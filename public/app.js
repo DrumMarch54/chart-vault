@@ -337,17 +337,15 @@
         if (!s.missing_count) { $missing.replaceChildren(h('p', { class: 'ok' }, 'Every tagged chart has its screenshot. Nothing is missing.')); return; }
         const groups = new Map();
         for (const m of s.missing) {
-          const mt = /^Screenshot_(\d{5})/.exec(m.filename);
+          const mt = /^Screenshot_(\d{6})/.exec(m.filename);
           const key = mt ? `Screenshot_${mt[1]}` : 'other';
           groups.set(key, (groups.get(key) || 0) + 1);
         }
-        const label = (k) => {
-          const y = k.slice(11, 15), half = k.slice(15);
-          return half === '0' ? `Jan–Sep ${y}` : `Oct–Dec ${y}`;
-        };
+        const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const label = (k) => `${MONTHS[Number(k.slice(15, 17)) - 1] || '?'} ${k.slice(11, 15)}`;
         $missing.replaceChildren(
           h('h2', { style: 'margin-top:0' }, `${fmtN(s.missing_count)} still missing`),
-          h('p', { class: 'muted small' }, 'Try the whole Screenshots folder first (long-press a file, tap All, tap Done). If the phone cannot handle that many, tap the search in the Files picker, type one code below, select all results, tap Done, and repeat per code.'),
+          h('p', { class: 'muted small' }, 'One month at a time: tap Choose screenshots, tap the search in the picker, type one code below, select all results, tap Done, then tap Upload. Each code is a year and month.'),
           ...[...groups.entries()].sort().map(([k, n]) => h('div', { class: 'stat' },
             k === 'other' ? h('span', {}, 'Not screenshots (Charts, Camera, WhatsApp folders)') : h('span', {}, h('code', { style: 'font-size:17px' }, k), h('span', { class: 'muted small' }, ` ${label(k)}`)),
             h('b', {}, fmtN(n)))));

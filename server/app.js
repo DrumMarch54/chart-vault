@@ -151,15 +151,17 @@ export function createApp(db, { log = console.log } = {}) {
     const find = db.prepare('SELECT stored_path FROM images WHERE filename = ?');
     const wanted = [], already = [];
     let unknown = 0;
+    const unknownSample = [];
     const seen = new Set();
     for (const n of names) {
       if (seen.has(n)) continue;
       seen.add(n);
       const row = find.get(n);
-      if (!row) unknown++;
+      if (!row) { unknown++; if (unknownSample.length < 3) unknownSample.push(n); }
       else if (row.stored_path) already.push(n);
       else wanted.push(n);
     }
+    log(`upload check: ${names.length} picked, ${wanted.length} wanted, ${already.length} already, ${unknown} unknown${unknownSample.length ? ` (e.g. ${unknownSample.join(', ')})` : ''}`);
     res.json({ wanted, already: already.length, unknown });
   });
   // Step 2: one file per request, raw body.
@@ -170,9 +172,10 @@ export function createApp(db, { log = console.log } = {}) {
       if (!filename) return res.status(400).json({ error: 'Missing file name.' });
       const result = await receiveUpload(db, req, { filename, sha256Header: req.get('x-sha256') });
       lastUpload = Date.now();
+      if (!result.already) log(`uploaded #${result.id} ${filename} (${result.size} bytes)`);
       res.json(result);
     } catch (err) {
-      if (err instanceof UploadError) return res.status(err.status).json({ error: err.message });
+      if (err instanceof UploadError) { log(`upload refused ${req.query.name}: ${err.message}`); return res.status(err.status).json({ error: err.message }); }
       next(err);
     }
   });
