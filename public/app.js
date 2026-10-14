@@ -315,6 +315,8 @@
   const stat = (label, value) => h('div', { class: 'stat' }, h('span', {}, label), h('b', {}, fmtN(value)));
 
   // ---------- upload images ----------
+  let activeUpload = null; // the progress card of an upload that is still running
+  const warnLeave = (e) => { e.preventDefault(); e.returnValue = 'An upload is still running.'; };
   routes.upload = function uploadView() {
     // No accept filter on purpose: with one, Android opens the photo-gallery picker, which
     // cannot handle thousands of files and has no filename search. Without it, the Files picker opens.
@@ -335,6 +337,7 @@
       $plan, $missing));
     $file.addEventListener('change', () => plan([...$file.files]));
     $dir.addEventListener('change', () => planFolders([...$dir.files]));
+    if (activeUpload) fill($plan, activeUpload.card); // an upload is still running: show its progress again
     showMissing();
 
     const IMG_RE = /\.(jpe?g|png|webp)$/i;
@@ -436,7 +439,10 @@
       const $cur = h('div', { class: 'muted small', style: 'word-break:break-all' });
       const $fails = h('div', { class: 'filelist' });
       const $stop = h('button', { type: 'button', class: 'btn-block', onclick: () => { stopped = true; $stop.disabled = true; $stop.textContent = 'Stopping after the current file…'; } }, 'Stop');
-      fill($plan, h('div', { class: 'card stack' }, $line, $bar, $cur, $stop, $fails));
+      const card = h('div', { class: 'card stack' }, $line, $bar, $cur, $stop, $fails);
+      activeUpload = { card };
+      fill($plan, card);
+      window.addEventListener('beforeunload', warnLeave);
       let lock = null;
       try { lock = await navigator.wakeLock?.request('screen'); } catch {}
       const update = () => {
@@ -481,6 +487,8 @@
       }
       update();
       await Promise.all([worker(), worker()]);
+      activeUpload = null;
+      window.removeEventListener('beforeunload', warnLeave);
       try { await lock?.release(); } catch {}
       const ok = doneN - failed.length;
       $cur.textContent = '';
@@ -531,7 +539,7 @@
       const hResp = await fetch('/api/health', { credentials: 'same-origin', cache: 'no-store' });
       const hb = await hResp.json();
       if (knownCommit === null) knownCommit = hb.commit;
-      else if (hb.commit !== knownCommit && !document.getElementById('newver')) {
+      else if (hb.commit !== knownCommit && !document.getElementById('newver') && !activeUpload) {
         document.body.append(h('button', { id: 'newver', type: 'button', class: 'btn-primary', onclick: () => location.reload() }, `Updated to build ${hb.commit}, tap to reload`));
       }
     } catch {}
