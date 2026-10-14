@@ -278,12 +278,12 @@
   // ---------- import tags ----------
   routes.import = async function importView() {
     const $file = h('input', { type: 'file', id: 'tagfile' });
-    const $pick = h('label', { for: 'tagfile', class: 'btn btn-primary btn-block filepick' }, 'Choose UserTag.backup');
+    const $pick = h('button', { type: 'button', class: 'btn-primary btn-block', onclick: () => $file.click() }, 'Choose UserTag.backup');
     const $result = h('div', {});
     const $hist = h('div', { class: 'card' }, h('p', { class: 'muted' }, 'Loading history…'));
     $file.addEventListener('change', async () => {
       const f = $file.files[0]; if (!f) return;
-      $pick.textContent = 'Importing…'; $pick.classList.add('disabled');
+      $pick.textContent = 'Importing…'; $pick.disabled = true;
       $result.replaceChildren(h('p', { class: 'muted' }, `Reading ${f.name} (${fmtBytes(f.size)})…`));
       try {
         const s = await api('/api/import?filename=' + encodeURIComponent(f.name), { method: 'POST', body: f });
@@ -294,7 +294,7 @@
           h('p', { class: 'muted small' }, s.new_images ? 'Next: go to Upload to add the screenshots for the new images.' : 'Nothing was deleted. Importing the same file again is always safe.')));
         loadHist();
       } catch (err) { $result.replaceChildren(h('div', { class: 'card' }, h('p', { class: 'err' }, err.message), h('p', { class: 'muted small' }, 'Nothing was changed.'))); }
-      $pick.textContent = 'Choose UserTag.backup'; $pick.classList.remove('disabled'); $file.value = '';
+      $pick.textContent = 'Choose UserTag.backup'; $pick.disabled = false; $file.value = '';
     });
     async function loadHist() {
       try {
@@ -315,7 +315,7 @@
   // ---------- upload images ----------
   routes.upload = function uploadView() {
     const $file = h('input', { type: 'file', id: 'imgfiles', multiple: true, accept: 'image/*' });
-    const $pick = h('label', { for: 'imgfiles', class: 'btn btn-primary btn-block filepick' }, 'Choose screenshots');
+    const $pick = h('button', { type: 'button', class: 'btn-primary btn-block', onclick: () => $file.click() }, 'Choose screenshots');
     const $plan = h('div', {});
     const $missing = h('div', { class: 'card stack' }, h('p', { class: 'muted' }, 'Checking what is still missing…'));
     render(h('div', { class: 'screen stack' }, h('h1', {}, 'Upload screenshots'),
@@ -472,6 +472,8 @@
     } catch {}
   }
   setInterval(checkVersion, 60_000);
+  window.addEventListener('hashchange', checkVersion);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) checkVersion(); });
 
   // ---------- start ----------
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
