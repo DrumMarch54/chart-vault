@@ -65,11 +65,69 @@ test('empty and partial input never throws', () => {
 test('birth date numbers (course notes)', () => {
   const b = N.birth(19, 12, 1984);
   assert.equal(t(b.day), '19/1'); assert.equal(t(b.month), '12/3'); assert.equal(t(b.year), '22/4');
-  assert.equal(t(b.littleLp), '8/8'); assert.equal(t(b.higherLp), '35/8');
-  assert.equal(t(b.outerDiamond), '13/4'); assert.equal(t(b.innerDiamond), '14/5'); assert.equal(t(b.dharma), '34/7');
+  assert.equal(t(b.littleLp), '8/8'); assert.equal(t(b.bigLp), '35/8');
+  assert.equal(t(b.outerDiamond), '13/4'); assert.equal(t(b.innerDiamond), '14/5'); assert.equal(t(b.dharmaDiamond), '34/7');
   assert.equal(t(b.nexus), '18/9'); assert.equal(t(b.target), '17/8');
   assert.equal(JSON.stringify(b.rhythm.map((p) => p.years)), JSON.stringify([4, 8, 7, 5, 1, 2]));
   assert.equal(JSON.stringify(N.rhythm(9).map((p) => p.years)), JSON.stringify([9, 9, 9]));
   assert.equal(JSON.stringify(N.rhythm(6).map((p) => p.years)), JSON.stringify([6, 3, 6, 3, 6, 3]));
   assert.equal(N.rhythm(8)[0].planet, 'Saturn');
+});
+
+// The class manual's worked example: Katrine Ditte Pilmark, born 19 August 1984.
+test('Katrine Ditte Pilmark (class manual, middle name)', () => {
+  const r = N.numeroscope({ day: 19, month: 8, year: 1984, name: 'Katrine Ditte Pilmark' });
+  const n = r.name;
+  assert.equal(JSON.stringify(n.words.map((w) => w.value.text)), JSON.stringify(['20/2', '18/9', '21/3']));
+  assert.equal(t(n.le), '14/5');
+  assert.equal(t(n.upperLeft), '3/3'); assert.equal(t(n.upperRight), '4/4');
+  assert.equal(t(n.lowerLeft), '7/7'); assert.equal(t(n.lowerRight), '8/8');
+  assert.equal(t(n.heart), '7/7'); assert.equal(t(n.heartExtra[0]), '16/7');
+  assert.equal(t(n.solar), '15/6'); assert.equal(t(n.solarExtra[0]), '15/6');
+  assert.equal(t(n.spine), '6/6'); assert.equal(t(n.pillar), '41/5');
+  assert.equal(n.middle.length, 1); assert.equal(n.middle[0].text, 'Ditte');
+  const e = r.essence;
+  assert.equal(t(e.day), '19/1'); assert.equal(t(e.month), '8/8'); assert.equal(t(e.year), '22/4');
+  assert.equal(t(e.littleLp), '13/4'); assert.equal(t(e.bigLp), '40/4');
+  assert.equal(t(e.outerAura), '9/9'); assert.equal(t(e.outerDiamond), '18/9');
+  assert.equal(t(e.innerAura), '5/5'); assert.equal(t(e.innerDiamond), '14/5');
+  assert.equal(t(e.topAura), '12/3'); assert.equal(t(e.dharmaDiamond), '84/3');
+  assert.equal(t(e.nexus), '14/5'); assert.equal(t(e.target), '13/4');
+  assert.equal(e.target.ds, e.littleLp.ds); assert.equal(e.bigLp.ds, e.littleLp.ds);
+  // Psyche: inner line month 8/8 and year 22/4, LE 12/3; outer line 18/9 (outer aura 9 + 9) and year.
+  const p = r.psyche;
+  assert.equal(t(p.inner.le), '12/3'); assert.equal(t(p.inner.upperLeft), '9/9'); assert.equal(t(p.inner.upperRight), '5/5');
+  assert.equal(t(p.challenge), '18/9'); assert.equal(t(p.outer.first.value), '18/9');
+  assert.equal(p.outer.le.ds, e.littleLp.ds);
+  assert.equal(t(p.outer.pillar), t(N.val(1 + p.outer.heart.ds + p.outer.solar.ds + p.outer.le.ds)));
+});
+
+test('Albert Einstein big and little personality / heart\'s desire (Module 10)', () => {
+  const r = N.numeroscope({ name: 'Albert Einstein' });
+  assert.equal(t(r.consonants.big), '28/1'); assert.equal(t(r.consonants.le), '10/1');
+  assert.equal(t(r.vowels.big), '18/9'); assert.equal(t(r.vowels.le), '9/9');
+});
+
+test('1949 year vibration is 23/5; month 12 is 12/3; a year typed as 2 digits is ignored', () => {
+  const e = N.essence(1, 12, 1949);
+  assert.equal(t(e.year), '23/5'); assert.equal(t(e.month), '12/3');
+  assert.equal(N.essence(1, 1, 49).year, null);
+});
+
+// The owner's own numbers (Drive doc "Peoples Numbers"): born 19 May 1998.
+test('Peter (Peoples Numbers): essence, inner and outer psyche', () => {
+  const r = N.numeroscope({ day: 19, month: 5, year: 1998, name: 'Peter Joshua Shicora' });
+  const e = r.essence;
+  assert.equal(t(e.day), '19/1'); assert.equal(t(e.month), '5/5'); assert.equal(t(e.year), '27/9');
+  assert.equal(t(e.littleLp), '15/6'); assert.equal(t(e.bigLp), '42/6');
+  assert.equal(t(e.outerDiamond), '15/6'); assert.equal(t(e.innerDiamond), '19/1'); assert.equal(t(e.dharmaDiamond), '59/5');
+  assert.equal(t(e.nexus), '16/7'); assert.equal(t(e.target), '15/6');
+  const p = r.psyche;
+  assert.equal(t(p.inner.leDiamond), '59/5'); assert.equal(t(p.inner.mindDiamond), '61/7'); assert.equal(t(p.inner.pillar), '19/1');
+  assert.equal(t(p.outer.leDiamond), '69/6'); assert.equal(t(p.outer.mindDiamond), '71/8'); assert.equal(t(p.outer.pillar), '24/6');
+  assert.equal(t(N.joined(p.outer.mindDiamond, p.inner.mindDiamond)), '87/6');
+  assert.equal(t(N.joined(p.outer.emotionDiamond, p.inner.emotionDiamond)), '96/6');
+  assert.equal(t(N.joined(p.outer.pillar, p.inner.pillar)), '61/7');
+  assert.equal(JSON.stringify(r.name.words.map((w) => w.value.text)), JSON.stringify(['24/6', '23/5', '22/4']));
+  assert.equal(t(r.name.le), '15/6');
 });

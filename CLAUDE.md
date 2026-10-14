@@ -20,6 +20,12 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - A reply that changed code ends with `Build: <short commit>`; the phone shows
   "Updated to build <commit>, tap to reload" within 15 s of the deploy.
 
+## Numerology knowledge
+- The course rules for the charts live in `.brain/numerology/` (start with its
+  README). Read `chart-construction.md` before touching `public/numeroscope.js`
+  or the Quick chart screen. The owner's Google Drive folder "Hub" is readable
+  from a cloud session with the Drive connector; ids are in that README.
+
 ## Rules that must hold
 - Never lose or mix up a chart or a tag. Filename = identity. Tags are kept
   exactly as written, never renamed or "fixed".
