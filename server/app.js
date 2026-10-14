@@ -3,7 +3,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { config } from './config.js';
 import { requireAuth, isAuthed, NO_TOKEN_MSG, passwordMatches, setSessionCookie, clearSessionCookie, isValidSession, loginAllowed, recordFailure, clearFailures } from './auth.js';
-import { parseUserTagBackup, importTags, addTagToImage, removeTagFromImage, ImportError } from './import.js';
+import { parseUserTagBackup, importTags, addTagToImage, removeTagFromImage, markAlbumMember, ImportError } from './import.js';
 import { receiveUpload, UploadError, fullPathFor, thumbPathFor, makeThumb, findLostFiles } from './storage.js';
 import { listImages, getImage, suggestTags, allTags, statusReport, exportTags } from './queries.js';
 import { runBackup, streamZip, isBackupRunning } from './backup.js';
@@ -195,6 +195,17 @@ export function createApp(db, { log = console.log } = {}) {
     }
     log(`upload check: ${names.length} picked, ${wanted.length} wanted, ${already.length} already, ${unknown} unknown${unknownSample.length ? ` (e.g. ${unknownSample.join(', ')})` : ''}`);
     res.json({ wanted, already: already.length, unknown });
+  });
+  // Album folders: "this file is in Gallery album X" becomes the tag X.
+  app.post('/api/album/mark', express.json({ limit: '10kb' }), (req, res, next) => {
+    try {
+      const r = markAlbumMember(db, { filename: req.body?.filename, album: req.body?.album });
+      if (r.created || r.tagged) log(`album "${req.body.album}": ${req.body.filename}${r.created ? ' (new chart)' : ''}${r.tagged ? ' tagged' : ''}`);
+      res.json(r);
+    } catch (err) {
+      if (err instanceof ImportError) return res.status(400).json({ error: err.message });
+      next(err);
+    }
   });
   // Step 2: one file per request, raw body.
   app.put('/api/upload/file', async (req, res, next) => {

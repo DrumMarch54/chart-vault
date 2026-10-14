@@ -322,13 +322,67 @@
     const $pick = h('button', { type: 'button', class: 'btn-primary btn-block', onclick: () => $file.click() }, 'Choose screenshots');
     const $plan = h('div', {});
     const $missing = h('div', { class: 'card stack' }, h('p', { class: 'muted' }, 'Checking what is still missing…'));
+    // Laptop only: pick a whole folder tree (e.g. DCIM). Gallery album folders
+    // become tags with the album's exact name.
+    const $dir = h('input', { type: 'file', id: 'dirfiles', multiple: true, webkitdirectory: true });
+    const $pickDir = h('button', { type: 'button', class: 'btn-block', onclick: () => $dir.click() }, 'Import album folders (laptop)');
     render(h('div', { class: 'screen stack' }, h('h1', {}, 'Upload screenshots'),
       h('div', { class: 'card stack' },
         h('p', {}, 'Only files named in the tag file are sent; everything else is skipped on the phone. Files already here are skipped too, so you can stop and come back any time.'),
-        $file, $pick),
+        $file, $pick,
+        h('p', { class: 'muted small', style: 'margin-top:14px' }, 'On a laptop you can also pick the phone\'s whole DCIM folder. Every Gallery album folder (like "12 Mind Center") becomes a tag with that exact name on the charts inside it.'),
+        $dir, $pickDir),
       $plan, $missing));
     $file.addEventListener('change', () => plan([...$file.files]));
+    $dir.addEventListener('change', () => planFolders([...$dir.files]));
     showMissing();
+
+    const IMG_RE = /\.(jpe?g|png|webp)$/i;
+    const NOT_ALBUMS = new Set(['Screenshots', 'Camera', 'DCIM', '.thumbnails']);
+    async function planFolders(files) {
+      if (!files.length) return;
+      const groups = new Map();
+      for (const f of files) {
+        if (!IMG_RE.test(f.name)) continue;
+        const parts = (f.webkitRelativePath || f.name).split('/');
+        const folder = parts.length >= 2 ? parts[parts.length - 2] : '(no folder)';
+        if (!groups.has(folder)) groups.set(folder, []);
+        groups.get(folder).push(f);
+      }
+      if (!groups.size) { fill($plan, h('div', { class: 'card' }, h('p', { class: 'err' }, 'No pictures found in that folder.'))); return; }
+      const rows = [...groups.entries()].sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }));
+      const boxes = new Map();
+      const $table = h('div', {}, ...rows.map(([folder, list]) => {
+        const defaultOn = !NOT_ALBUMS.has(folder) && list.length <= 1500;
+        const cb = h('input', { type: 'checkbox', style: 'width:26px;height:26px', checked: defaultOn });
+        boxes.set(folder, cb);
+        return h('label', { class: 'stat', style: 'gap:12px;cursor:pointer' }, h('span', { class: 'row', style: 'flex-wrap:nowrap' }, cb, h('span', {}, folder)), h('b', {}, fmtN(list.length)));
+      }));
+      const $start = h('button', { type: 'button', class: 'btn-primary btn-block', onclick: async () => {
+        const albumOf = new Map();
+        const todo = [], plain = [];
+        for (const [folder, list] of rows) {
+          if (boxes.get(folder).checked) for (const f of list) { albumOf.set(f, folder); todo.push(f); }
+          else plain.push(...list);
+        }
+        // Unticked folders use the normal rule: only files named in the tag file.
+        let extra = [];
+        if (plain.length) {
+          fill($plan, h('div', { class: 'card' }, h('p', {}, `Checking ${fmtN(plain.length)} files from unticked folders against the tag file…`)));
+          const byName = new Map(); for (const f of plain) if (!byName.has(f.name)) byName.set(f.name, f);
+          const names = [...byName.keys()];
+          try {
+            for (let i = 0; i < names.length; i += 500) { const r = await postJson('/api/upload/check', { names: names.slice(i, i + 500) }); extra.push(...r.wanted.map((n) => byName.get(n))); }
+          } catch (err) { fill($plan, h('div', { class: 'card' }, h('p', { class: 'err' }, err.message))); return; }
+        }
+        run([...todo, ...extra], albumOf);
+      } }, 'Start');
+      fill($plan, h('div', { class: 'card stack' },
+        h('p', {}, `Found ${fmtN(rows.length)} folders. Ticked folders are treated as chart albums: every picture in them is added and tagged with the folder name. Unticked folders only contribute files named in the tag file.`),
+        $table,
+        h('p', { class: 'muted small' }, 'Screenshots and Camera are unticked on purpose. Untick anything else that is not charts.'),
+        $start));
+    }
 
     // The phone's file picker cannot hand over thousands of files at once, so
     // show what is still missing in chunks, with the text to type in the
@@ -374,7 +428,7 @@
         $start));
     }
 
-    async function run(todo) {
+    async function run(todo, albumOf = new Map()) {
       const total = todo.length, totalBytes = todo.reduce((s, f) => s + f.size, 0);
       let doneN = 0, doneBytes = 0, failed = [], skipped = 0, stopped = false;
       const $bar = h('div', { class: 'bar' }, h('div', {}));
@@ -414,7 +468,14 @@
         while (queue.length && !stopped) {
           const f = queue.shift();
           $cur.textContent = `Sending ${f.name} (${fmtBytes(f.size)})`;
-          try { await sendOne(f); } catch (err) { failed.push(f); $fails.append(h('div', { class: 'err' }, `${f.name}: ${err.message}`)); if (err.message === 'logged out') return; }
+          try {
+            const album = albumOf.get(f);
+            if (album) {
+              const m = await postJson('/api/album/mark', { filename: f.name, album });
+              if (m.has_file) { skipped++; doneN++; doneBytes += f.size; update(); continue; }
+            }
+            await sendOne(f);
+          } catch (err) { failed.push(f); $fails.append(h('div', { class: 'err' }, `${f.name}: ${err.message}`)); if (err.message === 'logged out') return; }
           doneN++; doneBytes += f.size; update();
         }
       }
@@ -425,7 +486,7 @@
       $cur.textContent = '';
       $stop.replaceWith(h('div', { class: 'stack' },
         h('p', { class: failed.length ? 'err' : 'ok' }, stopped ? `Stopped. ${fmtN(ok)} uploaded so far.` : failed.length ? `Finished with ${failed.length} failure${failed.length === 1 ? '' : 's'}. ${fmtN(ok)} uploaded.` : `All done: ${fmtN(ok)} uploaded.`),
-        failed.length ? h('button', { type: 'button', class: 'btn-primary btn-block', onclick: () => run(failed) }, `Retry ${failed.length} failed`) : null,
+        failed.length ? h('button', { type: 'button', class: 'btn-primary btn-block', onclick: () => run(failed, albumOf) }, `Retry ${failed.length} failed`) : null,
         h('a', { class: 'btn btn-block', href: '#/' }, 'Go to Browse'),
         h('a', { class: 'btn btn-block', href: '#/status' }, 'See what is still missing')));
       showMissing();

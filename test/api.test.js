@@ -316,3 +316,42 @@ test('deploy guard: missing, current, stale, and it needs the password', async (
   assert.equal(status.updates.state, 'stale');
   assert.match(await (await api('/api/debug/snapshot?scope=short')).text(), /auto-update: stale/);
 });
+
+test('album folders: membership becomes a tag, unknown charts get created, uploads then work', async () => {
+  // a chart that is only in an album, never in the tag file
+  let r = await json(await api('/api/album/mark', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ filename: 'Screenshot_20250301_101010_Opera.jpg', album: '12 Mind Center' }) }));
+  assert.equal(r.status, 200);
+  assert.deepEqual(r.body, { id: r.body.id, has_file: false, created: true, tagged: true });
+  const id = r.body.id;
+  // again: nothing new
+  r = await json(await api('/api/album/mark', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ filename: 'Screenshot_20250301_101010_Opera.jpg', album: '12 Mind Center' }) }));
+  assert.deepEqual(r.body, { id, has_file: false, created: false, tagged: false });
+  // a known, already-uploaded chart just gets the album tag
+  r = await json(await api('/api/album/mark', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ filename: 'Screenshot_20251008_223530_Opera.jpg', album: 'Charts' }) }));
+  assert.equal(r.body.has_file, true); assert.equal(r.body.created, false); assert.equal(r.body.tagged, true);
+  let img = await json(await api(`/api/images/${r.body.id}`));
+  assert.ok(img.body.tags.some((t) => t.name === 'Charts' && t.source === 'album'));
+  assert.ok(img.body.paths.includes('/DCIM/Charts/Screenshot_20251008_223530_Opera.jpg'));
+  // the new chart can now be uploaded like any other
+  const jpg = await fakeJpeg(90, 160, 7);
+  r = await json(await api('/api/upload/file?name=' + encodeURIComponent('Screenshot_20250301_101010_Opera.jpg'), { method: 'PUT', body: jpg }));
+  assert.equal(r.status, 200); assert.equal(r.body.already, false);
+  img = await json(await api(`/api/images/${id}`));
+  assert.equal(img.body.has_file, true);
+  assert.deepEqual(img.body.tags.map((t) => t.name), ['12 Mind Center']);
+  assert.equal(img.body.taken_at, '2025-03-01T10:10:10');
+  // a removed album tag stays removed
+  await postJsonT(`/api/images/${id}/tags/remove`, { name: '12 Mind Center' });
+  r = await json(await api('/api/album/mark', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ filename: 'Screenshot_20250301_101010_Opera.jpg', album: '12 Mind Center' }) }));
+  assert.equal(r.body.tagged, false);
+  img = await json(await api(`/api/images/${id}`));
+  assert.deepEqual(img.body.tags, []);
+  // bad input
+  r = await json(await api('/api/album/mark', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ filename: '', album: 'x' }) }));
+  assert.equal(r.status, 400);
+  // re-importing the tag file does not disturb album tags or the new chart
+  await api('/api/import', { method: 'POST', body: JSON.stringify(SAMPLE) });
+  img = await json(await api(`/api/images/${id}`));
+  assert.equal(img.body.has_file, true);
+});
+async function postJsonT(p, data) { return api(p, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(data) }); }

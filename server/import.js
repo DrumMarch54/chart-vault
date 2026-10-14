@@ -132,3 +132,24 @@ export function removeTagFromImage(db, imageId, name) {
     return { removed: removed === 1 };
   })();
 }
+
+// A chart that sits in a Gallery album folder (e.g. "12 Mind Center"). Makes
+// sure the image exists (it may not be in the tag file at all), remembers the
+// phone path, and adds the album's exact name as a tag. Safe to repeat.
+export function markAlbumMember(db, { filename, album }) {
+  if (typeof filename !== 'string' || !filename.trim()) throw new ImportError('Missing file name.');
+  if (typeof album !== 'string' || !album.trim()) throw new ImportError('Missing album name.');
+  if (album.length > 120 || filename.length > 255) throw new ImportError('Name is too long.');
+  return db.transaction(() => {
+    const created = db.prepare('INSERT OR IGNORE INTO images (filename, taken_at) VALUES (?, ?)').run(filename, dateFromFilename(filename)).changes === 1;
+    const img = db.prepare('SELECT id, stored_path FROM images WHERE filename = ?').get(filename);
+    db.prepare('INSERT OR IGNORE INTO image_paths (image_id, path) VALUES (?, ?)').run(img.id, `/DCIM/${album}/${filename}`);
+    db.prepare('INSERT OR IGNORE INTO tags (name, kind) VALUES (?, ?)').run(album, tagKind(album));
+    const tagId = db.prepare('SELECT id FROM tags WHERE name = ?').get(album).id;
+    let tagged = false;
+    if (!db.prepare('SELECT 1 FROM removed_tags WHERE image_id = ? AND tag_id = ?').get(img.id, tagId)) {
+      tagged = db.prepare("INSERT OR IGNORE INTO image_tags (image_id, tag_id, source) VALUES (?, ?, 'album')").run(img.id, tagId).changes === 1;
+    }
+    return { id: img.id, has_file: !!img.stored_path, created, tagged };
+  })();
+}
