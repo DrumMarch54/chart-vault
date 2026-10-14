@@ -7,7 +7,7 @@
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; background: var(--bg); color: var(--text); font: 17px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-body { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom)); overscroll-behavior-y: none; }
+body { padding-bottom: env(safe-area-inset-bottom); overscroll-behavior-y: none; }
 a { color: var(--blue); }
 button, .btn { font: inherit; min-height: var(--tap); padding: 0 18px; border: 0; border-radius: var(--radius); background: var(--panel2); color: var(--text); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
 button:disabled { opacity: .5; cursor: default; }
@@ -32,11 +32,6 @@ input:focus { outline: none; border-color: var(--blue); }
 .err { color: var(--red); }
 .ok { color: var(--green); }
 
-/* bottom nav */
-#nav { position: fixed; left: 0; right: 0; bottom: 0; height: calc(var(--nav-h) + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom); background: var(--panel); border-top: 1px solid var(--panel2); display: flex; z-index: 20; }
-#nav a { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); text-decoration: none; font-size: 13px; gap: 2px; }
-#nav a .ico { font-size: 22px; line-height: 1; }
-#nav a.active { color: var(--accent); }
 
 /* search */
 .searchbar { position: sticky; top: 0; z-index: 10; background: var(--bg); padding: 10px 0 6px; }
@@ -93,13 +88,9 @@ input[type=file] { display: none; }
 #toast { position: fixed; left: 12px; right: 12px; top: calc(12px + env(safe-area-inset-top)); pointer-events: none; background: #2b3140; color: var(--text); padding: 12px 16px; border-radius: var(--radius); z-index: 60; box-shadow: 0 8px 24px rgba(0,0,0,.5); text-align: center; }
 #toast.err { background: #5a2a2a; }
 #newver { position: fixed; left: 50%; transform: translateX(-50%); top: calc(12px + env(safe-area-inset-top)); z-index: 55; box-shadow: 0 8px 24px rgba(0,0,0,.5); }
-.seg { display: flex; background: var(--panel); border-radius: var(--radius); padding: 4px; margin-bottom: 8px; }
-.seg button { flex: 1; min-height: 40px; background: transparent; color: var(--muted); border-radius: 10px; }
-.seg button.on { background: var(--panel2); color: var(--text); font-weight: 700; }
 
 /* full-screen viewer */
 body.fullscreen { padding-bottom: 0; overflow: hidden; }
-body.fullscreen #nav { display: none; }
 .viewer { position: fixed; inset: 0; background: #000; z-index: 30; overflow: hidden; }
 .vstage { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; touch-action: none; }
 .vimg { max-width: 100%; max-height: 100%; transform-origin: 0 0; will-change: transform; user-select: none; -webkit-user-drag: none; }
@@ -110,10 +101,15 @@ body.fullscreen #nav { display: none; }
 .varrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(40,40,50,.6); color: #fff; z-index: 2; }
 .varrow.left { left: 6px; } .varrow.right { right: 6px; }
 @media (hover: none) { .varrow { display: none; } }
-.vhandle { position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(14px + env(safe-area-inset-bottom)); min-height: 44px; padding: 0 22px; border-radius: 22px; background: rgba(30,34,46,.85); color: #fff; border: 1px solid rgba(255,255,255,.15); backdrop-filter: blur(6px); }
 .vsheet { position: absolute; left: 0; right: 0; bottom: 0; max-height: 72vh; background: var(--panel); border-radius: 20px 20px 0 0; transform: translateY(105%); transition: transform .25s ease; display: flex; flex-direction: column; box-shadow: 0 -8px 30px rgba(0,0,0,.6); }
 .vsheet.open { transform: translateY(0); }
 .vsheet-grip { padding: 10px 0 4px; display: flex; justify-content: center; cursor: pointer; touch-action: none; }
 .vsheet-grip span { width: 44px; height: 5px; border-radius: 3px; background: var(--muted); display: block; }
 .vsheet-body { overflow: auto; padding: 8px 16px calc(16px + env(safe-area-inset-bottom)); }
 .vsheet .addtag .suggest { top: auto; bottom: 100%; }
+
+.pagetop { display: flex; align-items: center; gap: 10px; padding: 4px 0 8px; }
+.pagetop h1 { margin: 0; }
+.gear { font-size: 24px; min-height: var(--tap); }
+.viewer .vtop { transition: opacity .2s; }
+.viewer.bare .vtop, .viewer.bare .varrow { opacity: 0; pointer-events: none; }

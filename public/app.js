@@ -2,7 +2,6 @@
 (() => {
   'use strict';
   const $app = document.getElementById('app');
-  const $nav = document.getElementById('nav');
   const $toast = document.getElementById('toast');
 
   // ---------- helpers ----------
@@ -52,7 +51,6 @@
     const [, name = '', arg = ''] = /^#\/([^/?]*)\/?([^?]*)/.exec(hash) || [];
     const query = new URLSearchParams(hash.split('?')[1] || '');
     const view = routes[name] || routes[''];
-    for (const a of $nav.querySelectorAll('a')) a.classList.toggle('active', a.dataset.nav === (name || 'browse'));
     closeOverlays();
     if (viewerCleanup) { viewerCleanup(); viewerCleanup = null; }
     view(arg, query);
@@ -65,7 +63,6 @@
 
   // ---------- login ----------
   function showLogin() {
-    $nav.classList.add('hidden');
     const $pw = h('input', { type: 'password', placeholder: 'Password', autocomplete: 'current-password', autofocus: true, enterkeyhint: 'go' });
     const $msg = h('p', { class: 'err small' });
     const $btn = h('button', { class: 'btn-primary btn-block', type: 'submit' }, 'Log in');
@@ -75,7 +72,7 @@
         const r = await fetch('/api/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ password: $pw.value }), credentials: 'same-origin' });
         const b = await r.json().catch(() => ({}));
         if (!r.ok) throw new Error(b.error || 'Could not log in.');
-        $nav.classList.remove('hidden'); route();
+        route();
       } catch (err) { $msg.textContent = err.message; $btn.disabled = false; }
     } }, $pw, $btn, $msg);
     render(h('div', { class: 'screen center' }, h('img', { src: '/icons/icon-192.png', width: 96, height: 96, alt: '', style: 'border-radius:22px;margin-bottom:16px' }), h('h1', {}, 'Chart Vault'), form));
@@ -151,9 +148,6 @@
         clamp(); apply();
       } else if (pts.length === 1 && start.x !== undefined && scale > 1) {
         tx = start.tx + (e.clientX - start.x); ty = start.ty + (e.clientY - start.y); clamp(); apply();
-      } else if (pts.length === 1 && swipe && scale === 1) {
-        // follow the finger a little so a swipe feels alive
-        img.style.transform = `translate(${(e.clientX - swipe.x) * 0.6}px, ${(e.clientY - swipe.y) * 0.4}px)`;
       }
     });
     const up = (e) => {
@@ -161,7 +155,6 @@
       const pts = [...pointers.values()];
       if (swipe && scale === 1 && pts.length === 0) {
         const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y;
-        img.style.transform = '';
         if (Math.abs(dx) > 70 && Math.abs(dy) < Math.abs(dx) * 0.7) (dx < 0 ? on.left : on.right)?.();
         else if (dy < -70 && Math.abs(dx) < 60) on.up?.();
         else if (dy > 90 && Math.abs(dx) < 60) on.down?.();
@@ -177,7 +170,7 @@
   }
 
   // ---------- tag suggestion box ----------
-  function suggestBox($input, { within = () => [], onPick, allowNew = false, kind = null }) {
+  function suggestBox($input, { within = () => [], onPick, allowNew = false, kind = null, alsoArchetype = false }) {
     const $list = h('div', { class: 'suggest hidden' });
     let timer, seq = 0;
     const hide = () => $list.classList.add('hidden');
@@ -185,14 +178,23 @@
       fill($list);
       const exact = items.some((t) => t.name === q);
       if (allowNew && q && !exact) $list.append(h('button', { type: 'button', onclick: () => { onPick(q); hide(); } }, h('span', {}, `Add new tag “${q}”`), h('span', { class: 'count' }, 'new')));
-      for (const t of items) $list.append(h('button', { type: 'button', onclick: () => { onPick(t.name); hide(); } },
-        h('span', { class: `chip ${t.kind}`, style: 'min-height:32px;font-size:15px;pointer-events:none' }, t.name), h('span', { class: 'count' }, `${fmtN(t.count)} chart${t.count === 1 ? '' : 's'}`)));
+      for (const t of items) $list.append(h('button', { type: 'button', onclick: () => { onPick(t.name, t.pickKind); hide(); } },
+        h('span', { class: `chip ${t.kind}`, style: 'min-height:32px;font-size:15px;pointer-events:none' }, t.name),
+        h('span', { class: 'count' }, t.pickKind === 'archetype' ? `${fmtN(t.count)} archetype pic${t.count === 1 ? '' : 's'}` : `${fmtN(t.count)} chart${t.count === 1 ? '' : 's'}`)));
       $list.classList.toggle('hidden', !$list.children.length);
     };
     const refresh = async () => {
       const q = $input.value.trim(); const my = ++seq;
       const params = new URLSearchParams({ q, limit: 25 }); if (kind) params.set('kind', kind); for (const w of within()) params.append('within', w);
-      try { const items = await api('/api/tags?' + params); if (my === seq) show(items, q); } catch {}
+      try {
+        let items = await api('/api/tags?' + params);
+        if (alsoArchetype && q) {
+          const ap = new URLSearchParams({ q, limit: 5, kind: 'archetype' });
+          const extra = await api('/api/tags?' + ap).catch(() => []);
+          items = [...items, ...extra.map((t) => ({ ...t, pickKind: 'archetype' }))];
+        }
+        if (my === seq) show(items, q);
+      } catch {}
     };
     $input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(refresh, 120); });
     $input.addEventListener('focus', refresh);
@@ -206,19 +208,19 @@
     const tags = query.getAll('tag');
     const kind = query.get('kind') === 'archetype' ? 'archetype' : 'chart';
     const setTags = (t, k = kind) => { const p = new URLSearchParams(); if (k === 'archetype') p.set('kind', 'archetype'); for (const x of t) p.append('tag', x); go('#/' + ((t.length || k === 'archetype') ? '?' + p : '')); };
-    const $switch = h('div', { class: 'seg' },
-      h('button', { type: 'button', class: kind === 'chart' ? 'on' : '', onclick: () => setTags(tags, 'chart') }, 'Charts'),
-      h('button', { type: 'button', class: kind === 'archetype' ? 'on' : '', onclick: () => setTags(tags, 'archetype') }, 'Archetype pics'));
+    const $gear = h('a', { class: 'btn iconbtn gear', href: '#/settings', 'aria-label': 'Settings', title: 'Settings' }, '⚙');
     const $input = h('input', { type: 'search', placeholder: tags.length ? 'Add another tag…' : 'Search tags (12mc, politics, a name…)', autocomplete: 'off', enterkeyhint: 'search' });
-    const $sugg = suggestBox($input, { within: () => tags, kind, onPick: (name) => { if (!tags.includes(name)) setTags([...tags, name]); $input.value = ''; } });
+    const $sugg = suggestBox($input, { within: () => tags, kind, alsoArchetype: kind === 'chart', onPick: (name, pickKind) => { if (pickKind && pickKind !== kind) setTags([name], pickKind); else if (!tags.includes(name)) setTags([...tags, name]); $input.value = ''; } });
     const $clear = h('button', { type: 'button', class: 'clear', 'aria-label': 'Clear', onclick: () => { $input.value = ''; $input.focus(); $sugg.classList.add('hidden'); } }, '×');
-    const $filters = h('div', { class: 'filters' }, ...tags.map((t) => chip({ name: t, kind: kindOf(t) }, { active: true, removable: true, onclick: () => setTags(tags.filter((x) => x !== t)) })),
+    const $filters = h('div', { class: 'filters' },
+      kind === 'archetype' ? chip({ name: 'Archetype pics', kind: 'name' }, { active: true, removable: true, onclick: () => setTags(tags, 'chart') }) : null,
+      ...tags.map((t) => chip({ name: t, kind: kindOf(t) }, { active: true, removable: true, onclick: () => setTags(tags.filter((x) => x !== t)) })),
       tags.length > 1 ? h('button', { type: 'button', class: 'chip', onclick: () => setTags([]) }, 'Clear all') : null);
     const $summary = h('div', { class: 'summary' }, 'Loading…');
     const $grid = h('div', { class: 'grid' });
     const $sentinel = h('div', { class: 'sentinel' });
     render(h('div', { class: 'screen' },
-      h('div', { class: 'searchbar' }, $switch, h('div', { class: 'searchbox' }, $input, $clear, $sugg), tags.length ? $filters : null, $summary),
+      h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), $gear), (tags.length || kind === 'archetype') ? $filters : null, $summary),
       $grid, $sentinel));
 
     let offset = 0, total = null, loading = false, done = false;
@@ -266,20 +268,20 @@
     const $name = h('span', { class: 'vname' }, '');
     const $prev = h('button', { type: 'button', class: 'iconbtn varrow left hidden', 'aria-label': 'Previous' }, '‹');
     const $next = h('button', { type: 'button', class: 'iconbtn varrow right hidden', 'aria-label': 'Next' }, '›');
-    const $handle = h('button', { type: 'button', class: 'vhandle' }, 'Tags ▲');
     const $sheetBody = h('div', { class: 'vsheet-body stack' });
     const $sheet = h('div', { class: 'vsheet' }, h('div', { class: 'vsheet-grip', onclick: () => closeSheet() }, h('span', {})), $sheetBody);
     const $root = h('div', { class: 'viewer' },
       $stage,
       h('div', { class: 'vtop' }, h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'Back to the list', onclick: back }, '‹'), $name, $count),
-      $prev, $next, $handle, $sheet);
+      $prev, $next, $sheet);
     render($root);
 
     let img, ctx = { prev: null, next: null, index: null, total: 0 }, sheetOpen = false;
-    const openSheet = () => { sheetOpen = true; $sheet.classList.add('open'); $handle.classList.add('hidden'); };
-    const closeSheet = () => { sheetOpen = false; $sheet.classList.remove('open'); $handle.classList.remove('hidden'); };
+    const openSheet = () => { sheetOpen = true; $sheet.classList.add('open'); $root.classList.remove('bare'); };
+    const closeSheet = () => { sheetOpen = false; $sheet.classList.remove('open'); };
+    const toggleBare = () => $root.classList.toggle('bare'); // tap: hide or show the top bar
     const goTo = (nid) => { if (nid) go(`#/chart/${nid}${qs ? '?' + qs : ''}`); };
-    const z = zoomable($stage, $img, { left: () => goTo(ctx.next), right: () => goTo(ctx.prev), up: openSheet, down: () => (sheetOpen ? closeSheet() : back()), tap: () => (sheetOpen ? closeSheet() : null) });
+    const z = zoomable($stage, $img, { left: () => goTo(ctx.next), right: () => goTo(ctx.prev), up: openSheet, down: () => (sheetOpen ? closeSheet() : back()), tap: () => (sheetOpen ? closeSheet() : toggleBare()) });
     $prev.onclick = () => goTo(ctx.prev); $next.onclick = () => goTo(ctx.next);
     const keys = (e) => { if (e.key === 'ArrowLeft') goTo(ctx.prev); else if (e.key === 'ArrowRight') goTo(ctx.next); else if (e.key === 'Escape') (sheetOpen ? closeSheet() : back()); };
     window.addEventListener('keydown', keys);
@@ -302,7 +304,6 @@
     const draw = () => {
       const groups = { name: [], position: [], number: [] };
       for (const t of img.tags) groups[t.kind].push(t);
-      $handle.textContent = `${img.tags.length} tag${img.tags.length === 1 ? '' : 's'} ▲`;
       const $tagInput = h('input', { type: 'text', placeholder: 'Add a tag…', autocomplete: 'off', autocapitalize: 'none', enterkeyhint: 'done' });
       const addTag = async (name) => {
         try { const r = await postJson(`/api/images/${img.id}/tags`, { name }); img = r.image; toast(r.added ? `Added “${name}”` : `“${name}” was already there`); draw(); }
@@ -328,7 +329,6 @@
           h('div', { style: 'word-break:break-all' }, img.filename),
           ...img.paths.map((p) => h('div', { style: 'word-break:break-all;padding-left:8px' }, p))));
     };
-    $handle.onclick = openSheet;
     draw();
   };
 
@@ -360,7 +360,7 @@
           ...rows.map((r) => h('div', { class: 'stat small' }, h('span', {}, `${fmtDate(r.imported_at)}`), h('span', { class: 'muted' }, `+${r.new_images} images, +${r.new_tags} tags, +${r.new_links} links`))));
       } catch (err) { fill($hist, h('p', { class: 'err' }, err.message)); }
     }
-    render(h('div', { class: 'screen stack' }, h('h1', {}, 'Import tags'),
+    render(h('div', { class: 'screen stack' }, pageTop('Import tags'),
       h('div', { class: 'card stack' },
         h('p', {}, 'Pick the UserTag.backup file from your Smart Switch backup. Safe to repeat: new tags are added, nothing is ever deleted.'),
         $file, $pick),
@@ -368,6 +368,8 @@
     loadHist();
   };
   const stat = (label, value) => h('div', { class: 'stat' }, h('span', {}, label), h('b', {}, fmtN(value)));
+  // Header for pages that hang off Settings: back arrow + title.
+  const pageTop = (title, backTo = '#/settings') => h('div', { class: 'pagetop' }, h('a', { class: 'btn iconbtn', href: backTo, 'aria-label': 'Back' }, '‹'), h('h1', {}, title));
 
   // ---------- upload images ----------
   let activeUpload = null; // the progress card of an upload that is still running
@@ -387,7 +389,7 @@
     // inside represents the number(s) in the folder name. Not charts.
     const $arch = h('input', { type: 'file', id: 'archfiles', multiple: true, webkitdirectory: true });
     const $pickArch = h('button', { type: 'button', class: 'btn-block', onclick: () => $arch.click() }, 'Import archetype pics (laptop)');
-    render(h('div', { class: 'screen stack' }, h('h1', {}, 'Upload screenshots'),
+    render(h('div', { class: 'screen stack' }, pageTop('Upload screenshots'),
       h('div', { class: 'card stack' },
         h('p', {}, 'Only files named in the tag file are sent; everything else is skipped on the phone. Files already here are skipped too, so you can stop and come back any time.'),
         $file, $pick,
@@ -572,10 +574,19 @@
     }
   };
 
+  // ---------- settings ----------
+  routes.settings = function settingsView() {
+    render(h('div', { class: 'screen stack' }, pageTop('Settings', '#/'),
+      h('a', { class: 'btn btn-block', href: '#/upload', style: 'justify-content:space-between' }, 'Upload screenshots', h('span', { class: 'muted' }, '›')),
+      h('a', { class: 'btn btn-block', href: '#/import', style: 'justify-content:space-between' }, 'Import tags', h('span', { class: 'muted' }, '›')),
+      h('a', { class: 'btn btn-block', href: '#/status', style: 'justify-content:space-between' }, 'Status and backup', h('span', { class: 'muted' }, '›')),
+      h('a', { class: 'btn btn-block', href: '#/?kind=archetype', style: 'justify-content:space-between' }, 'Archetype pics', h('span', { class: 'muted' }, '›'))));
+  };
+
   // ---------- status ----------
   routes.status = async function statusView() {
     const $body = h('div', { class: 'stack' }, h('p', { class: 'muted' }, 'Loading…'));
-    render(h('div', { class: 'screen' }, h('h1', {}, 'Status'), $body));
+    render(h('div', { class: 'screen' }, pageTop('Status'), $body));
     let s;
     try { s = await api('/api/status'); } catch (err) { fill($body, h('p', { class: 'err' }, err.message)); return; }
     const $backupMsg = h('p', { class: 'muted small' }, s.last_backup ? `Last backup: ${fmtDate(s.last_backup)} (${s.last_backup_result})` : 'No backup made yet. One runs automatically every day.');
@@ -626,7 +637,7 @@
     try {
       const me = await fetch('/api/me', { credentials: 'same-origin' }).then((r) => r.json());
       if (!me.loggedIn) return showLogin();
-      $nav.classList.remove('hidden'); route(); checkVersion();
+      route(); checkVersion();
     } catch { render(h('div', { class: 'screen center' }, h('p', { class: 'err' }, 'Cannot reach the server. Check your connection and reload.'))); }
   })();
 })();

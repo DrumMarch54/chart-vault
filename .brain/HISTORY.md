@@ -57,3 +57,10 @@ Brought the app in line with the new-app playbook from the first app:
   "N tags" pill opens a sheet with tags, add tag, details. Swipe down closes
   the sheet, then the viewer. Zoom = pinch / double tap; swipes only fire
   when not zoomed. Arrow keys and side arrows on a laptop.
+- 2026-10-14 later: the owner only uses Browse day to day. Bottom tab bar
+  removed; a gear button next to the search opens Settings (Upload, Import
+  tags, Status and backup, Archetype pics). Archetype pics have no switch:
+  typing a number shows a labelled "N archetype pics" suggestion; picking it
+  browses that side with an "Archetype pics ×" chip. Viewer: no tags pill,
+  swipe up opens the sheet, a tap hides/shows the top bar, the picture never
+  slides under a finger unless zoomed in.
