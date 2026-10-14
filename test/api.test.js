@@ -10,6 +10,9 @@ const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'chart-vault-test-'));
 process.env.DATA_DIR = path.join(tmp, 'data');
 process.env.BACKUP_DIR = path.join(tmp, 'backups');
 process.env.WEB_TOKEN = 'test-password';
+process.env.BUILD_COMMIT = 'testbld';
+process.env.AUTODEPLOY_SCRIPT = path.join(tmp, 'installed-autodeploy.sh');
+process.env.AUTODEPLOY_LOG = path.join(tmp, 'autodeploy.log');
 
 const { ensureDirs } = await import('../server/config.js');
 const { openDb } = await import('../server/db.js');
@@ -239,4 +242,77 @@ test('debug snapshot: locked, plain text, never shows the password, scopes and i
   assert.match(one, /on disk: image yes, thumb yes/);
   const none = await (await api('/api/debug/snapshot?id=999999')).text();
   assert.match(none, /No chart/);
+});
+
+test('error answers are never cached, good ones keep their own rules', async () => {
+  for (const p of ['/nope.css?v=abc', '/api/nope', '/api/images']) {
+    const r = await fetch(base + p);
+    assert.ok(r.status >= 400, p);
+    assert.match(r.headers.get('cache-control') || '', /no-store/, p);
+    assert.match(r.headers.get('cdn-cache-control') || '', /no-store/, p);
+  }
+  assert.equal((await fetch(base + '/CLAUDE.md')).status, 404, 'notes for Claude are not served');
+  const ok = await fetch(base + '/app.css?v=x');
+  assert.equal(ok.status, 200);
+  assert.match(ok.headers.get('cache-control'), /immutable/);
+});
+
+test('sign-in link: wrong password is "Not authorised.", right one sets the cookie and drops it from the address', async () => {
+  const bad = await fetch(base + '/?t=wrong', { redirect: 'manual' });
+  assert.equal(bad.status, 401);
+  assert.equal(await bad.text(), 'Not authorised.');
+  assert.equal(bad.headers.get('set-cookie'), null);
+  const good = await fetch(base + '/?t=test-password', { redirect: 'manual' });
+  assert.equal(good.status, 302);
+  assert.equal(good.headers.get('location'), '/');
+  const c = good.headers.get('set-cookie').split(';')[0];
+  assert.equal((await fetch(base + '/api/status', { headers: { cookie: c } })).status, 200);
+});
+
+test('health is open, says whether the caller is signed in, and shows the build', async () => {
+  const anon = await (await fetch(base + '/api/health')).json();
+  assert.equal(anon.authenticated, false);
+  assert.equal(anon.commit, 'testbld');
+  assert.equal(anon.configured, true);
+  assert.equal(typeof anon.busy, 'boolean');
+  const signed = await (await api('/api/health')).json();
+  assert.equal(signed.authenticated, true);
+  const bearer = await (await fetch(base + '/api/health', { headers: { authorization: 'Bearer test-password' } })).json();
+  assert.equal(bearer.authenticated, true);
+});
+
+test('imports and uploads remember the build that made them', async () => {
+  const imp = db.prepare('SELECT build FROM imports ORDER BY id DESC LIMIT 1').get();
+  assert.equal(imp.build, 'testbld');
+  const up = db.prepare('SELECT uploaded_build FROM images WHERE uploaded_at IS NOT NULL').all();
+  assert.ok(up.length);
+  for (const r of up) assert.equal(r.uploaded_build, 'testbld');
+  const short = await (await api('/api/debug/snapshot?scope=short')).text();
+  assert.match(short, /commit testbld/);
+  assert.match(short, /LAST IMPORT \S+ build testbld/);
+});
+
+test('deploy guard: missing, current, stale, and it needs the password', async () => {
+  assert.equal((await fetch(base + '/api/deploy-guard')).status, 401);
+  const installed = process.env.AUTODEPLOY_SCRIPT;
+  let g = await (await api('/api/deploy-guard')).json();
+  assert.equal(g.state, 'missing');
+  assert.equal(g.ok, false);
+  fs.copyFileSync(new URL('../deploy/autodeploy.sh', import.meta.url), installed);
+  fs.writeFileSync(process.env.AUTODEPLOY_LOG, 'deploy log line\n');
+  g = await (await api('/api/deploy-guard')).json();
+  assert.equal(g.state, 'current');
+  assert.equal(g.ok, true);
+  assert.deepEqual(g.log_tail, ['deploy log line']);
+  const old = new Date(Date.now() - 3600_000);
+  fs.utimesSync(process.env.AUTODEPLOY_LOG, old, old);
+  g = await (await api('/api/deploy-guard')).json();
+  assert.equal(g.stalled, true);
+  assert.equal(g.ok, false);
+  fs.appendFileSync(installed, '# older\n');
+  g = await (await api('/api/deploy-guard')).json();
+  assert.equal(g.state, 'stale');
+  const status = await (await api('/api/status')).json();
+  assert.equal(status.updates.state, 'stale');
+  assert.match(await (await api('/api/debug/snapshot?scope=short')).text(), /auto-update: stale/);
 });

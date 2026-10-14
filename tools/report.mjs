@@ -10,7 +10,8 @@
 // LIVE_APP_TOKEN (the app password, shared with the first app) from the
 // environment. LIVE_APP_URL is deliberately ignored: it belongs to the first app.
 // Never prints the password.
-// Exit codes: 0 ok, 1 bad usage, 2 no token, 3 refused (wrong password), 4 unreachable.
+// Exit codes: 0 ok, 1 bad usage, 2 no token, 3 refused (wrong password), 4 unreachable,
+// 5 the server has no password set, 7 no browser for screens.
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
@@ -36,6 +37,10 @@ async function get(p) {
   } catch (err) {
     console.error(`Cannot reach ${URL_BASE}: ${err.message}`); process.exit(4);
   }
+  if (res.status === 503) {
+    const body = await res.text();
+    if (/WEB_TOKEN is not set/.test(body)) { console.error('The live app has no password set (WEB_TOKEN missing in its .env), so nobody can read it.'); process.exit(5); }
+  }
   if (res.status === 401 || res.status === 403) { console.error('The live app refused the token (wrong LIVE_APP_TOKEN?).'); process.exit(3); }
   if (res.status >= 500 || res.status === 502 || res.status === 530) { console.error(`The live app answered ${res.status} (service down?).`); process.exit(4); }
   if (!res.ok) { console.error(`Unexpected ${res.status} for ${p}`); process.exit(4); }
@@ -48,9 +53,11 @@ async function screens(dir) {
   for (const spec of ['playwright', '/opt/node-tools/node_modules/playwright']) {
     try { ({ chromium } = require(spec)); break; } catch {}
   }
-  if (!chromium) { console.error('Playwright is not installed here; run: npm i -D playwright'); process.exit(1); }
+  if (!chromium) { console.error('Playwright is not installed here; run: npm i -D playwright'); process.exit(7); }
   fs.mkdirSync(dir, { recursive: true });
-  const browser = await chromium.launch();
+  let browser;
+  try { browser = await chromium.launch(); }
+  catch (err) { console.error(`Cannot start a browser: ${err.message.split('\n')[0]}`); process.exit(7); }
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
   const errors = [];
   page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));
@@ -82,7 +89,7 @@ async function screens(dir) {
   if (errors.length) console.log('Browser errors:\n' + errors.join('\n'));
 }
 
-if (cmd === 'help' || cmd === '--help' || cmd === '-h') { console.log(fs.readFileSync(new URL(import.meta.url)).toString().split('\n').slice(1, 12).join('\n')); process.exit(1); }
+if (cmd === 'help' || cmd === '--help' || cmd === '-h') { console.log(fs.readFileSync(new URL(import.meta.url)).toString().split('\n').slice(1, 15).join('\n')); process.exit(1); }
 if (!TOKEN) noToken();
 if (cmd === 'short') console.log(await get('/api/debug/snapshot?scope=short'));
 else if (cmd === 'full') console.log(await get('/api/debug/snapshot?scope=full'));

@@ -4,6 +4,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import sharp from 'sharp';
 import { paths } from './config.js';
+import { COMMIT } from './build.js';
 
 export const THUMB_WIDTH = 480;
 const MAX_UPLOAD = 60 * 1024 * 1024;
@@ -86,8 +87,8 @@ export async function receiveUpload(db, req, { filename, sha256Header }) {
     await fsp.rename(tmp, finalPath);
     try {
       const r = db.prepare(`UPDATE images SET stored_path = ?, thumb_path = ?, sha256 = ?, size = ?, width = ?, height = ?,
-        uploaded_at = strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ? AND stored_path IS NULL`).run(
-        storedPath, thumbRel, digest, size, meta.width, meta.height, image.id);
+        uploaded_at = strftime('%Y-%m-%dT%H:%M:%fZ','now'), uploaded_build = ? WHERE id = ? AND stored_path IS NULL`).run(
+        storedPath, thumbRel, digest, size, meta.width, meta.height, COMMIT, image.id);
       if (r.changes === 0) {
         // Someone uploaded the same file at the same moment; keep the first.
         await fsp.unlink(finalPath).catch(() => {});

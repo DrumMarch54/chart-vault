@@ -58,7 +58,9 @@
   }
   window.addEventListener('hashchange', route);
   const go = (hash) => { location.hash = hash; };
-  const render = (...nodes) => { $app.replaceChildren(...nodes); window.scrollTo(0, 0); };
+  // Like replaceChildren, but skips null/false so a conditional part never shows as the word "null".
+  const fill = (el, ...nodes) => el.replaceChildren(...nodes.filter((n) => n !== null && n !== undefined && n !== false));
+  const render = (...nodes) => { fill($app, ...nodes); window.scrollTo(0, 0); };
 
   // ---------- login ----------
   function showLogin() {
@@ -171,7 +173,7 @@
     let timer, seq = 0;
     const hide = () => $list.classList.add('hidden');
     const show = (items, q) => {
-      $list.replaceChildren();
+      fill($list);
       const exact = items.some((t) => t.name === q);
       if (allowNew && q && !exact) $list.append(h('button', { type: 'button', onclick: () => { onPick(q); hide(); } }, h('span', {}, `Add new tag “${q}”`), h('span', { class: 'count' }, 'new')));
       for (const t of items) $list.append(h('button', { type: 'button', onclick: () => { onPick(t.name); hide(); } },
@@ -239,7 +241,7 @@
       h('div', { class: 'detail-top' }, h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'Back', onclick: () => (history.length > 1 ? history.back() : go('#/')) }, '‹'), h('div', { class: 'title', id: 'dtitle' })),
       $body));
     let img;
-    try { img = await api(`/api/images/${id}`); } catch (err) { $body.replaceChildren(h('p', { class: 'err' }, err.message)); return; }
+    try { img = await api(`/api/images/${id}`); } catch (err) { fill($body, h('p', { class: 'err' }, err.message)); return; }
     document.getElementById('dtitle').textContent = img.filename;
     const draw = () => {
       const groups = { name: [], position: [], number: [] };
@@ -256,7 +258,7 @@
           try { const r = await postJson(`/api/images/${img.id}/tags/remove`, { name: t.name }); img = r.image; toast(`Removed “${t.name}”`); draw(); } catch (err) { toast(err.message, true); }
         } },
       ]) });
-      $body.replaceChildren(
+      fill($body, 
         img.has_file
           ? h('img', { class: 'fullimg', src: `/img/${img.id}`, alt: 'Chart', onclick: () => lightbox(`/img/${img.id}`) })
           : h('div', { class: 'card center', style: 'min-height:30vh' }, h('p', {}, 'No screenshot uploaded for this chart yet.'), h('a', { class: 'btn', href: '#/upload' }, 'Go to Upload')),
@@ -284,24 +286,24 @@
     $file.addEventListener('change', async () => {
       const f = $file.files[0]; if (!f) return;
       $pick.textContent = 'Importing…'; $pick.disabled = true;
-      $result.replaceChildren(h('p', { class: 'muted' }, `Reading ${f.name} (${fmtBytes(f.size)})…`));
+      fill($result, h('p', { class: 'muted' }, `Reading ${f.name} (${fmtBytes(f.size)})…`));
       try {
         const s = await api('/api/import?filename=' + encodeURIComponent(f.name), { method: 'POST', body: f });
-        $result.replaceChildren(h('div', { class: 'card' }, h('h2', { class: 'ok', style: 'margin-top:0' }, 'Import done'),
+        fill($result, h('div', { class: 'card' }, h('h2', { class: 'ok', style: 'margin-top:0' }, 'Import done'),
           stat('Entries in file', s.rows), stat('Images in file', s.images_in_file), stat('Tags in file', s.tags_in_file),
           stat('New images', s.new_images), stat('New tags', s.new_tags), stat('New image–tag links', s.new_links),
           s.skipped_removed ? stat('Skipped (removed by you in the app)', s.skipped_removed) : null,
           h('p', { class: 'muted small' }, s.new_images ? 'Next: go to Upload to add the screenshots for the new images.' : 'Nothing was deleted. Importing the same file again is always safe.')));
         loadHist();
-      } catch (err) { $result.replaceChildren(h('div', { class: 'card' }, h('p', { class: 'err' }, err.message), h('p', { class: 'muted small' }, 'Nothing was changed.'))); }
+      } catch (err) { fill($result, h('div', { class: 'card' }, h('p', { class: 'err' }, err.message), h('p', { class: 'muted small' }, 'Nothing was changed.'))); }
       $pick.textContent = 'Choose UserTag.backup'; $pick.disabled = false; $file.value = '';
     });
     async function loadHist() {
       try {
         const rows = await api('/api/imports');
-        $hist.replaceChildren(h('h2', { style: 'margin-top:0' }, 'Past imports'), rows.length ? null : h('p', { class: 'muted' }, 'None yet.'),
+        fill($hist, h('h2', { style: 'margin-top:0' }, 'Past imports'), rows.length ? null : h('p', { class: 'muted' }, 'None yet.'),
           ...rows.map((r) => h('div', { class: 'stat small' }, h('span', {}, `${fmtDate(r.imported_at)}`), h('span', { class: 'muted' }, `+${r.new_images} images, +${r.new_tags} tags, +${r.new_links} links`))));
-      } catch (err) { $hist.replaceChildren(h('p', { class: 'err' }, err.message)); }
+      } catch (err) { fill($hist, h('p', { class: 'err' }, err.message)); }
     }
     render(h('div', { class: 'screen stack' }, h('h1', {}, 'Import tags'),
       h('div', { class: 'card stack' },
@@ -334,7 +336,7 @@
     async function showMissing() {
       try {
         const s = await api('/api/status');
-        if (!s.missing_count) { $missing.replaceChildren(h('p', { class: 'ok' }, 'Every tagged chart has its screenshot. Nothing is missing.')); return; }
+        if (!s.missing_count) { fill($missing, h('p', { class: 'ok' }, 'Every tagged chart has its screenshot. Nothing is missing.')); return; }
         const groups = new Map();
         for (const m of s.missing) {
           const mt = /^Screenshot_(\d{6})/.exec(m.filename);
@@ -343,18 +345,18 @@
         }
         const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const label = (k) => `${MONTHS[Number(k.slice(15, 17)) - 1] || '?'} ${k.slice(11, 15)}`;
-        $missing.replaceChildren(
+        fill($missing, 
           h('h2', { style: 'margin-top:0' }, `${fmtN(s.missing_count)} still missing`),
           h('p', { class: 'muted small' }, 'One month at a time: tap Choose screenshots, tap the search in the picker, type one code below, select all results, tap Done, then tap Upload. Each code is a year and month.'),
           ...[...groups.entries()].sort().map(([k, n]) => h('div', { class: 'stat' },
             k === 'other' ? h('span', {}, 'Not screenshots (Charts, Camera, WhatsApp folders)') : h('span', {}, h('code', { style: 'font-size:17px' }, k), h('span', { class: 'muted small' }, ` ${label(k)}`)),
             h('b', {}, fmtN(n)))));
-      } catch (err) { $missing.replaceChildren(h('p', { class: 'err' }, err.message)); }
+      } catch (err) { fill($missing, h('p', { class: 'err' }, err.message)); }
     }
 
     async function plan(files) {
       if (!files.length) return;
-      $plan.replaceChildren(h('div', { class: 'card' }, h('p', {}, `Checking ${fmtN(files.length)} files against the tag file…`)));
+      fill($plan, h('div', { class: 'card' }, h('p', {}, `Checking ${fmtN(files.length)} files against the tag file…`)));
       const byName = new Map(); for (const f of files) if (!byName.has(f.name)) byName.set(f.name, f);
       const names = [...byName.keys()];
       let wanted = [], already = 0, unknown = 0;
@@ -363,10 +365,10 @@
           const r = await postJson('/api/upload/check', { names: names.slice(i, i + 500) });
           wanted.push(...r.wanted); already += r.already; unknown += r.unknown;
         }
-      } catch (err) { $plan.replaceChildren(h('div', { class: 'card' }, h('p', { class: 'err' }, err.message))); return; }
+      } catch (err) { fill($plan, h('div', { class: 'card' }, h('p', { class: 'err' }, err.message))); return; }
       const todo = wanted.map((n) => byName.get(n));
       const $start = h('button', { type: 'button', class: 'btn-primary btn-block', disabled: !todo.length, onclick: () => run(todo) }, todo.length ? `Upload ${fmtN(todo.length)} file${todo.length === 1 ? '' : 's'}` : 'Nothing to upload');
-      $plan.replaceChildren(h('div', { class: 'card stack' },
+      fill($plan, h('div', { class: 'card stack' },
         stat('Files you picked', files.length), stat('Charts to upload now', todo.length), stat('Already uploaded (skipped)', already), stat('Not in the tag file (skipped)', unknown),
         h('p', { class: 'muted small' }, 'Keep this screen open while it runs. If it stops, just pick the files again: it continues where it left off.'),
         $start));
@@ -380,7 +382,7 @@
       const $cur = h('div', { class: 'muted small', style: 'word-break:break-all' });
       const $fails = h('div', { class: 'filelist' });
       const $stop = h('button', { type: 'button', class: 'btn-block', onclick: () => { stopped = true; $stop.disabled = true; $stop.textContent = 'Stopping after the current file…'; } }, 'Stop');
-      $plan.replaceChildren(h('div', { class: 'card stack' }, $line, $bar, $cur, $stop, $fails));
+      fill($plan, h('div', { class: 'card stack' }, $line, $bar, $cur, $stop, $fails));
       let lock = null;
       try { lock = await navigator.wakeLock?.request('screen'); } catch {}
       const update = () => {
@@ -435,10 +437,10 @@
     const $body = h('div', { class: 'stack' }, h('p', { class: 'muted' }, 'Loading…'));
     render(h('div', { class: 'screen' }, h('h1', {}, 'Status'), $body));
     let s;
-    try { s = await api('/api/status'); } catch (err) { $body.replaceChildren(h('p', { class: 'err' }, err.message)); return; }
+    try { s = await api('/api/status'); } catch (err) { fill($body, h('p', { class: 'err' }, err.message)); return; }
     const $backupMsg = h('p', { class: 'muted small' }, s.last_backup ? `Last backup: ${fmtDate(s.last_backup)} (${s.last_backup_result})` : 'No backup made yet. One runs automatically every day.');
     const $missing = h('div', { class: 'filelist hidden' }, ...s.missing.map((m) => h('div', {}, m.filename, m.taken_at ? h('span', { class: 'muted' }, `  ${niceDate(m.taken_at)}`) : null)));
-    $body.replaceChildren(
+    fill($body, 
       h('div', { class: 'card' },
         stat('Charts with tags', s.images), stat('Screenshots uploaded', s.uploaded),
         h('div', { class: 'stat' }, h('span', {}, 'Tagged but no screenshot yet'), h('b', { class: s.missing_count ? 'err' : 'ok' }, fmtN(s.missing_count))),
@@ -456,11 +458,13 @@
       h('div', { class: 'card stack' },
         s.last_import ? h('p', { class: 'muted small' }, `Last tag import: ${fmtDate(s.last_import.imported_at)}, ${fmtN(s.last_import.images_in_file)} images in file`) : h('p', { class: 'muted small' }, 'No tag file imported yet.'),
         h('p', { class: 'muted small' }, `Chart Vault version ${s.version}, build ${s.commit}`),
+        s.updates ? h('p', { class: `small ${s.updates.ok ? 'muted' : 'err'}` }, s.updates.note) : null,
         h('button', { type: 'button', class: 'btn-block', onclick: async () => { await api('/api/logout', { method: 'POST' }).catch(() => {}); showLogin(); } }, 'Log out')));
   };
 
   // ---------- new version notice ----------
-  let knownCommit = null;
+  // The build this page was loaded from; a different one on the server means a new version.
+  let knownCommit = window.APP_VERSION && window.APP_VERSION !== '__V__' ? window.APP_VERSION : null;
   async function checkVersion() {
     try {
       const hResp = await fetch('/api/health', { credentials: 'same-origin', cache: 'no-store' });
@@ -471,7 +475,7 @@
       }
     } catch {}
   }
-  setInterval(checkVersion, 60_000);
+  setInterval(checkVersion, 15_000);
   window.addEventListener('hashchange', checkVersion);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) checkVersion(); });
 

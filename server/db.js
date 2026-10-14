@@ -55,11 +55,33 @@ CREATE INDEX IF NOT EXISTS idx_images_uploaded ON images(uploaded_at);
 CREATE INDEX IF NOT EXISTS idx_images_taken ON images(taken_at);
 `;
 
+// Numbered schema changes, run once each at startup, in order. The number of
+// the last one applied is kept in PRAGMA user_version. Never edit or reorder a
+// shipped entry; add a new one at the end.
+export const MIGRATIONS = [
+  // 1: the original schema (CREATE IF NOT EXISTS, so databases made before
+  //    migrations existed pass through unchanged)
+  (db) => db.exec(SCHEMA),
+  // 2: remember which build wrote an import and an upload
+  (db) => {
+    db.exec('ALTER TABLE imports ADD COLUMN build TEXT');
+    db.exec('ALTER TABLE images ADD COLUMN uploaded_build TEXT');
+  },
+];
+
+export function migrate(db) {
+  const have = db.pragma('user_version', { simple: true });
+  for (let n = have + 1; n <= MIGRATIONS.length; n++) {
+    db.transaction(() => { MIGRATIONS[n - 1](db); db.pragma(`user_version = ${n}`); })();
+  }
+  return { from: have, to: MIGRATIONS.length };
+}
+
 export function openDb(file) {
   const db = new Database(file);
   db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');
   db.pragma('synchronous = NORMAL');
-  db.exec(SCHEMA);
+  migrate(db);
   return db;
 }

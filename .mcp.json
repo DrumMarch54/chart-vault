@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "chrome-devtools": {
+      "type": "stdio",
+      "command": "bash",
+      "args": [
+        "-c",
+        "d=\"${CLAUDE_PROJECT_DIR:-$PWD}\"; while [ \"$d\" != / ]; do [ -x \"$d/tools/chrome_mcp.sh\" ] && exec \"$d/tools/chrome_mcp.sh\"; d=$(dirname \"$d\"); done; echo \"chrome_mcp.sh not found above ${CLAUDE_PROJECT_DIR:-$PWD}\" >&2; exit 1"
+      ]
+    }
+  }
+}

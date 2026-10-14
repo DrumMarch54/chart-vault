@@ -42,12 +42,14 @@ Settings (in `.env`):
 | `DATA_DIR` | database, images, thumbnails | ./data |
 | `BACKUP_DIR` | daily backup target | ./backups |
 
-`GET /api/health` answers `{"ok":true}` when the server is up.
+`GET /api/health` answers `{"ok":true, "commit", "busy", "authenticated"}` when the server is up.
+`node tools/dev-app.mjs` runs a throwaway copy with fake data on port 3399 (password `dev`).
 
 ## Tests
 
 ```
-npm test
+npm test          # all tests
+npm run verify    # syntax of every file + all tests
 ```
 
 Covers the tag-file parser and merge rules, re-import safety, app edits

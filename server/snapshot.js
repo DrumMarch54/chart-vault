@@ -6,6 +6,7 @@ import { config, paths } from './config.js';
 import { statusReport, getImage } from './queries.js';
 import { recentLogs } from './logbuf.js';
 import { fullPathFor, thumbPathFor } from './storage.js';
+import { deployGuard } from './deployguard.js';
 
 const started = Date.now();
 const fmtB = (b) => (b >= 1e9 ? (b / 1e9).toFixed(2) + ' GB' : b >= 1e6 ? (b / 1e6).toFixed(1) + ' MB' : Math.round((b || 0) / 1e3) + ' KB');
@@ -27,7 +28,7 @@ export function snapshot(db, { scope = 'full', id = null, commit = 'unknown', bu
     if (!img) { line(`No chart with id or filename "${id}".`); return out.join('\n'); }
     const raw = db.prepare('SELECT * FROM images WHERE id = ?').get(img.id);
     line(`CHART ${img.id}: ${img.filename}`);
-    line(`taken: ${img.taken_at || 'unknown'}   uploaded: ${img.uploaded_at || 'no'}`);
+    line(`taken: ${img.taken_at || 'unknown'}   uploaded: ${img.uploaded_at ? `${img.uploaded_at} by build ${raw.uploaded_build || 'unknown'}` : 'no'}`);
     line(`file: ${img.has_file ? `${raw.stored_path} (${fmtB(img.size)}, ${img.width}x${img.height}, sha256 ${img.sha256})` : 'none yet'}`);
     if (img.has_file) line(`on disk: image ${fs.existsSync(fullPathFor(raw)) ? 'yes' : 'MISSING'}, thumb ${thumbPathFor(raw) && fs.existsSync(thumbPathFor(raw)) ? 'yes' : 'missing'}`);
     line(`tags (${img.tags.length}): ${img.tags.map((t) => `${t.name}[${t.kind}${t.source === 'app' ? ',app' : ''}]`).join(', ')}`);
@@ -39,7 +40,10 @@ export function snapshot(db, { scope = 'full', id = null, commit = 'unknown', bu
 
   line('CHART VAULT SNAPSHOT  ', new Date().toISOString());
   line(`version ${version} commit ${commit}  up ${Math.round((Date.now() - started) / 60000)} min  busy ${busy}`);
-  line(`data dir ${config.dataDir}  backup dir ${config.backupDir}  port ${config.port}`);
+  line(`data dir ${config.dataDir}  backup dir ${config.backupDir}  port ${config.port}  schema ${db.pragma('user_version', { simple: true })}  password ${config.webToken ? 'set' : 'NOT SET'}`);
+  const g = deployGuard({ logLines: scope === 'short' ? 3 : 15 });
+  line(`auto-update: ${g.state} (${g.installed_path}), last check ${g.last_check_seconds_ago === null ? 'never' : `${g.last_check_seconds_ago}s ago`}. ${g.note}`);
+  for (const l of g.log_tail) line('  deploy log: ', blank(l));
   if (s.disk) line(`disk free ${fmtB(s.disk.free_bytes)} of ${fmtB(s.disk.total_bytes)}`);
   line('');
   line('COUNTS');
@@ -47,12 +51,12 @@ export function snapshot(db, { scope = 'full', id = null, commit = 'unknown', bu
   line(`distinct tags ${s.tags}   image-tag links ${s.links}   added in app ${s.added_in_app}   removed in app ${s.removed_in_app}`);
   line(`screenshot bytes ${fmtB(s.bytes)}   lost files (recorded but not on disk) ${s.lost_files ? s.lost_files.length : 0}`);
   line('');
-  line('LAST IMPORT ', s.last_import ? `${s.last_import.imported_at} ${s.last_import.filename}: rows ${s.last_import.rows}, images ${s.last_import.images_in_file}, new images ${s.last_import.new_images}, new tags ${s.last_import.new_tags}, new links ${s.last_import.new_links}, skipped removed ${s.last_import.skipped_removed}` : 'none');
+  line('LAST IMPORT ', s.last_import ? `${s.last_import.imported_at} build ${s.last_import.build || 'unknown'} ${s.last_import.filename}: rows ${s.last_import.rows}, images ${s.last_import.images_in_file}, new images ${s.last_import.new_images}, new tags ${s.last_import.new_tags}, new links ${s.last_import.new_links}, skipped removed ${s.last_import.skipped_removed}` : 'none');
   line('LAST BACKUP ', s.last_backup ? `${s.last_backup} ${s.last_backup_result}` : 'none');
   line('');
-  const recentUp = db.prepare('SELECT id, filename, uploaded_at, size FROM images WHERE uploaded_at IS NOT NULL ORDER BY uploaded_at DESC LIMIT 10').all();
+  const recentUp = db.prepare('SELECT id, filename, uploaded_at, uploaded_build, size FROM images WHERE uploaded_at IS NOT NULL ORDER BY uploaded_at DESC LIMIT 10').all();
   line('RECENT UPLOADS');
-  for (const r of recentUp) line(`  ${r.uploaded_at} #${r.id} ${r.filename} ${fmtB(r.size)}`);
+  for (const r of recentUp) line(`  ${r.uploaded_at} build ${r.uploaded_build || 'unknown'} #${r.id} ${r.filename} ${fmtB(r.size)}`);
   if (!recentUp.length) line('  none');
   const recentTags = db.prepare(`SELECT it.created_at, i.id, i.filename, t.name FROM image_tags it JOIN images i ON i.id = it.image_id JOIN tags t ON t.id = it.tag_id
     WHERE it.source = 'app' ORDER BY it.created_at DESC LIMIT 10`).all();
@@ -84,7 +88,7 @@ export function snapshot(db, { scope = 'full', id = null, commit = 'unknown', bu
     line('');
     const imports = db.prepare('SELECT * FROM imports ORDER BY id DESC LIMIT 10').all();
     line('IMPORT HISTORY');
-    for (const i of imports) line(`  ${i.imported_at} ${i.filename}: +${i.new_images} images, +${i.new_tags} tags, +${i.new_links} links, skipped ${i.skipped_removed}`);
+    for (const i of imports) line(`  ${i.imported_at} build ${i.build || 'unknown'} ${i.filename}: +${i.new_images} images, +${i.new_tags} tags, +${i.new_links} links, skipped ${i.skipped_removed}`);
     line('');
     const newest = db.prepare('SELECT id, filename, taken_at, (stored_path IS NOT NULL) f FROM images ORDER BY (taken_at IS NULL), taken_at DESC, id DESC LIMIT 15').all();
     line('NEWEST 15 CHARTS (what Browse shows first)');

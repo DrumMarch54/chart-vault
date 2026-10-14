@@ -2,13 +2,14 @@ import express from 'express';
 import path from 'node:path';
 import fs from 'node:fs';
 import { config } from './config.js';
-import { requireAuth, passwordMatches, setSessionCookie, clearSessionCookie, isValidSession, loginAllowed, recordFailure, clearFailures } from './auth.js';
+import { requireAuth, isAuthed, NO_TOKEN_MSG, passwordMatches, setSessionCookie, clearSessionCookie, isValidSession, loginAllowed, recordFailure, clearFailures } from './auth.js';
 import { parseUserTagBackup, importTags, addTagToImage, removeTagFromImage, ImportError } from './import.js';
 import { receiveUpload, UploadError, fullPathFor, thumbPathFor, makeThumb, findLostFiles } from './storage.js';
 import { listImages, getImage, suggestTags, allTags, statusReport, exportTags } from './queries.js';
 import { runBackup, streamZip, isBackupRunning } from './backup.js';
 import { snapshot } from './snapshot.js';
-import { execFileSync } from 'node:child_process';
+import { deployGuard } from './deployguard.js';
+import { COMMIT } from './build.js';
 import { paths } from './config.js';
 
 const MAX_IMPORT = 50 * 1024 * 1024;
@@ -24,12 +25,37 @@ export function createApp(db, { log = console.log } = {}) {
   app.set('trust proxy', 'loopback');
   app.set('etag', false);
 
+  // Any error answer must never be cached: a 404 for the app's own CSS during
+  // a deploy was once kept by the browser AND Cloudflare and outlived the fix.
+  app.use((req, res, next) => {
+    const writeHead = res.writeHead;
+    res.writeHead = function (status, ...rest) {
+      if (status >= 400) {
+        res.setHeader('Cache-Control', 'no-store, must-revalidate');
+        res.setHeader('CDN-Cache-Control', 'no-store');
+      }
+      return writeHead.call(this, status, ...rest);
+    };
+    next();
+  });
+
   // --- public: app shell and login ---
   const pub = path.join(config.root, 'public');
   // The HTML is never cached; the code files it points at carry the commit in
   // their address (?v=...), so every deploy is a brand-new address and no
   // browser or CDN cache can keep an old version alive.
   const sendIndex = (req, res) => {
+    // Sign-in link: /?t=<password> logs this browser in once and drops the
+    // password from the address.
+    if (typeof req.query.t === 'string') {
+      res.setHeader('Cache-Control', 'no-store');
+      if (!config.webToken) return res.status(503).type('text').send(NO_TOKEN_MSG);
+      if (!loginAllowed(req.ip)) return res.status(429).type('text').send('Too many tries. Wait a minute and try again.');
+      if (!passwordMatches(req.query.t)) { recordFailure(req.ip); return res.status(401).type('text').send('Not authorised.'); }
+      clearFailures(req.ip);
+      setSessionCookie(res);
+      return res.redirect(302, '/');
+    }
     const html = fs.readFileSync(path.join(pub, 'index.html'), 'utf8').replace(/__V__/g, COMMIT);
     res.setHeader('Cache-Control', 'no-store, must-revalidate');
     res.setHeader('CDN-Cache-Control', 'no-store');
@@ -43,14 +69,20 @@ export function createApp(db, { log = console.log } = {}) {
     res.setHeader('Service-Worker-Allowed', '/');
     res.type('application/javascript').send(js);
   });
+  // public/CLAUDE.md holds notes for Claude sessions, not for the web.
+  app.use((req, res, next) => (/\.md$/i.test(req.path) ? res.status(404).json({ error: 'Not found.' }) : next()));
   app.use(express.static(pub, { index: false, maxAge: '365d', immutable: true }));
 
-  // Public: used by the deploy script (busy = wait before restarting) and by the
-  // app itself to notice a new version.
-  app.get('/api/health', (req, res) => res.json({ ok: true, version: appVersion(), commit: COMMIT, busy: isBusy(), configured: !!config.webToken }));
+  // The only API answer without the password: used by the deploy script (busy =
+  // wait before restarting), by the app to notice a new version, and by
+  // tools/report.mjs to tell "down" from "refused".
+  app.get('/api/health', (req, res) => {
+    res.setHeader('Cache-Control', 'no-store');
+    res.json({ ok: true, version: appVersion(), commit: COMMIT, busy: isBusy(), configured: !!config.webToken, authenticated: !!config.webToken && isAuthed(req) });
+  });
 
   app.post('/api/login', express.json({ limit: '10kb' }), (req, res) => {
-    if (!config.webToken) return res.status(500).json({ error: 'The server has no WEB_TOKEN set yet.' });
+    if (!config.webToken) return res.status(503).json({ error: NO_TOKEN_MSG });
     if (!loginAllowed(req.ip)) return res.status(429).json({ error: 'Too many tries. Wait a minute and try again.' });
     if (!passwordMatches(req.body && req.body.password)) {
       recordFailure(req.ip);
@@ -187,6 +219,7 @@ export function createApp(db, { log = console.log } = {}) {
     report.disk = diskInfo();
     report.version = appVersion();
     report.commit = COMMIT;
+    report.updates = deployGuard();
     res.json(report);
   });
   app.get('/api/export/tags.json', (req, res) => {
@@ -199,6 +232,9 @@ export function createApp(db, { log = console.log } = {}) {
   app.get('/api/backup/download', async (req, res, next) => {
     try { await streamZip(db, res); } catch (err) { next(err); }
   });
+
+  // Is the auto-deploy script that cron runs the same as the repo copy?
+  app.get('/api/deploy-guard', (req, res) => res.json(deployGuard({ logLines: 10 })));
 
   // Plain-text state for Claude (tools/report.mjs). Password required like everything else.
   app.get('/api/debug/snapshot', (req, res) => {
@@ -217,13 +253,9 @@ export function createApp(db, { log = console.log } = {}) {
   return app;
 }
 
-const COMMIT = readCommit();
 let lastUpload = 0;
 // Busy while a backup runs or a file arrived in the last 20 seconds.
 function isBusy() { return isBackupRunning() || Date.now() - lastUpload < 20_000; }
-function readCommit() {
-  try { return execFileSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: config.root, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim(); } catch { return 'unknown'; }
-}
 function appVersion() {
   try { return JSON.parse(fs.readFileSync(path.join(config.root, 'package.json'), 'utf8')).version; } catch { return '?'; }
 }

@@ -1,4 +1,5 @@
 import { basename, dateFromFilename, tagKind } from './tags.js';
+import { COMMIT } from './build.js';
 
 export class ImportError extends Error {}
 
@@ -68,8 +69,8 @@ export function importTags(db, parsed, { filename = null } = {}) {
   const getTag = db.prepare('SELECT id FROM tags WHERE name = ?');
   const isRemoved = db.prepare('SELECT 1 FROM removed_tags WHERE image_id = ? AND tag_id = ?');
   const insLink = db.prepare("INSERT OR IGNORE INTO image_tags (image_id, tag_id, source) VALUES (?, ?, 'import')");
-  const insImport = db.prepare(`INSERT INTO imports (filename, rows, images_in_file, tags_in_file, new_images, new_tags, new_links, skipped_removed)
-    VALUES (@filename, @rows, @images_in_file, @tags_in_file, @new_images, @new_tags, @new_links, @skipped_removed)`);
+  const insImport = db.prepare(`INSERT INTO imports (filename, rows, images_in_file, tags_in_file, new_images, new_tags, new_links, skipped_removed, build)
+    VALUES (@filename, @rows, @images_in_file, @tags_in_file, @new_images, @new_tags, @new_links, @skipped_removed, @build)`);
 
   const run = db.transaction(() => {
     const summary = {
@@ -101,7 +102,7 @@ export function importTags(db, parsed, { filename = null } = {}) {
       }
     }
     summary.tags_in_file = allTags.size;
-    insImport.run(summary);
+    insImport.run({ ...summary, build: COMMIT });
     return summary;
   });
   return run();

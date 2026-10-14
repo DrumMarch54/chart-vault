@@ -39,6 +39,8 @@ service, different cron line.
    Save.
 6. On the phone open https://charts.tiktok-automation.com. You should see the
    Chart Vault login screen. Log in with the password from step 3.
+   (Or open https://charts.tiktok-automation.com/?t=YOUR-PASSWORD once: it logs
+   the phone in and takes the password out of the address.)
 7. In the browser menu choose **Add to Home screen** (Samsung Internet: menu →
    Add page to → Home screen). The app icon is a 3×3 grid with "12".
 
@@ -54,8 +56,13 @@ tail -20 /root/chart-vault-autodeploy.log    # what the deployer did
 
 Nothing on GitHub deploys by itself. The VPS checks the `main` branch every
 minute; when it changed, it waits while an upload or backup is in progress
-(up to 10 minutes), then updates, installs, and restarts the service. The app
-shows "Updated, tap to reload" within a minute.
+(up to 10 minutes; 5 minutes if the app does not answer), then updates,
+installs, and restarts the service. The app shows "Updated to build …, tap to
+reload" within a minute.
+
+The bottom of the Status page says whether automatic updates are installed
+and running. If it is red, say "the Status page says updates are not
+running" to Claude.
 
 Claude sessions push with: `git push origin <branch>:main`.
 

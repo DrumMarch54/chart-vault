@@ -86,7 +86,10 @@ export function isAuthed(req) {
   return false;
 }
 
+// Fails closed: no WEB_TOKEN on the server means nobody gets in.
+export const NO_TOKEN_MSG = 'WEB_TOKEN is not set on the server, so nobody can log in.';
 export function requireAuth(req, res, next) {
+  if (!config.webToken) return res.status(503).json({ error: NO_TOKEN_MSG });
   if (isAuthed(req)) return next();
   res.status(401).json({ error: 'Please log in.' });
 }

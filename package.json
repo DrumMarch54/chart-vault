@@ -9,7 +9,9 @@
   },
   "scripts": {
     "start": "node server/index.js",
-    "test": "node --test test/*.test.js"
+    "test": "node --test test/*.test.js",
+    "verify": "node tools/verify.mjs",
+    "dev": "node tools/dev-app.mjs"
   },
   "dependencies": {
     "archiver": "^8.0.0",
