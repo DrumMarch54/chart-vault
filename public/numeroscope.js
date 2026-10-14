@@ -129,6 +129,20 @@
     return { essence: e, birth: e, psyche: psyche(e), name: rhombus(all, e.day), consonants: rhombus(cons, e.day), vowels: rhombus(vow, e.day) };
   }
 
-  const api = { LETTERS, VOWELS, PLANETS, digitSum, val, add, joined, letterValue, lettersOf, nameWord, rhombus, essence, birth: essence, psyche, rhythm, numeroscope };
+
+  // Layout of the quick chart drawing, in drawing units, measured on the paid tool's screenshots
+  // (the orange diamond's top is y=357, its center x=371, its height 756; text y values are baselines).
+  const LAYOUT = {
+    main: { cx: 371, hw: 277, hh: 378, lineY: 735, line: 12, circleUp: 150, circleDown: 144, r: 111, tri: [1185, 1270, 65], big: [269, 1145, 51], letter: [664, 636.5, 28.5],
+      text: { dvY: 330, day: 36.6, auraL: 210, auraR: 531, upY: 522, heartY: 538.6, heart: 38, extraUp: 89.4, extra: 25.5, spineX: 525.5, spineY: 639.5, nameL: 75, nameR: 659, nameY: 723, name: 27, lineY: 774, lineFont: 36, lowY: 946.6, solarY: 832, solar: 37, extraDown: 91, leY: 1157, le: 36.6, pillarY: 1256, pillar: 34, small: 25, letterY: 646.4, letterFont: 26.6 } },
+    hex: { top: 49, ul: 109, ll: 232.5, bottom: 293, hw: 110, circle: [171, 48.6], small: [247, 15],
+      text: { topAuraY: 95, monthX: 236, yearX: 505, monthY: 95, lpY: 160, bigLpY: 192.7, lp: 27.4, auraY: 206, auraL: 284, auraR: 455, aura: 22, corner: 24.6 } },
+    psy: { cxL: 133, cxR: 608, cy: 326.5, hw: 92.5, hh: 138.5, line: 6, up: 55, r: 41, tri: [505.3, 534.8, 14],
+      text: { dvY: 176, day: 21.6, auraDx: 70, upY: 251.7, heartY: 272, heart: 24.6, lineDx: 125, lineY: 332.8, lineFont: 25, lowY: 422.7, solarY: 386.4, leY: 490.6, le: 22.8, pillarY: 534, pillar: 19, small: 23 } },
+    sub: { cxL: 113, cxR: 626, cy: 1049.6, hw: 98.4, hh: 139, line: 5, up: 55.6, down: 53.4, r: 41.3, tri: [1225, 1272, 29], bigDx: -60, bigY: 1203, bigR: 28.5,
+      text: { dvY: 893.3, day: 19.1, auraDx: 77, upY: 983, heartY: 984, heart: 22.8, extraUp: 29.5, extra: 14.6, nameDxL: -98, nameDxR: 103, nameY: 1039, name: 16, lineY: 1062.7, lineFont: 19, lowY: 1131, solarY: 1099, solar: 22.8, extraDown: 27, leY: 1211.6, le: 22.8, pillarY: 1264, pillar: 17.3, small: 20 } },
+  };
+
+  const api = { LAYOUT, LETTERS, VOWELS, PLANETS, digitSum, val, add, joined, letterValue, lettersOf, nameWord, rhombus, essence, birth: essence, psyche, rhythm, numeroscope };
   root.Numeroscope = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
