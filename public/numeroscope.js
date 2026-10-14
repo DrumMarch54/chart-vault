@@ -64,8 +64,9 @@
     const solarExtra = solar ? middle.map((w) => add(solar, w.value)) : [];
     const column = [top, heart, ...heartExtra, ...middle.map((w) => w.value), solar, ...solarExtra, le];
     const pillar = top && heart && solar && le ? val(column.reduce((a, v) => a + v.ds, 0)) : null;
+    // Spine = day ds + LE ds written as a plain sum (6 + 9 = 15/6, 1 + 5 = 6/6). CONFIRMED on two screenshots.
+    const spine = add(top, le);
     const spineDiamond = joined(top, le);
-    const spine = spineDiamond ? val(spineDiamond.ds) : null;
     return {
       words: live, first, last, middle, le, big,
       upperLeft: ul, upperRight: ur, heart, heartExtra, mindDiamond: joined(ul, ur),

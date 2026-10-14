@@ -46,7 +46,7 @@ test('"Test test" born on the 1st (screenshot 2)', () => {
   assert.equal(t(r.birth.day), '1/1');
   const n = r.name;
   assert.equal(t(n.upperLeft), '8/8'); assert.equal(t(n.upperRight), '8/8'); assert.equal(t(n.heart), '16/7'); assert.equal(t(n.pillar), '19/1');
-  assert.equal(t(n.spineDiamond), '15/6'); assert.equal(t(n.spine), '6/6');
+  assert.equal(t(n.spineDiamond), '15/6'); assert.equal(t(n.spine), '6/6'); assert.equal(t(N.numeroscope({ day: 6, name: 'Kevin Darnell Hart' }).name.spine), '15/6');
   const c = r.consonants;
   assert.equal(t(c.upperLeft), '3/3'); assert.equal(t(c.heart), '6/6'); assert.equal(t(c.pillar), '14/5');
   const v = r.vowels;
@@ -130,4 +130,28 @@ test('Peter (Peoples Numbers): essence, inner and outer psyche', () => {
   assert.equal(t(N.joined(p.outer.pillar, p.inner.pillar)), '61/7');
   assert.equal(JSON.stringify(r.name.words.map((w) => w.value.text)), JSON.stringify(['24/6', '23/5', '22/4']));
   assert.equal(t(r.name.le), '15/6');
+});
+
+// A vault screenshot of the paid tool: Kevin Darnell Hart, 6 July 1979 (image #639).
+test('Kevin Darnell Hart (vault screenshot): whole 5-chart set', () => {
+  const r = N.numeroscope({ day: 6, month: 7, year: 1979, name: 'Kevin Darnell Hart' });
+  const e = r.essence, n = r.name, c = r.consonants, v = r.vowels, p = r.psyche;
+  assert.equal(t(e.topAura), '15/6'); assert.equal(t(e.littleLp), '21/3'); assert.equal(t(e.bigLp), '39/3');
+  assert.equal(t(e.outerAura), '13/4'); assert.equal(t(e.innerAura), '14/5');
+  assert.equal(JSON.stringify(n.words.map((w) => w.value.text)), JSON.stringify(['19/1', '23/5', '12/3']));
+  assert.equal(t(n.heart), '16/7'); assert.equal(t(n.heartExtra[0]), '12/3'); assert.equal(t(n.spine), '15/6');
+  assert.equal(t(n.upperLeft), '7/7'); assert.equal(t(n.upperRight), '9/9');
+  assert.equal(t(n.lowerLeft), '10/1'); assert.equal(t(n.lowerRight), '12/3');
+  assert.equal(t(n.solar), '4/4'); assert.equal(t(n.solarExtra[0]), '9/9');
+  assert.equal(t(n.big), '54/9'); assert.equal(t(n.le), '9/9'); assert.equal(t(n.pillar), '43/7'); assert.equal(n.letters, 16);
+  assert.equal(JSON.stringify(c.words.map((w) => w.text + ' ' + w.value.text)), JSON.stringify(['Kvn 13/4', 'Drnll 17/8', 'Hrt 11/2']));
+  assert.equal(t(c.heart), '9/9'); assert.equal(t(c.heartExtra[0]), '17/8'); assert.equal(t(c.solar), '16/7'); assert.equal(t(c.solarExtra[0]), '15/6');
+  assert.equal(t(c.big), '41/5'); assert.equal(t(c.le), '14/5'); assert.equal(t(c.pillar), '49/4');
+  assert.equal(JSON.stringify(v.words.map((w) => w.text + ' ' + w.value.text)), JSON.stringify(['ei 6/6', 'ae 6/6', 'a 1/1']));
+  assert.equal(t(v.heart), '10/1'); assert.equal(t(v.heartExtra[0]), '7/7'); assert.equal(t(v.solar), '6/6'); assert.equal(t(v.solarExtra[0]), '12/3');
+  assert.equal(t(v.big), '13/4'); assert.equal(t(v.le), '13/4'); assert.equal(t(v.pillar), '33/6');
+  // Outer psyche (left blue): 13/4 and 26/8 on the line, LE 12/3, pillar 24/6. Inner (right): 7/7 and 26/8, LE 15/6, pillar 30/3.
+  assert.equal(t(p.outer.first.value), '13/4'); assert.equal(t(p.outer.le), '12/3'); assert.equal(t(p.outer.upperLeft), '10/1'); assert.equal(t(p.outer.upperRight), '14/5');
+  assert.equal(t(p.outer.heart), '6/6'); assert.equal(t(p.outer.lowerLeft), '7/7'); assert.equal(t(p.outer.lowerRight), '11/2'); assert.equal(t(p.outer.solar), '9/9'); assert.equal(t(p.outer.pillar), '24/6');
+  assert.equal(t(p.inner.le), '15/6'); assert.equal(t(p.inner.heart), '9/9'); assert.equal(t(p.inner.solar), '9/9'); assert.equal(t(p.inner.pillar), '30/3');
 });

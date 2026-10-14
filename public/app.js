@@ -626,33 +626,34 @@
       txt(p.cx, p.dvY, top, 'n-dark n-bold', p.big),
       txt(p.auraL, p.upY, c.upperLeft, 'n-gray', p.small), txt(p.auraR, p.upY, c.upperRight, 'n-gray', p.small),
       txt(p.cx, p.heartY, c.heart, 'n-dark n-bold', p.big),
-      ...c.heartExtra.map((v, i) => txt(p.cx, p.heartY + (i + 1) * p.big * 1.1, v, 'n-dark', p.mid)),
+      ...c.heartExtra.map((v, i) => txt(p.cx, p.heartY + p.extraUp + i * p.mid * 1.1, v, 'n-dark', p.mid)),
       p.spineX && txt(p.spineX, p.spineY, c.spine, 'n-gray', p.small),
       c.first && txt(p.nameL, p.nameY, c.first.text, 'n-dark', p.name), c.first && txt(p.nameL, p.lineY, c.first.value, 'n-dark n-bold', p.line),
       ...c.middle.flatMap((w, i) => [txt(p.cx + (i - (c.middle.length - 1) / 2) * p.big * 3, p.nameY, w.text, 'n-dark', p.name), txt(p.cx + (i - (c.middle.length - 1) / 2) * p.big * 3, p.lineY, w.value, 'n-dark n-bold', p.line)]),
       c.last && txt(p.nameR, p.nameY, c.last.text, 'n-dark', p.name), c.last && txt(p.nameR, p.lineY, c.last.value, 'n-dark n-bold', p.line),
       txt(p.auraL, p.lowY, c.lowerLeft, 'n-gray', p.small), txt(p.auraR, p.lowY, c.lowerRight, 'n-gray', p.small),
       txt(p.cx, p.solarY, c.solar, 'n-dark n-bold', p.big),
-      ...c.solarExtra.map((v, i) => txt(p.cx, p.solarY + (i + 1) * p.big * 1.1, v, 'n-dark', p.mid)),
+      ...c.solarExtra.map((v, i) => txt(p.cx, p.solarY + p.extraDown + i * p.mid * 1.1, v, 'n-dark', p.mid)),
       txt(p.bigX, p.leY, c.big, 'n-faded n-bold', p.big), txt(p.cx, p.leY, c.le, 'n-dark n-bold', p.big),
       txt(p.cx, p.pillarY, c.pillar, 'n-dark n-bold', p.mid),
     ];
     const day = data.essence.day;
-    svg.append(...numbers(data.name, { cx: 371, dvY: 330, auraL: 208, auraR: 535, upY: 520, heartY: 540, spineX: 530, spineY: 645, nameL: 75, nameR: 665, nameY: 718, lineY: 770, lowY: 952, solarY: 846, bigX: 270, leY: 1170, pillarY: 1264, big: 38, mid: 32, small: 26, name: 28, line: 36 }, day));
-    const sub = (cx, bigX) => ({ cx, dvY: 898, auraL: cx - 82, auraR: cx + 82, upY: 988, heartY: 1006, nameL: cx - 97, nameR: cx + 111, nameY: 1040, lineY: 1067, lowY: 1140, solarY: 1120, bigX, leY: 1219, pillarY: 1268, big: 22, mid: 20, small: 18, name: 16, line: 20 });
+    svg.append(...numbers(data.name, { cx: 371, dvY: 330, auraL: 208, auraR: 535, upY: 520, heartY: 540, spineX: 530, spineY: 645, nameL: 75, nameR: 665, nameY: 718, lineY: 770, lowY: 952, solarY: 846, bigX: 270, leY: 1170, pillarY: 1264, extraUp: 87, extraDown: 97, big: 38, mid: 32, small: 26, name: 28, line: 36 }, day));
+    const sub = (cx, bigX) => ({ cx, dvY: 898, auraL: cx - 82, auraR: cx + 82, upY: 988, heartY: 988, nameL: cx - 97, nameR: cx + 111, nameY: 1040, lineY: 1067, lowY: 1140, solarY: 1104, bigX, leY: 1219, pillarY: 1268, extraUp: 32, extraDown: 32, big: 22, mid: 16, small: 18, name: 16, line: 20 });
     svg.append(...numbers(data.consonants, sub(112, 52), day), ...numbers(data.vowels, sub(630, 690), day));
     svg.append(txt(670, 649, data.name.letters ? String(data.name.letters) : null, 'n-blue n-bold', 26));
-    // Psyche charts in the two pale blue diamonds: outer psyche left, inner psyche right (placement
-    // follows the chart's own left = outer, right = inner law; not yet checked against the paid tool).
-    const psy = (cx) => ({ cx, dvY: 175, auraL: cx - 80, auraR: cx + 80, upY: 255, heartY: 272, nameL: cx - 95, nameR: cx + 100, nameY: 312, lineY: 336, lowY: 405, solarY: 385, bigX: null, leY: 480, pillarY: 530, big: 20, mid: 18, small: 16, name: 14, line: 18 });
-    const psyNums = (c, p) => numbers({ ...c, big: null, middle: [], heartExtra: [], solarExtra: [], first: c.first && { text: '', value: c.first.value }, last: c.last && { text: '', value: c.last.value } }, p, null);
-    svg.append(...psyNums(data.psyche.outer, psy(130)), ...psyNums(data.psyche.inner, psy(612)));
-    // Essence chart in the purple shape: dharma on top, month top-left, year top-right, outer and
-    // inner auras on the sides, little and big life path in the circle, day in the small circle.
+    // Psyche charts in the two pale blue diamonds: outer psyche left, inner psyche right. Positions
+    // measured on the paid tool's screenshots in the vault (Kevin Darnell Hart, 6 July 1979).
+    const psy = (cx) => ({ cx, dvY: 160, auraL: cx - 73, auraR: cx + 73, upY: 240, heartY: 262, nameL: cx - 125, nameR: cx + 125, nameY: 0, lineY: 329, lowY: 414, solarY: 376, bigX: null, leY: 483, pillarY: 528, extraUp: 0, extraDown: 0, big: 20, mid: 16, small: 16, name: 1, line: 18 });
+    const psyNums = (c, p) => numbers({ ...c, big: null, middle: [], heartExtra: [], solarExtra: [], first: c.first && { text: '', value: c.first.value }, last: c.last && { text: '', value: c.last.value } }, p, day);
+    const $psy = sv('g', { class: 'psy' }); $psy.append(...psyNums(data.psyche.outer, psy(130)).filter(Boolean), ...psyNums(data.psyche.inner, psy(612)).filter(Boolean)); svg.append($psy);
+    // Essence chart in the purple shape, as the paid tool draws it: top aura at the top, month and
+    // year outside the upper corners, little and big life path in the circle, outer and inner auras
+    // beside the circle. The small circle stays empty; the day sits under the shape.
     const e = data.essence;
-    svg.append(txt(371, 70, e.topAura, 'n-dark n-bold', 22), txt(290, 128, e.month, 'n-dark n-bold', 22), txt(452, 128, e.year, 'n-dark n-bold', 22),
-      txt(238, 190, e.outerAura, 'n-gray', 20), txt(504, 190, e.innerAura, 'n-gray', 20),
-      txt(371, 160, e.littleLp, 'n-dark n-bold', 24), txt(371, 192, e.bigLp, 'n-dark n-bold', 24), txt(371, 247, e.day, 'n-dark n-bold', 18));
+    svg.append(txt(371, 86, e.topAura, 'n-gray', 22), txt(233, 86, e.month, 'n-dark n-bold', 22), txt(510, 86, e.year, 'n-dark n-bold', 22),
+      txt(284, 196, e.outerAura, 'n-gray', 20), txt(460, 196, e.innerAura, 'n-gray', 20),
+      txt(371, 154, e.littleLp, 'n-dark n-bold', 24), txt(371, 184, e.bigLp, 'n-dark n-bold', 24));
     return svg;
   }
   routes.quick = function quickView() {

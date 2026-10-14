@@ -122,3 +122,6 @@ body.fullscreen { padding-bottom: 0; overflow: hidden; }
 .nscope .n-gray { fill: #777; }
 .nscope .n-faded { fill: #c9c2ae; }
 .nscope .n-blue { fill: #4a7bb7; }
+.nscope .n-psy { fill: #4f6f8f; }
+.nscope .psy text { fill: #4f6f8f; }
+.nscope .psy .n-gray { fill: #7d93a8; }

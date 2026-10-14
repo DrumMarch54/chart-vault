@@ -46,8 +46,10 @@ CONFIRMED for the name chart, consonant chart and vowel chart:
    (12/3 = 7+5).
 6. Solar plexus main vibration = lower left ds + lower right ds (6/6 = 3+3;
    12/3 = 6+6 on the consonant chart).
-7. Spine = day ds + LE ds, shown as the spine NUMBER (6/6); the spine DIAMOND
-   is day ds beside LE ds (15/6). Owner confirmed the name.
+7. Spine = day ds + LE ds, written as a plain sum: day 6 + LE 9 = 15/6, day 1 +
+   LE 5 = 6/6 (Kevin Hart and Test test screenshots). Shown small and gray to
+   the right of the heart circle, above the surname. The spine DIAMOND is day
+   ds beside LE ds.
 8. Pillar = day ds + heart main ds + solar main ds + LE ds (19/1 = 1+7+6+5),
    shown in the triangle under the chart. Each sub-chart has its own pillar.
 9. Letter count of all names (8 for "Test test") in the small blue circle to
@@ -71,9 +73,12 @@ names:
   name chart) = upper left ds beside upper right ds. Emotion diamond (solar
   plexus diamond) = lower left ds beside lower right ds.
 
-Open questions for the drawing (ask for a paid-tool screenshot): where the
-middle name sits on the line, where heart/solar extra vibrations are written
-(class text: inside the circles under the main vibration), a one-word name.
+Drawing, confirmed on vault screenshots: the middle name sits in the middle of
+the line (between the circles); each extra vibration is written inside the
+circle under the main vibration; the letter count is the small blue circle.
+Still unseen: a one-word name. The vault (711 charts, most of them paid-tool
+screenshots) is the reference for anything else: fetch `/img/<id>` with the
+app password and look.
 
 ## Essence chart (Higher Self) — the purple shape at the top
 Triangle (drawn as a hexagon) with a circle in the middle. Day at the BOTTOM
@@ -97,14 +102,20 @@ point, month top-left corner, year top-right corner.
   ds.
 - Planets: 1 Sun, 2 Moon, 3 Jupiter, 4 Uranus, 5 Mercury, 6 Venus, 7 Neptune,
   8 Saturn, 9 Mars.
-Placement inside the paid tool's purple hexagon (big circle + small circle) is
-not confirmed; the course layout above is the best guess.
+Placement in the paid tool (vault screenshot of Kevin Darnell Hart, 6 July
+1979): top aura inside the top of the hexagon, month bold outside the upper
+left corner, year bold outside the upper right corner, little LP over big LP
+inside the circle, outer aura left of the circle, inner aura right of it, the
+small circle empty, the day in bold under the hexagon (it is also the top of
+the name chart).
 
 ## Psyche charts — the two pale blue rhombi
 Same rhombus rules with month and year on the central line instead of names.
-Top = day. (Which blue diamond is inner and which outer is not confirmed; by
-the chart's own left=outer, right=inner law the outer psyche should be on the
-left.)
+Top = day. CONFIRMED on the Kevin Hart screenshot: LEFT blue diamond = outer
+psyche (line 13/4 and 26/8, LE 12/3, pillar 24/6), RIGHT = inner psyche (7/7
+and 26/8, LE 15/6, pillar 30/3). The day sits above each blue diamond, the
+line values outside the corners without a label, LE bold under the tip,
+pillar in the small triangle.
 - Inner psyche (IPS): line left = MV, right = YV, both as they are
   (month 5 stays 5/5). LE = MV ds + YV ds (= the essence top aura). Auras:
   upper left = day+month, upper right = day+year, lower left = month+LE,
