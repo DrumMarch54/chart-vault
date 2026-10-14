@@ -79,7 +79,14 @@ export function clearSessionCookie(res) {
   res.setHeader('Set-Cookie', `${COOKIE}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax`);
 }
 
+export function isAuthed(req) {
+  if (isValidSession(req.headers.cookie)) return true;
+  const auth = req.headers.authorization || '';
+  if (auth.startsWith('Bearer ') && passwordMatches(auth.slice(7).trim())) return true;
+  return false;
+}
+
 export function requireAuth(req, res, next) {
-  if (isValidSession(req.headers.cookie)) return next();
+  if (isAuthed(req)) return next();
   res.status(401).json({ error: 'Please log in.' });
 }

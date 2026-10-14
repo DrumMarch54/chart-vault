@@ -215,3 +215,28 @@ test('backup runs and the zip contains the database, tags and images', async () 
   assert.ok(status.body.last_backup);
   assert.deepEqual(status.body.lost_files, []);
 });
+
+test('debug snapshot: locked, plain text, never shows the password, scopes and id work', async () => {
+  assert.equal((await fetch(base + '/api/debug/snapshot')).status, 401);
+  // scripts may use the password as a bearer token instead of the cookie
+  const bearer = await fetch(base + '/api/debug/snapshot?scope=short', { headers: { authorization: 'Bearer test-password' } });
+  assert.equal(bearer.status, 200);
+  assert.equal((await fetch(base + '/api/debug/snapshot', { headers: { authorization: 'Bearer wrong' } })).status, 401);
+  const short = await bearer.text();
+  assert.match(short, /CHART VAULT SNAPSHOT/);
+  assert.match(short, /charts with tags 3/);
+  assert.match(short, /LAST 20 LOG LINES/);
+  assert.ok(!short.includes('test-password'));
+  assert.ok(!short.includes('MISSING SCREENSHOT FILENAMES'));
+  const full = await (await api('/api/debug/snapshot?scope=full')).text();
+  assert.match(full, /MISSING SCREENSHOT FILENAMES/);
+  assert.match(full, /Screenshot_20240910_115242_Firefox.jpg/);
+  assert.match(full, /IMPORT HISTORY/);
+  const one = await (await api('/api/debug/snapshot?id=' + encodeURIComponent('Thinking, Feeling, Experiencing.jpg'))).text();
+  assert.match(one, /^CHART \d+: Thinking, Feeling, Experiencing.jpg/);
+  assert.match(one, /tags \(1\): Friend\[name,app\]/);
+  assert.match(one, /removed in app: thinking/);
+  assert.match(one, /on disk: image yes, thumb yes/);
+  const none = await (await api('/api/debug/snapshot?id=999999')).text();
+  assert.match(none, /No chart/);
+});

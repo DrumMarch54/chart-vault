@@ -23,3 +23,18 @@ in plain words and say what they will see. Never ask them to read code.
   data/UserTag.backup to also run the real-file test; it is git-ignored.
 - No build step: public/ is served as is. Bump `version` in package.json for
   user-visible releases.
+
+## Seeing the live app (do this instead of asking the owner)
+Read the live report yourself with the script whenever you need to know what
+the app did or is doing; never ask the owner to copy or paste a report or a
+screen.
+- `node tools/report.mjs short` – counts, last import/backup, last 20 log lines
+- `node tools/report.mjs full` – plus missing files, history, top tags, folders
+- `node tools/report.mjs <id or filename>` – one chart in detail
+- `node tools/report.mjs screens <dir>` – logs in with Playwright at phone size,
+  screenshots every tab into <dir>; then look at the PNGs
+- Needs LIVE_APP_TOKEN (the app password) in the cloud environment; it is the
+  same value the first app uses. Optional CHART_VAULT_URL overrides the address.
+  Exit 2 = no token, 3 = refused, 4 = unreachable.
+- The data behind it is `GET /api/debug/snapshot` (`?scope=short`, `?id=`),
+  password-protected like everything else, plain text, never includes secrets.

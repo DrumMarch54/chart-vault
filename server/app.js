@@ -7,6 +7,7 @@ import { parseUserTagBackup, importTags, addTagToImage, removeTagFromImage, Impo
 import { receiveUpload, UploadError, fullPathFor, thumbPathFor, makeThumb, findLostFiles } from './storage.js';
 import { listImages, getImage, suggestTags, allTags, statusReport, exportTags } from './queries.js';
 import { runBackup, streamZip, isBackupRunning } from './backup.js';
+import { snapshot } from './snapshot.js';
 import { execFileSync } from 'node:child_process';
 import { paths } from './config.js';
 
@@ -177,6 +178,12 @@ export function createApp(db, { log = console.log } = {}) {
   });
   app.get('/api/backup/download', async (req, res, next) => {
     try { await streamZip(db, res); } catch (err) { next(err); }
+  });
+
+  // Plain-text state for Claude (tools/report.mjs). Password required like everything else.
+  app.get('/api/debug/snapshot', (req, res) => {
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.send(snapshot(db, { scope: String(req.query.scope || 'full'), id: req.query.id ? String(req.query.id) : null, commit: COMMIT, busy: isBusy(), version: appVersion() }));
   });
 
   app.use('/api', (req, res) => res.status(404).json({ error: 'Not found.' }));

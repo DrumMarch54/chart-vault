@@ -4,7 +4,9 @@ import { createApp } from './app.js';
 import { scheduleBackups } from './backup.js';
 import { ensureThumbs, cleanTempFiles } from './storage.js';
 
-const log = (msg) => console.log(`${new Date().toISOString()} ${msg}`);
+import { remember } from './logbuf.js';
+
+const log = (msg) => { const line = `${new Date().toISOString()} ${msg}`; console.log(line); remember(line); };
 
 ensureDirs();
 if (!config.webToken) log('WARNING: WEB_TOKEN is not set. Nobody can log in until it is.');
