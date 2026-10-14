@@ -30,7 +30,7 @@ test('"Test test" with no date (screenshot 1)', () => {
   assert.equal(JSON.stringify(n.words.map((w) => [w.text, w.value.text])), JSON.stringify([['Test', '16/7'], ['test', '16/7']]));
   assert.equal(t(n.le), '14/5'); assert.equal(t(n.big), '32/5');
   assert.equal(t(n.lowerLeft), '12/3'); assert.equal(t(n.lowerRight), '12/3'); assert.equal(t(n.solar), '6/6');
-  assert.equal(n.upperLeft, null); assert.equal(n.heart, null); assert.equal(n.pillar, null);
+  assert.equal(n.upperLeft, null); assert.equal(n.heart, null); assert.equal(n.pillar, null); assert.equal(n.spine, null);
   assert.equal(n.letters, 8);
   const c = r.consonants;
   assert.equal(JSON.stringify(c.words.map((w) => [w.text, w.value.text])), JSON.stringify([['Tst', '11/2'], ['tst', '11/2']]));
@@ -46,6 +46,7 @@ test('"Test test" born on the 1st (screenshot 2)', () => {
   assert.equal(t(r.birth.day), '1/1');
   const n = r.name;
   assert.equal(t(n.upperLeft), '8/8'); assert.equal(t(n.upperRight), '8/8'); assert.equal(t(n.heart), '16/7'); assert.equal(t(n.pillar), '19/1');
+  assert.equal(t(n.spineDiamond), '15/6'); assert.equal(t(n.spine), '6/6');
   const c = r.consonants;
   assert.equal(t(c.upperLeft), '3/3'); assert.equal(t(c.heart), '6/6'); assert.equal(t(c.pillar), '14/5');
   const v = r.vowels;

@@ -626,6 +626,7 @@
       txt(p.cx, p.dvY, data.birth.day, 'n-dark n-bold', p.big),
       txt(p.auraL, p.upY, c.upperLeft, 'n-gray', p.small), txt(p.auraR, p.upY, c.upperRight, 'n-gray', p.small),
       txt(p.cx, p.heartY, c.heart, 'n-dark n-bold', p.big),
+      p.spineX && txt(p.spineX, p.spineY, c.spine, 'n-gray', p.small),
       c.first && txt(p.nameL, p.nameY, c.first.text, 'n-dark', p.name), c.first && txt(p.nameL, p.lineY, c.first.value, 'n-dark n-bold', p.line),
       c.last && txt(p.nameR, p.nameY, c.last.text, 'n-dark', p.name), c.last && txt(p.nameR, p.lineY, c.last.value, 'n-dark n-bold', p.line),
       txt(p.auraL, p.lowY, c.lowerLeft, 'n-gray', p.small), txt(p.auraR, p.lowY, c.lowerRight, 'n-gray', p.small),
@@ -633,7 +634,7 @@
       txt(p.bigX, p.leY, c.big, 'n-faded n-bold', p.big), txt(p.cx, p.leY, c.le, 'n-dark n-bold', p.big),
       txt(p.cx, p.pillarY, c.pillar, 'n-dark n-bold', p.mid),
     ];
-    svg.append(...numbers(data.name, { cx: 371, dvY: 330, auraL: 208, auraR: 535, upY: 520, heartY: 540, nameL: 75, nameR: 665, nameY: 718, lineY: 770, lowY: 952, solarY: 846, bigX: 270, leY: 1170, pillarY: 1264, big: 38, mid: 32, small: 26, name: 28, line: 36 }));
+    svg.append(...numbers(data.name, { cx: 371, dvY: 330, auraL: 208, auraR: 535, upY: 520, heartY: 540, spineX: 530, spineY: 645, nameL: 75, nameR: 665, nameY: 718, lineY: 770, lowY: 952, solarY: 846, bigX: 270, leY: 1170, pillarY: 1264, big: 38, mid: 32, small: 26, name: 28, line: 36 }));
     const sub = (cx, bigX) => ({ cx, dvY: 898, auraL: cx - 82, auraR: cx + 82, upY: 988, heartY: 1006, nameL: cx - 97, nameR: cx + 111, nameY: 1040, lineY: 1067, lowY: 1140, solarY: 1120, bigX, leY: 1219, pillarY: 1268, big: 22, mid: 20, small: 18, name: 16, line: 20 });
     svg.append(...numbers(data.consonants, sub(112, 52)), ...numbers(data.vowels, sub(630, 690)));
     svg.append(txt(670, 649, data.name.letters ? String(data.name.letters) : null, 'n-blue n-bold', 26));

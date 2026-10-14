@@ -60,7 +60,10 @@
     const lr = last && le ? add(last.value, le) : null;
     const solar = add(ll, lr);
     const pillar = dv && heart && solar && le ? val(dv.ds + heart.ds + middle.reduce((a, w) => a + w.value.ds, 0) + solar.ds + le.ds) : null;
-    return { words: live, first, last, middle, le, big, upperLeft: ul, upperRight: ur, heart, lowerLeft: ll, lowerRight: lr, solar, pillar, letters: live.reduce((a, w) => a + w.letters.length, 0) };
+    // Spine diamond = day digit sum beside LE digit sum (1 and 5 -> 15/6); spine number = its digit sum (6/6). CONFIRMED.
+    const spineDiamond = joined(dv, le);
+    const spine = spineDiamond ? val(spineDiamond.ds) : null;
+    return { words: live, first, last, middle, le, big, upperLeft: ul, upperRight: ur, heart, lowerLeft: ll, lowerRight: lr, solar, pillar, spineDiamond, spine, letters: live.reduce((a, w) => a + w.letters.length, 0) };
   }
 
   // Birth date pieces. Any part may be missing (null) while the owner is still typing.
