@@ -47,7 +47,7 @@ export function snapshot(db, { scope = 'full', id = null, commit = 'unknown', bu
   if (s.disk) line(`disk free ${fmtB(s.disk.free_bytes)} of ${fmtB(s.disk.total_bytes)}`);
   line('');
   line('COUNTS');
-  line(`charts with tags ${s.images}   uploaded ${s.uploaded}   missing screenshot ${s.missing_count}`);
+  line(`charts with tags ${s.images}   uploaded ${s.uploaded}   missing screenshot ${s.missing_count}   archetype pics ${s.archetypes} (${s.archetypes_uploaded} uploaded)`);
   line(`distinct tags ${s.tags}   image-tag links ${s.links}   added in app ${s.added_in_app}   removed in app ${s.removed_in_app}`);
   line(`screenshot bytes ${fmtB(s.bytes)}   lost files (recorded but not on disk) ${s.lost_files ? s.lost_files.length : 0}`);
   line('');

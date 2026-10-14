@@ -133,23 +133,30 @@ export function removeTagFromImage(db, imageId, name) {
   })();
 }
 
-// A chart that sits in a Gallery album folder (e.g. "12 Mind Center"). Makes
-// sure the image exists (it may not be in the tag file at all), remembers the
-// phone path, and adds the album's exact name as a tag. Safe to repeat.
-export function markAlbumMember(db, { filename, album }) {
+// A picture that sits in a Gallery album folder (e.g. "12 Mind Center" or
+// "15 pics"). Makes sure the image exists (it may not be in the tag file at
+// all), remembers the phone path, and adds the given tags. `kind` is 'chart'
+// or 'archetype' (a picture that represents a number, not a chart). Safe to
+// repeat. Never changes the kind of a picture that already exists.
+export const IMAGE_KINDS = ['chart', 'archetype'];
+export function markAlbumMember(db, { filename, album, tags, kind = 'chart' }) {
   if (typeof filename !== 'string' || !filename.trim()) throw new ImportError('Missing file name.');
   if (typeof album !== 'string' || !album.trim()) throw new ImportError('Missing album name.');
+  if (!IMAGE_KINDS.includes(kind)) throw new ImportError('Unknown picture type.');
+  const names = Array.isArray(tags) ? tags : [album];
+  if (!names.length || names.some((t) => typeof t !== 'string' || !t.trim() || t.length > 120)) throw new ImportError('Bad tag list.');
   if (album.length > 120 || filename.length > 255) throw new ImportError('Name is too long.');
   return db.transaction(() => {
-    const created = db.prepare('INSERT OR IGNORE INTO images (filename, taken_at) VALUES (?, ?)').run(filename, dateFromFilename(filename)).changes === 1;
-    const img = db.prepare('SELECT id, stored_path FROM images WHERE filename = ?').get(filename);
+    const created = db.prepare('INSERT OR IGNORE INTO images (filename, taken_at, kind) VALUES (?, ?, ?)').run(filename, dateFromFilename(filename), kind).changes === 1;
+    const img = db.prepare('SELECT id, stored_path, kind FROM images WHERE filename = ?').get(filename);
     db.prepare('INSERT OR IGNORE INTO image_paths (image_id, path) VALUES (?, ?)').run(img.id, `/DCIM/${album}/${filename}`);
-    db.prepare('INSERT OR IGNORE INTO tags (name, kind) VALUES (?, ?)').run(album, tagKind(album));
-    const tagId = db.prepare('SELECT id FROM tags WHERE name = ?').get(album).id;
-    let tagged = false;
-    if (!db.prepare('SELECT 1 FROM removed_tags WHERE image_id = ? AND tag_id = ?').get(img.id, tagId)) {
-      tagged = db.prepare("INSERT OR IGNORE INTO image_tags (image_id, tag_id, source) VALUES (?, ?, 'album')").run(img.id, tagId).changes === 1;
+    let tagged = 0;
+    for (const name of names) {
+      db.prepare('INSERT OR IGNORE INTO tags (name, kind) VALUES (?, ?)').run(name, tagKind(name));
+      const tagId = db.prepare('SELECT id FROM tags WHERE name = ?').get(name).id;
+      if (db.prepare('SELECT 1 FROM removed_tags WHERE image_id = ? AND tag_id = ?').get(img.id, tagId)) continue;
+      tagged += db.prepare("INSERT OR IGNORE INTO image_tags (image_id, tag_id, source) VALUES (?, ?, 'album')").run(img.id, tagId).changes;
     }
-    return { id: img.id, has_file: !!img.stored_path, created, tagged };
+    return { id: img.id, has_file: !!img.stored_path, created, tagged: tagged > 0, kind: img.kind };
   })();
 }

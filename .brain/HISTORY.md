@@ -34,3 +34,17 @@ Brought the app in line with the new-app playbook from the first app:
 - Found while looking at screenshots: the Status page showed the word "null"
   under the counts (and the Tags page under "Past imports") because
   `replaceChildren(null)` renders "null". All calls now go through `fill()`.
+
+## 2026-10-14 Albums and archetype pics
+- Gallery albums carry meaning the tag file does not: "9 Mind Center" means
+  9mc on every picture inside, often untagged. Folder import maps
+  "N Mind Center" -> Nmc; any other album keeps its exact name as the tag.
+- "15 pics"-style albums are NOT charts: pictures that visually represent a
+  number. They are `images.kind = 'archetype'` (migration 3), tagged with every
+  number in the album name ("69 and 96 pics" -> 69, 96). Browse has a
+  Charts | Archetype pics switch; a bare number tag means different things on
+  each side (strong example of N vs. picture of N) and never mixes.
+- The owner's "Charts" album is fully tagged already; ignore it.
+- A page reload kills a running upload. The update prompt stays hidden while
+  one runs; progress survives switching tabs. Never deploy mid-upload unless
+  the owner says so.

@@ -67,6 +67,12 @@ export const MIGRATIONS = [
     db.exec('ALTER TABLE imports ADD COLUMN build TEXT');
     db.exec('ALTER TABLE images ADD COLUMN uploaded_build TEXT');
   },
+  // 3: a picture is a chart (default) or an archetype pic (a picture that
+  //    visually represents a number, from the owner's "15 pics" albums)
+  (db) => {
+    db.exec("ALTER TABLE images ADD COLUMN kind TEXT NOT NULL DEFAULT 'chart'");
+    db.exec('CREATE INDEX IF NOT EXISTS idx_images_kind ON images(kind)');
+  },
 ];
 
 export function migrate(db) {

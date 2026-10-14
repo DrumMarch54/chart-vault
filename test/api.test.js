@@ -321,11 +321,11 @@ test('album folders: membership becomes a tag, unknown charts get created, uploa
   // a chart that is only in an album, never in the tag file
   let r = await json(await api('/api/album/mark', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ filename: 'Screenshot_20250301_101010_Opera.jpg', album: '12 Mind Center' }) }));
   assert.equal(r.status, 200);
-  assert.deepEqual(r.body, { id: r.body.id, has_file: false, created: true, tagged: true });
+  assert.deepEqual(r.body, { id: r.body.id, has_file: false, created: true, tagged: true, kind: 'chart' });
   const id = r.body.id;
   // again: nothing new
   r = await json(await api('/api/album/mark', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ filename: 'Screenshot_20250301_101010_Opera.jpg', album: '12 Mind Center' }) }));
-  assert.deepEqual(r.body, { id, has_file: false, created: false, tagged: false });
+  assert.deepEqual(r.body, { id, has_file: false, created: false, tagged: false, kind: 'chart' });
   // a known, already-uploaded chart just gets the album tag
   r = await json(await api('/api/album/mark', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ filename: 'Screenshot_20251008_223530_Opera.jpg', album: 'Charts' }) }));
   assert.equal(r.body.has_file, true); assert.equal(r.body.created, false); assert.equal(r.body.tagged, true);
@@ -355,3 +355,37 @@ test('album folders: membership becomes a tag, unknown charts get created, uploa
   assert.equal(img.body.has_file, true);
 });
 async function postJsonT(p, data) { return api(p, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(data) }); }
+
+test('archetype pics: separate kind, number tags from the album name, kept out of the chart list', async () => {
+  const mark = async (filename, album, tags, kind) => json(await api('/api/album/mark', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ filename, album, tags, kind }) }));
+  let r = await mark('arch1.jpg', '69 and 96 pics', ['69', '96'], 'archetype');
+  assert.equal(r.status, 200);
+  assert.deepEqual(r.body, { id: r.body.id, has_file: false, created: true, tagged: true, kind: 'archetype' });
+  const id = r.body.id;
+  await mark('arch2.jpg', '15 pics', ['15'], 'archetype');
+  // an existing chart marked again as archetype keeps being a chart
+  r = await mark('Screenshot_20251008_223530_Opera.jpg', '15 pics', ['15'], 'archetype');
+  assert.equal(r.body.kind, 'chart');
+  // charts list does not show archetype pics; archetype list does not show charts
+  const charts = await json(await api('/api/images'));
+  assert.ok(!charts.body.items.some((i) => i.filename.startsWith('arch')));
+  const arch = await json(await api('/api/images?kind=archetype'));
+  assert.deepEqual(arch.body.items.map((i) => i.filename).sort(), ['arch1.jpg', 'arch2.jpg']);
+  assert.equal(arch.body.items.find((i) => i.filename === 'arch1.jpg').tags.map((t) => t.name).join(','), '69,96');
+  // tag 15 exists on both sides; each side counts only its own pictures
+  const sugC = await json(await api('/api/tags?q=15'));
+  const sugA = await json(await api('/api/tags?q=15&kind=archetype'));
+  assert.ok(sugC.body.find((t) => t.name === '15').count >= 1);
+  assert.deepEqual(sugA.body.map((t) => [t.name, t.count]), [['15', 1]]);
+  const both = await json(await api('/api/images?kind=archetype&tag=69&tag=96'));
+  assert.equal(both.body.total, 1);
+  // status counts them apart; missing list is charts only
+  const st = await json(await api('/api/status'));
+  assert.equal(st.body.archetypes, 2);
+  assert.ok(!st.body.missing.some((m) => m.filename.startsWith('arch')));
+  // detail says what it is; bad kind refused
+  const one = await json(await api(`/api/images/${id}`));
+  assert.equal(one.body.kind, 'archetype');
+  r = await mark('arch3.jpg', 'x', ['1'], 'banana');
+  assert.equal(r.status, 400);
+});

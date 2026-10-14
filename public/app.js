@@ -168,7 +168,7 @@
   }
 
   // ---------- tag suggestion box ----------
-  function suggestBox($input, { within = () => [], onPick, allowNew = false }) {
+  function suggestBox($input, { within = () => [], onPick, allowNew = false, kind = null }) {
     const $list = h('div', { class: 'suggest hidden' });
     let timer, seq = 0;
     const hide = () => $list.classList.add('hidden');
@@ -182,7 +182,7 @@
     };
     const refresh = async () => {
       const q = $input.value.trim(); const my = ++seq;
-      const params = new URLSearchParams({ q, limit: 25 }); for (const w of within()) params.append('within', w);
+      const params = new URLSearchParams({ q, limit: 25 }); if (kind) params.set('kind', kind); for (const w of within()) params.append('within', w);
       try { const items = await api('/api/tags?' + params); if (my === seq) show(items, q); } catch {}
     };
     $input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(refresh, 120); });
@@ -195,9 +195,13 @@
   // ---------- browse ----------
   routes[''] = function browse(_, query) {
     const tags = query.getAll('tag');
-    const setTags = (t) => { const p = new URLSearchParams(); for (const x of t) p.append('tag', x); go('#/' + (t.length ? '?' + p : '')); };
+    const kind = query.get('kind') === 'archetype' ? 'archetype' : 'chart';
+    const setTags = (t, k = kind) => { const p = new URLSearchParams(); if (k === 'archetype') p.set('kind', 'archetype'); for (const x of t) p.append('tag', x); go('#/' + ((t.length || k === 'archetype') ? '?' + p : '')); };
+    const $switch = h('div', { class: 'seg' },
+      h('button', { type: 'button', class: kind === 'chart' ? 'on' : '', onclick: () => setTags(tags, 'chart') }, 'Charts'),
+      h('button', { type: 'button', class: kind === 'archetype' ? 'on' : '', onclick: () => setTags(tags, 'archetype') }, 'Archetype pics'));
     const $input = h('input', { type: 'search', placeholder: tags.length ? 'Add another tag…' : 'Search tags (12mc, politics, a name…)', autocomplete: 'off', enterkeyhint: 'search' });
-    const $sugg = suggestBox($input, { within: () => tags, onPick: (name) => { if (!tags.includes(name)) setTags([...tags, name]); $input.value = ''; } });
+    const $sugg = suggestBox($input, { within: () => tags, kind, onPick: (name) => { if (!tags.includes(name)) setTags([...tags, name]); $input.value = ''; } });
     const $clear = h('button', { type: 'button', class: 'clear', 'aria-label': 'Clear', onclick: () => { $input.value = ''; $input.focus(); $sugg.classList.add('hidden'); } }, '×');
     const $filters = h('div', { class: 'filters' }, ...tags.map((t) => chip({ name: t, kind: kindOf(t) }, { active: true, removable: true, onclick: () => setTags(tags.filter((x) => x !== t)) })),
       tags.length > 1 ? h('button', { type: 'button', class: 'chip', onclick: () => setTags([]) }, 'Clear all') : null);
@@ -205,11 +209,11 @@
     const $grid = h('div', { class: 'grid' });
     const $sentinel = h('div', { class: 'sentinel' });
     render(h('div', { class: 'screen' },
-      h('div', { class: 'searchbar' }, h('div', { class: 'searchbox' }, $input, $clear, $sugg), tags.length ? $filters : null, $summary),
+      h('div', { class: 'searchbar' }, $switch, h('div', { class: 'searchbox' }, $input, $clear, $sugg), tags.length ? $filters : null, $summary),
       $grid, $sentinel));
 
     let offset = 0, total = null, loading = false, done = false;
-    const params = () => { const p = new URLSearchParams({ limit: 60, offset }); for (const t of tags) p.append('tag', t); return p; };
+    const params = () => { const p = new URLSearchParams({ limit: 60, offset, kind }); for (const t of tags) p.append('tag', t); return p; };
     async function more() {
       if (loading || done) return; loading = true; $sentinel.textContent = 'Loading…';
       try {
@@ -217,13 +221,16 @@
         total = r.total; offset += r.items.length;
         for (const img of r.items) $grid.append(cell(img));
         done = offset >= total || r.items.length === 0;
-        $summary.textContent = tags.length ? `${fmtN(total)} chart${total === 1 ? '' : 's'} with ${tags.join(' and ')}` : `${fmtN(total)} charts, newest first`;
-        $sentinel.textContent = done ? (total === 0 ? 'No charts match.' : '') : '';
+        const noun = kind === 'archetype' ? 'archetype pic' : 'chart';
+        $summary.textContent = tags.length ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with ${tags.join(' and ')}` : `${fmtN(total)} ${noun}s, newest first`;
+        $sentinel.textContent = done ? (total === 0 ? (kind === 'archetype' && !tags.length ? 'No archetype pics yet. Add them on the Upload page.' : `No ${noun}s match.`) : '') : '';
       } catch (err) { $sentinel.textContent = err.message; }
       loading = false;
     }
     function cell(img) {
-      const label = (img.tags.find((t) => t.kind === 'name') || img.tags[0] || {}).name || '';
+      const label = img.kind === 'archetype'
+        ? img.tags.map((t) => t.name).join(', ')
+        : (img.tags.find((t) => t.kind === 'name') || img.tags[0] || {}).name || '';
       return h('a', { class: 'cell', href: `#/chart/${img.id}` },
         img.has_file ? h('img', { class: 'thumb', src: `/thumb/${img.id}`, loading: 'lazy', alt: label }) : h('div', { class: 'nofile' }, 'no file yet'),
         h('div', { class: `label ${label ? '' : 'muted'}` }, label || img.filename));
@@ -253,7 +260,7 @@
       };
       const $sugg = suggestBox($tagInput, { onPick: addTag, allowNew: true });
       const tagBtn = (t) => chip(t, { onclick: () => sheet(t.name, [
-        { label: `▦ Show all charts tagged “${t.name}”`, run: () => go(`#/?tag=${encodeURIComponent(t.name)}`) },
+        { label: `▦ Show all ${img.kind === 'archetype' ? 'archetype pics' : 'charts'} tagged “${t.name}”`, run: () => go(`#/?${img.kind === 'archetype' ? 'kind=archetype&' : ''}tag=${encodeURIComponent(t.name)}`) },
         { label: `✕ Remove “${t.name}” from this chart`, cls: 'btn-danger', run: async () => {
           try { const r = await postJson(`/api/images/${img.id}/tags/remove`, { name: t.name }); img = r.image; toast(`Removed “${t.name}”`); draw(); } catch (err) { toast(err.message, true); }
         } },
@@ -270,6 +277,7 @@
           groups.number.length ? h('div', {}, h('div', { class: 'muted small', style: 'margin-bottom:6px' }, 'Numbers'), h('div', { class: 'chips' }, ...groups.number.map(tagBtn))) : null,
           h('div', { class: 'addtag row', style: 'flex-wrap:nowrap' }, $tagInput, h('button', { type: 'button', class: 'btn-primary', onclick: () => { const v = $tagInput.value.trim(); if (v) { addTag(v); $tagInput.value = ''; } } }, 'Add'), $sugg)),
         h('div', { class: 'card small muted' },
+          h('div', {}, img.kind === 'archetype' ? 'Type: archetype pic (a picture that represents a number)' : 'Type: chart'),
           h('div', {}, `Taken: ${img.taken_at ? img.taken_at.replace('T', ' ') : 'unknown'}`),
           h('div', {}, img.has_file ? `File: ${fmtBytes(img.size)}, ${img.width}×${img.height}, uploaded ${fmtDate(img.uploaded_at)}` : 'File: not uploaded yet'),
           h('div', {}, 'Phone paths:'), ...img.paths.map((p) => h('div', { style: 'word-break:break-all;padding-left:8px' }, p))));
@@ -328,15 +336,22 @@
     // become tags with the album's exact name.
     const $dir = h('input', { type: 'file', id: 'dirfiles', multiple: true, webkitdirectory: true });
     const $pickDir = h('button', { type: 'button', class: 'btn-block', onclick: () => $dir.click() }, 'Import album folders (laptop)');
+    // Archetype pics: albums like "15 pics" or "69 and 96 pics". Every picture
+    // inside represents the number(s) in the folder name. Not charts.
+    const $arch = h('input', { type: 'file', id: 'archfiles', multiple: true, webkitdirectory: true });
+    const $pickArch = h('button', { type: 'button', class: 'btn-block', onclick: () => $arch.click() }, 'Import archetype pics (laptop)');
     render(h('div', { class: 'screen stack' }, h('h1', {}, 'Upload screenshots'),
       h('div', { class: 'card stack' },
         h('p', {}, 'Only files named in the tag file are sent; everything else is skipped on the phone. Files already here are skipped too, so you can stop and come back any time.'),
         $file, $pick,
-        h('p', { class: 'muted small', style: 'margin-top:14px' }, 'On a laptop you can also pick the phone\'s whole DCIM folder. Every Gallery album folder (like "12 Mind Center") becomes a tag with that exact name on the charts inside it.'),
-        $dir, $pickDir),
+        h('p', { class: 'muted small', style: 'margin-top:14px' }, 'On a laptop you can also pick a folder of Gallery albums. Every album folder becomes a tag on the charts inside it: "12 Mind Center" becomes 12mc, any other album keeps its exact name.'),
+        $dir, $pickDir,
+        h('p', { class: 'muted small', style: 'margin-top:14px' }, 'Archetype pics are pictures that represent a number, kept apart from charts. Pick the folder that holds albums like "15 pics"; every picture inside gets the number(s) in the album name as tags.'),
+        $arch, $pickArch),
       $plan, $missing));
     $file.addEventListener('change', () => plan([...$file.files]));
-    $dir.addEventListener('change', () => planFolders([...$dir.files]));
+    $dir.addEventListener('change', () => planFolders([...$dir.files], 'chart'));
+    $arch.addEventListener('change', () => planFolders([...$arch.files], 'archetype'));
     if (activeUpload) fill($plan, activeUpload.card); // an upload is still running: show its progress again
     showMissing();
 
@@ -345,7 +360,11 @@
     // album; "9mc" is how they tag the same thing on a picture.
     const albumTag = (folder) => { const m = /^(\d+)\s*mind\s*cent(er|re)$/i.exec(folder.trim()); return m ? `${m[1]}mc` : folder.trim(); };
     const NOT_ALBUMS = new Set(['Screenshots', 'Camera', 'DCIM', '.thumbnails']);
-    async function planFolders(files) {
+    // "69 and 96 pics" -> ["69", "96"]; a folder with no number keeps its name as the tag
+    const archTags = (folder) => { const nums = folder.match(/\d+/g); return nums && nums.length ? [...new Set(nums)] : [folder.trim()]; };
+    async function planFolders(files, kind) {
+      const isArch = kind === 'archetype';
+      const tagsFor = (folder) => (isArch ? archTags(folder) : [albumTag(folder)]);
       if (!files.length) return;
       const groups = new Map();
       for (const f of files) {
@@ -359,19 +378,19 @@
       const rows = [...groups.entries()].sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }));
       const boxes = new Map();
       const $table = h('div', {}, ...rows.map(([folder, list]) => {
-        const defaultOn = !NOT_ALBUMS.has(folder) && list.length <= 1500;
+        const defaultOn = isArch ? list.length <= 1500 : (!NOT_ALBUMS.has(folder) && list.length <= 1500);
         const cb = h('input', { type: 'checkbox', style: 'width:26px;height:26px', checked: defaultOn });
         boxes.set(folder, cb);
-        return h('label', { class: 'stat', style: 'gap:12px;cursor:pointer' }, h('span', { class: 'row', style: 'flex-wrap:nowrap' }, cb, h('span', {}, folder, ' ', h('span', { class: `chip ${kindOf(albumTag(folder))}`, style: 'min-height:30px;font-size:14px;pointer-events:none' }, albumTag(folder)))), h('b', {}, fmtN(list.length)));
+        return h('label', { class: 'stat', style: 'gap:12px;cursor:pointer' }, h('span', { class: 'row', style: 'flex-wrap:nowrap' }, cb, h('span', {}, folder, ' ', ...tagsFor(folder).map((t) => h('span', { class: `chip ${kindOf(t)}`, style: 'min-height:30px;font-size:14px;pointer-events:none;margin-right:4px' }, t)))), h('b', {}, fmtN(list.length)));
       }));
       const $start = h('button', { type: 'button', class: 'btn-primary btn-block', onclick: async () => {
         const albumOf = new Map();
         const todo = [], plain = [];
         for (const [folder, list] of rows) {
-          if (boxes.get(folder).checked) for (const f of list) { albumOf.set(f, albumTag(folder)); todo.push(f); }
-          else plain.push(...list);
+          if (boxes.get(folder).checked) for (const f of list) { albumOf.set(f, { album: folder, tags: tagsFor(folder), kind }); todo.push(f); }
+          else if (!isArch) plain.push(...list);
         }
-        // Unticked folders use the normal rule: only files named in the tag file.
+        // Unticked chart folders use the normal rule: only files named in the tag file.
         let extra = [];
         if (plain.length) {
           fill($plan, h('div', { class: 'card' }, h('p', {}, `Checking ${fmtN(plain.length)} files from unticked folders against the tag file…`)));
@@ -384,9 +403,11 @@
         run([...todo, ...extra], albumOf);
       } }, 'Start');
       fill($plan, h('div', { class: 'card stack' },
-        h('p', {}, `Found ${fmtN(rows.length)} folders. Ticked folders are chart albums: every picture in them is added and gets the tag shown next to the folder. "9 Mind Center" becomes 9mc. Unticked folders only contribute files named in the tag file.`),
+        h('p', {}, isArch
+          ? `Found ${fmtN(rows.length)} albums of archetype pics. Every picture in a ticked album is added as an archetype pic with the tags shown next to it. Unticked albums are skipped.`
+          : `Found ${fmtN(rows.length)} folders. Ticked folders are chart albums: every picture in them is added and gets the tag shown next to the folder. "9 Mind Center" becomes 9mc. Unticked folders only contribute files named in the tag file.`),
         $table,
-        h('p', { class: 'muted small' }, 'Screenshots and Camera are unticked on purpose. Untick anything else that is not charts.'),
+        isArch ? null : h('p', { class: 'muted small' }, 'Screenshots and Camera are unticked on purpose. Untick anything else that is not charts.'),
         $start));
     }
 
@@ -480,7 +501,7 @@
           try {
             const album = albumOf.get(f);
             if (album) {
-              const m = await postJson('/api/album/mark', { filename: f.name, album });
+              const m = await postJson('/api/album/mark', { filename: f.name, album: album.album, tags: album.tags, kind: album.kind });
               if (m.has_file) { skipped++; doneN++; doneBytes += f.size; update(); continue; }
             }
             await sendOne(f);
@@ -515,6 +536,7 @@
     fill($body, 
       h('div', { class: 'card' },
         stat('Charts with tags', s.images), stat('Screenshots uploaded', s.uploaded),
+        s.archetypes ? stat('Archetype pics', s.archetypes) : null,
         h('div', { class: 'stat' }, h('span', {}, 'Tagged but no screenshot yet'), h('b', { class: s.missing_count ? 'err' : 'ok' }, fmtN(s.missing_count))),
         stat('Distinct tags', s.tags), stat('Tags added in the app', s.added_in_app), stat('Tags removed in the app', s.removed_in_app),
         h('div', { class: 'stat' }, h('span', {}, 'Space used by screenshots'), h('b', {}, fmtBytes(s.bytes))),

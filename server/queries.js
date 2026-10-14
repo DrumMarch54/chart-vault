@@ -13,11 +13,11 @@ function filterSql(tags, params) {
     WHERE t.name IN (${marks}) GROUP BY it.image_id HAVING count(DISTINCT t.id) = ?)`;
 }
 
-export function listImages(db, { tags = [], onlyUploaded = false, limit = 60, offset = 0 } = {}) {
-  const params = [];
-  const where = `WHERE 1=1 ${filterSql(tags, params)} ${onlyUploaded ? 'AND i.stored_path IS NOT NULL' : ''}`;
+export function listImages(db, { tags = [], onlyUploaded = false, kind = 'chart', limit = 60, offset = 0 } = {}) {
+  const params = [kind];
+  const where = `WHERE i.kind = ? ${filterSql(tags, params)} ${onlyUploaded ? 'AND i.stored_path IS NOT NULL' : ''}`;
   const total = db.prepare(`SELECT count(*) c FROM images i ${where}`).get(...params).c;
-  const rows = db.prepare(`SELECT i.id, i.filename, i.taken_at, i.width, i.height, (i.stored_path IS NOT NULL) AS has_file
+  const rows = db.prepare(`SELECT i.id, i.filename, i.taken_at, i.width, i.height, i.kind, (i.stored_path IS NOT NULL) AS has_file
     FROM images i ${where} ORDER BY ${ORDER} LIMIT ? OFFSET ?`).all(...params, limit, offset);
   if (rows.length) {
     const ids = rows.map((r) => r.id);
@@ -37,7 +37,7 @@ export function getImage(db, id) {
     WHERE it.image_id = ? ORDER BY t.kind, t.name`).all(id);
   const paths = db.prepare('SELECT path FROM image_paths WHERE image_id = ? ORDER BY path').all(id).map((r) => r.path);
   return {
-    id: img.id, filename: img.filename, taken_at: img.taken_at, uploaded_at: img.uploaded_at,
+    id: img.id, filename: img.filename, kind: img.kind, taken_at: img.taken_at, uploaded_at: img.uploaded_at,
     has_file: !!img.stored_path, size: img.size, width: img.width, height: img.height, sha256: img.sha256,
     tags, paths,
   };
@@ -45,13 +45,13 @@ export function getImage(db, id) {
 
 // Tag suggestions. With `within` tags set, counts are narrowed to images that
 // already match those tags, so you only see tags you can still combine with.
-export function suggestTags(db, { q = '', within = [], limit = 30 } = {}) {
-  const params = [];
-  let scope = '';
+export function suggestTags(db, { q = '', within = [], kind = 'chart', limit = 30 } = {}) {
+  const params = [kind];
+  let scope = 'AND it.image_id IN (SELECT id FROM images WHERE kind = ?)';
   if (within.length) {
     const marks = within.map(() => '?').join(',');
     params.push(...within, within.length);
-    scope = `AND it.image_id IN (SELECT it2.image_id FROM image_tags it2 JOIN tags t2 ON t2.id = it2.tag_id
+    scope += ` AND it.image_id IN (SELECT it2.image_id FROM image_tags it2 JOIN tags t2 ON t2.id = it2.tag_id
       WHERE t2.name IN (${marks}) GROUP BY it2.image_id HAVING count(DISTINCT t2.id) = ?)`;
   }
   let match = '';
@@ -86,11 +86,13 @@ export function allTags(db) {
 
 export function statusReport(db) {
   const g = (sql) => db.prepare(sql).get();
-  const missing = db.prepare(`SELECT filename, taken_at FROM images WHERE stored_path IS NULL
+  const missing = db.prepare(`SELECT filename, taken_at FROM images WHERE stored_path IS NULL AND kind = 'chart'
     ORDER BY (taken_at IS NULL), taken_at DESC, id DESC`).all();
   return {
-    images: g('SELECT count(*) c FROM images').c,
-    uploaded: g('SELECT count(*) c FROM images WHERE stored_path IS NOT NULL').c,
+    images: g("SELECT count(*) c FROM images WHERE kind = 'chart'").c,
+    uploaded: g("SELECT count(*) c FROM images WHERE stored_path IS NOT NULL AND kind = 'chart'").c,
+    archetypes: g("SELECT count(*) c FROM images WHERE kind = 'archetype'").c,
+    archetypes_uploaded: g("SELECT count(*) c FROM images WHERE kind = 'archetype' AND stored_path IS NOT NULL").c,
     missing_count: missing.length,
     missing,
     tags: g('SELECT count(*) c FROM tags').c,
@@ -107,7 +109,7 @@ export function statusReport(db) {
 // Portable export of everything the tag file knew plus app changes. Goes
 // into every backup so the tags can be read without this app.
 export function exportTags(db) {
-  const images = db.prepare('SELECT id, filename, stored_path, sha256, taken_at, uploaded_at FROM images ORDER BY filename').all();
+  const images = db.prepare('SELECT id, filename, kind, stored_path, sha256, taken_at, uploaded_at FROM images ORDER BY filename').all();
   const tags = db.prepare('SELECT it.image_id, t.name, it.source FROM image_tags it JOIN tags t ON t.id = it.tag_id ORDER BY t.name').all();
   const removed = db.prepare('SELECT r.image_id, t.name FROM removed_tags r JOIN tags t ON t.id = r.tag_id').all();
   const byImage = new Map(images.map((i) => [i.id, { ...i, tags: [], removed_tags: [] }]));

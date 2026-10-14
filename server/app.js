@@ -103,7 +103,7 @@ export function createApp(db, { log = console.log } = {}) {
   app.get('/api/images', (req, res) => {
     const limit = Math.min(Math.max(Number(req.query.limit) || 60, 1), 200);
     const offset = Math.max(Number(req.query.offset) || 0, 0);
-    res.json(listImages(db, { tags: asList(req.query.tag), onlyUploaded: req.query.uploaded === '1', limit, offset }));
+    res.json(listImages(db, { tags: asList(req.query.tag), onlyUploaded: req.query.uploaded === '1', kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', limit, offset }));
   });
   app.get('/api/images/:id', (req, res) => {
     const img = getImage(db, Number(req.params.id));
@@ -112,7 +112,7 @@ export function createApp(db, { log = console.log } = {}) {
   });
   app.get('/api/tags', (req, res) => {
     const limit = Math.min(Math.max(Number(req.query.limit) || 30, 1), 200);
-    res.json(suggestTags(db, { q: String(req.query.q || ''), within: asList(req.query.within), limit }));
+    res.json(suggestTags(db, { q: String(req.query.q || ''), within: asList(req.query.within), kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', limit }));
   });
   app.get('/api/tags/all', (req, res) => res.json(allTags(db)));
 
@@ -199,8 +199,8 @@ export function createApp(db, { log = console.log } = {}) {
   // Album folders: "this file is in Gallery album X" becomes the tag X.
   app.post('/api/album/mark', express.json({ limit: '10kb' }), (req, res, next) => {
     try {
-      const r = markAlbumMember(db, { filename: req.body?.filename, album: req.body?.album });
-      if (r.created || r.tagged) log(`album "${req.body.album}": ${req.body.filename}${r.created ? ' (new chart)' : ''}${r.tagged ? ' tagged' : ''}`);
+      const r = markAlbumMember(db, { filename: req.body?.filename, album: req.body?.album, tags: req.body?.tags, kind: req.body?.kind || 'chart' });
+      if (r.created || r.tagged) log(`album "${req.body.album}": ${req.body.filename}${r.created ? ` (new ${r.kind})` : ''}${r.tagged ? ' tagged' : ''}`);
       res.json(r);
     } catch (err) {
       if (err instanceof ImportError) return res.status(400).json({ error: err.message });
