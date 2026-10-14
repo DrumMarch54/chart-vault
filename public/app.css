@@ -113,3 +113,12 @@ body.fullscreen { padding-bottom: 0; overflow: hidden; }
 .gear { font-size: 24px; min-height: var(--tap); }
 .viewer .vtop { transition: opacity .2s; }
 .viewer.bare .vtop, .viewer.bare .varrow { opacity: 0; pointer-events: none; }
+
+/* quick chart (numeroscope) – white card so the shapes keep the original colors */
+.nscope-box { background: #fff; border-radius: var(--radius); margin-top: 10px; padding: 4px; }
+.nscope { display: block; width: 100%; height: auto; font-family: "Open Sans", system-ui, sans-serif; }
+.nscope text { fill: #222; }
+.nscope .n-bold { font-weight: 700; }
+.nscope .n-gray { fill: #777; }
+.nscope .n-faded { fill: #c9c2ae; }
+.nscope .n-blue { fill: #4a7bb7; }

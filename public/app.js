@@ -208,6 +208,7 @@
     const tags = query.getAll('tag');
     const kind = query.get('kind') === 'archetype' ? 'archetype' : 'chart';
     const setTags = (t, k = kind) => { const p = new URLSearchParams(); if (k === 'archetype') p.set('kind', 'archetype'); for (const x of t) p.append('tag', x); go('#/' + ((t.length || k === 'archetype') ? '?' + p : '')); };
+    const $quick = h('a', { class: 'btn iconbtn gear', href: '#/quick', 'aria-label': 'Quick chart', title: 'Quick chart' }, '◈');
     const $gear = h('a', { class: 'btn iconbtn gear', href: '#/settings', 'aria-label': 'Settings', title: 'Settings' }, '⚙');
     const $input = h('input', { type: 'search', placeholder: tags.length ? 'Add another tag…' : 'Search tags (12mc, politics, a name…)', autocomplete: 'off', enterkeyhint: 'search' });
     const $sugg = suggestBox($input, { within: () => tags, kind, alsoArchetype: kind === 'chart', onPick: (name, pickKind) => { if (pickKind && pickKind !== kind) setTags([name], pickKind); else if (!tags.includes(name)) setTags([...tags, name]); $input.value = ''; } });
@@ -220,7 +221,7 @@
     const $grid = h('div', { class: 'grid' });
     const $sentinel = h('div', { class: 'sentinel' });
     render(h('div', { class: 'screen' },
-      h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), $gear), (tags.length || kind === 'archetype') ? $filters : null, $summary),
+      h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), $quick, $gear), (tags.length || kind === 'archetype') ? $filters : null, $summary),
       $grid, $sentinel));
 
     let offset = 0, total = null, loading = false, done = false;
@@ -577,10 +578,79 @@
   // ---------- settings ----------
   routes.settings = function settingsView() {
     render(h('div', { class: 'screen stack' }, pageTop('Settings', '#/'),
+      h('a', { class: 'btn btn-block', href: '#/quick', style: 'justify-content:space-between' }, 'Quick chart', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/upload', style: 'justify-content:space-between' }, 'Upload screenshots', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/import', style: 'justify-content:space-between' }, 'Import tags', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/status', style: 'justify-content:space-between' }, 'Status and backup', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/?kind=archetype', style: 'justify-content:space-between' }, 'Archetype pics', h('span', { class: 'muted' }, '›'))));
+  };
+
+  // ---------- quick chart ----------
+  // Type a birth date and a name, see the numeroscope at once. Shapes and
+  // positions are copied from the paid tool's screenshots (same proportions);
+  // the math is public/numeroscope.js. Number colors come later.
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  const sv = (tag, attrs = {}, ...children) => {
+    const el = document.createElementNS(SVGNS, tag);
+    for (const [k, v] of Object.entries(attrs)) if (v !== null && v !== undefined && v !== false) el.setAttribute(k, v);
+    for (const c of children.flat()) if (c !== null && c !== undefined && c !== false) el.append(c.nodeType ? c : document.createTextNode(String(c)));
+    return el;
+  };
+  // One rhombus with its two circles, white center line, faded "big" circle and pillar triangle.
+  function rhombusShape(cx, cy, hw, hh, r, fill, faded, extra = {}) {
+    const g = sv('g');
+    g.append(sv('polygon', { points: `${cx},${cy - hh} ${cx + hw},${cy} ${cx},${cy + hh} ${cx - hw},${cy}`, fill }));
+    g.append(sv('rect', { x: cx - hw, y: cy - extra.line / 2, width: hw * 2, height: extra.line, fill: '#fff' }));
+    g.append(sv('circle', { cx, cy: cy - extra.up, r, fill: '#fff' }), sv('circle', { cx, cy: cy + extra.up, r, fill: '#fff' }));
+    if (extra.tri) g.append(sv('polygon', { points: `${cx},${extra.tri[0]} ${cx + extra.tri[2]},${extra.tri[1]} ${cx - extra.tri[2]},${extra.tri[1]}`, fill }));
+    if (extra.big) g.append(sv('circle', { cx: extra.big[0], cy: extra.big[1], r: extra.big[2], fill: faded }));
+    return g;
+  }
+  function numeroscopeSvg(data) {
+    const svg = sv('svg', { viewBox: '-20 20 782 1270', class: 'nscope', role: 'img', 'aria-label': 'Numeroscope' });
+    // Top shape (birth date), two psyche diamonds, name chart, consonants (left), vowels (right).
+    svg.append(sv('polygon', { points: '371,40 482,105 482,220 371,290 260,220 260,105', fill: '#b9b6d7' }),
+      sv('polygon', { points: '371,40 482,105 260,105', fill: '#cfcde6' }),
+      sv('circle', { cx: 371, cy: 168, r: 50, fill: '#fff' }), sv('circle', { cx: 371, cy: 240, r: 18, fill: '#fff' }));
+    for (const [cx, fill] of [[130, '#dde6ee'], [612, '#c8d8e4']]) {
+      svg.append(rhombusShape(cx, 322, 101, 137, 38, fill, null, { line: 5, up: 57, tri: [500, 535, 22] }));
+    }
+    svg.append(rhombusShape(371, 740, 277, 384, 115, '#e9b86e', '#f4ecdc', { line: 9, up: 155, tri: [1195, 1278, 65], big: [270, 1160, 52] }));
+    svg.append(rhombusShape(112, 1055, 102, 145, 42, '#f6d8d3', '#fbe9e6', { line: 5, up: 57, tri: [1230, 1275, 30], big: [52, 1211, 30] }));
+    svg.append(rhombusShape(630, 1055, 102, 145, 42, '#d9e4de', '#edf2ef', { line: 5, up: 57, tri: [1230, 1275, 30], big: [690, 1211, 30] }));
+    svg.append(sv('circle', { cx: 670, cy: 640, r: 28, fill: '#fff', stroke: '#a9c3e4', 'stroke-width': 2.5 }));
+
+    const txt = (x, y, v, cls, size) => (v ? sv('text', { x, y, class: cls, 'font-size': size, 'text-anchor': 'middle' }, typeof v === 'string' ? v : v.text) : null);
+    // A rhombus's numbers. p = positions for that chart.
+    const numbers = (c, p) => [
+      txt(p.cx, p.dvY, data.birth.day, 'n-dark n-bold', p.big),
+      txt(p.auraL, p.upY, c.upperLeft, 'n-gray', p.small), txt(p.auraR, p.upY, c.upperRight, 'n-gray', p.small),
+      txt(p.cx, p.heartY, c.heart, 'n-dark n-bold', p.big),
+      c.first && txt(p.nameL, p.nameY, c.first.text, 'n-dark', p.name), c.first && txt(p.nameL, p.lineY, c.first.value, 'n-dark n-bold', p.line),
+      c.last && txt(p.nameR, p.nameY, c.last.text, 'n-dark', p.name), c.last && txt(p.nameR, p.lineY, c.last.value, 'n-dark n-bold', p.line),
+      txt(p.auraL, p.lowY, c.lowerLeft, 'n-gray', p.small), txt(p.auraR, p.lowY, c.lowerRight, 'n-gray', p.small),
+      txt(p.cx, p.solarY, c.solar, 'n-dark n-bold', p.big),
+      txt(p.bigX, p.leY, c.big, 'n-faded n-bold', p.big), txt(p.cx, p.leY, c.le, 'n-dark n-bold', p.big),
+      txt(p.cx, p.pillarY, c.pillar, 'n-dark n-bold', p.mid),
+    ];
+    svg.append(...numbers(data.name, { cx: 371, dvY: 330, auraL: 208, auraR: 535, upY: 520, heartY: 540, nameL: 75, nameR: 665, nameY: 718, lineY: 770, lowY: 952, solarY: 846, bigX: 270, leY: 1170, pillarY: 1264, big: 38, mid: 32, small: 26, name: 28, line: 36 }));
+    const sub = (cx, bigX) => ({ cx, dvY: 898, auraL: cx - 82, auraR: cx + 82, upY: 988, heartY: 1006, nameL: cx - 97, nameR: cx + 111, nameY: 1040, lineY: 1067, lowY: 1140, solarY: 1120, bigX, leY: 1219, pillarY: 1268, big: 22, mid: 20, small: 18, name: 16, line: 20 });
+    svg.append(...numbers(data.consonants, sub(112, 52)), ...numbers(data.vowels, sub(630, 690)));
+    svg.append(txt(670, 649, data.name.letters ? String(data.name.letters) : null, 'n-blue n-bold', 26));
+    return svg;
+  }
+  routes.quick = function quickView() {
+    const field = (ph, attrs = {}) => h('input', { type: 'text', inputmode: 'numeric', placeholder: ph, autocomplete: 'off', ...attrs });
+    const $day = field('day', { maxlength: 2 }), $month = field('month', { maxlength: 2 }), $year = field('year', { maxlength: 4 });
+    const $name = h('input', { type: 'text', placeholder: 'Full name', autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false' });
+    const $chart = h('div', { class: 'nscope-box' });
+    const draw = () => fill($chart, numeroscopeSvg(Numeroscope.numeroscope({ day: $day.value, month: $month.value, year: $year.value, name: $name.value })));
+    for (const el of [$day, $month, $year, $name]) el.addEventListener('input', draw);
+    render(h('div', { class: 'screen' }, pageTop('Quick chart', '#/'),
+      h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, $day, $month, $year),
+      h('div', { style: 'margin-top:8px' }, $name), $chart));
+    draw();
+    setTimeout(() => $name.focus(), 50);
   };
 
   // ---------- status ----------

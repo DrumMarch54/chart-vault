@@ -71,7 +71,7 @@ async function screens(dir) {
     try { await page.waitForSelector('#nav:not(.hidden)', { timeout: 15000 }); }
     catch { console.error('Login was refused.'); await browser.close(); process.exit(3); }
   }
-  const shots = [['browse', '#/'], ['upload', '#/upload'], ['tags', '#/import'], ['status', '#/status']];
+  const shots = [['browse', '#/'], ['quick', '#/quick'], ['upload', '#/upload'], ['tags', '#/import'], ['status', '#/status']];
   for (const [name, hash] of shots) {
     await page.goto(URL_BASE + '/' + hash, { waitUntil: 'networkidle' }).catch(() => {});
     await page.waitForTimeout(1200);
