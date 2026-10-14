@@ -30,6 +30,16 @@ export function listImages(db, { tags = [], onlyUploaded = false, kind = 'chart'
   return { total, items: rows, limit, offset };
 }
 
+// Where one picture sits in the current browse list (same filter, same order),
+// so the viewer can swipe to the previous / next one.
+export function imageContext(db, id, { tags = [], kind = 'chart' } = {}) {
+  const params = [kind];
+  const ids = db.prepare(`SELECT i.id FROM images i WHERE i.kind = ? ${filterSql(tags, params)} ORDER BY ${ORDER}`).all(...params).map((r) => r.id);
+  const at = ids.indexOf(id);
+  if (at < 0) return { index: null, total: ids.length, prev: null, next: null };
+  return { index: at + 1, total: ids.length, prev: at > 0 ? ids[at - 1] : null, next: at < ids.length - 1 ? ids[at + 1] : null };
+}
+
 export function getImage(db, id) {
   const img = db.prepare('SELECT * FROM images WHERE id = ?').get(id);
   if (!img) return null;

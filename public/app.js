@@ -54,6 +54,7 @@
     const view = routes[name] || routes[''];
     for (const a of $nav.querySelectorAll('a')) a.classList.toggle('active', a.dataset.nav === (name || 'browse'));
     closeOverlays();
+    if (viewerCleanup) { viewerCleanup(); viewerCleanup = null; }
     view(arg, query);
   }
   window.addEventListener('hashchange', route);
@@ -93,19 +94,15 @@
     document.body.append(bg); overlays.push(bg);
   }
 
-  // Pinch-to-zoom lightbox using pointer events (works with Samsung Internet and Chrome).
-  function lightbox(src) {
-    const img = h('img', { src, alt: 'Chart, pinch to zoom', draggable: 'false' });
-    const box = h('div', { class: 'lightbox' }, img,
-      h('button', { type: 'button', class: 'iconbtn close', 'aria-label': 'Close', onclick: () => close() }, '✕'),
-      h('div', { class: 'hint' }, 'Pinch to zoom · double-tap · drag to move'));
-    const close = () => { box.remove(); overlays = overlays.filter((o) => o !== box); };
-    document.body.append(box); overlays.push(box);
 
+  // Pinch-to-zoom + swipes on an image inside a box (pointer events: works
+  // with fingers on Samsung Internet and Chrome, and with a mouse on a laptop).
+  // Swipes only fire when the picture is not zoomed in.
+  function zoomable(box, img, on = {}) {
     let scale = 1, tx = 0, ty = 0; // transform: translate(tx,ty) scale(scale) with origin 0 0
     let base = null; // natural layout box of the image at scale 1
     const pointers = new Map();
-    let start = null, lastTap = 0;
+    let start = null, lastTap = 0, swipe = null;
     const apply = () => { img.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`; };
     const measure = () => { img.style.transform = ''; const r = img.getBoundingClientRect(); base = { x: r.left, y: r.top, w: r.width, h: r.height }; apply(); };
     const clamp = () => {
@@ -113,32 +110,32 @@
       if (scale === 1) { tx = 0; ty = 0; return; }
       const W = box.clientWidth, H = box.clientHeight;
       const w = base.w * scale, hh = base.h * scale;
-      // keep the image covering the viewport where it is bigger than it; centre it where smaller
-      const minX = Math.min(0, W - (base.x + w)) - base.x + Math.min(0, 0), maxX = Math.max(0, (W - w) / 2 - base.x);
       const left = base.x + tx, right = left + w;
       if (w <= W) tx = (W - w) / 2 - base.x; else { if (left > 0) tx -= left; if (right < W) tx += W - right; }
       const top = base.y + ty, bottom = top + hh;
       if (hh <= H) ty = (H - hh) / 2 - base.y; else { if (top > 0) ty -= top; if (bottom < H) ty += H - bottom; }
-      void minX; void maxX;
     };
     const zoomAt = (cx, cy, factor) => {
+      if (!base) return;
       const ns = Math.min(Math.max(scale * factor, 1), 8), k = ns / scale;
-      // keep the point under (cx,cy) fixed
       tx = cx - base.x - (cx - base.x - tx) * k; ty = cy - base.y - (cy - base.y - ty) * k; scale = ns; clamp(); apply();
     };
+    const reset = () => { scale = 1; tx = 0; ty = 0; measure(); };
     img.addEventListener('load', measure); if (img.complete) measure();
-    window.addEventListener('resize', measure);
+    const onResize = () => measure();
+    window.addEventListener('resize', onResize);
     box.addEventListener('pointerdown', (e) => {
-      if (e.target.closest('button')) return;
+      if (e.target.closest('button, a, input')) return;
       box.setPointerCapture(e.pointerId);
       pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
       const pts = [...pointers.values()];
       if (pts.length === 1) {
         const now = Date.now();
-        if (now - lastTap < 300) { zoomAt(e.clientX, e.clientY, scale > 1.5 ? 1 / scale : 2.5); lastTap = 0; }
-        else lastTap = now;
+        if (now - lastTap < 300) { zoomAt(e.clientX, e.clientY, scale > 1.5 ? 1 / scale : 2.5); lastTap = 0; swipe = null; }
+        else { lastTap = now; swipe = scale === 1 ? { x: e.clientX, y: e.clientY, t: now } : null; }
         start = { tx, ty, x: e.clientX, y: e.clientY, scale };
       } else if (pts.length === 2) {
+        swipe = null;
         start = { tx, ty, scale, dist: Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y), cx: (pts[0].x + pts[1].x) / 2, cy: (pts[0].y + pts[1].y) / 2 };
       }
     });
@@ -152,19 +149,31 @@
         const ns = Math.min(Math.max(start.scale * (dist / start.dist), 1), 8), k = ns / start.scale;
         tx = cx - base.x - (start.cx - base.x - start.tx) * k; ty = cy - base.y - (start.cy - base.y - start.ty) * k; scale = ns;
         clamp(); apply();
-      } else if (pts.length === 1 && start.x !== undefined) {
-        if (scale > 1) { tx = start.tx + (e.clientX - start.x); ty = start.ty + (e.clientY - start.y); clamp(); apply(); }
-        else if (e.clientY - start.y > 90 && Math.abs(e.clientX - start.x) < 60) close(); // swipe down to close
+      } else if (pts.length === 1 && start.x !== undefined && scale > 1) {
+        tx = start.tx + (e.clientX - start.x); ty = start.ty + (e.clientY - start.y); clamp(); apply();
+      } else if (pts.length === 1 && swipe && scale === 1) {
+        // follow the finger a little so a swipe feels alive
+        img.style.transform = `translate(${(e.clientX - swipe.x) * 0.6}px, ${(e.clientY - swipe.y) * 0.4}px)`;
       }
     });
     const up = (e) => {
       pointers.delete(e.pointerId);
       const pts = [...pointers.values()];
+      if (swipe && scale === 1 && pts.length === 0) {
+        const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y;
+        img.style.transform = '';
+        if (Math.abs(dx) > 70 && Math.abs(dy) < Math.abs(dx) * 0.7) (dx < 0 ? on.left : on.right)?.();
+        else if (dy < -70 && Math.abs(dx) < 60) on.up?.();
+        else if (dy > 90 && Math.abs(dx) < 60) on.down?.();
+        else if (Math.abs(dx) < 8 && Math.abs(dy) < 8 && Date.now() - swipe.t < 300) on.tap?.();
+      }
+      swipe = null;
       start = pts.length === 1 ? { tx, ty, x: pts[0].x, y: pts[0].y, scale } : null;
     };
     box.addEventListener('pointerup', up); box.addEventListener('pointercancel', up);
     box.addEventListener('wheel', (e) => { e.preventDefault(); zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.15 : 1 / 1.15); }, { passive: false });
     box.addEventListener('dblclick', (e) => e.preventDefault());
+    return { reset, destroy: () => window.removeEventListener('resize', onResize) };
   }
 
   // ---------- tag suggestion box ----------
@@ -231,7 +240,7 @@
       const label = img.kind === 'archetype'
         ? img.tags.map((t) => t.name).join(', ')
         : (img.tags.find((t) => t.kind === 'name') || img.tags[0] || {}).name || '';
-      return h('a', { class: 'cell', href: `#/chart/${img.id}` },
+      return h('a', { class: 'cell', href: `#/chart/${img.id}${location.hash.includes('?') ? '?' + location.hash.split('?')[1] : ''}` },
         img.has_file ? h('img', { class: 'thumb', src: `/thumb/${img.id}`, loading: 'lazy', alt: label }) : h('div', { class: 'nofile' }, 'no file yet'),
         h('div', { class: `label ${label ? '' : 'muted'}` }, label || img.filename));
     }
@@ -241,18 +250,59 @@
   };
   const kindOf = (name) => (/^\d+$/.test(name) ? 'number' : /^\d+[A-Za-z]/.test(name) ? 'position' : 'name');
 
-  // ---------- detail ----------
-  routes.chart = async function detail(id) {
-    const $body = h('div', { class: 'stack' }, h('p', { class: 'muted' }, 'Loading…'));
-    render(h('div', { class: 'screen' },
-      h('div', { class: 'detail-top' }, h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'Back', onclick: () => (history.length > 1 ? history.back() : go('#/')) }, '‹'), h('div', { class: 'title', id: 'dtitle' })),
-      $body));
-    let img;
-    try { img = await api(`/api/images/${id}`); } catch (err) { fill($body, h('p', { class: 'err' }, err.message)); return; }
-    document.getElementById('dtitle').textContent = img.filename;
+  // ---------- viewer (full screen) ----------
+  let viewerCleanup = null;
+  routes.chart = async function viewer(id, query) {
+    const qs = query.toString();
+    const listQ = new URLSearchParams(); for (const t of query.getAll('tag')) listQ.append('tag', t); if (query.get('kind') === 'archetype') listQ.set('kind', 'archetype');
+    const backHash = '#/' + (listQ.toString() ? '?' + listQ : '');
+    const back = () => go(backHash);
+    document.body.classList.add('fullscreen');
+    viewerCleanup = () => document.body.classList.remove('fullscreen');
+
+    const $img = h('img', { class: 'vimg', alt: 'Chart', draggable: 'false' });
+    const $stage = h('div', { class: 'vstage' }, $img);
+    const $count = h('span', { class: 'vcount' }, '');
+    const $name = h('span', { class: 'vname' }, '');
+    const $prev = h('button', { type: 'button', class: 'iconbtn varrow left hidden', 'aria-label': 'Previous' }, '‹');
+    const $next = h('button', { type: 'button', class: 'iconbtn varrow right hidden', 'aria-label': 'Next' }, '›');
+    const $handle = h('button', { type: 'button', class: 'vhandle' }, 'Tags ▲');
+    const $sheetBody = h('div', { class: 'vsheet-body stack' });
+    const $sheet = h('div', { class: 'vsheet' }, h('div', { class: 'vsheet-grip', onclick: () => closeSheet() }, h('span', {})), $sheetBody);
+    const $root = h('div', { class: 'viewer' },
+      $stage,
+      h('div', { class: 'vtop' }, h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'Back to the list', onclick: back }, '‹'), $name, $count),
+      $prev, $next, $handle, $sheet);
+    render($root);
+
+    let img, ctx = { prev: null, next: null, index: null, total: 0 }, sheetOpen = false;
+    const openSheet = () => { sheetOpen = true; $sheet.classList.add('open'); $handle.classList.add('hidden'); };
+    const closeSheet = () => { sheetOpen = false; $sheet.classList.remove('open'); $handle.classList.remove('hidden'); };
+    const goTo = (nid) => { if (nid) go(`#/chart/${nid}${qs ? '?' + qs : ''}`); };
+    const z = zoomable($stage, $img, { left: () => goTo(ctx.next), right: () => goTo(ctx.prev), up: openSheet, down: () => (sheetOpen ? closeSheet() : back()), tap: () => (sheetOpen ? closeSheet() : null) });
+    $prev.onclick = () => goTo(ctx.prev); $next.onclick = () => goTo(ctx.next);
+    const keys = (e) => { if (e.key === 'ArrowLeft') goTo(ctx.prev); else if (e.key === 'ArrowRight') goTo(ctx.next); else if (e.key === 'Escape') (sheetOpen ? closeSheet() : back()); };
+    window.addEventListener('keydown', keys);
+    viewerCleanup = () => { document.body.classList.remove('fullscreen'); window.removeEventListener('keydown', keys); z.destroy(); };
+    // swipe down on the sheet grip closes it
+    let gripY = null;
+    $sheet.addEventListener('pointerdown', (e) => { if (e.target.closest('.vsheet-grip')) gripY = e.clientY; });
+    $sheet.addEventListener('pointerup', (e) => { if (gripY !== null && e.clientY - gripY > 40) closeSheet(); gripY = null; });
+
+    try { img = await api(`/api/images/${id}`); } catch (err) { fill($sheetBody, h('p', { class: 'err' }, err.message)); openSheet(); return; }
+    if (img.has_file) { $img.src = `/img/${img.id}`; } else { $img.alt = ''; fill($stage, h('div', { class: 'center', style: 'min-height:100%' }, h('p', { class: 'muted' }, 'No picture for this chart yet.'), h('a', { class: 'btn', href: '#/upload' }, 'Go to Upload'))); }
+    $name.textContent = img.kind === 'archetype' ? img.tags.map((t) => t.name).join(', ') : ((img.tags.find((t) => t.kind === 'name') || {}).name || '');
+    api(`/api/images/${id}/context?${listQ}`).then((c) => {
+      ctx = c;
+      $count.textContent = c.index ? `${c.index} / ${c.total}` : '';
+      $prev.classList.toggle('hidden', !c.prev); $next.classList.toggle('hidden', !c.next);
+      for (const nid of [c.next, c.prev]) if (nid) { const pre = new Image(); pre.src = `/img/${nid}`; }
+    }).catch(() => {});
+
     const draw = () => {
       const groups = { name: [], position: [], number: [] };
       for (const t of img.tags) groups[t.kind].push(t);
+      $handle.textContent = `${img.tags.length} tag${img.tags.length === 1 ? '' : 's'} ▲`;
       const $tagInput = h('input', { type: 'text', placeholder: 'Add a tag…', autocomplete: 'off', autocapitalize: 'none', enterkeyhint: 'done' });
       const addTag = async (name) => {
         try { const r = await postJson(`/api/images/${img.id}/tags`, { name }); img = r.image; toast(r.added ? `Added “${name}”` : `“${name}” was already there`); draw(); }
@@ -261,27 +311,24 @@
       const $sugg = suggestBox($tagInput, { onPick: addTag, allowNew: true });
       const tagBtn = (t) => chip(t, { onclick: () => sheet(t.name, [
         { label: `▦ Show all ${img.kind === 'archetype' ? 'archetype pics' : 'charts'} tagged “${t.name}”`, run: () => go(`#/?${img.kind === 'archetype' ? 'kind=archetype&' : ''}tag=${encodeURIComponent(t.name)}`) },
-        { label: `✕ Remove “${t.name}” from this chart`, cls: 'btn-danger', run: async () => {
+        { label: `✕ Remove “${t.name}” from this ${img.kind === 'archetype' ? 'picture' : 'chart'}`, cls: 'btn-danger', run: async () => {
           try { const r = await postJson(`/api/images/${img.id}/tags/remove`, { name: t.name }); img = r.image; toast(`Removed “${t.name}”`); draw(); } catch (err) { toast(err.message, true); }
         } },
       ]) });
-      fill($body, 
-        img.has_file
-          ? h('img', { class: 'fullimg', src: `/img/${img.id}`, alt: 'Chart', onclick: () => lightbox(`/img/${img.id}`) })
-          : h('div', { class: 'card center', style: 'min-height:30vh' }, h('p', {}, 'No screenshot uploaded for this chart yet.'), h('a', { class: 'btn', href: '#/upload' }, 'Go to Upload')),
-        img.has_file ? h('p', { class: 'muted small', style: 'text-align:center;margin:4px 0' }, 'Tap the picture to zoom') : null,
-        h('div', { class: 'card stack' },
-          h('div', { class: 'row', style: 'justify-content:space-between' }, h('b', {}, `${img.tags.length} tag${img.tags.length === 1 ? '' : 's'}`), h('span', { class: 'muted small' }, 'Tap a tag for options')),
-          groups.name.length ? h('div', { class: 'chips' }, ...groups.name.map(tagBtn)) : null,
-          groups.position.length ? h('div', {}, h('div', { class: 'muted small', style: 'margin-bottom:6px' }, 'Positions'), h('div', { class: 'chips' }, ...groups.position.map(tagBtn))) : null,
-          groups.number.length ? h('div', {}, h('div', { class: 'muted small', style: 'margin-bottom:6px' }, 'Numbers'), h('div', { class: 'chips' }, ...groups.number.map(tagBtn))) : null,
-          h('div', { class: 'addtag row', style: 'flex-wrap:nowrap' }, $tagInput, h('button', { type: 'button', class: 'btn-primary', onclick: () => { const v = $tagInput.value.trim(); if (v) { addTag(v); $tagInput.value = ''; } } }, 'Add'), $sugg)),
-        h('div', { class: 'card small muted' },
+      fill($sheetBody,
+        h('div', { class: 'row', style: 'justify-content:space-between' }, h('b', {}, `${img.tags.length} tag${img.tags.length === 1 ? '' : 's'}`), h('span', { class: 'muted small' }, 'Tap a tag for options')),
+        groups.name.length ? h('div', { class: 'chips' }, ...groups.name.map(tagBtn)) : null,
+        groups.position.length ? h('div', {}, h('div', { class: 'muted small', style: 'margin-bottom:6px' }, 'Positions'), h('div', { class: 'chips' }, ...groups.position.map(tagBtn))) : null,
+        groups.number.length ? h('div', {}, h('div', { class: 'muted small', style: 'margin-bottom:6px' }, 'Numbers'), h('div', { class: 'chips' }, ...groups.number.map(tagBtn))) : null,
+        h('div', { class: 'addtag row', style: 'flex-wrap:nowrap' }, $tagInput, h('button', { type: 'button', class: 'btn-primary', onclick: () => { const v = $tagInput.value.trim(); if (v) { addTag(v); $tagInput.value = ''; } } }, 'Add'), $sugg),
+        h('div', { class: 'small muted' },
           h('div', {}, img.kind === 'archetype' ? 'Type: archetype pic (a picture that represents a number)' : 'Type: chart'),
           h('div', {}, `Taken: ${img.taken_at ? img.taken_at.replace('T', ' ') : 'unknown'}`),
           h('div', {}, img.has_file ? `File: ${fmtBytes(img.size)}, ${img.width}×${img.height}, uploaded ${fmtDate(img.uploaded_at)}` : 'File: not uploaded yet'),
-          h('div', {}, 'Phone paths:'), ...img.paths.map((p) => h('div', { style: 'word-break:break-all;padding-left:8px' }, p))));
+          h('div', { style: 'word-break:break-all' }, img.filename),
+          ...img.paths.map((p) => h('div', { style: 'word-break:break-all;padding-left:8px' }, p))));
     };
+    $handle.onclick = openSheet;
     draw();
   };
 

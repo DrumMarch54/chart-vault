@@ -48,3 +48,12 @@ Brought the app in line with the new-app playbook from the first app:
 - A page reload kills a running upload. The update prompt stays hidden while
   one runs; progress survives switching tabs. Never deploy mid-upload unless
   the owner says so.
+
+## 2026-10-14 Full-screen viewer
+- Tapping a thumbnail opens the picture full screen (the main use: pull up a
+  person's chart fast). Swipe left/right moves through the current search in
+  the same order as the grid (`/api/images/:id/context`); the chart link
+  carries the browse query so the viewer knows the list. Swipe up or the
+  "N tags" pill opens a sheet with tags, add tag, details. Swipe down closes
+  the sheet, then the viewer. Zoom = pinch / double tap; swipes only fire
+  when not zoomed. Arrow keys and side arrows on a laptop.

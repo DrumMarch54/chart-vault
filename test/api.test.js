@@ -389,3 +389,23 @@ test('archetype pics: separate kind, number tags from the album name, kept out o
   r = await mark('arch3.jpg', 'x', ['1'], 'banana');
   assert.equal(r.status, 400);
 });
+
+test('viewer context: previous and next within the current filter and order', async () => {
+  const all = await json(await api('/api/images'));
+  const ids = all.body.items.map((i) => i.id);
+  let c = await json(await api(`/api/images/${ids[0]}/context`));
+  assert.deepEqual(c.body, { index: 1, total: all.body.total, prev: null, next: ids[1] });
+  c = await json(await api(`/api/images/${ids[1]}/context`));
+  assert.equal(c.body.prev, ids[0]); assert.equal(c.body.index, 2);
+  const f = await json(await api('/api/images?tag=12mc'));
+  const fids = f.body.items.map((i) => i.id);
+  c = await json(await api(`/api/images/${fids[fids.length - 1]}/context?tag=12mc`));
+  assert.deepEqual(c.body, { index: fids.length, total: fids.length, prev: fids.length > 1 ? fids[fids.length - 2] : null, next: null });
+  // a chart outside the filter has no place in it
+  const outside = await json(await api('/api/images?tag=thinking'));
+  if (outside.body.items.length) {
+    c = await json(await api(`/api/images/${outside.body.items[0].id}/context?tag=12mc`));
+    assert.equal(c.body.index, null);
+  }
+  assert.equal((await api('/api/images/999999/context')).status, 404);
+});

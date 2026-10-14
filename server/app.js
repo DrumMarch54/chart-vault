@@ -5,7 +5,7 @@ import { config } from './config.js';
 import { requireAuth, isAuthed, NO_TOKEN_MSG, passwordMatches, setSessionCookie, clearSessionCookie, isValidSession, loginAllowed, recordFailure, clearFailures } from './auth.js';
 import { parseUserTagBackup, importTags, addTagToImage, removeTagFromImage, markAlbumMember, ImportError } from './import.js';
 import { receiveUpload, UploadError, fullPathFor, thumbPathFor, makeThumb, findLostFiles } from './storage.js';
-import { listImages, getImage, suggestTags, allTags, statusReport, exportTags } from './queries.js';
+import { listImages, getImage, imageContext, suggestTags, allTags, statusReport, exportTags } from './queries.js';
 import { runBackup, streamZip, isBackupRunning } from './backup.js';
 import { snapshot } from './snapshot.js';
 import { deployGuard } from './deployguard.js';
@@ -109,6 +109,11 @@ export function createApp(db, { log = console.log } = {}) {
     const img = getImage(db, Number(req.params.id));
     if (!img) return res.status(404).json({ error: 'No such chart.' });
     res.json(img);
+  });
+  app.get('/api/images/:id/context', (req, res) => {
+    const id = Number(req.params.id);
+    if (!getImage(db, id)) return res.status(404).json({ error: 'No such chart.' });
+    res.json(imageContext(db, id, { tags: asList(req.query.tag), kind: req.query.kind === 'archetype' ? 'archetype' : 'chart' }));
   });
   app.get('/api/tags', (req, res) => {
     const limit = Math.min(Math.max(Number(req.query.limit) || 30, 1), 200);
