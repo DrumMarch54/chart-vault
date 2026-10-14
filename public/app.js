@@ -314,7 +314,9 @@
 
   // ---------- upload images ----------
   routes.upload = function uploadView() {
-    const $file = h('input', { type: 'file', id: 'imgfiles', multiple: true, accept: 'image/*' });
+    // No accept filter on purpose: with one, Android opens the photo-gallery picker, which
+    // cannot handle thousands of files and has no filename search. Without it, the Files picker opens.
+    const $file = h('input', { type: 'file', id: 'imgfiles', multiple: true });
     const $pick = h('button', { type: 'button', class: 'btn-primary btn-block', onclick: () => $file.click() }, 'Choose screenshots');
     const $plan = h('div', {});
     const $missing = h('div', { class: 'card stack' }, h('p', { class: 'muted' }, 'Checking what is still missing…'));
@@ -345,7 +347,7 @@
         };
         $missing.replaceChildren(
           h('h2', { style: 'margin-top:0' }, `${fmtN(s.missing_count)} still missing`),
-          h('p', { class: 'muted small' }, 'Do one chunk at a time: tap Choose screenshots, tap the search (magnifier) in the picker, type the text below exactly, select all results, tap Done. Then come back here for the next chunk.'),
+          h('p', { class: 'muted small' }, 'Try the whole Screenshots folder first (long-press a file, tap All, tap Done). If the phone cannot handle that many, tap the search in the Files picker, type one code below, select all results, tap Done, and repeat per code.'),
           ...[...groups.entries()].sort().map(([k, n]) => h('div', { class: 'stat' },
             k === 'other' ? h('span', {}, 'Not screenshots (Charts, Camera, WhatsApp folders)') : h('span', {}, h('code', { style: 'font-size:17px' }, k), h('span', { class: 'muted small' }, ` ${label(k)}`)),
             h('b', {}, fmtN(n)))));
