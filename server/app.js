@@ -186,6 +186,7 @@ export function createApp(db, { log = console.log } = {}) {
     report.lost_files = findLostFiles(db);
     report.disk = diskInfo();
     report.version = appVersion();
+    report.commit = COMMIT;
     res.json(report);
   });
   app.get('/api/export/tags.json', (req, res) => {

@@ -455,7 +455,7 @@
         h('a', { class: 'btn btn-block', href: '/api/export/tags.json', download: '' }, 'Download tags only (small JSON file)')),
       h('div', { class: 'card stack' },
         s.last_import ? h('p', { class: 'muted small' }, `Last tag import: ${fmtDate(s.last_import.imported_at)}, ${fmtN(s.last_import.images_in_file)} images in file`) : h('p', { class: 'muted small' }, 'No tag file imported yet.'),
-        h('p', { class: 'muted small' }, `Chart Vault version ${s.version}`),
+        h('p', { class: 'muted small' }, `Chart Vault version ${s.version}, build ${s.commit}`),
         h('button', { type: 'button', class: 'btn-block', onclick: async () => { await api('/api/logout', { method: 'POST' }).catch(() => {}); showLogin(); } }, 'Log out')));
   };
 
@@ -467,7 +467,7 @@
       const hb = await hResp.json();
       if (knownCommit === null) knownCommit = hb.commit;
       else if (hb.commit !== knownCommit && !document.getElementById('newver')) {
-        document.body.append(h('button', { id: 'newver', type: 'button', class: 'btn-primary', onclick: () => location.reload() }, 'Updated, tap to reload'));
+        document.body.append(h('button', { id: 'newver', type: 'button', class: 'btn-primary', onclick: () => location.reload() }, `Updated to build ${hb.commit}, tap to reload`));
       }
     } catch {}
   }
