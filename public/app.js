@@ -341,6 +341,9 @@
     showMissing();
 
     const IMG_RE = /\.(jpe?g|png|webp)$/i;
+    // Album folder name -> tag. "9 Mind Center" is how the owner names the
+    // album; "9mc" is how they tag the same thing on a picture.
+    const albumTag = (folder) => { const m = /^(\d+)\s*mind\s*cent(er|re)$/i.exec(folder.trim()); return m ? `${m[1]}mc` : folder.trim(); };
     const NOT_ALBUMS = new Set(['Screenshots', 'Camera', 'DCIM', '.thumbnails']);
     async function planFolders(files) {
       if (!files.length) return;
@@ -359,13 +362,13 @@
         const defaultOn = !NOT_ALBUMS.has(folder) && list.length <= 1500;
         const cb = h('input', { type: 'checkbox', style: 'width:26px;height:26px', checked: defaultOn });
         boxes.set(folder, cb);
-        return h('label', { class: 'stat', style: 'gap:12px;cursor:pointer' }, h('span', { class: 'row', style: 'flex-wrap:nowrap' }, cb, h('span', {}, folder)), h('b', {}, fmtN(list.length)));
+        return h('label', { class: 'stat', style: 'gap:12px;cursor:pointer' }, h('span', { class: 'row', style: 'flex-wrap:nowrap' }, cb, h('span', {}, folder, ' ', h('span', { class: `chip ${kindOf(albumTag(folder))}`, style: 'min-height:30px;font-size:14px;pointer-events:none' }, albumTag(folder)))), h('b', {}, fmtN(list.length)));
       }));
       const $start = h('button', { type: 'button', class: 'btn-primary btn-block', onclick: async () => {
         const albumOf = new Map();
         const todo = [], plain = [];
         for (const [folder, list] of rows) {
-          if (boxes.get(folder).checked) for (const f of list) { albumOf.set(f, folder); todo.push(f); }
+          if (boxes.get(folder).checked) for (const f of list) { albumOf.set(f, albumTag(folder)); todo.push(f); }
           else plain.push(...list);
         }
         // Unticked folders use the normal rule: only files named in the tag file.
@@ -381,7 +384,7 @@
         run([...todo, ...extra], albumOf);
       } }, 'Start');
       fill($plan, h('div', { class: 'card stack' },
-        h('p', {}, `Found ${fmtN(rows.length)} folders. Ticked folders are treated as chart albums: every picture in them is added and tagged with the folder name. Unticked folders only contribute files named in the tag file.`),
+        h('p', {}, `Found ${fmtN(rows.length)} folders. Ticked folders are chart albums: every picture in them is added and gets the tag shown next to the folder. "9 Mind Center" becomes 9mc. Unticked folders only contribute files named in the tag file.`),
         $table,
         h('p', { class: 'muted small' }, 'Screenshots and Camera are unticked on purpose. Untick anything else that is not charts.'),
         $start));
