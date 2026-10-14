@@ -1,0 +1,20 @@
+{
+  "name": "chart-vault",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Safe copy of numerology chart screenshots and their tags",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "archiver": "^8.0.0",
+    "better-sqlite3": "^13.0.3",
+    "express": "^4.22.3",
+    "sharp": "^0.35.5"
+  }
+}
