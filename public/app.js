@@ -607,17 +607,18 @@
     return g;
   }
   function numeroscopeSvg(data) {
-    const svg = sv('svg', { viewBox: '-20 20 782 1270', class: 'nscope', role: 'img', 'aria-label': 'Numeroscope' });
+    const svg = sv('svg', { viewBox: '-32 20 806 1270', class: 'nscope', role: 'img', 'aria-label': 'Numeroscope' });
     // Top shape (birth date), two psyche diamonds, name chart, consonants (left), vowels (right).
-    svg.append(sv('polygon', { points: '371,40 482,105 482,220 371,290 260,220 260,105', fill: '#b9b6d7' }),
-      sv('polygon', { points: '371,40 482,105 260,105', fill: '#cfcde6' }),
-      sv('circle', { cx: 371, cy: 168, r: 50, fill: '#fff' }), sv('circle', { cx: 371, cy: 240, r: 18, fill: '#fff' }));
-    for (const [cx, fill] of [[130, '#dde6ee'], [612, '#c8d8e4']]) {
-      svg.append(rhombusShape(cx, 322, 101, 137, 38, fill, null, { line: 5, up: 57, tri: [500, 535, 22] }));
+    svg.append(sv('polygon', { points: '371,40 482,102 260,102', fill: '#d3d4e8' }),
+      sv('polygon', { points: '260,102 260,231 371,290', fill: '#ced0e5' }), sv('polygon', { points: '482,102 482,231 371,290', fill: '#ced0e5' }),
+      sv('polygon', { points: '260,102 482,102 371,290', fill: '#afafd5' }),
+      sv('circle', { cx: 371, cy: 162, r: 50, fill: '#efeff7' }), sv('circle', { cx: 371, cy: 243, r: 15, fill: '#d6d7eb' }));
+    for (const [cx, fill] of [[130, '#dde6ef'], [612, '#c3d5e1']]) {
+      svg.append(rhombusShape(cx, 322, 101, 137, 41, fill, null, { line: 5, up: 57, tri: [503, 527, 17] }));
     }
-    svg.append(rhombusShape(371, 740, 277, 384, 115, '#e9b86e', '#f4ecdc', { line: 9, up: 155, tri: [1195, 1278, 65], big: [270, 1160, 52] }));
-    svg.append(rhombusShape(112, 1055, 102, 145, 42, '#f6d8d3', '#fbe9e6', { line: 5, up: 57, tri: [1230, 1275, 30], big: [52, 1211, 30] }));
-    svg.append(rhombusShape(630, 1055, 102, 145, 42, '#d9e4de', '#edf2ef', { line: 5, up: 57, tri: [1230, 1275, 30], big: [690, 1211, 30] }));
+    svg.append(rhombusShape(371, 740, 277, 384, 115, '#eec186', '#f5efe3', { line: 9, up: 155, tri: [1195, 1278, 65], big: [270, 1160, 52] }));
+    svg.append(rhombusShape(112, 1055, 102, 145, 42, '#faddd7', '#fef0ed', { line: 5, up: 57, tri: [1230, 1275, 30], big: [52, 1211, 30] }));
+    svg.append(rhombusShape(630, 1055, 102, 145, 42, '#dae7e0', '#f6f8f7', { line: 5, up: 57, tri: [1230, 1275, 30], big: [690, 1211, 30] }));
     svg.append(sv('circle', { cx: 670, cy: 640, r: 28, fill: '#fff', stroke: '#a9c3e4', 'stroke-width': 2.5 }));
 
     const txt = (x, y, v, cls, size) => (v ? sv('text', { x, y, class: cls, 'font-size': size, 'text-anchor': 'middle' }, typeof v === 'string' ? v : v.text) : null);
@@ -628,32 +629,32 @@
       txt(p.cx, p.heartY, c.heart, 'n-dark n-bold', p.big),
       ...c.heartExtra.map((v, i) => txt(p.cx, p.heartY + p.extraUp + i * p.mid * 1.1, v, 'n-dark', p.mid)),
       p.spineX && txt(p.spineX, p.spineY, c.spine, 'n-gray', p.small),
-      c.first && txt(p.nameL, p.nameY, c.first.text, 'n-dark', p.name), c.first && txt(p.nameL, p.lineY, c.first.value, 'n-dark n-bold', p.line),
-      ...c.middle.flatMap((w, i) => [txt(p.cx + (i - (c.middle.length - 1) / 2) * p.big * 3, p.nameY, w.text, 'n-dark', p.name), txt(p.cx + (i - (c.middle.length - 1) / 2) * p.big * 3, p.lineY, w.value, 'n-dark n-bold', p.line)]),
-      c.last && txt(p.nameR, p.nameY, c.last.text, 'n-dark', p.name), c.last && txt(p.nameR, p.lineY, c.last.value, 'n-dark n-bold', p.line),
+      c.first && txt(p.nameL, p.nameY, c.first.text, 'n-dark', p.name), c.first && txt(p.nameL, p.lineY, c.first.value, p.lineCls, p.line),
+      ...c.middle.flatMap((w, i) => [txt(p.cx + (i - (c.middle.length - 1) / 2) * p.big * 3, p.nameY, w.text, 'n-dark', p.name), txt(p.cx + (i - (c.middle.length - 1) / 2) * p.big * 3, p.lineY, w.value, p.lineCls, p.line)]),
+      c.last && txt(p.nameR, p.nameY, c.last.text, 'n-dark', p.name), c.last && txt(p.nameR, p.lineY, c.last.value, p.lineCls, p.line),
       txt(p.auraL, p.lowY, c.lowerLeft, 'n-gray', p.small), txt(p.auraR, p.lowY, c.lowerRight, 'n-gray', p.small),
       txt(p.cx, p.solarY, c.solar, 'n-dark n-bold', p.big),
       ...c.solarExtra.map((v, i) => txt(p.cx, p.solarY + p.extraDown + i * p.mid * 1.1, v, 'n-dark', p.mid)),
-      txt(p.bigX, p.leY, c.big, 'n-faded n-bold', p.big), txt(p.cx, p.leY, c.le, 'n-dark n-bold', p.big),
+      txt(p.bigX, p.leY, c.big, 'n-faded n-bold', p.big), txt(p.cx, p.leY, c.le, 'n-dim n-bold', p.big),
       txt(p.cx, p.pillarY, c.pillar, 'n-dark n-bold', p.mid),
     ];
     const day = data.essence.day;
-    svg.append(...numbers(data.name, { cx: 371, dvY: 330, auraL: 208, auraR: 535, upY: 520, heartY: 540, spineX: 530, spineY: 645, nameL: 75, nameR: 665, nameY: 718, lineY: 770, lowY: 952, solarY: 846, bigX: 270, leY: 1170, pillarY: 1264, extraUp: 87, extraDown: 97, big: 38, mid: 32, small: 26, name: 28, line: 36 }, day));
-    const sub = (cx, bigX) => ({ cx, dvY: 898, auraL: cx - 82, auraR: cx + 82, upY: 988, heartY: 988, nameL: cx - 97, nameR: cx + 111, nameY: 1040, lineY: 1067, lowY: 1140, solarY: 1104, bigX, leY: 1219, pillarY: 1268, extraUp: 32, extraDown: 32, big: 22, mid: 16, small: 18, name: 16, line: 20 });
+    svg.append(...numbers(data.name, { cx: 371, dvY: 332, auraL: 208, auraR: 535, upY: 520, heartY: 540, spineX: 530, spineY: 645, nameL: 75, nameR: 665, nameY: 718, lineY: 770, lowY: 952, solarY: 846, bigX: 270, leY: 1170, pillarY: 1264, extraUp: 87, extraDown: 97, big: 38, mid: 32, small: 26, name: 28, line: 36, lineCls: 'n-dark n-bold' }, day));
+    const sub = (cx, bigX) => ({ cx, dvY: 898, auraL: cx - 82, auraR: cx + 82, upY: 988, heartY: 988, nameL: cx - 97, nameR: cx + 111, nameY: 1040, lineY: 1067, lowY: 1140, solarY: 1104, bigX, leY: 1219, pillarY: 1268, extraUp: 32, extraDown: 32, big: 22, mid: 16, small: 18, name: 16, line: 20, lineCls: 'n-dark' });
     svg.append(...numbers(data.consonants, sub(112, 52), day), ...numbers(data.vowels, sub(630, 690), day));
     svg.append(txt(670, 649, data.name.letters ? String(data.name.letters) : null, 'n-blue n-bold', 26));
     // Psyche charts in the two pale blue diamonds: outer psyche left, inner psyche right. Positions
     // measured on the paid tool's screenshots in the vault (Kevin Darnell Hart, 6 July 1979).
-    const psy = (cx) => ({ cx, dvY: 160, auraL: cx - 73, auraR: cx + 73, upY: 240, heartY: 262, nameL: cx - 125, nameR: cx + 125, nameY: 0, lineY: 329, lowY: 414, solarY: 376, bigX: null, leY: 483, pillarY: 528, extraUp: 0, extraDown: 0, big: 20, mid: 16, small: 16, name: 1, line: 18 });
+    const psy = (cx) => ({ cx, dvY: 159, auraL: cx - 74, auraR: cx + 74, upY: 235, heartY: 262, nameL: cx - 130, nameR: cx + 130, nameY: 0, lineY: 330, lowY: 412, solarY: 378, bigX: null, leY: 485, pillarY: 528, extraUp: 0, extraDown: 0, big: 24, mid: 20, small: 21, name: 1, line: 24, lineCls: 'n-dark' });
     const psyNums = (c, p) => numbers({ ...c, big: null, middle: [], heartExtra: [], solarExtra: [], first: c.first && { text: '', value: c.first.value }, last: c.last && { text: '', value: c.last.value } }, p, day);
     const $psy = sv('g', { class: 'psy' }); $psy.append(...psyNums(data.psyche.outer, psy(130)).filter(Boolean), ...psyNums(data.psyche.inner, psy(612)).filter(Boolean)); svg.append($psy);
     // Essence chart in the purple shape, as the paid tool draws it: top aura at the top, month and
     // year outside the upper corners, little and big life path in the circle, outer and inner auras
     // beside the circle. The small circle stays empty; the day sits under the shape.
     const e = data.essence;
-    svg.append(txt(371, 86, e.topAura, 'n-gray', 22), txt(233, 86, e.month, 'n-dark n-bold', 22), txt(510, 86, e.year, 'n-dark n-bold', 22),
-      txt(284, 196, e.outerAura, 'n-gray', 20), txt(460, 196, e.innerAura, 'n-gray', 20),
-      txt(371, 154, e.littleLp, 'n-dark n-bold', 24), txt(371, 184, e.bigLp, 'n-dark n-bold', 24));
+    svg.append(txt(371, 81, e.topAura, 'n-gray', 24), txt(234, 81, e.month, 'n-dark n-bold', 24), txt(508, 81, e.year, 'n-dark n-bold', 24),
+      txt(285, 193, e.outerAura, 'n-gray', 21), txt(457, 193, e.innerAura, 'n-gray', 21),
+      txt(371, 148, e.littleLp, 'n-dark n-bold', 25), txt(371, 179, e.bigLp, 'n-dark n-bold', 25));
     return svg;
   }
   routes.quick = function quickView() {
