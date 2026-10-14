@@ -13,6 +13,7 @@ This folder is the distilled, app-relevant part. Read these before touching
 | `chart-construction.md` | Every formula for the 5 charts, what is confirmed against the paid tool's screenshots, what is not. |
 | `positions.md` | What each position means (essence, psyche, name, vocation, personality) in a few lines each. |
 | `number-balance.md` | Balanced / semi-balanced / unbalanced numbers per position, and the per-number good/bad notes for heart center, solar plexus and auras. This is the basis for coloring numbers. |
+| `number-colors.md` | The paid tool's number colors and exact positions, read off 436 vault screenshots; how to redo it. |
 | `number-names.md` | The archetype name of every compound number 10 to 99 and the one-line "energy type" of each. |
 | `psyche.md` | Inner and outer psyche charts, the "teenage" numbers 10 to 18, the ages each aura covers. |
 | `interpretation.md` | How the owner reads a chart: hierarchy of positions, narrative weaving, terminology and number notation. |

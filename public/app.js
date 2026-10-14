@@ -620,41 +620,50 @@
       sv('circle', { cx: 371, cy: H.circle[0], r: H.circle[1], fill: '#efeff7' }), sv('circle', { cx: 371, cy: H.small[0], r: H.small[1], fill: '#d6d7eb' }));
     for (const [cx, fill] of [[P.cxL, '#dde6ef'], [P.cxR, '#c3d5e1']]) svg.append(rhombusShape(cx, P.cy, P.hw, P.hh, fill, { line: P.line, up: P.up, r: P.r, tri: P.tri }));
     svg.append(rhombusShape(M.cx, M.lineY, M.hw, M.hh, '#eec186', { line: M.line, up: M.circleUp, down: M.circleDown, r: M.r, tri: M.tri, big: M.big, faded: '#f5efe3' }));
-    svg.append(rhombusShape(S.cxL, S.cy, S.hw, S.hh, '#faddd7', { line: S.line, up: S.up, down: S.down, r: S.r, tri: S.tri, big: [S.cxL + S.bigDx, S.bigY, S.bigR], faded: '#fef0ed' }));
-    svg.append(rhombusShape(S.cxR, S.cy, S.hw, S.hh, '#dae7e0', { line: S.line, up: S.up, down: S.down, r: S.r, tri: S.tri, big: [S.cxR + S.bigDx, S.bigY, S.bigR], faded: '#f6f8f7' }));
+    svg.append(rhombusShape(S.left.cx, S.cy, S.hw, S.hh, '#faddd7', { line: S.line, up: S.up, down: S.down, r: S.r, tri: S.tri, big: [S.left.bigX, S.bigY, S.bigR], faded: '#fef0ed' }));
+    svg.append(rhombusShape(S.right.cx, S.cy, S.hw, S.hh, '#dae7e0', { line: S.line, up: S.up, down: S.down, r: S.r, tri: S.tri, big: [S.right.bigX, S.bigY, S.bigR], faded: '#f6f8f7' }));
     svg.append(sv('circle', { cx: M.letter[0], cy: M.letter[1], r: M.letter[2], fill: '#fff', stroke: '#a9c3e4', 'stroke-width': 2.5 }));
 
-    const txt = (x, y, v, cls, size) => (v ? sv('text', { x, y, class: cls, 'font-size': size, 'text-anchor': 'middle' }, typeof v === 'string' ? v : v.text) : null);
-    // The numbers of one rhombus. t = that chart's text layout, cx its center, top the day (or null).
-    const numbers = (c, t, cx, top) => [
-      txt(cx, t.dvY, top, 'n-dark n-bold', t.day),
-      txt(t.auraL ?? cx - t.auraDx, t.upY, c.upperLeft, 'n-gray', t.small), txt(t.auraR ?? cx + t.auraDx, t.upY, c.upperRight, 'n-gray', t.small),
-      txt(cx, t.heartY, c.heart, 'n-dark n-bold', t.heart),
-      ...c.heartExtra.map((v, i) => txt(cx, t.heartY + t.extraUp + i * t.extra * 1.1, v, 'n-dark', t.extra)),
-      t.spineX && txt(t.spineX, t.spineY, c.spine, 'n-gray', t.small),
-      c.first && txt(t.nameL ?? cx + t.nameDxL, t.nameY, c.first.text, 'n-dark', t.name), c.first && txt(t.nameL ?? cx + t.nameDxL, t.lineY, c.first.value, t.lineCls || 'n-dark', t.lineFont),
-      ...c.middle.flatMap((w, i) => { const x = cx + (i - (c.middle.length - 1) / 2) * t.lineFont * 3; return [txt(x, t.nameY, w.text, 'n-dark', t.name), txt(x, t.lineY, w.value, t.lineCls || 'n-dark', t.lineFont)]; }),
-      c.last && txt(t.nameR ?? cx + t.nameDxR, t.nameY, c.last.text, 'n-dark', t.name), c.last && txt(t.nameR ?? cx + t.nameDxR, t.lineY, c.last.value, t.lineCls || 'n-dark', t.lineFont),
-      txt(t.auraL ?? cx - t.auraDx, t.lowY, c.lowerLeft, 'n-gray', t.small), txt(t.auraR ?? cx + t.auraDx, t.lowY, c.lowerRight, 'n-gray', t.small),
-      txt(cx, t.solarY, c.solar, 'n-dark n-bold', t.solar || t.heart),
-      ...c.solarExtra.map((v, i) => txt(cx, t.solarY + t.extraDown + i * t.extra * 1.1, v, 'n-dark', t.extra)),
-      t.bigX !== undefined && txt(t.bigX, t.leY, c.big, 'n-faded n-bold', t.le), txt(cx, t.leY, c.le, 'n-dim n-bold', t.le),
-      txt(cx, t.pillarY, c.pillar, 'n-dark n-bold', t.pillar),
-    ];
+    const txt = (x, y, v, cls, size, anchor) => (v ? sv('text', { x, y, class: cls, 'font-size': size, 'text-anchor': anchor || 'middle' }, typeof v === 'string' ? v : v.text) : null);
+    // Color of one number: the paid tool's choice for that position and value (number-colors.js).
+    const oneMiddle = data.name.middle.length === 1;
+    const tone = (slot, v, bold) => 'n-' + NumberColors.lookup(slot, typeof v === 'string' ? v : (v ? v.text : ''), oneMiddle) + (bold ? ' n-bold' : '');
+    // x offsets of n items on one row: one at the center, two at the measured pair, more spread evenly across it.
+    const spread = (n, pair, i) => (n <= 1 || !pair ? 0 : pair[0] + (pair[1] - pair[0]) * i / (n - 1));
+    // The numbers of one rhombus. pre = the position prefix in number-colors.js ('' main, 'c.' consonants,
+    // 'v.' vowels, 'po.' / 'pi.' psyche), t = that chart's text layout, cx its center, top the day (or null).
+    const numbers = (pre, c, t, cx, top) => {
+      const sd = t.sideDx || 0, aL = t.auraL ?? cx - t.auraDx + sd, aR = t.auraR ?? cx + t.auraDx + sd, an = t.auraAnchor;
+      const nL = t.nameL ?? cx + t.nameDxL + sd, nR = t.nameR ?? cx + t.nameDxR + sd, lineBold = pre === '';
+      return [
+        txt(cx, t.dvY, top, tone(pre + 'day', top, pre === ''), t.day),
+        c.upperLeft && txt(aL, t.upY, c.upperLeft, tone(pre + 'ul', c.upperLeft), t.small, an), c.upperRight && txt(aR, t.upY, c.upperRight, tone(pre + 'ur', c.upperRight), t.small, an),
+        c.heart && txt(cx, t.heartY, c.heart, tone(pre + 'heart', c.heart, true), t.heart),
+        ...c.heartExtra.map((v, i) => txt(cx + spread(c.heartExtra.length, t.extra2, i), t.heartY + t.extraUp, v, tone(pre + 'heartExtra', v), t.extra)),
+        t.spineX && c.spine && txt(t.spineX, t.spineY, c.spine, tone(pre + 'spine', c.spine), t.small),
+        c.first && txt(nL, t.nameY, c.first.text, 'n-dark', t.name), c.first && txt(nL, t.lineY, c.first.value, tone(pre + 'first', c.first.value, lineBold), t.lineFont),
+        ...c.middle.flatMap((w, i) => { const x = t.middle2 && c.middle.length <= 2 ? cx + spread(c.middle.length, t.middle2, i) : nL + (nR - nL) * (i + 1) / (c.middle.length + 1); return [txt(x, t.nameY, w.text, 'n-dark', t.name), txt(x, t.lineY, w.value, tone(pre + 'middle', w.value, lineBold), t.lineFont)]; }),
+        c.last && txt(nR, t.nameY, c.last.text, 'n-dark', t.name), c.last && txt(nR, t.lineY, c.last.value, tone(pre + 'last', c.last.value, lineBold), t.lineFont),
+        c.lowerLeft && txt(aL, t.lowY, c.lowerLeft, tone(pre + 'll', c.lowerLeft), t.small, an), c.lowerRight && txt(aR, t.lowY, c.lowerRight, tone(pre + 'lr', c.lowerRight), t.small, an),
+        c.solar && txt(cx, t.solarY, c.solar, tone(pre + 'solar', c.solar, true), t.solar || t.heart),
+        ...c.solarExtra.map((v, i) => txt(cx + spread(c.solarExtra.length, t.solarExtra2, i), t.solarY + t.extraDown, v, tone(pre + 'solarExtra', v), t.extra)),
+        t.bigX !== undefined && c.big && txt(t.bigX, t.leY, c.big, tone(pre + 'big', c.big, true), t.le), c.le && txt(cx, t.leY, c.le, tone(pre + 'le', c.le, true), t.le),
+        c.pillar && txt(cx, t.pillarY, c.pillar, tone(pre + 'pillar', c.pillar, true), t.pillar),
+      ];
+    };
     const day = data.essence.day;
-    svg.append(...numbers(data.name, { ...M.text, bigX: M.big[0], lineCls: 'n-dark n-bold' }, M.cx, day));
-    svg.append(...numbers(data.consonants, { ...S.text, bigX: S.cxL + S.bigDx }, S.cxL, day), ...numbers(data.vowels, { ...S.text, bigX: S.cxR + S.bigDx }, S.cxR, day));
+    svg.append(...numbers('', data.name, { ...M.text, bigX: M.big[0] }, M.cx, day).filter(Boolean));
+    svg.append(...numbers('c.', data.consonants, { ...S.text, ...S.left }, S.left.cx, day).filter(Boolean), ...numbers('v.', data.vowels, { ...S.text, ...S.right }, S.right.cx, day).filter(Boolean));
     svg.append(txt(M.letter[0], M.text.letterY, data.name.letters ? String(data.name.letters) : null, 'n-blue n-bold', M.text.letterFont));
     // Psyche charts: outer psyche in the left blue diamond, inner in the right (confirmed on vault screenshots).
     const bare = (c) => ({ ...c, big: null, middle: [], heartExtra: [], solarExtra: [], first: c.first && { text: '', value: c.first.value }, last: c.last && { text: '', value: c.last.value } });
-    const $psy = sv('g', { class: 'psy' });
-    $psy.append(...numbers(bare(data.psyche.outer), P.text, P.cxL, day).filter(Boolean), ...numbers(bare(data.psyche.inner), P.text, P.cxR, day).filter(Boolean));
-    svg.append($psy);
+    svg.append(...numbers('po.', bare(data.psyche.outer), { ...P.text, sideDx: P.sideDxL }, P.cxL, day).filter(Boolean), ...numbers('pi.', bare(data.psyche.inner), { ...P.text, sideDx: P.sideDxR }, P.cxR, day).filter(Boolean));
     // Essence numbers: top aura inside the top of the shape, month and year outside the upper corners,
     // little and big life path in the circle, outer and inner auras beside it. The small circle stays empty.
     const e = data.essence, T = H.text;
-    svg.append(txt(371, T.topAuraY, e.topAura, 'n-gray', T.corner), txt(T.monthX, T.monthY, e.month, 'n-dark n-bold', T.corner), txt(T.yearX, T.monthY, e.year, 'n-dark n-bold', T.corner),
-      txt(T.auraL, T.auraY, e.outerAura, 'n-gray', T.aura), txt(T.auraR, T.auraY, e.innerAura, 'n-gray', T.aura),
+    // little and big life path in the circle, outer and inner auras beside it. All dark in the paid tool.
+    svg.append(txt(371, T.topAuraY, e.topAura, 'n-dark', T.corner), txt(T.monthX, T.monthY, e.month, 'n-dark n-bold', T.corner), txt(T.yearX, T.monthY, e.year, 'n-dark n-bold', T.corner),
+      txt(T.auraL, T.auraY, e.outerAura, 'n-dark', T.aura), txt(T.auraR, T.auraY, e.innerAura, 'n-dark', T.aura),
       txt(371, T.lpY, e.littleLp, 'n-dark n-bold', T.lp), txt(371, T.bigLpY, e.bigLp, 'n-dark n-bold', T.lp));
     return svg;
   }

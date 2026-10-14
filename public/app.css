@@ -118,11 +118,18 @@ body.fullscreen { padding-bottom: 0; overflow: hidden; }
 @font-face { font-family: "Open Sans"; src: url("/fonts/open-sans.woff2") format("woff2"); font-weight: 300 800; font-display: swap; }
 .nscope-box { background: #fff; border-radius: var(--radius); margin-top: 10px; padding: 4px; }
 .nscope { display: block; width: 100%; height: auto; font-family: "Open Sans", system-ui, sans-serif; }
-.nscope text { fill: #3e2e17; }
+.nscope text { fill: #303030; }
 .nscope .n-bold { font-weight: 700; }
-.nscope .n-gray { fill: #8a8a8a; }
-.nscope .n-dim { fill: #7d7f7e; }
-.nscope .n-faded { fill: #cec7bd; }
-.nscope .n-blue { fill: #507da4; }
-.nscope .psy text { fill: #557b9f; }
-.nscope .psy .n-gray { fill: #7d93a8; }
+/* Number colors as the paid tool draws them (number-colors.js): gray = neutral, greens = balanced, reds = compromised. */
+.nscope .n-dark { fill: #303030; }
+.nscope .n-gray { fill: #7f7f7f; }
+.nscope .n-green1 { fill: #689868; }
+.nscope .n-green2 { fill: #53ad53; }
+.nscope .n-green3 { fill: #3ac838; }
+.nscope .n-green4 { fill: #1be41a; }
+.nscope .n-red1 { fill: #926967; }
+.nscope .n-red2 { fill: #a35352; }
+.nscope .n-red3 { fill: #b43e3c; }
+.nscope .n-faded { fill: #cecabf; }
+.nscope .n-blue { fill: #5f7990; }
+.nscope .n-blue.n-bold { fill: #597997; }

@@ -34,11 +34,18 @@
   const wordSum = (letters) => letters.reduce((a, c) => a + LETTERS[c], 0);
 
   // One name on a center line: its shown text (only the letters that count), and its value.
+  // A name that has letters but none that pass the filter (e.g. "Jr" on the vowel chart) stays on the
+  // line as 0/0, still counts as first or last name, and adds nothing (paid tool, vault screenshot).
+  // Punctuation typed in the name stays in the labels ("Jr." on the main chart, "." on the vowel chart).
+  const ZERO = { sum: 0, ds: 0, text: '0/0' };
   function nameWord(text, filter) {
-    const keep = (c) => c.toUpperCase() in LETTERS && (!filter || filter(c.toUpperCase()));
-    const shown = [...String(text)].filter(keep).join('');
-    const letters = [...shown.toUpperCase()];
-    return { text: shown, letters, value: val(wordSum(letters)) };
+    const chars = [...String(text)];
+    const isLetter = (c) => c.toUpperCase() in LETTERS;
+    const keep = (c) => isLetter(c) && (!filter || filter(c.toUpperCase()));
+    const letters = chars.filter(keep).map((c) => c.toUpperCase());
+    const shown = filter ? chars.filter((c) => !isLetter(c) || keep(c)).join('') : chars.join('');
+    const value = letters.length ? val(wordSum(letters)) : (chars.some(isLetter) ? ZERO : null);
+    return { text: shown, letters, value };
   }
 
   // The rhombus (numeroscope) used by the name, consonant, vowel and psyche charts.
@@ -124,23 +131,37 @@
     const e = essence(day, month, year);
     const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
     const all = parts.map((p) => nameWord(p));
+    // Augmentation on the main name chart only (13 vault charts with Jr, Sr, Sir, II, III): a one-digit
+    // name value gets the day's digit sum added, and 9 more if that is still under 10. Jr (3) with day 2
+    // -> 14/5, with day 14 -> 17/8; Sir (6) with day 22 -> 10/1. The augmented value feeds LE, big LE
+    // and the auras. The consonant and vowel charts never augment (they show 3/3, 0/0, 5/5 as they are).
+    if (e.day) for (const w of all) if (w.value && w.value.sum < 10) { let n = w.value.sum + e.day.ds; if (n < 10) n += 9; w.value = val(n); }
     const cons = parts.map((p) => nameWord(p, (c) => !VOWELS.has(c)));
     const vow = parts.map((p) => nameWord(p, (c) => VOWELS.has(c)));
     return { essence: e, birth: e, psyche: psyche(e), name: rhombus(all, e.day), consonants: rhombus(cons, e.day), vowels: rhombus(vow, e.day) };
   }
 
 
-  // Layout of the quick chart drawing, in drawing units, measured on the paid tool's screenshots
-  // (the orange diamond's top is y=357, its center x=371, its height 756; text y values are baselines).
+  // Layout of the quick chart drawing, in drawing units: the orange diamond's top is y=357, its center
+  // x=371, its height 756; text y values are baselines. Shapes measured on the owner's reference
+  // screenshot; every number's position calibrated against 436 vault screenshots of the paid tool
+  // (tools/color-study, .brain/numerology/number-colors.md).
   const LAYOUT = {
     main: { cx: 371, hw: 277, hh: 378, lineY: 735, line: 12, circleUp: 150, circleDown: 144, r: 111, tri: [1185, 1270, 65], big: [269, 1145, 51], letter: [664, 636.5, 28.5],
-      text: { dvY: 330, day: 36.6, auraL: 210, auraR: 531, upY: 522, heartY: 538.6, heart: 38, extraUp: 89.4, extra: 25.5, spineX: 525.5, spineY: 639.5, nameL: 75, nameR: 659, nameY: 723, name: 27, lineY: 774, lineFont: 36, lowY: 946.6, solarY: 832, solar: 37, extraDown: 91, leY: 1157, le: 36.6, pillarY: 1256, pillar: 34, small: 25, letterY: 646.4, letterFont: 26.6 } },
+      text: { dvY: 334.5, day: 36.6, auraL: 210, auraR: 531, upY: 524.2, heartY: 540.6, heart: 38, extraUp: 89.4, extra: 25.5, spineX: 525.5, spineY: 640.8, nameL: 76.5, nameR: 661, extra2: [-59.4, 64.7], solarExtra2: [-59.4, 70.1], nameY: 723, name: 27, lineY: 770.5, lineFont: 36, lowY: 948.8, solarY: 833.6, solar: 37, extraDown: 91, leY: 1157, le: 36.6, pillarY: 1252, pillar: 34, small: 25, letterY: 646.4, letterFont: 26.6 } },
     hex: { top: 49, ul: 109, ll: 232.5, bottom: 293, hw: 110, circle: [171, 48.6], small: [247, 15],
-      text: { topAuraY: 95, monthX: 236, yearX: 505, monthY: 95, lpY: 160, bigLpY: 192.7, lp: 27.4, auraY: 206, auraL: 284, auraR: 455, aura: 22, corner: 24.6 } },
-    psy: { cxL: 133, cxR: 608, cy: 326.5, hw: 92.5, hh: 138.5, line: 6, up: 55, r: 41, tri: [505.3, 534.8, 14],
-      text: { dvY: 176, day: 21.6, auraDx: 70, upY: 251.7, heartY: 272, heart: 24.6, nameDxL: -125, nameDxR: 125, lineY: 332.8, lineFont: 25, lowY: 422.7, solarY: 386.4, leY: 490.6, le: 22.8, pillarY: 534, pillar: 19, small: 23 } },
-    sub: { cxL: 113, cxR: 626, cy: 1049.6, hw: 98.4, hh: 139, line: 5, up: 55.6, down: 53.4, r: 41.3, tri: [1225, 1272, 29], bigDx: -60, bigY: 1203, bigR: 28.5,
-      text: { dvY: 893.3, day: 19.1, auraDx: 77, upY: 983, heartY: 984, heart: 22.8, extraUp: 29.5, extra: 14.6, nameDxL: -98, nameDxR: 103, nameY: 1039, name: 16, lineY: 1062.7, lineFont: 19, lowY: 1131, solarY: 1099, solar: 22.8, extraDown: 27, leY: 1211.6, le: 22.8, pillarY: 1264, pillar: 17.3, small: 20 } },
+      text: { topAuraY: 100.6, monthX: 238.5, yearX: 502.8, monthY: 99.5, lpY: 165.6, bigLpY: 197.1, lp: 27.4, auraY: 208.1, auraL: 284, auraR: 455, aura: 22, corner: 24.6 } },
+    // sideDx shifts the line values and auras of one psyche chart against its center column (measured).
+    psy: { cxL: 132, cxR: 609, cy: 326.5, hw: 92.5, hh: 138.5, line: 6, up: 55, r: 41, tri: [505.3, 534.8, 14], sideDxL: 1, sideDxR: 4,
+      text: { dvY: 179.7, day: 21.6, auraDx: 70, upY: 254.4, heartY: 276.3, heart: 24.6, nameDxL: -125, nameDxR: 125, lineY: 334, lineFont: 25, lowY: 423.7, solarY: 390.7, leY: 493.1, le: 22.8, pillarY: 538.1, pillar: 19, small: 23 } },
+    // The two sub-charts are not mirror images: the paid tool anchors the consonant chart's auras at their
+    // left edge and the vowel chart's at their right edge, and its line values sit off-center. Measured.
+    // Middle names: one sits at the center (main chart: halfway between first and last); two sit at middle2
+    // (main chart: evenly spaced). Two extra vibrations sit side by side at extra2 / solarExtra2.
+    sub: { cy: 1049.6, hw: 98.4, hh: 139, line: 5, up: 55.6, down: 53.4, r: 41.3, tri: [1225, 1272, 29], bigY: 1203, bigR: 28.5,
+      left: { cx: 114, auraL: 19.5, auraR: 169, auraAnchor: 'start', nameL: 20.4, nameR: 223.8, middle2: [-43, 56], extra2: [-32.6, 27.3], solarExtra2: [-36.6, 24.1], bigX: 56.4 },
+      right: { cx: 621, auraL: 566.3, auraR: 721.2, auraAnchor: 'end', nameL: 514.5, nameR: 718.2, middle2: [-51, 45], extra2: [-31.5, 25.7], solarExtra2: [-29, 29], bigX: 558.9 },
+      text: { dvY: 895, day: 19.1, upY: 983.8, heartY: 984.4, heart: 22.8, extraUp: 30.8, extra: 14.6, nameY: 1039, name: 16, lineY: 1062.7, lineFont: 19, lowY: 1133.4, solarY: 1100.1, solar: 22.8, extraDown: 27, leY: 1210.4, le: 22.8, pillarY: 1264, pillar: 17.3, small: 20 } },
   };
 
   const api = { LAYOUT, LETTERS, VOWELS, PLANETS, digitSum, val, add, joined, letterValue, lettersOf, nameWord, rhombus, essence, birth: essence, psyche, rhythm, numeroscope };

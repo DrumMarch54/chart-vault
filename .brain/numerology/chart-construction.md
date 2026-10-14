@@ -17,11 +17,15 @@ course text and still waits for a screenshot with a full date and a middle name.
   20/2 + 18/9 + 21/3 = 2+9+3 = 14/5.
 - "Diamond" = two digit sums written side by side, strongest first:
   day 1 and month 8 → 18/9. A diamond is the structure, the aura is its sum.
-- A single-digit position (e.g. month 5) stays 5/5. No "augmentation" is
-  applied anywhere EXCEPT the outer psyche month (see psyche). The NotebookLM
-  summary that says name-line values under 10 get the day added is a
-  conflation of that psyche rule; the class manual never does it for names,
-  and the paid tool shows "e 5/5" on the vowel chart with day 1 typed.
+- Augmentation (CONFIRMED on 13 vault charts with Jr, Sr, Sir, II, III): on
+  the MAIN name chart a one-digit name value gets the day's digit sum added,
+  and 9 more if that is still under 10. Jr = 3 with day 2 -> 3+2 = 5 -> 14/5;
+  with day 14 -> 3+5 = 8 -> 17/8; Sir = 6 with day 22 -> 10/1; Sr = 5 with
+  day 24 -> 11/2. The augmented value is the word's value everywhere (LE, big
+  LE, auras). Without a day nothing is added. The consonant and vowel charts
+  never augment (they show 3/3, 0/0 and "e 5/5" as they are), and the inner
+  psyche month stays 5/5; the outer psyche month is the same idea (day ds +
+  month ds, +9 while under 10).
 
 ## The rhombus (numeroscope) — name, vocation, personality, psyche charts
 Shape: top = consciousness (A = day vibration), central line = the energies
@@ -76,7 +80,9 @@ names:
 Drawing, confirmed on vault screenshots: the middle name sits in the middle of
 the line (between the circles); each extra vibration is written inside the
 circle under the main vibration; the letter count is the small blue circle.
-Still unseen: a one-word name. The vault (711 charts, most of them paid-tool
+Every number's position and color was then calibrated against 436 vault
+screenshots (`number-colors.md`, `tools/color-study/`). Still unseen: a
+one-word name. The vault (711 charts, most of them paid-tool
 screenshots) is the reference for anything else: fetch `/img/<id>` with the
 app password and look.
 

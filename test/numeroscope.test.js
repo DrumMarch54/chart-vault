@@ -21,7 +21,7 @@ test('digit sums and notation', () => {
 test('Chaldean letters: Test = 16/7, 9 never a letter', () => {
   assert.equal(t(N.nameWord('Test').value), '16/7');
   assert.ok(!Object.values(N.LETTERS).includes(9));
-  assert.equal(N.nameWord("O'Neil-x").text, 'ONeilx');
+  assert.equal(N.nameWord("O'Neil-x").text, "O'Neil-x"); assert.equal(N.nameWord("O'Neil-x").letters.length, 6);
 });
 
 test('"Test test" with no date (screenshot 1)', () => {
@@ -154,4 +154,50 @@ test('Kevin Darnell Hart (vault screenshot): whole 5-chart set', () => {
   assert.equal(t(p.outer.first.value), '13/4'); assert.equal(t(p.outer.le), '12/3'); assert.equal(t(p.outer.upperLeft), '10/1'); assert.equal(t(p.outer.upperRight), '14/5');
   assert.equal(t(p.outer.heart), '6/6'); assert.equal(t(p.outer.lowerLeft), '7/7'); assert.equal(t(p.outer.lowerRight), '11/2'); assert.equal(t(p.outer.solar), '9/9'); assert.equal(t(p.outer.pillar), '24/6');
   assert.equal(t(p.inner.le), '15/6'); assert.equal(t(p.inner.heart), '9/9'); assert.equal(t(p.inner.solar), '9/9'); assert.equal(t(p.inner.pillar), '30/3');
+});
+
+test('number colors: table lookups, one-middle-name switch, fallbacks, no secrets of the study leak', () => {
+  const c = {};
+  vm.runInNewContext(fs.readFileSync(new URL('../public/number-colors.js', import.meta.url), 'utf8'), c);
+  const C = c.NumberColors;
+  // Peter Joshua Shicora, checked against the owner's paid-tool screenshot.
+  assert.equal(C.lookup('first', '24/6', true), 'green4'); assert.equal(C.lookup('middle', '23/5', true), 'green4'); assert.equal(C.lookup('last', '22/4', true), 'red3');
+  assert.equal(C.lookup('heart', '12/3', true), 'red3'); assert.equal(C.lookup('heart', '12/3', false), 'gray');
+  assert.equal(C.lookup('solar', '4/4', true), 'red1'); assert.equal(C.lookup('pillar', '36/9', true), 'green4'); assert.equal(C.lookup('le', '15/6', true), 'gray');
+  assert.equal(C.lookup('c.heart', '11/2', true), 'gray'); assert.equal(C.lookup('v.heart', '3/3', true), 'green2'); assert.equal(C.lookup('v.big', '33/6', true), 'green3');
+  // fixed positions and fallbacks
+  assert.equal(C.lookup('day', '19/1'), 'dark'); assert.equal(C.lookup('e.month', '5/5'), 'dark'); assert.equal(C.lookup('po.pillar', '24/6'), 'blue'); assert.equal(C.lookup('pi.pillar', '30/3'), 'dark');
+  assert.equal(C.lookup('big', '69/6'), 'faded'); assert.equal(C.lookup('first', '99/9'), 'gray'); assert.equal(C.lookup('c.big', '99/9'), 'faded');
+  const classes = new Set(Object.values(C.table).flatMap((t) => Object.values(t)));
+  for (const k of classes) assert.match(k, /^(gray|dark|faded|blue|green[1-4]|red[1-3])$/);
+  assert.ok(Object.keys(C.table).length > 40);
+});
+
+test('layout: every text position is a finite number (a NaN here means a number silently never draws)', () => {
+  const walk = (o, path) => { for (const [k, v] of Object.entries(o)) { if (v && typeof v === 'object') walk(v, path + k + '.'); else if (typeof v === 'number') assert.ok(Number.isFinite(v), path + k); } };
+  walk(N.LAYOUT, 'LAYOUT.');
+  for (const key of ['nameDxL', 'nameDxR']) assert.ok(key in N.LAYOUT.psy.text, 'psyche line x: ' + key);
+  for (const side of ['left', 'right']) for (const key of ['cx', 'auraL', 'auraR', 'nameL', 'nameR', 'bigX']) assert.ok(Number.isFinite(N.LAYOUT.sub[side][key]), side + '.' + key);
+});
+
+test('a name with no vowels stays on the vowel line as 0/0 (Charles Christopher White Jr., vault screenshot)', () => {
+  const r = N.numeroscope({ day: 2, month: 1, year: 1965, name: 'Charles Christopher White Jr.' });
+  assert.equal(JSON.stringify(r.vowels.words.map((w) => [w.text, w.value.text])), JSON.stringify([['ae', '6/6'], ['ioe', '13/4'], ['ie', '6/6'], ['.', '0/0']]));
+  assert.equal(t(r.vowels.le), '16/7'); assert.equal(t(r.vowels.upperRight), '2/2'); assert.equal(t(r.vowels.lowerRight), '7/7'); assert.equal(t(r.vowels.pillar), '48/3');
+  assert.equal(JSON.stringify(r.consonants.words.map((w) => w.text)), JSON.stringify(['Chrls', 'Chrstphr', 'Wht', 'Jr.']));
+  assert.equal(t(r.consonants.pillar), '38/2');
+  // main chart: Jr (3) is augmented by the day: 3 + 2 = 5, under 10 so + 9 = 14/5
+  assert.equal(JSON.stringify(r.name.words.map((w) => w.value.text)), JSON.stringify(['22/4', '45/9', '21/3', '14/5']));
+  assert.equal(t(r.name.le), '21/3'); assert.equal(t(r.name.big), '102/3'); assert.equal(t(r.name.heart), '13/4');
+  assert.equal(JSON.stringify(r.name.heartExtra.map(t)), JSON.stringify(['13/4', '7/7'])); assert.equal(t(r.name.solar), '15/6'); assert.equal(t(r.name.pillar), '53/8');
+});
+
+test('augmentation of one-digit names on the main chart (vault screenshots)', () => {
+  const line = (inp) => N.numeroscope(inp).name.words.map((w) => w.value.text).join(' ');
+  assert.equal(line({ day: 14, month: 10, year: 1981, name: 'Joseph Paul Borelli Jr' }), '29/2 18/9 23/5 17/8'); // 3 + 5 = 8 -> 17
+  assert.equal(line({ day: 24, month: 8, year: 1961, name: 'Paul William Chek Sr' }), '18/9 19/1 15/6 11/2'); // 5 + 6 = 11, stays
+  assert.equal(line({ day: 22, month: 1, year: 1990, name: 'Sir Robert Bryson Hall II' }), '10/1 22/4 20/2 12/3 15/6'); // Sir 6 + 4 = 10
+  assert.equal(line({ day: 28, month: 10, year: 1955, name: 'William Henry Gates III' }), '19/1 18/9 16/7 13/4'); // 3 + 1 = 4 -> 13
+  assert.equal(line({ name: 'Billy Camrick Carson II' }), '10/1 16/7 21/3 2/2'); // no day: nothing to add
+  assert.equal(N.numeroscope({ day: 1, name: 'Test test' }).vowels.words.map((w) => w.value.text).join(' '), '5/5 5/5'); // sub-charts never augment
 });
