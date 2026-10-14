@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" href="/icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<link rel="stylesheet" href="/app.css">
+<link rel="stylesheet" href="/app.css?v=__V__">
 </head>
 <body>
 <div id="app" aria-live="polite"><div class="screen center"><p class="muted">Loading…</p></div></div>
@@ -22,6 +22,7 @@
   <a href="#/status" data-nav="status"><span class="ico">✓</span>Status</a>
 </nav>
 <div id="toast" class="hidden" role="status"></div>
-<script src="/app.js"></script>
+<script>window.APP_VERSION="__V__";</script>
+<script src="/app.js?v=__V__"></script>
 </body>
 </html>

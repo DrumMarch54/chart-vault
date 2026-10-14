@@ -476,7 +476,7 @@
   document.addEventListener('visibilitychange', () => { if (!document.hidden) checkVersion(); });
 
   // ---------- start ----------
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js?v=' + (window.APP_VERSION || '0'), { updateViaCache: 'none' }).catch(() => {});
   (async () => {
     try {
       const me = await fetch('/api/me', { credentials: 'same-origin' }).then((r) => r.json());

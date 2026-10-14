@@ -26,8 +26,24 @@ export function createApp(db, { log = console.log } = {}) {
 
   // --- public: app shell and login ---
   const pub = path.join(config.root, 'public');
-  app.use(express.static(pub, { index: false, maxAge: 0, setHeaders: (res) => res.setHeader('Cache-Control', 'no-cache') }));
-  app.get('/', (req, res) => res.sendFile(path.join(pub, 'index.html')));
+  // The HTML is never cached; the code files it points at carry the commit in
+  // their address (?v=...), so every deploy is a brand-new address and no
+  // browser or CDN cache can keep an old version alive.
+  const sendIndex = (req, res) => {
+    const html = fs.readFileSync(path.join(pub, 'index.html'), 'utf8').replace(/__V__/g, COMMIT);
+    res.setHeader('Cache-Control', 'no-store, must-revalidate');
+    res.setHeader('CDN-Cache-Control', 'no-store');
+    res.type('html').send(html);
+  };
+  app.get(['/', '/index.html'], sendIndex);
+  app.get('/sw.js', (req, res) => {
+    const js = fs.readFileSync(path.join(pub, 'sw.js'), 'utf8').replace(/__V__/g, COMMIT);
+    res.setHeader('Cache-Control', 'no-store, must-revalidate');
+    res.setHeader('CDN-Cache-Control', 'no-store');
+    res.setHeader('Service-Worker-Allowed', '/');
+    res.type('application/javascript').send(js);
+  });
+  app.use(express.static(pub, { index: false, maxAge: '365d', immutable: true }));
 
   // Public: used by the deploy script (busy = wait before restarting) and by the
   // app itself to notice a new version.
