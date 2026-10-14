@@ -317,12 +317,40 @@
     const $file = h('input', { type: 'file', id: 'imgfiles', multiple: true, accept: 'image/*' });
     const $pick = h('label', { for: 'imgfiles', class: 'btn btn-primary btn-block filepick' }, 'Choose screenshots');
     const $plan = h('div', {});
+    const $missing = h('div', { class: 'card stack' }, h('p', { class: 'muted' }, 'Checking what is still missing…'));
     render(h('div', { class: 'screen stack' }, h('h1', {}, 'Upload screenshots'),
       h('div', { class: 'card stack' },
-        h('p', {}, 'Pick the screenshots on your phone (you can select the whole Screenshots folder). Only files named in the tag file are sent; everything else is skipped on the phone. Files already here are skipped too, so you can stop and come back any time.'),
+        h('p', {}, 'Only files named in the tag file are sent; everything else is skipped on the phone. Files already here are skipped too, so you can stop and come back any time.'),
         $file, $pick),
-      $plan));
+      $plan, $missing));
     $file.addEventListener('change', () => plan([...$file.files]));
+    showMissing();
+
+    // The phone's file picker cannot hand over thousands of files at once, so
+    // show what is still missing in chunks, with the text to type in the
+    // picker's search box to select one chunk at a time.
+    async function showMissing() {
+      try {
+        const s = await api('/api/status');
+        if (!s.missing_count) { $missing.replaceChildren(h('p', { class: 'ok' }, 'Every tagged chart has its screenshot. Nothing is missing.')); return; }
+        const groups = new Map();
+        for (const m of s.missing) {
+          const mt = /^Screenshot_(\d{5})/.exec(m.filename);
+          const key = mt ? `Screenshot_${mt[1]}` : 'other';
+          groups.set(key, (groups.get(key) || 0) + 1);
+        }
+        const label = (k) => {
+          const y = k.slice(11, 15), half = k.slice(15);
+          return half === '0' ? `Jan–Sep ${y}` : `Oct–Dec ${y}`;
+        };
+        $missing.replaceChildren(
+          h('h2', { style: 'margin-top:0' }, `${fmtN(s.missing_count)} still missing`),
+          h('p', { class: 'muted small' }, 'Do one chunk at a time: tap Choose screenshots, tap the search (magnifier) in the picker, type the text below exactly, select all results, tap Done. Then come back here for the next chunk.'),
+          ...[...groups.entries()].sort().map(([k, n]) => h('div', { class: 'stat' },
+            k === 'other' ? h('span', {}, 'Not screenshots (Charts, Camera, WhatsApp folders)') : h('span', {}, h('code', { style: 'font-size:17px' }, k), h('span', { class: 'muted small' }, ` ${label(k)}`)),
+            h('b', {}, fmtN(n)))));
+      } catch (err) { $missing.replaceChildren(h('p', { class: 'err' }, err.message)); }
+    }
 
     async function plan(files) {
       if (!files.length) return;
@@ -398,6 +426,7 @@
         failed.length ? h('button', { type: 'button', class: 'btn-primary btn-block', onclick: () => run(failed) }, `Retry ${failed.length} failed`) : null,
         h('a', { class: 'btn btn-block', href: '#/' }, 'Go to Browse'),
         h('a', { class: 'btn btn-block', href: '#/status' }, 'See what is still missing')));
+      showMissing();
     }
   };
 
