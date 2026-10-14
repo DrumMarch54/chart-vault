@@ -33,6 +33,7 @@ export async function snapshotDb(db, dest) {
 }
 
 let running = null;
+export function isBackupRunning() { return running !== null; }
 export function runBackup(db, log = console.log) {
   if (running) return running;
   running = (async () => {

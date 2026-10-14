@@ -6,7 +6,8 @@ import { requireAuth, passwordMatches, setSessionCookie, clearSessionCookie, isV
 import { parseUserTagBackup, importTags, addTagToImage, removeTagFromImage, ImportError } from './import.js';
 import { receiveUpload, UploadError, fullPathFor, thumbPathFor, makeThumb, findLostFiles } from './storage.js';
 import { listImages, getImage, suggestTags, allTags, statusReport, exportTags } from './queries.js';
-import { runBackup, streamZip } from './backup.js';
+import { runBackup, streamZip, isBackupRunning } from './backup.js';
+import { execFileSync } from 'node:child_process';
 import { paths } from './config.js';
 
 const MAX_IMPORT = 50 * 1024 * 1024;
@@ -27,7 +28,9 @@ export function createApp(db, { log = console.log } = {}) {
   app.use(express.static(pub, { index: false, maxAge: 0, setHeaders: (res) => res.setHeader('Cache-Control', 'no-cache') }));
   app.get('/', (req, res) => res.sendFile(path.join(pub, 'index.html')));
 
-  app.get('/api/health', (req, res) => res.json({ ok: true, version: appVersion(), configured: !!config.webToken }));
+  // Public: used by the deploy script (busy = wait before restarting) and by the
+  // app itself to notice a new version.
+  app.get('/api/health', (req, res) => res.json({ ok: true, version: appVersion(), commit: COMMIT, busy: isBusy(), configured: !!config.webToken }));
 
   app.post('/api/login', express.json({ limit: '10kb' }), (req, res) => {
     if (!config.webToken) return res.status(500).json({ error: 'The server has no WEB_TOKEN set yet.' });
@@ -144,10 +147,12 @@ export function createApp(db, { log = console.log } = {}) {
   });
   // Step 2: one file per request, raw body.
   app.put('/api/upload/file', async (req, res, next) => {
+    lastUpload = Date.now();
     try {
       const filename = String(req.query.name || '');
       if (!filename) return res.status(400).json({ error: 'Missing file name.' });
       const result = await receiveUpload(db, req, { filename, sha256Header: req.get('x-sha256') });
+      lastUpload = Date.now();
       res.json(result);
     } catch (err) {
       if (err instanceof UploadError) return res.status(err.status).json({ error: err.message });
@@ -185,6 +190,13 @@ export function createApp(db, { log = console.log } = {}) {
   return app;
 }
 
+const COMMIT = readCommit();
+let lastUpload = 0;
+// Busy while a backup runs or a file arrived in the last 20 seconds.
+function isBusy() { return isBackupRunning() || Date.now() - lastUpload < 20_000; }
+function readCommit() {
+  try { return execFileSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: config.root, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim(); } catch { return 'unknown'; }
+}
 function appVersion() {
   try { return JSON.parse(fs.readFileSync(path.join(config.root, 'package.json'), 'utf8')).version; } catch { return '?'; }
 }

@@ -20,7 +20,11 @@ the tags that go with them. Built for one person, used from a phone first.
 
 No outside services, no paid APIs. One SQLite file, images on disk.
 
-## Running it
+## Setup on the VPS
+
+See [SETUP.md](SETUP.md). Production follows the `main` branch.
+
+## Running it locally
 
 ```
 cp .env.example .env     # then set WEB_TOKEN and PORT

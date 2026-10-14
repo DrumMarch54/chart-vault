@@ -137,3 +137,12 @@ export function findLostFiles(db) {
     .filter((img) => !fs.existsSync(fullPathFor(img)))
     .map((img) => img.filename);
 }
+
+// Remove half-uploaded scraps left behind by a crash or restart. They are
+// never recorded in the database, so this loses nothing.
+export function cleanTempFiles(log = () => {}) {
+  const dir = path.join(paths.images, '.tmp');
+  let n = 0;
+  try { for (const f of fs.readdirSync(dir)) { fs.unlinkSync(path.join(dir, f)); n++; } } catch {}
+  if (n) log(`removed ${n} unfinished upload file(s)`);
+}

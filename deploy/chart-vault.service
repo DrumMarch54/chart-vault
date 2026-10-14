@@ -1,0 +1,16 @@
+[Unit]
+Description=Chart Vault (chart screenshots and tags)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/chart-vault
+EnvironmentFile=/root/chart-vault/.env
+ExecStart=/usr/bin/env node server/index.js
+Restart=always
+RestartSec=3
+# Give uploads and backups time to finish before a restart kills them.
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

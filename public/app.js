@@ -430,13 +430,27 @@
         h('button', { type: 'button', class: 'btn-block', onclick: async () => { await api('/api/logout', { method: 'POST' }).catch(() => {}); showLogin(); } }, 'Log out')));
   };
 
+  // ---------- new version notice ----------
+  let knownCommit = null;
+  async function checkVersion() {
+    try {
+      const hResp = await fetch('/api/health', { credentials: 'same-origin', cache: 'no-store' });
+      const hb = await hResp.json();
+      if (knownCommit === null) knownCommit = hb.commit;
+      else if (hb.commit !== knownCommit && !document.getElementById('newver')) {
+        document.body.append(h('button', { id: 'newver', type: 'button', class: 'btn-primary', onclick: () => location.reload() }, 'Updated, tap to reload'));
+      }
+    } catch {}
+  }
+  setInterval(checkVersion, 60_000);
+
   // ---------- start ----------
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
   (async () => {
     try {
       const me = await fetch('/api/me', { credentials: 'same-origin' }).then((r) => r.json());
       if (!me.loggedIn) return showLogin();
-      $nav.classList.remove('hidden'); route();
+      $nav.classList.remove('hidden'); route(); checkVersion();
     } catch { render(h('div', { class: 'screen center' }, h('p', { class: 'err' }, 'Cannot reach the server. Check your connection and reload.'))); }
   })();
 })();
