@@ -138,7 +138,7 @@
     hex: { top: 49, ul: 109, ll: 232.5, bottom: 293, hw: 110, circle: [171, 48.6], small: [247, 15],
       text: { topAuraY: 95, monthX: 236, yearX: 505, monthY: 95, lpY: 160, bigLpY: 192.7, lp: 27.4, auraY: 206, auraL: 284, auraR: 455, aura: 22, corner: 24.6 } },
     psy: { cxL: 133, cxR: 608, cy: 326.5, hw: 92.5, hh: 138.5, line: 6, up: 55, r: 41, tri: [505.3, 534.8, 14],
-      text: { dvY: 176, day: 21.6, auraDx: 70, upY: 251.7, heartY: 272, heart: 24.6, lineDx: 125, lineY: 332.8, lineFont: 25, lowY: 422.7, solarY: 386.4, leY: 490.6, le: 22.8, pillarY: 534, pillar: 19, small: 23 } },
+      text: { dvY: 176, day: 21.6, auraDx: 70, upY: 251.7, heartY: 272, heart: 24.6, nameDxL: -125, nameDxR: 125, lineY: 332.8, lineFont: 25, lowY: 422.7, solarY: 386.4, leY: 490.6, le: 22.8, pillarY: 534, pillar: 19, small: 23 } },
     sub: { cxL: 113, cxR: 626, cy: 1049.6, hw: 98.4, hh: 139, line: 5, up: 55.6, down: 53.4, r: 41.3, tri: [1225, 1272, 29], bigDx: -60, bigY: 1203, bigR: 28.5,
       text: { dvY: 893.3, day: 19.1, auraDx: 77, upY: 983, heartY: 984, heart: 22.8, extraUp: 29.5, extra: 14.6, nameDxL: -98, nameDxR: 103, nameY: 1039, name: 16, lineY: 1062.7, lineFont: 19, lowY: 1131, solarY: 1099, solar: 22.8, extraDown: 27, leY: 1211.6, le: 22.8, pillarY: 1264, pillar: 17.3, small: 20 } },
   };
