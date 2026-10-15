@@ -658,6 +658,42 @@
   // tool's screenshots (the owner's own chart in the vault): the orange diamond's top is y=357,
   // its center x=371, its height 756. Text y values are baselines.
   const L = Numeroscope.LAYOUT;
+  // Which part of a chart a number belongs to, from its position name ('c.heartExtra' → center).
+  const kindOfSlot = (slot) => { const k = slot.replace(/^(c|v|po|pi)\./, ''); return /^(ul|ur|ll|lr)$/.test(k) ? 'aura' : /^(heart|solar)/.test(k) ? 'center' : /^(first|middle|last)$/.test(k) ? 'line' : k === 'big' ? 'le' : k; };
+  // Show sheet: which charts and which parts are drawn. This phone remembers the choice.
+  const SHOW_CHARTS = [['ess', 'Essence chart'], ['psy', 'Psyche charts'], ['main', 'Name chart'], ['vow', 'Vocation chart'], ['con', 'Personality chart']];
+  const SHOW_KINDS = [['day', 'Day numbers'], ['aura', 'Auras in the corners'], ['center', 'Centers'], ['name', 'Names on the line'], ['line', 'Line values'], ['spine', 'Spine'], ['le', 'Life expressions'], ['pillar', 'Pillars'], ['letters', 'Letter count'], ['shape', 'Colored shapes']];
+  const SHOW_PRESETS = [['Everything', null], ['Centers only', 'center'], ['Names only', 'name'], ['Life expressions only', 'le']];
+  const loadShow = () => { try { const s = JSON.parse(localStorage.getItem('quickShow') || 'null'); if (s && s.charts && s.kinds) return s; } catch {} return { charts: {}, kinds: {} }; };
+  const saveShow = (show) => { try { localStorage.setItem('quickShow', JSON.stringify(show)); } catch {} };
+  const shown = (show, group, key) => show[group][key] !== false;
+  const applyShow = (svg, show) => {
+    for (const [k] of SHOW_CHARTS) svg.classList.toggle(`hide-c-${k}`, !shown(show, 'charts', k));
+    for (const [k] of SHOW_KINDS) svg.classList.toggle(`hide-k-${k}`, !shown(show, 'kinds', k));
+    // Trim the blank above and below what is left (a hidden essence chart leaves no empty top), same width.
+    if (!svg.isConnected) return;
+    const b = svg.getBBox(); if (!b.height) return;
+    const y0 = Math.max(20, Math.floor(b.y - 20)), y1 = Math.min(1290, Math.ceil(b.y + b.height + 20));
+    svg.setAttribute('viewBox', `${371 - 425} ${y0} 850 ${y1 - y0}`);
+  };
+  // The sheet itself: tap a chip to show or hide that chart or part; the chart behind updates at once.
+  function showSheet(show, onChange) {
+    const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
+    const close = () => { bg.remove(); overlays = overlays.filter((o) => o !== bg); };
+    const $charts = h('div', { class: 'chips' }), $kinds = h('div', { class: 'chips' });
+    const draw = () => {
+      fill($charts, ...SHOW_CHARTS.map(([k, label]) => h('button', { type: 'button', class: `chip ${shown(show, 'charts', k) ? 'active' : 'off'}`, onclick: () => { show.charts[k] = !shown(show, 'charts', k); change(); } }, label)));
+      fill($kinds, ...SHOW_KINDS.map(([k, label]) => h('button', { type: 'button', class: `chip ${shown(show, 'kinds', k) ? 'active' : 'off'}`, onclick: () => { show.kinds[k] = !shown(show, 'kinds', k); change(); } }, label)));
+    };
+    const change = () => { saveShow(show); onChange(); draw(); };
+    const preset = (only) => { show.kinds = {}; if (only) for (const [k] of SHOW_KINDS) show.kinds[k] = (k === only || k === 'shape'); change(); };
+    bg.append(h('div', { class: 'sheet showsheet' }, h('h3', {}, 'Show on the chart'),
+      h('div', { class: 'chips' }, ...SHOW_PRESETS.map(([label, only]) => h('button', { type: 'button', class: 'chip preset', onclick: () => preset(only) }, label))),
+      h('div', { class: 'muted small', style: 'margin:12px 0 6px' }, 'Charts'), $charts,
+      h('div', { class: 'muted small', style: 'margin:12px 0 6px' }, 'Numbers'), $kinds,
+      h('button', { type: 'button', class: 'btn-primary done', onclick: close }, 'Done')));
+    draw(); document.body.append(bg); overlays.push(bg);
+  }
   // One rhombus with its two circles, white center line, pillar triangle and (optionally) the faded "big" circle.
   function rhombusShape(cx, cy, hw, hh, fill, o) {
     const g = sv('g');
@@ -670,25 +706,27 @@
     return g;
   }
   function numeroscopeSvg(data) {
-    // 960 units across the screen, the drawing centered: the paid tool's chart takes about four fifths
-    // of the phone's width, so the psyche numbers never touch the edges.
-    const svg = sv('svg', { viewBox: `${371 - 480} 20 960 1270`, class: 'nscope', role: 'img', 'aria-label': 'Numeroscope' });
+    // 850 units across the screen, the drawing centered: the numbers at the far edges keep a thumb's
+    // width of white, and the whole set still fits above the fold on a phone.
+    const svg = sv('svg', { viewBox: `${371 - 425} 20 850 1270`, class: 'nscope', role: 'img', 'aria-label': 'Numeroscope' });
     const M = L.main, H = L.hex, P = L.psy, S = L.sub;
     // Essence shape: a cube seen from the front, light top and sides, dark front triangle, tinted circles.
-    svg.append(sv('polygon', { points: `371,${H.top} ${371 + H.hw},${H.ul} ${371 - H.hw},${H.ul}`, fill: '#ced0e5' }),
+    // Every shape and number carries its chart (data-chart) and kind (k-… / data-kind) so the Show sheet can hide parts.
+    const grp = (chart, kind, ...nodes) => sv('g', { 'data-chart': chart, 'data-kind': kind || null }, ...nodes.filter(Boolean));
+    svg.append(grp('ess', 'shape', sv('polygon', { points: `371,${H.top} ${371 + H.hw},${H.ul} ${371 - H.hw},${H.ul}`, fill: '#ced0e5' }),
       sv('polygon', { points: `${371 - H.hw},${H.ul} ${371 - H.hw},${H.ll} 371,${H.bottom}`, fill: '#ced0e5' }), sv('polygon', { points: `${371 + H.hw},${H.ul} ${371 + H.hw},${H.ll} 371,${H.bottom}`, fill: '#ced0e5' }),
       sv('polygon', { points: `${371 - H.hw},${H.ul} ${371 + H.hw},${H.ul} 371,${H.bottom}`, fill: '#afafd5' }),
-      sv('circle', { cx: 371, cy: H.circle[0], r: H.circle[1], fill: '#efeff7' }), sv('circle', { cx: 371, cy: H.small[0], r: H.small[1], fill: '#d6d7eb' }));
-    for (const [cx, fill] of [[P.cxL, '#dde6ef'], [P.cxR, '#c3d5e1']]) svg.append(rhombusShape(cx, P.cy, P.hw, P.hh, fill, { line: P.line, up: P.up, down: P.down, r: P.r, tri: P.tri }));
-    svg.append(rhombusShape(M.cx, M.lineY, M.hw, M.hh, '#eec186', { line: M.line, up: M.circleUp, down: M.circleDown, r: M.r, tri: M.tri, big: M.big, faded: '#f5efe3' }));
-    svg.append(rhombusShape(S.left.cx, S.cy, S.hw, S.hh, '#faddd7', { line: S.line, up: S.up, down: S.down, r: S.r, tri: S.tri, big: [S.left.bigX, S.bigY, S.bigR], faded: '#fef0ed' }));
-    svg.append(rhombusShape(S.right.cx, S.cy, S.hw, S.hh, '#dae7e0', { line: S.line, up: S.up, down: S.down, r: S.r, tri: S.tri, big: [S.right.bigX, S.bigY, S.bigR], faded: '#f6f8f7' }));
-    svg.append(sv('circle', { cx: M.letter[0], cy: M.letter[1], r: M.letter[2], fill: '#fff', stroke: '#a9c3e4', 'stroke-width': 2.5 }));
+      sv('circle', { cx: 371, cy: H.circle[0], r: H.circle[1], fill: '#efeff7' }), sv('circle', { cx: 371, cy: H.small[0], r: H.small[1], fill: '#d6d7eb' })));
+    svg.append(grp('psy', 'shape', ...[[P.cxL, '#dde6ef'], [P.cxR, '#c3d5e1']].map(([cx, fill]) => rhombusShape(cx, P.cy, P.hw, P.hh, fill, { line: P.line, up: P.up, down: P.down, r: P.r, tri: P.tri }))));
+    svg.append(grp('main', 'shape', rhombusShape(M.cx, M.lineY, M.hw, M.hh, '#eec186', { line: M.line, up: M.circleUp, down: M.circleDown, r: M.r, tri: M.tri, big: M.big, faded: '#f5efe3' }),
+      sv('circle', { cx: M.letter[0], cy: M.letter[1], r: M.letter[2], fill: '#fff', stroke: '#a9c3e4', 'stroke-width': 2.5, class: 'k-letters' })));
+    svg.append(grp('con', 'shape', rhombusShape(S.left.cx, S.cy, S.hw, S.hh, '#faddd7', { line: S.line, up: S.up, down: S.down, r: S.r, tri: S.tri, big: [S.left.bigX, S.bigY, S.bigR], faded: '#fef0ed' })));
+    svg.append(grp('vow', 'shape', rhombusShape(S.right.cx, S.cy, S.hw, S.hh, '#dae7e0', { line: S.line, up: S.up, down: S.down, r: S.r, tri: S.tri, big: [S.right.bigX, S.bigY, S.bigR], faded: '#f6f8f7' })));
 
     const txt = (x, y, v, cls, size, anchor) => (v ? sv('text', { x, y, class: cls, 'font-size': size, 'text-anchor': anchor || 'middle' }, typeof v === 'string' ? v : v.text) : null);
     // Color of one number: the paid tool's choice for that position and value (number-colors.js).
     const oneMiddle = data.name.middle.length === 1;
-    const tone = (slot, v, bold) => 'n-' + NumberColors.lookup(slot, typeof v === 'string' ? v : (v ? v.text : ''), oneMiddle) + (bold ? ' n-bold' : '');
+    const tone = (slot, v, bold) => 'n-' + NumberColors.lookup(slot, typeof v === 'string' ? v : (v ? v.text : ''), oneMiddle) + (bold ? ' n-bold' : '') + ' k-' + kindOfSlot(slot);
     // x offsets of n items on one row: one at the center, two at the measured pair, more spread evenly across it.
     const spread = (n, pair, i) => (n <= 1 || !pair ? 0 : pair[0] + (pair[1] - pair[0]) * i / (n - 1));
     // The numbers of one rhombus. pre = the position prefix in number-colors.js ('' main, 'c.' consonants,
@@ -702,9 +740,9 @@
         c.heart && txt(cx, t.heartY, c.heart, tone(pre + 'heart', c.heart, true), t.heart),
         ...c.heartExtra.map((v, i) => txt(cx + spread(c.heartExtra.length, t.extra2, i), t.heartY + t.extraUp, v, tone(pre + 'heartExtra', v), t.extra)),
         t.spineX && c.spine && txt(t.spineX, t.spineY, c.spine, tone(pre + 'spine', c.spine), t.spine || t.small),
-        c.first && txt(nL, t.nameY, c.first.text, 'n-dark', t.name), c.first && txt(nL, t.lineY, c.first.value, tone(pre + 'first', c.first.value, lineBold), t.lineFont),
-        ...c.middle.flatMap((w, i) => { const x = t.middle2 && c.middle.length <= 2 ? cx + spread(c.middle.length, t.middle2, i) : nL + (nR - nL) * (i + 1) / (c.middle.length + 1); return [txt(x, t.nameY, w.text, 'n-dark', t.name), txt(x, t.lineY, w.value, tone(pre + 'middle', w.value, lineBold), t.lineFont)]; }),
-        c.last && txt(nR, t.nameY, c.last.text, 'n-dark', t.name), c.last && txt(nR, t.lineY, c.last.value, tone(pre + 'last', c.last.value, lineBold), t.lineFont),
+        c.first && txt(nL, t.nameY, c.first.text, 'n-dark k-name', t.name), c.first && txt(nL, t.lineY, c.first.value, tone(pre + 'first', c.first.value, lineBold), t.lineFont),
+        ...c.middle.flatMap((w, i) => { const x = t.middle2 && c.middle.length <= 2 ? cx + spread(c.middle.length, t.middle2, i) : nL + (nR - nL) * (i + 1) / (c.middle.length + 1); return [txt(x, t.nameY, w.text, 'n-dark k-name', t.name), txt(x, t.lineY, w.value, tone(pre + 'middle', w.value, lineBold), t.lineFont)]; }),
+        c.last && txt(nR, t.nameY, c.last.text, 'n-dark k-name', t.name), c.last && txt(nR, t.lineY, c.last.value, tone(pre + 'last', c.last.value, lineBold), t.lineFont),
         c.lowerLeft && txt(aL, t.lowY, c.lowerLeft, tone(pre + 'll', c.lowerLeft), t.small, an), c.lowerRight && txt(aR, t.lowY, c.lowerRight, tone(pre + 'lr', c.lowerRight), t.small, an),
         c.solar && txt(cx, t.solarY, c.solar, tone(pre + 'solar', c.solar, true), t.solar || t.heart),
         ...c.solarExtra.map((v, i) => txt(cx + spread(c.solarExtra.length, t.solarExtra2, i), t.solarY + t.extraDown, v, tone(pre + 'solarExtra', v), t.extra)),
@@ -714,21 +752,21 @@
         ...(lineBold ? [c.first && tap(nL, c.first), ...c.middle.map((w, i) => tap(t.middle2 && c.middle.length <= 2 ? cx + spread(c.middle.length, t.middle2, i) : nL + (nR - nL) * (i + 1) / (c.middle.length + 1), w)), c.last && tap(nR, c.last)] : []),
       ];
     };
-    const tap = (x, w) => sv('rect', { x: x - 50, y: L.main.text.nameY - 32, width: 100, height: 88, fill: 'transparent', class: 'n-tap', 'data-word': w.text, role: 'button', 'aria-label': `Charts of the name ${w.text}` });
+    const tap = (x, w) => sv('rect', { x: x - 50, y: L.main.text.nameY - 32, width: 100, height: 88, fill: 'transparent', class: 'n-tap k-name', 'data-word': w.text, role: 'button', 'aria-label': `Charts of the name ${w.text}` });
     const day = data.essence.day;
-    svg.append(...numbers('', data.name, { ...M.text, bigX: M.big[0] }, M.cx, day).filter(Boolean));
-    svg.append(...numbers('c.', data.consonants, { ...S.text, ...S.left }, S.left.cx, day).filter(Boolean), ...numbers('v.', data.vowels, { ...S.text, ...S.right }, S.right.cx, day).filter(Boolean));
-    svg.append(txt(M.letter[0], M.text.letterY, data.name.letters ? String(data.name.letters) : null, 'n-blue n-bold', M.text.letterFont));
+    svg.append(grp('main', null, ...numbers('', data.name, { ...M.text, bigX: M.big[0] }, M.cx, day),
+      txt(M.letter[0], M.text.letterY, data.name.letters ? String(data.name.letters) : null, 'n-blue n-bold k-letters', M.text.letterFont)));
+    svg.append(grp('con', null, ...numbers('c.', data.consonants, { ...S.text, ...S.left }, S.left.cx, day)), grp('vow', null, ...numbers('v.', data.vowels, { ...S.text, ...S.right }, S.right.cx, day)));
     // Psyche charts: outer psyche in the left blue diamond, inner in the right (confirmed on vault screenshots).
     const bare = (c) => ({ ...c, big: null, middle: [], heartExtra: [], solarExtra: [], first: c.first && { text: '', value: c.first.value }, last: c.last && { text: '', value: c.last.value } });
-    svg.append(...numbers('po.', bare(data.psyche.outer), { ...P.text, sideDx: P.sideDxL }, P.cxL, day).filter(Boolean), ...numbers('pi.', bare(data.psyche.inner), { ...P.text, sideDx: P.sideDxR }, P.cxR, day).filter(Boolean));
+    svg.append(grp('psy', null, ...numbers('po.', bare(data.psyche.outer), { ...P.text, sideDx: P.sideDxL }, P.cxL, day), ...numbers('pi.', bare(data.psyche.inner), { ...P.text, sideDx: P.sideDxR }, P.cxR, day)));
     // Essence numbers: top aura inside the top of the shape, month and year outside the upper corners,
     // little and big life path in the circle, outer and inner auras beside it. The small circle stays empty.
     const e = data.essence, T = H.text;
     // little and big life path in the circle, outer and inner auras beside it. All dark in the paid tool.
-    svg.append(txt(371, T.topAuraY, e.topAura, 'n-dark', T.corner), txt(T.monthX, T.monthY, e.month, 'n-dark n-bold', T.corner), txt(T.yearX, T.monthY, e.year, 'n-dark n-bold', T.corner),
-      txt(T.auraL, T.auraY, e.outerAura, 'n-dark', T.aura), txt(T.auraR, T.auraY, e.innerAura, 'n-dark', T.aura),
-      txt(371, T.lpY, e.littleLp, 'n-dark n-bold', T.lp), txt(371, T.bigLpY, e.bigLp, 'n-dark n-bold', T.lp));
+    svg.append(grp('ess', null, txt(371, T.topAuraY, e.topAura, 'n-dark k-aura', T.corner), txt(T.monthX, T.monthY, e.month, 'n-dark n-bold k-line', T.corner), txt(T.yearX, T.monthY, e.year, 'n-dark n-bold k-line', T.corner),
+      txt(T.auraL, T.auraY, e.outerAura, 'n-dark k-aura', T.aura), txt(T.auraR, T.auraY, e.innerAura, 'n-dark k-aura', T.aura),
+      txt(371, T.lpY, e.littleLp, 'n-dark n-bold k-center', T.lp), txt(371, T.bigLpY, e.bigLp, 'n-dark n-bold k-center', T.lp)));
     return svg;
   }
   // One word's own charts (Module 12): the numeroscope with every letter as a name, its vowel
@@ -839,16 +877,18 @@
     const $name = h('input', { type: 'text', placeholder: 'Full name', autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false' });
     const $chart = h('div', { class: 'nscope-box' });
     let data = null, svg = null;
+    const show = loadShow();
     const draw = () => {
       data = Numeroscope.numeroscope({ day: $day.value, month: $month.value, year: $year.value, name: $name.value });
-      svg = numeroscopeSvg(data); fill($chart, svg);
+      svg = numeroscopeSvg(data); fill($chart, svg); applyShow(svg, show);
     };
     $chart.addEventListener('click', (e) => { const t = e.target.closest && e.target.closest('[data-word]'); if (t) openWord(t.getAttribute('data-word'), data && data.essence.day); });
     for (const el of [$day, $month, $year, $name]) el.addEventListener('input', draw);
     // The ⋮ menu sits beside the name field, never on the chart: Full screen and Save to vault. Taps outside close it.
     const $full = h('button', { type: 'button', class: 'cmenu-item' }, 'Full screen');
     const $save = h('button', { type: 'button', class: 'cmenu-item' }, 'Save to vault');
-    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $full, $save);
+    const $showBtn = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { $menu.classList.add('hidden'); showSheet(show, () => applyShow(svg, show)); } }, 'Show and hide parts');
+    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $full, $showBtn, $save);
     const $dots = h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'More', title: 'More', onclick: (e) => { e.stopPropagation(); $menu.classList.toggle('hidden'); } }, '⋮');
     document.addEventListener('click', (e) => { if (!$menu.contains(e.target)) $menu.classList.add('hidden'); });
     const $home = h('div', { class: 'nscope-home' }, $chart);

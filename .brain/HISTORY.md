@@ -196,3 +196,14 @@ Brought the app in line with the new-app playbook from the first app:
   in the vault (aspect 0.80 vs 0.72). It was the diamond finder picking up
   a wrong right edge; the shape detector gave 0.725. Measure twice before
   rebuilding a layout.
+- Same day, later: 960 units across was "too small" on the phone; 850 now
+  (numbers at the edges keep about 19 px of white). Lesson: match the
+  phone, not the website's zoom; the owner judges size on their own screen.
+- Show and hide parts (⋮ → "Show and hide parts"): a sheet of chips for the
+  five charts and for kinds of numbers (day, auras, centers, names, line
+  values, spine, life expressions, pillars, letter count, colored shapes),
+  with presets Everything / Centers only / Names only / Life expressions
+  only. Every element of the drawing carries data-chart and a k-<kind>
+  class; hiding is CSS on the svg root, so the saved PNG shows exactly what
+  the screen shows. The view box trims to what is left. Browser storage,
+  per phone.
