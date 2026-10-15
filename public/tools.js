@@ -58,8 +58,13 @@
     const svg = A.numeroscopeSvg(data);
     svg.classList.add('hide-c-main', 'hide-c-vow', 'hide-c-con', 'daychart');
     if (!withPsyche) svg.classList.add('hide-c-psy');
-    // Essence only: crop to the cube so it fills a small grid cell; with the psyche charts, the full width.
-    svg.setAttribute('viewBox', withPsyche ? `${371 - 425} 20 850 540` : `${371 - 215} 24 430 296`);
+    // The day vibration is drawn at the top of the name chart, which is hidden here, so a copy of it sits
+    // under the cube's point: the paid tool's Today page shows the day there (Forecasting p. 23).
+    const dayNode = svg.querySelector('[data-chart=main] text.k-day');
+    if (dayNode) svg.append(dayNode.cloneNode(true));
+    // Essence only: crop to the cube and the day under it so it fills a small grid cell; with the psyche
+    // charts, the full width.
+    svg.setAttribute('viewBox', withPsyche ? `${371 - 425} 20 850 540` : `${371 - 215} 24 430 330`);
     return svg;
   }
   // The codes a date holds, as chips: green strong, blue soft, red to avoid.
@@ -212,8 +217,10 @@
     if (nm && w >= 56) g.append(t(cx, topY + f(0.12) + 2, nm, Math.min(f(0.075), (w * 0.84) / (nm.length * 0.56)), opts.unbalanced ? 'name unb' : 'name'));
     const ccy = topY + hh * 0.42, r = w * 0.14;
     g.append(sv('circle', { cx, cy: ccy, r, fill: '#fff', stroke, 'stroke-width': 1.2 }), t(cx, ccy + f(0.1) * 0.36, d.center.text, f(0.1), 'bold'));
-    const sideY = topY + hh * 0.58, sideX = w * 0.5 * (1 - 0.58) + 4;
-    g.append(t(cx - sideX - 2, sideY, d.outer.text, f(0.11), 'aura', 'end'), t(cx + sideX + 2, sideY, d.inner.text, f(0.11), 'aura', 'start'));
+    // The auras sit outside the sides (book p. 35): the gap is measured where the text is tallest, at its
+    // top, where the triangle is wider than at the baseline.
+    const sideY = topY + hh * 0.62, auraF = f(opts.strong ? 0.1 : 0.11), sideX = (w / 2) * (1 - (sideY - auraF * 0.72 - topY) / hh) + 4;
+    g.append(t(cx - sideX - 2, sideY, d.outer.text, auraF, 'aura', 'end'), t(cx + sideX + 2, sideY, d.inner.text, auraF, 'aura', 'start'));
     g.append(t(cx, topY + hh + f(0.17) + 1, d.le.text, f(0.16), bold));
     if (opts.onTap) g.addEventListener('click', () => opts.onTap(d));
     svg.append(g);
@@ -226,7 +233,7 @@
     const lab = (x, y, s, cls, anchor) => svg.append(sv('text', { x, y, 'font-size': 9, class: cls || 'lab', 'text-anchor': anchor || 'middle' }, s));
     lab(8, 14, labels.title, 'band-title', 'start'); lab(W - 8, 14, labels.right, 'lab', 'end');
     const top = labels.noUnbalanced ? 50 : 60;
-    const mainBottom = tri(svg, d, W / 2, top, 150, { onTap, strong: true, aText: labels.aText, bText: labels.bText, name: labels.mainName });
+    const mainBottom = tri(svg, d, W / 2, top, 140, { onTap, strong: true, aText: labels.aText, bText: labels.bText, name: labels.mainName });
     lab(W / 2, Math.min(H - 6, mainBottom + 10), labels.mainLabel || (lv === 'main' ? 'main diamond' : lv === 'essence' ? 'essence diamond' : 'integration diamond'));
     const mid = labels.noUnbalanced ? 96 : 122;
     const ob = tri(svg, d.outerD, 62, mid, 92, { onTap }); lab(62, Math.min(H - 6, ob + 10), labels.outerLabel || 'outer diamond');
