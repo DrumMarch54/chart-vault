@@ -248,6 +248,17 @@ Brought the app in line with the new-app playbook from the first app:
 - New standing rule (owner): a course rule that cannot be read from Drive gets a ready-to-paste
   NotebookLM question, never a guess. In CLAUDE.md and USER.md.
 
+## 2026-10-15 The Hub must be read first; merge main first
+A chat planning "search charts by position" worked on a branch two days behind
+main. It never saw `.brain/numerology/`, `public/numeroscope.js` or the 436
+extracted chart inputs, so it guessed position names from the pictures and
+proposed building the calculator again. The owner: "that's crazy, the Hub is
+the golden grail, use it, across all chats". Two rules: read the Hub (via the
+numerology README) before any chart-content work, never guess what it defines;
+and merge origin/main into the branch at the start of every session before
+planning, so what the other chats built is in view. Grep before building was
+already a rule; it does not help when the checkout is stale.
+
 ## 2026-10-15 Home layout, tag names with spaces, swipe-down viewer
 The owner: name tags should read with spaces and capitals in the search box;
 two-tag search is annoying, remove it; nothing but the search box and the
@@ -269,4 +280,3 @@ grid); nothing over the picture until it is tapped.
   scroll position; this is also what lets the screen show through while the
   picture is dragged. Fresh loads of a chart address draw the list first.
 - Dev app people are now run-together names, so the splitter is visible there.
-
