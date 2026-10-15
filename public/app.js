@@ -235,14 +235,21 @@
 
   // ---------- tag suggestion box ----------
   // `empty` gives what the box shows while nothing is typed (the home screen's recent searches).
-  function suggestBox($input, { onPick, allowNew = false, kind = null, alsoArchetype = false, empty = null }) {
+  // `names`: also offer the charts NAMED what was typed (every chart whose name has a word starting with it,
+  // then each distinct name), above the tags.
+  function suggestBox($input, { onPick, onPickName = null, allowNew = false, kind = null, alsoArchetype = false, names = false, empty = null }) {
     const $list = h('div', { class: 'suggest hidden' });
     let timer, seq = 0;
     const hide = () => $list.classList.add('hidden');
-    const show = (items, q) => {
+    const show = (items, q, who = null) => {
       fill($list);
       if (!q && empty) { $list.append(...empty()); $list.classList.toggle('hidden', !$list.children.length); return; }
       learnTags(items);
+      if (who && who.count) {
+        const one = who.names.length === 1 && who.names[0].count === who.count;
+        if (!one) $list.append(h('button', { type: 'button', onclick: () => { count('search.name'); onPickName(q); hide(); } }, h('span', { class: 'chip who', style: 'min-height:32px;font-size:15px;pointer-events:none' }, `Everyone named ${q}`), h('span', { class: 'count' }, `${fmtN(who.count)} chart${who.count === 1 ? '' : 's'}`)));
+        for (const n of who.names) $list.append(h('button', { type: 'button', onclick: () => { count('search.name'); onPickName(n.name); hide(); } }, h('span', { class: 'chip who', style: 'min-height:32px;font-size:15px;pointer-events:none' }, n.name), h('span', { class: 'count' }, `${fmtN(n.count)} chart${n.count === 1 ? '' : 's'}`)));
+      }
       const exact = items.some((t) => t.name === q || (t.display || '').toLowerCase() === q.toLowerCase());
       if (allowNew && q && !exact) $list.append(h('button', { type: 'button', onclick: () => { onPick(q); hide(); } }, h('span', {}, `Add new tag “${q}”`), h('span', { class: 'count' }, 'new')));
       for (const t of items) $list.append(h('button', { type: 'button', onclick: () => { onPick(t.name, t.pickKind); hide(); } },
@@ -255,13 +262,15 @@
       if (!q && empty) { show([], ''); return; }
       const params = new URLSearchParams({ q, limit: 25 }); if (kind) params.set('kind', kind);
       try {
+        const whoP = names && q ? api('/api/names?' + new URLSearchParams({ q })).catch(() => null) : Promise.resolve(null);
         let items = await api('/api/tags?' + params);
         if (alsoArchetype && q) {
           const ap = new URLSearchParams({ q, limit: 5, kind: 'archetype' });
           const extra = await api('/api/tags?' + ap).catch(() => []);
           items = [...items, ...extra.map((t) => ({ ...t, pickKind: 'archetype' }))];
         }
-        if (my === seq) show(items, q);
+        const who = await whoP;
+        if (my === seq) show(items, q, who);
       } catch {}
     };
     $input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(refresh, 120); });
@@ -280,18 +289,22 @@
     // from the chart's name and date. Shown and remembered like a tag search.
     const pos = query.get('pos') || '', num = query.get('num') || '';
     const position = pos && num ? { pos, num } : null;
+    // A name search (?name=john): every chart whose name has a word starting with that, from the search box.
+    const name = query.get('name') || '';
+    const setName = (n) => go('#/?' + new URLSearchParams({ name: n }));
     const setTag = (t, k = kind) => { const p = new URLSearchParams(); if (k === 'archetype') p.set('kind', 'archetype'); if (t) p.set('tag', t); go('#/' + (p.toString() ? '?' + p : '')); };
-    const home = !tag && !position && kind === 'chart';
+    const home = !tag && !position && !name && kind === 'chart';
     const $quickIcon = h('a', { class: 'btn iconbtn gear', href: '#/quick', 'aria-label': 'Quick chart', title: 'Quick chart' }, '◈');
     const $gear = h('a', { class: 'btn iconbtn gear', href: '#/settings', 'aria-label': 'Settings', title: 'Settings' }, '⚙');
     const $input = h('input', { type: 'search', placeholder: 'Search names, tags, numbers', autocomplete: 'off', enterkeyhint: 'search' });
     if (tag) $input.value = pretty(tag); // the search box shows what is being searched; typing replaces it
+    if (name) $input.value = name;
     if (position) { $input.value = searchLabel(pos, num); loadCatalog().then(() => { if (document.activeElement !== $input) $input.value = searchLabel(pos, num); }).catch(() => {}); }
     const showClear = () => $clear.classList.toggle('hidden', !$input.value); // the × only when there is something to clear
     $input.addEventListener('input', showClear);
-    const $sugg = suggestBox($input, { kind, alsoArchetype: kind === 'chart', empty: home ? () => recentNodes(setTag) : null, onPick: (name, pickKind) => setTag(name, pickKind || kind) });
-    $input.addEventListener('focus', () => { if ((tag && $input.value === pretty(tag)) || position) $input.select(); });
-    const $clear = h('button', { type: 'button', class: 'clear', 'aria-label': 'Clear the search', onclick: () => { if (tag || position) { setTag('', 'chart'); return; } $input.value = ''; showClear(); $input.focus(); $sugg.classList.add('hidden'); } }, '×');
+    const $sugg = suggestBox($input, { kind, alsoArchetype: kind === 'chart', names: kind === 'chart', empty: home ? () => recentNodes(setTag, setName) : null, onPick: (picked, pickKind) => setTag(picked, pickKind || kind), onPickName: setName });
+    $input.addEventListener('focus', () => { if ((tag && $input.value === pretty(tag)) || position || (name && $input.value === name)) $input.select(); });
+    const $clear = h('button', { type: 'button', class: 'clear', 'aria-label': 'Clear the search', onclick: () => { if (tag || position || name) { setTag('', 'chart'); return; } $input.value = ''; showClear(); $input.focus(); $sugg.classList.add('hidden'); } }, '×');
     showClear();
     const $filters = kind === 'archetype' ? h('div', { class: 'filters' }, chip({ name: 'Archetype pics', kind: 'name' }, { active: true, removable: true, onclick: () => setTag(tag, 'chart') }))
       : position ? h('div', { class: 'filters' }, h('a', { class: 'chip position', href: '#/position?' + new URLSearchParams({ pos, num }) }, h('span', { class: 't' }, 'Change position or number'), h('span', { class: 'x' }, '›'))) : null;
@@ -303,6 +316,7 @@
     // below. The recent searches and the way to every tag drop down from the search box when it is tapped.
     if (tag) rememberSearch([tag], kind);
     if (position) rememberSearch([], kind, position);
+    if (name) rememberSearch([], kind, { name });
     if (!namesLoaded) loadTagNames().then(() => { if (tag && document.activeElement !== $input) $input.value = pretty(tag); });
     const $quick = h('a', { class: 'btn btn-primary btn-block quickbtn', href: '#/quick' }, h('span', { class: 'qicon' }, '◈'), 'Quick chart');
     const $byPos = h('a', { class: 'btn btn-block quickbtn posbtn', href: '#/position' }, h('span', { class: 'qicon' }, '⌖'), 'Search by position');
@@ -324,7 +338,7 @@
     if (home) return;
 
     let offset = 0, total = null, loading = false, done = false;
-    const params = () => { const p = new URLSearchParams({ limit: 60, offset, kind }); if (tag) p.append('tag', tag); if (position) { p.set('pos', pos); p.set('num', num); } return p; };
+    const params = () => { const p = new URLSearchParams({ limit: 60, offset, kind }); if (tag) p.append('tag', tag); if (position) { p.set('pos', pos); p.set('num', num); } if (name) p.set('name', name); return p; };
     async function more() {
       if (loading || done) return; loading = true; $sentinel.textContent = 'Loading…';
       try {
@@ -333,7 +347,7 @@
         for (const img of r.items) $grid.append(cell(img));
         done = offset >= total || r.items.length === 0;
         const noun = kind === 'archetype' ? 'archetype pic' : 'chart';
-        $summary.textContent = position ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with ${searchLabel(pos, num)}` : `${fmtN(total)} ${noun}${total === 1 ? '' : 's'}${tag ? '' : ', newest first'}`;
+        $summary.textContent = position ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with ${searchLabel(pos, num)}` : name ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} named ${name}` : `${fmtN(total)} ${noun}${total === 1 ? '' : 's'}${tag ? '' : ', newest first'}`;
         $sentinel.textContent = done ? (total === 0 ? (kind === 'archetype' && !tag ? 'No archetype pics yet. Add them on the Upload page.' : position ? 'No chart has that number there. Only charts whose name and date have been read can be found this way.' : `No ${noun}s match.`) : '') : '';
       } catch (err) { $sentinel.textContent = err.message; }
       loading = false;
@@ -342,7 +356,7 @@
       learnTags(img.tags);
       const label = img.kind === 'archetype'
         ? img.tags.map((t) => pretty(t.name)).join(', ')
-        : pretty((img.tags.find((t) => t.kind === 'name') || img.tags[0] || {}).name || '');
+        : img.title || pretty((img.tags.find((t) => t.kind === 'name') || img.tags[0] || {}).name || '');
       return h('a', { class: 'cell', href: `#/chart/${img.id}${location.hash.includes('?') ? '?' + location.hash.split('?')[1] : ''}` },
         img.has_file ? h('img', { class: 'thumb', src: `/thumb/${img.id}`, loading: 'lazy', alt: label }) : h('div', { class: 'nofile' }, 'no file yet'),
         h('div', { class: `label ${label ? '' : 'muted'}` }, label || img.filename));
@@ -357,22 +371,24 @@
   const rememberOpened = (id) => { try { localStorage.setItem('recent', JSON.stringify([id, ...recentIds().filter((x) => x !== id)].slice(0, 48))); } catch {} };
   // The last searches made on this phone, newest first: [{ tags, kind }]. Searching the same tag again moves it to the top.
   // A position search is remembered too: { tags: [], kind, pos, num }.
-  const recentSearches = () => { try { return (JSON.parse(localStorage.getItem('searches') || '[]') || []).filter((s) => s && Array.isArray(s.tags) && (s.tags.length || (s.pos && s.num))).slice(0, 20); } catch { return []; } };
+  // A name search is remembered too: { tags: [], kind, name }.
+  const recentSearches = () => { try { return (JSON.parse(localStorage.getItem('searches') || '[]') || []).filter((s) => s && Array.isArray(s.tags) && (s.tags.length || (s.pos && s.num) || s.name)).slice(0, 20); } catch { return []; } };
   const rememberSearch = (tags, kind, position = null) => {
     try {
-      const kept = recentSearches().filter((s) => (position ? !(s.pos === position.pos && s.num === position.num) : !(s.kind === kind && s.tags.length && (s.tags.every((t) => tags.includes(t)) || tags.every((t) => s.tags.includes(t))))));
+      const kept = recentSearches().filter((s) => (position && position.name ? s.name !== position.name : position ? !(s.pos === position.pos && s.num === position.num) : !(s.kind === kind && s.tags.length && (s.tags.every((t) => tags.includes(t)) || tags.every((t) => s.tags.includes(t))))));
       localStorage.setItem('searches', JSON.stringify([{ tags, kind, ...(position || {}) }, ...kept].slice(0, 20)));
     } catch {}
   };
   const runSearch = (s) => (s.pos ? go(positionHash(s.pos, s.num)) : null);
   // What drops down from an empty search box: the recent searches (tap one to run it again) and the way to every tag.
-  const recentNodes = (setTag) => {
+  const recentNodes = (setTag, setName) => {
     const searches = recentSearches();
     return [
       h('div', { class: 'shead' }, searches.length ? 'Recent searches' : 'Your recent searches will show here'),
-      ...searches.map((s) => h('button', { type: 'button', class: 'rsearch', onclick: () => (s.pos ? runSearch(s) : setTag(s.tags[0], s.kind)) },
+      ...searches.map((s) => h('button', { type: 'button', class: 'rsearch', onclick: () => (s.pos ? runSearch(s) : s.name ? setName(s.name) : setTag(s.tags[0], s.kind)) },
         h('span', { class: 'chips' }, s.kind === 'archetype' ? h('span', { class: 'chip name', style: 'pointer-events:none' }, 'Archetype pics') : null,
           s.pos ? h('span', { class: 'chip position', style: 'pointer-events:none' }, searchLabel(s.pos, s.num)) : null,
+          s.name ? h('span', { class: 'chip who', style: 'pointer-events:none' }, s.name) : null,
           ...s.tags.slice(0, 1).map((t) => h('span', { class: `chip ${kindOf(t)}`, style: 'pointer-events:none' }, pretty(t)))),
         h('span', { class: 'muted', style: 'padding-left:8px' }, '›'))),
       h('a', { class: 'rsearch alltags', href: '#/position' }, h('span', {}, 'Search by position'), h('span', { class: 'muted' }, '›')),
@@ -384,7 +400,7 @@
   let viewerCleanup = null;
   routes.chart = async function viewer(id, query) {
     const qs = query.toString();
-    const listQ = new URLSearchParams(); for (const t of query.getAll('tag')) listQ.append('tag', t); if (query.get('kind') === 'archetype') listQ.set('kind', 'archetype');
+    const listQ = new URLSearchParams(); for (const t of query.getAll('tag')) listQ.append('tag', t); if (query.get('kind') === 'archetype') listQ.set('kind', 'archetype'); if (query.get('name')) listQ.set('name', query.get('name'));
     for (const k of ['pos', 'num']) if (query.get(k)) listQ.set(k, query.get(k));
     const backHash = '#/' + (listQ.toString() ? '?' + listQ : '');
     // Back goes to the screen the viewer was opened from (the list, a search, the quick chart). Opened from a
@@ -479,7 +495,8 @@
     if (img.kind === 'chart') rememberOpened(img.id);
     // The full picture replaces the thumbnail only once it has arrived, so nothing blank or broken shows in between.
     if (img.has_file) { const full = new Image(); full.onload = () => { if ($img.isConnected) $img.src = full.src; }; full.src = `/img/${img.id}`; } else { $img.removeAttribute('src'); fill($stage, h('div', { class: 'center', style: 'min-height:100%' }, h('p', { class: 'muted' }, 'No picture for this chart yet.'), h('a', { class: 'btn', href: '#/upload' }, 'Go to Upload'))); }
-    $name.textContent = img.kind === 'archetype' ? img.tags.map((t) => pretty(t.name)).join(', ') : pretty((img.tags.find((t) => t.kind === 'name') || {}).name || '');
+    const showName = () => { $name.textContent = img.kind === 'archetype' ? img.tags.map((t) => pretty(t.name)).join(', ') : (img.title || pretty((img.tags.find((t) => t.kind === 'name') || {}).name || '')); };
+    showName();
     api(`/api/images/${id}/context?${listQ}`).then((c) => {
       ctx = c;
       $count.textContent = c.index ? `${c.index} / ${c.total}` : '';
@@ -548,7 +565,32 @@
           try { const r = await postJson(`/api/images/${img.id}/tags/remove`, { name: t.name }); img = r.image; toast(`Removed “${t.name}”`); draw(); } catch (err) { toast(err.message, true); }
         } },
       ]) });
+      // Who this is: the name under the thumbnail. Shown with a Fix button; a seeded guess asks to be confirmed.
+      const $who = h('div', { class: 'who-row' });
+      let fixingName = false;
+      const drawWho = () => {
+        if (img.kind !== 'chart') { fill($who); return; }
+        if (fixingName) {
+          const $in = h('input', { type: 'text', placeholder: 'First and last name, or the name they go by', autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false', value: img.title || '', maxlength: 80 });
+          const save = async () => {
+            try { count('viewer.fix_name'); const r = await api(`/api/images/${img.id}/title`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ title: $in.value }) }); img = r.image; fixingName = false; showName(); toast(img.title ? `Named ${img.title}` : 'Name cleared'); drawWho(); }
+            catch (err) { toast(err.message, true); }
+          };
+          $in.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); save(); } });
+          fill($who, h('b', {}, 'Who is this?'), h('p', { class: 'muted small' }, 'Short: first and last name, a stage name, or “Name · Group”. Tags are not changed.'), $in,
+            h('div', { class: 'row', style: 'flex-wrap:nowrap' }, h('button', { type: 'button', class: 'btn-primary', style: 'flex:1', onclick: save }, 'Save'), h('button', { type: 'button', onclick: () => { fixingName = false; drawWho(); } }, 'Cancel')));
+          setTimeout(() => $in.focus(), 50);
+          return;
+        }
+        const ok = async () => { try { count('viewer.name_ok'); const r = await postJson(`/api/images/${img.id}/title/ok`, {}); img = r.image; toast('Name confirmed'); drawWho(); } catch (err) { toast(err.message, true); } };
+        fill($who,
+          h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' },
+            h('div', { style: 'min-width:0' }, h('b', {}, img.title || 'No name yet'), img.title_check ? h('div', { class: 'muted small' }, 'A guess. Is it right?') : null),
+            h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:6px' }, img.title_check ? h('button', { type: 'button', onclick: ok }, 'Yes') : null, h('button', { type: 'button', onclick: () => { fixingName = true; drawWho(); } }, img.title ? 'Fix' : 'Name it'))));
+      };
+      drawWho();
       fill($sheetBody,
+        $who,
         h('div', { class: 'row', style: 'justify-content:space-between' }, h('b', {}, `${img.tags.length} tag${img.tags.length === 1 ? '' : 's'}`), h('span', { class: 'muted small' }, 'Tap a tag for options')),
         groups.name.length ? h('div', { class: 'chips' }, ...groups.name.map(tagBtn)) : null,
         groups.position.length ? h('div', {}, h('div', { class: 'muted small', style: 'margin-bottom:6px' }, 'Positions'), h('div', { class: 'chips' }, ...groups.position.map(tagBtn))) : null,
@@ -812,11 +854,45 @@
     render(h('div', { class: 'screen stack' }, pageTop('Settings', '#/'),
       h('a', { class: 'btn btn-block', href: '#/quick', style: 'justify-content:space-between' }, 'Quick chart', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/tags', style: 'justify-content:space-between' }, 'All tags', h('span', { class: 'muted' }, '›')),
+      h('a', { class: 'btn btn-block', href: '#/names', style: 'justify-content:space-between' }, 'Names to check', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/position', style: 'justify-content:space-between' }, 'Search by position', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/upload', style: 'justify-content:space-between' }, 'Upload screenshots', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/import', style: 'justify-content:space-between' }, 'Import tags', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/status', style: 'justify-content:space-between' }, 'Status and backup', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/?kind=archetype', style: 'justify-content:space-between' }, 'Archetype pics', h('span', { class: 'muted' }, '›'))));
+  };
+
+  // ---------- names to check ----------
+  // Every chart whose name is still a guess or missing: the picture, the name in a box to tweak, the
+  // tags and the typed name as hints. "Looks right" keeps it; "Save" keeps what was typed. Either removes the card.
+  routes.names = async function namesView() {
+    const $list = h('div', { class: 'stack' });
+    const $head = h('p', { class: 'muted' }, 'Loading…');
+    render(h('div', { class: 'screen stack' }, pageTop('Names to check'), $head, $list));
+    count('screen.names');
+    let r;
+    try { r = await api('/api/titles/check'); } catch (err) { $head.textContent = err.message; return; }
+    const left = () => { const n = $list.querySelectorAll('.who-card').length; $head.textContent = n ? `${fmtN(n)} chart${n === 1 ? '' : 's'} to look at. The name is what shows under the thumbnail: first and last name, a stage name, or “Name · Group”.` : 'Every chart has a name you have confirmed. Fix any name from the chart itself (open it, swipe up, tap Fix).'; };
+    for (const it of r.items) {
+      const $in = h('input', { type: 'text', placeholder: 'First and last name', autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false', value: it.title || '', maxlength: 80 });
+      const $card = h('div', { class: 'card who-card' });
+      const done = (msg) => { $card.remove(); toast(msg); left(); };
+      const save = async () => { const v = $in.value.trim(); if (!v) { toast('Type a name first', true); return; } try { count('names.save'); await api(`/api/images/${it.id}/title`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ title: v }) }); done(`Named ${v}`); } catch (err) { toast(err.message, true); } };
+      const ok = async () => { try { count('names.ok'); await postJson(`/api/images/${it.id}/title/ok`, {}); done(`Kept ${it.title}`); } catch (err) { toast(err.message, true); } };
+      $in.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); save(); } });
+      const hints = [];
+      if (it.typed) hints.push(`Typed into the chart: ${it.typed}`);
+      if (it.tags.length) hints.push(`Tags: ${it.tags.map(pretty).join(', ')}`);
+      fill($card,
+        h('div', { class: 'row', style: 'flex-wrap:nowrap;align-items:flex-start' },
+          h('a', { href: `#/chart/${it.id}`, class: 'who-thumb' }, it.has_file ? h('img', { src: `/thumb/${it.id}`, loading: 'lazy', alt: '' }) : h('div', { class: 'nofile' }, 'no file')),
+          h('div', { class: 'stack', style: 'flex:1;min-width:0;gap:8px' },
+            $in,
+            ...hints.map((t) => h('div', { class: 'muted small' }, t)),
+            h('div', { class: 'row', style: 'flex-wrap:nowrap' }, it.title ? h('button', { type: 'button', style: 'flex:1', onclick: ok }, 'Looks right') : null, h('button', { type: 'button', class: 'btn-primary', style: 'flex:1', onclick: save }, 'Save')))));
+      $list.append($card);
+    }
+    left();
   };
 
   // ---------- quick chart ----------

@@ -327,3 +327,35 @@ Built from `.brain/PLAN-position-search.md` (now deleted; this entry is the reco
   5 retries ("PII Data Handling", the pictures carry people's names and birth
   dates); the last 63 pictures were read in the main chat. Reading a batch of
   21 costs about 80k tokens of a cheaper model.
+
+## 2026-10-15 Who a chart is: a name under every thumbnail, separate from the tags
+- Complaint: scrolling the 15/6 life-path results, charts were labelled
+  "Celebrity", "Music", "Peter" or a bare first name. Cause: the label was the
+  alphabetically first name-kind tag, capitals first, so "Celebrity" beat
+  "charliesheen" and "Dad" beat "Peter". Live count: 165 of 711 charts showed
+  a category word, 382 a single word. The owner had tagged first names only
+  early on, so every John looked the same.
+- Design (approved): every chart gets a Name (images.title), never a tag. Tags
+  stay exactly as written and are for searching; the name is for reading at a
+  glance. Rules the owner set: first and last name only, no middle names; the
+  stage name when that is how the person is known ("Charlie Sheen", not
+  "Carlos Irwin Estévez"); "Name · Group" when the group is what they are
+  known for ("Kyle Forgeard · NELK"); their own charts "Me", their father
+  "Dad", "Mom". Short but complete enough to leave no doubt.
+- Seed: `server/chart-titles.json`, one entry per filename, decided once by
+  hand from the owner's tags, the full name typed into the paid tool
+  (`chart_inputs`, 680 charts had one) and what the chat knew of the person.
+  Loaded at startup for charts with no name (`seedTitles`, merge-only, never
+  over an owner edit). 41 entries are flagged `check` (a first name nobody can
+  complete, a garbled typed name, a guess) and sit in Settings → "Names to
+  check" with the picture, the name in a box, the tags and the typed name as
+  hints, "Looks right" / "Save". The viewer sheet opens with "Who is this?"
+  (Fix / Yes for a guess).
+- Search: typing a word in the search box now offers "Everyone named <word>"
+  and each matching name above the tags (`/api/names`, word-start match on the
+  name, any case); the result is `#/?name=` with its own summary, viewer swipes
+  and recent-search memory. A tag search is unchanged, so "John" the tag still
+  finds every chart tagged John.
+- Snapshot: a `chart names:` line (named / by owner / unnamed / to check) and a
+  `name:` line per chart. Test: `test/titles.test.js` (merge-only seed, check
+  list, name search, API, seed file sanity).

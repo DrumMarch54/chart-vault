@@ -7,6 +7,7 @@ import { statusReport, getImage, usageReport } from './queries.js';
 import { recentLogs } from './logbuf.js';
 import { fullPathFor, thumbPathFor } from './storage.js';
 import { deployGuard } from './deployguard.js';
+import { titleStats } from './titles.js';
 import { inputStats, tagCheck, chartsWithoutInputs, getInputs, valuesFor, chartLabel } from './positions.js';
 
 const started = Date.now();
@@ -32,6 +33,7 @@ export function snapshot(db, { scope = 'full', id = null, commit = 'unknown', bu
     line(`taken: ${img.taken_at || 'unknown'}   uploaded: ${img.uploaded_at ? `${img.uploaded_at} by build ${raw.uploaded_build || 'unknown'}` : 'no'}`);
     line(`file: ${img.has_file ? `${raw.stored_path} (${fmtB(img.size)}, ${img.width}x${img.height}, sha256 ${img.sha256})` : 'none yet'}`);
     if (img.has_file) line(`on disk: image ${fs.existsSync(fullPathFor(raw)) ? 'yes' : 'MISSING'}, thumb ${thumbPathFor(raw) && fs.existsSync(thumbPathFor(raw)) ? 'yes' : 'missing'}`);
+    line(`name: ${img.title ? `"${img.title}"` : '(none)'} (source ${img.title_source || 'none'}${img.title_check ? ', owner still to check' : ''})`);
     line(`tags (${img.tags.length}): ${img.tags.map((t) => `${t.name}[${t.kind}${t.source === 'app' ? ',app' : ''}]`).join(', ')}`);
     const removed = db.prepare('SELECT t.name, r.removed_at FROM removed_tags r JOIN tags t ON t.id = r.tag_id WHERE r.image_id = ?').all(img.id);
     if (removed.length) line(`removed in app: ${removed.map((r) => `${r.name} (${r.removed_at})`).join(', ')}`);
@@ -57,6 +59,8 @@ export function snapshot(db, { scope = 'full', id = null, commit = 'unknown', bu
   line(`charts with tags ${s.images}   uploaded ${s.uploaded}   missing screenshot ${s.missing_count}   archetype pics ${s.archetypes} (${s.archetypes_uploaded} uploaded)`);
   line(`distinct tags ${s.tags}   image-tag links ${s.links}   added in app ${s.added_in_app}   removed in app ${s.removed_in_app}`);
   line(`screenshot bytes ${fmtB(s.bytes)}   lost files (recorded but not on disk) ${s.lost_files ? s.lost_files.length : 0}`);
+  const ts = titleStats(db);
+  line(`chart names: ${ts.named} named (${ts.by_owner} by the owner)   ${ts.unnamed} without a name   ${ts.to_check} waiting for the owner to check`);
   line('');
   const used = usageReport(db, scope === 'short' ? 15 : 60);
   line(`WHAT YOU USE MOST (${used.length} names; counts only, never what was typed)`);
