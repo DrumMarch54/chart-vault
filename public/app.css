@@ -212,7 +212,7 @@ body.noscroll { overflow: hidden; }
 .tabs { padding: 2px 0 8px; }
 .tabs .chip.off { background: var(--panel2); color: var(--muted); }
 .tgroup { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 10px; background: var(--panel); margin-top: 8px; text-align: left; padding: 0 14px; min-height: 54px; }
-.tgroup .tg-title { flex: 1; min-width: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tgroup .tg-title { flex: 1; min-width: 0; font-weight: 600; line-height: 1.2; padding: 8px 0; }
 .tgroup .small { white-space: nowrap; }
 .tgroup .arrow { color: var(--muted); font-size: 18px; }
 .tchips { padding: 8px 2px 4px; }
