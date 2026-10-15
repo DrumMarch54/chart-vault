@@ -37,6 +37,8 @@ input:focus { outline: none; border-color: var(--blue); }
 .searchbar { position: sticky; top: 0; z-index: 10; background: var(--bg); padding: 10px 0 6px; }
 .searchbox { position: relative; }
 .searchbox input { padding-right: 48px; }
+/* The browser's own clear button inside a search box: hidden, the app has its own × */
+input[type=search]::-webkit-search-cancel-button, input[type=search]::-webkit-search-decoration { -webkit-appearance: none; appearance: none; display: none; }
 .searchbox .clear { position: absolute; right: 4px; top: 4px; width: 40px; min-height: 40px; height: 40px; padding: 0; border-radius: 10px; background: transparent; color: var(--muted); font-size: 22px; }
 .suggest { position: absolute; left: 0; right: 0; top: 100%; margin-top: 4px; background: var(--panel); border: 1px solid var(--panel2); border-radius: var(--radius); max-height: 55vh; overflow: auto; z-index: 15; box-shadow: 0 12px 30px rgba(0,0,0,.5); }
 .suggest button { width: 100%; justify-content: space-between; border-radius: 0; background: transparent; padding: 0 14px; border-bottom: 1px solid var(--panel2); text-align: left; }
@@ -58,6 +60,10 @@ input:focus { outline: none; border-color: var(--blue); }
 /* recently opened */
 .recent-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; margin-bottom: 4px; }
 .recent-row::-webkit-scrollbar { display: none; }
+/* home screen: recent searches, one row each, tap to search again */
+.rsearch { display: flex; width: 100%; justify-content: space-between; align-items: center; padding: 8px 10px; margin-bottom: 8px; min-height: 56px; }
+.rsearch .chips { gap: 6px; flex: 1; min-width: 0; }
+.rsearch .chip { min-height: 36px; font-size: 15px; }
 .recent-row .cell { flex: 0 0 31%; }
 @media (min-width: 700px) { .recent-row .cell { flex-basis: 19%; } }
 /* grid */
@@ -140,9 +146,10 @@ body.fullscreen { padding-bottom: 0; overflow: hidden; }
 .nscope .n-blue.n-bold { fill: #597997; }
 .nscope .n-tap { cursor: pointer; }
 .nscope-home { position: relative; }
-.cbtns { position: absolute; top: 10px; right: 10px; display: flex; gap: 6px; }
+.qname { position: relative; }
+.qname input { flex: 1; min-width: 0; }
 .cbtn { min-height: 36px; height: 36px; width: 36px; min-width: 36px; padding: 0; border-radius: 10px; background: #eef0f4; color: #3a3f52; font-size: 20px; font-weight: 700; }
-.cmenu { position: absolute; top: 52px; right: 10px; z-index: 5; min-width: 190px; background: #fff; border-radius: 12px; padding: 6px 0; box-shadow: 0 8px 28px rgba(0,0,0,.28); }
+.cmenu { position: absolute; top: calc(100% + 4px); right: 0; z-index: 5; min-width: 190px; background: #fff; border-radius: 12px; padding: 6px 0; box-shadow: 0 8px 28px rgba(0,0,0,.28); }
 .cmenu-item { display: flex; width: 100%; justify-content: flex-start; background: none; color: #22252e; border-radius: 0; padding: 0 18px; font-size: 16px; font-weight: 500; }
 .cmenu-item:active { background: #eef0f4; }
 body.noscroll { overflow: hidden; }

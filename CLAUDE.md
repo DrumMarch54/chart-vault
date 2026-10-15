@@ -81,7 +81,8 @@ looks like. A diagnostic that is computed and not on a screen does not exist.
   build is the truth over the repo.
 - Two failed tries at the same problem: stop and ask, never a third guess.
 - Grep before building: tell the owner what already exists. Grep for the name
-  of anything you add or delete.
+  of anything you add or delete, in tools/ and test/ too (report.mjs waited
+  for a removed tab bar and called a good login refused).
 - Can't verify against the live system? Say so plainly.
 - Big change: brainstorm and get the design approved first.
 - A durable lesson = one short rule here + the full story in `.brain/HISTORY.md`.

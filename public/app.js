@@ -46,6 +46,8 @@
 
   // ---------- routing ----------
   const routes = {};
+  let lastRoute = null; // the screen shown before this one (null = this is the first screen since the page loaded)
+  let viewerFromApp = false; // the viewer was opened from another screen here, so Back can use the browser's own history
   function route() {
     const hash = location.hash || '#/';
     const [, name = '', arg = ''] = /^#\/([^/?]*)\/?([^?]*)/.exec(hash) || [];
@@ -53,10 +55,15 @@
     const view = routes[name] || routes[''];
     closeOverlays();
     if (viewerCleanup) { viewerCleanup(); viewerCleanup = null; }
+    if (name === 'chart' && lastRoute !== 'chart') viewerFromApp = lastRoute !== null;
+    lastRoute = name;
     view(arg, query);
   }
   window.addEventListener('hashchange', route);
   const go = (hash) => { location.hash = hash; };
+  // Same screen change, but without adding a step to the browser's history (used between charts in the
+  // viewer, so the phone's Back button returns to the screen the viewer was opened from, not to the last chart).
+  const swap = (hash) => { location.replace(hash); };
   // Like replaceChildren, but skips null/false so a conditional part never shows as the word "null".
   const fill = (el, ...nodes) => el.replaceChildren(...nodes.filter((n) => n !== null && n !== undefined && n !== false));
   const render = (...nodes) => { fill($app, ...nodes); window.scrollTo(0, 0); };
@@ -221,11 +228,23 @@
     const $grid = h('div', { class: 'grid' });
     const $sentinel = h('div', { class: 'sentinel' });
     const $recent = h('div', { class: 'recent hidden' });
+    // The home screen (nothing searched) shows this phone's recent searches and recently opened charts,
+    // not every chart newest first: the owner always starts from a search.
+    const home = !tags.length && kind === 'chart';
+    if (tags.length) rememberSearch(tags, kind);
+    const searches = home ? recentSearches() : [];
+    const $searches = home ? h('div', { class: 'rsearches' },
+      searches.length ? h('div', { class: 'summary', style: 'padding-bottom:4px' }, 'Recent searches') : null,
+      ...searches.map((s) => h('button', { type: 'button', class: 'rsearch', onclick: () => setTags(s.tags, s.kind) },
+        h('span', { class: 'chips' }, s.kind === 'archetype' ? h('span', { class: 'chip name', style: 'pointer-events:none' }, 'Archetype pics') : null,
+          ...s.tags.map((t) => h('span', { class: `chip ${kindOf(t)}`, style: 'pointer-events:none' }, TagCodes.pretty(t)))),
+        h('span', { class: 'muted', style: 'padding-left:8px' }, '›'))),
+      searches.length ? null : h('p', { class: 'muted', style: 'padding:8px 2px' }, 'Search a name or a tag above. Your recent searches will show here.')) : null;
     render(h('div', { class: 'screen' },
       h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), $quick, $gear), (tags.length || kind === 'archetype') ? $filters : null),
-      $recent, $summary, $grid, $sentinel));
-    // Recently opened charts (this phone remembers the last 12), only on the plain list.
-    if (!tags.length && kind === 'chart' && recentIds().length) {
+      $searches, $recent, home ? null : $summary, home ? null : $grid, home ? null : $sentinel));
+    // Recently opened charts (this phone remembers the last 12), only on the home screen.
+    if (home && recentIds().length) {
       api('/api/images?ids=' + recentIds().join(',') + '&limit=50').then((r) => {
         const byId = new Map(r.items.map((i) => [i.id, i]));
         const items = recentIds().map((id) => byId.get(id)).filter(Boolean);
@@ -234,6 +253,7 @@
         $recent.classList.remove('hidden');
       }).catch(() => {});
     }
+    if (home) return;
 
     let offset = 0, total = null, loading = false, done = false;
     const params = () => { const p = new URLSearchParams({ limit: 60, offset, kind }); for (const t of tags) p.append('tag', t); return p; };
@@ -266,6 +286,15 @@
   // The last charts opened on this phone, newest first (browser storage; may be empty or blocked).
   const recentIds = () => { try { return (JSON.parse(localStorage.getItem('recent') || '[]') || []).filter(Number.isInteger).slice(0, 12); } catch { return []; } };
   const rememberOpened = (id) => { try { localStorage.setItem('recent', JSON.stringify([id, ...recentIds().filter((x) => x !== id)].slice(0, 12))); } catch {} };
+  // The last searches made on this phone, newest first: [{ tags, kind }]. Adding a tag to a search
+  // replaces the narrower search it grew from, so one lookup does not leave a trail of half-searches.
+  const recentSearches = () => { try { return (JSON.parse(localStorage.getItem('searches') || '[]') || []).filter((s) => s && Array.isArray(s.tags) && s.tags.length).slice(0, 20); } catch { return []; } };
+  const rememberSearch = (tags, kind) => {
+    try {
+      const kept = recentSearches().filter((s) => !(s.kind === kind && (s.tags.every((t) => tags.includes(t)) || tags.every((t) => s.tags.includes(t)))));
+      localStorage.setItem('searches', JSON.stringify([{ tags, kind }, ...kept].slice(0, 20)));
+    } catch {}
+  };
 
   // ---------- viewer (full screen) ----------
   let viewerCleanup = null;
@@ -273,12 +302,24 @@
     const qs = query.toString();
     const listQ = new URLSearchParams(); for (const t of query.getAll('tag')) listQ.append('tag', t); if (query.get('kind') === 'archetype') listQ.set('kind', 'archetype');
     const backHash = '#/' + (listQ.toString() ? '?' + listQ : '');
-    const back = () => go(backHash);
+    // Back goes to the screen the viewer was opened from (the list, a search, the quick chart). Opened from a
+    // link or a fresh load, there is no such screen, so it goes to the list this chart belongs to.
+    const back = () => (viewerFromApp ? history.back() : swap(backHash));
     document.body.classList.add('fullscreen');
     viewerCleanup = () => document.body.classList.remove('fullscreen');
 
-    const $img = h('img', { class: 'vimg', alt: 'Chart', draggable: 'false' });
+    // alt is empty on purpose: with text in it the browser draws a "missing picture" icon until the file arrives.
+    const $img = h('img', { class: 'vimg', alt: '', draggable: 'false' });
     const $stage = h('div', { class: 'vstage' }, $img);
+    // The picture is sized from its own proportions to fill the stage, so the small thumbnail shown first
+    // (already on the phone from the list) and the full picture that replaces it take exactly the same space.
+    const fit = () => {
+      if (!$img.naturalWidth || !$img.isConnected) return;
+      const W = $stage.clientWidth, H = $stage.clientHeight, r = $img.naturalWidth / $img.naturalHeight;
+      const w = Math.min(W, H * r); $img.style.width = `${w}px`; $img.style.height = `${w / r}px`;
+    };
+    $img.addEventListener('load', fit); window.addEventListener('resize', fit);
+    $img.src = `/thumb/${id}`;
     const $count = h('span', { class: 'vcount' }, '');
     const $name = h('span', { class: 'vname' }, '');
     const $prev = h('button', { type: 'button', class: 'iconbtn varrow left hidden', 'aria-label': 'Previous' }, '‹');
@@ -295,12 +336,12 @@
     const openSheet = () => { sheetOpen = true; $sheet.classList.add('open'); $root.classList.remove('bare'); };
     const closeSheet = () => { sheetOpen = false; $sheet.classList.remove('open'); };
     const toggleBare = () => $root.classList.toggle('bare'); // tap: hide or show the top bar
-    const goTo = (nid) => { if (nid) go(`#/chart/${nid}${qs ? '?' + qs : ''}`); };
+    const goTo = (nid) => { if (nid) swap(`#/chart/${nid}${qs ? '?' + qs : ''}`); };
     const z = zoomable($stage, $img, { left: () => goTo(ctx.next), right: () => goTo(ctx.prev), up: openSheet, down: () => (sheetOpen ? closeSheet() : back()), tap: () => (sheetOpen ? closeSheet() : toggleBare()) });
     $prev.onclick = () => goTo(ctx.prev); $next.onclick = () => goTo(ctx.next);
     const keys = (e) => { if (e.key === 'ArrowLeft') goTo(ctx.prev); else if (e.key === 'ArrowRight') goTo(ctx.next); else if (e.key === 'Escape') (sheetOpen ? closeSheet() : back()); };
     window.addEventListener('keydown', keys);
-    viewerCleanup = () => { document.body.classList.remove('fullscreen'); window.removeEventListener('keydown', keys); z.destroy(); };
+    viewerCleanup = () => { document.body.classList.remove('fullscreen'); window.removeEventListener('keydown', keys); window.removeEventListener('resize', fit); z.destroy(); };
     // swipe down on the sheet grip closes it
     let gripY = null;
     $sheet.addEventListener('pointerdown', (e) => { if (e.target.closest('.vsheet-grip')) gripY = e.clientY; });
@@ -309,7 +350,8 @@
     try { img = await api(`/api/images/${id}`); } catch (err) { fill($sheetBody, h('p', { class: 'err' }, err.message)); openSheet(); return; }
     if (query.get('sheet')) openSheet();
     if (img.kind === 'chart') rememberOpened(img.id);
-    if (img.has_file) { $img.src = `/img/${img.id}`; } else { $img.alt = ''; fill($stage, h('div', { class: 'center', style: 'min-height:100%' }, h('p', { class: 'muted' }, 'No picture for this chart yet.'), h('a', { class: 'btn', href: '#/upload' }, 'Go to Upload'))); }
+    // The full picture replaces the thumbnail only once it has arrived, so nothing blank or broken shows in between.
+    if (img.has_file) { const full = new Image(); full.onload = () => { if ($img.isConnected) $img.src = full.src; }; full.src = `/img/${img.id}`; } else { $img.removeAttribute('src'); fill($stage, h('div', { class: 'center', style: 'min-height:100%' }, h('p', { class: 'muted' }, 'No picture for this chart yet.'), h('a', { class: 'btn', href: '#/upload' }, 'Go to Upload'))); }
     $name.textContent = img.kind === 'archetype' ? img.tags.map((t) => t.name).join(', ') : ((img.tags.find((t) => t.kind === 'name') || {}).name || '');
     api(`/api/images/${id}/context?${listQ}`).then((c) => {
       ctx = c;
@@ -800,16 +842,17 @@
     };
     $chart.addEventListener('click', (e) => { const t = e.target.closest && e.target.closest('[data-word]'); if (t) openWord(t.getAttribute('data-word'), data && data.essence.day); });
     for (const el of [$day, $month, $year, $name]) el.addEventListener('input', draw);
+    // The ⋮ menu sits beside the name field, never on the chart: Full screen and Save to vault. Taps outside close it.
+    const $full = h('button', { type: 'button', class: 'cmenu-item' }, 'Full screen');
+    const $save = h('button', { type: 'button', class: 'cmenu-item' }, 'Save to vault');
+    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $full, $save);
+    const $dots = h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'More', title: 'More', onclick: (e) => { e.stopPropagation(); $menu.classList.toggle('hidden'); } }, '⋮');
+    document.addEventListener('click', (e) => { if (!$menu.contains(e.target)) $menu.classList.add('hidden'); });
+    const $home = h('div', { class: 'nscope-home' }, $chart);
     // Full screen: the chart alone, edge to edge, until the X is tapped. The chart element moves into the
     // overlay and back, so what was typed stays. Leaving the screen closes it (route() clears overlays).
-    const $full = h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Full screen', title: 'Full screen' }, '⤢');
-    // The ⋮ menu: chart actions (Save to vault now; more later). Taps outside close it.
-    const $save = h('button', { type: 'button', class: 'cmenu-item' }, 'Save to vault');
-    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $save);
-    const $dots = h('button', { type: 'button', class: 'cbtn', 'aria-label': 'More', title: 'More', onclick: (e) => { e.stopPropagation(); $menu.classList.toggle('hidden'); } }, '⋮');
-    document.addEventListener('click', (e) => { if (!$menu.contains(e.target)) $menu.classList.add('hidden'); });
-    const $home = h('div', { class: 'nscope-home' }, $chart, h('div', { class: 'cbtns' }, $full, $dots), $menu);
     $full.onclick = () => {
+      $menu.classList.add('hidden');
       const close = () => { $ov.remove(); overlays = overlays.filter((o) => o !== $ov); document.body.classList.remove('fullscreen'); $home.prepend($chart); window.removeEventListener('keydown', keys); };
       const keys = (e) => { if (e.key === 'Escape') close(); };
       const $ov = h('div', { class: 'nsfull' }, h('button', { type: 'button', class: 'cbtn nsfull-x', 'aria-label': 'Leave full screen', onclick: close }, '×'), $chart);
@@ -831,7 +874,7 @@
     };
     render(h('div', { class: 'screen' },
       h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px;margin-top:4px' }, h('a', { class: 'btn iconbtn', href: '#/', 'aria-label': 'Back' }, '‹'), $day, $month, $year),
-      h('div', { style: 'margin-top:8px' }, $name), $home));
+      h('div', { class: 'row qname', style: 'flex-wrap:nowrap;gap:8px;margin-top:8px' }, $name, $dots, $menu), $home));
     draw();
     setTimeout(() => $name.focus(), 50);
   };

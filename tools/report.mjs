@@ -68,7 +68,7 @@ async function screens(dir) {
   if (await page.locator('input[type=password]').count()) {
     await page.fill('input[type=password]', TOKEN);
     await page.click('button[type=submit]');
-    try { await page.waitForSelector('#nav:not(.hidden)', { timeout: 15000 }); }
+    try { await page.waitForSelector('.searchbar', { timeout: 15000 }); }
     catch { console.error('Login was refused.'); await browser.close(); process.exit(3); }
   }
   const shots = [['browse', '#/'], ['quick', '#/quick'], ['upload', '#/upload'], ['tags', '#/import'], ['status', '#/status']];

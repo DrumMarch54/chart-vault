@@ -146,3 +146,28 @@ Brought the app in line with the new-app playbook from the first app:
 - Recently opened: the last 12 charts opened on this phone, a row above the
   grid on the plain list. Browser storage, wrapped in try/catch; a cleared
   browser just empties the row.
+
+## 2026-10-15 Home screen is recent searches; Back returns to the screen before the viewer
+- Owner: the newest-first grid on the home screen was never used ("I'm just
+  searching a person's name"). Home now shows this phone's recent searches
+  (tap one to run it again; a search that grows by a tag replaces the
+  narrower one it came from) and the recently opened row. The grid still
+  shows for a search and for Archetype pics. Browser storage, like the
+  recently opened row.
+- The phone's Back button went back one chart at a time: every swipe in the
+  viewer pushed a history step. Chart-to-chart moves now use
+  `location.replace` (no step), and the viewer's own ‹ uses `history.back()`
+  when the viewer was opened from inside the app, so Back lands on the
+  search or screen the owner came from. Opened from a link, ‹ goes to the
+  chart's list instead.
+- A "missing picture" icon flashed when a chart opened or on each swipe: the
+  `<img>` had alt text and no file yet. alt is now empty and the thumbnail
+  (already on the phone from the list) shows at once, sized to the stage from
+  its own proportions; the full picture replaces it once loaded, same size.
+- Two × in the search box: the browser's own clear button on `type=search`
+  plus the app's. The browser's is hidden with CSS.
+- Quick chart: the ⋮ sits beside the name field (Full screen, Save to
+  vault); nothing sits on the chart any more.
+- `tools/report.mjs screens` said "Login was refused" with the right
+  password: it waited for `#nav`, removed with the tab bar two builds ago.
+  Lesson: when a screen element goes, grep tools/ and test/ for it too.
