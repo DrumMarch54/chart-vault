@@ -41,3 +41,11 @@ relationship = their sum (Relations book pp. 13-15).
 `.brain/numerology/README.md` "Reading PDFs" has the steps. Short: text-search first (pdftotext), render
 only the pages a hit points at (pdftoppm -r 70 … -f N -l N), look at the PNG; never print a whole book.
 Files over 10 MB come by direct link (they are shared "anyone with the link").
+
+## The day's planet pictures (public/planets/)
+NASA photographs, public domain, cropped to the disk and saved small (560 px, Saturn 720 px, webp): Sun
+GSFC_20171208_Archive_e002069 (SDO AIA 304), Moon GSFC_20171208_Archive_e001861, Mercury PIA15162
+(MESSENGER globe), Venus PIA23791 (Mariner 10, left frame), Mars PIA04591 (Hubble 2003), Jupiter PIA02873
+(Cassini globe), Saturn PIA11141 (Cassini), Uranus PIA18182 (Voyager 2), Neptune PIA01492 (Voyager 2).
+Found and fetched through https://images-api.nasa.gov (search, then /asset/<id> for the file sizes). The
+scene draws them with a screen blend so the black background vanishes into the sky.

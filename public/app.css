@@ -374,6 +374,7 @@ html.light .tscreen .reading .rate { margin-left: auto; }
 .scene { display: block; width: 100%; height: auto; border-radius: 12px; }
 .scenebox { margin: 2px 0 4px; cursor: pointer; }
 .scene text { font-family: "Open Sans", system-ui, sans-serif; fill: #fff; }
+.scene .planet { mix-blend-mode: screen; }
 .scene .sc-label { fill: #9fb3d9; letter-spacing: .12em; font-weight: 700; }
 .scene .sc-day { font-weight: 700; }
 .scene .sc-num { fill: #f0b64a; font-weight: 700; }

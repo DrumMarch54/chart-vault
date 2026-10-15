@@ -65,38 +65,32 @@
   // The codes a date holds, as chips: green strong, blue soft, red to avoid.
   const codeChips = (e) => A.h('div', { class: 'codes' }, ...e.codes.map((c) => A.h('span', { class: c.kind === 'avoid' || c.kind === 'care' ? 'warn' : c.kind === 'soft' ? 'soft' : '', onclick: () => numberSheet(c.value, c.pos) }, `${c.value.text} ${POS_WORDS[c.pos].split(' ·')[0].toLowerCase()} · ${c.words}`)));
 
-  // ---------- the day's scene: a planet for the ruler of the day over a starry sky (the paid tool's Today page) ----------
-  // Drawn here, no pictures fetched: each planet is a few gradients and shapes. Stars are seeded by the date
-  // so a day always looks the same.
-  const PLANET_COLORS = { Sun: ['#fff1a8', '#f7b733', '#c2410c'], Moon: ['#f4f4f6', '#c9ccd6', '#8a8f9c'], Jupiter: ['#f6e3c3', '#d9a066', '#8a4b2a'], Uranus: ['#d9f6f8', '#7fd3e0', '#2a8aa0'], Mercury: ['#e9e2d6', '#a89f93', '#5b544c'], Venus: ['#fff7d6', '#f0cf7a', '#b8862b'], Neptune: ['#9fc4ff', '#3b6fe0', '#1a2f7a'], Saturn: ['#f7ecd2', '#d8b57a', '#8a6a3a'], Mars: ['#ffb08a', '#d9542b', '#6b1f0f'] };
-  function planetScene(e, h = 150) {
-    const sv = A.sv, W = 390, cx = 92, cy = h / 2, r = Math.min(52, h * 0.36);
-    const planet = e.ruler, [c1, c2, c3] = PLANET_COLORS[planet] || PLANET_COLORS.Moon;
-    const id = 'pl' + planet.toLowerCase() + h;
+  // ---------- the day's scene: a real photo of the ruler of the day over a starry sky (the paid tool's Today page) ----------
+  // NASA photographs (public domain), cropped to the disk and kept small in public/planets/: the Sun by SDO,
+  // the Moon by LRO, Mercury by MESSENGER, Venus by Mariner 10, Mars and Jupiter by Hubble and Cassini,
+  // Saturn by Cassini, Uranus and Neptune by Voyager 2. Each sits on the sky with a screen blend, so the
+  // photo's black background disappears. Stars are seeded by the date so a day always looks the same.
+  function planetScene(e, h = 170) {
+    const sv = A.sv, W = 390;
+    const planet = e.ruler, key = planet.toLowerCase();
+    const id = 'sc' + h;
     const svg = sv('svg', { viewBox: `0 0 ${W} ${h}`, class: 'scene', role: 'img', 'aria-label': `Ruler of the day ${planet}` });
-    const defs = sv('defs', {},
-      sv('linearGradient', { id: id + 'sky', x1: 0, y1: 0, x2: 1, y2: 1 }, sv('stop', { offset: 0, 'stop-color': '#0b1026' }), sv('stop', { offset: 0.6, 'stop-color': '#1b1f3f' }), sv('stop', { offset: 1, 'stop-color': '#2b1b3f' })),
-      sv('radialGradient', { id: id + 'body', cx: 0.35, cy: 0.32, r: 0.8 }, sv('stop', { offset: 0, 'stop-color': c1 }), sv('stop', { offset: 0.55, 'stop-color': c2 }), sv('stop', { offset: 1, 'stop-color': c3 })),
-      sv('radialGradient', { id: id + 'glow', cx: 0.5, cy: 0.5, r: 0.5 }, sv('stop', { offset: 0.6, 'stop-color': c2, 'stop-opacity': 0.35 }), sv('stop', { offset: 1, 'stop-color': c2, 'stop-opacity': 0 })));
-    svg.append(defs, sv('rect', { x: 0, y: 0, width: W, height: h, fill: `url(#${id}sky)` }));
-    // stars, seeded by the date
+    svg.append(sv('defs', {},
+      sv('linearGradient', { id: id + 'sky', x1: 0, y1: 0, x2: 1, y2: 1 }, sv('stop', { offset: 0, 'stop-color': '#05070f' }), sv('stop', { offset: 0.55, 'stop-color': '#0d1226' }), sv('stop', { offset: 1, 'stop-color': '#1a1030' })),
+      sv('radialGradient', { id: id + 'neb', cx: 0.5, cy: 0.5, r: 0.5 }, sv('stop', { offset: 0, 'stop-color': '#4a3b8a', 'stop-opacity': 0.35 }), sv('stop', { offset: 1, 'stop-color': '#4a3b8a', 'stop-opacity': 0 })),
+      sv('radialGradient', { id: id + 'neb2', cx: 0.5, cy: 0.5, r: 0.5 }, sv('stop', { offset: 0, 'stop-color': '#1f6a7a', 'stop-opacity': 0.28 }), sv('stop', { offset: 1, 'stop-color': '#1f6a7a', 'stop-opacity': 0 }))));
+    svg.append(sv('rect', { x: 0, y: 0, width: W, height: h, fill: `url(#${id}sky)` }));
+    svg.append(sv('ellipse', { cx: 300, cy: h * 0.2, rx: 170, ry: 70, fill: `url(#${id}neb)` }), sv('ellipse', { cx: 120, cy: h * 0.9, rx: 160, ry: 60, fill: `url(#${id}neb2)` }));
     let seed = e.y * 10000 + e.m * 100 + e.d;
     const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
-    for (let i = 0; i < 70; i++) { const x = rnd() * W, y = rnd() * h, s = rnd(); if (Math.hypot(x - cx, y - cy) < r + 8) continue; svg.append(sv('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: (0.4 + s * 1.1).toFixed(2), fill: '#fff', opacity: (0.35 + s * 0.6).toFixed(2) })); }
-    svg.append(sv('circle', { cx, cy, r: r * 1.6, fill: `url(#${id}glow)` }));
-    const g = sv('g', {});
-    if (planet === 'Saturn') g.append(sv('ellipse', { cx, cy: cy + 2, rx: r * 1.75, ry: r * 0.42, fill: 'none', stroke: '#e7d5ad', 'stroke-width': r * 0.16, opacity: 0.55, transform: `rotate(-18 ${cx} ${cy})` }));
-    g.append(sv('circle', { cx, cy, r, fill: `url(#${id}body)` }));
-    if (planet === 'Jupiter' || planet === 'Saturn') for (const [dy, op] of [[-0.45, 0.25], [-0.15, 0.35], [0.2, 0.3], [0.5, 0.22]]) { const yy = cy + dy * r, hw = Math.sqrt(Math.max(0, r * r - (dy * r) ** 2)); g.append(sv('rect', { x: cx - hw, y: yy - r * 0.07, width: hw * 2, height: r * 0.14, fill: c3, opacity: op, rx: r * 0.07 })); }
-    if (planet === 'Jupiter') g.append(sv('ellipse', { cx: cx + r * 0.3, cy: cy + r * 0.25, rx: r * 0.22, ry: r * 0.12, fill: '#b5452a', opacity: 0.8 }));
-    if (planet === 'Moon' || planet === 'Mercury') for (const [dx, dy, rr] of [[-0.3, -0.2, 0.16], [0.25, 0.15, 0.11], [0.05, 0.45, 0.09], [0.4, -0.4, 0.07]]) g.append(sv('circle', { cx: cx + dx * r, cy: cy + dy * r, r: rr * r, fill: c3, opacity: 0.35 }));
-    if (planet === 'Saturn') g.append(sv('path', { d: `M ${cx - r * 1.75} ${cy + 2} A ${r * 1.75} ${r * 0.42} 0 0 0 ${cx + r * 1.75} ${cy + 2}`, fill: 'none', stroke: '#efe0bf', 'stroke-width': r * 0.16, opacity: 0.85, transform: `rotate(-18 ${cx} ${cy})` }));
-    if (planet === 'Sun') for (let i = 0; i < 12; i++) { const a = (i / 12) * Math.PI * 2; g.append(sv('line', { x1: cx + Math.cos(a) * r * 1.15, y1: cy + Math.sin(a) * r * 1.15, x2: cx + Math.cos(a) * r * 1.35, y2: cy + Math.sin(a) * r * 1.35, stroke: '#ffd77a', 'stroke-width': 2, opacity: 0.6, 'stroke-linecap': 'round' })); }
-    svg.append(g);
+    const size = planet === 'Saturn' ? h * 1.25 : h * 0.86, cx = planet === 'Saturn' ? 96 : 92, cy = h / 2;
+    for (let i = 0; i < 90; i++) { const x = rnd() * W, y = rnd() * h, s = rnd(); if (Math.hypot(x - cx, y - cy) < size * (planet === 'Saturn' ? 0.5 : 0.46)) continue; svg.append(sv('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: (0.3 + s * 1.0).toFixed(2), fill: s > 0.85 ? '#dfe8ff' : '#fff', opacity: (0.25 + s * 0.7).toFixed(2) })); }
+    // the photo: Saturn's rings need a wider frame; the others fill a disc of about the banner's height
+    svg.append(sv('image', { href: `/planets/${key}.webp`, x: cx - size / 2, y: cy - size / 2, width: size, height: size, class: 'planet', preserveAspectRatio: 'xMidYMid meet' }));
     const t = (x, y, s, size, cls, anchor) => sv('text', { x, y, 'font-size': size, class: cls, 'text-anchor': anchor || 'start' }, s);
-    const tx = 170;
-    svg.append(t(tx, cy - 30, `RULER OF THE DAY · ${planet.toUpperCase()}`, 10, 'sc-label'), t(tx, cy - 2, `${DOW[e.weekday]}`, 15, 'sc-day'), t(tx, cy + 18, `${MON[e.m - 1]} ${e.d}, ${e.y}`, 15, 'sc-day'),
-      t(tx, cy + 46, `${e.dv.text}  ${nameOf(e.dv)}`, 14, 'sc-num'));
+    const tx = 182;
+    svg.append(t(tx, cy - 32, `RULER OF THE DAY · ${planet.toUpperCase()}`, 9.5, 'sc-label'), t(tx, cy - 6, `${DOW[e.weekday]}`, 16, 'sc-day'), t(tx, cy + 15, `${MON[e.m - 1]} ${e.d}, ${e.y}`, 16, 'sc-day'),
+      t(tx, cy + 44, `${e.dv.text}  ${nameOf(e.dv)}`, 13.5, 'sc-num'));
     return svg;
   }
   // A day full screen: the scene, the essence and psyche charts edge to edge, ‹ › to the days around it.
@@ -109,7 +103,7 @@
     const draw = () => {
       const e = T.dayEnergy(cur.y, cur.m, cur.d); if (!e) return;
       $title.textContent = `${DOW[e.weekday].slice(0, 3)}, ${MON[cur.m - 1]} ${cur.d}, ${cur.y}`;
-      A.fill($box, planetScene(e, 150), A.h('div', { class: 'row', style: 'justify-content:space-between;padding:6px 8px 0' }, rate(e.rating), chip('Psyche charts', psyche.on, () => { psyche.on = !psyche.on; remember('toolsPsyche', psyche.on); draw(); })),
+      A.fill($box, planetScene(e, 170), A.h('div', { class: 'row', style: 'justify-content:space-between;padding:6px 8px 0' }, rate(e.rating), chip('Psyche charts', psyche.on, () => { psyche.on = !psyche.on; remember('toolsPsyche', psyche.on); draw(); })),
         A.h('div', { class: 'nscope-box' }, dateCharts(cur.y, cur.m, cur.d, psyche.on)),
         codeChips(e),
         A.h('button', { type: 'button', class: 'btn btn-block readbtn', onclick: () => { close(); if (onReadings) onReadings(cur); else A.go(`#/today/${iso(cur.y, cur.m, cur.d)}`); } }, 'Readings for this day ›'));
@@ -142,7 +136,7 @@
         A.h('div', { class: 'head' }, A.h('b', {}, v.text), A.h('span', { class: 'nm' }, nameOf(v)), A.h('span', { class: 'pos' }, POS_WORDS[pos])),
         A.h('p', {}, POS_INTRO[pos] + (pos === 'lp' ? ` Big essence ${e.bigLp.text}.` : '')));
       A.fill($body,
-        A.h('div', { class: 'scenebox', onclick: () => { A.count('today.full'); dayFull(date); } }, planetScene(e, 150)),
+        A.h('div', { class: 'scenebox', onclick: () => { A.count('today.full'); dayFull(date); } }, planetScene(e, 170)),
         A.h('div', { class: 'togglerow' }, chip('Psyche charts', psyche.on, () => { psyche.on = !psyche.on; remember('toolsPsyche', psyche.on); A.count('today.psyche'); draw(); }), rate(e.rating, 'right')),
         A.h('div', { class: 'nscope-box', role: 'button', 'aria-label': 'Full screen', onclick: () => { A.count('today.full'); dayFull(date); } }, dateCharts(date.y, date.m, date.d, psyche.on)),
         A.h('div', { class: 'bignum', onclick: () => numberSheet(e.dv, 'dv') }, A.h('b', {}, e.dv.text), A.h('span', { class: 'nm' }, nameOf(e.dv)), A.h('span', { class: 'ty' }, `Day vibration · ruler ${e.ruler}`)),
