@@ -136,8 +136,10 @@ body.fullscreen { padding-bottom: 0; overflow: hidden; }
 .nscope .n-tap { cursor: pointer; }
 .nscope-home { position: relative; }
 .cbtns { position: absolute; top: 10px; right: 10px; display: flex; gap: 6px; }
-.cbtn { min-height: 36px; height: 36px; min-width: 36px; padding: 0 12px; border-radius: 10px; background: #eef0f4; color: #3a3f52; font-size: 15px; font-weight: 600; }
-.cbtn:not(.save) { padding: 0; font-size: 20px; }
+.cbtn { min-height: 36px; height: 36px; width: 36px; min-width: 36px; padding: 0; border-radius: 10px; background: #eef0f4; color: #3a3f52; font-size: 20px; font-weight: 700; }
+.cmenu { position: absolute; top: 52px; right: 10px; z-index: 5; min-width: 190px; background: #fff; border-radius: 12px; padding: 6px 0; box-shadow: 0 8px 28px rgba(0,0,0,.28); }
+.cmenu-item { display: flex; width: 100%; justify-content: flex-start; background: none; color: #22252e; border-radius: 0; padding: 0 18px; font-size: 16px; font-weight: 500; }
+.cmenu-item:active { background: #eef0f4; }
 body.noscroll { overflow: hidden; }
 /* one word's own charts (popup) */
 .wordpop { position: fixed; inset: 0; z-index: 35; overflow: auto; background: var(--bg); padding: 8px 12px calc(24px + env(safe-area-inset-bottom)); max-width: 1100px; margin: 0 auto; }

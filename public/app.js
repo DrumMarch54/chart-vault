@@ -788,8 +788,12 @@
     // Full screen: the chart alone, edge to edge, until the X is tapped. The chart element moves into the
     // overlay and back, so what was typed stays. Leaving the screen closes it (route() clears overlays).
     const $full = h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Full screen', title: 'Full screen' }, '⤢');
-    const $save = h('button', { type: 'button', class: 'cbtn save', 'aria-label': 'Save to vault', title: 'Save to vault' }, 'Save');
-    const $home = h('div', { class: 'nscope-home' }, $chart, h('div', { class: 'cbtns' }, $save, $full));
+    // The ⋮ menu: chart actions (Save to vault now; more later). Taps outside close it.
+    const $save = h('button', { type: 'button', class: 'cmenu-item' }, 'Save to vault');
+    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $save);
+    const $dots = h('button', { type: 'button', class: 'cbtn', 'aria-label': 'More', title: 'More', onclick: (e) => { e.stopPropagation(); $menu.classList.toggle('hidden'); } }, '⋮');
+    document.addEventListener('click', (e) => { if (!$menu.contains(e.target)) $menu.classList.add('hidden'); });
+    const $home = h('div', { class: 'nscope-home' }, $chart, h('div', { class: 'cbtns' }, $full, $dots), $menu);
     $full.onclick = () => {
       const close = () => { $ov.remove(); overlays = overlays.filter((o) => o !== $ov); document.body.classList.remove('fullscreen'); $home.prepend($chart); window.removeEventListener('keydown', keys); };
       const keys = (e) => { if (e.key === 'Escape') close(); };
@@ -802,13 +806,13 @@
       if (!name) { toast('Type a name first.', true); $name.focus(); return; }
       const d = Number($day.value), m = Number($month.value), y = Number($year.value);
       const date = d && m && y >= 1000 ? `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}` : '';
-      $save.disabled = true; $save.textContent = 'Saving…';
+      $save.disabled = true; $save.textContent = 'Saving…'; $menu.classList.remove('hidden');
       try {
         const png = await chartPng(svg);
         const r = await api(`/api/quick/save?name=${encodeURIComponent(name)}&date=${date}`, { method: 'PUT', headers: { 'content-type': 'image/png' }, body: png });
         toast(`Saved “${name}” to the vault`);
         go(`#/chart/${r.id}?sheet=1`);
-      } catch (err) { toast(err.message, true); $save.disabled = false; $save.textContent = 'Save'; }
+      } catch (err) { toast(err.message, true); $save.disabled = false; $save.textContent = 'Save to vault'; $menu.classList.add('hidden'); }
     };
     render(h('div', { class: 'screen' },
       h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px;margin-top:4px' }, h('a', { class: 'btn iconbtn', href: '#/', 'aria-label': 'Back' }, '‹'), $day, $month, $year),
