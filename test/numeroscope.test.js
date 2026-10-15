@@ -307,3 +307,28 @@ test('day vibrations: JFK on 22 Nov 1963; the shadow column starts from the last
   assert.equal(d.rows.map((x) => x.shadow.text).join(' '), '2/2 2/2 4/4 2/2 6/6 2/2 8/8 9/9 17/8');
   assert.equal(N.dayRows({ day: 3, month: 1, year: 1990 }, 2026, 10, 3).rows[0].shadow.text, '0');
 });
+
+test('psyche rows use the outer psyche chart: JFK 1961 (F3) and 1963 columns from the case book', () => {
+  const col = (r, k) => r.rows.map((x) => (x.psyche[k] ? x.psyche[k].text : '-')).join(' ');
+  const r61 = N.yearRows({ day: 29, month: 5, year: 1917, name: 'John Fitzgerald Kennedy' }, 1961);
+  assert.equal(r61.formula.code, 'F3');
+  assert.equal(r61.rows.slice(2, 5).map((x) => x.shadow.text).join(' '), '9/9 2/2 11/2'); // "shadow column 9-2-11/2"
+  assert.equal(r61.rows.slice(2, 5).map((x) => x.psyche.shadow.text).join(' '), '9/9 7/7 16/7'); // "psyche column 9-7-16/7"
+  assert.equal([r61.rows[2].psyche.main.text, r61.rows[2].psyche.aura.text, r61.rows[2].psyche.shadow.text].join(' '), '10/1 10/1 9/9'); // "horizontal psyche row 10/1-10/1-9"
+  const r63 = N.yearRows({ day: 29, month: 5, year: 1917, name: 'John Fitzgerald Kennedy' }, 1963);
+  assert.equal(col(r63, 'main'), '1/1 2/2 3/3 7/7 10/1 1/1 2/2'); // 1st psyche column 3-7-10/1
+  assert.equal(col(r63, 'shadow'), '9/9 2/2 11/2 7/7 9/9 1/1 10/1'); // 3rd psyche column 11/2-7-9
+  assert.equal([r63.rows[6].psyche.main.text, r63.rows[6].psyche.aura.text, r63.rows[6].psyche.shadow.text].join(' '), '2/2 3/3 10/1'); // psyche row 2-3-10/1 on Nov 22
+});
+
+test('day rows: Wimbledon 2017 final at 2 PM (case book): the 2 PM triple, the fulfillment numbers, the even hours', () => {
+  const v = N.dayRows({ day: 17, month: 6, year: 1980, name: 'Venus Ebony Starr Williams' }, 2017, 7, 15);
+  const g = N.dayRows({ day: 8, month: 10, year: 1993, name: 'Garbiñe Muguruza Blanco' }, 2017, 7, 15);
+  const at = (r, i) => r.rows.slice(i, i + 3).map((x) => x.main.text).join(' ');
+  assert.equal(at(v, 4), '12/3 7/7 10/1'); assert.equal(at(g, 4), '8/8 7/7 15/6');
+  assert.equal(v.fulfillment.text, '12/3'); assert.equal(g.fulfillment.text, '8/8');
+  assert.equal(v.rows.map((x) => x.from).join(','), '0,160,320,480,640,800,960,1120,1280'); assert.equal(v.rows[8].until, 1440);
+  assert.ok(v.rows[5].from <= 14 * 60 && 14 * 60 < v.rows[5].until); // 2 PM sits in the middle row of that triple
+  assert.ok(v.rows[0].psyche.main && v.rows[3].psyche.main);
+  assert.equal(N.dayRows({ day: 1, month: 1, year: 2000 }, 2026, 1, 1).fulfillment, null);
+});

@@ -233,3 +233,10 @@ Brought the app in line with the new-app playbook from the first app:
   All tags button and the recently opened grid.
 - Lesson: course slides state formulas, course CASES state the conventions. When a
   rule's wording is ambiguous, find a worked example with numbers and match it exactly.
+- Same day, later: owner wanted the psyche rows and the hours on the day rows, Arizona time.
+  Psyche rows = outer psyche chart (proved on JFK 1961/1963 in the case book). The hours: the
+  book page is in a PDF the Drive connector refuses (over 10 MB); the rows are split evenly
+  (2 h 40 min) like the year's rows, said so on screen. Fulfillment number added. Ñ = N.
+  The clock is America/Phoenix in the code, not the phone's zone. Lesson: `pkill -f` with a
+  string that is also in the shell's own command line kills the shell (exit 144); match on
+  "node tools/dev-app" and run it in its own call.

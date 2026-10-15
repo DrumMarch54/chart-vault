@@ -239,3 +239,6 @@ body.noscroll { overflow: hidden; }
 .yrows .now { background: #fff3cf; }
 .tchips .chip .count { color: rgba(255,255,255,.6); font-size: 13px; }
 .tchips .chip .count::before { content: "·"; margin-right: 4px; }
+.cswitch { padding: 0 2px 8px; gap: 6px; }
+.cswitch .chip { min-height: 34px; font-size: 14px; padding: 0 12px; }
+.cswitch .chip.off { background: #eef0f4; color: #6b7080; }

@@ -11,8 +11,8 @@
     B: 2, K: 2, R: 2,
     C: 3, G: 3, L: 3, S: 3,
     D: 4, M: 4, T: 4,
-    E: 5, H: 5, N: 5, X: 5,
-    U: 6, V: 6, W: 6, 'Æ': 6,
+    E: 5, H: 5, N: 5, X: 5, // Ñ counts as N (case book: Garbiñe Muguruza Blanco's rows need LE 12/3)
+    U: 6, V: 6, W: 6, 'Æ': 6, 'Ñ': 5,
     O: 7, 'Ø': 7, Z: 7,
     F: 8, P: 8,
   };
@@ -301,18 +301,30 @@
     const main = column(formula, sources), shadow = column(formula, shadowSources);
     return main.map((m, i) => ({ ...m, main: m.value, shadow: shadow[i].value, aura: m.value && shadow[i].value ? rv(m.value.ds + shadow[i].value.ds) : null, verticalShadow: shadow[i].vertical, value: undefined }));
   }
+  // The psyche rows (columns 4-6 in the course): the same formula with the psychic self's life expression
+  // and pillar in place of the name chart's. The psychic self is the OUTER psyche chart (challenge number
+  // beside the year): CONFIRMED on JFK 1961 and 1963 (psyche columns 9-7-16/7, 3-7-10/1, 11/2-7-9 and
+  // the psyche row 10/1-10/1-9 of the course's case book).
+  const pick = (r) => ({ main: r.main, aura: r.aura, shadow: r.shadow, vertical: r.vertical, verticalShadow: r.verticalShadow });
+  function bothCharts(formula, src, shadowSrc, psySrc, psyShadowSrc) {
+    const name = columns(formula, src, shadowSrc), psy = columns(formula, psySrc, psyShadowSrc);
+    return name.map((r, i) => ({ ...r, psyche: pick(psy[i]) }));
+  }
 
   // The year rows of one calendar year for a person. Needs the birth date; the name gives the life
-  // expression and pillar rows (blank without one). Rows: { month, day, label, main, aura, shadow, vertical }.
+  // expression and pillar rows (blank without one). Rows: { month, day, label, main, aura, shadow,
+  // vertical, verticalShadow, psyche: { main, aura, shadow, vertical, verticalShadow }, until }.
   function yearRows({ day, month, year, name }, forYear) {
     const Y = Number(forYear) || 0, by = Number(year) || 0;
     const f = by >= 1000 ? yearFormula(by, Y) : null;
     if (!f || Y < by) return null;
     const data = numeroscope({ day, month, year, name });
-    const e = data.essence, n = data.name;
+    const e = data.essence, n = data.name, p = data.psyche.outer;
     const dayDs = e.day ? e.day.ds : null;
-    const common = { day: dayDs, le: dsOf(n.le), pillar: dsOf(n.pillar), age: digitSum(f.age), last: f.previous ? f.previous.number : null, this: f.period.number, leaving: f.period.number };
-    const rows = columns(FORMULAS[f.code], { ...common, year: digitSum(digitsOf(Y)) }, { ...common, year: digitSum(Y % 100) });
+    const common = { day: dayDs, age: digitSum(f.age), last: f.previous ? f.previous.number : null, this: f.period.number, leaving: f.period.number };
+    const yr = digitSum(digitsOf(Y)), sh = digitSum(Y % 100);
+    const nm = { ...common, le: dsOf(n.le), pillar: dsOf(n.pillar) }, ps = { ...common, le: dsOf(p.le), pillar: dsOf(p.pillar) };
+    const rows = bothCharts(FORMULAS[f.code], { ...nm, year: yr }, { ...nm, year: sh }, { ...ps, year: yr }, { ...ps, year: sh });
     // Each row runs from its date to the day before the next row's date; the last one to Dec 31.
     rows.forEach((r, i) => { const nx = rows[i + 1]; r.until = nx ? { month: nx.day === 1 ? nx.month - 1 : nx.month, day: nx.day === 1 ? daysIn(Y, nx.month - 1) : nx.day - 1 } : { month: 12, day: 31 }; });
     return { year: Y, formula: f, rows, hasName: !!n.le, hasPillar: !!n.pillar };
@@ -321,14 +333,23 @@
 
   // Day vibrations of one date (y, m, d) for a person: date ds, day vibration ds, sum, LE ds, sum, month
   // ds, sum, year ds, sum. The shadow column starts from the date's last digit (26 -> 6, 3 -> 0) and uses
-  // the year's shadow; the month stays (the slides give no month shadow).
+  // the year's shadow; the month stays (the slides give no month shadow). The nine rows split the day
+  // evenly, 2 h 40 min each from midnight, the way the year's rows split the year evenly (every 52 days
+  // for 7 rows, every 28 for 13): the course book's own time table is in a PDF too large to open here,
+  // so the split is the course's even rule, not a read-off table. The fulfillment number (case book,
+  // Wimbledon 2017) is the spine ds + the date ds: how problem-solving meets the day's energy.
   const DAY_FORMULA = [[0, 0, 'date'], [0, 0, 'day'], [0, 0, 'sum'], [0, 0, 'le'], [0, 0, 'sum'], [0, 0, 'month'], [0, 0, 'sum'], [0, 0, 'year'], [0, 0, 'sum']];
+  const DAY_MINUTES = 24 * 60 / DAY_FORMULA.length; // 160
   function dayRows({ day, month, year, name }, y, m, d) {
     const data = numeroscope({ day, month, year, name });
-    const e = data.essence, n = data.name;
-    const common = { day: e.day ? e.day.ds : null, le: dsOf(n.le), month: digitSum(m) };
-    const rows = columns(DAY_FORMULA, { ...common, date: digitSum(d), year: digitSum(digitsOf(y)) }, { ...common, date: d < 10 ? 0 : d % 10, year: digitSum(y % 100) });
-    return { y, m, d, rows, hasName: !!n.le };
+    const e = data.essence, n = data.name, p = data.psyche.outer;
+    const common = { day: e.day ? e.day.ds : null, month: digitSum(m) };
+    const dateDs = digitSum(d), shadowDate = d < 10 ? 0 : d % 10, yr = digitSum(digitsOf(y)), sh = digitSum(y % 100);
+    const nm = { ...common, le: dsOf(n.le) }, ps = { ...common, le: dsOf(p.le) };
+    const rows = bothCharts(DAY_FORMULA, { ...nm, date: dateDs, year: yr }, { ...nm, date: shadowDate, year: sh }, { ...ps, date: dateDs, year: yr }, { ...ps, date: shadowDate, year: sh });
+    rows.forEach((r, i) => { r.from = i * DAY_MINUTES; r.until = (i + 1) * DAY_MINUTES; });
+    const fulfillment = n.spine ? rv(n.spine.ds + dateDs) : null;
+    return { y, m, d, rows, fulfillment, hasName: !!n.le };
   }
 
   // What the course says a year-row number means, one line each (Module 17 slides).

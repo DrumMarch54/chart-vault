@@ -20,8 +20,16 @@ proves the pillar with a middle name, 34/7). What the cases settled:
 - Day vibrations: the slides define only the date's shadow (last digit, 0
   when one digit). The app also uses the year's shadow in the shadow column and
   keeps the month; NOT confirmed against a case.
-- Not built: psychic-self rows (columns 4-6), name-change-year formulas,
-  the "fulfillment number" of a day.
+- Psyche rows (columns 4-6) use the OUTER psyche chart's LE and pillar
+  (CONFIRMED: JFK 1961 and 1963 psyche columns and rows in the case book).
+- Day rows: nine rows of 2 h 40 min from midnight, shown in Arizona time
+  (America/Phoenix). The even split is the course's rule for the year's rows;
+  the book's own time table (Forecasting Numerology p.128-131, a 20 MB PDF) is
+  over the Drive connector's 10 MB limit, so the hours are NOT read off it.
+  The 2 PM triple of the Wimbledon 2017 case (rows 5-7) fits the even split.
+- Fulfillment number = spine ds + date ds (Wimbledon 2017: Venus 12/3, Muguruza 8).
+  Ñ counts as N (5): Garbiñe's rows only match with LE 12/3.
+- Not built: name-change-year formulas.
 
 
 ## Destiny rhythms
