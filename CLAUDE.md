@@ -20,7 +20,15 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - A reply that changed code ends with `Build: <short commit>`; the phone shows
   "Updated to build <commit>, tap to reload" within 15 s of the deploy.
 
-## Numerology knowledge
+## Numerology knowledge (the Hub: read it BEFORE any work about charts, positions, numbers or tags)
+- The owner's Google Drive folder "Hub" is the whole system: the five charts, every
+  position's name and formula, every number's meaning. The owner calls it the golden
+  grail. Start with `.brain/numerology/README.md` (index, Drive ids, how to open the
+  Hub from a cloud session). Never guess a position name, a formula or a meaning the
+  Hub defines; never ask the owner for one before reading it. A chat that built or
+  labelled anything about charts without reading the Hub got it wrong (HISTORY 2026-10-15).
+- Start of every session: `git fetch origin main` and merge it into the branch
+  before planning. A stale checkout hid all of this from one chat for an hour.
 - The course rules for the charts live in `.brain/numerology/` (start with its
   README). Read `chart-construction.md` before touching `public/numeroscope.js`
   or the Quick chart screen. The owner's Google Drive folder "Hub" is readable
