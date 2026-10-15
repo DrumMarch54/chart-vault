@@ -320,8 +320,8 @@ body.noscroll { overflow: hidden; }
 .dayrow .nums b { font-size: 15px; }
 .dayrow .rate { text-align: center; font-size: 11px; }
 .dayrow.today, .mini.today { outline: 2px solid var(--accent); }
-.minis { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.mini { background: #f6f7f9; border-radius: 12px; padding: 6px; text-align: center; color: #303030; cursor: pointer; }
+.minis { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+.mini { background: #f6f7f9; border-radius: 12px; padding: 6px; text-align: center; color: #303030; cursor: pointer; min-width: 0; overflow: hidden; }
 .mini .d { font-size: 13px; font-weight: 700; }
 .mini .rate { margin-top: 2px; }
 /* big diamond */
@@ -335,7 +335,7 @@ body.noscroll { overflow: hidden; }
 .bigd .unb { display: flex; justify-content: space-between; padding: 0 6px; margin-top: -4px; }
 .bigd .unb .lab { color: #b07c7c; }
 .bigd .who { display: flex; justify-content: space-between; font-size: 13px; color: #5f7990; font-weight: 600; padding: 0 10px 4px; }
-.dia { display: block; margin: 0 auto; max-width: 100%; height: auto; cursor: pointer; }
+.dia { display: block; margin: 0 auto; max-width: 100%; width: 100%; height: auto; }
 .dia text { fill: #303030; font-family: "Open Sans", system-ui, sans-serif; }
 .dia text.bold { font-weight: 700; }
 .dia text.aura { fill: #5f7990; }
@@ -370,3 +370,33 @@ html.light .tscreen .reading .rate { margin-left: auto; }
 .who-thumb { flex: 0 0 72px; width: 72px; display: block; border-radius: 8px; overflow: hidden; background: var(--panel2); }
 .who-thumb img { width: 72px; aspect-ratio: 9 / 16; object-fit: cover; display: block; }
 .who-thumb .nofile { width: 72px; aspect-ratio: 9 / 16; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 12px; }
+/* day scene and full-screen day (tools.js) */
+.scene { display: block; width: 100%; height: auto; border-radius: 12px; }
+.scenebox { margin: 2px 0 4px; cursor: pointer; }
+.scene text { font-family: "Open Sans", system-ui, sans-serif; fill: #fff; }
+.scene .sc-label { fill: #9fb3d9; letter-spacing: .12em; font-weight: 700; }
+.scene .sc-day { font-weight: 700; }
+.scene .sc-num { fill: #f0b64a; font-weight: 700; }
+.dayfull { background: #fff; color: #303030; padding: 6px 0 24px; }
+.dayfull .ttop { padding: 0 8px 4px; }
+.dayfull .nscope-box { padding: 0; }
+.dayfull .codes { padding: 0 8px; }
+.dayfull .readbtn { background: #eef0f4; color: #3a3f52; margin: 6px 8px; width: calc(100% - 16px); }
+.minis.cols1 { grid-template-columns: 1fr; }
+.mini .mhead { display: flex; justify-content: space-between; align-items: center; padding: 2px 4px; }
+.mini .mhead .d { font-size: 13px; font-weight: 700; }
+.mini .mfoot { display: flex; align-items: baseline; gap: 6px; padding: 0 4px 2px; font-size: 14px; min-width: 0; white-space: nowrap; overflow: hidden; justify-content: center; }
+.mini .mfoot.small { font-size: 11px; white-space: normal; line-height: 1.25; display: block; }
+.mini .mfoot .nm { overflow: hidden; text-overflow: ellipsis; }
+.mini.super { background: #eef8f1; outline: 2px solid #9fd7b2; }
+.mini.today.super { outline: 2px solid var(--accent); }
+/* the book-style diamond bands */
+.dia.band { border-radius: 10px; margin-bottom: 8px; }
+.dia .lab { fill: #7f8694; }
+.dia .lab.unb { fill: #c08080; }
+.dia .band-title { fill: #5f7990; font-weight: 700; letter-spacing: .06em; }
+.dia .life { fill: #6f7f93; font-weight: 700; letter-spacing: .14em; }
+.dia text.name { fill: #3b78c2; font-weight: 700; }
+.dia text.name.unb { fill: #c45b5b; }
+.dia text.big { font-size: 1.05em; }
+.dia .tri { cursor: pointer; }

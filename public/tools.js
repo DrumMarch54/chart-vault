@@ -58,11 +58,69 @@
     const svg = A.numeroscopeSvg(data);
     svg.classList.add('hide-c-main', 'hide-c-vow', 'hide-c-con', 'daychart');
     if (!withPsyche) svg.classList.add('hide-c-psy');
-    svg.setAttribute('viewBox', `${371 - 425} 20 850 ${(withPsyche ? 560 : 320) - 20}`);
+    // Essence only: crop to the cube so it fills a small grid cell; with the psyche charts, the full width.
+    svg.setAttribute('viewBox', withPsyche ? `${371 - 425} 20 850 540` : `${371 - 215} 24 430 296`);
     return svg;
   }
   // The codes a date holds, as chips: green strong, blue soft, red to avoid.
   const codeChips = (e) => A.h('div', { class: 'codes' }, ...e.codes.map((c) => A.h('span', { class: c.kind === 'avoid' || c.kind === 'care' ? 'warn' : c.kind === 'soft' ? 'soft' : '', onclick: () => numberSheet(c.value, c.pos) }, `${c.value.text} ${POS_WORDS[c.pos].split(' ·')[0].toLowerCase()} · ${c.words}`)));
+
+  // ---------- the day's scene: a planet for the ruler of the day over a starry sky (the paid tool's Today page) ----------
+  // Drawn here, no pictures fetched: each planet is a few gradients and shapes. Stars are seeded by the date
+  // so a day always looks the same.
+  const PLANET_COLORS = { Sun: ['#fff1a8', '#f7b733', '#c2410c'], Moon: ['#f4f4f6', '#c9ccd6', '#8a8f9c'], Jupiter: ['#f6e3c3', '#d9a066', '#8a4b2a'], Uranus: ['#d9f6f8', '#7fd3e0', '#2a8aa0'], Mercury: ['#e9e2d6', '#a89f93', '#5b544c'], Venus: ['#fff7d6', '#f0cf7a', '#b8862b'], Neptune: ['#9fc4ff', '#3b6fe0', '#1a2f7a'], Saturn: ['#f7ecd2', '#d8b57a', '#8a6a3a'], Mars: ['#ffb08a', '#d9542b', '#6b1f0f'] };
+  function planetScene(e, h = 150) {
+    const sv = A.sv, W = 390, cx = 92, cy = h / 2, r = Math.min(52, h * 0.36);
+    const planet = e.ruler, [c1, c2, c3] = PLANET_COLORS[planet] || PLANET_COLORS.Moon;
+    const id = 'pl' + planet.toLowerCase() + h;
+    const svg = sv('svg', { viewBox: `0 0 ${W} ${h}`, class: 'scene', role: 'img', 'aria-label': `Ruler of the day ${planet}` });
+    const defs = sv('defs', {},
+      sv('linearGradient', { id: id + 'sky', x1: 0, y1: 0, x2: 1, y2: 1 }, sv('stop', { offset: 0, 'stop-color': '#0b1026' }), sv('stop', { offset: 0.6, 'stop-color': '#1b1f3f' }), sv('stop', { offset: 1, 'stop-color': '#2b1b3f' })),
+      sv('radialGradient', { id: id + 'body', cx: 0.35, cy: 0.32, r: 0.8 }, sv('stop', { offset: 0, 'stop-color': c1 }), sv('stop', { offset: 0.55, 'stop-color': c2 }), sv('stop', { offset: 1, 'stop-color': c3 })),
+      sv('radialGradient', { id: id + 'glow', cx: 0.5, cy: 0.5, r: 0.5 }, sv('stop', { offset: 0.6, 'stop-color': c2, 'stop-opacity': 0.35 }), sv('stop', { offset: 1, 'stop-color': c2, 'stop-opacity': 0 })));
+    svg.append(defs, sv('rect', { x: 0, y: 0, width: W, height: h, fill: `url(#${id}sky)` }));
+    // stars, seeded by the date
+    let seed = e.y * 10000 + e.m * 100 + e.d;
+    const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
+    for (let i = 0; i < 70; i++) { const x = rnd() * W, y = rnd() * h, s = rnd(); if (Math.hypot(x - cx, y - cy) < r + 8) continue; svg.append(sv('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: (0.4 + s * 1.1).toFixed(2), fill: '#fff', opacity: (0.35 + s * 0.6).toFixed(2) })); }
+    svg.append(sv('circle', { cx, cy, r: r * 1.6, fill: `url(#${id}glow)` }));
+    const g = sv('g', {});
+    if (planet === 'Saturn') g.append(sv('ellipse', { cx, cy: cy + 2, rx: r * 1.75, ry: r * 0.42, fill: 'none', stroke: '#e7d5ad', 'stroke-width': r * 0.16, opacity: 0.55, transform: `rotate(-18 ${cx} ${cy})` }));
+    g.append(sv('circle', { cx, cy, r, fill: `url(#${id}body)` }));
+    if (planet === 'Jupiter' || planet === 'Saturn') for (const [dy, op] of [[-0.45, 0.25], [-0.15, 0.35], [0.2, 0.3], [0.5, 0.22]]) { const yy = cy + dy * r, hw = Math.sqrt(Math.max(0, r * r - (dy * r) ** 2)); g.append(sv('rect', { x: cx - hw, y: yy - r * 0.07, width: hw * 2, height: r * 0.14, fill: c3, opacity: op, rx: r * 0.07 })); }
+    if (planet === 'Jupiter') g.append(sv('ellipse', { cx: cx + r * 0.3, cy: cy + r * 0.25, rx: r * 0.22, ry: r * 0.12, fill: '#b5452a', opacity: 0.8 }));
+    if (planet === 'Moon' || planet === 'Mercury') for (const [dx, dy, rr] of [[-0.3, -0.2, 0.16], [0.25, 0.15, 0.11], [0.05, 0.45, 0.09], [0.4, -0.4, 0.07]]) g.append(sv('circle', { cx: cx + dx * r, cy: cy + dy * r, r: rr * r, fill: c3, opacity: 0.35 }));
+    if (planet === 'Saturn') g.append(sv('path', { d: `M ${cx - r * 1.75} ${cy + 2} A ${r * 1.75} ${r * 0.42} 0 0 0 ${cx + r * 1.75} ${cy + 2}`, fill: 'none', stroke: '#efe0bf', 'stroke-width': r * 0.16, opacity: 0.85, transform: `rotate(-18 ${cx} ${cy})` }));
+    if (planet === 'Sun') for (let i = 0; i < 12; i++) { const a = (i / 12) * Math.PI * 2; g.append(sv('line', { x1: cx + Math.cos(a) * r * 1.15, y1: cy + Math.sin(a) * r * 1.15, x2: cx + Math.cos(a) * r * 1.35, y2: cy + Math.sin(a) * r * 1.35, stroke: '#ffd77a', 'stroke-width': 2, opacity: 0.6, 'stroke-linecap': 'round' })); }
+    svg.append(g);
+    const t = (x, y, s, size, cls, anchor) => sv('text', { x, y, 'font-size': size, class: cls, 'text-anchor': anchor || 'start' }, s);
+    const tx = 170;
+    svg.append(t(tx, cy - 30, `RULER OF THE DAY · ${planet.toUpperCase()}`, 10, 'sc-label'), t(tx, cy - 2, `${DOW[e.weekday]}`, 15, 'sc-day'), t(tx, cy + 18, `${MON[e.m - 1]} ${e.d}, ${e.y}`, 15, 'sc-day'),
+      t(tx, cy + 46, `${e.dv.text}  ${nameOf(e.dv)}`, 14, 'sc-num'));
+    return svg;
+  }
+  // A day full screen: the scene, the essence and psyche charts edge to edge, ‹ › to the days around it.
+  function dayFull(date, { onReadings } = {}) {
+    let cur = date;
+    const psyche = { on: recall('toolsPsyche', true) };
+    const $box = A.h('div', {}), $title = A.h('h1', {});
+    const close = () => { $pop.remove(); A.overlayGone($pop); document.body.classList.remove('noscroll'); window.removeEventListener('keydown', keys); };
+    const keys = (ev) => { if (ev.key === 'Escape') close(); if (ev.key === 'ArrowLeft') move(-1); if (ev.key === 'ArrowRight') move(1); };
+    const draw = () => {
+      const e = T.dayEnergy(cur.y, cur.m, cur.d); if (!e) return;
+      $title.textContent = `${DOW[e.weekday].slice(0, 3)}, ${MON[cur.m - 1]} ${cur.d}, ${cur.y}`;
+      A.fill($box, planetScene(e, 150), A.h('div', { class: 'row', style: 'justify-content:space-between;padding:6px 8px 0' }, rate(e.rating), chip('Psyche charts', psyche.on, () => { psyche.on = !psyche.on; remember('toolsPsyche', psyche.on); draw(); })),
+        A.h('div', { class: 'nscope-box' }, dateCharts(cur.y, cur.m, cur.d, psyche.on)),
+        codeChips(e),
+        A.h('button', { type: 'button', class: 'btn btn-block readbtn', onclick: () => { close(); if (onReadings) onReadings(cur); else A.go(`#/today/${iso(cur.y, cur.m, cur.d)}`); } }, 'Readings for this day ›'));
+    };
+    const move = (by) => { cur = shift(cur, by); A.count('dayfull.move'); draw(); };
+    const $pop = A.h('div', { class: 'wordpop dayfull' },
+      A.h('div', { class: 'pagetop ttop' }, A.h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Close', onclick: close }, '‹'), A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Previous day', onclick: () => move(-1) }, '‹'), $title, A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Next day', onclick: () => move(1) }, '›')),
+      $box);
+    A.overlay($pop); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
+    draw();
+  }
 
   // ---------- Today (one date's energy) ----------
   function todayView(arg) {
@@ -84,12 +142,13 @@
         A.h('div', { class: 'head' }, A.h('b', {}, v.text), A.h('span', { class: 'nm' }, nameOf(v)), A.h('span', { class: 'pos' }, POS_WORDS[pos])),
         A.h('p', {}, POS_INTRO[pos] + (pos === 'lp' ? ` Big essence ${e.bigLp.text}.` : '')));
       A.fill($body,
+        A.h('div', { class: 'scenebox', onclick: () => { A.count('today.full'); dayFull(date); } }, planetScene(e, 150)),
         A.h('div', { class: 'togglerow' }, chip('Psyche charts', psyche.on, () => { psyche.on = !psyche.on; remember('toolsPsyche', psyche.on); A.count('today.psyche'); draw(); }), rate(e.rating, 'right')),
-        A.h('div', { class: 'nscope-box' }, dateCharts(date.y, date.m, date.d, psyche.on)),
+        A.h('div', { class: 'nscope-box', role: 'button', 'aria-label': 'Full screen', onclick: () => { A.count('today.full'); dayFull(date); } }, dateCharts(date.y, date.m, date.d, psyche.on)),
         A.h('div', { class: 'bignum', onclick: () => numberSheet(e.dv, 'dv') }, A.h('b', {}, e.dv.text), A.h('span', { class: 'nm' }, nameOf(e.dv)), A.h('span', { class: 'ty' }, `Day vibration · ruler ${e.ruler}`)),
         codeChips(e),
         row('dv', e.dv), row('lp', e.lp), row('outer', e.outer), row('inner', e.inner), row('dvlp', e.dvlp), row('dharma', e.dharma), row('target', e.target),
-        A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Tap a number for the book\'s words. Super, good and hard follow the success codes and the numbers to avoid in "Success Codes & Superdates".'));
+        A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Tap the chart for full screen, a number for the book\'s words. Super, good and hard follow the success codes and the numbers to avoid in "Success Codes & Superdates".'));
     };
     A.render(A.h('div', { class: 'screen qscreen tscreen' },
       A.h('div', { class: 'pagetop ttop' }, A.h('a', { class: 'btn iconbtn', href: '#/', 'aria-label': 'Back' }, '‹'), A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Previous day', onclick: () => { date = shift(date, -1); draw(); } }, '‹'), $title, A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Next day', onclick: () => { date = shift(date, 1); draw(); } }, '›'), A.h('a', { class: 'btn iconbtn', href: '#/coming', 'aria-label': 'Coming days', title: 'Coming days' }, '▦')),
@@ -98,21 +157,23 @@
     draw();
   }
 
-  // ---------- Coming days ----------
+  // ---------- Coming days: a grid of the days' charts, super dates labelled, tap for full screen ----------
   function comingView(arg) {
     light();
     const now = todayIn();
     let start = parseIso(arg) || now;
-    const view = { mode: recall('comingMode', 'list'), superOnly: false, psyche: recall('toolsPsyche', false) };
+    const view = { mode: recall('comingMode', 'charts'), superOnly: false, psyche: recall('comingPsyche', false), cols: recall('comingCols', 2) };
     const $body = A.h('div', {}), $chips = A.h('div', { class: 'togglerow' });
     const $date = A.h('input', { type: 'date', class: 'datebox', 'aria-label': 'First day' });
     $date.addEventListener('change', () => { const p = parseIso($date.value); if (p) { start = p; draw(); } });
-    const open = (e) => A.go(`#/today/${iso(e.y, e.m, e.d)}`);
+    const open = (e) => { A.count('coming.open_day'); dayFull({ y: e.y, m: e.m, d: e.d }); };
     const isToday = (e) => e.y === now.y && e.m === now.m && e.d === now.d;
     const draw = () => {
       $date.value = iso(start.y, start.m, start.d);
-      A.fill($chips, chip('List', view.mode === 'list', () => { view.mode = 'list'; remember('comingMode', 'list'); draw(); }), chip('Charts', view.mode === 'charts', () => { view.mode = 'charts'; remember('comingMode', 'charts'); A.count('coming.charts'); draw(); }),
-        chip('Super dates only', view.superOnly, () => { view.superOnly = !view.superOnly; A.count('coming.super_only'); draw(); }), view.mode === 'charts' ? chip('Psyche charts', view.psyche, () => { view.psyche = !view.psyche; remember('toolsPsyche', view.psyche); draw(); }) : null);
+      A.fill($chips, chip('Charts', view.mode === 'charts', () => { view.mode = 'charts'; remember('comingMode', 'charts'); draw(); }), chip('List', view.mode === 'list', () => { view.mode = 'list'; remember('comingMode', 'list'); A.count('coming.list'); draw(); }),
+        chip('Super dates only', view.superOnly, () => { view.superOnly = !view.superOnly; A.count('coming.super_only'); draw(); }),
+        view.mode === 'charts' ? chip('Psyche charts', view.psyche, () => { view.psyche = !view.psyche; remember('comingPsyche', view.psyche); draw(); }) : null,
+        view.mode === 'charts' ? chip(view.cols === 2 ? 'Bigger' : 'Smaller', false, () => { view.cols = view.cols === 2 ? 1 : 2; remember('comingCols', view.cols); A.count('coming.size'); draw(); }) : null);
       let days = T.comingDays(start.y, start.m, start.d, 31).filter(Boolean);
       if (view.superOnly) days = days.filter((e) => e.rating === 'super');
       if (!days.length) { A.fill($body, A.h('p', { class: 'muted' }, 'No super dates in these 31 days. Try the next month.')); return; }
@@ -123,58 +184,71 @@
           A.h('div', { class: 'nums' }, num('Day', e.dv), num('Essence', e.lp), num('Outer', e.outer), num('Inner', e.inner), num('Target', e.target)),
           A.h('span', { class: `rate ${e.rating}` }, T.RATING_WORDS[e.rating].replace(' date', ''))))));
       } else {
-        A.fill($body, A.h('div', { class: 'minis' }, ...days.map((e) => A.h('div', { class: 'mini' + (isToday(e) ? ' today' : ''), role: 'button', onclick: () => open(e) },
-          A.h('div', { class: 'd' }, `${DOW[e.weekday].slice(0, 3)} ${MON[e.m - 1]} ${e.d}`), dateCharts(e.y, e.m, e.d, view.psyche), A.h('div', {}, A.h('b', {}, e.dv.text), ' ', A.h('span', { class: 'muted small' }, nameOf(e.dv))), rate(e.rating)))));
+        A.fill($body, A.h('div', { class: 'minis cols' + view.cols }, ...days.map((e) => A.h('div', { class: 'mini' + (isToday(e) ? ' today' : '') + (e.rating === 'super' ? ' super' : ''), role: 'button', onclick: () => open(e) },
+          A.h('div', { class: 'mhead' }, A.h('span', { class: 'd' }, `${DOW[e.weekday].slice(0, 3)} ${MON[e.m - 1]} ${e.d}`), A.h('span', { class: `rate ${e.rating}` }, T.RATING_WORDS[e.rating].replace(' date', ''))),
+          dateCharts(e.y, e.m, e.d, view.psyche),
+          A.h('div', { class: 'mfoot' }, A.h('b', {}, e.dv.text), A.h('span', { class: 'muted small nm' }, nameOf(e.dv))),
+          A.h('div', { class: 'mfoot muted small' }, `essence ${e.lp.text} · outer ${e.outer.text} · inner ${e.inner.text}`)))));
       }
     };
     A.render(A.h('div', { class: 'screen qscreen tscreen' }, top('Coming days', '#/', A.h('a', { class: 'btn iconbtn', href: '#/today', 'aria-label': 'Today', title: 'Today' }, '☀')),
       $chips,
       A.h('div', { class: 'row ynav tnav' }, A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'A month earlier', onclick: () => { start = shift(start, -31); draw(); } }, '‹'), $date, A.h('span', { class: 'muted small' }, '31 days'), A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'A month later', onclick: () => { start = shift(start, 31); draw(); } }, '›')),
       $body,
-      A.h('p', { class: 'muted small', style: 'margin:10px 2px' }, 'Tap a day to open it. Super, good and hard follow the success codes and the numbers to avoid in "Success Codes & Superdates".')));
+      A.h('p', { class: 'muted small', style: 'margin:10px 2px' }, 'Tap a day for full screen. Super dates are marked green. Super, good and hard follow the success codes and the numbers to avoid in "Success Codes & Superdates" (the app\'s reading of them).')));
     draw();
   }
 
-  // ---------- the big diamond drawing (Number fun, Relationship) ----------
-  // One inverted triangle: a and b in the top corners, the life expression at the bottom, the two auras on
-  // the sides, the center in the circle, the archetype name under it. Tapping opens that number's sheet
-  // (or, in Number fun, jumps to its own big diamond).
-  function triangle(d, w, opts = {}) {
-    const sv = A.sv;
-    const hh = w * 0.86, cx = w / 2, pad = w * (w < 100 ? 0.22 : 0.16), topY = pad + w * 0.1;
-    const svg = sv('svg', { viewBox: `0 0 ${w} ${hh + pad * 2.2}`, class: 'dia' + (opts.unbalanced ? ' unb' : ''), role: opts.onTap ? 'button' : 'img', 'aria-label': `${d.text} ${d.name}` });
-    const stroke = opts.unbalanced ? '#c98a8a' : '#4f86c6';
-    svg.append(sv('polygon', { points: `${pad},${topY} ${w - pad},${topY} ${cx},${topY + hh * 0.72}`, fill: opts.unbalanced ? '#fbf1f1' : '#eef4fb', stroke, 'stroke-width': w > 120 ? 3 : 2 }));
-    svg.append(sv('circle', { cx, cy: topY + hh * 0.26, r: w * 0.13, fill: '#fff', stroke, 'stroke-width': 1.5 }));
-    const f = (k) => Math.max(9, w * k);
+  // ---------- the big diamond drawing (Number fun, Relationship), laid out like the book's Number fun page ----------
+  // One level is one wide band: outer life on the left, inner life on the right, the main diamond in the
+  // middle, the outer and inner diamonds at the lower corners, the two unbalanced ones small above them.
+  // Triangles are drawn the book's way: thin blue outline, the two digits outside the top corners, the
+  // auras outside the sides, the center in a circle, the life expression under the point, the archetype
+  // name in small blue inside the top. Measured on The Diamond Method p. 35.
+  function tri(svg, d, cx, topY, w, opts = {}) {
+    const sv = A.sv, hh = w * 0.75, pad = 0;
+    const g = sv('g', { class: 'tri' + (opts.unbalanced ? ' unb' : ''), role: 'button', 'aria-label': `${d.text} ${d.name}` });
+    const stroke = opts.unbalanced ? '#e0a0a0' : '#4f86c6';
+    g.append(sv('polygon', { points: `${cx - w / 2},${topY} ${cx + w / 2},${topY} ${cx},${topY + hh}`, fill: '#fff', stroke, 'stroke-width': w > 120 ? 2.2 : 1.4 }));
+    const f = (k) => Math.max(6.5, w * k);
     const t = (x, y, s, size, cls, anchor) => sv('text', { x, y, 'font-size': size, 'text-anchor': anchor || 'middle', class: cls || '' }, s);
-    svg.append(t(pad - 2, topY - 6, opts.aText || String(d.a), f(0.13), 'bold'), t(w - pad + 2, topY - 6, opts.bText || String(d.b), f(0.13), 'bold'));
-    svg.append(t(cx, topY + hh * 0.26 + f(0.1) * 0.35, d.center.text, f(0.1), 'bold'));
-    svg.append(t(cx - w * 0.3, topY + hh * 0.45, d.outer.text, f(0.095), 'aura', 'end'), t(cx + w * 0.3, topY + hh * 0.45, d.inner.text, f(0.095), 'aura', 'start'));
-    svg.append(t(cx, topY + hh * 0.72 + f(0.14), d.le.text, f(0.13), 'bold'));
-    const nm = opts.name !== undefined ? opts.name : (w < 100 && d.name.length > 16 ? d.name.replace(/^The /, '') : d.name);
-    // A long name shrinks to fit the triangle's width instead of being cut off at the edges.
-    if (nm) svg.append(t(cx, topY + hh * 0.72 + f(0.14) + f(0.1) * 1.3, nm, Math.min(f(0.078), w < 100 ? 9.5 : 99, (w - 4) / (nm.length * 0.56)), 'name'));
-    if (opts.onTap) svg.addEventListener('click', () => opts.onTap(d));
+    const bold = (opts.strong ? 'big ' : '') + 'bold';
+    g.append(t(cx - w / 2 - 3, topY - 4, opts.aText || String(d.a), f(0.17), bold, 'end'), t(cx + w / 2 + 3, topY - 4, opts.bText || String(d.b), f(0.17), bold, 'start'));
+    const nm = opts.name !== undefined ? opts.name : d.name;
+    if (nm && w >= 56) g.append(t(cx, topY + f(0.12) + 2, nm, Math.min(f(0.075), (w * 0.84) / (nm.length * 0.56)), opts.unbalanced ? 'name unb' : 'name'));
+    const ccy = topY + hh * 0.42, r = w * 0.14;
+    g.append(sv('circle', { cx, cy: ccy, r, fill: '#fff', stroke, 'stroke-width': 1.2 }), t(cx, ccy + f(0.1) * 0.36, d.center.text, f(0.1), 'bold'));
+    const sideY = topY + hh * 0.58, sideX = w * 0.5 * (1 - 0.58) + 4;
+    g.append(t(cx - sideX - 2, sideY, d.outer.text, f(0.11), 'aura', 'end'), t(cx + sideX + 2, sideY, d.inner.text, f(0.11), 'aura', 'start'));
+    g.append(t(cx, topY + hh + f(0.17) + 1, d.le.text, f(0.16), bold));
+    if (opts.onTap) g.addEventListener('click', () => opts.onTap(d));
+    svg.append(g);
+    return topY + hh + f(0.17) + 4;
+  }
+  function levelSvg(d, lv, labels, onTap) {
+    const sv = A.sv, W = 390, H = labels.noUnbalanced ? 216 : 240;
+    const svg = sv('svg', { viewBox: `0 0 ${W} ${H}`, class: 'dia band', role: 'img' });
+    svg.append(sv('rect', { x: 0, y: 0, width: W / 2, height: H, fill: lv === 'main' ? '#e7eef6' : lv === 'essence' ? '#edf2f8' : '#f3f6fa' }), sv('rect', { x: W / 2, y: 0, width: W / 2, height: H, fill: lv === 'main' ? '#cfdde9' : lv === 'essence' ? '#d9e4ee' : '#e4ecf4' }));
+    const lab = (x, y, s, cls, anchor) => svg.append(sv('text', { x, y, 'font-size': 9, class: cls || 'lab', 'text-anchor': anchor || 'middle' }, s));
+    lab(8, 14, labels.title, 'band-title', 'start'); lab(W - 8, 14, labels.right, 'lab', 'end');
+    const top = labels.noUnbalanced ? 50 : 60;
+    const mainBottom = tri(svg, d, W / 2, top, 150, { onTap, strong: true, aText: labels.aText, bText: labels.bText, name: labels.mainName });
+    lab(W / 2, Math.min(H - 6, mainBottom + 10), labels.mainLabel || (lv === 'main' ? 'main diamond' : lv === 'essence' ? 'essence diamond' : 'integration diamond'));
+    const mid = labels.noUnbalanced ? 96 : 122;
+    const ob = tri(svg, d.outerD, 62, mid, 92, { onTap }); lab(62, Math.min(H - 6, ob + 10), labels.outerLabel || 'outer diamond');
+    const ib = tri(svg, d.innerD, W - 62, mid, 92, { onTap }); lab(W - 62, Math.min(H - 6, ib + 10), labels.innerLabel || 'inner diamond');
+    if (!labels.noUnbalanced) {
+      tri(svg, d.outerU, 62, 42, 52, { onTap, unbalanced: true }); lab(62, 30, 'outer unbalanced', 'lab unb');
+      tri(svg, d.innerU, W - 62, 42, 52, { onTap, unbalanced: true }); lab(W - 62, 30, 'inner unbalanced', 'lab unb');
+    }
+    if (lv === 'main') { lab(W / 4, H - 6, 'OUTER LIFE', 'life'); lab((3 * W) / 4, H - 6, 'INNER LIFE', 'life'); }
     return svg;
   }
-  // Three levels like the book: spiritual (integration), emotional (essence), physical (main), each with its
-  // outer and inner diamond beside it and the two unbalanced ones below. `labels` names the sides of the
-  // bottom level (Relationship: how each person feels it).
   function bigDiamondEl(B, onTap, labels = {}) {
-    const h = A.h;
-    const level = (title, right, d, lv) => h('div', { class: 'level' },
-      h('div', { class: 'lv' }, h('span', {}, title), h('span', { class: 'r' }, right)),
-      lv === 'main' && labels.who ? h('div', { class: 'who' }, h('span', {}, labels.who[0]), h('span', {}, labels.who[1])) : null,
-      h('div', { class: 'trio' },
-        h('div', { class: 'side' }, h('div', { class: 'lab' }, (lv === 'main' && labels.outer) || 'outer'), triangle(d.outerD, 104, { onTap })),
-        triangle(d, 150, { onTap, aText: lv === 'main' ? labels.aText : undefined, bText: lv === 'main' ? labels.bText : undefined, name: lv === 'main' && labels.mainName !== undefined ? labels.mainName : undefined }),
-        h('div', { class: 'side' }, h('div', { class: 'lab' }, (lv === 'main' && labels.inner) || 'inner'), triangle(d.innerD, 104, { onTap }))),
-      labels.noUnbalanced ? null : h('div', { class: 'unb' }, h('div', {}, h('div', { class: 'lab' }, 'outer unbalanced'), triangle(d.outerU, 72, { unbalanced: true, onTap })), h('div', {}, h('div', { class: 'lab' }, 'inner unbalanced'), triangle(d.innerU, 72, { unbalanced: true, onTap }))));
-    return h('div', { class: 'bigd' },
-      level('Spiritual · integration', labels.spiritual || 'how it evolves fastest', B.integration, 'integration'),
-      level('Emotional · essence', labels.emotional || 'hidden motivation', B.essence, 'essence'),
-      level(labels.physicalTitle || 'Physical · main diamond', labels.physical || 'how it acts', B.main, 'main'));
+    return A.h('div', { class: 'bigd' },
+      levelSvg(B.integration, 'integration', { title: 'SPIRITUAL · the integration diamond', right: labels.spiritual || 'how it evolves fastest', noUnbalanced: labels.noUnbalanced }, onTap),
+      levelSvg(B.essence, 'essence', { title: 'EMOTIONAL · the essence diamond', right: labels.emotional || 'hidden motivation', noUnbalanced: labels.noUnbalanced }, onTap),
+      levelSvg(B.main, 'main', { title: labels.physicalTitle || 'PHYSICAL · the main diamond', right: labels.physical || 'how it acts', noUnbalanced: labels.noUnbalanced, aText: labels.aText, bText: labels.bText, mainName: labels.mainName, mainLabel: labels.mainLabel, outerLabel: labels.outer, innerLabel: labels.inner }, onTap));
   }
 
   // ---------- Number fun ----------
@@ -259,7 +333,7 @@
       const B = T.bigDiamond(A1.ds, B1.ds);
       const le = B.main.le, fa = B.main.outerD, fb = B.main.innerD;
       A.fill($body,
-        bigDiamondEl(B, (d) => numberSheet(T.val(d.code), 'about'), { who: [`${na} ${A1.text}`, `${nb} ${B1.text}`], outer: `how ${na} feels it`, inner: `how ${nb} feels it`, aText: A1.text, bText: B1.text, mainName: `Life expression ${le.text}`, physicalTitle: 'Physical · the two day vibrations', physical: 'what happens when they meet', emotional: 'the meeting of their emotions', spiritual: 'where the relationship can grow', noUnbalanced: true }),
+        bigDiamondEl(B, (d) => numberSheet(T.val(d.code), 'about'), { outer: `how ${na} feels it`, inner: `how ${nb} feels it`, aText: `${na} ${A1.text}`, bText: `${nb} ${B1.text}`, mainName: `Life expression ${le.text}`, mainLabel: 'the two day vibrations', physicalTitle: 'PHYSICAL · the two day vibrations', physical: 'what happens when they meet', emotional: 'the meeting of their emotions', spiritual: 'where the relationship can grow', noUnbalanced: true }),
         A.h('div', { class: 'reading', onclick: () => numberSheet(le, 'about') }, A.h('div', { class: 'head' }, A.h('b', {}, le.text), A.h('span', { class: 'nm' }, 'Life expression of the relationship')), A.h('p', {}, `${A1.ds} and ${B1.ds} meet in a ${le.text}${nameOf(le) ? ' (' + nameOf(le) + ')' : ''}: the resulting energy, what happens when they are together.`)),
         A.h('div', { class: 'reading' }, A.h('div', { class: 'head' }, A.h('b', {}, fa.text), A.h('span', { class: 'nm' }, `How ${na} feels it`)), A.h('p', {}, `${na}'s ${A1.ds} with the relationship's ${le.ds}: ${fa.text} ${fa.name}.`)),
         A.h('div', { class: 'reading' }, A.h('div', { class: 'head' }, A.h('b', {}, fb.text), A.h('span', { class: 'nm' }, `How ${nb} feels it`)), A.h('p', {}, `${nb}'s ${B1.ds} with the relationship's ${le.ds}: ${fb.text} ${fb.name}.`)),
@@ -350,5 +424,5 @@
     Object.assign(A.routes, { today: todayView, coming: comingView, numberfun: numberFunView, price: priceView, relation: relationView, karmic: karmicView, mychart: myChartView });
     return { homeButtons, USAGE_LABELS, myChart: () => recall('mychart', null) };
   }
-  root.Tools = { install, triangle, bigDiamondEl };
+  root.Tools = { install, bigDiamondEl, planetScene };
 })(typeof globalThis !== 'undefined' ? globalThis : this);

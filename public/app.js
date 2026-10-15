@@ -1473,7 +1473,7 @@
     bg.append(h('div', { class: 'sheet' }, content, h('button', { type: 'button', onclick: close }, 'Close')));
     document.body.append(bg); overlays.push(bg);
   };
-  const toolsUi = window.Tools ? window.Tools.install({ routes, h, sv, fill, render, count, toast, api, go, numeroscopeSvg, sheet: wordsSheet, setCleanup: (fn) => { viewerCleanup = fn; } }) : null;
+  const toolsUi = window.Tools ? window.Tools.install({ routes, h, sv, fill, render, count, toast, api, go, numeroscopeSvg, sheet: wordsSheet, overlay: (o) => overlays.push(o), overlayGone: (o) => { overlays = overlays.filter((x) => x !== o); }, setCleanup: (fn) => { viewerCleanup = fn; } }) : null;
   if (toolsUi) Object.assign(USAGE_LABELS, toolsUi.USAGE_LABELS);
 
   // ---------- start ----------

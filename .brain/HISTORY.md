@@ -376,3 +376,8 @@ default reading order interleaves entries at page edges; `-raw` keeps them whole
 - Snapshot: a `chart names:` line (named / by owner / unnamed / to check) and a
   `name:` line per chart. Test: `test/titles.test.js` (merge-only seed, check
   list, name search, API, seed file sanity).
+Same day, after the owner looked: the Coming days grid became the default (charts in a grid, tap for a full
+screen day with ‹ › through the days), Number fun was redrawn as the book's wide bands (Diamond Method p. 35,
+read at 230 dpi: outer life left, inner life right, names inside the triangles, unbalanced ones small above),
+and each day got a drawn planet scene for its ruler. Lesson: a mockup "approved" from a phone still gets
+corrected on the live screen; look at the book's own page at full size before drawing anything.
