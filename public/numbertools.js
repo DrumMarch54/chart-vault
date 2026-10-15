@@ -4,7 +4,8 @@
 // Sources, all in the owner's Drive "Hub" (.brain/numerology/software-tools.md says where each was read):
 //   big diamond      The Diamond Method book pp. 7-28, CONFIRMED on its worked example 14/5
 //   energy of a date Forecasting Numerology pp. 20-23 (24.12.1999 case), Success Codes & Superdates pp. 19-31, 198-200
-//   success codes    Success Codes & Superdates pp. 22-32 (the rating rule super/good/hard is the app's own reading of them)
+//   success codes    Success Codes & Superdates pp. 22-32 and 31; the Super / Good / Beware rule follows the course's
+//                    wording as NotebookLM summarized it on 2026-10-15 (.brain/numerology/software-tools.md)
 //   prices           Marketing Numerology pp. 36-55
 //   karmic           Forecasting Numerology pp. 63-77: shared destiny rhythms = same birth-year digit sum
 (function (root) {
@@ -60,22 +61,72 @@
   // (outer diamond = the two digit sums side by side, 63/9), inner aura = day + year (61/7), dharma line =
   // month + year (31/4). Superdates p. 199: target = day ds followed by the dharma ds; DVLP = day ds + life path ds.
   const PLANETS = N.PLANETS;
-  // Success codes (Superdates pp. 22-32).
+  // Success codes (Superdates pp. 22-32) and the numbers to avoid (p. 31), as the course and NotebookLM's
+  // reading of it (2026-10-15) list them. Category 1 = strong + soft (the primary codes), 2 = strength,
+  // 3 = special. 35/53 = the 3-5-8 money triad in a diamond; 28/82 do a little of the leadership codes' work
+  // but not in the strongest positions.
   const CODES = {
-    strong: [58, 85, 10, 19, 37, 46, 55, 64, 73, 91],
+    strong: [58, 85, 35, 53, 10, 19, 37, 46, 55, 64, 73, 91],
     soft: [5, 14, 23, 32, 41, 50, 68, 77, 86, 95, 45, 54, 17, 15, 24, 33, 42, 51, 60, 69, 78, 87, 96],
-    strength: [9, 27, 36, 63, 72, 90, 99, 21, 30],
+    strength: [9, 27, 36, 63, 72, 90, 21, 30, 28, 82],
     special: [13, 49, 94, 56, 65, 67, 76, 25, 34, 52, 70, 71, 89, 98],
-    avoid: [29, 92, 12, 39, 48, 84, 16, 61, 79, 88, 97],
-    care: [57, 75, 18, 81],
+    avoid: [16, 61, 79, 88, 97, 29, 92],
+    care: [12, 57, 75, 39, 48, 84, 11],
+    limited: [18, 81, 99],
   };
-  const CODE_WORDS = { strong: 'strong success code', soft: 'soft success code', strength: 'strength code', special: 'special code', avoid: 'number to avoid', care: 'use with care' };
-  const codeKind = (sum) => { for (const k of ['avoid', 'care', 'strong', 'soft', 'strength', 'special']) if (CODES[k].includes(sum)) return k; return null; };
+  const CODE_WORDS = { strong: 'strong success code', soft: 'soft success code', strength: 'strength code', special: 'special code', avoid: 'number to avoid', care: 'use with care', limited: 'strength code, not in a strong position' };
+  const codeKind = (sum) => { for (const k of ['avoid', 'care', 'limited', 'strong', 'soft', 'strength', 'special']) if (CODES[k].includes(sum)) return k; return null; };
+  // Every position a date is read in (Superdates p. 20, NotebookLM 2026-10-15): the day chart's positions
+  // and the centers, life expression and pillar of both psyche charts (the auras repeat the diamonds).
+  const POSITION_WORDS = {
+    dv: 'day vibration', mv: 'month', yv: 'year', lp: 'essence', bigLp: 'big essence', outer: 'outer diamond', inner: 'inner diamond', dvlp: 'natural talent', dharma: 'dharma line', target: 'target number',
+    piHeart: 'inner psyche heart', piSolar: 'inner psyche solar plexus', piLe: 'inner psyche life expression', piPillar: 'inner psyche pillar',
+    poHeart: 'outer psyche heart', poSolar: 'outer psyche solar plexus', poLe: 'outer psyche life expression', poPillar: 'outer psyche pillar',
+  };
+  const DOMINANT = ['dv', 'lp', 'bigLp']; // where a primary code counts most
+  const STRONG_POS = ['dv', 'lp']; // the strongest positions (GV and ST in the book): the day and the essence
+  const isPsyche = (pos) => /^p[io]/.test(pos);
+  // Super / Good / Beware, the paid tool's three colors (gold, green, red), from the course's rules:
+  //  Beware: a number to avoid anywhere in the day chart or in a psyche center, pillar or life expression;
+  //          12, 57, 75, 39, 48, 84 or 11 as the day or the essence; 18, 81, 99 as the day, the essence or
+  //          the target; 4 and 8 meeting (day, month, year) in a diamond (the 4-12/3-8 clash).
+  //  Super:  nothing of that, the psyche charts free of use-with-care numbers (the video: "good in both the
+  //          main chart and the psyche chart"), a primary code (strong or soft) as the day or the essence,
+  //          and both a strong and a soft code in the day chart (p. 23: "a balanced combination of both").
+  //  Good:   everything else.
+  function rateDate(positions, pairs) {
+    const found = [];
+    for (const [pos, v] of Object.entries(positions)) { if (!v) continue; const kind = codeKind(v.sum); if (kind) found.push({ pos, value: v, kind, words: CODE_WORDS[kind] }); }
+    const where = (c) => `${c.value.text} as the ${POSITION_WORDS[c.pos] || c.pos}`;
+    const bad = [], psycheCare = [];
+    for (const c of found) {
+      if (c.kind === 'avoid') bad.push(`${where(c)}: a number to avoid completely`);
+      else if (c.kind === 'care' && STRONG_POS.includes(c.pos)) bad.push(`${where(c)}: to be avoided as the day or the essence`);
+      else if (c.kind === 'care' && isPsyche(c.pos)) psycheCare.push(`${where(c)}: use with care`);
+      else if (c.kind === 'limited' && (STRONG_POS.includes(c.pos) || c.pos === 'target')) bad.push(`${where(c)}: too hard as the day, the essence or the target`);
+    }
+    for (const [a, b, name] of pairs) if (a && b && ((a.ds === 4 && b.ds === 8) || (a.ds === 8 && b.ds === 4))) bad.push(`4 and 8 meet in the ${name}: the 4-12/3-8 clash`);
+    if (bad.length) return { rating: 'beware', reasons: bad, codes: found };
+    const primary = found.filter((c) => !isPsyche(c.pos) && (c.kind === 'strong' || c.kind === 'soft'));
+    const strong = primary.filter((c) => c.kind === 'strong'), soft = primary.filter((c) => c.kind === 'soft');
+    const dominant = primary.filter((c) => DOMINANT.includes(c.pos));
+    const reasons = [];
+    if (dominant.length) reasons.push(`a primary success code as the ${POSITION_WORDS[dominant[0].pos]} (${dominant[0].value.text})`);
+    if (strong.length) reasons.push(`strong: ${strong.map(where).join(', ')}`);
+    if (soft.length) reasons.push(`soft: ${soft.map(where).join(', ')}`);
+    if (dominant.length && strong.length && soft.length && !psycheCare.length) return { rating: 'super', reasons, codes: found };
+    const missing = [];
+    if (!dominant.length) missing.push('no primary success code as the day or the essence');
+    if (!strong.length) missing.push('no strong success code');
+    if (!soft.length) missing.push('no soft success code');
+    return { rating: 'good', reasons: missing.concat(psycheCare, reasons), codes: found };
+  }
   function dayEnergy(y, m, d) {
     y = Number(y); m = Number(m); d = Number(d);
     const dt = new Date(y, m - 1, d);
     if (!(y >= 1000 && y <= 9999) || dt.getFullYear() !== y || dt.getMonth() + 1 !== m || dt.getDate() !== d) return null; // no Feb 30
-    const e = N.essence(String(d), String(m), String(y));
+    const scope = N.numeroscope({ day: String(d), month: String(m), year: String(y), name: '' });
+    const e = scope.essence;
     if (!(e.day && e.month && e.year)) return null;
     const dv = val(d), mv = val(m), yv = val(digitsOf(y));
     const lp = val(dv.ds + mv.ds + yv.ds), bigLp = val(digitsOf(d) + digitsOf(m) + digitsOf(y));
@@ -83,17 +134,13 @@
     const two = (p, q) => val(p * 10 + q);
     const outer = two(dv.ds, mv.ds), inner = two(dv.ds, yv.ds), dharma = two(mv.ds, yv.ds);
     const target = two(dv.ds, dharmaAura.ds), dvlp = two(dv.ds, lp.ds);
-    const positions = { dv, lp, bigLp, outer, inner, dvlp, dharma, target };
-    // Every code found, per position. The rating is the app's reading of the book: a number to avoid as the
-    // day vibration or the essence makes a hard date; four or more codes a super date; two or three good.
-    const codes = [];
-    for (const [pos, v] of Object.entries(positions)) { if (pos === 'bigLp') continue; const k = codeKind(v.sum); if (k) codes.push({ pos, value: v, kind: k, words: CODE_WORDS[k] }); }
-    const bad = codes.some((c) => c.kind === 'avoid' && (c.pos === 'dv' || c.pos === 'lp'));
-    const good = codes.filter((c) => !['avoid', 'care'].includes(c.kind)).length;
-    const rating = bad ? 'hard' : good >= 4 ? 'super' : good >= 2 ? 'good' : 'quiet';
-    return { y, m, d, weekday: dt.getDay(), dv, mv, yv, lp, bigLp, outerAura, innerAura, dharmaAura, outer, inner, dharma, target, dvlp, ruler: PLANETS[dv.ds], codes, rating, essence: e };
+    const pi = scope.psyche.inner, po = scope.psyche.outer;
+    const positions = { dv, lp, bigLp, outer, inner, dvlp, dharma, target,
+      piHeart: pi.heart, piSolar: pi.solar, piLe: pi.le, piPillar: pi.pillar, poHeart: po.heart, poSolar: po.solar, poLe: po.le, poPillar: po.pillar };
+    const rated = rateDate(positions, [[dv, mv, 'outer diamond'], [dv, yv, 'inner diamond'], [mv, yv, 'dharma line']]);
+    return { y, m, d, weekday: dt.getDay(), dv, mv, yv, lp, bigLp, outerAura, innerAura, dharmaAura, outer, inner, dharma, target, dvlp, ruler: PLANETS[dv.ds], essenceRuler: PLANETS[lp.ds], codes: rated.codes, rating: rated.rating, reasons: rated.reasons, essence: e, psyche: scope.psyche };
   }
-  const RATING_WORDS = { super: 'Super date', good: 'Good date', hard: 'Hard date', quiet: 'Quiet date' };
+  const RATING_WORDS = { super: 'Super Date', good: 'Good Date', beware: 'Beware' };
   // n days from a date on (Coming days).
   function comingDays(y, m, d, n = 31) {
     const out = [];
@@ -176,5 +223,5 @@
       others: (otherYears || []).map((y) => Number(y)).filter((y) => y >= 1000 && y <= 9999).map((y) => ({ year: y, ds: ds(y), shared: ds(y) === ds(mine), sameYear: y === mine })) };
   }
 
-  root.NumberTools = { val, littleDiamond, bigDiamond, numbersContaining, dayEnergy, comingDays, RATING_WORDS, CODES, CODE_WORDS, codeKind, PRICE_VIBES, PRICE_RANGES, priceCheck, priceFind, karmic, nameOf };
+  root.NumberTools = { val, littleDiamond, bigDiamond, numbersContaining, dayEnergy, comingDays, rateDate, RATING_WORDS, CODES, CODE_WORDS, POSITION_WORDS, codeKind, PRICE_VIBES, PRICE_RANGES, priceCheck, priceFind, karmic, nameOf };
 })(typeof globalThis !== 'undefined' ? globalThis : this);

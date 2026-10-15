@@ -381,3 +381,21 @@ screen day with ‹ › through the days), Number fun was redrawn as the book's 
 read at 230 dpi: outer life left, inner life right, names inside the triangles, unbalanced ones small above),
 and each day got a drawn planet scene for its ruler. Lesson: a mockup "approved" from a phone still gets
 corrected on the live screen; look at the book's own page at full size before drawing anything.
+
+## 2026-10-15 Night look, the Super / Good / Beware rule from the course, Title Case, inline readings
+The owner's list after a day with the number tools: no day under the essence chart in Coming Days (the day is
+drawn with the hidden name chart; a copy now sits under the cube's point), the super-date logic "way off" (the
+app called Oct 15 2026 Good with 61/7 twice; the book says avoid completely), readings that only described the
+positions (now the number's keywords and the book's first sentences, tap for the page), a Relationship tool
+that would not take a date (day / month / year boxes per person now), lowercase titles (Title Case everywhere,
+the owner's rule), aura numbers over the triangle edges in Number Fun (measured at the top of the text), and
+"make the forecast page a vibe". Four mockups were published as an artifact (real sky, whole page dark with
+two planets, horizon, the paid tool's layout); the owner chose B with the real charts on a not-pure-white card
+and the psyche toggle moved out of the chip row. The rule: the Superdates book gives the codes and the
+numbers to avoid but no formula ("qualitative, not a score", Cosmic Calendar p. 172); the course video says a
+super date must be good in both the main and the psyche chart; the owner asked NotebookLM and pasted the
+answer, which named the positions and the disqualifiers. Lesson: a rule the book states in prose still needs
+the owner's NotebookLM pass before it is code, and the app must show its reasons on the screen, or "why is
+this a Beware day" is a guess again. The first draft rated 317 of 365 days Beware because every psyche
+number and every aura was read as a key position; auras repeat the diamonds, and a use-with-care number in
+a psyche center now only blocks Super. Settled at about 30 / 100 / 235 for 2026.

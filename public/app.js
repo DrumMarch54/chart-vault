@@ -38,16 +38,16 @@
   }
   const postJson = (path, data) => api(path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(data) });
 
-  // Which buttons and screens get used, shown on Status as "What you use most".
+  // Which buttons and screens get used, shown on Status as "What You Use Most".
   // A NAME and a count only: never what was typed, never a chart, a tag or a
   // filename. Never throws, never waits, so a count can never break a tap.
   // A renamed or removed button changes its name and its label here, same commit.
   const USAGE_LABELS = {
-    'screen.home': 'Home screen', 'screen.chart': 'Chart viewer', 'screen.settings': 'Settings', 'screen.quick': 'Quick chart',
-    'screen.tags': 'All tags', 'screen.upload': 'Upload screenshots', 'screen.import': 'Import tags', 'screen.status': 'Status and backup',
-    'viewer.add_tag': 'Add a tag to a chart', 'quick.save': 'Save a quick chart', 'quick.full_screen': 'Quick chart full screen',
-    'quick.year_rows': 'Year rows and day vibrations', 'quick.show_parts': 'Show and hide parts', 'quick.augment': 'Augmentation on or off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
-    'screen.position': 'Search by position', 'position.search': 'Run a position search', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'viewer.number_tap': 'Tap a number on a chart', 'status.recompute': 'Recompute chart numbers',
+    'screen.home': 'Home Screen', 'screen.chart': 'Chart Viewer', 'screen.settings': 'Settings', 'screen.quick': 'Quick Chart',
+    'screen.tags': 'All Tags', 'screen.upload': 'Upload Screenshots', 'screen.import': 'Import Tags', 'screen.status': 'Status and backup',
+    'viewer.add_tag': 'Add a tag to a chart', 'quick.save': 'Save a quick chart', 'quick.full_screen': 'Quick Chart full screen',
+    'quick.year_rows': 'Year Rows and Day Vibrations', 'quick.show_parts': 'Show and Hide Parts', 'quick.augment': 'Augmentation On or Off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
+    'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'viewer.number_tap': 'Tap a number on a chart', 'status.recompute': 'Recompute chart numbers',
   };
   const count = (name) => { try { fetch('/api/usage', { method: 'POST', credentials: 'same-origin', keepalive: true, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name }) }).catch(() => {}); } catch { /* counting never breaks a tap */ } };
 
@@ -294,7 +294,7 @@
     const setName = (n) => go('#/?' + new URLSearchParams({ name: n }));
     const setTag = (t, k = kind) => { const p = new URLSearchParams(); if (k === 'archetype') p.set('kind', 'archetype'); if (t) p.set('tag', t); go('#/' + (p.toString() ? '?' + p : '')); };
     const home = !tag && !position && !name && kind === 'chart';
-    const $quickIcon = h('a', { class: 'btn iconbtn gear', href: '#/quick', 'aria-label': 'Quick chart', title: 'Quick chart' }, '◈');
+    const $quickIcon = h('a', { class: 'btn iconbtn gear', href: '#/quick', 'aria-label': 'Quick Chart', title: 'Quick Chart' }, '◈');
     const $gear = h('a', { class: 'btn iconbtn gear', href: '#/settings', 'aria-label': 'Settings', title: 'Settings' }, '⚙');
     const $input = h('input', { type: 'search', placeholder: 'Search names, tags, numbers', autocomplete: 'off', enterkeyhint: 'search' });
     if (tag) $input.value = pretty(tag); // the search box shows what is being searched; typing replaces it
@@ -306,7 +306,7 @@
     $input.addEventListener('focus', () => { if ((tag && $input.value === pretty(tag)) || position || (name && $input.value === name)) $input.select(); });
     const $clear = h('button', { type: 'button', class: 'clear', 'aria-label': 'Clear the search', onclick: () => { if (tag || position || name) { setTag('', 'chart'); return; } $input.value = ''; showClear(); $input.focus(); $sugg.classList.add('hidden'); } }, '×');
     showClear();
-    const $filters = kind === 'archetype' ? h('div', { class: 'filters' }, chip({ name: 'Archetype pics', kind: 'name' }, { active: true, removable: true, onclick: () => setTag(tag, 'chart') }))
+    const $filters = kind === 'archetype' ? h('div', { class: 'filters' }, chip({ name: 'Archetype Pics', kind: 'name' }, { active: true, removable: true, onclick: () => setTag(tag, 'chart') }))
       : position ? h('div', { class: 'filters' }, h('a', { class: 'chip position', href: '#/position?' + new URLSearchParams({ pos, num }) }, h('span', { class: 't' }, 'Change position or number'), h('span', { class: 'x' }, '›'))) : null;
     const $summary = h('div', { class: 'summary' }, 'Loading…');
     const $grid = h('div', { class: 'grid' });
@@ -318,20 +318,20 @@
     if (position) rememberSearch([], kind, position);
     if (name) rememberSearch([], kind, { name });
     if (!namesLoaded) loadTagNames().then(() => { if (tag && document.activeElement !== $input) $input.value = pretty(tag); });
-    const $quick = h('a', { class: 'btn btn-primary btn-block quickbtn', href: '#/quick' }, h('span', { class: 'qicon' }, '◈'), 'Quick chart');
-    const $byPos = h('a', { class: 'btn btn-block quickbtn posbtn', href: '#/position' }, h('span', { class: 'qicon' }, '⌖'), 'Search by position');
+    const $quick = h('a', { class: 'btn btn-primary btn-block quickbtn', href: '#/quick' }, h('span', { class: 'qicon' }, '◈'), 'Quick Chart');
+    const $byPos = h('a', { class: 'btn btn-block quickbtn posbtn', href: '#/position' }, h('span', { class: 'qicon' }, '⌖'), 'Search by Position');
     render(h('div', { class: `screen ${home ? 'home' : ''}` },
       home ? h('div', { class: 'pagetop hometop' }, h('h1', {}, 'Chart Vault'), $gear) : null,
       h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), home ? null : $quickIcon, home ? null : $gear), $filters),
       home ? $quick : null, home ? $byPos : null, home && toolsUi ? toolsUi.homeButtons() : null,
       $recent, home ? null : $summary, home ? null : $grid, home ? null : $sentinel));
-    // Recently opened charts (this phone remembers the last 48), a grid like a search result, only on the home screen.
+    // Recently Opened charts (this phone remembers the last 48), a grid like a search result, only on the home screen.
     if (home && recentIds().length) {
       api('/api/images?ids=' + recentIds().join(',') + '&limit=50').then((r) => {
         const byId = new Map(r.items.map((i) => [i.id, i]));
         const items = recentIds().map((id) => byId.get(id)).filter(Boolean);
         if (!items.length) return;
-        fill($recent, h('div', { class: 'summary rhead' }, 'Recently opened'), h('div', { class: 'grid' }, ...items.map(cell)));
+        fill($recent, h('div', { class: 'summary rhead' }, 'Recently Opened'), h('div', { class: 'grid' }, ...items.map(cell)));
         $recent.classList.remove('hidden');
       }).catch(() => {});
     }
@@ -384,15 +384,15 @@
   const recentNodes = (setTag, setName) => {
     const searches = recentSearches();
     return [
-      h('div', { class: 'shead' }, searches.length ? 'Recent searches' : 'Your recent searches will show here'),
+      h('div', { class: 'shead' }, searches.length ? 'Recent Searches' : 'Your recent searches will show here'),
       ...searches.map((s) => h('button', { type: 'button', class: 'rsearch', onclick: () => (s.pos ? runSearch(s) : s.name ? setName(s.name) : setTag(s.tags[0], s.kind)) },
-        h('span', { class: 'chips' }, s.kind === 'archetype' ? h('span', { class: 'chip name', style: 'pointer-events:none' }, 'Archetype pics') : null,
+        h('span', { class: 'chips' }, s.kind === 'archetype' ? h('span', { class: 'chip name', style: 'pointer-events:none' }, 'Archetype Pics') : null,
           s.pos ? h('span', { class: 'chip position', style: 'pointer-events:none' }, searchLabel(s.pos, s.num)) : null,
           s.name ? h('span', { class: 'chip who', style: 'pointer-events:none' }, s.name) : null,
           ...s.tags.slice(0, 1).map((t) => h('span', { class: `chip ${kindOf(t)}`, style: 'pointer-events:none' }, pretty(t)))),
         h('span', { class: 'muted', style: 'padding-left:8px' }, '›'))),
-      h('a', { class: 'rsearch alltags', href: '#/position' }, h('span', {}, 'Search by position'), h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'rsearch alltags', href: '#/tags' }, h('span', {}, 'All tags'), h('span', { class: 'muted' }, '›')),
+      h('a', { class: 'rsearch alltags', href: '#/position' }, h('span', {}, 'Search by Position'), h('span', { class: 'muted' }, '›')),
+      h('a', { class: 'rsearch alltags', href: '#/tags' }, h('span', {}, 'All Tags'), h('span', { class: 'muted' }, '›')),
     ];
   };
 
@@ -635,7 +635,7 @@
           ...rows.map((r) => h('div', { class: 'stat small' }, h('span', {}, `${fmtDate(r.imported_at)}`), h('span', { class: 'muted' }, `+${r.new_images} images, +${r.new_tags} tags, +${r.new_links} links`))));
       } catch (err) { fill($hist, h('p', { class: 'err' }, err.message)); }
     }
-    render(h('div', { class: 'screen stack' }, pageTop('Import tags'),
+    render(h('div', { class: 'screen stack' }, pageTop('Import Tags'),
       h('div', { class: 'card stack' },
         h('p', {}, 'Pick the UserTag.backup file from your Smart Switch backup. Safe to repeat: new tags are added, nothing is ever deleted.'),
         $file, $pick),
@@ -660,17 +660,17 @@
     // become tags with the album's exact name.
     const $dir = h('input', { type: 'file', id: 'dirfiles', multiple: true, webkitdirectory: true });
     const $pickDir = h('button', { type: 'button', class: 'btn-block', onclick: () => $dir.click() }, 'Import album folders (laptop)');
-    // Archetype pics: albums like "15 pics" or "69 and 96 pics". Every picture
+    // Archetype Pics: albums like "15 pics" or "69 and 96 pics". Every picture
     // inside represents the number(s) in the folder name. Not charts.
     const $arch = h('input', { type: 'file', id: 'archfiles', multiple: true, webkitdirectory: true });
     const $pickArch = h('button', { type: 'button', class: 'btn-block', onclick: () => $arch.click() }, 'Import archetype pics (laptop)');
-    render(h('div', { class: 'screen stack' }, pageTop('Upload screenshots'),
+    render(h('div', { class: 'screen stack' }, pageTop('Upload Screenshots'),
       h('div', { class: 'card stack' },
         h('p', {}, 'Only files named in the tag file are sent; everything else is skipped on the phone. Files already here are skipped too, so you can stop and come back any time.'),
         $file, $pick,
         h('p', { class: 'muted small', style: 'margin-top:14px' }, 'On a laptop you can also pick a folder of Gallery albums. Every album folder becomes a tag on the charts inside it: "12 Mind Center" becomes 12mc, any other album keeps its exact name.'),
         $dir, $pickDir,
-        h('p', { class: 'muted small', style: 'margin-top:14px' }, 'Archetype pics are pictures that represent a number, kept apart from charts. Pick the folder that holds albums like "15 pics"; every picture inside gets the number(s) in the album name as tags.'),
+        h('p', { class: 'muted small', style: 'margin-top:14px' }, 'Archetype Pics are pictures that represent a number, kept apart from charts. Pick the folder that holds albums like "15 pics"; every picture inside gets the number(s) in the album name as tags.'),
         $arch, $pickArch),
       $plan, $missing));
     $file.addEventListener('change', () => plan([...$file.files]));
@@ -852,15 +852,15 @@
   // ---------- settings ----------
   routes.settings = function settingsView() {
     render(h('div', { class: 'screen stack' }, pageTop('Settings', '#/'),
-      h('a', { class: 'btn btn-block', href: '#/quick', style: 'justify-content:space-between' }, 'Quick chart', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/tags', style: 'justify-content:space-between' }, 'All tags', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/names', style: 'justify-content:space-between' }, 'Names to check', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/position', style: 'justify-content:space-between' }, 'Search by position', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/upload', style: 'justify-content:space-between' }, 'Upload screenshots', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/import', style: 'justify-content:space-between' }, 'Import tags', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/mychart', style: 'justify-content:space-between' }, 'My chart (your own name and birth date)', h('span', { class: 'muted' }, '›')),
+      h('a', { class: 'btn btn-block', href: '#/quick', style: 'justify-content:space-between' }, 'Quick Chart', h('span', { class: 'muted' }, '›')),
+      h('a', { class: 'btn btn-block', href: '#/tags', style: 'justify-content:space-between' }, 'All Tags', h('span', { class: 'muted' }, '›')),
+      h('a', { class: 'btn btn-block', href: '#/names', style: 'justify-content:space-between' }, 'Names to Check', h('span', { class: 'muted' }, '›')),
+      h('a', { class: 'btn btn-block', href: '#/position', style: 'justify-content:space-between' }, 'Search by Position', h('span', { class: 'muted' }, '›')),
+      h('a', { class: 'btn btn-block', href: '#/upload', style: 'justify-content:space-between' }, 'Upload Screenshots', h('span', { class: 'muted' }, '›')),
+      h('a', { class: 'btn btn-block', href: '#/import', style: 'justify-content:space-between' }, 'Import Tags', h('span', { class: 'muted' }, '›')),
+      h('a', { class: 'btn btn-block', href: '#/mychart', style: 'justify-content:space-between' }, 'My Chart (your own name and birth date)', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/status', style: 'justify-content:space-between' }, 'Status and backup', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/?kind=archetype', style: 'justify-content:space-between' }, 'Archetype pics', h('span', { class: 'muted' }, '›'))));
+      h('a', { class: 'btn btn-block', href: '#/?kind=archetype', style: 'justify-content:space-between' }, 'Archetype Pics', h('span', { class: 'muted' }, '›'))));
   };
 
   // ---------- names to check ----------
@@ -869,7 +869,7 @@
   routes.names = async function namesView() {
     const $list = h('div', { class: 'stack' });
     const $head = h('p', { class: 'muted' }, 'Loading…');
-    render(h('div', { class: 'screen stack' }, pageTop('Names to check'), $head, $list));
+    render(h('div', { class: 'screen stack' }, pageTop('Names to Check'), $head, $list));
     count('screen.names');
     let r;
     try { r = await api('/api/titles/check'); } catch (err) { $head.textContent = err.message; return; }
@@ -914,8 +914,8 @@
   // Which part of a chart a number belongs to, from its position name ('c.heartExtra' → center).
   const kindOfSlot = (slot) => { const k = slot.replace(/^(c|v|po|pi)\./, ''); return /^(ul|ur|ll|lr)$/.test(k) ? 'aura' : /^(heart|solar)/.test(k) ? 'center' : /^(first|middle|last)$/.test(k) ? 'line' : k === 'big' ? 'le' : k; };
   // Show sheet: which charts and which parts are drawn. This phone remembers the choice.
-  const SHOW_CHARTS = [['ess', 'Essence chart'], ['psy', 'Psyche charts'], ['main', 'Name chart'], ['vow', 'Vocation chart'], ['con', 'Personality chart']];
-  const SHOW_KINDS = [['day', 'Day numbers'], ['aura', 'Auras in the corners'], ['center', 'Centers'], ['name', 'Names on the line'], ['line', 'Line values'], ['spine', 'Spine'], ['le', 'Life expressions'], ['pillar', 'Pillars'], ['letters', 'Letter count'], ['shape', 'Colored shapes']];
+  const SHOW_CHARTS = [['ess', 'Essence Chart'], ['psy', 'Psyche Charts'], ['main', 'Name Chart'], ['vow', 'Vocation Chart'], ['con', 'Personality Chart']];
+  const SHOW_KINDS = [['day', 'Day Numbers'], ['aura', 'Auras in the Corners'], ['center', 'Centers'], ['name', 'Names on the Line'], ['line', 'Line Values'], ['spine', 'Spine'], ['le', 'Life Expressions'], ['pillar', 'Pillars'], ['letters', 'Letter Count'], ['shape', 'Colored Shapes']];
   const SHOW_PRESETS = [['Everything', null], ['Centers only', 'center'], ['Names only', 'name'], ['Life expressions only', 'le']];
   const loadShow = () => { try { const s = JSON.parse(localStorage.getItem('quickShow') || 'null'); if (s && s.charts && s.kinds) return s; } catch {} return { charts: {}, kinds: {} }; };
   const saveShow = (show) => { try { localStorage.setItem('quickShow', JSON.stringify(show)); } catch {} };
@@ -1010,7 +1010,7 @@
     svg.append(grp('main', null, ...numbers('', data.name, { ...M.text, bigX: M.big[0] }, M.cx, day),
       txt(M.letter[0], M.text.letterY, data.name.letters ? String(data.name.letters) : null, 'n-blue n-bold k-letters', M.text.letterFont)));
     svg.append(grp('con', null, ...numbers('c.', data.consonants, { ...S.text, ...S.left }, S.left.cx, day)), grp('vow', null, ...numbers('v.', data.vowels, { ...S.text, ...S.right }, S.right.cx, day)));
-    // Psyche charts: outer psyche in the left blue diamond, inner in the right (confirmed on vault screenshots).
+    // Psyche Charts: outer psyche in the left blue diamond, inner in the right (confirmed on vault screenshots).
     const bare = (c) => ({ ...c, big: null, middle: [], heartExtra: [], solarExtra: [], first: c.first && { text: '', value: c.first.value }, last: c.last && { text: '', value: c.last.value } });
     svg.append(grp('psy', null, ...numbers('po.', bare(data.psyche.outer), { ...P.text, sideDx: P.sideDxL }, P.cxL, day), ...numbers('pi.', bare(data.psyche.inner), { ...P.text, sideDx: P.sideDxR }, P.cxR, day)));
     // Essence numbers: top aura inside the top of the shape, month and year outside the upper corners,
@@ -1089,7 +1089,7 @@
     const small = (title, c, pre) => h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, title), singleNameSvg(c, pre, c.words.length, day));
     const $pop = h('div', { class: 'wordpop' },
       h('div', { class: 'pagetop' }, h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Close', onclick: close }, '‹'), h('h1', {}, word), h('span', { class: 'muted small' }, `${r.letters} letters`)),
-      h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'Number pyramid'), pyramidEl(r),
+      h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'Number Pyramid'), pyramidEl(r),
         h('div', { class: 'verdict' },
           h('div', {}, h('span', { class: 'muted small' }, 'Weight'), h('b', {}, fmtW(W.total))),
           h('div', {}, h('span', { class: 'muted small' }, 'Ratio'), h('b', { class: W.approved ? 'ok' : 'err' }, W.ratio.toFixed(3))),
@@ -1097,7 +1097,7 @@
           $more),
         $table),
       day ? null : h('p', { class: 'muted small', style: 'margin:0 0 8px' }, 'Type a birth day to see the top half of the charts and the pillars.'),
-      h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'Name chart'), singleNameSvg(r.name, '', r.letters, day)),
+      h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'Name Chart'), singleNameSvg(r.name, '', r.letters, day)),
       h('div', { class: 'two' }, small('Vocation', r.vowels, 'v.'), small('Personality', r.consonants, 'c.')));
     overlays.push($pop); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
   }
@@ -1141,12 +1141,12 @@
     };
     $chart.addEventListener('click', (e) => { const t = e.target.closest && e.target.closest('[data-word]'); if (t) openWord(t.getAttribute('data-word'), data && data.essence.day); });
     for (const el of [$day, $month, $year, $name]) el.addEventListener('input', draw);
-    // The ⋮ menu sits beside the name field, never on the chart: Full screen and Save to vault. Taps outside close it.
+    // The ⋮ menu sits beside the name field, never on the chart: Full screen and Save to Vault. Taps outside close it.
     const $full = h('button', { type: 'button', class: 'cmenu-item' }, 'Full screen');
-    const $save = h('button', { type: 'button', class: 'cmenu-item' }, 'Save to vault');
-    const $showBtn = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { count('quick.show_parts'); $menu.classList.add('hidden'); showSheet(show, () => applyShow(svg, show)); } }, 'Show and hide parts');
-    const $rows = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { count('quick.year_rows'); $menu.classList.add('hidden'); openForecast(input()); } }, 'Year rows and day vibrations');
-    const augmentLabel = () => (augment ? 'Augmentation on' : 'Augmentation off');
+    const $save = h('button', { type: 'button', class: 'cmenu-item' }, 'Save to Vault');
+    const $showBtn = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { count('quick.show_parts'); $menu.classList.add('hidden'); showSheet(show, () => applyShow(svg, show)); } }, 'Show and Hide Parts');
+    const $rows = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { count('quick.year_rows'); $menu.classList.add('hidden'); openForecast(input()); } }, 'Year Rows and Day Vibrations');
+    const augmentLabel = () => (augment ? 'Augmentation On' : 'Augmentation Off');
     const $augment = h('button', { type: 'button', class: 'cmenu-item', role: 'menuitemcheckbox', 'aria-checked': String(augment), onclick: () => {
       count('quick.augment'); augment = !augment; try { localStorage.setItem('quickAugment', augment ? 'on' : 'off'); } catch {}
       $augment.textContent = augmentLabel(); $augment.setAttribute('aria-checked', String(augment)); $menu.classList.add('hidden'); draw();
@@ -1165,7 +1165,7 @@
       const $ov = h('div', { class: 'nsfull' }, h('button', { type: 'button', class: 'cbtn nsfull-x', 'aria-label': 'Leave full screen', onclick: close }, '×'), $chart);
       overlays.push($ov); document.body.append($ov); document.body.classList.add('fullscreen'); window.addEventListener('keydown', keys);
     };
-    // Save to vault: the drawing becomes a chart picture tagged with the typed name, then opens with its tags.
+    // Save to Vault: the drawing becomes a chart picture tagged with the typed name, then opens with its tags.
     $save.onclick = async () => {
       count('quick.save');
       const name = $name.value.trim();
@@ -1178,7 +1178,7 @@
         const r = await api(`/api/quick/save?name=${encodeURIComponent(name)}&date=${date}`, { method: 'PUT', headers: { 'content-type': 'image/png' }, body: png });
         toast(`Saved “${name}” to the vault`);
         go(`#/chart/${r.id}?sheet=1`);
-      } catch (err) { toast(err.message, true); $save.disabled = false; $save.textContent = 'Save to vault'; $menu.classList.add('hidden'); }
+      } catch (err) { toast(err.message, true); $save.disabled = false; $save.textContent = 'Save to Vault'; $menu.classList.add('hidden'); }
     };
     // The whole screen is white like the chart card, the fields are small, the chart runs edge to edge:
     // the chart is what this screen is for. The light look is undone when another screen takes over.
@@ -1187,7 +1187,7 @@
     render(h('div', { class: 'screen qscreen' },
       h('div', { class: 'row qfields' }, h('a', { class: 'btn iconbtn', href: '#/', 'aria-label': 'Back' }, '‹'), $day, $month, $year),
       h('div', { class: 'row qfields qname' }, $name, $dots, $menu), $home));
-    // Opened from the home screen's "My chart" button: the saved name and birth date fill the boxes.
+    // Opened from the home screen's "My Chart" button: the saved name and birth date fill the boxes.
     const me = query && query.get('me') && toolsUi ? toolsUi.myChart() : null;
     if (me && me.day) { $day.value = String(me.day); $month.value = String(me.month); $year.value = String(me.year); $name.value = me.name || ''; }
     draw();
@@ -1209,7 +1209,7 @@
     const $charts = h('div', { class: 'chips tabs' });
     const $list = h('div', { class: 'stack poslist' });
     const $hint = h('p', { class: 'muted small' });
-    render(h('div', { class: 'screen' }, pageTop('Search by position', '#/'),
+    render(h('div', { class: 'screen' }, pageTop('Search by Position', '#/'),
       h('div', { class: 'row posnum', style: 'flex-wrap:nowrap' }, $num, $ds), $hint, $charts, $list));
     try { await loadCatalog(); } catch (err) { fill($list, h('p', { class: 'err' }, err.message)); return; }
     let counts = null, seq = 0;
@@ -1250,7 +1250,7 @@
     if (!VIEWS.some(([k]) => k === view)) view = 'words';
     const $tabs = h('div', { class: 'chips tabs' });
     const $body = h('div', { class: 'stack' }, h('p', { class: 'muted' }, 'Loading…'));
-    render(h('div', { class: 'screen' }, pageTop('All tags', '#/'), $tabs, $body));
+    render(h('div', { class: 'screen' }, pageTop('All Tags', '#/'), $tabs, $body));
     let all;
     try { all = await api('/api/tags/all'); } catch (err) { fill($body, h('p', { class: 'err' }, err.message)); return; }
     learnTags(all);
@@ -1395,8 +1395,8 @@
     $date.addEventListener('change', () => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec($date.value); if (m) { date = { y: Number(m[1]), m: Number(m[2]), d: Number(m[3]) }; drawDay(); } });
     const name = String(input.name || '').trim();
     const $pop = h('div', { class: 'wordpop' },
-      h('div', { class: 'pagetop' }, h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Close', onclick: close }, '‹'), h('h1', {}, name || 'Year rows'), h('span', { class: 'muted small' }, `${e.day.sum} ${MON[e.month.sum - 1]} ${birthYear}`)),
-      h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'Destiny periods'), $periods),
+      h('div', { class: 'pagetop' }, h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Close', onclick: close }, '‹'), h('h1', {}, name || 'Year Rows'), h('span', { class: 'muted small' }, `${e.day.sum} ${MON[e.month.sum - 1]} ${birthYear}`)),
+      h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'Destiny Periods'), $periods),
       h('div', { class: 'wcard' }, $yearTitle,
         h('div', { class: 'row ynav' }, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Previous year', onclick: () => { if (year > birthYear) { year--; drawYear(); drawPeriods(); } } }, '‹'), $yearNote, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Next year', onclick: () => { year++; drawYear(); drawPeriods(); } }, '›')),
         $year, h('p', { class: 'muted small', style: 'margin:8px 0 0' }, 'Tap a number for what it means; a sum also shows the two rows above it read as one number.')),
@@ -1419,7 +1419,7 @@
     fill($body, 
       h('div', { class: 'card' },
         stat('Charts with tags', s.images), stat('Screenshots uploaded', s.uploaded),
-        s.archetypes ? stat('Archetype pics', s.archetypes) : null,
+        s.archetypes ? stat('Archetype Pics', s.archetypes) : null,
         h('div', { class: 'stat' }, h('span', {}, 'Tagged but no screenshot yet'), h('b', { class: s.missing_count ? 'err' : 'ok' }, fmtN(s.missing_count))),
         stat('Distinct tags', s.tags), stat('Tags added in the app', s.added_in_app), stat('Tags removed in the app', s.removed_in_app),
         h('div', { class: 'stat' }, h('span', {}, 'Space used by screenshots'), h('b', {}, fmtBytes(s.bytes))),
@@ -1427,18 +1427,18 @@
       s.lost_files.length ? h('div', { class: 'card' }, h('p', { class: 'err' }, `${s.lost_files.length} file(s) are recorded but missing on disk. Tell Claude about this.`), h('div', { class: 'filelist' }, ...s.lost_files.map((f) => h('div', {}, f)))) : null,
       s.missing_count ? h('div', { class: 'card stack' },
         h('button', { type: 'button', class: 'btn-block', onclick: (e) => { $missing.classList.toggle('hidden'); e.target.textContent = $missing.classList.contains('hidden') ? `Show the ${fmtN(s.missing_count)} missing filenames` : 'Hide list'; } }, `Show the ${fmtN(s.missing_count)} missing filenames`),
-        $missing, h('a', { class: 'btn btn-primary btn-block', href: '#/upload' }, 'Upload screenshots')) : null,
+        $missing, h('a', { class: 'btn btn-primary btn-block', href: '#/upload' }, 'Upload Screenshots')) : null,
       h('div', { class: 'card stack' }, h('h2', { style: 'margin-top:0' }, 'Backup'), $backupMsg,
         h('button', { type: 'button', class: 'btn-block', onclick: async (e) => { count('status.backup'); e.target.disabled = true; e.target.textContent = 'Backing up…'; try { const r = await api('/api/backup/run', { method: 'POST' }); $backupMsg.textContent = `Last backup: ${fmtDate(r.at)} (${r.result})`; toast('Backup done'); } catch (err) { toast(err.message, true); } e.target.disabled = false; e.target.textContent = 'Back up now'; } }, 'Back up now'),
         h('a', { class: 'btn btn-block', href: '/api/backup/download', download: '' }, `Download everything as one zip (${fmtBytes(s.bytes)})`),
         h('a', { class: 'btn btn-block', href: '/api/export/tags.json', download: '' }, 'Download tags only (small JSON file)')),
-      s.positions ? h('div', { class: 'card stack' }, h('h2', { style: 'margin-top:0' }, 'Search by position'),
+      s.positions ? h('div', { class: 'card stack' }, h('h2', { style: 'margin-top:0' }, 'Search by Position'),
         stat('Charts with a name and date', s.positions.with_inputs), stat('Charts with a full birth date', s.positions.with_date),
         h('div', { class: 'stat' }, h('span', {}, 'Charts not read yet'), h('b', { class: s.positions.without_inputs ? 'err' : 'ok' }, fmtN(s.positions.without_inputs))),
         s.positions.check ? h('div', { class: 'stat' }, h('span', {}, 'Your position tags that agree with the computed charts'), h('b', {}, `${fmtN(s.positions.check.agree)} of ${fmtN(s.positions.check.tags)}`)) : null,
         h('p', { class: 'muted small' }, 'A tag that disagrees usually means the name or date was misread: open the chart, tap "Wrong? Fix". Charts not read yet get their name and date the same way.'),
-        h('button', { type: 'button', class: 'btn-block', onclick: async (e) => { count('status.recompute'); e.target.disabled = true; e.target.textContent = 'Recomputing…'; try { const r = await api('/api/positions/recompute', { method: 'POST' }); toast(`Recomputed ${fmtN(r.recomputed)} charts`); } catch (err) { toast(err.message, true); } e.target.disabled = false; e.target.textContent = 'Recompute every chart'; } }, 'Recompute every chart')) : null,
-      s.usage && s.usage.length ? h('div', { class: 'card stack' }, h('h2', { style: 'margin-top:0' }, 'What you use most'),
+        h('button', { type: 'button', class: 'btn-block', onclick: async (e) => { count('status.recompute'); e.target.disabled = true; e.target.textContent = 'Recomputing…'; try { const r = await api('/api/positions/recompute', { method: 'POST' }); toast(`Recomputed ${fmtN(r.recomputed)} charts`); } catch (err) { toast(err.message, true); } e.target.disabled = false; e.target.textContent = 'Recompute Every Chart'; } }, 'Recompute Every Chart')) : null,
+      s.usage && s.usage.length ? h('div', { class: 'card stack' }, h('h2', { style: 'margin-top:0' }, 'What You Use Most'),
         ...s.usage.slice(0, 20).map((u) => stat(USAGE_LABELS[u.name] || u.name, u.count))) : null,
       h('div', { class: 'card stack' },
         s.last_import ? h('p', { class: 'muted small' }, `Last tag import: ${fmtDate(s.last_import.imported_at)}, ${fmtN(s.last_import.images_in_file)} images in file`) : h('p', { class: 'muted small' }, 'No tag file imported yet.'),
@@ -1465,7 +1465,7 @@
   document.addEventListener('visibilitychange', () => { if (!document.hidden) checkVersion(); });
 
   // ---------- number tools (public/tools.js) ----------
-  // Today, Coming days, Number fun, Price tool, Relationship, Karmic connections, My chart: their screens
+  // Today, Coming Days, Number Fun, Price Tool, Relationship, Karmic Connections, My Chart: their screens
   // live in tools.js and get the plumbing here (screens, drawing, counting). A bottom sheet for a number's words.
   const wordsSheet = (content) => {
     const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });

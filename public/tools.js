@@ -1,5 +1,5 @@
-// The number tools' screens: Today, Coming days, Number fun, Price tool, Relationship, Karmic connections,
-// My chart. Math in public/numbertools.js, the book's words in public/readings.js (loaded on first use).
+// The number tools' screens: Today, Coming Days, Number Fun, Price Tool, Relationship, Karmic Connections,
+// My Chart. Math in public/numbertools.js, the book's words in public/readings.js (loaded on first use).
 // app.js hands over its screen plumbing through Tools.install(...) at startup; nothing here touches the
 // vault's charts or tags. Layouts: the six mockups approved on 2026-10-15 (.brain/HISTORY.md).
 (function (root) {
@@ -23,6 +23,12 @@
 
   // ---------- shared pieces ----------
   const light = () => { document.documentElement.classList.add('light'); A.setCleanup(() => document.documentElement.classList.remove('light')); };
+  // The night look of Today and Coming Days: the sky continues under the whole page, the accent follows
+  // the ruler of the day (approved as mockup B, 2026-10-15).
+  const TINTS = { Sun: '#f6c453', Moon: '#d3d9e8', Mercury: '#9fc9d9', Venus: '#f2c9a0', Mars: '#e58a72', Jupiter: '#dba66b', Saturn: '#e3c995', Uranus: '#8fd3e0', Neptune: '#8aa4f5' };
+  const night = (planet) => { const el = document.documentElement; el.classList.add('night'); el.style.setProperty('--tint', TINTS[planet] || TINTS.Venus); A.setCleanup(() => { el.classList.remove('night'); el.style.removeProperty('--tint'); }); };
+  // The first sentences of a book passage, for the reading rows (tap for the whole page).
+  const snippet = (t, n = 2) => (t ? String(t).split(/(?<=[.!?])\s+/).slice(0, n).join(' ') : '');
   const top = (title, back = '#/', right = null) => A.h('div', { class: 'pagetop ttop' }, A.h('a', { class: 'btn iconbtn', href: back, 'aria-label': 'Back' }, '‹'), A.h('h1', {}, title), right);
   const chip = (label, on, onclick) => A.h('button', { type: 'button', class: `chip ${on ? 'active' : 'off'}`, onclick }, label);
   const rate = (r, cls = '') => A.h('span', { class: `rate ${r} ${cls}` }, T.RATING_WORDS[r]);
@@ -49,7 +55,7 @@
     const kind = T.codeKind(n);
     A.sheet(A.h('div', { class: 'numsheet' }, A.h('h3', {}, `${v.text} ${name}`), kind ? A.h('div', { class: 'codes' }, A.h('span', { class: kind === 'avoid' || kind === 'care' ? 'warn' : kind === 'soft' ? 'soft' : '' }, T.CODE_WORDS[kind])) : null, extra || null, ...parts));
   }
-  const POS_WORDS = { dv: 'Day vibration', lp: 'Essence of the day', bigLp: 'Big essence', outer: 'Outer diamond · day + month', inner: 'Inner diamond · day + year', dvlp: 'Natural talent · day + essence', dharma: 'Dharma of the month · month + year', target: 'Target number · day + dharma' };
+  const POS_WORDS = { dv: 'Day Vibration', lp: 'Essence of the Day', bigLp: 'Big Essence', outer: 'Outer Diamond · Day + Month', inner: 'Inner Diamond · Day + Year', dvlp: 'Natural Talent · Day + Essence', dharma: 'Dharma of the Month · Month + Year', target: 'Target Number · Day + Dharma' };
   const POS_INTRO = { dv: 'The main vibration of the day and where to focus your attention.', lp: 'The emotional energy of the day: what inspiration you receive and how you feel.', outer: 'The day\'s radiance and action: what kind of actions are best to take.', inner: 'The day\'s inner motivation and drive: how the mind, thoughts and emotions work.', dvlp: 'How to connect to the greatest flow, creativity and productivity of the day.', dharma: 'The same for the whole month: the qualities you need to awaken to be successful.', target: 'The day\'s portal to success: the one adjustment that aligns your tone with the day.' };
 
   // The essence chart and the two psyche charts of a date, drawn exactly like the quick chart's.
@@ -68,34 +74,53 @@
     return svg;
   }
   // The codes a date holds, as chips: green strong, blue soft, red to avoid.
-  const codeChips = (e) => A.h('div', { class: 'codes' }, ...e.codes.map((c) => A.h('span', { class: c.kind === 'avoid' || c.kind === 'care' ? 'warn' : c.kind === 'soft' ? 'soft' : '', onclick: () => numberSheet(c.value, c.pos) }, `${c.value.text} ${POS_WORDS[c.pos].split(' ·')[0].toLowerCase()} · ${c.words}`)));
+  const codeChips = (e) => A.h('div', { class: 'codes' }, ...e.codes.map((c) => A.h('span', { class: c.kind === 'avoid' || c.kind === 'care' || c.kind === 'limited' ? 'warn' : c.kind === 'soft' ? 'soft' : '', onclick: () => numberSheet(c.value, c.pos) }, `${c.value.text} ${T.POSITION_WORDS[c.pos] || c.pos} · ${c.words}`)));
+  // Why the date is rated as it is: the rule's own reasons, in the course's words.
+  const WHY_WORDS = { super: 'Why a Super Date', good: 'Why only a Good Date', beware: 'Why Beware' };
+  const whyBox = (e) => A.h('div', { class: 'why ' + e.rating }, A.h('div', { class: 'head' }, A.h('span', { class: `rate ${e.rating}` }, T.RATING_WORDS[e.rating]), A.h('span', { class: 'pos' }, WHY_WORDS[e.rating])),
+    A.h('ul', {}, ...e.reasons.map((r) => A.h('li', {}, r))));
+  const psyToggle = (on, onclick) => A.h('button', { type: 'button', class: 'psytog', onclick }, on ? 'Hide Psyche Charts' : 'Show Psyche Charts');
 
   // ---------- the day's scene: a real photo of the ruler of the day over a starry sky (the paid tool's Today page) ----------
   // NASA photographs (public domain), cropped to the disk and kept small in public/planets/: the Sun by SDO,
   // the Moon by LRO, Mercury by MESSENGER, Venus by Mariner 10, Mars and Jupiter by Hubble and Cassini,
   // Saturn by Cassini, Uranus and Neptune by Voyager 2. Each sits on the sky with a screen blend, so the
-  // photo's black background disappears. Stars are seeded by the date so a day always looks the same.
-  function planetScene(e, h = 170) {
+  // photo's black background disappears. The sky: star dust, mid stars, a few bright ones with a glint, a
+  // Milky Way band and a nebula in the ruler's tint, all seeded by the date so a day always looks the same.
+  // The essence (life path) has its own, smaller planet high in the sky.
+  function planetScene(e, h = 200) {
     const sv = A.sv, W = 390;
-    const planet = e.ruler, key = planet.toLowerCase();
+    const planet = e.ruler, key = planet.toLowerCase(), tint = TINTS[planet] || TINTS.Venus;
     const id = 'sc' + h;
-    const svg = sv('svg', { viewBox: `0 0 ${W} ${h}`, class: 'scene', role: 'img', 'aria-label': `Ruler of the day ${planet}` });
-    svg.append(sv('defs', {},
-      sv('linearGradient', { id: id + 'sky', x1: 0, y1: 0, x2: 1, y2: 1 }, sv('stop', { offset: 0, 'stop-color': '#05070f' }), sv('stop', { offset: 0.55, 'stop-color': '#0d1226' }), sv('stop', { offset: 1, 'stop-color': '#1a1030' })),
-      sv('radialGradient', { id: id + 'neb', cx: 0.5, cy: 0.5, r: 0.5 }, sv('stop', { offset: 0, 'stop-color': '#4a3b8a', 'stop-opacity': 0.35 }), sv('stop', { offset: 1, 'stop-color': '#4a3b8a', 'stop-opacity': 0 })),
-      sv('radialGradient', { id: id + 'neb2', cx: 0.5, cy: 0.5, r: 0.5 }, sv('stop', { offset: 0, 'stop-color': '#1f6a7a', 'stop-opacity': 0.28 }), sv('stop', { offset: 1, 'stop-color': '#1f6a7a', 'stop-opacity': 0 }))));
-    svg.append(sv('rect', { x: 0, y: 0, width: W, height: h, fill: `url(#${id}sky)` }));
-    svg.append(sv('ellipse', { cx: 300, cy: h * 0.2, rx: 170, ry: 70, fill: `url(#${id}neb)` }), sv('ellipse', { cx: 120, cy: h * 0.9, rx: 160, ry: 60, fill: `url(#${id}neb2)` }));
+    const svg = sv('svg', { viewBox: `0 0 ${W} ${h}`, class: 'scene', role: 'img', 'aria-label': `Ruler of the day ${planet}, essence ${e.essenceRuler}` });
+    const defs = sv('defs', {},
+      sv('linearGradient', { id: id + 'sky', x1: 0, y1: 0, x2: 1, y2: 1 }, sv('stop', { offset: 0, 'stop-color': '#04060f' }), sv('stop', { offset: 0.55, 'stop-color': '#0b1024' }), sv('stop', { offset: 1, 'stop-color': '#180f2c' })),
+      sv('linearGradient', { id: id + 'mw', x1: 0, y1: 0, x2: 0, y2: 1 }, sv('stop', { offset: 0, 'stop-color': '#c8d0f0', 'stop-opacity': 0 }), sv('stop', { offset: 0.5, 'stop-color': '#c8d0f0', 'stop-opacity': 0.14 }), sv('stop', { offset: 1, 'stop-color': '#c8d0f0', 'stop-opacity': 0 })),
+      sv('radialGradient', { id: id + 'neb', cx: 0.5, cy: 0.5, r: 0.5 }, sv('stop', { offset: 0, 'stop-color': tint, 'stop-opacity': 0.26 }), sv('stop', { offset: 1, 'stop-color': tint, 'stop-opacity': 0 })),
+      sv('radialGradient', { id: id + 'neb2', cx: 0.5, cy: 0.5, r: 0.5 }, sv('stop', { offset: 0, 'stop-color': '#5a46a0', 'stop-opacity': 0.3 }), sv('stop', { offset: 1, 'stop-color': '#5a46a0', 'stop-opacity': 0 })),
+      sv('radialGradient', { id: id + 'glint' }, sv('stop', { offset: 0, 'stop-color': '#fff', 'stop-opacity': 0.9 }), sv('stop', { offset: 0.3, 'stop-color': '#dce6ff', 'stop-opacity': 0.35 }), sv('stop', { offset: 1, 'stop-color': '#dce6ff', 'stop-opacity': 0 })));
+    svg.append(defs, sv('rect', { x: 0, y: 0, width: W, height: h, fill: `url(#${id}sky)` }));
+    svg.append(sv('rect', { x: -W, y: h * 0.4 - 60, width: 3 * W, height: 120, fill: `url(#${id}mw)`, transform: `rotate(-28 ${W * 0.55} ${h * 0.4})` }));
+    svg.append(sv('ellipse', { cx: 110, cy: h * 0.55, rx: 190, ry: 120, fill: `url(#${id}neb)` }), sv('ellipse', { cx: 300, cy: h * 0.2, rx: 170, ry: 80, fill: `url(#${id}neb2)` }));
     let seed = e.y * 10000 + e.m * 100 + e.d;
     const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
-    const size = planet === 'Saturn' ? h * 1.25 : h * 0.86, cx = planet === 'Saturn' ? 96 : 92, cy = h / 2;
-    for (let i = 0; i < 90; i++) { const x = rnd() * W, y = rnd() * h, s = rnd(); if (Math.hypot(x - cx, y - cy) < size * (planet === 'Saturn' ? 0.5 : 0.46)) continue; svg.append(sv('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: (0.3 + s * 1.0).toFixed(2), fill: s > 0.85 ? '#dfe8ff' : '#fff', opacity: (0.25 + s * 0.7).toFixed(2) })); }
-    // the photo: Saturn's rings need a wider frame; the others fill a disc of about the banner's height
+    const size = planet === 'Saturn' ? h * 1.2 : h * 0.84, cx = planet === 'Saturn' ? 92 : 88, cy = h / 2;
+    const eKey = e.essenceRuler.toLowerCase(), eSize = e.essenceRuler === 'Saturn' ? 80 : 56, ex = W - 66, ey = 40;
+    const clear = (x, y) => Math.hypot(x - cx, y - cy) < size * (planet === 'Saturn' ? 0.42 : 0.44) || Math.hypot(x - ex, y - ey) < eSize * 0.5;
+    const star = (x, y, r, fill, o) => svg.append(sv('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r, fill, opacity: o }));
+    for (let i = 0; i < 260; i++) { const x = rnd() * W, y = rnd() * h; if (clear(x, y)) continue; star(x, y, (0.25 + rnd() * 0.35).toFixed(2), '#fff', (0.15 + rnd() * 0.35).toFixed(2)); }
+    for (let i = 0; i < 80; i++) { const x = rnd() * W, y = rnd() * h, t = rnd(); if (clear(x, y)) continue; star(x, y, (0.5 + rnd() * 0.8).toFixed(2), t > 0.8 ? '#cfdbff' : t > 0.6 ? '#fff1dc' : '#fff', (0.55 + rnd() * 0.45).toFixed(2)); }
+    for (let i = 0; i < 7; i++) { const x = rnd() * W, y = rnd() * h, r = 1.2 + rnd() * 0.8; if (clear(x, y)) continue;
+      svg.append(sv('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: (r * 5).toFixed(1), fill: `url(#${id}glint)` }), sv('path', { d: `M${(x - r * 4).toFixed(1)} ${y.toFixed(1)}H${(x + r * 4).toFixed(1)}M${x.toFixed(1)} ${(y - r * 4).toFixed(1)}V${(y + r * 4).toFixed(1)}`, stroke: '#fff', 'stroke-width': 0.6, opacity: 0.6 })); }
+    // the photos: the ruler of the day, and the essence's planet small and high
     svg.append(sv('image', { href: `/planets/${key}.webp`, x: cx - size / 2, y: cy - size / 2, width: size, height: size, class: 'planet', preserveAspectRatio: 'xMidYMid meet' }));
-    const t = (x, y, s, size, cls, anchor) => sv('text', { x, y, 'font-size': size, class: cls, 'text-anchor': anchor || 'start' }, s);
-    const tx = 182;
-    svg.append(t(tx, cy - 32, `RULER OF THE DAY · ${planet.toUpperCase()}`, 9.5, 'sc-label'), t(tx, cy - 6, `${DOW[e.weekday]}`, 16, 'sc-day'), t(tx, cy + 15, `${MON[e.m - 1]} ${e.d}, ${e.y}`, 16, 'sc-day'),
-      t(tx, cy + 44, `${e.dv.text}  ${nameOf(e.dv)}`, 13.5, 'sc-num'));
+    svg.append(sv('image', { href: `/planets/${eKey}.webp`, x: ex - eSize / 2, y: ey - eSize / 2, width: eSize, height: eSize, class: 'planet', preserveAspectRatio: 'xMidYMid meet' }));
+    const t = (x, y, str, fs, cls, anchor) => sv('text', { x, y, 'font-size': fs, class: cls, 'text-anchor': anchor || 'start' }, str);
+    svg.append(t(W - 14, ey + eSize / 2 + 10, `ESSENCE ${e.lp.text} · ${e.essenceRuler.toUpperCase()}`, 9, 'sc-label', 'end'));
+    const tx = 178, ty = cy + 30;
+    svg.append(t(tx, ty - 22, 'RULER OF THE DAY', 9.5, 'sc-label'), t(tx, ty, planet, 22, 'sc-day'), t(tx, ty + 22, `${e.dv.text} ${nameOf(e.dv)}`, 14, 'sc-num'));
+    const word = T.RATING_WORDS[e.rating], pw = word.length * 6.6 + 16;
+    svg.append(sv('rect', { x: tx, y: ty + 33, width: pw, height: 20, rx: 10, class: 'sc-pill ' + e.rating }), t(tx + pw / 2, ty + 47, word, 10.5, 'sc-pilltext ' + e.rating, 'middle'));
     return svg;
   }
   // A day full screen: the scene, the essence and psyche charts edge to edge, ‹ › to the days around it.
@@ -107,11 +132,13 @@
     const keys = (ev) => { if (ev.key === 'Escape') close(); if (ev.key === 'ArrowLeft') move(-1); if (ev.key === 'ArrowRight') move(1); };
     const draw = () => {
       const e = T.dayEnergy(cur.y, cur.m, cur.d); if (!e) return;
+      $pop.style.setProperty('--tint', TINTS[e.ruler] || TINTS.Venus);
       $title.textContent = `${DOW[e.weekday].slice(0, 3)}, ${MON[cur.m - 1]} ${cur.d}, ${cur.y}`;
-      A.fill($box, planetScene(e, 170), A.h('div', { class: 'row', style: 'justify-content:space-between;padding:6px 8px 0' }, rate(e.rating), chip('Psyche charts', psyche.on, () => { psyche.on = !psyche.on; remember('toolsPsyche', psyche.on); draw(); })),
+      A.fill($box, planetScene(e, 200),
         A.h('div', { class: 'nscope-box' }, dateCharts(cur.y, cur.m, cur.d, psyche.on)),
-        codeChips(e),
-        A.h('button', { type: 'button', class: 'btn btn-block readbtn', onclick: () => { close(); if (onReadings) onReadings(cur); else A.go(`#/today/${iso(cur.y, cur.m, cur.d)}`); } }, 'Readings for this day ›'));
+        A.h('div', { class: 'under' }, psyToggle(psyche.on, () => { psyche.on = !psyche.on; remember('toolsPsyche', psyche.on); draw(); })),
+        whyBox(e),
+        A.h('button', { type: 'button', class: 'btn btn-block readbtn', onclick: () => { close(); if (onReadings) onReadings(cur); else A.go(`#/today/${iso(cur.y, cur.m, cur.d)}`); } }, 'Readings for This Day ›'));
     };
     const move = (by) => { cur = shift(cur, by); A.count('dayfull.move'); draw(); };
     const $pop = A.h('div', { class: 'wordpop dayfull' },
@@ -123,42 +150,62 @@
 
   // ---------- Today (one date's energy) ----------
   function todayView(arg) {
-    light();
     const now = todayIn();
     let date = parseIso(arg) || now;
     const psyche = { on: recall('toolsPsyche', true) };
     const $title = A.h('h1', {}), $sub = A.h('div', { class: 'tsub muted small' }), $body = A.h('div', {});
     const $date = A.h('input', { type: 'date', class: 'datebox', 'aria-label': 'Date' });
     $date.addEventListener('change', () => { const p = parseIso($date.value); if (p) { date = p; draw(); } });
-    const draw = () => {
+    // What the book says about this number in this position: keywords and the first sentences.
+    const bookBits = (R, pos, v) => {
+      const n = v.sum, D = (o) => o || {};
+      switch (pos) {
+        case 'dv': return { kw: D(R.dayVibration && R.dayVibration[n]).keywords, text: D(R.dayVibration && R.dayVibration[n]).text };
+        case 'lp': return { kw: D(R.lifePath && R.lifePath[n]).keywords, text: D(R.lifePath && R.lifePath[n]).text };
+        case 'outer': return { text: D(R.outer && R.outer[n])['Aura of the Day'] };
+        case 'inner': return { text: D(R.inner && R.inner[n])['Inner Weather'] };
+        case 'dvlp': return { kw: D(R.dvlp && R.dvlp[n]).keywords, text: D(R.dvlp && R.dvlp[n]).text };
+        case 'dharma': return { text: D(R.outer && R.outer[n]).about || N.MEANINGS[v.ds] };
+        case 'target': return { text: D(R.target && R.target[n])['Alignment Vector'] };
+        default: return {};
+      }
+    };
+    const draw = async () => {
       const e = T.dayEnergy(date.y, date.m, date.d);
       $date.value = iso(date.y, date.m, date.d);
       if (!e) { A.fill($body, A.h('p', { class: 'err' }, 'That is not a real date.')); return; }
+      night(e.ruler);
       const isToday = date.y === now.y && date.m === now.m && date.d === now.d;
       $title.textContent = `${DOW[e.weekday].slice(0, 3)}, ${MON[date.m - 1]} ${date.d}, ${date.y}`;
       $sub.textContent = isToday ? 'Today in Arizona' : 'Tap the date to come back to today';
-      const row = (pos, v) => A.h('div', { class: 'reading', onclick: () => numberSheet(v, pos) },
-        A.h('div', { class: 'head' }, A.h('b', {}, v.text), A.h('span', { class: 'nm' }, nameOf(v)), A.h('span', { class: 'pos' }, POS_WORDS[pos])),
-        A.h('p', {}, POS_INTRO[pos] + (pos === 'lp' ? ` Big essence ${e.bigLp.text}.` : '')));
+      const R = await readings();
+      const row = (pos, v) => {
+        const b = bookBits(R, pos, v);
+        return A.h('div', { class: 'reading', onclick: () => numberSheet(v, pos) },
+          A.h('div', { class: 'head' }, A.h('b', {}, v.text), A.h('span', { class: 'nm' }, nameOf(v)), A.h('span', { class: 'pos' }, POS_WORDS[pos])),
+          b.kw ? A.h('p', { class: 'kw' }, b.kw) : null,
+          A.h('p', {}, b.text ? snippet(b.text, pos === 'target' ? 3 : 2) : POS_INTRO[pos]),
+          pos === 'lp' ? A.h('p', { class: 'muted small', style: 'margin-top:4px' }, `Big essence ${e.bigLp.text} ${nameOf(e.bigLp)}.`) : null);
+      };
       A.fill($body,
-        A.h('div', { class: 'scenebox', onclick: () => { A.count('today.full'); dayFull(date); } }, planetScene(e, 170)),
-        A.h('div', { class: 'togglerow' }, chip('Psyche charts', psyche.on, () => { psyche.on = !psyche.on; remember('toolsPsyche', psyche.on); A.count('today.psyche'); draw(); }), rate(e.rating, 'right')),
+        A.h('div', { class: 'scenebox', onclick: () => { A.count('today.full'); dayFull(date); } }, planetScene(e, 200)),
         A.h('div', { class: 'nscope-box', role: 'button', 'aria-label': 'Full screen', onclick: () => { A.count('today.full'); dayFull(date); } }, dateCharts(date.y, date.m, date.d, psyche.on)),
-        A.h('div', { class: 'bignum', onclick: () => numberSheet(e.dv, 'dv') }, A.h('b', {}, e.dv.text), A.h('span', { class: 'nm' }, nameOf(e.dv)), A.h('span', { class: 'ty' }, `Day vibration · ruler ${e.ruler}`)),
+        A.h('div', { class: 'under' }, A.h('span', { class: 'muted small' }, 'Tap the chart for full screen'), psyToggle(psyche.on, () => { psyche.on = !psyche.on; remember('toolsPsyche', psyche.on); A.count('today.psyche'); draw(); })),
+        whyBox(e),
+        A.h('div', { class: 'bignum', onclick: () => numberSheet(e.dv, 'dv') }, A.h('b', {}, e.dv.text), A.h('span', { class: 'nm' }, nameOf(e.dv)), A.h('span', { class: 'ty' }, `Day Vibration · Ruler ${e.ruler}`)),
         codeChips(e),
         row('dv', e.dv), row('lp', e.lp), row('outer', e.outer), row('inner', e.inner), row('dvlp', e.dvlp), row('dharma', e.dharma), row('target', e.target),
-        A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Tap the chart for full screen, a number for the book\'s words. Super, good and hard follow the success codes and the numbers to avoid in "Success Codes & Superdates".'));
+        A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Tap a number for the book\'s whole page. Super, Good and Beware follow the success codes and the numbers to avoid in "Success Codes & Superdates".'));
     };
     A.render(A.h('div', { class: 'screen qscreen tscreen' },
-      A.h('div', { class: 'pagetop ttop' }, A.h('a', { class: 'btn iconbtn', href: '#/', 'aria-label': 'Back' }, '‹'), A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Previous day', onclick: () => { date = shift(date, -1); draw(); } }, '‹'), $title, A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Next day', onclick: () => { date = shift(date, 1); draw(); } }, '›'), A.h('a', { class: 'btn iconbtn', href: '#/coming', 'aria-label': 'Coming days', title: 'Coming days' }, '▦')),
+      A.h('div', { class: 'pagetop ttop' }, A.h('a', { class: 'btn iconbtn', href: '#/', 'aria-label': 'Back' }, '‹'), A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Previous day', onclick: () => { date = shift(date, -1); draw(); } }, '‹'), $title, A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Next day', onclick: () => { date = shift(date, 1); draw(); } }, '›'), A.h('a', { class: 'btn iconbtn', href: '#/coming', 'aria-label': 'Coming Days', title: 'Coming Days' }, '▦')),
       A.h('div', { class: 'row ynav tnav' }, $date, $sub),
       $body));
     draw();
   }
 
-  // ---------- Coming days: a grid of the days' charts, super dates labelled, tap for full screen ----------
+  // ---------- Coming Days: a grid of the days' charts, super dates labelled, tap for full screen ----------
   function comingView(arg) {
-    light();
     const now = todayIn();
     let start = parseIso(arg) || now;
     const view = { mode: recall('comingMode', 'charts'), superOnly: false, psyche: recall('comingPsyche', false), cols: recall('comingCols', 2) };
@@ -169,13 +216,14 @@
     const isToday = (e) => e.y === now.y && e.m === now.m && e.d === now.d;
     const draw = () => {
       $date.value = iso(start.y, start.m, start.d);
+      const first = T.dayEnergy(start.y, start.m, start.d); night(first ? first.ruler : 'Venus');
       A.fill($chips, chip('Charts', view.mode === 'charts', () => { view.mode = 'charts'; remember('comingMode', 'charts'); draw(); }), chip('List', view.mode === 'list', () => { view.mode = 'list'; remember('comingMode', 'list'); A.count('coming.list'); draw(); }),
-        chip('Super dates only', view.superOnly, () => { view.superOnly = !view.superOnly; A.count('coming.super_only'); draw(); }),
-        view.mode === 'charts' ? chip('Psyche charts', view.psyche, () => { view.psyche = !view.psyche; remember('comingPsyche', view.psyche); draw(); }) : null,
+        chip('Super Dates Only', view.superOnly, () => { view.superOnly = !view.superOnly; A.count('coming.super_only'); draw(); }),
+        view.mode === 'charts' ? chip('Psyche Charts', view.psyche, () => { view.psyche = !view.psyche; remember('comingPsyche', view.psyche); draw(); }) : null,
         view.mode === 'charts' ? chip(view.cols === 2 ? 'Bigger' : 'Smaller', false, () => { view.cols = view.cols === 2 ? 1 : 2; remember('comingCols', view.cols); A.count('coming.size'); draw(); }) : null);
       let days = T.comingDays(start.y, start.m, start.d, 31).filter(Boolean);
       if (view.superOnly) days = days.filter((e) => e.rating === 'super');
-      if (!days.length) { A.fill($body, A.h('p', { class: 'muted' }, 'No super dates in these 31 days. Try the next month.')); return; }
+      if (!days.length) { A.fill($body, A.h('p', { class: 'muted' }, 'No Super Dates in these 31 days. Try the next month.')); return; }
       const num = (label, v) => A.h('div', {}, A.h('span', {}, label), A.h('b', {}, v.text));
       if (view.mode === 'list') {
         A.fill($body, A.h('div', { class: 'days' }, ...days.map((e) => A.h('div', { class: 'dayrow' + (isToday(e) ? ' today' : ''), role: 'button', onclick: () => open(e) },
@@ -187,18 +235,18 @@
           A.h('div', { class: 'mhead' }, A.h('span', { class: 'd' }, `${DOW[e.weekday].slice(0, 3)} ${MON[e.m - 1]} ${e.d}`), A.h('span', { class: `rate ${e.rating}` }, T.RATING_WORDS[e.rating].replace(' date', ''))),
           dateCharts(e.y, e.m, e.d, view.psyche),
           A.h('div', { class: 'mfoot' }, A.h('b', {}, e.dv.text), A.h('span', { class: 'muted small nm' }, nameOf(e.dv))),
-          A.h('div', { class: 'mfoot muted small' }, `essence ${e.lp.text} · outer ${e.outer.text} · inner ${e.inner.text}`)))));
+          A.h('div', { class: 'mfoot muted small' }, `Essence ${e.lp.text} · Outer ${e.outer.text} · Inner ${e.inner.text}`)))));
       }
     };
-    A.render(A.h('div', { class: 'screen qscreen tscreen' }, top('Coming days', '#/', A.h('a', { class: 'btn iconbtn', href: '#/today', 'aria-label': 'Today', title: 'Today' }, '☀')),
+    A.render(A.h('div', { class: 'screen qscreen tscreen' }, top('Coming Days', '#/', A.h('a', { class: 'btn iconbtn', href: '#/today', 'aria-label': 'Today', title: 'Today' }, '☀')),
       $chips,
       A.h('div', { class: 'row ynav tnav' }, A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'A month earlier', onclick: () => { start = shift(start, -31); draw(); } }, '‹'), $date, A.h('span', { class: 'muted small' }, '31 days'), A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'A month later', onclick: () => { start = shift(start, 31); draw(); } }, '›')),
       $body,
-      A.h('p', { class: 'muted small', style: 'margin:10px 2px' }, 'Tap a day for full screen. Super dates are marked green. Super, good and hard follow the success codes and the numbers to avoid in "Success Codes & Superdates" (the app\'s reading of them).')));
+      A.h('p', { class: 'muted small', style: 'margin:10px 2px' }, 'Tap a day for full screen and the reasons. Super, Good and Beware follow the success codes and the numbers to avoid in "Success Codes & Superdates".')));
     draw();
   }
 
-  // ---------- the big diamond drawing (Number fun, Relationship), laid out like the book's Number fun page ----------
+  // ---------- the big diamond drawing (Number Fun, Relationship), laid out like the book's Number Fun page ----------
   // One level is one wide band: outer life on the left, inner life on the right, the main diamond in the
   // middle, the outer and inner diamonds at the lower corners, the two unbalanced ones small above them.
   // Triangles are drawn the book's way: thin blue outline, the two digits outside the top corners, the
@@ -234,25 +282,25 @@
     lab(8, 14, labels.title, 'band-title', 'start'); lab(W - 8, 14, labels.right, 'lab', 'end');
     const top = labels.noUnbalanced ? 50 : 60;
     const mainBottom = tri(svg, d, W / 2, top, 140, { onTap, strong: true, aText: labels.aText, bText: labels.bText, name: labels.mainName });
-    lab(W / 2, Math.min(H - 6, mainBottom + 10), labels.mainLabel || (lv === 'main' ? 'main diamond' : lv === 'essence' ? 'essence diamond' : 'integration diamond'));
+    lab(W / 2, Math.min(H - 6, mainBottom + 10), labels.mainLabel || (lv === 'main' ? 'Main Diamond' : lv === 'essence' ? 'Essence Diamond' : 'Integration Diamond'));
     const mid = labels.noUnbalanced ? 96 : 122;
-    const ob = tri(svg, d.outerD, 62, mid, 92, { onTap }); lab(62, Math.min(H - 6, ob + 10), labels.outerLabel || 'outer diamond');
-    const ib = tri(svg, d.innerD, W - 62, mid, 92, { onTap }); lab(W - 62, Math.min(H - 6, ib + 10), labels.innerLabel || 'inner diamond');
+    const ob = tri(svg, d.outerD, 62, mid, 92, { onTap }); lab(62, Math.min(H - 6, ob + 10), labels.outerLabel || 'Outer Diamond');
+    const ib = tri(svg, d.innerD, W - 62, mid, 92, { onTap }); lab(W - 62, Math.min(H - 6, ib + 10), labels.innerLabel || 'Inner Diamond');
     if (!labels.noUnbalanced) {
-      tri(svg, d.outerU, 62, 42, 52, { onTap, unbalanced: true }); lab(62, 30, 'outer unbalanced', 'lab unb');
-      tri(svg, d.innerU, W - 62, 42, 52, { onTap, unbalanced: true }); lab(W - 62, 30, 'inner unbalanced', 'lab unb');
+      tri(svg, d.outerU, 62, 42, 52, { onTap, unbalanced: true }); lab(62, 30, 'Outer Unbalanced', 'lab unb');
+      tri(svg, d.innerU, W - 62, 42, 52, { onTap, unbalanced: true }); lab(W - 62, 30, 'Inner Unbalanced', 'lab unb');
     }
     if (lv === 'main') { lab(W / 4, H - 6, 'OUTER LIFE', 'life'); lab((3 * W) / 4, H - 6, 'INNER LIFE', 'life'); }
     return svg;
   }
   function bigDiamondEl(B, onTap, labels = {}) {
     return A.h('div', { class: 'bigd' },
-      levelSvg(B.integration, 'integration', { title: 'SPIRITUAL · the integration diamond', right: labels.spiritual || 'how it evolves fastest', noUnbalanced: labels.noUnbalanced }, onTap),
-      levelSvg(B.essence, 'essence', { title: 'EMOTIONAL · the essence diamond', right: labels.emotional || 'hidden motivation', noUnbalanced: labels.noUnbalanced }, onTap),
-      levelSvg(B.main, 'main', { title: labels.physicalTitle || 'PHYSICAL · the main diamond', right: labels.physical || 'how it acts', noUnbalanced: labels.noUnbalanced, aText: labels.aText, bText: labels.bText, mainName: labels.mainName, mainLabel: labels.mainLabel, outerLabel: labels.outer, innerLabel: labels.inner }, onTap));
+      levelSvg(B.integration, 'integration', { title: 'SPIRITUAL · The Integration Diamond', right: labels.spiritual || 'How It Evolves Fastest', noUnbalanced: labels.noUnbalanced }, onTap),
+      levelSvg(B.essence, 'essence', { title: 'EMOTIONAL · The Essence Diamond', right: labels.emotional || 'Hidden Motivation', noUnbalanced: labels.noUnbalanced }, onTap),
+      levelSvg(B.main, 'main', { title: labels.physicalTitle || 'PHYSICAL · The Main Diamond', right: labels.physical || 'How It Acts', noUnbalanced: labels.noUnbalanced, aText: labels.aText, bText: labels.bText, mainName: labels.mainName, mainLabel: labels.mainLabel, outerLabel: labels.outer, innerLabel: labels.inner }, onTap));
   }
 
-  // ---------- Number fun ----------
+  // ---------- Number Fun ----------
   function numberFunView(arg) {
     light();
     let n = Math.min(99, Math.max(1, Number(arg) || recall('numberFun', 14)));
@@ -269,17 +317,17 @@
       const about = (R.outer && R.outer[n] && R.outer[n].about) || (R.dayVibration && R.dayVibration[n] && R.dayVibration[n].text) || '';
       const inOthers = n >= 10 ? T.numbersContaining(n) : [];
       A.fill($body,
-        A.h('div', { class: 'bignum', onclick: () => numberSheet(v, n < 10 ? 'dv' : 'about') }, A.h('b', {}, v.text), A.h('span', { class: 'nm' }, nameOf(v)), A.h('span', { class: 'ty' }, `ruler ${N.PLANETS[v.ds]}`)),
+        A.h('div', { class: 'bignum', onclick: () => numberSheet(v, n < 10 ? 'dv' : 'about') }, A.h('b', {}, v.text), A.h('span', { class: 'nm' }, nameOf(v)), A.h('span', { class: 'ty' }, `Ruler ${N.PLANETS[v.ds]}`)),
         bigDiamondEl(B, jump),
         about ? A.h('div', { class: 'reading', onclick: () => numberSheet(v, n < 10 ? 'dv' : 'about') }, A.h('div', { class: 'head' }, A.h('b', {}, v.text), A.h('span', { class: 'nm' }, nameOf(v))), A.h('p', {}, about)) : null,
-        inOthers.length ? A.h('div', { class: 'reading' }, A.h('div', { class: 'head' }, A.h('span', { class: 'nm' }, `Where ${v.text} appears in other numbers`)), A.h('div', { class: 'chips', style: 'margin-top:6px' }, ...inOthers.map((x) => A.h('button', { type: 'button', class: 'chip', onclick: () => { n = x; A.count('numberfun.tap_other'); draw(); } }, T.val(x).text)))) : null,
+        inOthers.length ? A.h('div', { class: 'reading' }, A.h('div', { class: 'head' }, A.h('span', { class: 'nm' }, `Where ${v.text} Appears in Other Numbers`)), A.h('div', { class: 'chips', style: 'margin-top:6px' }, ...inOthers.map((x) => A.h('button', { type: 'button', class: 'chip', onclick: () => { n = x; A.count('numberfun.tap_other'); draw(); } }, T.val(x).text)))) : null,
         A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Tap any diamond to open that number. The three levels follow the Diamond Method book: the main diamond, the essence diamond made of its two auras, and the integration diamond above that.'));
     };
-    A.render(A.h('div', { class: 'screen qscreen tscreen' }, top('Number fun', '#/', $in), $row, $body));
+    A.render(A.h('div', { class: 'screen qscreen tscreen' }, top('Number Fun', '#/', $in), $row, $body));
     draw();
   }
 
-  // ---------- Price tool ----------
+  // ---------- Price Tool ----------
   function priceView() {
     light();
     const state = recall('priceTool', { vibe: 23, range: 1, price: '' });
@@ -312,45 +360,48 @@
     };
     $in.addEventListener('input', () => { state.price = $in.value; drawCheck(); });
     $in.value = state.price || '';
-    A.render(A.h('div', { class: 'screen qscreen tscreen' }, top('Price tool'),
-      A.h('div', { class: 'wlabel tl' }, 'Check a price'), A.h('div', { class: 'pricebox' }, A.h('span', { class: 'cur' }, '$'), $in), $check,
-      A.h('div', { class: 'wlabel tl', style: 'padding-top:16px' }, 'Find a price'), $vibes, $ranges, $list));
+    A.render(A.h('div', { class: 'screen qscreen tscreen' }, top('Price Tool'),
+      A.h('div', { class: 'wlabel tl' }, 'Check a Price'), A.h('div', { class: 'pricebox' }, A.h('span', { class: 'cur' }, '$'), $in), $check,
+      A.h('div', { class: 'wlabel tl', style: 'padding-top:16px' }, 'Find a Price'), $vibes, $ranges, $list));
     drawCheck(); drawFind();
   }
 
   // ---------- Relationship ----------
+  // The paid tool asks for each person's name and birthday (Relations book p. 569); the math uses the day
+  // of birth, the month and year are kept with the name so a date can be typed whole.
   function relationView() {
     light();
-    const saved = recall('relation', { a: ['', ''], b: ['', ''] });
+    const saved = recall('relation', { a: ['', '', '', ''], b: ['', '', '', ''] });
     const field = (ph, v, attrs = {}) => A.h('input', { type: 'text', placeholder: ph, value: v || '', autocomplete: 'off', ...attrs });
-    const $an = field('First person', saved.a[0], { autocapitalize: 'words' }), $ad = field('birth day (1-31)', saved.a[1], { inputmode: 'numeric', maxlength: 2 });
-    const $bn = field('Second person', saved.b[0], { autocapitalize: 'words' }), $bd = field('birth day (1-31)', saved.b[1], { inputmode: 'numeric', maxlength: 2 });
+    const person = (ph, sv) => { const $n = field(ph, sv[0], { autocapitalize: 'words' }), $d = field('day', sv[1], { inputmode: 'numeric', maxlength: 2, 'aria-label': `${ph} birth day` }), $m = field('month', sv[2], { inputmode: 'numeric', maxlength: 2, 'aria-label': `${ph} birth month` }), $y = field('year', sv[3], { inputmode: 'numeric', maxlength: 4, 'aria-label': `${ph} birth year` }); return { $n, $d, $m, $y, all: [$n, $d, $m, $y] }; };
+    const a = person('First person', saved.a || []), b = person('Second person', saved.b || []);
     const $body = A.h('div', {});
     const draw = () => {
-      remember('relation', { a: [$an.value, $ad.value], b: [$bn.value, $bd.value] });
-      const da = Number($ad.value), db = Number($bd.value);
-      if (!(da >= 1 && da <= 31 && db >= 1 && db <= 31)) { A.fill($body, A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Type both birth days (the day of the month, 1 to 31). The tool reads the two day vibrations together, the paid tool\'s way.')); return; }
-      const A1 = T.val(da), B1 = T.val(db), na = $an.value.trim() || 'First', nb = $bn.value.trim() || 'Second';
+      remember('relation', { a: a.all.map((f) => f.value), b: b.all.map((f) => f.value) });
+      const da = Number(a.$d.value), db = Number(b.$d.value);
+      if (!(da >= 1 && da <= 31 && db >= 1 && db <= 31)) { A.fill($body, A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Type both birth dates. The day of birth (1 to 31) is what counts: the tool reads the two day vibrations together, the paid tool\'s way.')); return; }
+      const A1 = T.val(da), B1 = T.val(db), na = a.$n.value.trim() || 'First', nb = b.$n.value.trim() || 'Second';
       const B = T.bigDiamond(A1.ds, B1.ds);
       const le = B.main.le, fa = B.main.outerD, fb = B.main.innerD;
       A.fill($body,
-        bigDiamondEl(B, (d) => numberSheet(T.val(d.code), 'about'), { outer: `how ${na} feels it`, inner: `how ${nb} feels it`, aText: `${na} ${A1.text}`, bText: `${nb} ${B1.text}`, mainName: `Life expression ${le.text}`, mainLabel: 'the two day vibrations', physicalTitle: 'PHYSICAL · the two day vibrations', physical: 'what happens when they meet', emotional: 'the meeting of their emotions', spiritual: 'where the relationship can grow', noUnbalanced: true }),
-        A.h('div', { class: 'reading', onclick: () => numberSheet(le, 'about') }, A.h('div', { class: 'head' }, A.h('b', {}, le.text), A.h('span', { class: 'nm' }, 'Life expression of the relationship')), A.h('p', {}, `${A1.ds} and ${B1.ds} meet in a ${le.text}${nameOf(le) ? ' (' + nameOf(le) + ')' : ''}: the resulting energy, what happens when they are together.`)),
-        A.h('div', { class: 'reading' }, A.h('div', { class: 'head' }, A.h('b', {}, fa.text), A.h('span', { class: 'nm' }, `How ${na} feels it`)), A.h('p', {}, `${na}'s ${A1.ds} with the relationship's ${le.ds}: ${fa.text} ${fa.name}.`)),
-        A.h('div', { class: 'reading' }, A.h('div', { class: 'head' }, A.h('b', {}, fb.text), A.h('span', { class: 'nm' }, `How ${nb} feels it`)), A.h('p', {}, `${nb}'s ${B1.ds} with the relationship's ${le.ds}: ${fb.text} ${fb.name}.`)),
-        A.h('div', { class: 'reading', onclick: () => numberSheet(B.essence.le, 'about') }, A.h('div', { class: 'head' }, A.h('b', {}, B.essence.le.text), A.h('span', { class: 'nm' }, 'Essence of the relationship')), A.h('p', {}, 'The sum of how each feels it: the deeper emotional dimension, one level above what is visible.')),
-        A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Built like the paid tool (Relations book, pp. 12-16): the two day vibrations in a little diamond, then unpacked like Number fun. Tap any diamond for its number.'));
+        bigDiamondEl(B, (d) => numberSheet(T.val(d.code), 'about'), { outer: `How ${na} Feels It`, inner: `How ${nb} Feels It`, aText: `${na} ${A1.text}`, bText: `${nb} ${B1.text}`, mainName: `Life expression ${le.text}`, mainLabel: 'The Two Day Vibrations', physicalTitle: 'PHYSICAL · The Two Day Vibrations', physical: 'What Happens When They Meet', emotional: 'The Meeting of Their Emotions', spiritual: 'Where the Relationship Can Grow', noUnbalanced: true }),
+        A.h('div', { class: 'reading', onclick: () => numberSheet(le, 'about') }, A.h('div', { class: 'head' }, A.h('b', {}, le.text), A.h('span', { class: 'nm' }, 'Life Expression of the Relationship')), A.h('p', {}, `${A1.ds} and ${B1.ds} meet in a ${le.text}${nameOf(le) ? ' (' + nameOf(le) + ')' : ''}: the resulting energy, what happens when they are together.`)),
+        A.h('div', { class: 'reading' }, A.h('div', { class: 'head' }, A.h('b', {}, fa.text), A.h('span', { class: 'nm' }, `How ${na} Feels It`)), A.h('p', {}, `${na}'s ${A1.ds} with the relationship's ${le.ds}: ${fa.text} ${fa.name}.`)),
+        A.h('div', { class: 'reading' }, A.h('div', { class: 'head' }, A.h('b', {}, fb.text), A.h('span', { class: 'nm' }, `How ${nb} Feels It`)), A.h('p', {}, `${nb}'s ${B1.ds} with the relationship's ${le.ds}: ${fb.text} ${fb.name}.`)),
+        A.h('div', { class: 'reading', onclick: () => numberSheet(B.essence.le, 'about') }, A.h('div', { class: 'head' }, A.h('b', {}, B.essence.le.text), A.h('span', { class: 'nm' }, 'Essence of the Relationship')), A.h('p', {}, 'The sum of how each feels it: the deeper emotional dimension, one level above what is visible.')),
+        A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Built like the paid tool (Relations book, pp. 12-16): the two day vibrations in a little diamond, then unpacked like Number Fun. Tap any diamond for its number.'));
     };
-    for (const $f of [$an, $ad, $bn, $bd]) $f.addEventListener('input', draw);
-    const useMe = async () => { try { const me = await A.api('/api/mychart'); if (!me.day) { A.toast('Set up My chart first (Settings).', true); return; } $an.value = me.name.split(' ')[0] || 'Me'; $ad.value = String(me.day); A.count('relation.use_me'); draw(); } catch (err) { A.toast(err.message, true); } };
+    for (const $f of [...a.all, ...b.all]) $f.addEventListener('input', draw);
+    const useMe = async () => { try { const me = await A.api('/api/mychart'); if (!me.day) { A.toast('Set up My Chart first (Settings).', true); return; } a.$n.value = me.name.split(' ')[0] || 'Me'; a.$d.value = String(me.day); a.$m.value = String(me.month || ''); a.$y.value = String(me.year || ''); A.count('relation.use_me'); draw(); } catch (err) { A.toast(err.message, true); } };
+    const col = (p) => A.h('div', {}, p.$n, A.h('div', { class: 'dmy' }, p.$d, p.$m, p.$y));
     A.render(A.h('div', { class: 'screen qscreen tscreen' }, top('Relationship'),
-      A.h('div', { class: 'two-people' }, A.h('div', {}, $an, $ad), A.h('div', {}, $bn, $bd)),
-      A.h('div', { class: 'togglerow' }, chip('Me as the first person', false, useMe)),
+      A.h('div', { class: 'two-people' }, col(a), col(b)),
+      A.h('div', { class: 'togglerow' }, chip('Me as the First Person', false, useMe)),
       $body));
     draw();
   }
 
-  // ---------- Karmic connections ----------
+  // ---------- Karmic Connections ----------
   function karmicView() {
     light();
     const saved = recall('karmic', { me: '', others: ['', '', '', ''] });
@@ -365,19 +416,19 @@
         A.h('div', { class: 'reading' }, A.h('div', { class: 'head' }, A.h('b', {}, `${k.year}`), A.h('span', { class: 'nm' }, `year number ${k.ds} · rhythm ${k.rhythm.join('-')}`)), A.h('p', {}, `Your destiny rhythm: ${k.periods.slice(0, 6).map((p) => `${p.number} (${p.start}–${p.end})`).join(', ')} …`)),
         ...k.others.map((o) => A.h('div', { class: 'reading ' + (o.shared ? 'yes' : 'no') }, A.h('div', { class: 'head' }, A.h('b', {}, String(o.year)), A.h('span', { class: 'nm' }, `year number ${o.ds}`), A.h('span', { class: 'rate ' + (o.shared ? 'super' : 'quiet') }, o.shared ? (o.sameYear ? 'Same year: connected' : 'Karmically connected') : 'Not connected')),
           A.h('p', {}, o.shared ? 'Shares your destiny rhythm: the same planets and lessons at the same points of life. With a close relationship this is a karmic connection.' : 'A different rhythm. A close relationship is still possible, without a karmic contract.'))),
-        A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'From Forecasting Numerology pp. 63-77: shared destiny rhythms come from the same birth-year number. Your own year rows and periods are under Quick chart ⋮ "Year rows and day vibrations".'));
+        A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'From Forecasting Numerology pp. 63-77: shared destiny rhythms come from the same birth-year number. Your own year rows and periods are under Quick Chart ⋮ "Year Rows and Day Vibrations".'));
     };
     [$me, ...$others].forEach(($f) => $f.addEventListener('input', draw));
-    const useMe = async () => { try { const me = await A.api('/api/mychart'); if (!me.year) { A.toast('Set up My chart first (Settings).', true); return; } $me.value = String(me.year); draw(); } catch (err) { A.toast(err.message, true); } };
-    A.render(A.h('div', { class: 'screen qscreen tscreen' }, top('Karmic connections'),
+    const useMe = async () => { try { const me = await A.api('/api/mychart'); if (!me.year) { A.toast('Set up My Chart first (Settings).', true); return; } $me.value = String(me.year); draw(); } catch (err) { A.toast(err.message, true); } };
+    A.render(A.h('div', { class: 'screen qscreen tscreen' }, top('Karmic Connections'),
       A.h('div', { class: 'two-people' }, A.h('div', {}, A.h('div', { class: 'muted small', style: 'padding:0 2px 4px' }, 'You'), $me), A.h('div', {}, A.h('div', { class: 'muted small', style: 'padding:0 2px 4px' }, 'Others'), ...$others)),
-      A.h('div', { class: 'togglerow' }, chip('Use My chart', false, useMe)),
+      A.h('div', { class: 'togglerow' }, chip('Use My Chart', false, useMe)),
       $body));
     draw();
     if (!$me.value) useMe().catch(() => {});
   }
 
-  // ---------- My chart (Settings) ----------
+  // ---------- My Chart (Settings) ----------
   function myChartView() {
     const field = (ph, attrs = {}) => A.h('input', { type: 'text', placeholder: ph, autocomplete: 'off', ...attrs });
     const $name = field('Full name', { autocapitalize: 'words' }), $day = field('day', { inputmode: 'numeric', maxlength: 2 }), $month = field('month', { inputmode: 'numeric', maxlength: 2 }), $year = field('year', { inputmode: 'numeric', maxlength: 4 });
@@ -388,8 +439,8 @@
       catch (err) { $msg.textContent = err.message; $msg.className = 'err small'; }
       $save.disabled = false;
     } }, 'Save');
-    A.render(A.h('div', { class: 'screen stack' }, top('My chart', '#/settings'),
-      A.h('p', { class: 'muted small' }, 'Your own name and birth date. The Relationship and Karmic connections tools and the "My chart" button on the home screen start from it. Kept on the server, never in a chart or a tag.'),
+    A.render(A.h('div', { class: 'screen stack' }, top('My Chart', '#/settings'),
+      A.h('p', { class: 'muted small' }, 'Your own name and birth date. The Relationship and Karmic Connections tools and the "My Chart" button on the home screen start from it. Kept on the server, never in a chart or a tag.'),
       A.h('div', { class: 'card' }, $name, A.h('div', { class: 'row', style: 'margin-top:8px;flex-wrap:nowrap' }, $day, $month, $year)),
       $save, $msg));
     A.api('/api/mychart').then((me) => { $name.value = me.name || ''; $day.value = me.day || ''; $month.value = me.month || ''; $year.value = me.year || ''; remember('mychart', me); $msg.textContent = me.day ? 'This is what is saved now.' : 'Nothing saved yet.'; }).catch((err) => { $msg.textContent = err.message; $msg.className = 'err small'; });
@@ -400,24 +451,24 @@
     const h = A.h, now = todayIn(), e = T.dayEnergy(now.y, now.m, now.d);
     const me = recall('mychart', null);
     const btn = (href, icon, label, sub, name) => h('a', { class: 'btn', href, onclick: () => A.count(name) }, h('span', { class: 'qicon' }, icon), label, sub ? h('span', { class: 'sub' }, sub) : null);
-    const $me = btn(me && me.day ? '#/quick?me=1' : '#/mychart', '☰', 'My chart', me && me.day ? 'year rows, day rows' : 'set it up', 'home.mychart');
+    const $me = btn(me && me.day ? '#/quick?me=1' : '#/mychart', '☰', 'My Chart', me && me.day ? 'year rows, day rows' : 'set it up', 'home.mychart');
     // This phone may not have seen the saved chart yet: ask the server once and fix the button in place.
     if (!me) A.api('/api/mychart').then((r) => { remember('mychart', r); if (r.day) { $me.href = '#/quick?me=1'; $me.querySelector('.sub').textContent = 'year rows, day rows'; } }).catch(() => {});
     return h('div', { class: 'tools' }, h('div', { class: 'summary rhead' }, 'Tools'),
       btn('#/today', '☀', 'Today', e ? `${DOW[e.weekday].slice(0, 3)} ${MON[now.m - 1]} ${now.d} · ${e.dv.text}` : '', 'home.today'),
-      btn('#/coming', '▦', 'Coming days', 'next 31 days', 'home.coming'),
-      btn('#/numberfun', '◇', 'Number fun', '1 to 99', 'home.numberfun'),
-      btn('#/price', '$', 'Price tool', '', 'home.price'),
+      btn('#/coming', '▦', 'Coming Days', 'next 31 days', 'home.coming'),
+      btn('#/numberfun', '◇', 'Number Fun', '1 to 99', 'home.numberfun'),
+      btn('#/price', '$', 'Price Tool', '', 'home.price'),
       btn('#/relation', '⧫', 'Relationship', 'two people', 'home.relation'),
-      btn('#/karmic', '∞', 'Karmic connections', 'shared rhythms', 'home.karmic'),
+      btn('#/karmic', '∞', 'Karmic Connections', 'shared rhythms', 'home.karmic'),
       $me);
   }
 
   const USAGE_LABELS = {
-    'screen.today': 'Today', 'screen.coming': 'Coming days', 'screen.numberfun': 'Number fun', 'screen.price': 'Price tool', 'screen.relation': 'Relationship', 'screen.karmic': 'Karmic connections', 'screen.mychart': 'My chart (settings)',
-    'home.today': 'Home → Today', 'home.coming': 'Home → Coming days', 'home.numberfun': 'Home → Number fun', 'home.price': 'Home → Price tool', 'home.relation': 'Home → Relationship', 'home.karmic': 'Home → Karmic connections', 'home.mychart': 'Home → My chart',
-    'today.psyche': 'Today: psyche charts on or off', 'coming.charts': 'Coming days: charts view', 'coming.super_only': 'Coming days: super dates only', 'numberfun.type': 'Number fun: type a number', 'numberfun.tap_diamond': 'Number fun: tap a diamond', 'numberfun.tap_other': 'Number fun: tap a number it appears in',
-    'price.vibe': 'Price tool: pick a vibration', 'price.range': 'Price tool: pick a range', 'price.pick': 'Price tool: pick a found price', 'relation.use_me': 'Relationship: me as the first person', 'mychart.save': 'My chart: save',
+    'screen.today': 'Today', 'screen.coming': 'Coming Days', 'screen.numberfun': 'Number Fun', 'screen.price': 'Price Tool', 'screen.relation': 'Relationship', 'screen.karmic': 'Karmic Connections', 'screen.mychart': 'My Chart (settings)',
+    'home.today': 'Home → Today', 'home.coming': 'Home → Coming Days', 'home.numberfun': 'Home → Number Fun', 'home.price': 'Home → Price Tool', 'home.relation': 'Home → Relationship', 'home.karmic': 'Home → Karmic Connections', 'home.mychart': 'Home → My Chart',
+    'today.psyche': 'Today: psyche charts on or off', 'today.full': 'Today: full screen day', 'dayfull.move': 'Full screen day: previous or next day', 'coming.open_day': 'Coming Days: open a day', 'coming.size': 'Coming Days: bigger or smaller', 'coming.list': 'Coming Days: list view', 'coming.charts': 'Coming Days: charts view', 'coming.super_only': 'Coming Days: super dates only', 'numberfun.type': 'Number Fun: type a number', 'numberfun.tap_diamond': 'Number Fun: tap a diamond', 'numberfun.tap_other': 'Number Fun: tap a number it appears in',
+    'price.vibe': 'Price Tool: pick a vibration', 'price.range': 'Price Tool: pick a range', 'price.pick': 'Price Tool: pick a found price', 'relation.use_me': 'Relationship: me as the first person', 'mychart.save': 'My Chart: save',
   };
 
   function install(app) {

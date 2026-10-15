@@ -56,8 +56,22 @@ test('target number example (Superdates p. 200): day 3, month 8, year 6 → 35/8
 test('coming days and ratings', () => {
   const days = T.comingDays(2026, 10, 15, 3);
   assert.equal(days.length, 3); assert.equal(days[1].d, 16); assert.equal(days[2].d, 17);
-  for (const d of days) assert.ok(['super', 'good', 'hard', 'quiet'].includes(d.rating));
-  assert.equal(T.dayEnergy(2026, 10, 16).rating, 'hard'); // 16/7 day vibration is a number to avoid
+  for (const d of days) assert.ok(['super', 'good', 'beware'].includes(d.rating));
+  // Beware: a number to avoid anywhere in the day chart (Superdates p. 31), with the reason spelled out.
+  const oct16 = T.dayEnergy(2026, 10, 16);
+  assert.equal(oct16.rating, 'beware'); assert.ok(oct16.reasons.some((r) => r.startsWith('16/7 as the day vibration')));
+  const oct15 = T.dayEnergy(2026, 10, 15); // 15/6 day, but 61/7 as the outer and inner diamonds
+  assert.equal(oct15.rating, 'beware'); assert.ok(oct15.reasons.some((r) => r.startsWith('61/7 as the outer diamond')));
+  // Super: a primary code as the day or the essence, a strong and a soft code, nothing to avoid, psyche clean.
+  const feb5 = T.dayEnergy(2026, 2, 5); // 5 day, 58/4 natural talent and 53/8 target (the 3-5-8 money triad)
+  assert.equal(feb5.rating, 'super'); assert.ok(feb5.reasons.some((r) => r.startsWith('strong:'))); assert.ok(feb5.reasons.some((r) => r.startsWith('soft:')));
+  assert.equal(feb5.essenceRuler, 'Saturn');
+  // 4 and 8 meeting in a diamond is the 4-12/3-8 clash: 4 Aug 2029 (year 2+0+2+9 = 13/4, day 4, month 8).
+  const clash = T.dayEnergy(2029, 8, 4);
+  assert.equal(clash.rating, 'beware'); assert.ok(clash.reasons.some((r) => r.includes('4 and 8 meet')));
+  // Good: nothing to avoid, but not the full set of codes. The reasons say what is missing.
+  const good = T.comingDays(2026, 1, 1, 365).find((d) => d.rating === 'good');
+  assert.ok(good && good.reasons.some((r) => r.startsWith('no ') || r.includes('use with care')));
   assert.equal(T.dayEnergy(2026, 2, 30), null);
 });
 
