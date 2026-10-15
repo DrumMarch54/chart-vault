@@ -47,6 +47,7 @@
     'screen.tags': 'All tags', 'screen.upload': 'Upload screenshots', 'screen.import': 'Import tags', 'screen.status': 'Status and backup',
     'viewer.add_tag': 'Add a tag to a chart', 'quick.save': 'Save a quick chart', 'quick.full_screen': 'Quick chart full screen',
     'quick.year_rows': 'Year rows and day vibrations', 'quick.show_parts': 'Show and hide parts', 'quick.augment': 'Augmentation on or off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
+    'screen.position': 'Search by position', 'position.search': 'Run a position search', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'viewer.number_tap': 'Tap a number on a chart', 'status.recompute': 'Recompute chart numbers',
   };
   const count = (name) => { try { fetch('/api/usage', { method: 'POST', credentials: 'same-origin', keepalive: true, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name }) }).catch(() => {}); } catch { /* counting never breaks a tap */ } };
 
@@ -64,6 +65,19 @@
       h('span', { class: 't' }, pretty(tag.name)),
       tag.count !== undefined ? h('span', { class: 'count' }, ` ${fmtN(tag.count)}`) : null,
       removable ? h('span', { class: 'x' }, '×') : null);
+
+  // ---------- search by position: the catalog of positions (plain words, grouped by chart) ----------
+  // Fetched once from the server (server/positions.js is the one list); remembered in browser storage so
+  // a search in the address or a recent search reads right before the fetch answers.
+  let catalog = null;
+  try { catalog = JSON.parse(localStorage.getItem('positions') || 'null'); } catch {}
+  const loadCatalog = async () => { if (catalog) return catalog; catalog = await api('/api/positions'); try { localStorage.setItem('positions', JSON.stringify(catalog)); } catch {} return catalog; };
+  const chartLabel = (key) => (key === '*' ? 'any chart' : ((catalog && catalog.charts.find((c) => c.key === key)) || {}).label || key);
+  const posLabel = (pos) => { const [chart, key = '*'] = String(pos).split('.'); if (key === '*') return chart === '*' ? 'anywhere' : `anywhere in the ${chartLabel(chart).toLowerCase()}`; const p = catalog && catalog.positions.find((x) => x.chart === chart && x.key === key); return `${p ? p.label : key} · ${chartLabel(chart)}`; };
+  // "12" reads 12/3; "/3" reads "digit sum 3".
+  const numLabel = (num) => { const m = /^(\d+)?(?:\/(\d))?$/.exec(String(num)); if (!m) return String(num); if (!m[1]) return `digit sum ${m[2]}`; const n = Number(m[1]); return n < 10 ? String(n) : `${n}/${TagCodes.digitSum(n)}`; };
+  const searchLabel = (pos, num) => `${numLabel(num)} in ${posLabel(pos)}`;
+  const positionHash = (pos, num) => `#/?pos=${encodeURIComponent(pos)}&num=${encodeURIComponent(num)}`;
 
   // ---------- routing ----------
   const routes = {};
@@ -262,19 +276,25 @@
     // One tag at a time: picking a tag replaces the search, never narrows it.
     const tag = query.get('tag') || '';
     const kind = query.get('kind') === 'archetype' ? 'archetype' : 'chart';
+    // A position search (?pos=name.heart&num=12): every chart with that number in that position, computed
+    // from the chart's name and date. Shown and remembered like a tag search.
+    const pos = query.get('pos') || '', num = query.get('num') || '';
+    const position = pos && num ? { pos, num } : null;
     const setTag = (t, k = kind) => { const p = new URLSearchParams(); if (k === 'archetype') p.set('kind', 'archetype'); if (t) p.set('tag', t); go('#/' + (p.toString() ? '?' + p : '')); };
-    const home = !tag && kind === 'chart';
+    const home = !tag && !position && kind === 'chart';
     const $quickIcon = h('a', { class: 'btn iconbtn gear', href: '#/quick', 'aria-label': 'Quick chart', title: 'Quick chart' }, '◈');
     const $gear = h('a', { class: 'btn iconbtn gear', href: '#/settings', 'aria-label': 'Settings', title: 'Settings' }, '⚙');
     const $input = h('input', { type: 'search', placeholder: 'Search names, tags, numbers', autocomplete: 'off', enterkeyhint: 'search' });
     if (tag) $input.value = pretty(tag); // the search box shows what is being searched; typing replaces it
+    if (position) { $input.value = searchLabel(pos, num); loadCatalog().then(() => { if (document.activeElement !== $input) $input.value = searchLabel(pos, num); }).catch(() => {}); }
     const showClear = () => $clear.classList.toggle('hidden', !$input.value); // the × only when there is something to clear
     $input.addEventListener('input', showClear);
     const $sugg = suggestBox($input, { kind, alsoArchetype: kind === 'chart', empty: home ? () => recentNodes(setTag) : null, onPick: (name, pickKind) => setTag(name, pickKind || kind) });
-    $input.addEventListener('focus', () => { if (tag && $input.value === pretty(tag)) $input.select(); });
-    const $clear = h('button', { type: 'button', class: 'clear', 'aria-label': 'Clear the search', onclick: () => { if (tag) { setTag('', 'chart'); return; } $input.value = ''; showClear(); $input.focus(); $sugg.classList.add('hidden'); } }, '×');
+    $input.addEventListener('focus', () => { if ((tag && $input.value === pretty(tag)) || position) $input.select(); });
+    const $clear = h('button', { type: 'button', class: 'clear', 'aria-label': 'Clear the search', onclick: () => { if (tag || position) { setTag('', 'chart'); return; } $input.value = ''; showClear(); $input.focus(); $sugg.classList.add('hidden'); } }, '×');
     showClear();
-    const $filters = kind === 'archetype' ? h('div', { class: 'filters' }, chip({ name: 'Archetype pics', kind: 'name' }, { active: true, removable: true, onclick: () => setTag(tag, 'chart') })) : null;
+    const $filters = kind === 'archetype' ? h('div', { class: 'filters' }, chip({ name: 'Archetype pics', kind: 'name' }, { active: true, removable: true, onclick: () => setTag(tag, 'chart') }))
+      : position ? h('div', { class: 'filters' }, h('a', { class: 'chip position', href: '#/position?' + new URLSearchParams({ pos, num }) }, h('span', { class: 't' }, 'Change position or number'), h('span', { class: 'x' }, '›'))) : null;
     const $summary = h('div', { class: 'summary' }, 'Loading…');
     const $grid = h('div', { class: 'grid' });
     const $sentinel = h('div', { class: 'sentinel' });
@@ -282,12 +302,14 @@
     // The home screen is the search box and the way into the quick chart; the recently opened charts sit
     // below. The recent searches and the way to every tag drop down from the search box when it is tapped.
     if (tag) rememberSearch([tag], kind);
+    if (position) rememberSearch([], kind, position);
     if (!namesLoaded) loadTagNames().then(() => { if (tag && document.activeElement !== $input) $input.value = pretty(tag); });
     const $quick = h('a', { class: 'btn btn-primary btn-block quickbtn', href: '#/quick' }, h('span', { class: 'qicon' }, '◈'), 'Quick chart');
+    const $byPos = h('a', { class: 'btn btn-block quickbtn posbtn', href: '#/position' }, h('span', { class: 'qicon' }, '⌖'), 'Search by position');
     render(h('div', { class: `screen ${home ? 'home' : ''}` },
       home ? h('div', { class: 'pagetop hometop' }, h('h1', {}, 'Chart Vault'), $gear) : null,
       h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), home ? null : $quickIcon, home ? null : $gear), $filters),
-      home ? $quick : null,
+      home ? $quick : null, home ? $byPos : null,
       $recent, home ? null : $summary, home ? null : $grid, home ? null : $sentinel));
     // Recently opened charts (this phone remembers the last 48), a grid like a search result, only on the home screen.
     if (home && recentIds().length) {
@@ -302,7 +324,7 @@
     if (home) return;
 
     let offset = 0, total = null, loading = false, done = false;
-    const params = () => { const p = new URLSearchParams({ limit: 60, offset, kind }); if (tag) p.append('tag', tag); return p; };
+    const params = () => { const p = new URLSearchParams({ limit: 60, offset, kind }); if (tag) p.append('tag', tag); if (position) { p.set('pos', pos); p.set('num', num); } return p; };
     async function more() {
       if (loading || done) return; loading = true; $sentinel.textContent = 'Loading…';
       try {
@@ -311,8 +333,8 @@
         for (const img of r.items) $grid.append(cell(img));
         done = offset >= total || r.items.length === 0;
         const noun = kind === 'archetype' ? 'archetype pic' : 'chart';
-        $summary.textContent = `${fmtN(total)} ${noun}${total === 1 ? '' : 's'}${tag ? '' : ', newest first'}`;
-        $sentinel.textContent = done ? (total === 0 ? (kind === 'archetype' && !tag ? 'No archetype pics yet. Add them on the Upload page.' : `No ${noun}s match.`) : '') : '';
+        $summary.textContent = position ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with ${searchLabel(pos, num)}` : `${fmtN(total)} ${noun}${total === 1 ? '' : 's'}${tag ? '' : ', newest first'}`;
+        $sentinel.textContent = done ? (total === 0 ? (kind === 'archetype' && !tag ? 'No archetype pics yet. Add them on the Upload page.' : position ? 'No chart has that number there. Only charts whose name and date have been read can be found this way.' : `No ${noun}s match.`) : '') : '';
       } catch (err) { $sentinel.textContent = err.message; }
       loading = false;
     }
@@ -334,22 +356,26 @@
   const recentIds = () => { try { return (JSON.parse(localStorage.getItem('recent') || '[]') || []).filter(Number.isInteger).slice(0, 48); } catch { return []; } };
   const rememberOpened = (id) => { try { localStorage.setItem('recent', JSON.stringify([id, ...recentIds().filter((x) => x !== id)].slice(0, 48))); } catch {} };
   // The last searches made on this phone, newest first: [{ tags, kind }]. Searching the same tag again moves it to the top.
-  const recentSearches = () => { try { return (JSON.parse(localStorage.getItem('searches') || '[]') || []).filter((s) => s && Array.isArray(s.tags) && s.tags.length).slice(0, 20); } catch { return []; } };
-  const rememberSearch = (tags, kind) => {
+  // A position search is remembered too: { tags: [], kind, pos, num }.
+  const recentSearches = () => { try { return (JSON.parse(localStorage.getItem('searches') || '[]') || []).filter((s) => s && Array.isArray(s.tags) && (s.tags.length || (s.pos && s.num))).slice(0, 20); } catch { return []; } };
+  const rememberSearch = (tags, kind, position = null) => {
     try {
-      const kept = recentSearches().filter((s) => !(s.kind === kind && (s.tags.every((t) => tags.includes(t)) || tags.every((t) => s.tags.includes(t)))));
-      localStorage.setItem('searches', JSON.stringify([{ tags, kind }, ...kept].slice(0, 20)));
+      const kept = recentSearches().filter((s) => (position ? !(s.pos === position.pos && s.num === position.num) : !(s.kind === kind && s.tags.length && (s.tags.every((t) => tags.includes(t)) || tags.every((t) => s.tags.includes(t))))));
+      localStorage.setItem('searches', JSON.stringify([{ tags, kind, ...(position || {}) }, ...kept].slice(0, 20)));
     } catch {}
   };
+  const runSearch = (s) => (s.pos ? go(positionHash(s.pos, s.num)) : null);
   // What drops down from an empty search box: the recent searches (tap one to run it again) and the way to every tag.
   const recentNodes = (setTag) => {
     const searches = recentSearches();
     return [
       h('div', { class: 'shead' }, searches.length ? 'Recent searches' : 'Your recent searches will show here'),
-      ...searches.map((s) => h('button', { type: 'button', class: 'rsearch', onclick: () => setTag(s.tags[0], s.kind) },
+      ...searches.map((s) => h('button', { type: 'button', class: 'rsearch', onclick: () => (s.pos ? runSearch(s) : setTag(s.tags[0], s.kind)) },
         h('span', { class: 'chips' }, s.kind === 'archetype' ? h('span', { class: 'chip name', style: 'pointer-events:none' }, 'Archetype pics') : null,
+          s.pos ? h('span', { class: 'chip position', style: 'pointer-events:none' }, searchLabel(s.pos, s.num)) : null,
           ...s.tags.slice(0, 1).map((t) => h('span', { class: `chip ${kindOf(t)}`, style: 'pointer-events:none' }, pretty(t)))),
         h('span', { class: 'muted', style: 'padding-left:8px' }, '›'))),
+      h('a', { class: 'rsearch alltags', href: '#/position' }, h('span', {}, 'Search by position'), h('span', { class: 'muted' }, '›')),
       h('a', { class: 'rsearch alltags', href: '#/tags' }, h('span', {}, 'All tags'), h('span', { class: 'muted' }, '›')),
     ];
   };
@@ -359,6 +385,7 @@
   routes.chart = async function viewer(id, query) {
     const qs = query.toString();
     const listQ = new URLSearchParams(); for (const t of query.getAll('tag')) listQ.append('tag', t); if (query.get('kind') === 'archetype') listQ.set('kind', 'archetype');
+    for (const k of ['pos', 'num']) if (query.get(k)) listQ.set(k, query.get(k));
     const backHash = '#/' + (listQ.toString() ? '?' + listQ : '');
     // Back goes to the screen the viewer was opened from (the list, a search, the quick chart). Opened from a
     // link or a fresh load, there is no such screen, so it goes to the list this chart belongs to.
@@ -460,6 +487,52 @@
       for (const nid of [c.next, c.prev]) if (nid) { const pre = new Image(); pre.src = `/img/${nid}`; }
     }).catch(() => {});
 
+    // The chart's own numbers: the name and date read off the picture and every position computed from
+    // them. Tap a number to find every chart with it there; "Wrong? Fix" lets the owner correct the inputs.
+    const $numbers = h('div', { class: 'numbers stack' });
+    let numbers = null, fixing = false;
+    const loadNumbers = async () => { try { numbers = await api(`/api/images/${img.id}/numbers`); } catch (err) { numbers = { error: err.message }; } drawNumbers(); };
+    const drawNumbers = () => {
+      if (img.kind !== 'chart') { fill($numbers); return; }
+      if (!numbers) { fill($numbers, h('p', { class: 'muted small' }, 'Loading the numbers…')); return; }
+      if (numbers.error) { fill($numbers, h('p', { class: 'err small' }, numbers.error)); return; }
+      const inp = numbers.inputs;
+      const when = inp && (inp.day || inp.month || inp.year) ? `${inp.day ?? '?'}.${inp.month ?? '?'}.${inp.year ?? '?'}` : '';
+      if (fixing) {
+        const field = (ph, v, attrs = {}) => h('input', { type: 'text', inputmode: 'numeric', placeholder: ph, autocomplete: 'off', value: v ?? '', ...attrs });
+        const $day = field('day', inp && inp.day, { maxlength: 2 }), $month = field('month', inp && inp.month, { maxlength: 2 }), $year = field('year', inp && inp.year, { maxlength: 4 });
+        const $name = h('input', { type: 'text', placeholder: 'Full name, exactly as typed into the chart', autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false', value: inp ? inp.name : '' });
+        const $msg = h('p', { class: 'err small' });
+        const save = async () => {
+          try {
+            count('viewer.fix_inputs');
+            numbers = await api(`/api/images/${img.id}/inputs`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ day: $day.value.trim(), month: $month.value.trim(), year: $year.value.trim(), name: $name.value }) });
+            fixing = false; toast('Numbers recomputed'); drawNumbers();
+          } catch (err) { $msg.textContent = err.message; }
+        };
+        fill($numbers, h('b', {}, inp ? 'Fix the name or date' : 'Type the name and date'),
+          h('p', { class: 'muted small' }, 'Exactly as typed into the chart: same spelling, every name, Jr or III included. The numbers are recomputed at once.'),
+          h('div', { class: 'row qfields fixfields' }, $day, $month, $year), $name, $msg,
+          h('div', { class: 'row', style: 'flex-wrap:nowrap' }, h('button', { type: 'button', class: 'btn-primary', style: 'flex:1', onclick: save }, 'Save'), h('button', { type: 'button', onclick: () => { fixing = false; drawNumbers(); } }, 'Cancel')));
+        return;
+      }
+      if (!inp) {
+        fill($numbers, h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('span', { class: 'muted small' }, 'Name and date not read yet, so this chart cannot be found by position.'), h('button', { type: 'button', onclick: () => { fixing = true; drawNumbers(); } }, 'Type them')));
+        return;
+      }
+      const groups = numbers.charts.map((c) => {
+        const $chips = h('div', { class: 'chips tchips' });
+        $chips.hidden = c.chart !== 'name';
+        for (const v of c.values) $chips.append(h('button', { type: 'button', class: 'chip position', onclick: () => { count('viewer.number_tap'); go(positionHash(`${c.chart}.${v.position}`, String(v.sum))); } }, h('span', { class: 't' }, `${v.label}${v.n ? ' ' + (v.n + 1) : ''}`), h('span', { class: 'count' }, v.sum < 10 ? String(v.sum) : v.text)));
+        const $arrow = h('span', { class: 'arrow' }, $chips.hidden ? '⌄' : '⌃');
+        return [h('button', { type: 'button', class: 'tgroup', onclick: () => { $chips.hidden = !$chips.hidden; $arrow.textContent = $chips.hidden ? '⌄' : '⌃'; } }, h('span', { class: 'tg-title' }, c.label), h('span', { class: 'muted small' }, `${c.values.length} numbers`), $arrow), $chips];
+      });
+      fill($numbers,
+        h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('div', {}, h('b', {}, inp.name || '(no name)'), h('div', { class: 'muted small' }, when ? `Born ${when}` : 'No date: name chart only')), h('button', { type: 'button', onclick: () => { fixing = true; drawNumbers(); } }, 'Wrong? Fix')),
+        h('div', { class: 'muted small' }, 'Tap a number to find every chart with it in that position.'),
+        ...groups.flat());
+    };
+    if (img.kind === 'chart') loadNumbers();
     const draw = () => {
       const groups = { name: [], position: [], number: [] };
       for (const t of img.tags) groups[t.kind].push(t);
@@ -481,6 +554,7 @@
         groups.position.length ? h('div', {}, h('div', { class: 'muted small', style: 'margin-bottom:6px' }, 'Positions'), h('div', { class: 'chips' }, ...groups.position.map(tagBtn))) : null,
         groups.number.length ? h('div', {}, h('div', { class: 'muted small', style: 'margin-bottom:6px' }, 'Numbers'), h('div', { class: 'chips' }, ...groups.number.map(tagBtn))) : null,
         h('div', { class: 'addtag row', style: 'flex-wrap:nowrap' }, $tagInput, h('button', { type: 'button', class: 'btn-primary', onclick: () => { const v = $tagInput.value.trim(); if (v) { count('viewer.add_tag'); addTag(v); $tagInput.value = ''; } } }, 'Add'), $sugg),
+        $numbers,
         h('div', { class: 'small muted' },
           h('div', {}, img.kind === 'archetype' ? 'Type: archetype pic (a picture that represents a number)' : 'Type: chart'),
           h('div', {}, `Taken: ${img.taken_at ? img.taken_at.replace('T', ' ') : 'unknown'}`),
@@ -738,6 +812,7 @@
     render(h('div', { class: 'screen stack' }, pageTop('Settings', '#/'),
       h('a', { class: 'btn btn-block', href: '#/quick', style: 'justify-content:space-between' }, 'Quick chart', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/tags', style: 'justify-content:space-between' }, 'All tags', h('span', { class: 'muted' }, '›')),
+      h('a', { class: 'btn btn-block', href: '#/position', style: 'justify-content:space-between' }, 'Search by position', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/upload', style: 'justify-content:space-between' }, 'Upload screenshots', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/import', style: 'justify-content:space-between' }, 'Import tags', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/status', style: 'justify-content:space-between' }, 'Status and backup', h('span', { class: 'muted' }, '›')),
@@ -1042,6 +1117,53 @@
   // ---------- all tags ----------
   // Every tag there is, three ways: the words (people and topics), the position codes grouped by
   // position, and everything grouped by number. Tap a tag to search it. Groups open on tap.
+  // ---------- search by position ----------
+  // Type a number, see how many charts hold it in every position of every chart, tap one. The counts come
+  // from the server's stored chart numbers; the search itself is the browse screen with ?pos=&num=.
+  routes.position = async function positionView(_, query) {
+    const startPos = query.get('pos') || '', startNum = query.get('num') || '';
+    let chart = startPos ? startPos.split('.')[0] : 'name'; try { if (!startPos) chart = localStorage.getItem('posChart') || 'name'; } catch {}
+    const $num = h('input', { type: 'text', inputmode: 'numeric', placeholder: 'Number, like 12', autocomplete: 'off', maxlength: 3, value: startNum.replace('/', ''), enterkeyhint: 'search' });
+    const $ds = h('button', { type: 'button', class: 'chip off', title: 'Digit sum' }, 'as a digit sum');
+    let ds = startNum.startsWith('/');
+    const $charts = h('div', { class: 'chips tabs' });
+    const $list = h('div', { class: 'stack poslist' });
+    const $hint = h('p', { class: 'muted small' });
+    render(h('div', { class: 'screen' }, pageTop('Search by position', '#/'),
+      h('div', { class: 'row posnum', style: 'flex-wrap:nowrap' }, $num, $ds), $hint, $charts, $list));
+    try { await loadCatalog(); } catch (err) { fill($list, h('p', { class: 'err' }, err.message)); return; }
+    let counts = null, seq = 0;
+    const numText = () => { const n = $num.value.trim(); if (!n) return ''; return ds ? `/${n.slice(-1)}` : n; };
+    const refresh = async () => {
+      const n = numText(); const my = ++seq;
+      $ds.classList.toggle('hidden', !/^\d$/.test($num.value.trim()));
+      if (!n) { counts = null; drawList(); return; }
+      try { const c = await api('/api/positions/counts?num=' + encodeURIComponent(n)); if (my === seq) { counts = c; drawList(); } } catch (err) { if (my === seq) { counts = { error: err.message }; drawList(); } }
+    };
+    const drawCharts = () => fill($charts, ...[{ key: '*', label: 'Any chart' }, ...catalog.charts].map((c) => h('button', { type: 'button', class: `chip ${chart === c.key ? 'active' : 'off'}`, onclick: () => { chart = c.key; try { localStorage.setItem('posChart', chart); } catch {} drawCharts(); drawList(); } }, c.label)));
+    const pick = (pos) => { const n = numText(); if (!n) { $num.focus(); toast('Type a number first', true); return; } count('position.search'); go(positionHash(pos, n)); };
+    const drawList = () => {
+      const n = numText();
+      $hint.textContent = n ? (counts && !counts.error ? `${fmtN(counts.total)} chart${counts.total === 1 ? '' : 's'} have ${numLabel(n)} somewhere. Tap a position.` : '') : 'Type a number, then tap the position to look in. Charts are found by their name and date, tags or not.';
+      if (counts && counts.error) { fill($list, h('p', { class: 'err' }, counts.error)); return; }
+      const cnt = (pos) => (counts ? (pos.endsWith('.*') ? (pos === '*.*' ? counts.total : counts.perChart[pos.split('.')[0]] || 0) : counts.counts[pos] || 0) : null);
+      const row = (pos, label, note) => { const c = cnt(pos); return h('button', { type: 'button', class: `posrow ${c === 0 ? 'none' : ''}`, onclick: () => pick(pos) }, h('span', { class: 'pl' }, h('span', {}, label), note ? h('span', { class: 'muted small' }, note) : null), h('b', {}, c === null ? '' : fmtN(c))); };
+      const out = [];
+      if (chart === '*') out.push(row('*.*', 'Anywhere', 'Any position of any chart'), ...catalog.charts.map((c) => row(`${c.key}.*`, `Anywhere in the ${c.label.toLowerCase()}`, c.note)));
+      else {
+        const c = catalog.charts.find((x) => x.key === chart);
+        out.push(row(`${chart}.*`, `Anywhere in the ${c.label.toLowerCase()}`, c.note), ...catalog.positions.filter((p) => p.chart === chart).map((p) => row(`${chart}.${p.key}`, p.label)));
+      }
+      fill($list, ...out);
+    };
+    $num.addEventListener('input', () => { clearTimeout($num.t); $num.t = setTimeout(refresh, 150); });
+    $num.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $num.blur(); } });
+    $ds.onclick = () => { ds = !ds; $ds.classList.toggle('active', ds); $ds.classList.toggle('off', !ds); refresh(); };
+    $ds.classList.toggle('active', ds); $ds.classList.toggle('off', !ds);
+    drawCharts(); refresh();
+    if (!$num.value) setTimeout(() => $num.focus(), 50);
+  };
+
   routes.tags = async function tagsView() {
     const VIEWS = [['words', 'Words'], ['position', 'By position'], ['number', 'By number']];
     let view = 'words'; try { view = localStorage.getItem('tagsView') || 'words'; } catch {}
@@ -1230,6 +1352,12 @@
         h('button', { type: 'button', class: 'btn-block', onclick: async (e) => { count('status.backup'); e.target.disabled = true; e.target.textContent = 'Backing up…'; try { const r = await api('/api/backup/run', { method: 'POST' }); $backupMsg.textContent = `Last backup: ${fmtDate(r.at)} (${r.result})`; toast('Backup done'); } catch (err) { toast(err.message, true); } e.target.disabled = false; e.target.textContent = 'Back up now'; } }, 'Back up now'),
         h('a', { class: 'btn btn-block', href: '/api/backup/download', download: '' }, `Download everything as one zip (${fmtBytes(s.bytes)})`),
         h('a', { class: 'btn btn-block', href: '/api/export/tags.json', download: '' }, 'Download tags only (small JSON file)')),
+      s.positions ? h('div', { class: 'card stack' }, h('h2', { style: 'margin-top:0' }, 'Search by position'),
+        stat('Charts with a name and date', s.positions.with_inputs), stat('Charts with a full birth date', s.positions.with_date),
+        h('div', { class: 'stat' }, h('span', {}, 'Charts not read yet'), h('b', { class: s.positions.without_inputs ? 'err' : 'ok' }, fmtN(s.positions.without_inputs))),
+        s.positions.check ? h('div', { class: 'stat' }, h('span', {}, 'Your position tags that agree with the computed charts'), h('b', {}, `${fmtN(s.positions.check.agree)} of ${fmtN(s.positions.check.tags)}`)) : null,
+        h('p', { class: 'muted small' }, 'A tag that disagrees usually means the name or date was misread: open the chart, tap "Wrong? Fix". Charts not read yet get their name and date the same way.'),
+        h('button', { type: 'button', class: 'btn-block', onclick: async (e) => { count('status.recompute'); e.target.disabled = true; e.target.textContent = 'Recomputing…'; try { const r = await api('/api/positions/recompute', { method: 'POST' }); toast(`Recomputed ${fmtN(r.recomputed)} charts`); } catch (err) { toast(err.message, true); } e.target.disabled = false; e.target.textContent = 'Recompute every chart'; } }, 'Recompute every chart')) : null,
       s.usage && s.usage.length ? h('div', { class: 'card stack' }, h('h2', { style: 'margin-top:0' }, 'What you use most'),
         ...s.usage.slice(0, 20).map((u) => stat(USAGE_LABELS[u.name] || u.name, u.count))) : null,
       h('div', { class: 'card stack' },

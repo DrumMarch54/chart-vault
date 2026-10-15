@@ -7,6 +7,7 @@ import { statusReport, getImage, usageReport } from './queries.js';
 import { recentLogs } from './logbuf.js';
 import { fullPathFor, thumbPathFor } from './storage.js';
 import { deployGuard } from './deployguard.js';
+import { inputStats, tagCheck, chartsWithoutInputs, getInputs, valuesFor, chartLabel } from './positions.js';
 
 const started = Date.now();
 const fmtB = (b) => (b >= 1e9 ? (b / 1e9).toFixed(2) + ' GB' : b >= 1e6 ? (b / 1e6).toFixed(1) + ' MB' : Math.round((b || 0) / 1e3) + ' KB');
@@ -35,6 +36,12 @@ export function snapshot(db, { scope = 'full', id = null, commit = 'unknown', bu
     const removed = db.prepare('SELECT t.name, r.removed_at FROM removed_tags r JOIN tags t ON t.id = r.tag_id WHERE r.image_id = ?').all(img.id);
     if (removed.length) line(`removed in app: ${removed.map((r) => `${r.name} (${r.removed_at})`).join(', ')}`);
     line(`phone paths: ${img.paths.join(' | ')}`);
+    const inp = getInputs(db, img.id);
+    if (!inp) line('inputs: none (name and date not read yet; no position search for this chart)');
+    else {
+      line(`inputs: ${inp.day ?? '?'}.${inp.month ?? '?'}.${inp.year ?? '?'} "${inp.name}" (source ${inp.source}, build ${inp.build || 'unknown'}, ${inp.updated_at})`);
+      for (const c of valuesFor(db, img.id)) line(`  ${c.label}: ${c.values.map((v) => `${v.label}${v.n ? ' ' + (v.n + 1) : ''} ${v.text}`).join(' · ')}`);
+    }
     return out.join('\n');
   }
 
@@ -71,6 +78,17 @@ export function snapshot(db, { scope = 'full', id = null, commit = 'unknown', bu
   for (const r of recentTags) line(`  ${r.created_at} added "${r.name}" to #${r.id} ${r.filename}`);
   for (const r of recentRemoved) line(`  ${r.removed_at} removed "${r.name}" from #${r.id} ${r.filename}`);
   if (!recentTags.length && !recentRemoved.length) line('  none');
+  line('');
+  const ps = inputStats(db), check = tagCheck(db);
+  line('POSITION SEARCH (name + date read for a chart -> every position computed; see server/positions.js)');
+  line(`charts with inputs ${ps.with_inputs} of ${ps.charts} (full date ${ps.with_date}; by source ${Object.entries(ps.by_source).map(([k, v]) => `${k} ${v}`).join(', ') || 'none'})   without inputs ${ps.without_inputs}   stored numbers ${ps.values}`);
+  line(`owner's position tags checked against the computed charts: ${check.tags} tags, agree ${check.agree}, DISAGREE ${check.disagree}, unknown code ${check.unknown}`);
+  if (scope !== 'short') {
+    for (const d of check.disagreeing.slice(0, 200)) line(`  disagree: #${d.id} ${d.filename} tag "${d.tag}"`);
+    const none = chartsWithoutInputs(db);
+    line(`CHARTS WITHOUT INPUTS (${none.length})`);
+    for (const r of none) line(`  #${r.id} ${r.filename}${r.has_file ? '' : ' (no file)'}`);
+  }
   line('');
   const n = scope === 'short' ? 20 : 300;
   line(`LAST ${n} LOG LINES`);

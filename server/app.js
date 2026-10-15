@@ -9,6 +9,7 @@ import { listImages, getImage, imageContext, suggestTags, allTags, tagNames, sta
 import { runBackup, streamZip, isBackupRunning } from './backup.js';
 import { snapshot } from './snapshot.js';
 import { deployGuard } from './deployguard.js';
+import { catalog, positionCounts, parseNumber, getInputs, setInputs, clearInputs, valuesFor, recomputeAll, inputStats, tagCheck, InputError, CHARTS } from './positions.js';
 import { COMMIT } from './build.js';
 import { paths } from './config.js';
 
@@ -17,6 +18,16 @@ const MAX_IMPORT = 50 * 1024 * 1024;
 function asList(v) {
   if (v === undefined || v === null || v === '') return [];
   return (Array.isArray(v) ? v : [v]).map(String).filter((s) => s.length);
+}
+// ?pos=name.heart&num=12 (or num=/3 for a digit sum): the position search, or null when not asked for.
+const CHART_KEYS = new Set(['*', ...CHARTS.map((c) => c.key)]);
+function positionOf(q) {
+  const pos = typeof q.pos === 'string' ? q.pos : '';
+  const num = parseNumber(q.num);
+  if (!pos || !num) return null;
+  const [chart, position = '*'] = pos.split('.');
+  if (!CHART_KEYS.has(chart) || !/^[A-Za-z*]+$/.test(position)) return null;
+  return { chart, position, number: num.number, ds: num.ds };
 }
 
 export function createApp(db, { log = console.log } = {}) {
@@ -104,7 +115,7 @@ export function createApp(db, { log = console.log } = {}) {
     const limit = Math.min(Math.max(Number(req.query.limit) || 60, 1), 200);
     const offset = Math.max(Number(req.query.offset) || 0, 0);
     const ids = req.query.ids ? String(req.query.ids).split(',').map(Number) : null;
-    res.json(listImages(db, { tags: asList(req.query.tag), onlyUploaded: req.query.uploaded === '1', kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', limit, offset, ids }));
+    res.json(listImages(db, { tags: asList(req.query.tag), position: positionOf(req.query), onlyUploaded: req.query.uploaded === '1', kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', limit, offset, ids }));
   });
   app.get('/api/images/:id', (req, res) => {
     const img = getImage(db, Number(req.params.id));
@@ -114,7 +125,41 @@ export function createApp(db, { log = console.log } = {}) {
   app.get('/api/images/:id/context', (req, res) => {
     const id = Number(req.params.id);
     if (!getImage(db, id)) return res.status(404).json({ error: 'No such chart.' });
-    res.json(imageContext(db, id, { tags: asList(req.query.tag), kind: req.query.kind === 'archetype' ? 'archetype' : 'chart' }));
+    res.json(imageContext(db, id, { tags: asList(req.query.tag), position: positionOf(req.query), kind: req.query.kind === 'archetype' ? 'archetype' : 'chart' }));
+  });
+
+  // Search by chart position: the catalog of positions, how many charts hold a number in each,
+  // and one chart's typed inputs with everything computed from them.
+  app.get('/api/positions', (req, res) => res.json(catalog()));
+  app.get('/api/positions/counts', (req, res) => {
+    const num = parseNumber(req.query.num);
+    if (!num) return res.status(400).json({ error: 'Type a number first, like 12 or 12/3.' });
+    res.json(positionCounts(db, num));
+  });
+  app.get('/api/images/:id/numbers', (req, res) => {
+    const img = getImage(db, Number(req.params.id));
+    if (!img) return res.status(404).json({ error: 'No such chart.' });
+    res.json({ inputs: getInputs(db, img.id), charts: valuesFor(db, img.id) });
+  });
+  // The owner fixes a misread name or date (or types one for a chart nobody could read): recomputes at once.
+  app.put('/api/images/:id/inputs', express.json({ limit: '10kb' }), (req, res, next) => {
+    try {
+      const img = getImage(db, Number(req.params.id));
+      if (!img) return res.status(404).json({ error: 'No such chart.' });
+      const b = req.body || {};
+      if (b.clear) { clearInputs(db, img.id); log(`inputs cleared for #${img.id} ${img.filename}`); return res.json({ inputs: null, charts: [] }); }
+      const inputs = setInputs(db, img.id, { day: b.day, month: b.month, year: b.year, name: b.name }, { source: 'owner' });
+      log(`inputs set by owner for #${img.id} ${img.filename}: ${inputs.day || '?'}.${inputs.month || '?'}.${inputs.year || '?'} "${inputs.name}"`);
+      res.json({ inputs, charts: valuesFor(db, img.id) });
+    } catch (err) {
+      if (err instanceof InputError) return res.status(400).json({ error: err.message });
+      next(err);
+    }
+  });
+  app.post('/api/positions/recompute', (req, res) => {
+    const n = recomputeAll(db);
+    log(`recomputed the chart numbers of ${n} charts`);
+    res.json({ recomputed: n, ...inputStats(db), check: tagCheck(db) });
   });
   app.get('/api/tags', (req, res) => {
     const limit = Math.min(Math.max(Number(req.query.limit) || 30, 1), 200);
@@ -265,6 +310,8 @@ export function createApp(db, { log = console.log } = {}) {
     report.version = appVersion();
     report.commit = COMMIT;
     report.updates = deployGuard();
+    report.positions = inputStats(db);
+    report.positions.check = (({ tags, agree, disagree, unknown }) => ({ tags, agree, disagree, unknown }))(tagCheck(db));
     res.json(report);
   });
   app.get('/api/export/tags.json', (req, res) => {

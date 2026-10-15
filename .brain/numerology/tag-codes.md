@@ -48,3 +48,12 @@ center, confirmed; `ia` dropped. `1900rugrat` is a handle, not a position.
 The screen spells every code out (`public/tag-codes.js`, "19fn" reads
 "19/1 First name"); the stored tag never changes; a search typed either way
 finds it.
+
+Learned from the position search gate (2026-10-15, `server/positions.js`
+`TAG_POSITIONS`): "mc"/"ec" also mean the center's diamond (66mc = mind
+diamond 66); "osle" = outer psyche LE diamond; a one-digit tag is a digit sum
+(9lp = 18/9); "NcomboM<pos>" names the two parts of a center or diamond
+(4combo9ec = lower auras 4 and 9, 8combo15publicdiamond = day 8 beside first
+name 15/6); a diamond may be tagged with its digits the other way round
+(68pd for 86). With these, 1230 of the 1267 position tags on charts with
+known inputs agree with the computed charts.

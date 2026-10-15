@@ -60,6 +60,18 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   Never edit a shipped one. Imports and uploads record the build that made them.
 - Error answers (status ≥ 400) are never cached; the app shell is versioned by commit.
 
+## Search by position (built 2026-10-15)
+- A chart's typed name and date live in `chart_inputs`; every number of every
+  position the engine computes from them lives in `chart_values`
+  (`server/positions.js`, the one list of positions and of what each tag code
+  means). `server/chart-inputs.json` is the seed, by filename: loaded at startup
+  for charts that have none, never over an owner fix. Add new reads there.
+- The owner's position tags are the quality gate: `tagCheck` (snapshot and
+  Status) says how many agree. A disagreeing tag = a misread name or date;
+  look at the picture, fix on the chart page ("Wrong? Fix") or in the seed.
+- Changing the engine: tap "Recompute every chart" on Status (or POST
+  /api/positions/recompute). Values are never edited by hand.
+
 ## Dev
 - `npm run verify` before saying done: syntax of every file + all tests. Spends nothing.
 - `npm test` runs test/*.test.js (node:test). Put the real UserTag.backup at

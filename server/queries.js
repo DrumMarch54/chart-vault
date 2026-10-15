@@ -1,5 +1,6 @@
 // Read-only queries used by the browse screens.
 import { TagCodes, displayName } from './tagnames.js';
+import { positionSql } from './positions.js';
 export { TagCodes };
 // Every tag row that leaves the server carries how it reads on screen ("alexjones" -> "Alex Jones").
 const withDisplay = (t) => ({ ...t, display: displayName(t.name) });
@@ -7,21 +8,22 @@ const withDisplay = (t) => ({ ...t, display: displayName(t.name) });
 // Newest first by the date in the filename; charts without a date go last.
 const ORDER = '(i.taken_at IS NULL), i.taken_at DESC, i.id DESC';
 
-function filterSql(tags, params) {
-  // Images that carry ALL of the given tags (AND).
-  if (!tags.length) return '';
+function filterSql(tags, params, position = null) {
+  // Images that carry ALL of the given tags (AND), and the number in the position when one is asked for.
+  let sql = position ? ' ' + positionSql(position, params) : '';
+  if (!tags.length) return sql;
   const marks = tags.map(() => '?').join(',');
   params.push(...tags, tags.length);
-  return `AND i.id IN (
+  return sql + ` AND i.id IN (
     SELECT it.image_id FROM image_tags it JOIN tags t ON t.id = it.tag_id
     WHERE t.name IN (${marks}) GROUP BY it.image_id HAVING count(DISTINCT t.id) = ?)`;
 }
 
-export function listImages(db, { tags = [], onlyUploaded = false, kind = 'chart', limit = 60, offset = 0, ids = null } = {}) {
+export function listImages(db, { tags = [], position = null, onlyUploaded = false, kind = 'chart', limit = 60, offset = 0, ids = null } = {}) {
   const params = [kind];
   let idSql = '';
   if (ids) { const list = ids.filter((n) => Number.isInteger(n)).slice(0, 50); idSql = list.length ? `AND i.id IN (${list.map(() => '?').join(',')})` : 'AND 0'; params.push(...list); }
-  const where = `WHERE i.kind = ? ${filterSql(tags, params)} ${idSql} ${onlyUploaded ? 'AND i.stored_path IS NOT NULL' : ''}`;
+  const where = `WHERE i.kind = ? ${filterSql(tags, params, position)} ${idSql} ${onlyUploaded ? 'AND i.stored_path IS NOT NULL' : ''}`;
   const total = db.prepare(`SELECT count(*) c FROM images i ${where}`).get(...params).c;
   const rows = db.prepare(`SELECT i.id, i.filename, i.taken_at, i.width, i.height, i.kind, (i.stored_path IS NOT NULL) AS has_file
     FROM images i ${where} ORDER BY ${ORDER} LIMIT ? OFFSET ?`).all(...params, limit, offset);
@@ -38,9 +40,9 @@ export function listImages(db, { tags = [], onlyUploaded = false, kind = 'chart'
 
 // Where one picture sits in the current browse list (same filter, same order),
 // so the viewer can swipe to the previous / next one.
-export function imageContext(db, id, { tags = [], kind = 'chart' } = {}) {
+export function imageContext(db, id, { tags = [], position = null, kind = 'chart' } = {}) {
   const params = [kind];
-  const ids = db.prepare(`SELECT i.id FROM images i WHERE i.kind = ? ${filterSql(tags, params)} ORDER BY ${ORDER}`).all(...params).map((r) => r.id);
+  const ids = db.prepare(`SELECT i.id FROM images i WHERE i.kind = ? ${filterSql(tags, params, position)} ORDER BY ${ORDER}`).all(...params).map((r) => r.id);
   const at = ids.indexOf(id);
   if (at < 0) return { index: null, total: ids.length, prev: null, next: null };
   return { index: at + 1, total: ids.length, prev: at > 0 ? ids[at - 1] : null, next: at < ids.length - 1 ? ids[at + 1] : null };

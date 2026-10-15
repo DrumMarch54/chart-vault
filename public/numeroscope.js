@@ -29,9 +29,15 @@
   // Two digit sums side by side ("diamond"): 1 and 2 -> 12/3.
   const joined = (a, b) => (a && b ? val(a.ds * 10 + b.ds) : null);
 
-  const lettersOf = (word) => [...String(word).toUpperCase()].filter((c) => c in LETTERS);
-  const letterValue = (c) => LETTERS[String(c).toUpperCase()] || 0;
-  const wordSum = (letters) => letters.reduce((a, c) => a + LETTERS[c], 0);
+  // An accented letter counts as its plain letter (José = J O S E = 16/7, Rubeš = R U B E S; vault
+  // screenshots of the paid tool). Å, Æ, Ø, Ñ keep their own entries above. Ğ is a letter with no value:
+  // Doğan reads 17/8 (D O A N) on the owner's chart, and the letter count still includes it.
+  const SILENT = new Set(['Ğ']);
+  const fold = (c) => { const u = String(c).toUpperCase(); if (u in LETTERS) return u; if (SILENT.has(u)) return u; const b = u.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); return b in LETTERS ? b : null; };
+  const isLetter = (c) => fold(c) !== null;
+  const lettersOf = (word) => [...String(word)].map(fold).filter(Boolean);
+  const letterValue = (c) => { const f = fold(c); return f ? LETTERS[f] || 0 : 0; };
+  const wordSum = (letters) => letters.reduce((a, c) => a + (LETTERS[c] || 0), 0);
 
   // One name on a center line: its shown text (only the letters that count), and its value.
   // A name that has letters but none that pass the filter (e.g. "Jr" on the vowel chart) stays on the
@@ -40,9 +46,8 @@
   const ZERO = { sum: 0, ds: 0, text: '0/0' };
   function nameWord(text, filter) {
     const chars = [...String(text)];
-    const isLetter = (c) => c.toUpperCase() in LETTERS;
-    const keep = (c) => isLetter(c) && (!filter || filter(c.toUpperCase()));
-    const letters = chars.filter(keep).map((c) => c.toUpperCase());
+    const keep = (c) => isLetter(c) && (!filter || filter(fold(c)));
+    const letters = chars.filter(keep).map(fold);
     const shown = filter ? chars.filter((c) => !isLetter(c) || keep(c)).join('') : chars.join('');
     const value = letters.length ? val(wordSum(letters)) : (chars.some(isLetter) ? ZERO : null);
     return { text: shown, letters, value };
@@ -155,8 +160,8 @@
   // Shicora 3 5 1 3 7 2 1 -> auras 4/4 2/2 7/7 5/5, heart 6/6 + 11 7 9 13 8, solar 12/3 + 8 4 6 10 5,
   // LE 22/4, pillar 86/5, 7 letters. Vowels and consonants of the word give its vocation and personality charts.
   function letterWords(word, filter) {
-    return [...String(word)].filter((c) => c.toUpperCase() in LETTERS && (!filter || filter(c.toUpperCase())))
-      .map((c) => ({ text: c, letters: [c.toUpperCase()], value: val(LETTERS[c.toUpperCase()]) }));
+    return [...String(word)].filter((c) => isLetter(c) && (!filter || filter(fold(c))))
+      .map((c) => ({ text: c, letters: [fold(c)], value: LETTERS[fold(c)] ? val(LETTERS[fold(c)]) : ZERO }));
   }
 
   // Number pyramid of a word: letter values at the bottom, each row above adds neighbours' digit sums

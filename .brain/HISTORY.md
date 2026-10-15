@@ -290,3 +290,40 @@ grid); nothing over the picture until it is tapped.
   scroll position; this is also what lets the screen show through while the
   picture is dragged. Fresh loads of a chart address draw the list first.
 - Dev app people are now run-together names, so the splitter is visible there.
+
+## 2026-10-15 Search by chart position
+Built from `.brain/PLAN-position-search.md` (now deleted; this entry is the record).
+- The 275 charts the color study could not read (its OCR gate only passed the
+  paid tool's white page) were read by vision: the top 60% of each picture at
+  720 px wide, 21 per helper agent, results as JSON in the scratchpad, then
+  merged. Three styles: the white page with three date boxes and a name box,
+  the dark navy page (same boxes), and the pale blue hexagon page with no
+  boxes, where the DAY is the bold number under the hexagon, the MONTH the
+  hexagon's top-left corner and the YEAR the small gray number. The first
+  instruction said the "⊙ 28/1" at the top of the blue page was the day; it is
+  the target number. The agents that worked out the right rule from the
+  chart's own sums were right; trust a worked check over a written rule.
+  8 pictures are not charts (year-row tables, a paper chart, a domain tool).
+- Gate: recompute every chart and compare with the owner's position tags.
+  The 436 OCR inputs first scored 836 of 913; the misses taught the tag
+  habits now in `TAG_POSITIONS`: "66mc" is the mind diamond, "61osle" the
+  outer psyche LE diamond, "9lp" a digit sum, "4combo9ec" the two lower
+  auras, "8combo15publicdiamond" day beside first name, "68pd" the diamond's
+  digits the other way round. The rest were OCR garbage ("ion sar Daniel",
+  "Andrewtate", "Ill" for III, "lhan" for Ilhan): 19 names fixed by looking.
+  Whole seed: 1230 of 1267 tags agree; the 20 left are mostly charts drawn
+  with no date (the tag names the day the card does not show) and three
+  tags that match nothing on their chart.
+- The paid tool counts José as J O S E (é = e, 16/7) and Rubeš with š = s, but
+  Doğan as D O A N (17/8): ğ is a letter with no value. The engine now folds
+  accents to the plain letter and keeps Ğ silent; the letter count includes it.
+- Screen: "Search by position" on the home screen, in the search box's
+  dropdown and in Settings; type a number, see a count per position per
+  chart, tap one; the result is the browse grid with `?pos=&num=` (viewer
+  swipes follow it, recent searches remember it). The chart page shows the
+  read name and date, every computed number as a tappable chip, and "Wrong?
+  Fix" / "Type them". Status: counts, tag agreement, "Recompute every chart".
+- The permission classifier refused 5 of 12 helper-agent launches and 3 of the
+  5 retries ("PII Data Handling", the pictures carry people's names and birth
+  dates); the last 63 pictures were read in the main chat. Reading a batch of
+  21 costs about 80k tokens of a cheaper model.

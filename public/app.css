@@ -254,3 +254,21 @@ body.noscroll { overflow: hidden; }
 .yrows .now { box-shadow: inset 0 0 0 100px rgba(240, 182, 74, .28); }
 .tchips .chip .count { color: rgba(255,255,255,.6); font-size: 13px; }
 .tchips .chip .count::before { content: "·"; margin-right: 4px; }
+
+/* search by position */
+.posbtn { background: var(--panel); margin-top: 10px; }
+.posnum input { flex: 1; min-width: 0; min-height: 52px; font-size: 20px; }
+.posnum .chip { white-space: nowrap; }
+.poslist { margin-top: 4px; }
+.posrow { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 10px; background: var(--panel); text-align: left; padding: 0 14px; min-height: 54px; }
+.posrow .pl { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; line-height: 1.2; padding: 8px 0; }
+.posrow b { font-size: 18px; white-space: nowrap; }
+.posrow.none { opacity: .45; }
+.numbers { border-top: 1px solid var(--panel2); padding-top: 10px; }
+.numbers .tchips[hidden] { display: none; }
+.numbers .row > button { white-space: nowrap; }
+.numbers .tgroup { margin-top: 6px; min-height: 46px; }
+.numbers .chip .count { color: #fff; font-weight: 700; font-size: 15px; }
+.numbers .chip .count::before { content: ""; margin: 0; }
+.fixfields { padding: 0; margin: 0; }
+.fixfields input { background: var(--panel2); border: 1px solid var(--panel2); color: var(--text); }

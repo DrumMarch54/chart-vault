@@ -59,6 +59,11 @@ for (let i = 16; i < 40; i++) {
   await receiveUpload(db, req, { filename: names[i] });
 }
 
+// Names and dates for the fake charts, so the position search and the chart page's numbers can be looked at.
+const { setInputs } = await import('../server/positions.js');
+const fakePeople = [['Alex Emric Jones', 11, 2, 1974], ['Jimmy Rowe', 1, 11, 1999], ['Kanye Omari West', 8, 6, 1977], ['Erica', 3, 3, 1991], ['Katrine Ditte Pilmark', 19, 8, 1984], ['Josh Provencio', 21, 10, 1985]];
+db.prepare("SELECT id FROM images WHERE kind = 'chart' ORDER BY id").all().forEach((r, i) => { if (i % 5 !== 4) { const [name, day, month, year] = fakePeople[i % fakePeople.length]; setInputs(db, r.id, { name, day, month, year }, { source: 'read' }); } });
+
 const app = createApp(db, { log: (m) => console.log(m) });
 const server = app.listen(port, '127.0.0.1', () => {
   console.log(`Dev Chart Vault (throwaway data in ${tmp}) at http://127.0.0.1:${port}`);

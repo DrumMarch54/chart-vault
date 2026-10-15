@@ -3,6 +3,7 @@ import { openDb } from './db.js';
 import { createApp } from './app.js';
 import { scheduleBackups } from './backup.js';
 import { ensureThumbs, cleanTempFiles } from './storage.js';
+import { seedInputs, loadSeedFile } from './positions.js';
 
 import { remember } from './logbuf.js';
 import { COMMIT } from './build.js';
@@ -13,6 +14,10 @@ ensureDirs();
 if (!config.webToken) log('WARNING: WEB_TOKEN is not set. Nobody can log in until it is.');
 cleanTempFiles(log);
 const db = openDb(paths.db);
+// The names and dates read off the vault's pictures (server/chart-inputs.json): added for charts that
+// have none yet, never over what is already there.
+try { const r = seedInputs(db, loadSeedFile()); if (r.added) log(`position search: loaded inputs for ${r.added} chart(s) from the repo (${r.skipped} already there, ${r.unknown} not in this vault)`); }
+catch (err) { log(`position search seed failed: ${err.message}`); }
 const app = createApp(db, { log });
 
 app.listen(config.port, config.host, () => {
