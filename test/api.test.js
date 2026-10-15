@@ -383,6 +383,11 @@ test('archetype pics: separate kind, number tags from the album name, kept out o
   assert.deepEqual(sugA.body.map((t) => [t.name, t.count]), [['15', 1]]);
   const both = await json(await api('/api/images?kind=archetype&tag=69&tag=96'));
   assert.equal(both.body.total, 1);
+  // the All tags list counts charts and archetype pics apart for every tag
+  const all = await json(await api('/api/tags/all'));
+  const t15 = all.body.find((t) => t.name === '15');
+  assert.equal(t15.archetypes, 1); assert.ok(t15.charts >= 1); assert.equal(t15.count, t15.charts + t15.archetypes);
+  assert.deepEqual(all.body.find((t) => t.name === '69'), { name: '69', kind: 'number', count: 1, charts: 0, archetypes: 1 });
   // status counts them apart; missing list is charts only
   const st = await json(await api('/api/status'));
   assert.equal(st.body.archetypes, 2);

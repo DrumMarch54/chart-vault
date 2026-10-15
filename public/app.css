@@ -6,6 +6,7 @@
   color-scheme: dark;
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { overscroll-behavior-y: none; }
 html, body { margin: 0; background: var(--bg); color: var(--text); font: 17px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
 body { padding-bottom: env(safe-area-inset-bottom); overscroll-behavior-y: none; }
 a { color: var(--blue); }
@@ -160,7 +161,7 @@ html.light .nscope-box { border-radius: 0; padding: 0; margin-top: 4px; }
 .cmenu-item:active { background: #eef0f4; }
 body.noscroll { overflow: hidden; }
 /* one word's own charts (popup) */
-.wordpop { position: fixed; inset: 0; z-index: 35; overflow: auto; background: var(--bg); padding: 8px 12px calc(24px + env(safe-area-inset-bottom)); max-width: 1100px; margin: 0 auto; }
+.wordpop { position: fixed; inset: 0; z-index: 35; overflow: auto; background: var(--bg); color: var(--text); padding: 8px 12px calc(24px + env(safe-area-inset-bottom)); max-width: 1100px; margin: 0 auto; }
 .wordpop .pagetop h1 { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .wordpop .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .wcard { background: #fff; border-radius: var(--radius); padding: 8px 6px 6px; margin-bottom: 10px; color: #303030; }
@@ -200,3 +201,41 @@ body.noscroll { overflow: hidden; }
 .showsheet .chip.off { background: var(--panel2); color: var(--muted); }
 .showsheet .chip.preset { background: var(--chip-pos); }
 .showsheet .done { margin-top: 16px; }
+/* home: the way to every tag */
+.alltags { justify-content: space-between; margin-top: 4px; }
+.alltags .small { flex: 1; text-align: left; padding-left: 10px; }
+/* search dropdown while nothing is typed: recent searches, then All tags */
+.suggest .shead { padding: 10px 14px 4px; color: var(--muted); font-size: 14px; }
+.suggest .rsearch { min-height: 52px; margin: 0; border-bottom: 1px solid var(--panel2); }
+.suggest a.rsearch { display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: var(--text); padding: 0 14px; border-bottom: 0; }
+/* All tags screen */
+.tabs { padding: 2px 0 8px; }
+.tabs .chip.off { background: var(--panel2); color: var(--muted); }
+.tgroup { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 10px; background: var(--panel); margin-top: 8px; text-align: left; padding: 0 14px; min-height: 54px; }
+.tgroup .tg-title { flex: 1; min-width: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tgroup .small { white-space: nowrap; }
+.tgroup .arrow { color: var(--muted); font-size: 18px; }
+.tchips { padding: 8px 2px 4px; }
+.tchips .chip { text-decoration: none; }
+/* year rows popup */
+.periods { display: flex; flex-wrap: wrap; gap: 6px; padding: 2px 2px 4px; }
+.period { display: flex; flex-direction: column; align-items: center; gap: 1px; min-height: 0; padding: 6px 8px; border-radius: 10px; background: #f3f4f7; color: #303030; font-size: 12px; line-height: 1.2; }
+.period b { font-size: 18px; }
+.period .muted { color: #8a8f9c; }
+.period.active { background: var(--accent); color: var(--accent-text); }
+.period.active .muted { color: #4a3b12; }
+.ynav { flex-wrap: nowrap; justify-content: space-between; gap: 8px; padding: 0 2px 6px; }
+.ynote { flex: 1; min-width: 0; text-align: center; margin: 0; color: #8a8f9c; }
+.datebox { flex: 1; min-width: 0; min-height: 36px; height: 36px; font: inherit; font-size: 15px; border-radius: 10px; border: 1px solid #e1e3e9; background: #f3f4f7; color: #22252e; padding: 0 8px; }
+.yrows { display: grid; grid-template-columns: 1fr 62px 58px 62px; font-size: 15px; color: #303030; }
+.yrows > div { padding: 5px 3px; border-bottom: 1px solid #eceef2; display: flex; flex-direction: column; justify-content: center; min-height: 44px; }
+.yrows .yh { color: #8a8f9c; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; min-height: 0; text-align: center; }
+.yrows .yh:first-child { text-align: left; }
+.yrows .ydate b { font-weight: 600; font-size: 14px; }
+.yrows .ydate span { color: #8a8f9c; font-size: 12px; line-height: 1.15; }
+.yrows .yv { align-items: center; text-align: center; font: 700 17px/1.15 "Open Sans", system-ui, sans-serif; cursor: pointer; }
+.yrows .yv.aura { color: #5f7990; font-weight: 500; }
+.yrows .yv small { font-weight: 400; font-size: 11px; color: #8a8f9c; }
+.yrows .now { background: #fff3cf; }
+.tchips .chip .count { color: rgba(255,255,255,.6); font-size: 13px; }
+.tchips .chip .count::before { content: "·"; margin-right: 4px; }

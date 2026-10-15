@@ -253,3 +253,57 @@ test('one word shows only its value on the line, nothing else (paid tool, Muslim
   assert.equal(n.first.text, 'Kim'); assert.equal(n.last, null); assert.equal(n.le, null); assert.equal(n.upperLeft, null);
   const two = N.numeroscope({ day: 9, name: 'Kim Lee' }).name; assert.equal(two.last.text, 'Lee'); assert.ok(two.heart && two.le);
 });
+
+// Forecasting (Module 17): destiny periods, year rows, day vibrations. Checked against the course's own
+// worked cases: Robert Redford's formula sequence, JFK's 1963 and Nixon's 1972 year rows.
+test('destiny periods and formulas follow the course examples (born 1936, 1937, 1938, 1940, 1944)', () => {
+  const seq = (y, n) => N.destinyPeriods(y, n).map((p) => `${p.number}:${p.start}-${p.end}`).join(' ');
+  assert.equal(seq(1936, 7), '1:1936-1936 2:1937-1938 4:1939-1942 8:1943-1950 7:1951-1957 5:1958-1962 1:1963-1963');
+  assert.equal(seq(1938, 4), '3:1938-1940 6:1941-1946 3:1947-1949 6:1950-1955');
+  assert.equal(seq(1940, 5), '5:1940-1944 1:1945-1945 2:1946-1947 4:1948-1951 8:1952-1959');
+  assert.equal(seq(1944, 3), '9:1944-1952 9:1953-1961 9:1962-1970');
+  const f = (b, y) => N.yearFormula(b, y).code;
+  assert.equal([1936, 1937, 1938, 1939, 1940, 1942, 1943, 1950, 1951, 1962, 1963].map((y) => f(1936, y)).join(' '), 'F0 F1 F3 F1 F2 F3 F1 F3 F1 F3 F4');
+  assert.equal([1937, 1938, 1939, 1963, 1964, 1965].map((y) => f(1937, y)).join(' '), 'F0 F3 F1 F4 F1 F3');
+  assert.equal([1940, 1941, 1944, 1945, 1946, 1947].map((y) => f(1940, y)).join(' '), 'F0 F2 F3 F4 F1 F3');
+  assert.equal(N.yearFormula(1936, 1945).previous.number, 4); assert.equal(N.yearFormula(1936, 1945).period.number, 8); assert.equal(N.yearFormula(1936, 1945).age, 9);
+  assert.equal(N.destinyPeriods('', 3).length, 0); assert.equal(N.yearFormula(1990, 1980), null);
+});
+
+test('JFK 1963 (F2): vertical 5-1-6 = 51/6 and horizontal 6-11/2-5 = 65/2 around November 22', () => {
+  const r = N.yearRows({ day: 29, month: 5, year: 1917, name: 'John Fitzgerald Kennedy' }, 1963);
+  assert.equal(r.formula.code, 'F2'); assert.equal(r.formula.age, 46);
+  const col = (k) => r.rows.map((x) => (x[k] ? x[k].text : '-')).join(' ');
+  assert.equal(col('main'), '1/1 2/2 3/3 2/2 5/5 1/1 6/6');
+  assert.equal(col('shadow'), '9/9 2/2 11/2 2/2 4/4 1/1 5/5');
+  assert.equal(col('aura'), '10/1 4/4 5/5 4/4 9/9 2/2 11/2');
+  assert.equal(r.rows[6].vertical.text, '51/6'); assert.equal(r.rows[4].vertical.text, '32/5');
+  assert.equal(r.rows.map((x) => `${x.month}/${x.day}`).join(' '), '1/1 2/22 4/15 6/6 7/28 9/18 11/9');
+  assert.equal(`${r.rows[0].until.month}/${r.rows[0].until.day}`, '2/21'); assert.equal(`${r.rows[6].until.month}/${r.rows[6].until.day}`, '12/31');
+});
+
+test('Nixon 1972 (F4): the seven vertical triples 19/1 17/8 85/4 41/5 51/6 67/4 45/9 on the course dates', () => {
+  const r = N.yearRows({ day: 9, month: 1, year: 1913, name: 'Richard Milhous Nixon' }, 1972);
+  assert.equal(r.formula.code, 'F4'); assert.equal(r.rows.length, 15);
+  const sums = r.rows.filter((x) => x.source === 'sum');
+  assert.equal(sums.map((x) => x.vertical.text).join(' '), '19/1 17/8 85/4 41/5 51/6 67/4 45/9');
+  assert.equal(sums.map((x) => `${x.month}/${x.day}`).join(' '), '2/18 4/9 5/27 7/16 9/3 10/21 12/8');
+  assert.equal(r.rows[5].label, 'Last period'); assert.equal(r.rows[5].main.text, '5/5');
+  assert.equal(r.rows[7].label, 'This period'); assert.equal(r.rows[9].label, 'Leaving this period'); assert.equal(r.rows[9].main.text, '1/1');
+});
+
+test('year rows without a name leave the life expression and pillar rows blank; the birth year has age 0', () => {
+  const r = N.yearRows({ day: 9, month: 1, year: 1913 }, 1972);
+  assert.equal(r.hasName, false);
+  assert.equal(r.rows[3].main, null); assert.equal(r.rows[4].main, null); assert.equal(r.rows[5].main.text, '5/5'); assert.equal(r.rows[6].main, null);
+  const b = N.yearRows({ day: 1, month: 1, year: 2000, name: 'Test test' }, 2000);
+  assert.equal(b.formula.code, 'F0'); assert.equal(b.rows[5].main.text, '0'); assert.equal(b.rows[6].main.text, b.rows[4].main.text);
+  assert.equal(N.yearRows({ day: 1, month: 1, year: '' }, 2000), null);
+});
+
+test('day vibrations: JFK on 22 Nov 1963; the shadow column starts from the last digit of the date', () => {
+  const d = N.dayRows({ day: 29, month: 5, year: 1917, name: 'John Fitzgerald Kennedy' }, 1963, 11, 22);
+  assert.equal(d.rows.map((x) => x.main.text).join(' '), '4/4 2/2 6/6 2/2 8/8 2/2 10/1 1/1 2/2');
+  assert.equal(d.rows.map((x) => x.shadow.text).join(' '), '2/2 2/2 4/4 2/2 6/6 2/2 8/8 9/9 17/8');
+  assert.equal(N.dayRows({ day: 3, month: 1, year: 1990 }, 2026, 10, 3).rows[0].shadow.text, '0');
+});

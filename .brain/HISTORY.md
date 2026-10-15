@@ -207,3 +207,29 @@ Brought the app in line with the new-app playbook from the first app:
   class; hiding is CSS on the svg root, so the saved PNG shows exactly what
   the screen shows. The view box trims to what is left. Browser storage,
   per phone.
+
+## 2026-10-15 Year rows, All tags screen, recent searches in the search box, no pull-to-refresh
+- Owner: "I shouldn't be able to pull up and refresh the page". `overscroll-behavior-y: none`
+  was on body only; Chrome reads it from html for the viewport. Now on html and body, plus
+  a touchmove guard in app.js: a finger dragged down while the page is at the top is
+  cancelled unless something under it can still scroll up (sheet, list, popup).
+- Owner wants destiny rhythms, yearly rows and the daily forecast. Read Module 17
+  (NCE-yearrows_ocred.pdf), the "Yearly Rows" powerpoint cases and the owner's
+  USA Yearly Rows. The numbers in those cases pinned down what the slides leave
+  implicit (verticals, auras, shadow column, row spans): `.brain/numerology/yearly-rows.md`.
+  Built in numeroscope.js with tests on JFK 1963 and Nixon 1972; the Nixon case also
+  confirmed the pillar formula with a middle name (34/7). Shown from the quick chart's ⋮
+  menu: destiny periods (tap one to jump), one year's rows with ‹ ›, the current row
+  highlighted, ↕ verticals under sum rows, tap a number for the course's one-line
+  meaning and known combinations; day vibrations for any date with a date box.
+- Owner: "something that helps me see all the different categories of tags".
+  New All tags screen (home button, Settings, and inside the search dropdown):
+  Words (used the most, then A-Z), By position (codes grouped by what the code means),
+  By number (every number with its archetype name and every position it is tagged in).
+  `/api/tags/all` now counts charts and archetype pics apart. Groups open on tap.
+- Owner: "I don't like that thing below the search bar. The recent searches should pop up
+  whenever I actually click the search bar." Recent searches moved into the search box's
+  dropdown (shown while nothing is typed, with an All tags row); the home screen keeps the
+  All tags button and the recently opened grid.
+- Lesson: course slides state formulas, course CASES state the conventions. When a
+  rule's wording is ambiguous, find a worked example with numbers and match it exactly.

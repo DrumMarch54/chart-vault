@@ -234,6 +234,125 @@
   };
 
 
-  const api = { LAYOUT, LETTERS, VOWELS, PLANETS, TENSION, digitSum, val, add, joined, letterValue, lettersOf, nameWord, rhombus, essence, birth: essence, psyche, rhythm, numeroscope, letterWords, pyramid, weighPyramid, singleName };
+  // ---------- Forecasting: destiny periods, year rows, day vibrations (Module 17 "NCE-yearrows") ----------
+  // Rules: .brain/numerology/yearly-rows.md. CONFIRMED against the course's own cases: JFK 1963 (F2, the
+  // vertical 5-1-6 = 51/6 and the horizontal 6-11/2-5 = 65/2 around Nov 22) and Nixon 1972 (F4, the seven
+  // vertical triples 19/1 17/8 85/4 41/5 51/6 67/4 45/9 with their date spans).
+  // A row value may be 0 (the birth year's age, a date's shadow): shown as "0", adds nothing.
+  const rv = (n) => (n > 0 ? val(n) : { sum: 0, ds: 0, text: '0' });
+  const dsOf = (v) => (v ? v.ds : null);
+
+  // The destiny periods from the birth year on: [{ number, start, end, years, planet }], `count` of them.
+  // The first period starts in the birth year; its length is its own number (the year's digit sum).
+  function destinyPeriods(birthYear, count = 20) {
+    const y = Number(birthYear) || 0;
+    if (y < 1000 || y > 9999) return [];
+    const seq = rhythm(digitSum(digitsOf(y)));
+    const out = [];
+    let start = y;
+    for (let i = 0; i < count; i++) {
+      const years = seq[i % seq.length].years;
+      out.push({ number: years, start, end: start + years - 1, years, planet: PLANETS[years] });
+      start += years;
+    }
+    return out;
+  }
+
+  // Which formula a year uses: F0 birth year, F4 a one-year period, F1 first, F3 last, F2 in between.
+  // Also what the period rows need: this period's number, the one before it, the age turned that year.
+  function yearFormula(birthYear, year) {
+    const periods = destinyPeriods(birthYear, 40);
+    const i = periods.findIndex((p) => year >= p.start && year <= p.end);
+    if (i < 0) return null;
+    const p = periods[i], prev = periods[i - 1] || null;
+    const code = year === Number(birthYear) ? 'F0' : p.years === 1 ? 'F4' : year === p.start ? 'F1' : year === p.end ? 'F3' : 'F2';
+    const words = { F0: 'birth year', F1: `first year of the ${p.number} period`, F2: `middle of the ${p.number} period`, F3: `last year of the ${p.number} period`, F4: 'the one-year period' }[code];
+    return { code, words, period: p, previous: prev, age: year - Number(birthYear), index: i };
+  }
+
+  // The row formulas: [month, day, source]. "sum" = the two rows above, added numerologically.
+  const FORMULAS = {
+    F0: [[1, 1, 'year'], [2, 22, 'day'], [4, 15, 'sum'], [6, 6, 'le'], [7, 28, 'sum'], [9, 18, 'age'], [11, 9, 'sum']],
+    F1: [[1, 1, 'year'], [1, 29, 'day'], [2, 26, 'sum'], [3, 25, 'le'], [4, 23, 'sum'], [5, 21, 'last'], [6, 18, 'sum'], [7, 16, 'this'], [8, 13, 'sum'], [9, 10, 'pillar'], [10, 8, 'sum'], [11, 5, 'age'], [12, 3, 'sum']],
+    F2: [[1, 1, 'year'], [2, 22, 'day'], [4, 15, 'sum'], [6, 6, 'le'], [7, 28, 'sum'], [9, 18, 'age'], [11, 9, 'sum']],
+    F3: [[1, 1, 'year'], [2, 3, 'day'], [3, 8, 'sum'], [4, 10, 'le'], [5, 13, 'sum'], [6, 14, 'this'], [7, 18, 'sum'], [8, 21, 'pillar'], [9, 22, 'sum'], [10, 25, 'age'], [11, 29, 'sum']],
+    F4: [[1, 1, 'year'], [1, 25, 'day'], [2, 18, 'sum'], [3, 15, 'le'], [4, 9, 'sum'], [5, 3, 'last'], [5, 27, 'sum'], [6, 21, 'this'], [7, 16, 'sum'], [8, 10, 'leaving'], [9, 3, 'sum'], [9, 27, 'pillar'], [10, 21, 'sum'], [11, 15, 'age'], [12, 8, 'sum']],
+  };
+  const SOURCE_WORDS = { year: 'Year', day: 'Day vibration', le: 'Life expression', age: 'Age', last: 'Last period', this: 'This period', leaving: 'Leaving this period', pillar: 'Pillar', sum: 'Sum', date: 'Date', month: 'Month' };
+
+  // One column of rows from a formula and its source digits; sums cascade, a missing source leaves
+  // a blank row and blank sums until the next source. Each sum row also carries the "vertical"
+  // reading of the two source rows above it, written as a diamond (9 over 1 -> 91/1).
+  function column(formula, sources) {
+    const rows = [];
+    formula.forEach(([month, day, source], i) => {
+      let value;
+      if (source === 'sum') { const a = rows[i - 2], b = rows[i - 1]; value = a && b && a.value && b.value ? rv(a.value.ds + b.value.ds) : null; }
+      else value = sources[source] === null || sources[source] === undefined ? null : rv(sources[source]);
+      const row = { month, day, source, label: SOURCE_WORDS[source], value, vertical: null };
+      if (source === 'sum' && value) { const a = rows[i - 2].value, b = rows[i - 1].value; row.vertical = rv(a.ds * 10 + b.ds); if (!a.ds && !b.ds) row.vertical = null; }
+      rows.push(row);
+    });
+    return rows;
+  }
+  // Main column + shadow column (the year's last two digits instead of the whole year) + the aura
+  // between them (main ds + shadow ds, like every aura in the charts).
+  function columns(formula, sources, shadowSources) {
+    const main = column(formula, sources), shadow = column(formula, shadowSources);
+    return main.map((m, i) => ({ ...m, main: m.value, shadow: shadow[i].value, aura: m.value && shadow[i].value ? rv(m.value.ds + shadow[i].value.ds) : null, verticalShadow: shadow[i].vertical, value: undefined }));
+  }
+
+  // The year rows of one calendar year for a person. Needs the birth date; the name gives the life
+  // expression and pillar rows (blank without one). Rows: { month, day, label, main, aura, shadow, vertical }.
+  function yearRows({ day, month, year, name }, forYear) {
+    const Y = Number(forYear) || 0, by = Number(year) || 0;
+    const f = by >= 1000 ? yearFormula(by, Y) : null;
+    if (!f || Y < by) return null;
+    const data = numeroscope({ day, month, year, name });
+    const e = data.essence, n = data.name;
+    const dayDs = e.day ? e.day.ds : null;
+    const common = { day: dayDs, le: dsOf(n.le), pillar: dsOf(n.pillar), age: digitSum(f.age), last: f.previous ? f.previous.number : null, this: f.period.number, leaving: f.period.number };
+    const rows = columns(FORMULAS[f.code], { ...common, year: digitSum(digitsOf(Y)) }, { ...common, year: digitSum(Y % 100) });
+    // Each row runs from its date to the day before the next row's date; the last one to Dec 31.
+    rows.forEach((r, i) => { const nx = rows[i + 1]; r.until = nx ? { month: nx.day === 1 ? nx.month - 1 : nx.month, day: nx.day === 1 ? daysIn(Y, nx.month - 1) : nx.day - 1 } : { month: 12, day: 31 }; });
+    return { year: Y, formula: f, rows, hasName: !!n.le, hasPillar: !!n.pillar };
+  }
+  const daysIn = (y, m) => new Date(y, m, 0).getDate();
+
+  // Day vibrations of one date (y, m, d) for a person: date ds, day vibration ds, sum, LE ds, sum, month
+  // ds, sum, year ds, sum. The shadow column starts from the date's last digit (26 -> 6, 3 -> 0) and uses
+  // the year's shadow; the month stays (the slides give no month shadow).
+  const DAY_FORMULA = [[0, 0, 'date'], [0, 0, 'day'], [0, 0, 'sum'], [0, 0, 'le'], [0, 0, 'sum'], [0, 0, 'month'], [0, 0, 'sum'], [0, 0, 'year'], [0, 0, 'sum']];
+  function dayRows({ day, month, year, name }, y, m, d) {
+    const data = numeroscope({ day, month, year, name });
+    const e = data.essence, n = data.name;
+    const common = { day: e.day ? e.day.ds : null, le: dsOf(n.le), month: digitSum(m) };
+    const rows = columns(DAY_FORMULA, { ...common, date: digitSum(d), year: digitSum(digitsOf(y)) }, { ...common, date: d < 10 ? 0 : d % 10, year: digitSum(y % 100) });
+    return { y, m, d, rows, hasName: !!n.le };
+  }
+
+  // What the course says a year-row number means, one line each (Module 17 slides).
+  const MEANINGS = {
+    1: 'Winning mentality, optimism, drive, luck', 2: 'Pleasure, enjoyment, lightness, sensitivity, fun, aesthetics', 3: 'Success, status, knowledge, drive, power, career',
+    4: 'Change, innovation, stability or challenges with this', 5: 'Business, money, communication, networking, friends, new experiences', 6: 'Love, family, children, health, body, relationships, art, getting pregnant',
+    7: 'Spirituality, travel, wisdom, profundity, intuition, psyche', 8: 'Strength, karma, tests, drive, responsibility, new status', 9: 'Authority, leadership, justice, fairness, purposefulness, fulfillment',
+    10: 'Cosmic love, openness, amplifies the numbers around it, loved or hated', 11: 'Stress, sensitivity, fatigue, community, need to unplug', 12: 'Misunderstandings, victimization, personal status, expansion but risk of loss',
+    13: 'Change, ingenuity, transformation, innovation', 14: 'Communication, networking, business, money, speed, career', 15: 'Charisma, eroticism and love, emotional fluctuations, inspiration',
+    16: 'Worries, challenges, fear of loss, anxiety, hard work', 17: 'Personal influence, star vibe, spotlight, something to be remembered', 18: 'Competition, warrior vibe, hard work, power, anger',
+  };
+  // Known combinations read in a vertical or horizontal triple, by the diamond they make (Module 17).
+  const ROW_COMBOS = {
+    44: 'Karmic period: big upheavals, plans fall through, illness; or mastering the physical', 48: 'Karmic period: confusion, mentally challenged; or mastering mental control', 84: 'Karmic period: confusion, mentally challenged; or mastering mental control',
+    88: 'Karmic period: loss of relationships, old fears return; or constructive burning of karma', 79: 'Karmic period: cleansing, decluttering, existential crisis; or fearless clean-up', 97: 'Karmic period: cleansing, decluttering, existential crisis; or fearless clean-up',
+    58: 'World conqueror: breaking through, new markets, visibility (chaos if unbalanced)', 85: 'World conqueror: breaking through, new markets, visibility (chaos if unbalanced)',
+    53: 'Money triad: reaping rewards, a raise, status, money', 35: 'Money triad: reaping rewards, a raise, status, money',
+    51: 'Advancement, sudden rise; also the assassination resonance', 65: 'Popularity, beloved, but emotionally vulnerable', 56: 'Popularity, charm, sensitivity',
+    38: 'Stress: expansion and change, fatigue, loss of self-esteem', 74: 'Stress: psychologically vulnerable, introverted, dreamy', 29: 'Stress: work pressure against the need for rest', 92: 'Stress: work pressure against the need for rest',
+    15: 'Love, charisma, passion; also pregnancy and weddings', 96: 'Attraction, falling in love', 69: 'Attraction, falling in love', 26: 'Family unity, family legacy', 62: 'Family unity, family legacy', 17: 'Something that is remembered and lasts',
+    55: 'Media attention, lots of talk', 95: 'Master of speech', 54: 'Communication leader, the CEO', 45: 'Leadership, legacy',
+  };
+  const combos = (v) => (v ? ROW_COMBOS[v.sum] || null : null);
+
+  const api = { LAYOUT, LETTERS, VOWELS, PLANETS, TENSION, MEANINGS, ROW_COMBOS, combos, FORMULAS, digitSum, val, add, joined, letterValue, lettersOf, nameWord, rhombus, essence, birth: essence, psyche, rhythm, numeroscope, letterWords, pyramid, weighPyramid, singleName, destinyPeriods, yearFormula, yearRows, dayRows };
   root.Numeroscope = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

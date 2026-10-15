@@ -60,6 +60,16 @@
     view(arg, query);
   }
   window.addEventListener('hashchange', route);
+  // No pull-to-refresh: a finger dragged down at the top of the page reloads the whole app in the browser
+  // and loses what was being done. CSS (overscroll-behavior) stops it in most browsers; this stops the rest.
+  // A drag inside something that can still scroll up on its own (a sheet, a list, a popup) is left alone.
+  let touchY = null;
+  const scrollsUp = (el) => { for (let n = el; n && n !== document.body; n = n.parentElement) { const o = getComputedStyle(n).overflowY; if ((o === 'auto' || o === 'scroll') && n.scrollTop > 0) return true; } return false; };
+  document.addEventListener('touchstart', (e) => { touchY = e.touches.length === 1 ? e.touches[0].clientY : null; }, { passive: true });
+  document.addEventListener('touchmove', (e) => {
+    if (touchY === null || e.touches.length !== 1 || !e.cancelable) return;
+    if (window.scrollY <= 0 && e.touches[0].clientY > touchY && !scrollsUp(e.target)) e.preventDefault();
+  }, { passive: false });
   const go = (hash) => { location.hash = hash; };
   // Same screen change, but without adding a step to the browser's history (used between charts in the
   // viewer, so the phone's Back button returns to the screen the viewer was opened from, not to the last chart).
@@ -177,12 +187,14 @@
   }
 
   // ---------- tag suggestion box ----------
-  function suggestBox($input, { within = () => [], onPick, allowNew = false, kind = null, alsoArchetype = false }) {
+  // `empty` gives what the box shows while nothing is typed (the home screen's recent searches).
+  function suggestBox($input, { within = () => [], onPick, allowNew = false, kind = null, alsoArchetype = false, empty = null }) {
     const $list = h('div', { class: 'suggest hidden' });
     let timer, seq = 0;
     const hide = () => $list.classList.add('hidden');
     const show = (items, q) => {
       fill($list);
+      if (!q && empty) { $list.append(...empty()); $list.classList.toggle('hidden', !$list.children.length); return; }
       const exact = items.some((t) => t.name === q);
       if (allowNew && q && !exact) $list.append(h('button', { type: 'button', onclick: () => { onPick(q); hide(); } }, h('span', {}, `Add new tag “${q}”`), h('span', { class: 'count' }, 'new')));
       for (const t of items) $list.append(h('button', { type: 'button', onclick: () => { onPick(t.name, t.pickKind); hide(); } },
@@ -192,6 +204,7 @@
     };
     const refresh = async () => {
       const q = $input.value.trim(); const my = ++seq;
+      if (!q && empty) { show([], ''); return; }
       const params = new URLSearchParams({ q, limit: 25 }); if (kind) params.set('kind', kind); for (const w of within()) params.append('within', w);
       try {
         let items = await api('/api/tags?' + params);
@@ -218,7 +231,7 @@
     const $quick = h('a', { class: 'btn iconbtn gear', href: '#/quick', 'aria-label': 'Quick chart', title: 'Quick chart' }, '◈');
     const $gear = h('a', { class: 'btn iconbtn gear', href: '#/settings', 'aria-label': 'Settings', title: 'Settings' }, '⚙');
     const $input = h('input', { type: 'search', placeholder: tags.length ? 'Add another tag…' : 'Search (12/3 mind center, politics, a name…)', autocomplete: 'off', enterkeyhint: 'search' });
-    const $sugg = suggestBox($input, { within: () => tags, kind, alsoArchetype: kind === 'chart', onPick: (name, pickKind) => { if (pickKind && pickKind !== kind) setTags([name], pickKind); else if (!tags.includes(name)) setTags([...tags, name]); $input.value = ''; } });
+    const $sugg = suggestBox($input, { within: () => tags, kind, alsoArchetype: kind === 'chart', empty: tags.length || kind === 'archetype' ? null : () => recentNodes(setTags), onPick: (name, pickKind) => { if (pickKind && pickKind !== kind) setTags([name], pickKind); else if (!tags.includes(name)) setTags([...tags, name]); $input.value = ''; } });
     const $clear = h('button', { type: 'button', class: 'clear', 'aria-label': 'Clear', onclick: () => { $input.value = ''; $input.focus(); $sugg.classList.add('hidden'); } }, '×');
     const $filters = h('div', { class: 'filters' },
       kind === 'archetype' ? chip({ name: 'Archetype pics', kind: 'name' }, { active: true, removable: true, onclick: () => setTags(tags, 'chart') }) : null,
@@ -228,21 +241,15 @@
     const $grid = h('div', { class: 'grid' });
     const $sentinel = h('div', { class: 'sentinel' });
     const $recent = h('div', { class: 'recent hidden' });
-    // The home screen (nothing searched) shows this phone's recent searches and recently opened charts,
-    // not every chart newest first: the owner always starts from a search.
+    // The home screen (nothing searched) shows the way into every tag and the recently opened charts, not
+    // every chart newest first: the owner always starts from a search. The recent searches live inside the
+    // search box: they drop down when it is tapped and stay out of the way otherwise.
     const home = !tags.length && kind === 'chart';
     if (tags.length) rememberSearch(tags, kind);
-    const searches = home ? recentSearches() : [];
-    const $searches = home ? h('div', { class: 'rsearches' },
-      searches.length ? h('div', { class: 'summary', style: 'padding-bottom:4px' }, 'Recent searches') : null,
-      ...searches.map((s) => h('button', { type: 'button', class: 'rsearch', onclick: () => setTags(s.tags, s.kind) },
-        h('span', { class: 'chips' }, s.kind === 'archetype' ? h('span', { class: 'chip name', style: 'pointer-events:none' }, 'Archetype pics') : null,
-          ...s.tags.map((t) => h('span', { class: `chip ${kindOf(t)}`, style: 'pointer-events:none' }, TagCodes.pretty(t)))),
-        h('span', { class: 'muted', style: 'padding-left:8px' }, '›'))),
-      searches.length ? null : h('p', { class: 'muted', style: 'padding:8px 2px' }, 'Search a name or a tag above. Your recent searches will show here.')) : null;
+    const $alltags = home ? h('a', { class: 'btn btn-block alltags', href: '#/tags' }, 'All tags', h('span', { class: 'muted small' }, 'words · positions · numbers'), h('span', { class: 'muted' }, '›')) : null;
     render(h('div', { class: 'screen' },
       h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), $quick, $gear), (tags.length || kind === 'archetype') ? $filters : null),
-      $searches, $recent, home ? null : $summary, home ? null : $grid, home ? null : $sentinel));
+      $alltags, $recent, home ? null : $summary, home ? null : $grid, home ? null : $sentinel));
     // Recently opened charts (this phone remembers the last 48), a grid like a search result, only on the home screen.
     if (home && recentIds().length) {
       api('/api/images?ids=' + recentIds().join(',') + '&limit=50').then((r) => {
@@ -294,6 +301,18 @@
       const kept = recentSearches().filter((s) => !(s.kind === kind && (s.tags.every((t) => tags.includes(t)) || tags.every((t) => s.tags.includes(t)))));
       localStorage.setItem('searches', JSON.stringify([{ tags, kind }, ...kept].slice(0, 20)));
     } catch {}
+  };
+  // What drops down from an empty search box: the recent searches (tap one to run it again) and the way to every tag.
+  const recentNodes = (setTags) => {
+    const searches = recentSearches();
+    return [
+      h('div', { class: 'shead' }, searches.length ? 'Recent searches' : 'Your recent searches will show here'),
+      ...searches.map((s) => h('button', { type: 'button', class: 'rsearch', onclick: () => setTags(s.tags, s.kind) },
+        h('span', { class: 'chips' }, s.kind === 'archetype' ? h('span', { class: 'chip name', style: 'pointer-events:none' }, 'Archetype pics') : null,
+          ...s.tags.map((t) => h('span', { class: `chip ${kindOf(t)}`, style: 'pointer-events:none' }, TagCodes.pretty(t)))),
+        h('span', { class: 'muted', style: 'padding-left:8px' }, '›'))),
+      h('a', { class: 'rsearch alltags', href: '#/tags' }, h('span', {}, 'All tags'), h('span', { class: 'muted' }, '›')),
+    ];
   };
 
   // ---------- viewer (full screen) ----------
@@ -637,6 +656,7 @@
   routes.settings = function settingsView() {
     render(h('div', { class: 'screen stack' }, pageTop('Settings', '#/'),
       h('a', { class: 'btn btn-block', href: '#/quick', style: 'justify-content:space-between' }, 'Quick chart', h('span', { class: 'muted' }, '›')),
+      h('a', { class: 'btn btn-block', href: '#/tags', style: 'justify-content:space-between' }, 'All tags', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/upload', style: 'justify-content:space-between' }, 'Upload screenshots', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/import', style: 'justify-content:space-between' }, 'Import tags', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/status', style: 'justify-content:space-between' }, 'Status and backup', h('span', { class: 'muted' }, '›')),
@@ -888,7 +908,8 @@
     const $full = h('button', { type: 'button', class: 'cmenu-item' }, 'Full screen');
     const $save = h('button', { type: 'button', class: 'cmenu-item' }, 'Save to vault');
     const $showBtn = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { $menu.classList.add('hidden'); showSheet(show, () => applyShow(svg, show)); } }, 'Show and hide parts');
-    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $full, $showBtn, $save);
+    const $rows = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { $menu.classList.add('hidden'); openForecast({ day: $day.value, month: $month.value, year: $year.value, name: $name.value }); } }, 'Year rows and day vibrations');
+    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $full, $showBtn, $rows, $save);
     const $dots = h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'More', title: 'More', onclick: (e) => { e.stopPropagation(); $menu.classList.toggle('hidden'); } }, '⋮');
     document.addEventListener('click', (e) => { if (!$menu.contains(e.target)) $menu.classList.add('hidden'); });
     const $home = h('div', { class: 'nscope-home' }, $chart);
@@ -925,6 +946,151 @@
     draw();
     setTimeout(() => $name.focus(), 50);
   };
+
+  // ---------- all tags ----------
+  // Every tag there is, three ways: the words (people and topics), the position codes grouped by
+  // position, and everything grouped by number. Tap a tag to search it. Groups open on tap.
+  routes.tags = async function tagsView() {
+    const VIEWS = [['words', 'Words'], ['position', 'By position'], ['number', 'By number']];
+    let view = 'words'; try { view = localStorage.getItem('tagsView') || 'words'; } catch {}
+    if (!VIEWS.some(([k]) => k === view)) view = 'words';
+    const $tabs = h('div', { class: 'chips tabs' });
+    const $body = h('div', { class: 'stack' }, h('p', { class: 'muted' }, 'Loading…'));
+    render(h('div', { class: 'screen' }, pageTop('All tags', '#/'), $tabs, $body));
+    let all;
+    try { all = await api('/api/tags/all'); } catch (err) { fill($body, h('p', { class: 'err' }, err.message)); return; }
+    const used = all.filter((t) => t.count > 0);
+    const n = (t) => t.charts || t.archetypes;
+    const search = (t) => `#/?${!t.charts && t.archetypes ? 'kind=archetype&' : ''}tag=${encodeURIComponent(t.name)}`;
+    const tagLink = (t, label) => h('a', { class: `chip ${t.kind}`, href: search(t), title: t.name }, h('span', { class: 't' }, label || TagCodes.pretty(t.name)), h('span', { class: 'count' }, fmtN(n(t))));
+    const sumOf = (list) => list.reduce((a, t) => a + n(t), 0);
+    const charts = (list) => `${fmtN(list.length)} tag${list.length === 1 ? '' : 's'} · ${fmtN(sumOf(list))} chart${sumOf(list) === 1 ? '' : 's'}`;
+    const group = (title, list, chips, open = false) => {
+      const $chips = h('div', { class: 'chips tchips' }, ...chips);
+      $chips.hidden = !open;
+      const $arrow = h('span', { class: 'arrow' }, open ? '⌃' : '⌄');
+      const $btn = h('button', { type: 'button', class: 'tgroup', onclick: () => { $chips.hidden = !$chips.hidden; $arrow.textContent = $chips.hidden ? '⌄' : '⌃'; } },
+        h('span', { class: 'tg-title' }, title), h('span', { class: 'muted small' }, charts(list)), $arrow);
+      return [$btn, $chips];
+    };
+    const byName = (a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+    const byCount = (a, b) => n(b) - n(a) || byName(a, b);
+    const parsed = (t) => TagCodes.parse(t.name);
+    const draw = () => {
+      fill($tabs, ...VIEWS.map(([k, label]) => h('button', { type: 'button', class: `chip ${view === k ? 'active' : 'off'}`, onclick: () => { view = k; try { localStorage.setItem('tagsView', k); } catch {} draw(); } }, label)));
+      const out = [];
+      if (view === 'words') {
+        const words = used.filter((t) => t.kind === 'name');
+        const most = words.filter((t) => n(t) >= 3).sort(byCount);
+        if (most.length) out.push(...group('Used the most', most, most.map((t) => tagLink(t)), true));
+        const letters = new Map();
+        for (const t of words.slice().sort(byName)) { const c = t.name[0].toUpperCase(); const key = /[A-Z]/.test(c) ? c : '#'; if (!letters.has(key)) letters.set(key, []); letters.get(key).push(t); }
+        for (const [letter, list] of letters) out.push(...group(letter, list, list.map((t) => tagLink(t))));
+        if (!words.length) out.push(h('p', { class: 'muted' }, 'No word tags yet.'));
+      } else if (view === 'position') {
+        const groups = new Map();
+        for (const t of used.filter((t) => t.kind === 'position')) {
+          const p = parsed(t);
+          const key = p ? (p.label || 'Two numbers together') : 'Other codes';
+          if (!groups.has(key)) groups.set(key, []);
+          groups.get(key).push(t);
+        }
+        const order = [...groups.entries()].sort((a, b) => sumOf(b[1]) - sumOf(a[1]) || a[0].localeCompare(b[0]));
+        for (const [label, list] of order) {
+          list.sort((a, b) => { const pa = parsed(a), pb = parsed(b); return (pa && pb ? pa.numbers[0] - pb.numbers[0] : 0) || byName(a, b); });
+          out.push(...group(label, list, list.map((t) => { const p = parsed(t); return tagLink(t, p ? p.numbers.map((x) => (x < 10 ? String(x) : `${x}/${TagCodes.digitSum(x)}`)).join(' + ') : t.name); })));
+        }
+        if (!groups.size) out.push(h('p', { class: 'muted' }, 'No position tags yet.'));
+      } else {
+        const groups = new Map();
+        for (const t of used.filter((t) => t.kind !== 'name')) {
+          const p = parsed(t);
+          const key = p ? p.numbers[0] : 'other';
+          if (!groups.has(key)) groups.set(key, []);
+          groups.get(key).push(t);
+        }
+        const order = [...groups.entries()].sort((a, b) => (a[0] === 'other') - (b[0] === 'other') || a[0] - b[0]);
+        for (const [num, list] of order) {
+          list.sort(byCount);
+          const title = num === 'other' ? 'Other' : `${num < 10 ? num : `${num}/${TagCodes.digitSum(num)}`}${TagCodes.NAMES[num] ? ' · ' + TagCodes.NAMES[num] : ''}`;
+          out.push(...group(title, list, list.map((t) => {
+            const p = parsed(t);
+            const label = !p ? t.name : p.numbers.length > 1 ? TagCodes.pretty(t.name) : p.label || (t.archetypes && !t.charts ? 'archetype pics' : 'the number itself');
+            return tagLink(t, label);
+          })));
+        }
+        if (!groups.size) out.push(h('p', { class: 'muted' }, 'No number tags yet.'));
+      }
+      fill($body, ...out);
+    };
+    draw();
+  };
+
+  // ---------- year rows and day vibrations (forecasting, Module 17) ----------
+  // From the quick chart's date and name: the destiny periods, one year's rows (main column, aura, shadow
+  // column) and the day vibrations of one date. Math: Numeroscope.yearRows / dayRows (public/numeroscope.js).
+  const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const rowText = (v) => (v ? (v.sum < 10 ? String(v.sum) : v.text) : '–');
+  // What a number in the rows means: the course's one line, the archetype name, a known combination.
+  function meaningSheet(v, vertical) {
+    if (!v) return;
+    const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
+    const close = () => { bg.remove(); overlays = overlays.filter((o) => o !== bg); };
+    const line = (x) => (x ? h('p', { style: 'margin:0 0 10px' }, h('b', {}, rowText(x)), TagCodes.NAMES[x.sum] ? ` ${TagCodes.NAMES[x.sum]}` : '', h('br'), Numeroscope.MEANINGS[x.sum] || Numeroscope.MEANINGS[x.ds] || '', Numeroscope.combos(x) ? h('span', { class: 'muted' }, h('br'), Numeroscope.combos(x)) : null) : null);
+    bg.append(h('div', { class: 'sheet' }, h('h3', {}, 'What it means'), line(v), vertical ? h('p', { class: 'muted small', style: 'margin:0 0 6px' }, 'Read with the two rows above it (vertical):') : null, vertical ? line(vertical) : null,
+      h('button', { type: 'button', onclick: close }, 'Close')));
+    document.body.append(bg); overlays.push(bg);
+  }
+  function openForecast(input) {
+    const e = Numeroscope.essence(input.day, input.month, input.year);
+    if (!(e.day && e.month && e.year)) { toast('Type the whole birth date first: day, month and year.', true); return; }
+    const birthYear = Number(input.year);
+    const today = new Date();
+    let year = Math.max(today.getFullYear(), birthYear);
+    let date = { y: today.getFullYear(), m: today.getMonth() + 1, d: today.getDate() };
+    const close = () => { $pop.remove(); overlays = overlays.filter((o) => o !== $pop); document.body.classList.remove('noscroll'); window.removeEventListener('keydown', keys); };
+    const keys = (ev) => { if (ev.key === 'Escape') close(); };
+    const $periods = h('div', { class: 'periods' }), $yearTitle = h('div', { class: 'wlabel' }), $yearNote = h('p', { class: 'muted small ynote' }), $year = h('div', {});
+    const $dayTitle = h('div', { class: 'wlabel' }), $day = h('div', {});
+    const $date = h('input', { type: 'date', class: 'datebox', value: `${date.y}-${String(date.m).padStart(2, '0')}-${String(date.d).padStart(2, '0')}` });
+    const cell = (v, cls, vertical) => h('div', { class: `yv ${cls || ''}`, onclick: () => meaningSheet(v, vertical) }, rowText(v), vertical ? h('small', {}, `↕ ${rowText(vertical)}`) : null);
+    const head = () => [h('div', { class: 'yh' }, 'From'), h('div', { class: 'yh' }, 'Main'), h('div', { class: 'yh' }, 'Aura'), h('div', { class: 'yh' }, 'Shadow')];
+    const drawPeriods = () => {
+      const ps = Numeroscope.destinyPeriods(birthYear, 12).filter((p) => p.start <= birthYear + 99);
+      fill($periods, ...ps.map((p) => h('button', { type: 'button', class: `period ${year >= p.start && year <= p.end ? 'active' : ''}`, onclick: () => { year = Math.max(p.start, birthYear); drawYear(); drawPeriods(); } },
+        h('b', {}, String(p.number)), h('span', {}, p.years === 1 ? String(p.start) : `${p.start}–${p.end}`), h('span', { class: 'muted' }, p.years === 1 ? `age ${p.start - birthYear}` : `age ${p.start - birthYear}–${p.end - birthYear}`))));
+    };
+    const drawYear = () => {
+      const r = Numeroscope.yearRows(input, year);
+      $yearTitle.textContent = `Year rows ${year}`;
+      if (!r) { fill($year, h('p', { class: 'muted' }, 'Before the birth year.')); $yearNote.textContent = ''; return; }
+      $yearNote.textContent = `Age ${r.formula.age} · ${r.formula.words}${r.hasName ? '' : ' · type a name to fill the life expression and pillar rows'}`;
+      const isNow = (x) => year === today.getFullYear() && (today.getMonth() + 1 > x.month || (today.getMonth() + 1 === x.month && today.getDate() >= x.day)) && (today.getMonth() + 1 < x.until.month || (today.getMonth() + 1 === x.until.month && today.getDate() <= x.until.day));
+      fill($year, h('div', { class: 'yrows' }, ...head(), ...r.rows.flatMap((x) => { const now = isNow(x) ? 'now' : ''; return [
+        h('div', { class: `ydate ${now}` }, h('b', {}, `${MON[x.month - 1]} ${x.day}`), h('span', {}, x.label)),
+        cell(x.main, now, x.vertical), cell(x.aura, `aura ${now}`), cell(x.shadow, now, x.verticalShadow)]; })));
+    };
+    const drawDay = () => {
+      const r = Numeroscope.dayRows(input, date.y, date.m, date.d);
+      $dayTitle.textContent = `Day vibrations ${MON[date.m - 1]} ${date.d}, ${date.y}`;
+      fill($day, h('div', { class: 'yrows' }, ...head(), ...r.rows.flatMap((x) => [h('div', { class: 'ydate' }, h('b', {}, x.label)), cell(x.main, '', x.vertical), cell(x.aura, 'aura'), cell(x.shadow, '', x.verticalShadow)])),
+        r.hasName ? null : h('p', { class: 'muted small', style: 'margin:8px 0 0' }, 'Type a name to fill the life expression row.'));
+    };
+    const shiftDay = (by) => { const dt = new Date(date.y, date.m - 1, date.d + by); date = { y: dt.getFullYear(), m: dt.getMonth() + 1, d: dt.getDate() }; $date.value = `${date.y}-${String(date.m).padStart(2, '0')}-${String(date.d).padStart(2, '0')}`; drawDay(); };
+    $date.addEventListener('change', () => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec($date.value); if (m) { date = { y: Number(m[1]), m: Number(m[2]), d: Number(m[3]) }; drawDay(); } });
+    const name = String(input.name || '').trim();
+    const $pop = h('div', { class: 'wordpop' },
+      h('div', { class: 'pagetop' }, h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Close', onclick: close }, '‹'), h('h1', {}, name || 'Year rows'), h('span', { class: 'muted small' }, `${e.day.sum} ${MON[e.month.sum - 1]} ${birthYear}`)),
+      h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'Destiny periods'), $periods),
+      h('div', { class: 'wcard' }, $yearTitle,
+        h('div', { class: 'row ynav' }, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Previous year', onclick: () => { if (year > birthYear) { year--; drawYear(); drawPeriods(); } } }, '‹'), $yearNote, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Next year', onclick: () => { year++; drawYear(); drawPeriods(); } }, '›')),
+        $year, h('p', { class: 'muted small', style: 'margin:8px 0 0' }, 'Each row runs until the next one starts. Tap a number for what it means. ↕ reads the two rows above as one number.')),
+      h('div', { class: 'wcard' }, $dayTitle,
+        h('div', { class: 'row ynav' }, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Previous day', onclick: () => shiftDay(-1) }, '‹'), $date, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Next day', onclick: () => shiftDay(1) }, '›')),
+        $day));
+    overlays.push($pop); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
+    drawPeriods(); drawYear(); drawDay();
+  }
 
   // ---------- status ----------
   routes.status = async function statusView() {

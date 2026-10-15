@@ -98,9 +98,12 @@ export function suggestTags(db, { q = '', within = [], kind = 'chart', limit = 3
   return rows.slice(0, limit);
 }
 
+// Every tag with how many charts and how many archetype pics carry it (the All tags screen).
 export function allTags(db) {
-  return db.prepare(`SELECT t.name, t.kind, count(it.image_id) AS count FROM tags t
-    LEFT JOIN image_tags it ON it.tag_id = t.id GROUP BY t.id ORDER BY t.name COLLATE NOCASE`).all();
+  return db.prepare(`SELECT t.name, t.kind, count(it.image_id) AS count,
+      count(CASE WHEN i.kind = 'chart' THEN 1 END) AS charts, count(CASE WHEN i.kind = 'archetype' THEN 1 END) AS archetypes
+    FROM tags t LEFT JOIN image_tags it ON it.tag_id = t.id LEFT JOIN images i ON i.id = it.image_id
+    GROUP BY t.id ORDER BY t.name COLLATE NOCASE`).all();
 }
 
 export function statusReport(db) {

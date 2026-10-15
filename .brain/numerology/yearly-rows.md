@@ -1,6 +1,28 @@
 # Destiny rhythms and yearly rows (Module 17 "NCE-yearrows", "Yearly Rows" powerpoint)
 
-Not built in the app yet. Everything here is from the course slides.
+Built 2026-10-15: `Numeroscope.destinyPeriods / yearFormula / yearRows / dayRows`
+in `public/numeroscope.js`, shown from the quick chart's ⋮ menu ("Year rows and
+day vibrations"). CONFIRMED against the course's own worked cases
+(`test/numeroscope.test.js`): the formula sequence for people born 1936-1944
+(NCE-yearrows slides), JFK 1963 (F2: vertical 5-1-6 = 51/6 and horizontal
+6-11/2-5 = 65/2 around Nov 22) and Nixon 1972 (F4: the seven vertical triples
+19/1 17/8 85/4 41/5 51/6 67/4 45/9 with the slide's date spans; this also
+proves the pillar with a middle name, 34/7). What the cases settled:
+- Source rows are single digits (the ds); sum rows can be compound (9+1 = 10/1).
+- A "vertical" is the two source rows above a sum row written as a diamond
+  (9 over 1 -> 91/1); its ds is the sum row. A row runs from its date to the
+  day before the next row; the last to Dec 31.
+- The aura column = main ds + shadow ds (JFK: 6 and 5 -> 11/2), like every aura.
+- The shadow column differs from the main one only in the year row (last two
+  digits of the year); everything else cascades from the same sources.
+- The birth year always uses F0 (the slides label two of their F0 examples
+  "F1"; the F0 formula is the one with the age row, which is 0 that year).
+- Day vibrations: the slides define only the date's shadow (last digit, 0
+  when one digit). The app also uses the year's shadow in the shadow column and
+  keeps the month; NOT confirmed against a case.
+- Not built: psychic-self rows (columns 4-6), name-change-year formulas,
+  the "fulfillment number" of a day.
+
 
 ## Destiny rhythms
 From the birth year's digit sum. Period lengths in years, 27-year cycles:

@@ -165,7 +165,7 @@ pillar in the small triangle.
   adult transition (Saturn return, ages 27-28); 12, 13, 16, 18 there are the
   hard transitions.
 
-## Destiny rhythm (from the year ds) and yearly rows — NOT built yet
+## Destiny rhythm (from the year ds) and yearly rows — built 2026-10-15 (see yearly-rows.md)
 - Doubling rhythm 1-2-4-8-7-5 for year ds 1,2,4,5,7,8, period lengths in years,
   starting at the ds, 27-year cycle. Polar 3-6 for 3 and 6. 9-9-9 for 9.
 - Yearly rows: 7 periods (Jan 1-Feb 21, Feb 22-Apr 14, Apr 15-Jun 5, Jun 6-Jul
