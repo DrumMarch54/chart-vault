@@ -22,11 +22,15 @@ proves the pillar with a middle name, 34/7). What the cases settled:
   keeps the month; NOT confirmed against a case.
 - Psyche rows (columns 4-6) use the OUTER psyche chart's LE and pillar
   (CONFIRMED: JFK 1961 and 1963 psyche columns and rows in the case book).
-- Day rows: nine rows of 2 h 40 min from midnight, shown in Arizona time
-  (America/Phoenix). The even split is the course's rule for the year's rows;
-  the book's own time table (Forecasting Numerology p.128-131, a 20 MB PDF) is
-  over the Drive connector's 10 MB limit, so the hours are NOT read off it.
-  The 2 PM triple of the Wimbledon 2017 case (rows 5-7) fits the even split.
+- Day rows (book p.136, owner's screenshot 2026-10-15): 00:00-02:40, 02:40-05:20,
+  05:20-08:00, 08:00-10:40, 10:40-13:20, 13:20-16:00, 16:00-18:40, 18:40-21:20,
+  21:20-23:59. Shown in Arizona time (America/Phoenix). The shadow column
+  differs only in its first row (the date's shadow); month and year stay.
+- Layout (book p.89 and p.136): ONE table. Period · formula · human self
+  (num, aura, shadow) · psychic self (num, aura, shadow). Source rows show a
+  plain digit, sum rows and auras always n/ds (8/8, 14/5).
+- The Forecasting Numerology book (20 MB) is over the Drive connector's limit;
+  pages the owner photographs are the way to read it.
 - Fulfillment number = spine ds + date ds (Wimbledon 2017: Venus 12/3, Muguruza 8).
   Ñ counts as N (5): Garbiñe's rows only match with LE 12/3.
 - Not built: name-change-year formulas.

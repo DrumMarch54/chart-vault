@@ -1049,6 +1049,8 @@
     return { y: p.year, m: p.month, d: p.day, minutes: (p.hour % 24) * 60 + p.minute };
   };
   const clock = (mins) => { const h = Math.floor(mins / 60) % 24, m = mins % 60; return `${h % 12 || 12}:${String(m).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`; };
+  // "12:00–2:40 AM", "10:40 AM–1:20 PM"; the last period ends at 11:59 PM.
+  const span = (a, b) => { const end = Math.min(b, 1439), ca = clock(a), cb = clock(end); return ca.slice(-2) === cb.slice(-2) ? `${ca.slice(0, -3)}–${cb}` : `${ca}–${cb}`; };
   function openForecast(input) {
     const e = Numeroscope.essence(input.day, input.month, input.year);
     if (!(e.day && e.month && e.year)) { toast('Type the whole birth date first: day, month and year.', true); return; }
@@ -1056,25 +1058,21 @@
     const now = nowIn(TZ);
     let year = Math.max(now.y, birthYear);
     let date = { y: now.y, m: now.m, d: now.d };
-    // Which chart's rows: the name chart's (main) or the psyche chart's. This phone remembers the choice.
-    let chart = 'name'; try { chart = localStorage.getItem('rowsChart') === 'psyche' ? 'psyche' : 'name'; } catch {}
     const close = () => { $pop.remove(); overlays = overlays.filter((o) => o !== $pop); document.body.classList.remove('noscroll'); window.removeEventListener('keydown', keys); };
     const keys = (ev) => { if (ev.key === 'Escape') close(); };
     const $periods = h('div', { class: 'periods' }), $yearTitle = h('div', { class: 'wlabel' }), $yearNote = h('p', { class: 'muted small ynote' }), $year = h('div', {});
     const $dayTitle = h('div', { class: 'wlabel' }), $dayNote = h('p', { class: 'muted small ynote', style: 'padding:0 2px 6px' }), $day = h('div', {});
     const $date = h('input', { type: 'date', class: 'datebox', value: `${date.y}-${String(date.m).padStart(2, '0')}-${String(date.d).padStart(2, '0')}` });
-    const vals = (x) => (chart === 'psyche' ? x.psyche : x);
-    const cell = (v, cls, vertical) => h('div', { class: `yv ${cls || ''}`, onclick: () => meaningSheet(v, vertical) }, rowText(v), vertical ? h('small', {}, `↕ ${rowText(vertical)}`) : null);
-    const head = () => [h('div', { class: 'yh' }, 'From'), h('div', { class: 'yh' }, 'Main'), h('div', { class: 'yh' }, 'Aura'), h('div', { class: 'yh' }, 'Shadow')];
-    const three = (x, now) => { const c = vals(x); return [cell(c.main, now, c.vertical), cell(c.aura, `aura ${now}`), cell(c.shadow, now, c.verticalShadow)]; };
-    // Name chart / Psyche chart switch, one above each table, both showing the same choice.
-    const switches = [];
-    const chartSwitch = () => {
-      const $s = h('div', { class: 'chips cswitch' });
-      switches.push($s);
-      return $s;
-    };
-    const drawSwitches = () => { for (const $s of switches) fill($s, ...[['name', 'Name chart'], ['psyche', 'Psyche chart']].map(([k, label]) => h('button', { type: 'button', class: `chip ${chart === k ? 'active' : 'off'}`, onclick: () => { chart = k; try { localStorage.setItem('rowsChart', k); } catch {} drawAll(); } }, label))); };
+    // One table like the paid tool's: period and formula, then the human self (name chart) and the psychic
+    // self, each as value, aura, shadow. Source rows show a plain digit, sums and auras always "n/ds".
+    const text = (v, plain) => (v ? (plain && v.sum < 10 ? String(v.sum) : v.text) : '–');
+    const cell = (v, cls, plain, vertical) => h('div', { class: `yv ${cls || ''}`, onclick: () => meaningSheet(v, vertical) }, text(v, plain));
+    const head = () => [h('div', { class: 'yh yg' }, ''), h('div', { class: 'yh yg' }, 'Human self'), h('div', { class: 'yh yg' }, 'Psychic self'),
+      h('div', { class: 'yh' }, 'Period'), h('div', { class: 'yh' }, 'Num.'), h('div', { class: 'yh' }, 'Aura'), h('div', { class: 'yh' }, 'Shad.'), h('div', { class: 'yh ps' }, 'Num.'), h('div', { class: 'yh ps' }, 'Aura'), h('div', { class: 'yh ps' }, 'Shad.')];
+    const six = (x, now) => { const plain = x.source !== 'sum', p = x.psyche; return [
+      cell(x.main, `num ${now}`, plain, x.vertical), cell(x.aura, `aura ${now}`), cell(x.shadow, now, plain, x.verticalShadow),
+      cell(p.main, `ps num ${now}`, plain, p.vertical), cell(p.aura, `ps aura ${now}`), cell(p.shadow, `ps ${now}`, plain, p.verticalShadow)]; };
+    const FORMULA_WORDS = { year: 'Year digit sum', day: 'Birth day digit sum', sum: 'Sum of two prev.', le: 'Life expression', age: 'Age digit sum', last: 'Last period', this: 'This period', leaving: 'Leaving this period', pillar: 'Pillar digit sum', date: 'Date digit sum', month: 'Month digit sum' };
     const drawPeriods = () => {
       const ps = Numeroscope.destinyPeriods(birthYear, 12).filter((p) => p.start <= birthYear + 99);
       fill($periods, ...ps.map((p) => h('button', { type: 'button', class: `period ${year >= p.start && year <= p.end ? 'active' : ''}`, onclick: () => { year = Math.max(p.start, birthYear); drawYear(); drawPeriods(); } },
@@ -1087,7 +1085,7 @@
       $yearNote.textContent = `Age ${r.formula.age} · ${r.formula.words}${r.hasName ? '' : ' · type a name to fill the life expression and pillar rows'}`;
       const isNow = (x) => year === now.y && (now.m > x.month || (now.m === x.month && now.d >= x.day)) && (now.m < x.until.month || (now.m === x.until.month && now.d <= x.until.day));
       fill($year, h('div', { class: 'yrows' }, ...head(), ...r.rows.flatMap((x) => { const n = isNow(x) ? 'now' : ''; return [
-        h('div', { class: `ydate ${n}` }, h('b', {}, `${MON[x.month - 1]} ${x.day}`), h('span', {}, x.label)), ...three(x, n)]; })));
+        h('div', { class: `ydate ${n}` }, h('b', {}, `${MON[x.month - 1]} ${x.day} – ${MON[x.until.month - 1]} ${x.until.day}`), h('span', {}, FORMULA_WORDS[x.source])), ...six(x, n)]; })));
     };
     const drawDay = () => {
       const r = Numeroscope.dayRows(input, date.y, date.m, date.d);
@@ -1095,9 +1093,9 @@
       const today = date.y === now.y && date.m === now.m && date.d === now.d;
       fill($dayNote, today ? `Now ${clock(now.minutes)} in Arizona · ` : '', r.fulfillment ? h('span', { onclick: () => meaningSheet(r.fulfillment), style: 'cursor:pointer' }, `Fulfillment number ${rowText(r.fulfillment)}`) : 'Type a name to fill the life expression row and the fulfillment number');
       fill($day, h('div', { class: 'yrows' }, ...head(), ...r.rows.flatMap((x) => { const n = today && now.minutes >= x.from && now.minutes < x.until ? 'now' : ''; return [
-        h('div', { class: `ydate ${n}` }, h('b', {}, clock(x.from)), h('span', {}, x.label)), ...three(x, n)]; })));
+        h('div', { class: `ydate ${n}` }, h('b', {}, span(x.from, x.until)), h('span', {}, FORMULA_WORDS[x.source])), ...six(x, n)]; })));
     };
-    const drawAll = () => { drawSwitches(); drawYear(); drawDay(); };
+    const drawAll = () => { drawYear(); drawDay(); };
     const shiftDay = (by) => { const dt = new Date(date.y, date.m - 1, date.d + by); date = { y: dt.getFullYear(), m: dt.getMonth() + 1, d: dt.getDate() }; $date.value = `${date.y}-${String(date.m).padStart(2, '0')}-${String(date.d).padStart(2, '0')}`; drawDay(); };
     $date.addEventListener('change', () => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec($date.value); if (m) { date = { y: Number(m[1]), m: Number(m[2]), d: Number(m[3]) }; drawDay(); } });
     const name = String(input.name || '').trim();
@@ -1106,11 +1104,11 @@
       h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'Destiny periods'), $periods),
       h('div', { class: 'wcard' }, $yearTitle,
         h('div', { class: 'row ynav' }, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Previous year', onclick: () => { if (year > birthYear) { year--; drawYear(); drawPeriods(); } } }, '‹'), $yearNote, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Next year', onclick: () => { year++; drawYear(); drawPeriods(); } }, '›')),
-        chartSwitch(), $year, h('p', { class: 'muted small', style: 'margin:8px 0 0' }, 'Each row runs until the next one starts. Tap a number for what it means. ↕ reads the two rows above as one number.')),
+        $year, h('p', { class: 'muted small', style: 'margin:8px 0 0' }, 'Tap a number for what it means; a sum also shows the two rows above it read as one number.')),
       h('div', { class: 'wcard' }, $dayTitle,
         h('div', { class: 'row ynav' }, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Previous day', onclick: () => shiftDay(-1) }, '‹'), $date, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Next day', onclick: () => shiftDay(1) }, '›')),
-        $dayNote, chartSwitch(), $day,
-        h('p', { class: 'muted small', style: 'margin:8px 0 0' }, 'Arizona time. The day is split into nine equal periods of 2 h 40 min from midnight, the same even split the course uses for the year’s rows; the course book’s own time table could not be opened to check it.')));
+        $dayNote, $day,
+        h('p', { class: 'muted small', style: 'margin:8px 0 0' }, 'Arizona time. Nine periods of 2 h 40 min from midnight, as in the course book.')));
     overlays.push($pop); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
     drawPeriods(); drawAll();
   }

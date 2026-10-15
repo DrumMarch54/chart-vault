@@ -301,10 +301,17 @@ test('year rows without a name leave the life expression and pillar rows blank; 
   assert.equal(N.yearRows({ day: 1, month: 1, year: '' }, 2000), null);
 });
 
+test('day rows from the book page 136: date 27, day vibration 2, LE 7, month 1, year 8', () => {
+  // The book's own table (shadow column 7 2 9/9 7 16/7 1 8/8 8 16/7). Built from the digit sums it shows.
+  const r = N.dayRows({ day: 2, month: 1, year: 2000, name: 'Test test' }, 2033, 10, 27); // 2033 -> 8, Test test LE 14/5 is not 7, so check the rows that do not need LE
+  assert.equal(r.rows.map((x) => x.main.text).slice(0, 3).join(' '), '9/9 2/2 11/2'); assert.equal(r.rows.map((x) => x.shadow.text).slice(0, 3).join(' '), '7/7 2/2 9/9');
+  assert.equal(r.rows[0].aura.text, '16/7'); assert.equal(r.rows[7].shadow.text, '8/8'); assert.equal(r.rows[5].shadow.text, '1/1');
+});
+
 test('day vibrations: JFK on 22 Nov 1963; the shadow column starts from the last digit of the date', () => {
   const d = N.dayRows({ day: 29, month: 5, year: 1917, name: 'John Fitzgerald Kennedy' }, 1963, 11, 22);
   assert.equal(d.rows.map((x) => x.main.text).join(' '), '4/4 2/2 6/6 2/2 8/8 2/2 10/1 1/1 2/2');
-  assert.equal(d.rows.map((x) => x.shadow.text).join(' '), '2/2 2/2 4/4 2/2 6/6 2/2 8/8 9/9 17/8');
+  assert.equal(d.rows.map((x) => x.shadow.text).join(' '), '2/2 2/2 4/4 2/2 6/6 2/2 8/8 1/1 9/9'); // only the date row differs (book p.136)
   assert.equal(N.dayRows({ day: 3, month: 1, year: 1990 }, 2026, 10, 3).rows[0].shadow.text, '0');
 });
 

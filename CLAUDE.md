@@ -89,5 +89,9 @@ looks like. A diagnostic that is computed and not on a screen does not exist.
   of anything you add or delete, in tools/ and test/ too (report.mjs waited
   for a removed tab bar and called a good login refused).
 - Can't verify against the live system? Say so plainly.
+- Course rule you cannot read (a Drive file too big, a page you cannot see,
+  a rule that stays ambiguous): STOP before building on a guess and give the
+  owner a ready-to-paste question for NotebookLM, which has the whole course.
+  The charts must follow the course exactly; a guess costs more than a question.
 - Big change: brainstorm and get the design approved first.
 - A durable lesson = one short rule here + the full story in `.brain/HISTORY.md`.
