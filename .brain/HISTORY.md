@@ -240,3 +240,10 @@ Brought the app in line with the new-app playbook from the first app:
   The clock is America/Phoenix in the code, not the phone's zone. Lesson: `pkill -f` with a
   string that is also in the shell's own command line kills the shell (exit 144); match on
   "node tools/dev-app" and run it in its own call.
+- Same day, later: the owner photographed the book's year-row and day-row tables (p.89, p.136).
+  Day rows run 00:00-02:40 ... 21:20-23:59 (the even split was right); the day shadow column
+  changes ONLY the date row (the year's shadow was wrong, fixed). Both selves sit in ONE table:
+  period · formula · human self (num, aura, shadow) · psychic self (num, aura, shadow); sums
+  and auras always n/ds, source rows a plain digit. The Name/Psyche switch is gone.
+- New standing rule (owner): a course rule that cannot be read from Drive gets a ready-to-paste
+  NotebookLM question, never a guess. In CLAUDE.md and USER.md.

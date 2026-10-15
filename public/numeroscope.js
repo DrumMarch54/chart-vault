@@ -332,21 +332,20 @@
   const daysIn = (y, m) => new Date(y, m, 0).getDate();
 
   // Day vibrations of one date (y, m, d) for a person: date ds, day vibration ds, sum, LE ds, sum, month
-  // ds, sum, year ds, sum. The shadow column starts from the date's last digit (26 -> 6, 3 -> 0) and uses
-  // the year's shadow; the month stays (the slides give no month shadow). The nine rows split the day
-  // evenly, 2 h 40 min each from midnight, the way the year's rows split the year evenly (every 52 days
-  // for 7 rows, every 28 for 13): the course book's own time table is in a PDF too large to open here,
-  // so the split is the course's even rule, not a read-off table. The fulfillment number (case book,
-  // Wimbledon 2017) is the spine ds + the date ds: how problem-solving meets the day's energy.
+  // ds, sum, year ds, sum. The shadow column differs ONLY in its first row, the date's shadow (26 -> 6,
+  // 3 -> 0); month and year stay as they are (book p.136: "column 3 is calculated in the same way, but
+  // starts with the date shadow"; its table shows the same year in both). The nine rows run 00:00-02:40,
+  // 02:40-05:20 ... 21:20-23:59 (2 h 40 min each, book p.136, CONFIRMED on the owner's screenshot).
+  // The fulfillment number (case book, Wimbledon 2017) is the spine ds + the date ds.
   const DAY_FORMULA = [[0, 0, 'date'], [0, 0, 'day'], [0, 0, 'sum'], [0, 0, 'le'], [0, 0, 'sum'], [0, 0, 'month'], [0, 0, 'sum'], [0, 0, 'year'], [0, 0, 'sum']];
   const DAY_MINUTES = 24 * 60 / DAY_FORMULA.length; // 160
   function dayRows({ day, month, year, name }, y, m, d) {
     const data = numeroscope({ day, month, year, name });
     const e = data.essence, n = data.name, p = data.psyche.outer;
     const common = { day: e.day ? e.day.ds : null, month: digitSum(m) };
-    const dateDs = digitSum(d), shadowDate = d < 10 ? 0 : d % 10, yr = digitSum(digitsOf(y)), sh = digitSum(y % 100);
+    const dateDs = digitSum(d), shadowDate = d < 10 ? 0 : d % 10, yr = digitSum(digitsOf(y));
     const nm = { ...common, le: dsOf(n.le) }, ps = { ...common, le: dsOf(p.le) };
-    const rows = bothCharts(DAY_FORMULA, { ...nm, date: dateDs, year: yr }, { ...nm, date: shadowDate, year: sh }, { ...ps, date: dateDs, year: yr }, { ...ps, date: shadowDate, year: sh });
+    const rows = bothCharts(DAY_FORMULA, { ...nm, date: dateDs, year: yr }, { ...nm, date: shadowDate, year: yr }, { ...ps, date: dateDs, year: yr }, { ...ps, date: shadowDate, year: yr });
     rows.forEach((r, i) => { r.from = i * DAY_MINUTES; r.until = (i + 1) * DAY_MINUTES; });
     const fulfillment = n.spine ? rv(n.spine.ds + dateDs) : null;
     return { y, m, d, rows, fulfillment, hasName: !!n.le };

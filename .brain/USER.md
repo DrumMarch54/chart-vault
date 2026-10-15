@@ -12,3 +12,6 @@
   up the same way (the playbook in that repo, `.brain/NEW-APP-PLAYBOOK.md`).
 - Expects: buttons not commands, straight answers about what was verified vs
   assumed, root-cause fixes, little clutter, short replies.
+- Has the whole course in NotebookLM. When a rule cannot be read from Drive
+  (file too big, a table that is only a picture), they want a ready-to-paste
+  question for NotebookLM, not a guess. They answer with its reply.

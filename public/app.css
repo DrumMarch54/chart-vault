@@ -227,18 +227,20 @@ body.noscroll { overflow: hidden; }
 .ynav { flex-wrap: nowrap; justify-content: space-between; gap: 8px; padding: 0 2px 6px; }
 .ynote { flex: 1; min-width: 0; text-align: center; margin: 0; color: #8a8f9c; }
 .datebox { flex: 1; min-width: 0; min-height: 36px; height: 36px; font: inherit; font-size: 15px; border-radius: 10px; border: 1px solid #e1e3e9; background: #f3f4f7; color: #22252e; padding: 0 8px; }
-.yrows { display: grid; grid-template-columns: 1fr 62px 58px 62px; font-size: 15px; color: #303030; }
-.yrows > div { padding: 5px 3px; border-bottom: 1px solid #eceef2; display: flex; flex-direction: column; justify-content: center; min-height: 44px; }
-.yrows .yh { color: #8a8f9c; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; min-height: 0; text-align: center; }
-.yrows .yh:first-child { text-align: left; }
-.yrows .ydate b { font-weight: 600; font-size: 14px; }
-.yrows .ydate span { color: #8a8f9c; font-size: 12px; line-height: 1.15; }
-.yrows .yv { align-items: center; text-align: center; font: 700 17px/1.15 "Open Sans", system-ui, sans-serif; cursor: pointer; }
+/* One table like the paid tool's: period + formula, then value / aura / shadow for the human self and the psychic self */
+.yrows { display: grid; grid-template-columns: minmax(92px, 1.2fr) repeat(6, minmax(36px, 1fr)); font-size: 13px; color: #303030; margin: 0 -2px; }
+.yrows > div { padding: 5px 2px; border-bottom: 1px solid #eceef2; display: flex; flex-direction: column; justify-content: center; min-height: 42px; }
+.yrows .yh { color: #8a8f9c; font-size: 10px; text-transform: uppercase; letter-spacing: .04em; min-height: 0; text-align: center; padding-top: 2px; padding-bottom: 2px; }
+.yrows .yg { grid-column: span 3; font-weight: 700; color: #5f7990; border-bottom: 0; }
+.yrows .yg:first-child { grid-column: span 1; }
+.yrows .yh.ps { background: #eef4f8; }
+.yrows .ydate b { font-weight: 600; font-size: 12px; }
+.yrows .ydate span { color: #8a8f9c; font-size: 10px; line-height: 1.15; }
+.yrows .yv { align-items: center; text-align: center; font: 600 14px/1.15 "Open Sans", system-ui, sans-serif; cursor: pointer; }
+.yrows .yv.num { background: #4d5a6b; color: #fff; font-weight: 700; }
 .yrows .yv.aura { color: #5f7990; font-weight: 500; }
-.yrows .yv small { font-weight: 400; font-size: 11px; color: #8a8f9c; }
-.yrows .now { background: #fff3cf; }
+.yrows .yv.ps { background: #eef4f8; color: #5f7990; }
+.yrows .yv.ps.num { background: #d7e4ee; color: #2f5673; }
+.yrows .now { box-shadow: inset 0 0 0 100px rgba(240, 182, 74, .28); }
 .tchips .chip .count { color: rgba(255,255,255,.6); font-size: 13px; }
 .tchips .chip .count::before { content: "·"; margin-right: 4px; }
-.cswitch { padding: 0 2px 8px; gap: 6px; }
-.cswitch .chip { min-height: 34px; font-size: 14px; padding: 0 12px; }
-.cswitch .chip.off { background: #eef0f4; color: #6b7080; }
