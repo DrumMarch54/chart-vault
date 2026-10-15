@@ -86,6 +86,33 @@ one-word name. The vault (711 charts, most of them paid-tool
 screenshots) is the reference for anything else: fetch `/img/<id>` with the
 app password and look.
 
+## Single name chart and number pyramid (Module 12, Name Change step 3)
+The paid tool shows this when the mouse hovers a word on the name line; the
+app opens it on a tap. CONFIRMED on the owner's screenshots (Peter, Joshua,
+Shicora, day 19) to the last number.
+- Single name chart = the rhombus with every LETTER as a name: first letter
+  = first name, last letter = surname, letters between = middle names (one
+  extra vibration each in both centers, shown as plain sums under the main
+  vibration: Shicora heart 6/6 + 11 7 9 13 8). Letter values are used as
+  they are (no augmentation). LE = sum of the letters (= the word's value),
+  pillar = day + heart + extras + middle letters + solar + extras + LE
+  (Shicora 86/5). The small circle = letter count. The word's vowels give its
+  vocation chart (LE = heart's desire), its consonants its personality chart.
+  Without a day only the lower half exists.
+- Number pyramid: letter values at the bottom; each row above adds the digit
+  sums of neighbours (14/5 + 10/1 = 6/6) until one number is on top.
+- Weight: tension numbers 11/2 = 0.5 point, 12/3, 16/7, 18/9 = 1 point;
+  pairs 4+4→8, 4+8→12, 13+8→12, 18+12→12, 8+8→16, 16+18→16 = 1 point (exact
+  values of the two cells below). Each point × its row's ratio, row 1 = the
+  letters, row n = the top: ratio(k) = 1 + (n-1)·2^(k-n) (book tables: 4 rows
+  1.375 / 1.75 / 2.5 / 4; 10 rows 1.0176 … 1.2813 (row 5), 3.25 (row 8), 10).
+  A tension number on top adds its points × n once more. Total ratio = total
+  / n(n+1)/2; under 0.3 the name is approved (green), else red.
+  Joshua 2.90625/21 = 0.138, Shicora 6.375/28 = 0.228, Peter 15/15 = 1
+  (11/2 on top: +2.5).
+- A one-word name on the MAIN chart: the word is the first name, the surname
+  side stays empty (owner's rule; the paid tool's drawing for it is unseen).
+
 ## Essence chart (Higher Self) — the purple shape at the top
 Triangle (drawn as a hexagon) with a circle in the middle. Day at the BOTTOM
 point, month top-left corner, year top-right corner.

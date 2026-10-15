@@ -47,6 +47,9 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - `npm run verify` before saying done: syntax of every file + all tests. Spends nothing.
 - `npm test` runs test/*.test.js (node:test). Put the real UserTag.backup at
   data/UserTag.backup to also run the real-file test; it is git-ignored.
+- Quick chart math: `public/numeroscope.js`, rules in `.brain/numerology/`.
+  A one-word name is the first name alone. Tap a name on the line for its own
+  charts and pyramid (`singleName`); every formula there is screenshot-proven.
 - `node tools/dev-app.mjs [port]` runs a THROWAWAY copy with fake charts on
   127.0.0.1:3399 (password `dev`, refuses the live port). Look at it with
   `CHART_VAULT_URL=http://127.0.0.1:3399 LIVE_APP_TOKEN=dev node tools/report.mjs screens <dir>`

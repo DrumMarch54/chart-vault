@@ -59,7 +59,7 @@ test('empty and partial input never throws', () => {
     assert.ok(r.name && r.consonants && r.vowels);
   }
   const one = N.numeroscope({ name: 'Anna' }).name;
-  assert.equal(one.first, one.last);
+  assert.equal(one.first.text, 'Anna'); assert.equal(one.last, null);
 });
 
 test('birth date numbers (course notes)', () => {
@@ -200,4 +200,54 @@ test('augmentation of one-digit names on the main chart (vault screenshots)', ()
   assert.equal(line({ day: 28, month: 10, year: 1955, name: 'William Henry Gates III' }), '19/1 18/9 16/7 13/4'); // 3 + 1 = 4 -> 13
   assert.equal(line({ name: 'Billy Camrick Carson II' }), '10/1 16/7 21/3 2/2'); // no day: nothing to add
   assert.equal(N.numeroscope({ day: 1, name: 'Test test' }).vowels.words.map((w) => w.value.text).join(' '), '5/5 5/5'); // sub-charts never augment
+});
+
+// Module 12: single name charts and number pyramids, checked against the owner's paid-tool screenshots
+// (Peter Joshua Shicora, 19 May 1998: the popup for each name).
+test('single name chart: every letter is a name (Shicora, Joshua, Peter, day 19)', () => {
+  const s = N.singleName('Shicora', 19), n = s.name;
+  assert.equal(s.letters, 7);
+  assert.equal(JSON.stringify(n.words.map((w) => w.text + w.value.sum)), JSON.stringify(['S3', 'h5', 'i1', 'c3', 'o7', 'r2', 'a1']));
+  assert.equal(t(n.upperLeft), '4/4'); assert.equal(t(n.upperRight), '2/2'); assert.equal(t(n.heart), '6/6');
+  assert.equal(n.heartExtra.map((v) => v.sum).join(' '), '11 7 9 13 8');
+  assert.equal(t(n.lowerLeft), '7/7'); assert.equal(t(n.lowerRight), '5/5'); assert.equal(t(n.solar), '12/3');
+  assert.equal(n.solarExtra.map((v) => v.sum).join(' '), '8 4 6 10 5');
+  assert.equal(t(n.le), '22/4'); assert.equal(t(n.pillar), '86/5');
+  // vocation (vowels i o a) and personality (consonants S h c r)
+  assert.equal(t(s.vowels.heart), '4/4'); assert.equal(s.vowels.heartExtra.map((v) => v.sum).join(' '), '11'); assert.equal(t(s.vowels.lowerLeft), '10/1'); assert.equal(t(s.vowels.solar), '2/2'); assert.equal(t(s.vowels.le), '9/9'); assert.equal(t(s.vowels.pillar), '34/7');
+  assert.equal(t(s.consonants.heart), '7/7'); assert.equal(s.consonants.heartExtra.map((v) => v.sum).join(' '), '12 10'); assert.equal(t(s.consonants.solar), '13/4'); assert.equal(t(s.consonants.le), '13/4'); assert.equal(t(s.consonants.pillar), '44/8');
+  const j = N.singleName('Joshua', 19);
+  assert.equal(t(j.name.heart), '4/4'); assert.equal(j.name.heartExtra.map((v) => v.sum).join(' '), '11 7 9 10'); assert.equal(t(j.name.solar), '12/3'); assert.equal(t(j.name.le), '23/5'); assert.equal(t(j.name.pillar), '77/5');
+  assert.equal(t(j.vowels.heart), '10/1'); assert.equal(t(j.vowels.le), '14/5'); assert.equal(t(j.consonants.heart), '8/8'); assert.equal(t(j.consonants.lowerRight), '14/5'); assert.equal(t(j.consonants.pillar), '38/2');
+  const p = N.singleName('Peter', 19);
+  assert.equal(t(p.name.upperLeft), '9/9'); assert.equal(t(p.name.heart), '12/3'); assert.equal(p.name.heartExtra.map((v) => v.sum).join(' '), '8 7 8'); assert.equal(t(p.name.lowerLeft), '14/5'); assert.equal(t(p.name.solar), '13/4'); assert.equal(t(p.name.le), '24/6'); assert.equal(t(p.name.pillar), '77/5');
+  assert.equal(t(p.vowels.heart), '12/3'); assert.equal(t(p.vowels.pillar), '8/8'); assert.equal(t(p.consonants.solar), '11/2'); assert.equal(t(p.consonants.pillar), '28/1');
+  // no day: nothing above the line
+  const nd = N.singleName('Peter', null); assert.equal(nd.name.heart, null); assert.equal(t(nd.name.solar), '13/4'); assert.equal(nd.name.pillar, null);
+  for (const w of ['', '-', 'A', 'Ab']) assert.ok(N.singleName(w, 19).weight);
+});
+
+test('number pyramid and its weight (book formula; Joshua 2.90625/21, Shicora 6.375/28, Peter 15/15)', () => {
+  const rows = (w) => N.singleName(w, 19).pyramid.map((r) => r.map((v) => v.text).join(' '));
+  assert.equal(JSON.stringify(rows('Peter')), JSON.stringify(['8/8 5/5 4/4 5/5 2/2', '13/4 9/9 9/9 7/7', '13/4 18/9 16/7', '13/4 16/7', '11/2']));
+  assert.equal(rows('Shicora')[5], '6/6 4/4'); assert.equal(rows('Shicora')[6], '10/1');
+  const W = (w) => N.singleName(w, 19).weight;
+  const j = W('Joshua'); assert.equal(j.total, 2.90625); assert.equal(j.cells, 21); assert.equal(j.ratio.toFixed(3), '0.138'); assert.equal(j.approved, true);
+  assert.equal(j.numbers.find((x) => x.value.sum === 11).weight, 0.65625); assert.equal(j.numbers.find((x) => x.value.sum === 18).weight, 2.25); assert.equal(j.numbers.find((x) => x.value.sum === 10).count, 5);
+  const s = W('Shicora'); assert.equal(s.total, 6.375); assert.equal(s.cells, 28); assert.equal(s.numbers.find((x) => x.value.sum === 12).count, 3); assert.equal(s.penalty, 0);
+  const p = W('Peter'); assert.equal(p.total, 15); assert.equal(p.cells, 15); assert.equal(p.ratio, 1); assert.equal(p.approved, false); assert.equal(p.penalty, 2.5);
+  assert.equal(p.numbers.find((x) => x.value.sum === 16).weight, 5); assert.equal(p.numbers.find((x) => x.value.sum === 18).weight, 2);
+  assert.equal(p.combos.find((x) => x.a.sum === 16 && x.b.sum === 18).weight, 3); assert.equal(p.combos.filter((x) => x.count).length, 1);
+  // the book's ratio tables: 4 rows 1.375 / 1.75 / 2.5 / 4; 10 rows 1.0176 / 1.2813 (row 5) / 3.25 (row 8) / 10
+  const ratio = (k, n) => 1 + (n - 1) * Math.pow(2, k - n);
+  assert.deepEqual([1, 2, 3, 4].map((k) => ratio(k, 4)), [1.375, 1.75, 2.5, 4]);
+  assert.equal(ratio(1, 10).toFixed(4), '1.0176'); assert.equal(ratio(5, 10), 1.28125); assert.equal(ratio(8, 10), 3.25); assert.equal(ratio(10, 10), 10);
+});
+
+test('one word is the first name alone, never doubled as the surname (Kim)', () => {
+  const n = N.numeroscope({ day: 9, month: 10, year: 1958, name: 'Kim' }).name;
+  assert.equal(n.first.text, 'Kim'); assert.equal(n.last, null); assert.equal(n.middle.length, 0);
+  assert.equal(n.le.ds, n.first.value.ds); assert.equal(n.upperRight, null); assert.equal(n.heart, null); assert.equal(n.solar, null); assert.equal(n.pillar, null); assert.equal(n.leDiamond, null);
+  assert.ok(n.upperLeft && n.lowerLeft && n.spine);
+  const two = N.numeroscope({ day: 9, name: 'Kim Lee' }).name; assert.equal(two.last.text, 'Lee'); assert.ok(two.heart);
 });

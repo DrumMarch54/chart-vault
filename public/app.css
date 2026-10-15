@@ -133,3 +133,34 @@ body.fullscreen { padding-bottom: 0; overflow: hidden; }
 .nscope .n-faded { fill: #cecabf; }
 .nscope .n-blue { fill: #5f7990; }
 .nscope .n-blue.n-bold { fill: #597997; }
+.nscope .n-tap { cursor: pointer; }
+.wordchips { margin-top: 10px; }
+.wordhint { margin: 6px 2px 0; }
+body.noscroll { overflow: hidden; }
+/* one word's own charts (popup) */
+.wordpop { position: fixed; inset: 0; z-index: 35; overflow: auto; background: var(--bg); padding: 8px 12px calc(24px + env(safe-area-inset-bottom)); max-width: 1100px; margin: 0 auto; }
+.wordpop .pagetop h1 { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wordpop h3 { margin: 0 0 6px; font-size: 16px; }
+.wordpop .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.wordpop .two .card { margin: 0; padding: 10px 6px; }
+.wordpop .two .nscope-box, .smallchart .nscope { background: #fff; border-radius: 10px; }
+.smallchart .nscope { padding: 2px; }
+.pyr { background: #fff; border-radius: 10px; padding: 10px 4px; overflow-x: auto; }
+.pyr-row { display: flex; justify-content: center; gap: 2px; }
+.pyr-row span { min-width: 42px; text-align: center; font: 700 14px/22px "Open Sans", system-ui, sans-serif; color: #303030; border-radius: 4px; padding: 0 2px; }
+.pyr-row.letters span { font-weight: 400; color: #666; }
+.pyr .tense { background: #fbe1e4; } .pyr .top-tense { background: #ffe88a; }
+.pyr .n-gray { color: #7f7f7f; } .pyr .n-dark { color: #303030; } .pyr .n-faded { color: #cecabf; } .pyr .n-blue { color: #5f7990; }
+.pyr .n-green1 { color: #689868; } .pyr .n-green2 { color: #53ad53; } .pyr .n-green3 { color: #3ac838; } .pyr .n-green4 { color: #1be41a; }
+.pyr .n-red1 { color: #926967; } .pyr .n-red2 { color: #a35352; } .pyr .n-red3 { color: #b43e3c; }
+.wtable { margin-top: 0; }
+.wrow { display: grid; grid-template-columns: 1fr 56px 70px; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--panel2); font-size: 15px; }
+.wrow span:nth-child(2), .wrow b { text-align: right; }
+.wrow.head { border-bottom-color: var(--muted); }
+.wrow.total { border-bottom: 0; font-size: 17px; padding-top: 8px; }
+.wrow.total b { font-size: 19px; }
+/* full-screen quick chart */
+.nsfull { position: fixed; inset: 0; z-index: 30; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.nsfull .nscope-box { margin: 0; padding: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+.nsfull .nscope { width: 100%; height: 100%; max-height: 100%; }
+.nsfull-x { position: absolute; top: calc(8px + env(safe-area-inset-top)); right: 8px; background: rgba(40,40,50,.75); color: #fff; z-index: 2; }

@@ -56,8 +56,10 @@
   // Middle names (class manual, Katrine Ditte Pilmark): each adds an extra vibration to both
   // centers (center main ds + middle ds) and everything in the central column goes in the pillar.
   function rhombus(words, top) {
+    // One word is the first name alone: the surname side stays empty until a second word is typed
+    // (owner, 2026-10-15: "Kim" must never be shown as "Kim Kim").
     const live = words.filter((w) => w && w.value);
-    const first = live[0] || null, last = live.length > 1 ? live[live.length - 1] : (live[0] || null);
+    const first = live[0] || null, last = live.length > 1 ? live[live.length - 1] : null;
     const middle = live.slice(1, -1);
     const le = live.length ? val(live.reduce((a, w) => a + w.value.ds, 0)) : null;
     const big = live.length ? val(live.reduce((a, w) => a + w.value.sum, 0)) : null;
@@ -78,7 +80,7 @@
       words: live, first, last, middle, le, big,
       upperLeft: ul, upperRight: ur, heart, heartExtra, mindDiamond: joined(ul, ur),
       lowerLeft: ll, lowerRight: lr, solar, solarExtra, emotionDiamond: joined(ll, lr),
-      leDiamond: live.length > 1 ? joined(first.value, last.value) : null,
+      leDiamond: first && last ? joined(first.value, last.value) : null,
       pillar, spineDiamond, spine,
       letters: live.reduce((a, w) => a + w.letters.length, 0),
     };
@@ -141,6 +143,69 @@
     return { essence: e, birth: e, psyche: psyche(e), name: rhombus(all, e.day), consonants: rhombus(cons, e.day), vowels: rhombus(vow, e.day) };
   }
 
+  // Single name chart (Module 12, Name Change method step 3): the numeroscope applied to ONE word, every
+  // letter taking the place of a name. First letter = first name, last letter = surname, the letters
+  // between = middle names (one extra vibration each in both centers). No augmentation: the letter values
+  // are used as they are. CONFIRMED on the owner's paid-tool screenshots (Shicora, Joshua, Peter, day 19):
+  // Shicora 3 5 1 3 7 2 1 -> auras 4/4 2/2 7/7 5/5, heart 6/6 + 11 7 9 13 8, solar 12/3 + 8 4 6 10 5,
+  // LE 22/4, pillar 86/5, 7 letters. Vowels and consonants of the word give its vocation and personality charts.
+  function letterWords(word, filter) {
+    return [...String(word)].filter((c) => c.toUpperCase() in LETTERS && (!filter || filter(c.toUpperCase())))
+      .map((c) => ({ text: c, letters: [c.toUpperCase()], value: val(LETTERS[c.toUpperCase()]) }));
+  }
+
+  // Number pyramid of a word: letter values at the bottom, each row above adds neighbours' digit sums
+  // (14/5 + 10/1 = 6/6) until one number is left at the top. rows[0] is the letter row.
+  function pyramid(values) {
+    const rows = [];
+    let row = values.filter(Boolean);
+    while (row.length) { rows.push(row); if (row.length === 1) break; row = row.slice(1).map((v, i) => val(row[i].ds + v.ds)); }
+    return rows;
+  }
+
+  // Weighting the pyramid (Module 12, "Weighting numbers"): tension numbers 11/2 = 0.5 point, 12/3, 16/7,
+  // 18/9 = 1 point; tension-boosting pairs (4+4 -> 8, 4+8 -> 12, 13+8 -> 12, 18+12 -> 12, 8+8 -> 16,
+  // 16+18 -> 16) 1 point. Each point is multiplied by its row's ratio, which grows exponentially from
+  // row 1 (the letters) to n on row n: ratio(k) = 1 + (n-1) * 2^(k-n). Book examples: 4 rows -> 1.375,
+  // 1.75, 2.5, 4; 10 rows -> 1.0176, ..., 1.2813 (row 5), 3.25 (row 8), 10. A tension number on top adds
+  // its points * n once more. Total ratio = total weight / N, N = n(n+1)/2 cells; under 0.3 is approved.
+  // CONFIRMED on the paid tool: Joshua 2.90625/21, Shicora 6.375/28, Peter 15/15 (11/2 on top, +2.5).
+  const TENSION = { 11: 0.5, 12: 1, 16: 1, 18: 1 };
+  const COMBOS = [[4, 4, 8], [4, 8, 12], [13, 8, 12], [18, 12, 12], [8, 8, 16], [16, 18, 16]];
+  function weighPyramid(rows) {
+    const n = rows.length;
+    if (!n) return { n, cells: 0, numbers: [], combos: [], penalty: 0, top: null, total: 0, ratio: 0, approved: true };
+    const ratio = (k) => 1 + (n - 1) * Math.pow(2, k - n);
+    const numbers = []; // 10/1 .. 18/9, rows 2 and up
+    for (let sum = 10; sum <= 18; sum++) {
+      let count = 0, weight = 0;
+      rows.forEach((row, i) => { if (i === 0) return; for (const v of row) if (v.sum === sum) { count++; weight += (TENSION[sum] || 0) * ratio(i + 1); } });
+      numbers.push({ value: val(sum), count, weight });
+    }
+    const combos = COMBOS.map(([a, b, made]) => {
+      let count = 0, weight = 0;
+      rows.forEach((row, i) => { if (i === 0) return; row.forEach((v, j) => { const p = rows[i - 1][j].sum, q = rows[i - 1][j + 1].sum; if (v.sum === made && ((p === a && q === b) || (p === b && q === a))) { count++; weight += ratio(i + 1); } }); });
+      return { a: val(a), b: val(b), made: val(made), count, weight };
+    });
+    const top = rows[n - 1][0];
+    const penalty = TENSION[top.sum] ? TENSION[top.sum] * n : 0;
+    const total = numbers.reduce((s, x) => s + x.weight, 0) + combos.reduce((s, x) => s + x.weight, 0) + penalty;
+    const cells = n * (n + 1) / 2;
+    return { n, cells, numbers, combos, penalty, top, total, ratio: total / cells, approved: total / cells < 0.3 };
+  }
+
+  function singleName(word, day) {
+    const top = day ? (typeof day === 'object' ? day : val(Number(day) || 0)) : null;
+    const letters = letterWords(word);
+    const rows = pyramid(letters.map((w) => w.value));
+    return {
+      word: String(word || ''), letters: letters.length,
+      name: rhombus(letters, top),
+      consonants: rhombus(letterWords(word, (c) => !VOWELS.has(c)), top),
+      vowels: rhombus(letterWords(word, (c) => VOWELS.has(c)), top),
+      pyramid: rows, weight: weighPyramid(rows),
+    };
+  }
 
   // Layout of the quick chart drawing, in drawing units: the orange diamond's top is y=357, its center
   // x=371, its height 756; text y values are baselines. Shapes measured on the owner's reference
@@ -152,8 +217,8 @@
     hex: { top: 49, ul: 109, ll: 232.5, bottom: 293, hw: 110, circle: [171, 48.6], small: [247, 15],
       text: { topAuraY: 100.6, monthX: 238.5, yearX: 502.8, monthY: 99.5, lpY: 165.6, bigLpY: 197.1, lp: 27.4, auraY: 208.1, auraL: 284, auraR: 455, aura: 22, corner: 24.6 } },
     // sideDx shifts the line values and auras of one psyche chart against its center column (measured).
-    psy: { cxL: 132, cxR: 609, cy: 326.5, hw: 92.5, hh: 138.5, line: 6, up: 55, r: 41, tri: [505.3, 534.8, 14], sideDxL: 1, sideDxR: 4,
-      text: { dvY: 179.7, day: 21.6, auraDx: 70, upY: 254.4, heartY: 276.3, heart: 24.6, nameDxL: -125, nameDxR: 125, lineY: 334, lineFont: 25, lowY: 423.7, solarY: 390.7, leY: 493.1, le: 22.8, pillarY: 538.1, pillar: 19, small: 23 } },
+    psy: { cxL: 132, cxR: 609, cy: 326.5, hw: 92.5, hh: 138.5, line: 6, up: 55, r: 41, tri: [489.5, 540, 24], sideDxL: 1, sideDxR: 4,
+      text: { dvY: 179.7, day: 21.6, auraDx: 70, upY: 254.4, heartY: 276.3, heart: 24.6, nameDxL: -125, nameDxR: 125, lineY: 334, lineFont: 25, lowY: 423.7, solarY: 390.7, leY: 493.1, le: 22.8, pillarY: 536.5, pillar: 21, pillarBold: false, small: 23 } },
     // The two sub-charts are not mirror images: the paid tool anchors the consonant chart's auras at their
     // left edge and the vowel chart's at their right edge, and its line values sit off-center. Measured.
     // Middle names: one sits at the center (main chart: halfway between first and last); two sit at middle2
@@ -164,6 +229,6 @@
       text: { dvY: 895, day: 19.1, upY: 983.8, heartY: 984.4, heart: 22.8, extraUp: 30.8, extra: 14.6, nameY: 1039, name: 16, lineY: 1062.7, lineFont: 19, lowY: 1133.4, solarY: 1100.1, solar: 22.8, extraDown: 27, leY: 1210.4, le: 22.8, pillarY: 1264, pillar: 17.3, small: 20 } },
   };
 
-  const api = { LAYOUT, LETTERS, VOWELS, PLANETS, digitSum, val, add, joined, letterValue, lettersOf, nameWord, rhombus, essence, birth: essence, psyche, rhythm, numeroscope };
+  const api = { LAYOUT, LETTERS, VOWELS, PLANETS, TENSION, digitSum, val, add, joined, letterValue, lettersOf, nameWord, rhombus, essence, birth: essence, psyche, rhythm, numeroscope, letterWords, pyramid, weighPyramid, singleName };
   root.Numeroscope = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

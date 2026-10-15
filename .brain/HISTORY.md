@@ -95,3 +95,31 @@ Brought the app in line with the new-app playbook from the first app:
 - `tools/color-study/vault-inputs.json` (id, date, name of 436 charts) is the
   seed for the owner's wanted feature: find every chart with number N in
   position P, tagged or not. Not built yet; needs a design first.
+
+## 2026-10-15 Quick chart: one name's own charts, pyramid weight, full screen
+- "Kim" typed once showed "Kim Kim": the rhombus made a single word both the
+  first and the last name. Now one word is the first name alone and the
+  surname side stays empty until a second word is typed. What the paid tool
+  draws for a one-word name is still unseen.
+- Tapping a name on the name line (or its chip) opens that word's own charts,
+  the paid tool's hover popup: the numeroscope with every LETTER as a name
+  (first letter = first name, last letter = surname, the rest middle names
+  with one extra vibration each), the word's vowel (vocation) and consonant
+  (personality) charts, the number pyramid and the tension weight. All three
+  of the owner's screenshots (Peter, Joshua, Shicora, day 19) match to the
+  last number, including the pyramid weights.
+- The weight formula was not in the slides, only "exponential, ending in n
+  on row n" with two example tables. Fitting those: ratio(row k of n) =
+  1 + (n-1)·2^(k-n). Tension points: 11/2 = 0.5, 12/3, 16/7, 18/9 = 1; the six
+  boosting pairs 1 each; a tension number on top adds its points × n once
+  more (the "2.5 penalty karma points" line). Total ratio = total / n(n+1)/2,
+  under 0.3 approved. Source: Module 12 (NP-SingleNameChartsNumberPyramids,
+  Drive) and the "6. WEIGHTING THE PYRAMID" transcript.
+- The psyche pillar triangle was a 14-unit stub with a bold number straddling
+  it. Measured on the owner's paid-tool screenshot: apex 489.5, base 540,
+  half-width 24, number regular weight inside it. The psyche diamonds
+  themselves match the paid tool within 2 units (owner suspected they were
+  squashed; measured, they are not).
+- Full screen button on the Quick chart: the chart alone, white, edge to
+  edge, X to leave. The chart element moves into the overlay and back so what
+  was typed stays.

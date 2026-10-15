@@ -81,7 +81,7 @@
 
   // ---------- overlays (sheet, lightbox) ----------
   let overlays = [];
-  function closeOverlays() { for (const o of overlays) o.remove(); overlays = []; }
+  function closeOverlays() { for (const o of overlays) o.remove(); overlays = []; document.body.classList.remove('noscroll'); }
   function sheet(title, actions) {
     const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
     const close = () => { bg.remove(); overlays = overlays.filter((o) => o !== bg); };
@@ -648,9 +648,12 @@
         c.solar && txt(cx, t.solarY, c.solar, tone(pre + 'solar', c.solar, true), t.solar || t.heart),
         ...c.solarExtra.map((v, i) => txt(cx + spread(c.solarExtra.length, t.solarExtra2, i), t.solarY + t.extraDown, v, tone(pre + 'solarExtra', v), t.extra)),
         t.bigX !== undefined && c.big && txt(t.bigX, t.leY, c.big, tone(pre + 'big', c.big, true), t.le), c.le && txt(cx, t.leY, c.le, tone(pre + 'le', c.le, true), t.le),
-        c.pillar && txt(cx, t.pillarY, c.pillar, tone(pre + 'pillar', c.pillar, true), t.pillar),
+        c.pillar && txt(cx, t.pillarY, c.pillar, tone(pre + 'pillar', c.pillar, t.pillarBold !== false), t.pillar),
+        // Main chart only: an invisible tap target over each name and its value opens that word's own charts.
+        ...(lineBold ? [c.first && tap(nL, c.first), ...c.middle.map((w, i) => tap(t.middle2 && c.middle.length <= 2 ? cx + spread(c.middle.length, t.middle2, i) : nL + (nR - nL) * (i + 1) / (c.middle.length + 1), w)), c.last && tap(nR, c.last)] : []),
       ];
     };
+    const tap = (x, w) => sv('rect', { x: x - 50, y: L.main.text.nameY - 32, width: 100, height: 88, fill: 'transparent', class: 'n-tap', 'data-word': w.text, role: 'button', 'aria-label': `Charts of the name ${w.text}` });
     const day = data.essence.day;
     svg.append(...numbers('', data.name, { ...M.text, bigX: M.big[0] }, M.cx, day).filter(Boolean));
     svg.append(...numbers('c.', data.consonants, { ...S.text, ...S.left }, S.left.cx, day).filter(Boolean), ...numbers('v.', data.vowels, { ...S.text, ...S.right }, S.right.cx, day).filter(Boolean));
@@ -667,16 +670,108 @@
       txt(371, T.lpY, e.littleLp, 'n-dark n-bold', T.lp), txt(371, T.bigLpY, e.bigLp, 'n-dark n-bold', T.lp));
     return svg;
   }
+  // One word's own charts (Module 12): the numeroscope with every letter as a name, its vowel
+  // (vocation) and consonant (personality) charts, the number pyramid and its tension weight.
+  // Drawn in its own 400x440 box; the small charts are the same drawing at a smaller width.
+  function singleNameSvg(c, pre, count, day) {
+    const cx = 200, cy = 200, hw = 150, hh = 150, up = 66, r = 44, stroke = '#8fb4d9';
+    const svg = sv('svg', { viewBox: '0 0 400 440', class: 'nscope single', role: 'img', 'aria-label': 'Single name chart' });
+    svg.append(sv('polygon', { points: `${cx},${cy - hh} ${cx + hw},${cy} ${cx},${cy + hh} ${cx - hw},${cy}`, fill: '#fff', stroke, 'stroke-width': 2.5 }),
+      sv('line', { x1: cx - hw, y1: cy, x2: cx + hw, y2: cy, stroke, 'stroke-width': 2.5 }),
+      sv('circle', { cx, cy: cy - up, r, fill: '#fff', stroke: '#cfe0f0', 'stroke-width': 2 }), sv('circle', { cx, cy: cy + up, r, fill: '#fff', stroke: '#cfe0f0', 'stroke-width': 2 }),
+      sv('circle', { cx, cy: cy + hh + 28, r: 25, fill: '#f0f0f4' }), sv('polygon', { points: `${cx},${cy + hh + 56} ${cx + 22},${cy + hh + 86} ${cx - 22},${cy + hh + 86}`, fill: '#dde6ef' }),
+      sv('circle', { cx: cx + hw * 0.74, cy: cy - hh + 14, r: 17, fill: '#fff', stroke: '#c7c7cf', 'stroke-width': 2 }));
+    const txt = (x, y, v, cls, size, anchor) => (v ? sv('text', { x, y, class: cls, 'font-size': size, 'text-anchor': anchor || 'middle' }, typeof v === 'string' ? v : v.text) : null);
+    const tone = (slot, v, bold) => 'n-' + NumberColors.lookup(slot, v ? v.text : '', false) + (bold ? ' n-bold' : '');
+    const plain = (vals) => vals.map((v) => String(v.sum)).join('  ');
+    const letters = c.words, n = letters.length, span = hw * 0.78;
+    const xAt = (i) => (n <= 1 ? cx : cx - span + 2 * span * i / (n - 1));
+    const hasX = c.heartExtra.length > 0, hasS = c.solarExtra.length > 0;
+    svg.append(...[
+      day && txt(cx, cy - hh - 14, day, 'n-gray', 21),
+      count ? txt(cx + hw * 0.74, cy - hh + 20, String(count), 'n-gray n-bold', 17) : null,
+      c.upperLeft && txt(cx - hw * 0.56, cy - hh * 0.46, c.upperLeft, tone(pre + 'ul', c.upperLeft), 21, 'end'), c.upperRight && txt(cx + hw * 0.56, cy - hh * 0.46, c.upperRight, tone(pre + 'ur', c.upperRight), 21, 'start'),
+      c.heart && txt(cx, cy - up + (hasX ? -4 : 8), c.heart, tone(pre + 'heart', c.heart, true), 24),
+      hasX && txt(cx, cy - up + 18, plain(c.heartExtra), tone(pre + 'heartExtra', c.heartExtra[0]), 13),
+      ...letters.flatMap((w, i) => [txt(xAt(i), cy - 7, w.text, 'n-dark', 22), txt(xAt(i), cy + 21, String(w.value.sum), 'n-dark' + (i === 0 || i === n - 1 ? ' n-bold' : ''), 20)]),
+      c.lowerLeft && txt(cx - hw * 0.56, cy + hh * 0.46 + 8, c.lowerLeft, tone(pre + 'll', c.lowerLeft), 21, 'end'), c.lowerRight && txt(cx + hw * 0.56, cy + hh * 0.46 + 8, c.lowerRight, tone(pre + 'lr', c.lowerRight), 21, 'start'),
+      c.solar && txt(cx, cy + up + (hasS ? -2 : 8), c.solar, tone(pre + 'solar', c.solar, true), 24),
+      hasS && txt(cx, cy + up + 20, plain(c.solarExtra), tone(pre + 'solarExtra', c.solarExtra[0]), 13),
+      c.le && txt(cx, cy + hh + 36, c.le, tone(pre + 'le', c.le, true), 24),
+      c.pillar && txt(cx, cy + hh + 82, c.pillar, 'n-gray', 15),
+    ].filter(Boolean));
+    return svg;
+  }
+  const fmtW = (x) => String(Number(x.toFixed(5)));
+  function pyramidEl(r) {
+    const rows = r.pyramid.slice().reverse();
+    const W = r.weight, topCell = W.top;
+    const cls = (v, i) => { const t = Numeroscope.TENSION[v.sum]; return 'n-' + (v.sum < 10 ? 'dark' : NumberColors.lookup('first', v.text, false)) + (t ? (i === 0 ? ' top-tense' : ' tense') : ''); };
+    return h('div', { class: 'pyr' },
+      ...rows.map((row, i) => h('div', { class: 'pyr-row' }, ...row.map((v) => h('span', { class: cls(v, i) }, i === rows.length - 1 ? String(v.sum) : v.text)))),
+      h('div', { class: 'pyr-row letters' }, ...r.name.words.map((w) => h('span', {}, w.text))),
+      topCell && Numeroscope.TENSION[topCell.sum] ? h('p', { class: 'err small', style: 'margin:8px 0 0' }, `The top of the pyramid is ${topCell.text}: ${fmtW(W.penalty)} penalty points added.`) : null);
+  }
+  function weightEl(W) {
+    const row = (label, count, weight) => h('div', { class: 'wrow' + (count ? '' : ' muted') }, h('span', {}, label), h('span', {}, `× ${count}`), h('b', {}, fmtW(weight)));
+    return h('div', { class: 'card wtable' },
+      h('div', { class: 'wrow head muted small' }, h('span', {}, 'In the pyramid'), h('span', {}, 'Count'), h('span', {}, 'Weight')),
+      ...W.numbers.map((x) => row(x.value.text, x.count, x.weight)),
+      ...W.combos.map((x) => row(`${x.made.sum} from ${x.a.sum} + ${x.b.sum}`, x.count, x.weight)),
+      W.penalty ? row(`${W.top.text} on top, penalty`, 1, W.penalty) : null,
+      h('div', { class: 'wrow total' }, h('span', {}, 'Total weight'), h('span', {}), h('b', {}, fmtW(W.total))),
+      h('div', { class: 'wrow total' }, h('span', {}, 'Total ratio'), h('span', {}, `${fmtW(W.total)} / ${W.cells}`), h('b', { class: W.approved ? 'ok' : 'err' }, W.ratio.toFixed(3))),
+      h('p', { class: 'muted small', style: 'margin:8px 0 0' }, W.approved ? 'Under 0.3: the name is approved.' : '0.3 or over: the name is not approved.'));
+  }
+  // The popup for one word of the name line.
+  function openWord(word, day) {
+    const r = Numeroscope.singleName(word, day);
+    if (!r.letters) return;
+    day = day && day.text ? day : null;
+    const close = () => { $pop.remove(); overlays = overlays.filter((o) => o !== $pop); document.body.classList.remove('noscroll'); window.removeEventListener('keydown', keys); };
+    const keys = (e) => { if (e.key === 'Escape') close(); };
+    const small = (title, c, pre, le, leLabel) => h('div', { class: 'card smallchart' }, h('h3', {}, title), singleNameSvg(c, pre, c.words.length, day),
+      h('p', { class: 'small', style: 'margin:4px 0 0;text-align:center' }, le ? `${leLabel} ${le.text}` : `No ${pre === 'v.' ? 'vowels' : 'consonants'}`));
+    const $pop = h('div', { class: 'wordpop' },
+      h('div', { class: 'pagetop' }, h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Close', onclick: close }, '‹'), h('h1', {}, word), h('span', { class: 'muted small' }, `${r.letters} letters`)),
+      day ? null : h('p', { class: 'muted small', style: 'margin:0 0 8px' }, 'Type a birth day to see the top half of the chart and the pillar.'),
+      h('div', { class: 'nscope-box' }, singleNameSvg(r.name, '', r.letters, day)),
+      h('div', { class: 'two' }, small('Vocation', r.vowels, 'v.', r.vowels.le, "Vowels. Heart's desire"), small('Personality', r.consonants, 'c.', r.consonants.le, 'Consonants. Personality')),
+      h('div', { class: 'card' }, h('h3', {}, 'Number pyramid'), pyramidEl(r)),
+      h('h3', { style: 'margin:14px 0 4px' }, 'Weight of the pyramid'), weightEl(r.weight));
+    overlays.push($pop); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
+  }
+
   routes.quick = function quickView() {
     const field = (ph, attrs = {}) => h('input', { type: 'text', inputmode: 'numeric', placeholder: ph, autocomplete: 'off', ...attrs });
     const $day = field('day', { maxlength: 2 }), $month = field('month', { maxlength: 2 }), $year = field('year', { maxlength: 4 });
     const $name = h('input', { type: 'text', placeholder: 'Full name', autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false' });
     const $chart = h('div', { class: 'nscope-box' });
-    const draw = () => fill($chart, numeroscopeSvg(Numeroscope.numeroscope({ day: $day.value, month: $month.value, year: $year.value, name: $name.value })));
+    const $words = h('div', { class: 'chips wordchips' });
+    const $hint = h('p', { class: 'muted small wordhint' }, 'Tap a name on the chart, or a chip, to see that name on its own.');
+    let data = null;
+    const draw = () => {
+      data = Numeroscope.numeroscope({ day: $day.value, month: $month.value, year: $year.value, name: $name.value });
+      fill($chart, numeroscopeSvg(data));
+      fill($words, ...data.name.words.map((w) => h('button', { type: 'button', class: 'chip', onclick: () => openWord(w.text, data.essence.day) }, w.text, h('span', { class: 'x' }, '›'))));
+      $hint.classList.toggle('hidden', !data.name.words.length);
+    };
+    $chart.addEventListener('click', (e) => { const t = e.target.closest && e.target.closest('[data-word]'); if (t) openWord(t.getAttribute('data-word'), data && data.essence.day); });
     for (const el of [$day, $month, $year, $name]) el.addEventListener('input', draw);
-    render(h('div', { class: 'screen' }, pageTop('Quick chart', '#/'),
+    // Full screen: the chart alone, edge to edge, until the X is tapped. The chart element moves into the
+    // overlay and back, so what was typed stays. Leaving the screen closes it (route() clears overlays).
+    const $full = h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Full screen', title: 'Full screen' }, '⤢');
+    const $home = h('div', { class: 'nscope-home' }, $chart);
+    $full.onclick = () => {
+      const close = () => { $ov.remove(); overlays = overlays.filter((o) => o !== $ov); document.body.classList.remove('fullscreen'); $home.append($chart); window.removeEventListener('keydown', keys); if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {}); };
+      const keys = (e) => { if (e.key === 'Escape') close(); };
+      const $ov = h('div', { class: 'nsfull' }, h('button', { type: 'button', class: 'btn iconbtn nsfull-x', 'aria-label': 'Leave full screen', onclick: close }, '×'), $chart);
+      overlays.push($ov); document.body.append($ov); document.body.classList.add('fullscreen'); window.addEventListener('keydown', keys);
+      if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {});
+    };
+    render(h('div', { class: 'screen' }, h('div', { class: 'pagetop' }, h('a', { class: 'btn iconbtn', href: '#/', 'aria-label': 'Back' }, '‹'), h('h1', { style: 'flex:1' }, 'Quick chart'), $full),
       h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, $day, $month, $year),
-      h('div', { style: 'margin-top:8px' }, $name), $chart));
+      h('div', { style: 'margin-top:8px' }, $name), $words, $hint, $home));
     draw();
     setTimeout(() => $name.focus(), 50);
   };
