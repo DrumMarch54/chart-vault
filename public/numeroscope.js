@@ -56,10 +56,12 @@
   // Middle names (class manual, Katrine Ditte Pilmark): each adds an extra vibration to both
   // centers (center main ds + middle ds) and everything in the central column goes in the pillar.
   function rhombus(words, top) {
-    // One word is the first name alone: the surname side stays empty until a second word is typed
-    // (owner, 2026-10-15: "Kim" must never be shown as "Kim Kim").
+    // One word: only the word and its value on the line, nothing else (paid tool, "Muslim" screenshot:
+    // main line 21/3, consonant line Mslm 14/5, vowel line ui 7/7, no LE, no auras, no centers).
     const live = words.filter((w) => w && w.value);
     const first = live[0] || null, last = live.length > 1 ? live[live.length - 1] : null;
+    const letters = live.reduce((a, w) => a + w.letters.length, 0);
+    if (live.length < 2) return { words: live, first, last: null, middle: [], le: null, big: null, upperLeft: null, upperRight: null, heart: null, heartExtra: [], mindDiamond: null, lowerLeft: null, lowerRight: null, solar: null, solarExtra: [], emotionDiamond: null, leDiamond: null, pillar: null, spineDiamond: null, spine: null, letters };
     const middle = live.slice(1, -1);
     const le = live.length ? val(live.reduce((a, w) => a + w.value.ds, 0)) : null;
     const big = live.length ? val(live.reduce((a, w) => a + w.value.sum, 0)) : null;
@@ -81,8 +83,7 @@
       upperLeft: ul, upperRight: ur, heart, heartExtra, mindDiamond: joined(ul, ur),
       lowerLeft: ll, lowerRight: lr, solar, solarExtra, emotionDiamond: joined(ll, lr),
       leDiamond: first && last ? joined(first.value, last.value) : null,
-      pillar, spineDiamond, spine,
-      letters: live.reduce((a, w) => a + w.letters.length, 0),
+      pillar, spineDiamond, spine, letters,
     };
   }
 

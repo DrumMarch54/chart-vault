@@ -154,6 +154,14 @@ body.noscroll { overflow: hidden; }
 .pyr .n-green1 { color: #689868; } .pyr .n-green2 { color: #53ad53; } .pyr .n-green3 { color: #3ac838; } .pyr .n-green4 { color: #1be41a; }
 .pyr .n-red1 { color: #926967; } .pyr .n-red2 { color: #a35352; } .pyr .n-red3 { color: #b43e3c; }
 .wtable { margin-top: 0; }
+.verdict { display: flex; justify-content: space-between; align-items: center; font-size: 17px; }
+.verdict b { font-size: 19px; }
+.tabbar { display: flex; gap: 8px; margin: 2px 0 10px; }
+.tabbar .chip { flex: 1; justify-content: center; }
+.beside { display: grid; grid-template-columns: 3fr 2fr; gap: 8px; align-items: start; }
+.beside .nscope-box { margin: 0; }
+.two.stacked { grid-template-columns: 1fr; gap: 8px; }
+.two.stacked .card { padding: 6px 4px; } .two.stacked h3 { font-size: 13px; margin: 0 0 2px; text-align: center; } .two.stacked p { font-size: 12px; }
 .wrow { display: grid; grid-template-columns: 1fr 56px 70px; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--panel2); font-size: 15px; }
 .wrow span:nth-child(2), .wrow b { text-align: right; }
 .wrow.head { border-bottom-color: var(--muted); }

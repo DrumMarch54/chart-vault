@@ -244,10 +244,12 @@ test('number pyramid and its weight (book formula; Joshua 2.90625/21, Shicora 6.
   assert.equal(ratio(1, 10).toFixed(4), '1.0176'); assert.equal(ratio(5, 10), 1.28125); assert.equal(ratio(8, 10), 3.25); assert.equal(ratio(10, 10), 10);
 });
 
-test('one word is the first name alone, never doubled as the surname (Kim)', () => {
+test('one word shows only its value on the line, nothing else (paid tool, Muslim)', () => {
+  const r = N.numeroscope({ name: 'Muslim' });
+  assert.equal(r.name.first.text, 'Muslim'); assert.equal(t(r.name.first.value), '21/3'); assert.equal(r.name.last, null); assert.equal(r.name.letters, 6);
+  assert.equal(r.consonants.first.text, 'Mslm'); assert.equal(t(r.consonants.first.value), '14/5'); assert.equal(r.vowels.first.text, 'ui'); assert.equal(t(r.vowels.first.value), '7/7');
+  for (const c of [r.name, r.consonants, r.vowels]) for (const k of ['le', 'big', 'upperLeft', 'lowerLeft', 'heart', 'solar', 'pillar', 'spine']) assert.equal(c[k], null, k);
   const n = N.numeroscope({ day: 9, month: 10, year: 1958, name: 'Kim' }).name;
-  assert.equal(n.first.text, 'Kim'); assert.equal(n.last, null); assert.equal(n.middle.length, 0);
-  assert.equal(n.le.ds, n.first.value.ds); assert.equal(n.upperRight, null); assert.equal(n.heart, null); assert.equal(n.solar, null); assert.equal(n.pillar, null); assert.equal(n.leDiamond, null);
-  assert.ok(n.upperLeft && n.lowerLeft && n.spine);
-  const two = N.numeroscope({ day: 9, name: 'Kim Lee' }).name; assert.equal(two.last.text, 'Lee'); assert.ok(two.heart);
+  assert.equal(n.first.text, 'Kim'); assert.equal(n.last, null); assert.equal(n.le, null); assert.equal(n.upperLeft, null);
+  const two = N.numeroscope({ day: 9, name: 'Kim Lee' }).name; assert.equal(two.last.text, 'Lee'); assert.ok(two.heart && two.le);
 });

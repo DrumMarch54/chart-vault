@@ -674,8 +674,8 @@
   // (vocation) and consonant (personality) charts, the number pyramid and its tension weight.
   // Drawn in its own 400x440 box; the small charts are the same drawing at a smaller width.
   function singleNameSvg(c, pre, count, day) {
-    const cx = 200, cy = 200, hw = 150, hh = 150, up = 66, r = 44, stroke = '#8fb4d9';
-    const svg = sv('svg', { viewBox: '0 0 400 440', class: 'nscope single', role: 'img', 'aria-label': 'Single name chart' });
+    const cx = 200, cy = 240, hw = 150, hh = 205, up = 80, r = 60, stroke = '#8fb4d9';
+    const svg = sv('svg', { viewBox: '0 0 400 540', class: 'nscope single', role: 'img', 'aria-label': 'Single name chart' });
     svg.append(sv('polygon', { points: `${cx},${cy - hh} ${cx + hw},${cy} ${cx},${cy + hh} ${cx - hw},${cy}`, fill: '#fff', stroke, 'stroke-width': 2.5 }),
       sv('line', { x1: cx - hw, y1: cy, x2: cx + hw, y2: cy, stroke, 'stroke-width': 2.5 }),
       sv('circle', { cx, cy: cy - up, r, fill: '#fff', stroke: '#cfe0f0', 'stroke-width': 2 }), sv('circle', { cx, cy: cy + up, r, fill: '#fff', stroke: '#cfe0f0', 'stroke-width': 2 }),
@@ -691,12 +691,12 @@
       day && txt(cx, cy - hh - 14, day, 'n-gray', 21),
       count ? txt(cx + hw * 0.74, cy - hh + 20, String(count), 'n-gray n-bold', 17) : null,
       c.upperLeft && txt(cx - hw * 0.56, cy - hh * 0.46, c.upperLeft, tone(pre + 'ul', c.upperLeft), 21, 'end'), c.upperRight && txt(cx + hw * 0.56, cy - hh * 0.46, c.upperRight, tone(pre + 'ur', c.upperRight), 21, 'start'),
-      c.heart && txt(cx, cy - up + (hasX ? -4 : 8), c.heart, tone(pre + 'heart', c.heart, true), 24),
-      hasX && txt(cx, cy - up + 18, plain(c.heartExtra), tone(pre + 'heartExtra', c.heartExtra[0]), 13),
+      c.heart && txt(cx, cy - up + (hasX ? -2 : 9), c.heart, tone(pre + 'heart', c.heart, true), 26),
+      hasX && txt(cx, cy - up + 22, plain(c.heartExtra), tone(pre + 'heartExtra', c.heartExtra[0]), 14),
       ...letters.flatMap((w, i) => [txt(xAt(i), cy - 7, w.text, 'n-dark', 22), txt(xAt(i), cy + 21, String(w.value.sum), 'n-dark' + (i === 0 || i === n - 1 ? ' n-bold' : ''), 20)]),
       c.lowerLeft && txt(cx - hw * 0.56, cy + hh * 0.46 + 8, c.lowerLeft, tone(pre + 'll', c.lowerLeft), 21, 'end'), c.lowerRight && txt(cx + hw * 0.56, cy + hh * 0.46 + 8, c.lowerRight, tone(pre + 'lr', c.lowerRight), 21, 'start'),
-      c.solar && txt(cx, cy + up + (hasS ? -2 : 8), c.solar, tone(pre + 'solar', c.solar, true), 24),
-      hasS && txt(cx, cy + up + 20, plain(c.solarExtra), tone(pre + 'solarExtra', c.solarExtra[0]), 13),
+      c.solar && txt(cx, cy + up + (hasS ? -1 : 9), c.solar, tone(pre + 'solar', c.solar, true), 26),
+      hasS && txt(cx, cy + up + 23, plain(c.solarExtra), tone(pre + 'solarExtra', c.solarExtra[0]), 14),
       c.le && txt(cx, cy + hh + 36, c.le, tone(pre + 'le', c.le, true), 24),
       c.pillar && txt(cx, cy + hh + 82, c.pillar, 'n-gray', 15),
     ].filter(Boolean));
@@ -723,26 +723,46 @@
       h('div', { class: 'wrow total' }, h('span', {}, 'Total ratio'), h('span', {}, `${fmtW(W.total)} / ${W.cells}`), h('b', { class: W.approved ? 'ok' : 'err' }, W.ratio.toFixed(3))),
       h('p', { class: 'muted small', style: 'margin:8px 0 0' }, W.approved ? 'Under 0.3: the name is approved.' : '0.3 or over: the name is not approved.'));
   }
-  // The popup for one word of the name line.
+  // The popup for one word of the name line. layout: a stacked, b pyramid first + table folded,
+  // c tabs, d chart beside the small charts (brainstorm 2026-10-15, the owner picks one).
+  let wordLayout = 'a';
   function openWord(word, day) {
     const r = Numeroscope.singleName(word, day);
     if (!r.letters) return;
     day = day && day.text ? day : null;
     const close = () => { $pop.remove(); overlays = overlays.filter((o) => o !== $pop); document.body.classList.remove('noscroll'); window.removeEventListener('keydown', keys); };
     const keys = (e) => { if (e.key === 'Escape') close(); };
+    const W = r.weight;
     const small = (title, c, pre, le, leLabel) => h('div', { class: 'card smallchart' }, h('h3', {}, title), singleNameSvg(c, pre, c.words.length, day),
       h('p', { class: 'small', style: 'margin:4px 0 0;text-align:center' }, le ? `${leLabel} ${le.text}` : `No ${pre === 'v.' ? 'vowels' : 'consonants'}`));
-    const $pop = h('div', { class: 'wordpop' },
-      h('div', { class: 'pagetop' }, h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Close', onclick: close }, '‹'), h('h1', {}, word), h('span', { class: 'muted small' }, `${r.letters} letters`)),
-      day ? null : h('p', { class: 'muted small', style: 'margin:0 0 8px' }, 'Type a birth day to see the top half of the chart and the pillar.'),
-      h('div', { class: 'nscope-box' }, singleNameSvg(r.name, '', r.letters, day)),
-      h('div', { class: 'two' }, small('Vocation', r.vowels, 'v.', r.vowels.le, "Vowels. Heart's desire"), small('Personality', r.consonants, 'c.', r.consonants.le, 'Consonants. Personality')),
-      h('div', { class: 'card' }, h('h3', {}, 'Number pyramid'), pyramidEl(r)),
-      h('h3', { style: 'margin:14px 0 4px' }, 'Weight of the pyramid'), weightEl(r.weight));
+    const verdict = () => h('div', { class: 'verdict card' }, h('span', {}, 'Pyramid ratio'), h('b', { class: W.approved ? 'ok' : 'err' }, `${W.ratio.toFixed(3)} ${W.approved ? 'approved' : 'not approved'}`));
+    const $chart = h('div', { class: 'nscope-box sec-chart' }, singleNameSvg(r.name, '', r.letters, day));
+    const $subs = h('div', { class: 'two sec-subs' }, small('Vocation', r.vowels, 'v.', r.vowels.le, "Vowels. Heart's desire"), small('Personality', r.consonants, 'c.', r.consonants.le, 'Consonants. Personality'));
+    const $pyr = h('div', { class: 'card sec-pyr' }, h('h3', {}, 'Number pyramid'), pyramidEl(r));
+    const $table = h('div', { class: 'sec-table' }, h('h3', { style: 'margin:14px 0 4px' }, 'Weight of the pyramid'), weightEl(W));
+    const top = h('div', { class: 'pagetop' }, h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Close', onclick: close }, '‹'), h('h1', {}, word), h('span', { class: 'muted small' }, `${r.letters} letters`));
+    const noDay = day ? null : h('p', { class: 'muted small', style: 'margin:0 0 8px' }, 'Type a birth day to see the top half of the chart and the pillar.');
+    let body;
+    if (wordLayout === 'b') {
+      const $fold = h('button', { type: 'button', class: 'btn btn-block', onclick: () => { $table.classList.toggle('hidden'); $fold.textContent = $table.classList.contains('hidden') ? 'Show the weight table' : 'Hide the weight table'; } }, 'Show the weight table');
+      $table.classList.add('hidden');
+      body = [$chart, $pyr, verdict(), $subs, $fold, $table];
+    } else if (wordLayout === 'c') {
+      const tabs = [['Chart', [$chart, $subs]], ['Pyramid', [$pyr, verdict()]], ['Weight', [$table]]];
+      const $panes = tabs.map(([, els]) => h('div', { class: 'tabpane hidden' }, ...els));
+      const $bar = h('div', { class: 'tabbar' }, ...tabs.map(([name], i) => h('button', { type: 'button', class: 'chip', onclick: () => show(i) }, name)));
+      const show = (i) => { $panes.forEach((p, j) => p.classList.toggle('hidden', j !== i)); [...$bar.children].forEach((b, j) => b.classList.toggle('active', j === i)); $pop.scrollTo(0, 0); };
+      body = [$bar, ...$panes]; setTimeout(() => show(0), 0);
+    } else if (wordLayout === 'd') {
+      $subs.classList.add('stacked');
+      body = [h('div', { class: 'beside' }, $chart, $subs), $pyr, $table];
+    } else body = [$chart, $subs, $pyr, $table];
+    const $pop = h('div', { class: 'wordpop', 'data-layout': wordLayout }, top, noDay, ...body);
     overlays.push($pop); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
   }
 
-  routes.quick = function quickView() {
+  routes.quick = function quickView(arg, query) {
+    wordLayout = /^[abcd]$/.test(query.get('layout') || '') ? query.get('layout') : 'a';
     const field = (ph, attrs = {}) => h('input', { type: 'text', inputmode: 'numeric', placeholder: ph, autocomplete: 'off', ...attrs });
     const $day = field('day', { maxlength: 2 }), $month = field('month', { maxlength: 2 }), $year = field('year', { maxlength: 4 });
     const $name = h('input', { type: 'text', placeholder: 'Full name', autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false' });
