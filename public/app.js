@@ -243,13 +243,13 @@
     render(h('div', { class: 'screen' },
       h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), $quick, $gear), (tags.length || kind === 'archetype') ? $filters : null),
       $searches, $recent, home ? null : $summary, home ? null : $grid, home ? null : $sentinel));
-    // Recently opened charts (this phone remembers the last 12), only on the home screen.
+    // Recently opened charts (this phone remembers the last 48), a grid like a search result, only on the home screen.
     if (home && recentIds().length) {
       api('/api/images?ids=' + recentIds().join(',') + '&limit=50').then((r) => {
         const byId = new Map(r.items.map((i) => [i.id, i]));
         const items = recentIds().map((id) => byId.get(id)).filter(Boolean);
         if (!items.length) return;
-        fill($recent, h('div', { class: 'summary', style: 'padding-bottom:4px' }, 'Recently opened'), h('div', { class: 'recent-row' }, ...items.map(cell)));
+        fill($recent, h('div', { class: 'summary', style: 'padding-bottom:4px' }, 'Recently opened'), h('div', { class: 'grid' }, ...items.map(cell)));
         $recent.classList.remove('hidden');
       }).catch(() => {});
     }
@@ -284,8 +284,8 @@
   };
   const kindOf = (name) => (/^\d+$/.test(name) ? 'number' : /^\d+[A-Za-z]/.test(name) ? 'position' : 'name');
   // The last charts opened on this phone, newest first (browser storage; may be empty or blocked).
-  const recentIds = () => { try { return (JSON.parse(localStorage.getItem('recent') || '[]') || []).filter(Number.isInteger).slice(0, 12); } catch { return []; } };
-  const rememberOpened = (id) => { try { localStorage.setItem('recent', JSON.stringify([id, ...recentIds().filter((x) => x !== id)].slice(0, 12))); } catch {} };
+  const recentIds = () => { try { return (JSON.parse(localStorage.getItem('recent') || '[]') || []).filter(Number.isInteger).slice(0, 48); } catch { return []; } };
+  const rememberOpened = (id) => { try { localStorage.setItem('recent', JSON.stringify([id, ...recentIds().filter((x) => x !== id)].slice(0, 48))); } catch {} };
   // The last searches made on this phone, newest first: [{ tags, kind }]. Adding a tag to a search
   // replaces the narrower search it grew from, so one lookup does not leave a trail of half-searches.
   const recentSearches = () => { try { return (JSON.parse(localStorage.getItem('searches') || '[]') || []).filter((s) => s && Array.isArray(s.tags) && s.tags.length).slice(0, 20); } catch { return []; } };
@@ -872,9 +872,13 @@
         go(`#/chart/${r.id}?sheet=1`);
       } catch (err) { toast(err.message, true); $save.disabled = false; $save.textContent = 'Save to vault'; $menu.classList.add('hidden'); }
     };
-    render(h('div', { class: 'screen' },
-      h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px;margin-top:4px' }, h('a', { class: 'btn iconbtn', href: '#/', 'aria-label': 'Back' }, '‹'), $day, $month, $year),
-      h('div', { class: 'row qname', style: 'flex-wrap:nowrap;gap:8px;margin-top:8px' }, $name, $dots, $menu), $home));
+    // The whole screen is white like the chart card, the fields are small, the chart runs edge to edge:
+    // the chart is what this screen is for. The light look is undone when another screen takes over.
+    document.documentElement.classList.add('light');
+    viewerCleanup = () => document.documentElement.classList.remove('light');
+    render(h('div', { class: 'screen qscreen' },
+      h('div', { class: 'row qfields' }, h('a', { class: 'btn iconbtn', href: '#/', 'aria-label': 'Back' }, '‹'), $day, $month, $year),
+      h('div', { class: 'row qfields qname' }, $name, $dots, $menu), $home));
     draw();
     setTimeout(() => $name.focus(), 50);
   };

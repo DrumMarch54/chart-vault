@@ -171,3 +171,9 @@ Brought the app in line with the new-app playbook from the first app:
 - `tools/report.mjs screens` said "Login was refused" with the right
   password: it waited for `#nav`, removed with the tab bar two builds ago.
   Lesson: when a screen element goes, grep tools/ and test/ for it too.
+- Same day: the owner wanted the recently opened charts as the old scrolling
+  grid, not a side-scroller (now 48, grid like a search result). Quick chart
+  screen: the black band under the white card felt "claustrophobic"; the
+  screen is white end to end (`html.light`, set on the root, undone through
+  viewerCleanup when another screen takes over), fields 40px, chart edge to
+  edge. The white on body alone left the band: html has its own background.
