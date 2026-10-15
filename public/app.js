@@ -293,6 +293,7 @@
     $sheet.addEventListener('pointerup', (e) => { if (gripY !== null && e.clientY - gripY > 40) closeSheet(); gripY = null; });
 
     try { img = await api(`/api/images/${id}`); } catch (err) { fill($sheetBody, h('p', { class: 'err' }, err.message)); openSheet(); return; }
+    if (query.get('sheet')) openSheet();
     if (img.has_file) { $img.src = `/img/${img.id}`; } else { $img.alt = ''; fill($stage, h('div', { class: 'center', style: 'min-height:100%' }, h('p', { class: 'muted' }, 'No picture for this chart yet.'), h('a', { class: 'btn', href: '#/upload' }, 'Go to Upload'))); }
     $name.textContent = img.kind === 'archetype' ? img.tags.map((t) => t.name).join(', ') : ((img.tags.find((t) => t.kind === 'name') || {}).name || '');
     api(`/api/images/${id}/context?${listQ}`).then((c) => {
@@ -723,9 +724,8 @@
       h('div', { class: 'wrow total' }, h('span', {}, 'Total ratio'), h('span', {}, `${fmtW(W.total)} / ${W.cells}`), h('b', { class: W.approved ? 'ok' : 'err' }, W.ratio.toFixed(3))),
       h('p', { class: 'muted small', style: 'margin:8px 0 0' }, W.approved ? 'Under 0.3: the name is approved.' : '0.3 or over: the name is not approved.'));
   }
-  // The popup for one word of the name line. layout: a stacked, b pyramid first + table folded,
-  // c tabs, d chart beside the small charts (brainstorm 2026-10-15, the owner picks one).
-  let wordLayout = 'a';
+  // The popup for one word of the name line: pyramid first with its weight, then the word's own chart,
+  // then its vocation and personality charts. The full weight table stays behind "Details".
   function openWord(word, day) {
     const r = Numeroscope.singleName(word, day);
     if (!r.letters) return;
@@ -733,65 +733,86 @@
     const close = () => { $pop.remove(); overlays = overlays.filter((o) => o !== $pop); document.body.classList.remove('noscroll'); window.removeEventListener('keydown', keys); };
     const keys = (e) => { if (e.key === 'Escape') close(); };
     const W = r.weight;
-    const small = (title, c, pre, le, leLabel) => h('div', { class: 'card smallchart' }, h('h3', {}, title), singleNameSvg(c, pre, c.words.length, day),
-      h('p', { class: 'small', style: 'margin:4px 0 0;text-align:center' }, le ? `${leLabel} ${le.text}` : `No ${pre === 'v.' ? 'vowels' : 'consonants'}`));
-    const verdict = () => h('div', { class: 'verdict card' }, h('span', {}, 'Pyramid ratio'), h('b', { class: W.approved ? 'ok' : 'err' }, `${W.ratio.toFixed(3)} ${W.approved ? 'approved' : 'not approved'}`));
-    const $chart = h('div', { class: 'nscope-box sec-chart' }, singleNameSvg(r.name, '', r.letters, day));
-    const $subs = h('div', { class: 'two sec-subs' }, small('Vocation', r.vowels, 'v.', r.vowels.le, "Vowels. Heart's desire"), small('Personality', r.consonants, 'c.', r.consonants.le, 'Consonants. Personality'));
-    const $pyr = h('div', { class: 'card sec-pyr' }, h('h3', {}, 'Number pyramid'), pyramidEl(r));
-    const $table = h('div', { class: 'sec-table' }, h('h3', { style: 'margin:14px 0 4px' }, 'Weight of the pyramid'), weightEl(W));
-    const top = h('div', { class: 'pagetop' }, h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Close', onclick: close }, '‹'), h('h1', {}, word), h('span', { class: 'muted small' }, `${r.letters} letters`));
-    const noDay = day ? null : h('p', { class: 'muted small', style: 'margin:0 0 8px' }, 'Type a birth day to see the top half of the chart and the pillar.');
-    let body;
-    if (wordLayout === 'b') {
-      const $fold = h('button', { type: 'button', class: 'btn btn-block', onclick: () => { $table.classList.toggle('hidden'); $fold.textContent = $table.classList.contains('hidden') ? 'Show the weight table' : 'Hide the weight table'; } }, 'Show the weight table');
-      $table.classList.add('hidden');
-      body = [$chart, $pyr, verdict(), $subs, $fold, $table];
-    } else if (wordLayout === 'c') {
-      const tabs = [['Chart', [$chart, $subs]], ['Pyramid', [$pyr, verdict()]], ['Weight', [$table]]];
-      const $panes = tabs.map(([, els]) => h('div', { class: 'tabpane hidden' }, ...els));
-      const $bar = h('div', { class: 'tabbar' }, ...tabs.map(([name], i) => h('button', { type: 'button', class: 'chip', onclick: () => show(i) }, name)));
-      const show = (i) => { $panes.forEach((p, j) => p.classList.toggle('hidden', j !== i)); [...$bar.children].forEach((b, j) => b.classList.toggle('active', j === i)); $pop.scrollTo(0, 0); };
-      body = [$bar, ...$panes]; setTimeout(() => show(0), 0);
-    } else if (wordLayout === 'd') {
-      $subs.classList.add('stacked');
-      body = [h('div', { class: 'beside' }, $chart, $subs), $pyr, $table];
-    } else body = [$chart, $subs, $pyr, $table];
-    const $pop = h('div', { class: 'wordpop', 'data-layout': wordLayout }, top, noDay, ...body);
+    const $table = h('div', { class: 'hidden' }, weightEl(W));
+    const $more = h('button', { type: 'button', class: 'linkbtn', onclick: () => { $table.classList.toggle('hidden'); $more.textContent = $table.classList.contains('hidden') ? 'Details' : 'Hide details'; } }, 'Details');
+    const small = (title, c, pre) => h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, title), singleNameSvg(c, pre, c.words.length, day));
+    const $pop = h('div', { class: 'wordpop' },
+      h('div', { class: 'pagetop' }, h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Close', onclick: close }, '‹'), h('h1', {}, word), h('span', { class: 'muted small' }, `${r.letters} letters`)),
+      h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'Number pyramid'), pyramidEl(r),
+        h('div', { class: 'verdict' },
+          h('div', {}, h('span', { class: 'muted small' }, 'Weight'), h('b', {}, fmtW(W.total))),
+          h('div', {}, h('span', { class: 'muted small' }, 'Ratio'), h('b', { class: W.approved ? 'ok' : 'err' }, W.ratio.toFixed(3))),
+          h('div', {}, h('span', { class: 'muted small' }, W.approved ? 'Under 0.3' : '0.3 or over'), h('b', { class: W.approved ? 'ok' : 'err' }, W.approved ? 'Approved' : 'Not approved')),
+          $more),
+        $table),
+      day ? null : h('p', { class: 'muted small', style: 'margin:0 0 8px' }, 'Type a birth day to see the top half of the charts and the pillars.'),
+      h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'Name chart'), singleNameSvg(r.name, '', r.letters, day)),
+      h('div', { class: 'two' }, small('Vocation', r.vowels, 'v.'), small('Personality', r.consonants, 'c.')));
     overlays.push($pop); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
   }
 
-  routes.quick = function quickView(arg, query) {
-    wordLayout = /^[abcd]$/.test(query.get('layout') || '') ? query.get('layout') : 'a';
+  // The chart drawing as a PNG (the app's own styles and font inlined, so the picture is what the screen shows).
+  let fontData = null;
+  async function chartPng(svg, width = 1612) {
+    if (!fontData) { const buf = await fetch('/fonts/open-sans.woff2').then((r) => r.arrayBuffer()); fontData = 'data:font/woff2;base64,' + btoa(String.fromCharCode(...new Uint8Array(buf))); }
+    const rules = [];
+    for (const sheet of document.styleSheets) { try { for (const rule of sheet.cssRules) if (rule.selectorText && rule.selectorText.includes('.nscope')) rules.push(rule.cssText); } catch {} }
+    const clone = svg.cloneNode(true);
+    const [, , vw, vh] = clone.getAttribute('viewBox').split(' ').map(Number);
+    const height = Math.round(width * vh / vw);
+    clone.setAttribute('width', width); clone.setAttribute('height', height); clone.setAttribute('xmlns', SVGNS);
+    clone.prepend(sv('style', {}, `@font-face{font-family:"Open Sans";src:url(${fontData}) format("woff2");font-weight:300 800}\n${rules.join('\n')}`));
+    clone.prepend(sv('rect', { x: -32, y: 20, width: vw, height: vh, fill: '#fff' }));
+    const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(clone)], { type: 'image/svg+xml' }));
+    try {
+      const img = new Image();
+      await new Promise((res, rej) => { img.onload = res; img.onerror = () => rej(new Error('Could not draw the chart.')); img.src = url; });
+      const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
+      const ctx = canvas.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, width, height); ctx.drawImage(img, 0, 0, width, height);
+      return await new Promise((res, rej) => canvas.toBlob((b) => (b ? res(b) : rej(new Error('Could not make the picture.'))), 'image/png'));
+    } finally { URL.revokeObjectURL(url); }
+  }
+
+  routes.quick = function quickView() {
     const field = (ph, attrs = {}) => h('input', { type: 'text', inputmode: 'numeric', placeholder: ph, autocomplete: 'off', ...attrs });
     const $day = field('day', { maxlength: 2 }), $month = field('month', { maxlength: 2 }), $year = field('year', { maxlength: 4 });
     const $name = h('input', { type: 'text', placeholder: 'Full name', autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false' });
     const $chart = h('div', { class: 'nscope-box' });
-    const $words = h('div', { class: 'chips wordchips' });
-    const $hint = h('p', { class: 'muted small wordhint' }, 'Tap a name on the chart, or a chip, to see that name on its own.');
-    let data = null;
+    let data = null, svg = null;
     const draw = () => {
       data = Numeroscope.numeroscope({ day: $day.value, month: $month.value, year: $year.value, name: $name.value });
-      fill($chart, numeroscopeSvg(data));
-      fill($words, ...data.name.words.map((w) => h('button', { type: 'button', class: 'chip', onclick: () => openWord(w.text, data.essence.day) }, w.text, h('span', { class: 'x' }, '›'))));
-      $hint.classList.toggle('hidden', !data.name.words.length);
+      svg = numeroscopeSvg(data); fill($chart, svg);
     };
     $chart.addEventListener('click', (e) => { const t = e.target.closest && e.target.closest('[data-word]'); if (t) openWord(t.getAttribute('data-word'), data && data.essence.day); });
     for (const el of [$day, $month, $year, $name]) el.addEventListener('input', draw);
     // Full screen: the chart alone, edge to edge, until the X is tapped. The chart element moves into the
     // overlay and back, so what was typed stays. Leaving the screen closes it (route() clears overlays).
-    const $full = h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Full screen', title: 'Full screen' }, '⤢');
-    const $home = h('div', { class: 'nscope-home' }, $chart);
+    const $full = h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Full screen', title: 'Full screen' }, '⤢');
+    const $save = h('button', { type: 'button', class: 'cbtn save', 'aria-label': 'Save to vault', title: 'Save to vault' }, 'Save');
+    const $home = h('div', { class: 'nscope-home' }, $chart, h('div', { class: 'cbtns' }, $save, $full));
     $full.onclick = () => {
-      const close = () => { $ov.remove(); overlays = overlays.filter((o) => o !== $ov); document.body.classList.remove('fullscreen'); $home.append($chart); window.removeEventListener('keydown', keys); if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {}); };
+      const close = () => { $ov.remove(); overlays = overlays.filter((o) => o !== $ov); document.body.classList.remove('fullscreen'); $home.prepend($chart); window.removeEventListener('keydown', keys); };
       const keys = (e) => { if (e.key === 'Escape') close(); };
-      const $ov = h('div', { class: 'nsfull' }, h('button', { type: 'button', class: 'btn iconbtn nsfull-x', 'aria-label': 'Leave full screen', onclick: close }, '×'), $chart);
+      const $ov = h('div', { class: 'nsfull' }, h('button', { type: 'button', class: 'cbtn nsfull-x', 'aria-label': 'Leave full screen', onclick: close }, '×'), $chart);
       overlays.push($ov); document.body.append($ov); document.body.classList.add('fullscreen'); window.addEventListener('keydown', keys);
-      if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {});
     };
-    render(h('div', { class: 'screen' }, h('div', { class: 'pagetop' }, h('a', { class: 'btn iconbtn', href: '#/', 'aria-label': 'Back' }, '‹'), h('h1', { style: 'flex:1' }, 'Quick chart'), $full),
-      h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, $day, $month, $year),
-      h('div', { style: 'margin-top:8px' }, $name), $words, $hint, $home));
+    // Save to vault: the drawing becomes a chart picture tagged with the typed name, then opens with its tags.
+    $save.onclick = async () => {
+      const name = $name.value.trim();
+      if (!name) { toast('Type a name first.', true); $name.focus(); return; }
+      const d = Number($day.value), m = Number($month.value), y = Number($year.value);
+      const date = d && m && y >= 1000 ? `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}` : '';
+      $save.disabled = true; $save.textContent = 'Saving…';
+      try {
+        const png = await chartPng(svg);
+        const r = await api(`/api/quick/save?name=${encodeURIComponent(name)}&date=${date}`, { method: 'PUT', headers: { 'content-type': 'image/png' }, body: png });
+        toast(`Saved “${name}” to the vault`);
+        go(`#/chart/${r.id}?sheet=1`);
+      } catch (err) { toast(err.message, true); $save.disabled = false; $save.textContent = 'Save'; }
+    };
+    render(h('div', { class: 'screen' },
+      h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px;margin-top:4px' }, h('a', { class: 'btn iconbtn', href: '#/', 'aria-label': 'Back' }, '‹'), $day, $month, $year),
+      h('div', { style: 'margin-top:8px' }, $name), $home));
     draw();
     setTimeout(() => $name.focus(), 50);
   };

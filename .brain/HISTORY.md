@@ -123,3 +123,13 @@ Brought the app in line with the new-app playbook from the first app:
 - Full screen button on the Quick chart: the chart alone, white, edge to
   edge, X to leave. The chart element moves into the overlay and back so what
   was typed stays.
+- Follow-up the same day: one word shows only its line value (paid tool,
+  "Muslim"); the popup is pyramid first with weight/ratio under it (table
+  behind "Details"), then the name chart, then vocation and personality;
+  the single-name diamond has the main chart's proportions (it was square,
+  "squashed"). Chips and hint under the name box, the "Quick chart" title
+  and the browser's full-screen mode (its "drag from the top to exit" toast
+  annoyed the owner) are gone; Save and full-screen buttons sit inside the
+  chart card. "Save" draws the chart to a PNG in the browser (app styles and
+  the font inlined) and PUTs it to /api/quick/save, which files it as a chart
+  tagged with the typed name and opens it with its tag sheet.

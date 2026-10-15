@@ -409,3 +409,20 @@ test('viewer context: previous and next within the current filter and order', as
   }
   assert.equal((await api('/api/images/999999/context')).status, 404);
 });
+
+test('quick chart "Save to vault": a PNG becomes a chart tagged with the typed name; a bad save leaves no record', async () => {
+  const png = await sharp({ create: { width: 806, height: 1270, channels: 3, background: '#fff' } }).png().toBuffer();
+  let r = await json(await api('/api/quick/save?name=' + encodeURIComponent('Peter Joshua Shicora') + '&date=1998-05-19', { method: 'PUT', headers: { 'x-sha256': sha(png) }, body: png }));
+  assert.equal(r.status, 200); assert.equal(r.body.already, false); assert.equal(r.body.width, 806);
+  const img = (await json(await api(`/api/images/${r.body.id}`))).body;
+  assert.match(img.filename, /^Quick_Peter-Joshua-Shicora_1998-05-19_\d{8}_\d{6}\.png$/);
+  assert.equal(img.has_file, true); assert.equal(img.kind, 'chart');
+  assert.deepEqual(img.tags.map((t) => [t.name, t.kind]), [['Peter Joshua Shicora', 'name']]);
+  assert.ok(img.paths.includes(`/Quick chart/${img.filename}`)); assert.ok(img.taken_at);
+  // refused: no name, or not a picture; nothing is left behind
+  const before = db.prepare('SELECT COUNT(*) AS n FROM images').get().n;
+  r = await json(await api('/api/quick/save?name=', { method: 'PUT', body: png })); assert.equal(r.status, 400);
+  r = await json(await api('/api/quick/save?name=Bob', { method: 'PUT', body: Buffer.from('not a picture') })); assert.equal(r.status, 400);
+  assert.equal(db.prepare('SELECT COUNT(*) AS n FROM images').get().n, before);
+  assert.equal((await json(await api('/api/quick/save?name=Bob', { method: 'GET' }))).status, 404);
+});
