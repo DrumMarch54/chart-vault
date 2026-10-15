@@ -20,6 +20,21 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - A reply that changed code ends with `Build: <short commit>`; the phone shows
   "Updated to build <commit>, tap to reload" within 15 s of the deploy.
 
+## Numerology knowledge
+- The course rules for the charts live in `.brain/numerology/` (start with its
+  README). Read `chart-construction.md` before touching `public/numeroscope.js`
+  or the Quick chart screen. The owner's Google Drive folder "Hub" is readable
+  from a cloud session with the Drive connector; ids are in that README.
+- Tag codes ("19fn") are decoded in `.brain/numerology/tag-codes.md` and
+  spelled out on screen by `public/tag-codes.js`; the stored tag never changes.
+- Number colors and exact positions come from the vault's own screenshots
+  (`.brain/numerology/number-colors.md`, `tools/color-study/`): measure
+  against them, never guess a color or a position. `public/number-colors.js`
+  is generated; regenerate it, do not hand-edit.
+- A layout complaint comes with a paid-tool screenshot: run
+  `tools/color-study/layout/` (compare.py) against it and change only what it
+  measures as off. The numbers it prints beat anyone's eye.
+
 ## Rules that must hold
 - Never lose or mix up a chart or a tag. Filename = identity. Tags are kept
   exactly as written, never renamed or "fixed".
@@ -37,6 +52,11 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - `npm run verify` before saying done: syntax of every file + all tests. Spends nothing.
 - `npm test` runs test/*.test.js (node:test). Put the real UserTag.backup at
   data/UserTag.backup to also run the real-file test; it is git-ignored.
+- Quick chart math: `public/numeroscope.js`, rules in `.brain/numerology/`.
+  Year rows and day vibrations too (`yearly-rows.md`): every formula is proven
+  on the course's JFK 1963 and Nixon 1972 cases; keep those tests green.
+  A one-word name is the first name alone. Tap a name on the line for its own
+  charts and pyramid (`singleName`); every formula there is screenshot-proven.
 - `node tools/dev-app.mjs [port]` runs a THROWAWAY copy with fake charts on
   127.0.0.1:3399 (password `dev`, refuses the live port). Look at it with
   `CHART_VAULT_URL=http://127.0.0.1:3399 LIVE_APP_TOKEN=dev node tools/report.mjs screens <dir>`
@@ -83,7 +103,8 @@ load in a cloud session whether or not the marketplace does.
   build is the truth over the repo.
 - Two failed tries at the same problem: stop and ask, never a third guess.
 - Grep before building: tell the owner what already exists. Grep for the name
-  of anything you add or delete.
+  of anything you add or delete, in tools/ and test/ too (report.mjs waited
+  for a removed tab bar and called a good login refused).
 - Can't verify against the live system? Say so plainly.
 - Big change: brainstorm and get the design approved first.
 - A durable lesson = one short rule here + the full story in `.brain/HISTORY.md`.

@@ -40,12 +40,14 @@
 
   const chip = (tag, { onclick, active, removable } = {}) =>
     h('button', { class: `chip ${tag.kind || ''} ${active ? 'active' : ''} ${tag.source === 'app' ? 'app' : ''}`, type: 'button', onclick, title: tag.name },
-      h('span', { class: 't' }, tag.name),
+      h('span', { class: 't' }, TagCodes.pretty(tag.name)),
       tag.count !== undefined ? h('span', { class: 'count' }, ` ${fmtN(tag.count)}`) : null,
       removable ? h('span', { class: 'x' }, '×') : null);
 
   // ---------- routing ----------
   const routes = {};
+  let lastRoute = null; // the screen shown before this one (null = this is the first screen since the page loaded)
+  let viewerFromApp = false; // the viewer was opened from another screen here, so Back can use the browser's own history
   function route() {
     const hash = location.hash || '#/';
     const [, name = '', arg = ''] = /^#\/([^/?]*)\/?([^?]*)/.exec(hash) || [];
@@ -53,10 +55,25 @@
     const view = routes[name] || routes[''];
     closeOverlays();
     if (viewerCleanup) { viewerCleanup(); viewerCleanup = null; }
+    if (name === 'chart' && lastRoute !== 'chart') viewerFromApp = lastRoute !== null;
+    lastRoute = name;
     view(arg, query);
   }
   window.addEventListener('hashchange', route);
+  // No pull-to-refresh: a finger dragged down at the top of the page reloads the whole app in the browser
+  // and loses what was being done. CSS (overscroll-behavior) stops it in most browsers; this stops the rest.
+  // A drag inside something that can still scroll up on its own (a sheet, a list, a popup) is left alone.
+  let touchY = null;
+  const scrollsUp = (el) => { for (let n = el; n && n !== document.body; n = n.parentElement) { const o = getComputedStyle(n).overflowY; if ((o === 'auto' || o === 'scroll') && n.scrollTop > 0) return true; } return false; };
+  document.addEventListener('touchstart', (e) => { touchY = e.touches.length === 1 ? e.touches[0].clientY : null; }, { passive: true });
+  document.addEventListener('touchmove', (e) => {
+    if (touchY === null || e.touches.length !== 1 || !e.cancelable) return;
+    if (window.scrollY <= 0 && e.touches[0].clientY > touchY && !scrollsUp(e.target)) e.preventDefault();
+  }, { passive: false });
   const go = (hash) => { location.hash = hash; };
+  // Same screen change, but without adding a step to the browser's history (used between charts in the
+  // viewer, so the phone's Back button returns to the screen the viewer was opened from, not to the last chart).
+  const swap = (hash) => { location.replace(hash); };
   // Like replaceChildren, but skips null/false so a conditional part never shows as the word "null".
   const fill = (el, ...nodes) => el.replaceChildren(...nodes.filter((n) => n !== null && n !== undefined && n !== false));
   const render = (...nodes) => { fill($app, ...nodes); window.scrollTo(0, 0); };
@@ -81,7 +98,7 @@
 
   // ---------- overlays (sheet, lightbox) ----------
   let overlays = [];
-  function closeOverlays() { for (const o of overlays) o.remove(); overlays = []; }
+  function closeOverlays() { for (const o of overlays) o.remove(); overlays = []; document.body.classList.remove('noscroll'); }
   function sheet(title, actions) {
     const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
     const close = () => { bg.remove(); overlays = overlays.filter((o) => o !== bg); };
@@ -170,21 +187,24 @@
   }
 
   // ---------- tag suggestion box ----------
-  function suggestBox($input, { within = () => [], onPick, allowNew = false, kind = null, alsoArchetype = false }) {
+  // `empty` gives what the box shows while nothing is typed (the home screen's recent searches).
+  function suggestBox($input, { within = () => [], onPick, allowNew = false, kind = null, alsoArchetype = false, empty = null }) {
     const $list = h('div', { class: 'suggest hidden' });
     let timer, seq = 0;
     const hide = () => $list.classList.add('hidden');
     const show = (items, q) => {
       fill($list);
+      if (!q && empty) { $list.append(...empty()); $list.classList.toggle('hidden', !$list.children.length); return; }
       const exact = items.some((t) => t.name === q);
       if (allowNew && q && !exact) $list.append(h('button', { type: 'button', onclick: () => { onPick(q); hide(); } }, h('span', {}, `Add new tag “${q}”`), h('span', { class: 'count' }, 'new')));
       for (const t of items) $list.append(h('button', { type: 'button', onclick: () => { onPick(t.name, t.pickKind); hide(); } },
-        h('span', { class: `chip ${t.kind}`, style: 'min-height:32px;font-size:15px;pointer-events:none' }, t.name),
+        h('span', { class: `chip ${t.kind}`, style: 'min-height:32px;font-size:15px;pointer-events:none' }, TagCodes.pretty(t.name)),
         h('span', { class: 'count' }, t.pickKind === 'archetype' ? `${fmtN(t.count)} archetype pic${t.count === 1 ? '' : 's'}` : `${fmtN(t.count)} chart${t.count === 1 ? '' : 's'}`)));
       $list.classList.toggle('hidden', !$list.children.length);
     };
     const refresh = async () => {
       const q = $input.value.trim(); const my = ++seq;
+      if (!q && empty) { show([], ''); return; }
       const params = new URLSearchParams({ q, limit: 25 }); if (kind) params.set('kind', kind); for (const w of within()) params.append('within', w);
       try {
         let items = await api('/api/tags?' + params);
@@ -208,9 +228,10 @@
     const tags = query.getAll('tag');
     const kind = query.get('kind') === 'archetype' ? 'archetype' : 'chart';
     const setTags = (t, k = kind) => { const p = new URLSearchParams(); if (k === 'archetype') p.set('kind', 'archetype'); for (const x of t) p.append('tag', x); go('#/' + ((t.length || k === 'archetype') ? '?' + p : '')); };
+    const $quick = h('a', { class: 'btn iconbtn gear', href: '#/quick', 'aria-label': 'Quick chart', title: 'Quick chart' }, '◈');
     const $gear = h('a', { class: 'btn iconbtn gear', href: '#/settings', 'aria-label': 'Settings', title: 'Settings' }, '⚙');
-    const $input = h('input', { type: 'search', placeholder: tags.length ? 'Add another tag…' : 'Search tags (12mc, politics, a name…)', autocomplete: 'off', enterkeyhint: 'search' });
-    const $sugg = suggestBox($input, { within: () => tags, kind, alsoArchetype: kind === 'chart', onPick: (name, pickKind) => { if (pickKind && pickKind !== kind) setTags([name], pickKind); else if (!tags.includes(name)) setTags([...tags, name]); $input.value = ''; } });
+    const $input = h('input', { type: 'search', placeholder: tags.length ? 'Add another tag…' : 'Search (12/3 mind center, politics, a name…)', autocomplete: 'off', enterkeyhint: 'search' });
+    const $sugg = suggestBox($input, { within: () => tags, kind, alsoArchetype: kind === 'chart', empty: tags.length || kind === 'archetype' ? null : () => recentNodes(setTags), onPick: (name, pickKind) => { if (pickKind && pickKind !== kind) setTags([name], pickKind); else if (!tags.includes(name)) setTags([...tags, name]); $input.value = ''; } });
     const $clear = h('button', { type: 'button', class: 'clear', 'aria-label': 'Clear', onclick: () => { $input.value = ''; $input.focus(); $sugg.classList.add('hidden'); } }, '×');
     const $filters = h('div', { class: 'filters' },
       kind === 'archetype' ? chip({ name: 'Archetype pics', kind: 'name' }, { active: true, removable: true, onclick: () => setTags(tags, 'chart') }) : null,
@@ -219,9 +240,27 @@
     const $summary = h('div', { class: 'summary' }, 'Loading…');
     const $grid = h('div', { class: 'grid' });
     const $sentinel = h('div', { class: 'sentinel' });
+    const $recent = h('div', { class: 'recent hidden' });
+    // The home screen (nothing searched) shows the way into every tag and the recently opened charts, not
+    // every chart newest first: the owner always starts from a search. The recent searches live inside the
+    // search box: they drop down when it is tapped and stay out of the way otherwise.
+    const home = !tags.length && kind === 'chart';
+    if (tags.length) rememberSearch(tags, kind);
+    const $alltags = home ? h('a', { class: 'btn btn-block alltags', href: '#/tags' }, 'All tags', h('span', { class: 'muted small' }, 'words · positions · numbers'), h('span', { class: 'muted' }, '›')) : null;
     render(h('div', { class: 'screen' },
-      h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), $gear), (tags.length || kind === 'archetype') ? $filters : null, $summary),
-      $grid, $sentinel));
+      h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), $quick, $gear), (tags.length || kind === 'archetype') ? $filters : null),
+      $alltags, $recent, home ? null : $summary, home ? null : $grid, home ? null : $sentinel));
+    // Recently opened charts (this phone remembers the last 48), a grid like a search result, only on the home screen.
+    if (home && recentIds().length) {
+      api('/api/images?ids=' + recentIds().join(',') + '&limit=50').then((r) => {
+        const byId = new Map(r.items.map((i) => [i.id, i]));
+        const items = recentIds().map((id) => byId.get(id)).filter(Boolean);
+        if (!items.length) return;
+        fill($recent, h('div', { class: 'summary', style: 'padding-bottom:4px' }, 'Recently opened'), h('div', { class: 'grid' }, ...items.map(cell)));
+        $recent.classList.remove('hidden');
+      }).catch(() => {});
+    }
+    if (home) return;
 
     let offset = 0, total = null, loading = false, done = false;
     const params = () => { const p = new URLSearchParams({ limit: 60, offset, kind }); for (const t of tags) p.append('tag', t); return p; };
@@ -233,7 +272,7 @@
         for (const img of r.items) $grid.append(cell(img));
         done = offset >= total || r.items.length === 0;
         const noun = kind === 'archetype' ? 'archetype pic' : 'chart';
-        $summary.textContent = tags.length ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with ${tags.join(' and ')}` : `${fmtN(total)} ${noun}s, newest first`;
+        $summary.textContent = tags.length ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with ${tags.map(TagCodes.pretty).join(' and ')}` : `${fmtN(total)} ${noun}s, newest first`;
         $sentinel.textContent = done ? (total === 0 ? (kind === 'archetype' && !tags.length ? 'No archetype pics yet. Add them on the Upload page.' : `No ${noun}s match.`) : '') : '';
       } catch (err) { $sentinel.textContent = err.message; }
       loading = false;
@@ -251,6 +290,30 @@
     more();
   };
   const kindOf = (name) => (/^\d+$/.test(name) ? 'number' : /^\d+[A-Za-z]/.test(name) ? 'position' : 'name');
+  // The last charts opened on this phone, newest first (browser storage; may be empty or blocked).
+  const recentIds = () => { try { return (JSON.parse(localStorage.getItem('recent') || '[]') || []).filter(Number.isInteger).slice(0, 48); } catch { return []; } };
+  const rememberOpened = (id) => { try { localStorage.setItem('recent', JSON.stringify([id, ...recentIds().filter((x) => x !== id)].slice(0, 48))); } catch {} };
+  // The last searches made on this phone, newest first: [{ tags, kind }]. Adding a tag to a search
+  // replaces the narrower search it grew from, so one lookup does not leave a trail of half-searches.
+  const recentSearches = () => { try { return (JSON.parse(localStorage.getItem('searches') || '[]') || []).filter((s) => s && Array.isArray(s.tags) && s.tags.length).slice(0, 20); } catch { return []; } };
+  const rememberSearch = (tags, kind) => {
+    try {
+      const kept = recentSearches().filter((s) => !(s.kind === kind && (s.tags.every((t) => tags.includes(t)) || tags.every((t) => s.tags.includes(t)))));
+      localStorage.setItem('searches', JSON.stringify([{ tags, kind }, ...kept].slice(0, 20)));
+    } catch {}
+  };
+  // What drops down from an empty search box: the recent searches (tap one to run it again) and the way to every tag.
+  const recentNodes = (setTags) => {
+    const searches = recentSearches();
+    return [
+      h('div', { class: 'shead' }, searches.length ? 'Recent searches' : 'Your recent searches will show here'),
+      ...searches.map((s) => h('button', { type: 'button', class: 'rsearch', onclick: () => setTags(s.tags, s.kind) },
+        h('span', { class: 'chips' }, s.kind === 'archetype' ? h('span', { class: 'chip name', style: 'pointer-events:none' }, 'Archetype pics') : null,
+          ...s.tags.map((t) => h('span', { class: `chip ${kindOf(t)}`, style: 'pointer-events:none' }, TagCodes.pretty(t)))),
+        h('span', { class: 'muted', style: 'padding-left:8px' }, '›'))),
+      h('a', { class: 'rsearch alltags', href: '#/tags' }, h('span', {}, 'All tags'), h('span', { class: 'muted' }, '›')),
+    ];
+  };
 
   // ---------- viewer (full screen) ----------
   let viewerCleanup = null;
@@ -258,12 +321,24 @@
     const qs = query.toString();
     const listQ = new URLSearchParams(); for (const t of query.getAll('tag')) listQ.append('tag', t); if (query.get('kind') === 'archetype') listQ.set('kind', 'archetype');
     const backHash = '#/' + (listQ.toString() ? '?' + listQ : '');
-    const back = () => go(backHash);
+    // Back goes to the screen the viewer was opened from (the list, a search, the quick chart). Opened from a
+    // link or a fresh load, there is no such screen, so it goes to the list this chart belongs to.
+    const back = () => (viewerFromApp ? history.back() : swap(backHash));
     document.body.classList.add('fullscreen');
     viewerCleanup = () => document.body.classList.remove('fullscreen');
 
-    const $img = h('img', { class: 'vimg', alt: 'Chart', draggable: 'false' });
+    // alt is empty on purpose: with text in it the browser draws a "missing picture" icon until the file arrives.
+    const $img = h('img', { class: 'vimg', alt: '', draggable: 'false' });
     const $stage = h('div', { class: 'vstage' }, $img);
+    // The picture is sized from its own proportions to fill the stage, so the small thumbnail shown first
+    // (already on the phone from the list) and the full picture that replaces it take exactly the same space.
+    const fit = () => {
+      if (!$img.naturalWidth || !$img.isConnected) return;
+      const W = $stage.clientWidth, H = $stage.clientHeight, r = $img.naturalWidth / $img.naturalHeight;
+      const w = Math.min(W, H * r); $img.style.width = `${w}px`; $img.style.height = `${w / r}px`;
+    };
+    $img.addEventListener('load', fit); window.addEventListener('resize', fit);
+    $img.src = `/thumb/${id}`;
     const $count = h('span', { class: 'vcount' }, '');
     const $name = h('span', { class: 'vname' }, '');
     const $prev = h('button', { type: 'button', class: 'iconbtn varrow left hidden', 'aria-label': 'Previous' }, '‹');
@@ -280,19 +355,22 @@
     const openSheet = () => { sheetOpen = true; $sheet.classList.add('open'); $root.classList.remove('bare'); };
     const closeSheet = () => { sheetOpen = false; $sheet.classList.remove('open'); };
     const toggleBare = () => $root.classList.toggle('bare'); // tap: hide or show the top bar
-    const goTo = (nid) => { if (nid) go(`#/chart/${nid}${qs ? '?' + qs : ''}`); };
+    const goTo = (nid) => { if (nid) swap(`#/chart/${nid}${qs ? '?' + qs : ''}`); };
     const z = zoomable($stage, $img, { left: () => goTo(ctx.next), right: () => goTo(ctx.prev), up: openSheet, down: () => (sheetOpen ? closeSheet() : back()), tap: () => (sheetOpen ? closeSheet() : toggleBare()) });
     $prev.onclick = () => goTo(ctx.prev); $next.onclick = () => goTo(ctx.next);
     const keys = (e) => { if (e.key === 'ArrowLeft') goTo(ctx.prev); else if (e.key === 'ArrowRight') goTo(ctx.next); else if (e.key === 'Escape') (sheetOpen ? closeSheet() : back()); };
     window.addEventListener('keydown', keys);
-    viewerCleanup = () => { document.body.classList.remove('fullscreen'); window.removeEventListener('keydown', keys); z.destroy(); };
+    viewerCleanup = () => { document.body.classList.remove('fullscreen'); window.removeEventListener('keydown', keys); window.removeEventListener('resize', fit); z.destroy(); };
     // swipe down on the sheet grip closes it
     let gripY = null;
     $sheet.addEventListener('pointerdown', (e) => { if (e.target.closest('.vsheet-grip')) gripY = e.clientY; });
     $sheet.addEventListener('pointerup', (e) => { if (gripY !== null && e.clientY - gripY > 40) closeSheet(); gripY = null; });
 
     try { img = await api(`/api/images/${id}`); } catch (err) { fill($sheetBody, h('p', { class: 'err' }, err.message)); openSheet(); return; }
-    if (img.has_file) { $img.src = `/img/${img.id}`; } else { $img.alt = ''; fill($stage, h('div', { class: 'center', style: 'min-height:100%' }, h('p', { class: 'muted' }, 'No picture for this chart yet.'), h('a', { class: 'btn', href: '#/upload' }, 'Go to Upload'))); }
+    if (query.get('sheet')) openSheet();
+    if (img.kind === 'chart') rememberOpened(img.id);
+    // The full picture replaces the thumbnail only once it has arrived, so nothing blank or broken shows in between.
+    if (img.has_file) { const full = new Image(); full.onload = () => { if ($img.isConnected) $img.src = full.src; }; full.src = `/img/${img.id}`; } else { $img.removeAttribute('src'); fill($stage, h('div', { class: 'center', style: 'min-height:100%' }, h('p', { class: 'muted' }, 'No picture for this chart yet.'), h('a', { class: 'btn', href: '#/upload' }, 'Go to Upload'))); }
     $name.textContent = img.kind === 'archetype' ? img.tags.map((t) => t.name).join(', ') : ((img.tags.find((t) => t.kind === 'name') || {}).name || '');
     api(`/api/images/${id}/context?${listQ}`).then((c) => {
       ctx = c;
@@ -577,11 +655,465 @@
   // ---------- settings ----------
   routes.settings = function settingsView() {
     render(h('div', { class: 'screen stack' }, pageTop('Settings', '#/'),
+      h('a', { class: 'btn btn-block', href: '#/quick', style: 'justify-content:space-between' }, 'Quick chart', h('span', { class: 'muted' }, '›')),
+      h('a', { class: 'btn btn-block', href: '#/tags', style: 'justify-content:space-between' }, 'All tags', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/upload', style: 'justify-content:space-between' }, 'Upload screenshots', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/import', style: 'justify-content:space-between' }, 'Import tags', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/status', style: 'justify-content:space-between' }, 'Status and backup', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/?kind=archetype', style: 'justify-content:space-between' }, 'Archetype pics', h('span', { class: 'muted' }, '›'))));
   };
+
+  // ---------- quick chart ----------
+  // Type a birth date and a name, see the numeroscope at once. Shapes and
+  // positions are copied from the paid tool's screenshots (same proportions);
+  // the math is public/numeroscope.js. Number colors come later.
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  const sv = (tag, attrs = {}, ...children) => {
+    const el = document.createElementNS(SVGNS, tag);
+    for (const [k, v] of Object.entries(attrs)) if (v !== null && v !== undefined && v !== false) el.setAttribute(k, v);
+    for (const c of children.flat()) if (c !== null && c !== undefined && c !== false) el.append(c.nodeType ? c : document.createTextNode(String(c)));
+    return el;
+  };
+  // Layout of the quick chart, in drawing units. Every number below was measured on the paid
+  // tool's screenshots (the owner's own chart in the vault): the orange diamond's top is y=357,
+  // its center x=371, its height 756. Text y values are baselines.
+  const L = Numeroscope.LAYOUT;
+  // Which part of a chart a number belongs to, from its position name ('c.heartExtra' → center).
+  const kindOfSlot = (slot) => { const k = slot.replace(/^(c|v|po|pi)\./, ''); return /^(ul|ur|ll|lr)$/.test(k) ? 'aura' : /^(heart|solar)/.test(k) ? 'center' : /^(first|middle|last)$/.test(k) ? 'line' : k === 'big' ? 'le' : k; };
+  // Show sheet: which charts and which parts are drawn. This phone remembers the choice.
+  const SHOW_CHARTS = [['ess', 'Essence chart'], ['psy', 'Psyche charts'], ['main', 'Name chart'], ['vow', 'Vocation chart'], ['con', 'Personality chart']];
+  const SHOW_KINDS = [['day', 'Day numbers'], ['aura', 'Auras in the corners'], ['center', 'Centers'], ['name', 'Names on the line'], ['line', 'Line values'], ['spine', 'Spine'], ['le', 'Life expressions'], ['pillar', 'Pillars'], ['letters', 'Letter count'], ['shape', 'Colored shapes']];
+  const SHOW_PRESETS = [['Everything', null], ['Centers only', 'center'], ['Names only', 'name'], ['Life expressions only', 'le']];
+  const loadShow = () => { try { const s = JSON.parse(localStorage.getItem('quickShow') || 'null'); if (s && s.charts && s.kinds) return s; } catch {} return { charts: {}, kinds: {} }; };
+  const saveShow = (show) => { try { localStorage.setItem('quickShow', JSON.stringify(show)); } catch {} };
+  const shown = (show, group, key) => show[group][key] !== false;
+  const applyShow = (svg, show) => {
+    for (const [k] of SHOW_CHARTS) svg.classList.toggle(`hide-c-${k}`, !shown(show, 'charts', k));
+    for (const [k] of SHOW_KINDS) svg.classList.toggle(`hide-k-${k}`, !shown(show, 'kinds', k));
+    // Trim the blank above and below what is left (a hidden essence chart leaves no empty top), same width.
+    if (!svg.isConnected) return;
+    const b = svg.getBBox(); if (!b.height) return;
+    const y0 = Math.max(20, Math.floor(b.y - 20)), y1 = Math.min(1290, Math.ceil(b.y + b.height + 20));
+    svg.setAttribute('viewBox', `${371 - 425} ${y0} 850 ${y1 - y0}`);
+  };
+  // The sheet itself: tap a chip to show or hide that chart or part; the chart behind updates at once.
+  function showSheet(show, onChange) {
+    const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
+    const close = () => { bg.remove(); overlays = overlays.filter((o) => o !== bg); };
+    const $charts = h('div', { class: 'chips' }), $kinds = h('div', { class: 'chips' });
+    const draw = () => {
+      fill($charts, ...SHOW_CHARTS.map(([k, label]) => h('button', { type: 'button', class: `chip ${shown(show, 'charts', k) ? 'active' : 'off'}`, onclick: () => { show.charts[k] = !shown(show, 'charts', k); change(); } }, label)));
+      fill($kinds, ...SHOW_KINDS.map(([k, label]) => h('button', { type: 'button', class: `chip ${shown(show, 'kinds', k) ? 'active' : 'off'}`, onclick: () => { show.kinds[k] = !shown(show, 'kinds', k); change(); } }, label)));
+    };
+    const change = () => { saveShow(show); onChange(); draw(); };
+    const preset = (only) => { show.kinds = {}; if (only) for (const [k] of SHOW_KINDS) show.kinds[k] = (k === only || k === 'shape'); change(); };
+    bg.append(h('div', { class: 'sheet showsheet' }, h('h3', {}, 'Show on the chart'),
+      h('div', { class: 'chips' }, ...SHOW_PRESETS.map(([label, only]) => h('button', { type: 'button', class: 'chip preset', onclick: () => preset(only) }, label))),
+      h('div', { class: 'muted small', style: 'margin:12px 0 6px' }, 'Charts'), $charts,
+      h('div', { class: 'muted small', style: 'margin:12px 0 6px' }, 'Numbers'), $kinds,
+      h('button', { type: 'button', class: 'btn-primary done', onclick: close }, 'Done')));
+    draw(); document.body.append(bg); overlays.push(bg);
+  }
+  // One rhombus with its two circles, white center line, pillar triangle and (optionally) the faded "big" circle.
+  function rhombusShape(cx, cy, hw, hh, fill, o) {
+    const g = sv('g');
+    g.append(sv('polygon', { points: `${cx},${cy - hh} ${cx + hw},${cy} ${cx},${cy + hh} ${cx - hw},${cy}`, fill }));
+    g.append(sv('rect', { x: cx - hw, y: cy - o.line / 2, width: hw * 2, height: o.line, fill: '#fff' }));
+    const [rx, ry] = Array.isArray(o.r) ? o.r : [o.r, o.r]; // the paid tool's circles are a touch wider than tall
+    g.append(sv('ellipse', { cx, cy: cy - o.up, rx, ry, fill: '#fff' }), sv('ellipse', { cx, cy: cy + (o.down || o.up), rx, ry, fill: '#fff' }));
+    g.append(sv('polygon', { points: `${cx},${o.tri[0]} ${cx + o.tri[2]},${o.tri[1]} ${cx - o.tri[2]},${o.tri[1]}`, fill }));
+    if (o.big) g.append(sv('circle', { cx: o.big[0], cy: o.big[1], r: o.big[2], fill: o.faded }));
+    return g;
+  }
+  function numeroscopeSvg(data) {
+    // 850 units across the screen, the drawing centered: the numbers at the far edges keep a thumb's
+    // width of white, and the whole set still fits above the fold on a phone.
+    const svg = sv('svg', { viewBox: `${371 - 425} 20 850 1270`, class: 'nscope', role: 'img', 'aria-label': 'Numeroscope' });
+    const M = L.main, H = L.hex, P = L.psy, S = L.sub;
+    // Essence shape: a cube seen from the front, light top and sides, dark front triangle, tinted circles.
+    // Every shape and number carries its chart (data-chart) and kind (k-… / data-kind) so the Show sheet can hide parts.
+    const grp = (chart, kind, ...nodes) => sv('g', { 'data-chart': chart, 'data-kind': kind || null }, ...nodes.filter(Boolean));
+    svg.append(grp('ess', 'shape', sv('polygon', { points: `371,${H.top} ${371 + H.hw},${H.ul} ${371 - H.hw},${H.ul}`, fill: '#ced0e5' }),
+      sv('polygon', { points: `${371 - H.hw},${H.ul} ${371 - H.hw},${H.ll} 371,${H.bottom}`, fill: '#ced0e5' }), sv('polygon', { points: `${371 + H.hw},${H.ul} ${371 + H.hw},${H.ll} 371,${H.bottom}`, fill: '#ced0e5' }),
+      sv('polygon', { points: `${371 - H.hw},${H.ul} ${371 + H.hw},${H.ul} 371,${H.bottom}`, fill: '#afafd5' }),
+      sv('circle', { cx: 371, cy: H.circle[0], r: H.circle[1], fill: '#efeff7' }), sv('circle', { cx: 371, cy: H.small[0], r: H.small[1], fill: '#d6d7eb' })));
+    svg.append(grp('psy', 'shape', ...[[P.cxL, '#dde6ef'], [P.cxR, '#c3d5e1']].map(([cx, fill]) => rhombusShape(cx, P.cy, P.hw, P.hh, fill, { line: P.line, up: P.up, down: P.down, r: P.r, tri: P.tri }))));
+    svg.append(grp('main', 'shape', rhombusShape(M.cx, M.lineY, M.hw, M.hh, '#eec186', { line: M.line, up: M.circleUp, down: M.circleDown, r: M.r, tri: M.tri, big: M.big, faded: '#f5efe3' }),
+      sv('circle', { cx: M.letter[0], cy: M.letter[1], r: M.letter[2], fill: '#fff', stroke: '#a9c3e4', 'stroke-width': 2.5, class: 'k-letters' })));
+    svg.append(grp('con', 'shape', rhombusShape(S.left.cx, S.cy, S.hw, S.hh, '#faddd7', { line: S.line, up: S.up, down: S.down, r: S.r, tri: S.tri, big: [S.left.bigX, S.bigY, S.bigR], faded: '#fef0ed' })));
+    svg.append(grp('vow', 'shape', rhombusShape(S.right.cx, S.cy, S.hw, S.hh, '#dae7e0', { line: S.line, up: S.up, down: S.down, r: S.r, tri: S.tri, big: [S.right.bigX, S.bigY, S.bigR], faded: '#f6f8f7' })));
+
+    const txt = (x, y, v, cls, size, anchor) => (v ? sv('text', { x, y, class: cls, 'font-size': size, 'text-anchor': anchor || 'middle' }, typeof v === 'string' ? v : v.text) : null);
+    // Color of one number: the paid tool's choice for that position and value (number-colors.js).
+    const oneMiddle = data.name.middle.length === 1;
+    const tone = (slot, v, bold) => 'n-' + NumberColors.lookup(slot, typeof v === 'string' ? v : (v ? v.text : ''), oneMiddle) + (bold ? ' n-bold' : '') + ' k-' + kindOfSlot(slot);
+    // x offsets of n items on one row: one at the center, two at the measured pair, more spread evenly across it.
+    const spread = (n, pair, i) => (n <= 1 || !pair ? 0 : pair[0] + (pair[1] - pair[0]) * i / (n - 1));
+    // The numbers of one rhombus. pre = the position prefix in number-colors.js ('' main, 'c.' consonants,
+    // 'v.' vowels, 'po.' / 'pi.' psyche), t = that chart's text layout, cx its center, top the day (or null).
+    const numbers = (pre, c, t, cx, top) => {
+      const sd = t.sideDx || 0, aL = t.auraL ?? cx - t.auraDx + sd, aR = t.auraR ?? cx + t.auraDx + sd, an = t.auraAnchor;
+      const nL = t.nameL ?? cx + t.nameDxL + sd, nR = t.nameR ?? cx + t.nameDxR + sd, lineBold = pre === '';
+      return [
+        txt(cx, t.dvY, top, tone(pre + 'day', top, pre === ''), t.day),
+        c.upperLeft && txt(aL, t.upY, c.upperLeft, tone(pre + 'ul', c.upperLeft), t.small, an), c.upperRight && txt(aR, t.upY, c.upperRight, tone(pre + 'ur', c.upperRight), t.small, an),
+        c.heart && txt(cx, t.heartY, c.heart, tone(pre + 'heart', c.heart, true), t.heart),
+        ...c.heartExtra.map((v, i) => txt(cx + spread(c.heartExtra.length, t.extra2, i), t.heartY + t.extraUp, v, tone(pre + 'heartExtra', v), t.extra)),
+        t.spineX && c.spine && txt(t.spineX, t.spineY, c.spine, tone(pre + 'spine', c.spine), t.spine || t.small),
+        c.first && txt(nL, t.nameY, c.first.text, 'n-dark k-name', t.name), c.first && txt(nL, t.lineY, c.first.value, tone(pre + 'first', c.first.value, lineBold), t.lineFont),
+        ...c.middle.flatMap((w, i) => { const x = t.middle2 && c.middle.length <= 2 ? cx + spread(c.middle.length, t.middle2, i) : nL + (nR - nL) * (i + 1) / (c.middle.length + 1); return [txt(x, t.nameY, w.text, 'n-dark k-name', t.name), txt(x, t.lineY, w.value, tone(pre + 'middle', w.value, lineBold), t.lineFont)]; }),
+        c.last && txt(nR, t.nameY, c.last.text, 'n-dark k-name', t.name), c.last && txt(nR, t.lineY, c.last.value, tone(pre + 'last', c.last.value, lineBold), t.lineFont),
+        c.lowerLeft && txt(aL, t.lowY, c.lowerLeft, tone(pre + 'll', c.lowerLeft), t.small, an), c.lowerRight && txt(aR, t.lowY, c.lowerRight, tone(pre + 'lr', c.lowerRight), t.small, an),
+        c.solar && txt(cx, t.solarY, c.solar, tone(pre + 'solar', c.solar, true), t.solar || t.heart),
+        ...c.solarExtra.map((v, i) => txt(cx + spread(c.solarExtra.length, t.solarExtra2, i), t.solarY + t.extraDown, v, tone(pre + 'solarExtra', v), t.extra)),
+        t.bigX !== undefined && c.big && txt(t.bigX, t.leY, c.big, tone(pre + 'big', c.big, true), t.le), c.le && txt(cx, t.leY, c.le, tone(pre + 'le', c.le, true), t.le),
+        c.pillar && txt(cx, t.pillarY, c.pillar, tone(pre + 'pillar', c.pillar, t.pillarBold !== false), t.pillar),
+        // Main chart only: an invisible tap target over each name and its value opens that word's own charts.
+        ...(lineBold ? [c.first && tap(nL, c.first), ...c.middle.map((w, i) => tap(t.middle2 && c.middle.length <= 2 ? cx + spread(c.middle.length, t.middle2, i) : nL + (nR - nL) * (i + 1) / (c.middle.length + 1), w)), c.last && tap(nR, c.last)] : []),
+      ];
+    };
+    const tap = (x, w) => sv('rect', { x: x - 50, y: L.main.text.nameY - 32, width: 100, height: 88, fill: 'transparent', class: 'n-tap k-name', 'data-word': w.text, role: 'button', 'aria-label': `Charts of the name ${w.text}` });
+    const day = data.essence.day;
+    svg.append(grp('main', null, ...numbers('', data.name, { ...M.text, bigX: M.big[0] }, M.cx, day),
+      txt(M.letter[0], M.text.letterY, data.name.letters ? String(data.name.letters) : null, 'n-blue n-bold k-letters', M.text.letterFont)));
+    svg.append(grp('con', null, ...numbers('c.', data.consonants, { ...S.text, ...S.left }, S.left.cx, day)), grp('vow', null, ...numbers('v.', data.vowels, { ...S.text, ...S.right }, S.right.cx, day)));
+    // Psyche charts: outer psyche in the left blue diamond, inner in the right (confirmed on vault screenshots).
+    const bare = (c) => ({ ...c, big: null, middle: [], heartExtra: [], solarExtra: [], first: c.first && { text: '', value: c.first.value }, last: c.last && { text: '', value: c.last.value } });
+    svg.append(grp('psy', null, ...numbers('po.', bare(data.psyche.outer), { ...P.text, sideDx: P.sideDxL }, P.cxL, day), ...numbers('pi.', bare(data.psyche.inner), { ...P.text, sideDx: P.sideDxR }, P.cxR, day)));
+    // Essence numbers: top aura inside the top of the shape, month and year outside the upper corners,
+    // little and big life path in the circle, outer and inner auras beside it. The small circle stays empty.
+    const e = data.essence, T = H.text;
+    // little and big life path in the circle, outer and inner auras beside it. All dark in the paid tool.
+    svg.append(grp('ess', null, txt(371, T.topAuraY, e.topAura, 'n-dark k-aura', T.corner), txt(T.monthX, T.monthY, e.month, 'n-dark n-bold k-line', T.corner), txt(T.yearX, T.monthY, e.year, 'n-dark n-bold k-line', T.corner),
+      txt(T.auraL, T.auraY, e.outerAura, 'n-dark k-aura', T.aura), txt(T.auraR, T.auraY, e.innerAura, 'n-dark k-aura', T.aura),
+      txt(371, T.lpY, e.littleLp, 'n-dark n-bold k-center', T.lp), txt(371, T.bigLpY, e.bigLp, 'n-dark n-bold k-center', T.lp)));
+    return svg;
+  }
+  // One word's own charts (Module 12): the numeroscope with every letter as a name, its vowel
+  // (vocation) and consonant (personality) charts, the number pyramid and its tension weight.
+  // Drawn in its own 400x440 box; the small charts are the same drawing at a smaller width.
+  function singleNameSvg(c, pre, count, day) {
+    const cx = 200, cy = 240, hw = 150, hh = 205, up = 80, r = 60, stroke = '#8fb4d9';
+    const svg = sv('svg', { viewBox: '0 0 400 540', class: 'nscope single', role: 'img', 'aria-label': 'Single name chart' });
+    svg.append(sv('polygon', { points: `${cx},${cy - hh} ${cx + hw},${cy} ${cx},${cy + hh} ${cx - hw},${cy}`, fill: '#fff', stroke, 'stroke-width': 2.5 }),
+      sv('line', { x1: cx - hw, y1: cy, x2: cx + hw, y2: cy, stroke, 'stroke-width': 2.5 }),
+      sv('circle', { cx, cy: cy - up, r, fill: '#fff', stroke: '#cfe0f0', 'stroke-width': 2 }), sv('circle', { cx, cy: cy + up, r, fill: '#fff', stroke: '#cfe0f0', 'stroke-width': 2 }),
+      sv('circle', { cx, cy: cy + hh + 28, r: 25, fill: '#f0f0f4' }), sv('polygon', { points: `${cx},${cy + hh + 56} ${cx + 22},${cy + hh + 86} ${cx - 22},${cy + hh + 86}`, fill: '#dde6ef' }),
+      sv('circle', { cx: cx + hw * 0.74, cy: cy - hh + 14, r: 17, fill: '#fff', stroke: '#c7c7cf', 'stroke-width': 2 }));
+    const txt = (x, y, v, cls, size, anchor) => (v ? sv('text', { x, y, class: cls, 'font-size': size, 'text-anchor': anchor || 'middle' }, typeof v === 'string' ? v : v.text) : null);
+    const tone = (slot, v, bold) => 'n-' + NumberColors.lookup(slot, v ? v.text : '', false) + (bold ? ' n-bold' : '');
+    const plain = (vals) => vals.map((v) => String(v.sum)).join('  ');
+    const letters = c.words, n = letters.length, span = hw * 0.78;
+    const xAt = (i) => (n <= 1 ? cx : cx - span + 2 * span * i / (n - 1));
+    const hasX = c.heartExtra.length > 0, hasS = c.solarExtra.length > 0;
+    svg.append(...[
+      day && txt(cx, cy - hh - 14, day, 'n-gray', 21),
+      count ? txt(cx + hw * 0.74, cy - hh + 20, String(count), 'n-gray n-bold', 17) : null,
+      c.upperLeft && txt(cx - hw * 0.56, cy - hh * 0.46, c.upperLeft, tone(pre + 'ul', c.upperLeft), 21, 'end'), c.upperRight && txt(cx + hw * 0.56, cy - hh * 0.46, c.upperRight, tone(pre + 'ur', c.upperRight), 21, 'start'),
+      c.heart && txt(cx, cy - up + (hasX ? -2 : 9), c.heart, tone(pre + 'heart', c.heart, true), 26),
+      hasX && txt(cx, cy - up + 22, plain(c.heartExtra), tone(pre + 'heartExtra', c.heartExtra[0]), 14),
+      ...letters.flatMap((w, i) => [txt(xAt(i), cy - 7, w.text, 'n-dark', 22), txt(xAt(i), cy + 21, String(w.value.sum), 'n-dark' + (i === 0 || i === n - 1 ? ' n-bold' : ''), 20)]),
+      c.lowerLeft && txt(cx - hw * 0.56, cy + hh * 0.46 + 8, c.lowerLeft, tone(pre + 'll', c.lowerLeft), 21, 'end'), c.lowerRight && txt(cx + hw * 0.56, cy + hh * 0.46 + 8, c.lowerRight, tone(pre + 'lr', c.lowerRight), 21, 'start'),
+      c.solar && txt(cx, cy + up + (hasS ? -1 : 9), c.solar, tone(pre + 'solar', c.solar, true), 26),
+      hasS && txt(cx, cy + up + 23, plain(c.solarExtra), tone(pre + 'solarExtra', c.solarExtra[0]), 14),
+      c.le && txt(cx, cy + hh + 36, c.le, tone(pre + 'le', c.le, true), 24),
+      c.pillar && txt(cx, cy + hh + 82, c.pillar, 'n-gray', 15),
+    ].filter(Boolean));
+    return svg;
+  }
+  const fmtW = (x) => String(Number(x.toFixed(5)));
+  function pyramidEl(r) {
+    const rows = r.pyramid.slice().reverse();
+    const W = r.weight, topCell = W.top;
+    const cls = (v, i) => { const t = Numeroscope.TENSION[v.sum]; return 'n-' + (v.sum < 10 ? 'dark' : NumberColors.lookup('first', v.text, false)) + (t ? (i === 0 ? ' top-tense' : ' tense') : ''); };
+    return h('div', { class: 'pyr' },
+      ...rows.map((row, i) => h('div', { class: 'pyr-row' }, ...row.map((v) => h('span', { class: cls(v, i) }, i === rows.length - 1 ? String(v.sum) : v.text)))),
+      h('div', { class: 'pyr-row letters' }, ...r.name.words.map((w) => h('span', {}, w.text))),
+      topCell && Numeroscope.TENSION[topCell.sum] ? h('p', { class: 'err small', style: 'margin:8px 0 0' }, `The top of the pyramid is ${topCell.text}: ${fmtW(W.penalty)} penalty points added.`) : null);
+  }
+  function weightEl(W) {
+    const row = (label, count, weight) => h('div', { class: 'wrow' + (count ? '' : ' muted') }, h('span', {}, label), h('span', {}, `× ${count}`), h('b', {}, fmtW(weight)));
+    return h('div', { class: 'card wtable' },
+      h('div', { class: 'wrow head muted small' }, h('span', {}, 'In the pyramid'), h('span', {}, 'Count'), h('span', {}, 'Weight')),
+      ...W.numbers.map((x) => row(x.value.text, x.count, x.weight)),
+      ...W.combos.map((x) => row(`${x.made.sum} from ${x.a.sum} + ${x.b.sum}`, x.count, x.weight)),
+      W.penalty ? row(`${W.top.text} on top, penalty`, 1, W.penalty) : null,
+      h('div', { class: 'wrow total' }, h('span', {}, 'Total weight'), h('span', {}), h('b', {}, fmtW(W.total))),
+      h('div', { class: 'wrow total' }, h('span', {}, 'Total ratio'), h('span', {}, `${fmtW(W.total)} / ${W.cells}`), h('b', { class: W.approved ? 'ok' : 'err' }, W.ratio.toFixed(3))),
+      h('p', { class: 'muted small', style: 'margin:8px 0 0' }, W.approved ? 'Under 0.3: the name is approved.' : '0.3 or over: the name is not approved.'));
+  }
+  // The popup for one word of the name line: pyramid first with its weight, then the word's own chart,
+  // then its vocation and personality charts. The full weight table stays behind "Details".
+  function openWord(word, day) {
+    const r = Numeroscope.singleName(word, day);
+    if (!r.letters) return;
+    day = day && day.text ? day : null;
+    const close = () => { $pop.remove(); overlays = overlays.filter((o) => o !== $pop); document.body.classList.remove('noscroll'); window.removeEventListener('keydown', keys); };
+    const keys = (e) => { if (e.key === 'Escape') close(); };
+    const W = r.weight;
+    const $table = h('div', { class: 'hidden' }, weightEl(W));
+    const $more = h('button', { type: 'button', class: 'linkbtn', onclick: () => { $table.classList.toggle('hidden'); $more.textContent = $table.classList.contains('hidden') ? 'Details' : 'Hide details'; } }, 'Details');
+    const small = (title, c, pre) => h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, title), singleNameSvg(c, pre, c.words.length, day));
+    const $pop = h('div', { class: 'wordpop' },
+      h('div', { class: 'pagetop' }, h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Close', onclick: close }, '‹'), h('h1', {}, word), h('span', { class: 'muted small' }, `${r.letters} letters`)),
+      h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'Number pyramid'), pyramidEl(r),
+        h('div', { class: 'verdict' },
+          h('div', {}, h('span', { class: 'muted small' }, 'Weight'), h('b', {}, fmtW(W.total))),
+          h('div', {}, h('span', { class: 'muted small' }, 'Ratio'), h('b', { class: W.approved ? 'ok' : 'err' }, W.ratio.toFixed(3))),
+          h('div', {}, h('span', { class: 'muted small' }, W.approved ? 'Under 0.3' : '0.3 or over'), h('b', { class: W.approved ? 'ok' : 'err' }, W.approved ? 'Approved' : 'Not approved')),
+          $more),
+        $table),
+      day ? null : h('p', { class: 'muted small', style: 'margin:0 0 8px' }, 'Type a birth day to see the top half of the charts and the pillars.'),
+      h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'Name chart'), singleNameSvg(r.name, '', r.letters, day)),
+      h('div', { class: 'two' }, small('Vocation', r.vowels, 'v.'), small('Personality', r.consonants, 'c.')));
+    overlays.push($pop); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
+  }
+
+  // The chart drawing as a PNG (the app's own styles and font inlined, so the picture is what the screen shows).
+  let fontData = null;
+  async function chartPng(svg, width = 1612) {
+    if (!fontData) { const buf = await fetch('/fonts/open-sans.woff2').then((r) => r.arrayBuffer()); fontData = 'data:font/woff2;base64,' + btoa(String.fromCharCode(...new Uint8Array(buf))); }
+    const rules = [];
+    for (const sheet of document.styleSheets) { try { for (const rule of sheet.cssRules) if (rule.selectorText && rule.selectorText.includes('.nscope')) rules.push(rule.cssText); } catch {} }
+    const clone = svg.cloneNode(true);
+    const [vx, vy, vw, vh] = clone.getAttribute('viewBox').split(' ').map(Number);
+    const height = Math.round(width * vh / vw);
+    clone.setAttribute('width', width); clone.setAttribute('height', height); clone.setAttribute('xmlns', SVGNS);
+    clone.prepend(sv('style', {}, `@font-face{font-family:"Open Sans";src:url(${fontData}) format("woff2");font-weight:300 800}\n${rules.join('\n')}`));
+    clone.prepend(sv('rect', { x: vx, y: vy, width: vw, height: vh, fill: '#fff' }));
+    const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(clone)], { type: 'image/svg+xml' }));
+    try {
+      const img = new Image();
+      await new Promise((res, rej) => { img.onload = res; img.onerror = () => rej(new Error('Could not draw the chart.')); img.src = url; });
+      const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
+      const ctx = canvas.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, width, height); ctx.drawImage(img, 0, 0, width, height);
+      return await new Promise((res, rej) => canvas.toBlob((b) => (b ? res(b) : rej(new Error('Could not make the picture.'))), 'image/png'));
+    } finally { URL.revokeObjectURL(url); }
+  }
+
+  routes.quick = function quickView() {
+    const field = (ph, attrs = {}) => h('input', { type: 'text', inputmode: 'numeric', placeholder: ph, autocomplete: 'off', ...attrs });
+    const $day = field('day', { maxlength: 2 }), $month = field('month', { maxlength: 2 }), $year = field('year', { maxlength: 4 });
+    const $name = h('input', { type: 'text', placeholder: 'Full name', autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false' });
+    const $chart = h('div', { class: 'nscope-box' });
+    let data = null, svg = null;
+    const show = loadShow();
+    const draw = () => {
+      data = Numeroscope.numeroscope({ day: $day.value, month: $month.value, year: $year.value, name: $name.value });
+      svg = numeroscopeSvg(data); fill($chart, svg); applyShow(svg, show);
+    };
+    $chart.addEventListener('click', (e) => { const t = e.target.closest && e.target.closest('[data-word]'); if (t) openWord(t.getAttribute('data-word'), data && data.essence.day); });
+    for (const el of [$day, $month, $year, $name]) el.addEventListener('input', draw);
+    // The ⋮ menu sits beside the name field, never on the chart: Full screen and Save to vault. Taps outside close it.
+    const $full = h('button', { type: 'button', class: 'cmenu-item' }, 'Full screen');
+    const $save = h('button', { type: 'button', class: 'cmenu-item' }, 'Save to vault');
+    const $showBtn = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { $menu.classList.add('hidden'); showSheet(show, () => applyShow(svg, show)); } }, 'Show and hide parts');
+    const $rows = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { $menu.classList.add('hidden'); openForecast({ day: $day.value, month: $month.value, year: $year.value, name: $name.value }); } }, 'Year rows and day vibrations');
+    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $full, $showBtn, $rows, $save);
+    const $dots = h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'More', title: 'More', onclick: (e) => { e.stopPropagation(); $menu.classList.toggle('hidden'); } }, '⋮');
+    document.addEventListener('click', (e) => { if (!$menu.contains(e.target)) $menu.classList.add('hidden'); });
+    const $home = h('div', { class: 'nscope-home' }, $chart);
+    // Full screen: the chart alone, edge to edge, until the X is tapped. The chart element moves into the
+    // overlay and back, so what was typed stays. Leaving the screen closes it (route() clears overlays).
+    $full.onclick = () => {
+      $menu.classList.add('hidden');
+      const close = () => { $ov.remove(); overlays = overlays.filter((o) => o !== $ov); document.body.classList.remove('fullscreen'); $home.prepend($chart); window.removeEventListener('keydown', keys); };
+      const keys = (e) => { if (e.key === 'Escape') close(); };
+      const $ov = h('div', { class: 'nsfull' }, h('button', { type: 'button', class: 'cbtn nsfull-x', 'aria-label': 'Leave full screen', onclick: close }, '×'), $chart);
+      overlays.push($ov); document.body.append($ov); document.body.classList.add('fullscreen'); window.addEventListener('keydown', keys);
+    };
+    // Save to vault: the drawing becomes a chart picture tagged with the typed name, then opens with its tags.
+    $save.onclick = async () => {
+      const name = $name.value.trim();
+      if (!name) { toast('Type a name first.', true); $name.focus(); return; }
+      const d = Number($day.value), m = Number($month.value), y = Number($year.value);
+      const date = d && m && y >= 1000 ? `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}` : '';
+      $save.disabled = true; $save.textContent = 'Saving…'; $menu.classList.remove('hidden');
+      try {
+        const png = await chartPng(svg);
+        const r = await api(`/api/quick/save?name=${encodeURIComponent(name)}&date=${date}`, { method: 'PUT', headers: { 'content-type': 'image/png' }, body: png });
+        toast(`Saved “${name}” to the vault`);
+        go(`#/chart/${r.id}?sheet=1`);
+      } catch (err) { toast(err.message, true); $save.disabled = false; $save.textContent = 'Save to vault'; $menu.classList.add('hidden'); }
+    };
+    // The whole screen is white like the chart card, the fields are small, the chart runs edge to edge:
+    // the chart is what this screen is for. The light look is undone when another screen takes over.
+    document.documentElement.classList.add('light');
+    viewerCleanup = () => document.documentElement.classList.remove('light');
+    render(h('div', { class: 'screen qscreen' },
+      h('div', { class: 'row qfields' }, h('a', { class: 'btn iconbtn', href: '#/', 'aria-label': 'Back' }, '‹'), $day, $month, $year),
+      h('div', { class: 'row qfields qname' }, $name, $dots, $menu), $home));
+    draw();
+    setTimeout(() => $name.focus(), 50);
+  };
+
+  // ---------- all tags ----------
+  // Every tag there is, three ways: the words (people and topics), the position codes grouped by
+  // position, and everything grouped by number. Tap a tag to search it. Groups open on tap.
+  routes.tags = async function tagsView() {
+    const VIEWS = [['words', 'Words'], ['position', 'By position'], ['number', 'By number']];
+    let view = 'words'; try { view = localStorage.getItem('tagsView') || 'words'; } catch {}
+    if (!VIEWS.some(([k]) => k === view)) view = 'words';
+    const $tabs = h('div', { class: 'chips tabs' });
+    const $body = h('div', { class: 'stack' }, h('p', { class: 'muted' }, 'Loading…'));
+    render(h('div', { class: 'screen' }, pageTop('All tags', '#/'), $tabs, $body));
+    let all;
+    try { all = await api('/api/tags/all'); } catch (err) { fill($body, h('p', { class: 'err' }, err.message)); return; }
+    const used = all.filter((t) => t.count > 0);
+    const n = (t) => t.charts || t.archetypes;
+    const search = (t) => `#/?${!t.charts && t.archetypes ? 'kind=archetype&' : ''}tag=${encodeURIComponent(t.name)}`;
+    const tagLink = (t, label) => h('a', { class: `chip ${t.kind}`, href: search(t), title: t.name }, h('span', { class: 't' }, label || TagCodes.pretty(t.name)), h('span', { class: 'count' }, fmtN(n(t))));
+    const sumOf = (list) => list.reduce((a, t) => a + n(t), 0);
+    const charts = (list) => `${fmtN(list.length)} tag${list.length === 1 ? '' : 's'} · ${fmtN(sumOf(list))} chart${sumOf(list) === 1 ? '' : 's'}`;
+    const group = (title, list, chips, open = false) => {
+      const $chips = h('div', { class: 'chips tchips' }, ...chips);
+      $chips.hidden = !open;
+      const $arrow = h('span', { class: 'arrow' }, open ? '⌃' : '⌄');
+      const $btn = h('button', { type: 'button', class: 'tgroup', onclick: () => { $chips.hidden = !$chips.hidden; $arrow.textContent = $chips.hidden ? '⌄' : '⌃'; } },
+        h('span', { class: 'tg-title' }, title), h('span', { class: 'muted small' }, charts(list)), $arrow);
+      return [$btn, $chips];
+    };
+    const byName = (a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+    const byCount = (a, b) => n(b) - n(a) || byName(a, b);
+    const parsed = (t) => TagCodes.parse(t.name);
+    const draw = () => {
+      fill($tabs, ...VIEWS.map(([k, label]) => h('button', { type: 'button', class: `chip ${view === k ? 'active' : 'off'}`, onclick: () => { view = k; try { localStorage.setItem('tagsView', k); } catch {} draw(); } }, label)));
+      const out = [];
+      if (view === 'words') {
+        const words = used.filter((t) => t.kind === 'name');
+        const most = words.filter((t) => n(t) >= 3).sort(byCount);
+        if (most.length) out.push(...group('Used the most', most, most.map((t) => tagLink(t)), true));
+        const letters = new Map();
+        for (const t of words.slice().sort(byName)) { const c = t.name[0].toUpperCase(); const key = /[A-Z]/.test(c) ? c : '#'; if (!letters.has(key)) letters.set(key, []); letters.get(key).push(t); }
+        for (const [letter, list] of letters) out.push(...group(letter, list, list.map((t) => tagLink(t))));
+        if (!words.length) out.push(h('p', { class: 'muted' }, 'No word tags yet.'));
+      } else if (view === 'position') {
+        const groups = new Map();
+        for (const t of used.filter((t) => t.kind === 'position')) {
+          const p = parsed(t);
+          const key = p ? (p.label || 'Two numbers together') : 'Other codes';
+          if (!groups.has(key)) groups.set(key, []);
+          groups.get(key).push(t);
+        }
+        const order = [...groups.entries()].sort((a, b) => sumOf(b[1]) - sumOf(a[1]) || a[0].localeCompare(b[0]));
+        for (const [label, list] of order) {
+          list.sort((a, b) => { const pa = parsed(a), pb = parsed(b); return (pa && pb ? pa.numbers[0] - pb.numbers[0] : 0) || byName(a, b); });
+          out.push(...group(label, list, list.map((t) => { const p = parsed(t); return tagLink(t, p ? p.numbers.map((x) => (x < 10 ? String(x) : `${x}/${TagCodes.digitSum(x)}`)).join(' + ') : t.name); })));
+        }
+        if (!groups.size) out.push(h('p', { class: 'muted' }, 'No position tags yet.'));
+      } else {
+        const groups = new Map();
+        for (const t of used.filter((t) => t.kind !== 'name')) {
+          const p = parsed(t);
+          const key = p ? p.numbers[0] : 'other';
+          if (!groups.has(key)) groups.set(key, []);
+          groups.get(key).push(t);
+        }
+        const order = [...groups.entries()].sort((a, b) => (a[0] === 'other') - (b[0] === 'other') || a[0] - b[0]);
+        for (const [num, list] of order) {
+          list.sort(byCount);
+          const title = num === 'other' ? 'Other' : `${num < 10 ? num : `${num}/${TagCodes.digitSum(num)}`}${TagCodes.NAMES[num] ? ' · ' + TagCodes.NAMES[num] : ''}`;
+          out.push(...group(title, list, list.map((t) => {
+            const p = parsed(t);
+            const label = !p ? t.name : p.numbers.length > 1 ? TagCodes.pretty(t.name) : p.label || (t.archetypes && !t.charts ? 'archetype pics' : 'the number itself');
+            return tagLink(t, label);
+          })));
+        }
+        if (!groups.size) out.push(h('p', { class: 'muted' }, 'No number tags yet.'));
+      }
+      fill($body, ...out);
+    };
+    draw();
+  };
+
+  // ---------- year rows and day vibrations (forecasting, Module 17) ----------
+  // From the quick chart's date and name: the destiny periods, one year's rows (main column, aura, shadow
+  // column) and the day vibrations of one date. Math: Numeroscope.yearRows / dayRows (public/numeroscope.js).
+  const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const rowText = (v) => (v ? (v.sum < 10 ? String(v.sum) : v.text) : '–');
+  // What a number in the rows means: the course's one line, the archetype name, a known combination.
+  function meaningSheet(v, vertical) {
+    if (!v) return;
+    const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
+    const close = () => { bg.remove(); overlays = overlays.filter((o) => o !== bg); };
+    const line = (x) => (x ? h('p', { style: 'margin:0 0 10px' }, h('b', {}, rowText(x)), TagCodes.NAMES[x.sum] ? ` ${TagCodes.NAMES[x.sum]}` : '', h('br'), Numeroscope.MEANINGS[x.sum] || Numeroscope.MEANINGS[x.ds] || '', Numeroscope.combos(x) ? h('span', { class: 'muted' }, h('br'), Numeroscope.combos(x)) : null) : null);
+    bg.append(h('div', { class: 'sheet' }, h('h3', {}, 'What it means'), line(v), vertical ? h('p', { class: 'muted small', style: 'margin:0 0 6px' }, 'Read with the two rows above it (vertical):') : null, vertical ? line(vertical) : null,
+      h('button', { type: 'button', onclick: close }, 'Close')));
+    document.body.append(bg); overlays.push(bg);
+  }
+  // The owner's clock: Safford, Arizona (no daylight saving). "Today" and "now" in the rows are read there,
+  // whatever the phone's own clock says.
+  const TZ = 'America/Phoenix';
+  const nowIn = (tz) => {
+    const p = {}; for (const x of new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' }).formatToParts(new Date())) p[x.type] = Number(x.value);
+    return { y: p.year, m: p.month, d: p.day, minutes: (p.hour % 24) * 60 + p.minute };
+  };
+  const clock = (mins) => { const h = Math.floor(mins / 60) % 24, m = mins % 60; return `${h % 12 || 12}:${String(m).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`; };
+  function openForecast(input) {
+    const e = Numeroscope.essence(input.day, input.month, input.year);
+    if (!(e.day && e.month && e.year)) { toast('Type the whole birth date first: day, month and year.', true); return; }
+    const birthYear = Number(input.year);
+    const now = nowIn(TZ);
+    let year = Math.max(now.y, birthYear);
+    let date = { y: now.y, m: now.m, d: now.d };
+    // Which chart's rows: the name chart's (main) or the psyche chart's. This phone remembers the choice.
+    let chart = 'name'; try { chart = localStorage.getItem('rowsChart') === 'psyche' ? 'psyche' : 'name'; } catch {}
+    const close = () => { $pop.remove(); overlays = overlays.filter((o) => o !== $pop); document.body.classList.remove('noscroll'); window.removeEventListener('keydown', keys); };
+    const keys = (ev) => { if (ev.key === 'Escape') close(); };
+    const $periods = h('div', { class: 'periods' }), $yearTitle = h('div', { class: 'wlabel' }), $yearNote = h('p', { class: 'muted small ynote' }), $year = h('div', {});
+    const $dayTitle = h('div', { class: 'wlabel' }), $dayNote = h('p', { class: 'muted small ynote', style: 'padding:0 2px 6px' }), $day = h('div', {});
+    const $date = h('input', { type: 'date', class: 'datebox', value: `${date.y}-${String(date.m).padStart(2, '0')}-${String(date.d).padStart(2, '0')}` });
+    const vals = (x) => (chart === 'psyche' ? x.psyche : x);
+    const cell = (v, cls, vertical) => h('div', { class: `yv ${cls || ''}`, onclick: () => meaningSheet(v, vertical) }, rowText(v), vertical ? h('small', {}, `↕ ${rowText(vertical)}`) : null);
+    const head = () => [h('div', { class: 'yh' }, 'From'), h('div', { class: 'yh' }, 'Main'), h('div', { class: 'yh' }, 'Aura'), h('div', { class: 'yh' }, 'Shadow')];
+    const three = (x, now) => { const c = vals(x); return [cell(c.main, now, c.vertical), cell(c.aura, `aura ${now}`), cell(c.shadow, now, c.verticalShadow)]; };
+    // Name chart / Psyche chart switch, one above each table, both showing the same choice.
+    const switches = [];
+    const chartSwitch = () => {
+      const $s = h('div', { class: 'chips cswitch' });
+      switches.push($s);
+      return $s;
+    };
+    const drawSwitches = () => { for (const $s of switches) fill($s, ...[['name', 'Name chart'], ['psyche', 'Psyche chart']].map(([k, label]) => h('button', { type: 'button', class: `chip ${chart === k ? 'active' : 'off'}`, onclick: () => { chart = k; try { localStorage.setItem('rowsChart', k); } catch {} drawAll(); } }, label))); };
+    const drawPeriods = () => {
+      const ps = Numeroscope.destinyPeriods(birthYear, 12).filter((p) => p.start <= birthYear + 99);
+      fill($periods, ...ps.map((p) => h('button', { type: 'button', class: `period ${year >= p.start && year <= p.end ? 'active' : ''}`, onclick: () => { year = Math.max(p.start, birthYear); drawYear(); drawPeriods(); } },
+        h('b', {}, String(p.number)), h('span', {}, p.years === 1 ? String(p.start) : `${p.start}–${p.end}`), h('span', { class: 'muted' }, p.years === 1 ? `age ${p.start - birthYear}` : `age ${p.start - birthYear}–${p.end - birthYear}`))));
+    };
+    const drawYear = () => {
+      const r = Numeroscope.yearRows(input, year);
+      $yearTitle.textContent = `Year rows ${year}`;
+      if (!r) { fill($year, h('p', { class: 'muted' }, 'Before the birth year.')); $yearNote.textContent = ''; return; }
+      $yearNote.textContent = `Age ${r.formula.age} · ${r.formula.words}${r.hasName ? '' : ' · type a name to fill the life expression and pillar rows'}`;
+      const isNow = (x) => year === now.y && (now.m > x.month || (now.m === x.month && now.d >= x.day)) && (now.m < x.until.month || (now.m === x.until.month && now.d <= x.until.day));
+      fill($year, h('div', { class: 'yrows' }, ...head(), ...r.rows.flatMap((x) => { const n = isNow(x) ? 'now' : ''; return [
+        h('div', { class: `ydate ${n}` }, h('b', {}, `${MON[x.month - 1]} ${x.day}`), h('span', {}, x.label)), ...three(x, n)]; })));
+    };
+    const drawDay = () => {
+      const r = Numeroscope.dayRows(input, date.y, date.m, date.d);
+      $dayTitle.textContent = `Day vibrations ${MON[date.m - 1]} ${date.d}, ${date.y}`;
+      const today = date.y === now.y && date.m === now.m && date.d === now.d;
+      fill($dayNote, today ? `Now ${clock(now.minutes)} in Arizona · ` : '', r.fulfillment ? h('span', { onclick: () => meaningSheet(r.fulfillment), style: 'cursor:pointer' }, `Fulfillment number ${rowText(r.fulfillment)}`) : 'Type a name to fill the life expression row and the fulfillment number');
+      fill($day, h('div', { class: 'yrows' }, ...head(), ...r.rows.flatMap((x) => { const n = today && now.minutes >= x.from && now.minutes < x.until ? 'now' : ''; return [
+        h('div', { class: `ydate ${n}` }, h('b', {}, clock(x.from)), h('span', {}, x.label)), ...three(x, n)]; })));
+    };
+    const drawAll = () => { drawSwitches(); drawYear(); drawDay(); };
+    const shiftDay = (by) => { const dt = new Date(date.y, date.m - 1, date.d + by); date = { y: dt.getFullYear(), m: dt.getMonth() + 1, d: dt.getDate() }; $date.value = `${date.y}-${String(date.m).padStart(2, '0')}-${String(date.d).padStart(2, '0')}`; drawDay(); };
+    $date.addEventListener('change', () => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec($date.value); if (m) { date = { y: Number(m[1]), m: Number(m[2]), d: Number(m[3]) }; drawDay(); } });
+    const name = String(input.name || '').trim();
+    const $pop = h('div', { class: 'wordpop' },
+      h('div', { class: 'pagetop' }, h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Close', onclick: close }, '‹'), h('h1', {}, name || 'Year rows'), h('span', { class: 'muted small' }, `${e.day.sum} ${MON[e.month.sum - 1]} ${birthYear}`)),
+      h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'Destiny periods'), $periods),
+      h('div', { class: 'wcard' }, $yearTitle,
+        h('div', { class: 'row ynav' }, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Previous year', onclick: () => { if (year > birthYear) { year--; drawYear(); drawPeriods(); } } }, '‹'), $yearNote, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Next year', onclick: () => { year++; drawYear(); drawPeriods(); } }, '›')),
+        chartSwitch(), $year, h('p', { class: 'muted small', style: 'margin:8px 0 0' }, 'Each row runs until the next one starts. Tap a number for what it means. ↕ reads the two rows above as one number.')),
+      h('div', { class: 'wcard' }, $dayTitle,
+        h('div', { class: 'row ynav' }, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Previous day', onclick: () => shiftDay(-1) }, '‹'), $date, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Next day', onclick: () => shiftDay(1) }, '›')),
+        $dayNote, chartSwitch(), $day,
+        h('p', { class: 'muted small', style: 'margin:8px 0 0' }, 'Arizona time. The day is split into nine equal periods of 2 h 40 min from midnight, the same even split the course uses for the year’s rows; the course book’s own time table could not be opened to check it.')));
+    overlays.push($pop); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
+    drawPeriods(); drawAll();
+  }
 
   // ---------- status ----------
   routes.status = async function statusView() {

@@ -1,4 +1,9 @@
 // Read-only queries used by the browse screens.
+import fs from 'node:fs';
+import vm from 'node:vm';
+const codesCtx = {};
+vm.runInNewContext(fs.readFileSync(new URL('../public/tag-codes.js', import.meta.url), 'utf8'), codesCtx);
+export const TagCodes = codesCtx.TagCodes;
 
 // Newest first by the date in the filename; charts without a date go last.
 const ORDER = '(i.taken_at IS NULL), i.taken_at DESC, i.id DESC';
@@ -13,9 +18,11 @@ function filterSql(tags, params) {
     WHERE t.name IN (${marks}) GROUP BY it.image_id HAVING count(DISTINCT t.id) = ?)`;
 }
 
-export function listImages(db, { tags = [], onlyUploaded = false, kind = 'chart', limit = 60, offset = 0 } = {}) {
+export function listImages(db, { tags = [], onlyUploaded = false, kind = 'chart', limit = 60, offset = 0, ids = null } = {}) {
   const params = [kind];
-  const where = `WHERE i.kind = ? ${filterSql(tags, params)} ${onlyUploaded ? 'AND i.stored_path IS NOT NULL' : ''}`;
+  let idSql = '';
+  if (ids) { const list = ids.filter((n) => Number.isInteger(n)).slice(0, 50); idSql = list.length ? `AND i.id IN (${list.map(() => '?').join(',')})` : 'AND 0'; params.push(...list); }
+  const where = `WHERE i.kind = ? ${filterSql(tags, params)} ${idSql} ${onlyUploaded ? 'AND i.stored_path IS NOT NULL' : ''}`;
   const total = db.prepare(`SELECT count(*) c FROM images i ${where}`).get(...params).c;
   const rows = db.prepare(`SELECT i.id, i.filename, i.taken_at, i.width, i.height, i.kind, (i.stored_path IS NOT NULL) AS has_file
     FROM images i ${where} ORDER BY ${ORDER} LIMIT ? OFFSET ?`).all(...params, limit, offset);
@@ -67,8 +74,10 @@ export function suggestTags(db, { q = '', within = [], kind = 'chart', limit = 3
   let match = '';
   const needle = q.trim();
   if (needle) {
-    params.push(`%${escapeLike(needle)}%`);
-    match = `AND t.name LIKE ? ESCAPE '\\' COLLATE NOCASE`;
+    // "19/1 first" also finds the stored "19fn" (public/tag-codes.js).
+    const forms = [`%${escapeLike(needle)}%`, ...TagCodes.expandQuery(needle).map((f) => escapeLike(f))];
+    params.push(...forms);
+    match = `AND (${forms.map(() => "t.name LIKE ? ESCAPE '\\' COLLATE NOCASE").join(' OR ')})`;
   }
   const excl = within.length ? `AND t.name NOT IN (${within.map(() => '?').join(',')})` : '';
   if (within.length) params.push(...within);
@@ -89,9 +98,12 @@ export function suggestTags(db, { q = '', within = [], kind = 'chart', limit = 3
   return rows.slice(0, limit);
 }
 
+// Every tag with how many charts and how many archetype pics carry it (the All tags screen).
 export function allTags(db) {
-  return db.prepare(`SELECT t.name, t.kind, count(it.image_id) AS count FROM tags t
-    LEFT JOIN image_tags it ON it.tag_id = t.id GROUP BY t.id ORDER BY t.name COLLATE NOCASE`).all();
+  return db.prepare(`SELECT t.name, t.kind, count(it.image_id) AS count,
+      count(CASE WHEN i.kind = 'chart' THEN 1 END) AS charts, count(CASE WHEN i.kind = 'archetype' THEN 1 END) AS archetypes
+    FROM tags t LEFT JOIN image_tags it ON it.tag_id = t.id LEFT JOIN images i ON i.id = it.image_id
+    GROUP BY t.id ORDER BY t.name COLLATE NOCASE`).all();
 }
 
 export function statusReport(db) {

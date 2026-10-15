@@ -166,6 +166,10 @@ test('tag suggestions: by prefix, with counts, narrowed by current filter', asyn
   assert.deepEqual(r.body.map((t) => [t.name, t.count]), [['personA', 1], ['personB', 1], ['politics', 1]]);
   r = await json(await api('/api/tags?q=12'));
   assert.deepEqual(r.body.map((t) => [t.name, t.kind, t.count]), [['12mc', 'position', 2]]);
+  r = await json(await api('/api/tags?q=' + encodeURIComponent('12/3 mind center'))); // the spelled-out form finds the stored code
+  assert.deepEqual(r.body.map((t) => t.name), ['12mc']);
+  r = await json(await api('/api/images?ids=1,2,999'));
+  assert.equal(r.body.items.length, 2); assert.equal(r.body.total, 2);
   r = await json(await api('/api/tags?within=12mc'));
   assert.deepEqual(r.body.map((t) => t.name).sort(), ['personA', 'personB', 'politics']); // 12mc itself excluded, thinking not combinable
   r = await json(await api('/api/tags?q=%25')); // LIKE wildcard typed by user is literal
@@ -379,6 +383,11 @@ test('archetype pics: separate kind, number tags from the album name, kept out o
   assert.deepEqual(sugA.body.map((t) => [t.name, t.count]), [['15', 1]]);
   const both = await json(await api('/api/images?kind=archetype&tag=69&tag=96'));
   assert.equal(both.body.total, 1);
+  // the All tags list counts charts and archetype pics apart for every tag
+  const all = await json(await api('/api/tags/all'));
+  const t15 = all.body.find((t) => t.name === '15');
+  assert.equal(t15.archetypes, 1); assert.ok(t15.charts >= 1); assert.equal(t15.count, t15.charts + t15.archetypes);
+  assert.deepEqual(all.body.find((t) => t.name === '69'), { name: '69', kind: 'number', count: 1, charts: 0, archetypes: 1 });
   // status counts them apart; missing list is charts only
   const st = await json(await api('/api/status'));
   assert.equal(st.body.archetypes, 2);
@@ -408,4 +417,21 @@ test('viewer context: previous and next within the current filter and order', as
     assert.equal(c.body.index, null);
   }
   assert.equal((await api('/api/images/999999/context')).status, 404);
+});
+
+test('quick chart "Save to vault": a PNG becomes a chart tagged with the typed name; a bad save leaves no record', async () => {
+  const png = await sharp({ create: { width: 806, height: 1270, channels: 3, background: '#fff' } }).png().toBuffer();
+  let r = await json(await api('/api/quick/save?name=' + encodeURIComponent('Peter Joshua Shicora') + '&date=1998-05-19', { method: 'PUT', headers: { 'x-sha256': sha(png) }, body: png }));
+  assert.equal(r.status, 200); assert.equal(r.body.already, false); assert.equal(r.body.width, 806);
+  const img = (await json(await api(`/api/images/${r.body.id}`))).body;
+  assert.match(img.filename, /^Quick_Peter-Joshua-Shicora_1998-05-19_\d{8}_\d{6}\.png$/);
+  assert.equal(img.has_file, true); assert.equal(img.kind, 'chart');
+  assert.deepEqual(img.tags.map((t) => [t.name, t.kind]), [['Peter Joshua Shicora', 'name']]);
+  assert.ok(img.paths.includes(`/Quick chart/${img.filename}`)); assert.ok(img.taken_at);
+  // refused: no name, or not a picture; nothing is left behind
+  const before = db.prepare('SELECT COUNT(*) AS n FROM images').get().n;
+  r = await json(await api('/api/quick/save?name=', { method: 'PUT', body: png })); assert.equal(r.status, 400);
+  r = await json(await api('/api/quick/save?name=Bob', { method: 'PUT', body: Buffer.from('not a picture') })); assert.equal(r.status, 400);
+  assert.equal(db.prepare('SELECT COUNT(*) AS n FROM images').get().n, before);
+  assert.equal((await json(await api('/api/quick/save?name=Bob', { method: 'GET' }))).status, 404);
 });

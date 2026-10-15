@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import { config } from './config.js';
 import { requireAuth, isAuthed, NO_TOKEN_MSG, passwordMatches, setSessionCookie, clearSessionCookie, isValidSession, loginAllowed, recordFailure, clearFailures } from './auth.js';
 import { parseUserTagBackup, importTags, addTagToImage, removeTagFromImage, markAlbumMember, ImportError } from './import.js';
-import { receiveUpload, UploadError, fullPathFor, thumbPathFor, makeThumb, findLostFiles } from './storage.js';
+import { receiveUpload, createQuickChart, UploadError, fullPathFor, thumbPathFor, makeThumb, findLostFiles } from './storage.js';
 import { listImages, getImage, imageContext, suggestTags, allTags, statusReport, exportTags } from './queries.js';
 import { runBackup, streamZip, isBackupRunning } from './backup.js';
 import { snapshot } from './snapshot.js';
@@ -103,7 +103,8 @@ export function createApp(db, { log = console.log } = {}) {
   app.get('/api/images', (req, res) => {
     const limit = Math.min(Math.max(Number(req.query.limit) || 60, 1), 200);
     const offset = Math.max(Number(req.query.offset) || 0, 0);
-    res.json(listImages(db, { tags: asList(req.query.tag), onlyUploaded: req.query.uploaded === '1', kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', limit, offset }));
+    const ids = req.query.ids ? String(req.query.ids).split(',').map(Number) : null;
+    res.json(listImages(db, { tags: asList(req.query.tag), onlyUploaded: req.query.uploaded === '1', kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', limit, offset, ids }));
   });
   app.get('/api/images/:id', (req, res) => {
     const img = getImage(db, Number(req.params.id));
@@ -224,6 +225,23 @@ export function createApp(db, { log = console.log } = {}) {
       res.json(result);
     } catch (err) {
       if (err instanceof UploadError) { log(`upload refused ${req.query.name}: ${err.message}`); return res.status(err.status).json({ error: err.message }); }
+      next(err);
+    }
+  });
+
+  // Quick chart "Save to vault": the page sends the drawn chart as a PNG; it becomes a chart record
+  // tagged with the typed name, like any uploaded screenshot.
+  app.put('/api/quick/save', async (req, res, next) => {
+    lastUpload = Date.now();
+    let made = null;
+    try {
+      made = createQuickChart(db, { name: req.query.name, date: req.query.date });
+      const result = await receiveUpload(db, req, { filename: made.filename, sha256Header: req.get('x-sha256') });
+      log(`quick chart saved #${result.id} ${made.filename} (${result.size} bytes)`);
+      res.json(result);
+    } catch (err) {
+      if (made) db.prepare('DELETE FROM images WHERE id = ? AND stored_path IS NULL').run(made.id);
+      if (err instanceof UploadError) { log(`quick chart save refused: ${err.message}`); return res.status(err.status).json({ error: err.message }); }
       next(err);
     }
   });
