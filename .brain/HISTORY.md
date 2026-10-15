@@ -327,3 +327,21 @@ Built from `.brain/PLAN-position-search.md` (now deleted; this entry is the reco
   5 retries ("PII Data Handling", the pictures carry people's names and birth
   dates); the last 63 pictures were read in the main chat. Reading a batch of
   21 costs about 80k tokens of a cheaper model.
+
+## 2026-10-15 Number tools: the paid tool's other features, and reading the books as pictures
+The owner asked for the rest of Numerologist PRO's features (price tool, day forecast, coming days, number
+fun, relationship, karmic). First attempt took the website's images as the software and asked the owner for
+screenshots; the owner pointed out those were marketing art and that the source files should show the real
+thing. They did: the course books carry "TOOL: … in Numerologist PRO Software" boxes with real screenshots
+(Forecasting Numerology p. 23 is the Today screen; Diamond Method p. 35 is Number fun; the Relations book
+p. 569 is the relationship tool). The Drive connector gives PDFs as text only and refuses files over 10 MB,
+but a download result lands on disk as base64 and the big books are shared by link, so curl fetches them;
+pdftotext finds the page, pdftoppm renders only that page, and the PNG is read as a picture. Lesson, now a
+CLAUDE.md rule: read the books as pictures, page by page, never print a whole one, never ask for what a book
+shows. Six mockups built from the app's own styles and engine were approved before any code. What shipped:
+Today / Coming days (the day chart with the essence and psyche charts, every position's reading from the
+Superdates book, a Super / Good / Hard tag that is the app's own reading of the success codes), Number fun
+(the big diamond, confirmed on the book's 14/5), Price tool (Marketing Numerology's rules), Relationship (two
+day vibrations unpacked like Number fun; matches the website's John + Eve example), Karmic connections
+(shared destiny rhythms = same birth-year number), My chart (the owner's numbers on the server). pdftotext's
+default reading order interleaves entries at page edges; `-raw` keeps them whole (tools/make-readings.mjs).

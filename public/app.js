@@ -309,7 +309,7 @@
     render(h('div', { class: `screen ${home ? 'home' : ''}` },
       home ? h('div', { class: 'pagetop hometop' }, h('h1', {}, 'Chart Vault'), $gear) : null,
       h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), home ? null : $quickIcon, home ? null : $gear), $filters),
-      home ? $quick : null, home ? $byPos : null,
+      home ? $quick : null, home ? $byPos : null, home && toolsUi ? toolsUi.homeButtons() : null,
       $recent, home ? null : $summary, home ? null : $grid, home ? null : $sentinel));
     // Recently opened charts (this phone remembers the last 48), a grid like a search result, only on the home screen.
     if (home && recentIds().length) {
@@ -815,6 +815,7 @@
       h('a', { class: 'btn btn-block', href: '#/position', style: 'justify-content:space-between' }, 'Search by position', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/upload', style: 'justify-content:space-between' }, 'Upload screenshots', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/import', style: 'justify-content:space-between' }, 'Import tags', h('span', { class: 'muted' }, '›')),
+      h('a', { class: 'btn btn-block', href: '#/mychart', style: 'justify-content:space-between' }, 'My chart (your own name and birth date)', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/status', style: 'justify-content:space-between' }, 'Status and backup', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/?kind=archetype', style: 'justify-content:space-between' }, 'Archetype pics', h('span', { class: 'muted' }, '›'))));
   };
@@ -1047,7 +1048,7 @@
     } finally { URL.revokeObjectURL(url); }
   }
 
-  routes.quick = function quickView() {
+  routes.quick = function quickView(_, query) {
     const field = (ph, attrs = {}) => h('input', { type: 'text', inputmode: 'numeric', placeholder: ph, autocomplete: 'off', ...attrs });
     const $day = field('day', { maxlength: 2 }), $month = field('month', { maxlength: 2 }), $year = field('year', { maxlength: 4 });
     const $name = h('input', { type: 'text', placeholder: 'Full name', autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false' });
@@ -1110,8 +1111,11 @@
     render(h('div', { class: 'screen qscreen' },
       h('div', { class: 'row qfields' }, h('a', { class: 'btn iconbtn', href: '#/', 'aria-label': 'Back' }, '‹'), $day, $month, $year),
       h('div', { class: 'row qfields qname' }, $name, $dots, $menu), $home));
+    // Opened from the home screen's "My chart" button: the saved name and birth date fill the boxes.
+    const me = query && query.get('me') && toolsUi ? toolsUi.myChart() : null;
+    if (me && me.day) { $day.value = String(me.day); $month.value = String(me.month); $year.value = String(me.year); $name.value = me.name || ''; }
     draw();
-    setTimeout(() => $name.focus(), 50);
+    if (!(me && me.day)) setTimeout(() => $name.focus(), 50);
   };
 
   // ---------- all tags ----------
@@ -1383,6 +1387,18 @@
   setInterval(checkVersion, 15_000);
   window.addEventListener('hashchange', checkVersion);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) checkVersion(); });
+
+  // ---------- number tools (public/tools.js) ----------
+  // Today, Coming days, Number fun, Price tool, Relationship, Karmic connections, My chart: their screens
+  // live in tools.js and get the plumbing here (screens, drawing, counting). A bottom sheet for a number's words.
+  const wordsSheet = (content) => {
+    const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
+    const close = () => { bg.remove(); overlays = overlays.filter((o) => o !== bg); };
+    bg.append(h('div', { class: 'sheet' }, content, h('button', { type: 'button', onclick: close }, 'Close')));
+    document.body.append(bg); overlays.push(bg);
+  };
+  const toolsUi = window.Tools ? window.Tools.install({ routes, h, sv, fill, render, count, toast, api, go, numeroscopeSvg, sheet: wordsSheet, setCleanup: (fn) => { viewerCleanup = fn; } }) : null;
+  if (toolsUi) Object.assign(USAGE_LABELS, toolsUi.USAGE_LABELS);
 
   // ---------- start ----------
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js?v=' + (window.APP_VERSION || '0'), { updateViaCache: 'none' }).catch(() => {});

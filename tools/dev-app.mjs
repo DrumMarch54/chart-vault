@@ -31,6 +31,9 @@ const sharp = (await import('sharp')).default;
 
 ensureDirs();
 const db = openDb(paths.db);
+// A saved "My chart" so the tools that start from a person have one (a fake person, like the charts).
+const { setMyChart } = await import('../server/mychart.js');
+setMyChart({ name: 'Josh Provencio', day: 21, month: 10, year: 1985 });
 
 // Fake tag file: 40 charts, a mix of position, number and name tags; the first
 // newest 24 get a generated screenshot, the oldest 16 stay "missing".

@@ -8,6 +8,7 @@ import { receiveUpload, createQuickChart, UploadError, fullPathFor, thumbPathFor
 import { listImages, getImage, imageContext, suggestTags, allTags, tagNames, statusReport, exportTags, bumpUsage, usageReport } from './queries.js';
 import { runBackup, streamZip, isBackupRunning } from './backup.js';
 import { snapshot } from './snapshot.js';
+import { getMyChart, setMyChart } from './mychart.js';
 import { deployGuard } from './deployguard.js';
 import { catalog, positionCounts, parseNumber, getInputs, setInputs, clearInputs, valuesFor, recomputeAll, inputStats, tagCheck, InputError, CHARTS } from './positions.js';
 import { COMMIT } from './build.js';
@@ -300,6 +301,18 @@ export function createApp(db, { log = console.log } = {}) {
     res.json({ ok: true, counted });
   });
   app.get('/api/usage', (req, res) => res.json(usageReport(db)));
+
+  // My chart: the owner's own name and birth date (server/mychart.js), for the tools that start from a person.
+  app.get('/api/mychart', (req, res) => res.json(getMyChart()));
+  app.put('/api/mychart', express.json({ limit: '4kb' }), (req, res) => {
+    const b = req.body || {};
+    const day = Number(b.day) || 0, month = Number(b.month) || 0, year = Number(b.year) || 0;
+    const any = day || month || year;
+    if (any && !(day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 1000 && year <= 9999)) return res.status(400).json({ error: 'The birth date needs a day (1-31), a month (1-12) and a four-digit year.' });
+    const saved = setMyChart(b);
+    log(`my chart saved: ${saved.name ? 'name set' : 'no name'}, date ${saved.day ? 'set' : 'not set'}`);
+    res.json(saved);
+  });
 
   // Status, export, backup
   app.get('/api/status', (req, res) => {

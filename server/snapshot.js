@@ -7,6 +7,7 @@ import { statusReport, getImage, usageReport } from './queries.js';
 import { recentLogs } from './logbuf.js';
 import { fullPathFor, thumbPathFor } from './storage.js';
 import { deployGuard } from './deployguard.js';
+import { getMyChart } from './mychart.js';
 import { inputStats, tagCheck, chartsWithoutInputs, getInputs, valuesFor, chartLabel } from './positions.js';
 
 const started = Date.now();
@@ -52,6 +53,8 @@ export function snapshot(db, { scope = 'full', id = null, commit = 'unknown', bu
   line(`auto-update: ${g.state} (${g.installed_path}), last check ${g.last_check_seconds_ago === null ? 'never' : `${g.last_check_seconds_ago}s ago`}. ${g.note}`);
   for (const l of g.log_tail) line('  deploy log: ', blank(l));
   if (s.disk) line(`disk free ${fmtB(s.disk.free_bytes)} of ${fmtB(s.disk.total_bytes)}`);
+  const me = getMyChart();
+  line(`My chart: ${me.day ? `${me.name || '(no name)'} ${me.day}.${me.month}.${me.year}` : 'not set'}`);
   line('');
   line('COUNTS');
   line(`charts with tags ${s.images}   uploaded ${s.uploaded}   missing screenshot ${s.missing_count}   archetype pics ${s.archetypes} (${s.archetypes_uploaded} uploaded)`);

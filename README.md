@@ -16,6 +16,9 @@ the tags that go with them. Built for one person, used from a phone first.
 - **Status** page: how many charts still have no screenshot, and their names.
 - **Backup**: a daily copy of the database and images into a backup folder, plus
   a one-tap download of everything as a zip.
+- **Number tools**: Today and Coming days (the energy of a date with the essence and psyche
+  charts and the course's readings), Number fun (the big diamond of any number 1-99), Price tool,
+  Relationship (two people's day vibrations), Karmic connections (shared destiny rhythms), My chart.
 - **Login** with one shared password (`WEB_TOKEN`). Nothing is public.
 
 No outside services, no paid APIs. One SQLite file, images on disk.

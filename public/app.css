@@ -272,3 +272,94 @@ body.noscroll { overflow: hidden; }
 .numbers .chip .count::before { content: ""; margin: 0; }
 .fixfields { padding: 0; margin: 0; }
 .fixfields input { background: var(--panel2); border: 1px solid var(--panel2); color: var(--text); }
+
+/* ---------- number tools (public/tools.js): Today, Coming days, Number fun, Price tool, Relationship, Karmic ---------- */
+.tools .btn { justify-content: flex-start; min-height: 56px; font-size: 17px; gap: 14px; margin-top: 8px; width: 100%; background: var(--panel); color: var(--text); }
+.tools .btn .qicon { font-size: 22px; width: 30px; text-align: center; }
+.tools .btn .sub { color: var(--muted); font-size: 14px; margin-left: auto; text-align: right; }
+.tools .rhead { margin-top: 20px; }
+.tscreen { color: #303030; }
+.ttop { gap: 6px; padding: 4px 0 4px; }
+.ttop h1 { flex: 1; min-width: 0; text-align: center; font-size: 19px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ttop .btn, .ttop .iconbtn { background: #eef0f4; color: #3a3f52; }
+.tnav { padding: 0 2px 6px; }
+.tnav .tsub { white-space: nowrap; }
+.togglerow { display: flex; gap: 8px; padding: 6px 2px; flex-wrap: wrap; align-items: center; }
+.togglerow .chip { min-height: 36px; font-size: 14px; }
+.togglerow .right { margin-left: auto; }
+.tscreen .chip.off { background: #e9ebf0; color: #5a5f6e; }
+.rate { display: inline-block; font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 10px; white-space: nowrap; }
+.rate.super { background: #d9f3e1; color: #1f6b3a; } .rate.good { background: #e3ebfb; color: #2e4a8b; } .rate.hard { background: #fde8e8; color: #9b2c2c; } .rate.quiet { background: #ececf0; color: #666; }
+.reading { background: #f6f7f9; border-radius: 12px; padding: 10px 12px; margin: 8px 0; color: #303030; }
+.reading .head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.reading .head b { font-size: 20px; }
+.reading .head .nm { color: #5f7990; font-weight: 600; }
+.reading .head .pos { color: #8a8f9c; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; margin-left: auto; text-align: right; }
+.reading p { margin: 6px 0 0; font-size: 14px; line-height: 1.4; }
+.reading.yes { background: #eef8f1; } .reading.no { background: #f3f3f5; }
+.codes { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+.codes span { font-size: 13px; padding: 3px 9px; border-radius: 12px; background: #e6f4ea; color: #1f6b3a; font-weight: 600; }
+.codes span.warn { background: #fde8e8; color: #9b2c2c; }
+.codes span.soft { background: #eef2fb; color: #2e4a8b; }
+.bignum { display: flex; align-items: baseline; gap: 10px; padding: 6px 4px; color: #303030; flex-wrap: wrap; }
+.bignum b { font-size: 34px; }
+.bignum .nm { font-size: 18px; color: #b8860b; font-weight: 600; }
+.bignum .ty { color: #8a8f9c; font-size: 13px; margin-left: auto; text-align: right; }
+.numsheet { max-height: 75vh; overflow: auto; }
+.numsheet h3 { font-size: 20px; }
+.numsheet p { margin: 4px 0 8px; font-size: 15px; line-height: 1.45; }
+/* coming days */
+.days { display: flex; flex-direction: column; gap: 6px; }
+.dayrow { display: grid; grid-template-columns: 50px 1fr 52px; gap: 8px; align-items: center; background: #f6f7f9; border-radius: 12px; padding: 8px 10px; color: #303030; cursor: pointer; }
+.dayrow .d { text-align: center; line-height: 1.1; }
+.dayrow .d b { font-size: 20px; display: block; }
+.dayrow .d span { font-size: 11px; color: #8a8f9c; text-transform: uppercase; }
+.dayrow .nums { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; font-size: 14px; }
+.dayrow .nums span { color: #8a8f9c; font-size: 10px; display: block; text-transform: uppercase; letter-spacing: .04em; }
+.dayrow .nums b { font-size: 15px; }
+.dayrow .rate { text-align: center; font-size: 11px; }
+.dayrow.today, .mini.today { outline: 2px solid var(--accent); }
+.minis { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mini { background: #f6f7f9; border-radius: 12px; padding: 6px; text-align: center; color: #303030; cursor: pointer; }
+.mini .d { font-size: 13px; font-weight: 700; }
+.mini .rate { margin-top: 2px; }
+/* big diamond */
+.bigd { color: #303030; }
+.bigd .level { background: #f6f7f9; border-radius: 12px; padding: 6px 6px 4px; margin-bottom: 8px; }
+.bigd .lv { font: 700 11px/1.2 system-ui; letter-spacing: .1em; text-transform: uppercase; color: #8a8f9c; padding: 2px 4px 6px; display: flex; justify-content: space-between; gap: 8px; }
+.bigd .lv .r { color: #8a8f9c; font-weight: 500; letter-spacing: 0; text-transform: none; text-align: right; }
+.bigd .trio { display: grid; grid-template-columns: 1fr 1.35fr 1fr; align-items: end; gap: 2px; }
+.bigd .side { text-align: center; }
+.bigd .side .lab, .bigd .unb .lab { font-size: 10px; color: #8a8f9c; text-align: center; }
+.bigd .unb { display: flex; justify-content: space-between; padding: 0 6px; margin-top: -4px; }
+.bigd .unb .lab { color: #b07c7c; }
+.bigd .who { display: flex; justify-content: space-between; font-size: 13px; color: #5f7990; font-weight: 600; padding: 0 10px 4px; }
+.dia { display: block; margin: 0 auto; max-width: 100%; height: auto; cursor: pointer; }
+.dia text { fill: #303030; font-family: "Open Sans", system-ui, sans-serif; }
+.dia text.bold { font-weight: 700; }
+.dia text.aura { fill: #5f7990; }
+.dia text.name { fill: #b8860b; font-weight: 600; }
+/* number fun */
+.numrow { display: flex; gap: 4px; overflow-x: auto; padding: 4px 2px 8px; scrollbar-width: none; }
+.numrow::-webkit-scrollbar { display: none; }
+.numrow button { min-width: 44px; min-height: 36px; padding: 0; font-size: 14px; border-radius: 8px; background: #eef0f4; color: #303030; flex: 0 0 auto; }
+.numrow button.active { background: var(--accent); color: var(--accent-text); font-weight: 700; }
+.tscreen input.numin { width: 64px; min-height: 40px; height: 40px; font: 700 18px system-ui; text-align: center; border-radius: 10px; border: 1px solid #e1e3e9; background: #f3f4f7; color: #22252e; }
+/* price tool */
+.wlabel.tl { text-align: left; padding: 8px 2px 6px; }
+.pricebox { display: flex; gap: 8px; align-items: center; }
+.pricebox input { font: 700 24px system-ui; min-height: 52px; height: 52px; border-radius: 12px; border: 1px solid #e1e3e9; background: #f3f4f7; color: #22252e; padding: 0 12px; width: 100%; }
+.pricebox .cur { font-size: 24px; font-weight: 700; color: #8a8f9c; }
+.prices { display: flex; flex-direction: column; gap: 6px; }
+.prow { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 10px; background: #f6f7f9; border-radius: 12px; padding: 8px 12px; color: #303030; cursor: pointer; }
+.prow b { font-size: 22px; }
+.prow .ds { font-size: 14px; color: #5f7990; font-weight: 600; }
+.prow .top { font-size: 12px; padding: 4px 8px; border-radius: 10px; font-weight: 700; }
+.top.g { background: #d9f3e1; color: #1f6b3a; } .top.y { background: #fff1c2; color: #7a5a00; } .top.r { background: #fde8e8; color: #9b2c2c; }
+.vib { display: flex; gap: 6px; flex-wrap: wrap; padding: 4px 0 8px; }
+.vib .chip { min-height: 36px; font-size: 14px; padding: 0 12px; }
+.vib .chip small { opacity: .75; margin-left: 4px; font-size: 12px; }
+/* relationship, karmic */
+.two-people { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.two-people input { width: 100%; min-height: 40px; font-size: 15px; border-radius: 10px; border: 1px solid #e1e3e9; background: #f3f4f7; color: #22252e; padding: 0 10px; margin-bottom: 6px; }
+html.light .tscreen .reading .rate { margin-left: auto; }

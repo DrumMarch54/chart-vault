@@ -18,6 +18,7 @@ This folder is the distilled, app-relevant part. Read these before touching
 | `psyche.md` | Inner and outer psyche charts, the "teenage" numbers 10 to 18, the ages each aura covers. |
 | `interpretation.md` | How the owner reads a chart: hierarchy of positions, narrative weaving, terminology and number notation. |
 | `yearly-rows.md` | Destiny rhythms and the year row formulas F0-F4, combinations to read in them. |
+| `software-tools.md` | Every feature of the paid tool, which the app has, and where each rule was read (Today, Coming days, Number fun, Price tool, Relationship, Karmic). |
 | `sources/` | Verbatim copies of the long documents: the class manual on the name chart, aura and center descriptions per number, the 1-9 / 10-45 / 46-99 guides, the main combo guide, number notes, the website's 1-99 descriptions, Facebook questions, all chart videos. Grep these for a specific number in a specific position. |
 
 Drive map (Hub), with ids, for reading more:
@@ -39,3 +40,23 @@ the psyche, chakras and undernumeroscope powerpoints; Name-Numeroscope TEXT
 website 1-99 descriptions. Not yet read: the big course PDFs (Essence,
 Diamond Method, Name numeroscopes, forecasting), Jung date correspondence,
 Class Transcripts.
+
+## Reading PDFs as pictures (2026-10-15)
+The Drive connector returns a PDF as text only, and refuses files over 10 MB. Both limits are easy to get past:
+1. Find the file: `search_files` (title or fullText). Its id is in the result.
+2. Under 10 MB: `download_file_content` → the tool result is saved to a file on disk (base64 JSON); decode it
+   with a 5-line script (json → base64 → .pdf). Over 10 MB: the big course books are shared "anyone with the
+   link", so `curl -L "https://drive.usercontent.google.com/download?id=<id>&export=download&confirm=t"`
+   fetches the bytes directly (check `get_file_permissions` first; the owner can share a file by link).
+3. `pdftotext -raw book.pdf book.txt`, then grep the text for the word or number wanted. Split on form
+   feeds to get page numbers.
+4. Render ONLY the pages the hits point at: `pdftoppm -r 70 -png -f N -l N book.pdf out` and Read the PNG.
+   A contact sheet (tools in the chat's scratchpad, 28 dpi, 8 per row) is the way to find a software
+   screenshot or a chart layout in an unknown book; never render a whole book at reading size.
+Big books so far (ids): Forecasting Numerology 1FBZDrmkXyTIPemXx7u_E5YMCGKksDU0c (167 pp.), "Diamonds,
+Relations, Stats, Aura Type, Templates and Book" 1QmJD4DmimtvzmvG7dTOEDHQ6TL3w1UiT (1361 pp.: Diamond
+Method, Relations, the all-in-one course book with the TOOL: boxes), "Essence, Psyche Name and Sub-Charts"
+1YWBzzhNqcaJ5rmCPOOO2AZrE4nqvk2LK (1471 pp.), Success Codes & Superdates 1kwdLhHkLABzh7SS4Cj3AWa1dKR4Wz72S,
+Marketing Numerology 1j6_OMBMKDlIFtdujMkY2nqwcGiV0b2Ws, Diamond Method (also separate) 1a1eWDBqDuKypo8PskSwTWkNzhdm5fJ8J.
+The real screens of the paid tool are the "TOOL: … in Numerologist PRO Software" boxes in these books;
+the website's pictures are marketing art, not the software.

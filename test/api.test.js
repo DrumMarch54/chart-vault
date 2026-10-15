@@ -455,3 +455,20 @@ test('usage: names and counts only, bad names dropped, shown on status and in th
   assert.match(snap, /WHAT YOU USE MOST[\s\S]*screen\.status 2/);
   assert.doesNotMatch(snap, /Screenshot_20251008\.jpg 1/);
 });
+
+test('my chart: locked, empty at first, saved on the server, bad dates refused, shown in the snapshot', async () => {
+  assert.equal((await fetch(base + '/api/mychart')).status, 401);
+  const empty = await (await api('/api/mychart')).json();
+  assert.equal(empty.day, 0); assert.equal(empty.name, '');
+  const bad = await api('/api/mychart', { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name: 'X', day: 32, month: 1, year: 1990 }) });
+  assert.equal(bad.status, 400); assert.match((await bad.json()).error, /birth date/);
+  const ok = await (await api('/api/mychart', { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name: '  Peter Joshua Shicora ', day: '21', month: '10', year: '1985' }) })).json();
+  assert.equal(ok.name, 'Peter Joshua Shicora'); assert.equal(ok.day, 21); assert.equal(ok.year, 1985);
+  const again = await (await api('/api/mychart')).json();
+  assert.equal(again.month, 10);
+  const snap = await (await api('/api/debug/snapshot?scope=short')).text();
+  assert.match(snap, /My chart: Peter Joshua Shicora 21\.10\.1985/);
+  // Clearing the date is allowed; the name can stay.
+  const cleared = await (await api('/api/mychart', { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name: 'Peter', day: '', month: '', year: '' }) })).json();
+  assert.equal(cleared.day, 0); assert.equal(cleared.name, 'Peter');
+});
