@@ -40,11 +40,11 @@ chart was recomputed and the tagged number looked up in every position.
 | NcomboM[pos] | N and M together (in that position when one is named) | owner |
 | plain number (42, 69) | a good example of that number in a person | owner |
 
-Still open (asked the owner): `sp` (18sp on Elvis Presley = solar plexus
-18/9; 88sp on Jack Colin Doherty = spine diamond 88), `ia` (16ia on
-Livingston George Allen: both right-side auras of the name chart are 16/7),
-`cd` (56cd on Tony Hinchcliffe: only outer aura 14/5 beside month 6 fits),
-`mentalflow` (both charts fit outer psyche heart beside inner psyche heart).
-`1900rugrat` is a handle, not a position.
-Recompute: scratch scripts decode.mjs / decode2.mjs in the session that
-made this; the method is in this file's header.
+Owner's answers (2026-10-15): `sp` = solar plexus (88sp on Jack Colin
+Doherty was a typo for 88sd); `cd` = challenge diamond = higher-self outer
+aura digit sum beside the month (also the two psyche challenge numbers side
+by side); `mentalflow` = outer psyche mind center beside inner psyche mind
+center, confirmed; `ia` dropped. `1900rugrat` is a handle, not a position.
+The screen spells every code out (`public/tag-codes.js`, "19fn" reads
+"19/1 First name"); the stored tag never changes; a search typed either way
+finds it.

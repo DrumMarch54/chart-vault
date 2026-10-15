@@ -40,7 +40,7 @@
 
   const chip = (tag, { onclick, active, removable } = {}) =>
     h('button', { class: `chip ${tag.kind || ''} ${active ? 'active' : ''} ${tag.source === 'app' ? 'app' : ''}`, type: 'button', onclick, title: tag.name },
-      h('span', { class: 't' }, tag.name),
+      h('span', { class: 't' }, TagCodes.pretty(tag.name)),
       tag.count !== undefined ? h('span', { class: 'count' }, ` ${fmtN(tag.count)}`) : null,
       removable ? h('span', { class: 'x' }, '×') : null);
 
@@ -179,7 +179,7 @@
       const exact = items.some((t) => t.name === q);
       if (allowNew && q && !exact) $list.append(h('button', { type: 'button', onclick: () => { onPick(q); hide(); } }, h('span', {}, `Add new tag “${q}”`), h('span', { class: 'count' }, 'new')));
       for (const t of items) $list.append(h('button', { type: 'button', onclick: () => { onPick(t.name, t.pickKind); hide(); } },
-        h('span', { class: `chip ${t.kind}`, style: 'min-height:32px;font-size:15px;pointer-events:none' }, t.name),
+        h('span', { class: `chip ${t.kind}`, style: 'min-height:32px;font-size:15px;pointer-events:none' }, TagCodes.pretty(t.name)),
         h('span', { class: 'count' }, t.pickKind === 'archetype' ? `${fmtN(t.count)} archetype pic${t.count === 1 ? '' : 's'}` : `${fmtN(t.count)} chart${t.count === 1 ? '' : 's'}`)));
       $list.classList.toggle('hidden', !$list.children.length);
     };
@@ -210,7 +210,7 @@
     const setTags = (t, k = kind) => { const p = new URLSearchParams(); if (k === 'archetype') p.set('kind', 'archetype'); for (const x of t) p.append('tag', x); go('#/' + ((t.length || k === 'archetype') ? '?' + p : '')); };
     const $quick = h('a', { class: 'btn iconbtn gear', href: '#/quick', 'aria-label': 'Quick chart', title: 'Quick chart' }, '◈');
     const $gear = h('a', { class: 'btn iconbtn gear', href: '#/settings', 'aria-label': 'Settings', title: 'Settings' }, '⚙');
-    const $input = h('input', { type: 'search', placeholder: tags.length ? 'Add another tag…' : 'Search tags (12mc, politics, a name…)', autocomplete: 'off', enterkeyhint: 'search' });
+    const $input = h('input', { type: 'search', placeholder: tags.length ? 'Add another tag…' : 'Search (12/3 mind center, politics, a name…)', autocomplete: 'off', enterkeyhint: 'search' });
     const $sugg = suggestBox($input, { within: () => tags, kind, alsoArchetype: kind === 'chart', onPick: (name, pickKind) => { if (pickKind && pickKind !== kind) setTags([name], pickKind); else if (!tags.includes(name)) setTags([...tags, name]); $input.value = ''; } });
     const $clear = h('button', { type: 'button', class: 'clear', 'aria-label': 'Clear', onclick: () => { $input.value = ''; $input.focus(); $sugg.classList.add('hidden'); } }, '×');
     const $filters = h('div', { class: 'filters' },
@@ -220,9 +220,20 @@
     const $summary = h('div', { class: 'summary' }, 'Loading…');
     const $grid = h('div', { class: 'grid' });
     const $sentinel = h('div', { class: 'sentinel' });
+    const $recent = h('div', { class: 'recent hidden' });
     render(h('div', { class: 'screen' },
-      h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), $quick, $gear), (tags.length || kind === 'archetype') ? $filters : null, $summary),
-      $grid, $sentinel));
+      h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), $quick, $gear), (tags.length || kind === 'archetype') ? $filters : null),
+      $recent, $summary, $grid, $sentinel));
+    // Recently opened charts (this phone remembers the last 12), only on the plain list.
+    if (!tags.length && kind === 'chart' && recentIds().length) {
+      api('/api/images?ids=' + recentIds().join(',') + '&limit=50').then((r) => {
+        const byId = new Map(r.items.map((i) => [i.id, i]));
+        const items = recentIds().map((id) => byId.get(id)).filter(Boolean);
+        if (!items.length) return;
+        fill($recent, h('div', { class: 'summary', style: 'padding-bottom:4px' }, 'Recently opened'), h('div', { class: 'recent-row' }, ...items.map(cell)));
+        $recent.classList.remove('hidden');
+      }).catch(() => {});
+    }
 
     let offset = 0, total = null, loading = false, done = false;
     const params = () => { const p = new URLSearchParams({ limit: 60, offset, kind }); for (const t of tags) p.append('tag', t); return p; };
@@ -234,7 +245,7 @@
         for (const img of r.items) $grid.append(cell(img));
         done = offset >= total || r.items.length === 0;
         const noun = kind === 'archetype' ? 'archetype pic' : 'chart';
-        $summary.textContent = tags.length ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with ${tags.join(' and ')}` : `${fmtN(total)} ${noun}s, newest first`;
+        $summary.textContent = tags.length ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with ${tags.map(TagCodes.pretty).join(' and ')}` : `${fmtN(total)} ${noun}s, newest first`;
         $sentinel.textContent = done ? (total === 0 ? (kind === 'archetype' && !tags.length ? 'No archetype pics yet. Add them on the Upload page.' : `No ${noun}s match.`) : '') : '';
       } catch (err) { $sentinel.textContent = err.message; }
       loading = false;
@@ -252,6 +263,9 @@
     more();
   };
   const kindOf = (name) => (/^\d+$/.test(name) ? 'number' : /^\d+[A-Za-z]/.test(name) ? 'position' : 'name');
+  // The last charts opened on this phone, newest first (browser storage; may be empty or blocked).
+  const recentIds = () => { try { return (JSON.parse(localStorage.getItem('recent') || '[]') || []).filter(Number.isInteger).slice(0, 12); } catch { return []; } };
+  const rememberOpened = (id) => { try { localStorage.setItem('recent', JSON.stringify([id, ...recentIds().filter((x) => x !== id)].slice(0, 12))); } catch {} };
 
   // ---------- viewer (full screen) ----------
   let viewerCleanup = null;
@@ -294,6 +308,7 @@
 
     try { img = await api(`/api/images/${id}`); } catch (err) { fill($sheetBody, h('p', { class: 'err' }, err.message)); openSheet(); return; }
     if (query.get('sheet')) openSheet();
+    if (img.kind === 'chart') rememberOpened(img.id);
     if (img.has_file) { $img.src = `/img/${img.id}`; } else { $img.alt = ''; fill($stage, h('div', { class: 'center', style: 'min-height:100%' }, h('p', { class: 'muted' }, 'No picture for this chart yet.'), h('a', { class: 'btn', href: '#/upload' }, 'Go to Upload'))); }
     $name.textContent = img.kind === 'archetype' ? img.tags.map((t) => t.name).join(', ') : ((img.tags.find((t) => t.kind === 'name') || {}).name || '');
     api(`/api/images/${id}/context?${listQ}`).then((c) => {

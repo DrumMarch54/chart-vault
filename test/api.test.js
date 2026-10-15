@@ -166,6 +166,10 @@ test('tag suggestions: by prefix, with counts, narrowed by current filter', asyn
   assert.deepEqual(r.body.map((t) => [t.name, t.count]), [['personA', 1], ['personB', 1], ['politics', 1]]);
   r = await json(await api('/api/tags?q=12'));
   assert.deepEqual(r.body.map((t) => [t.name, t.kind, t.count]), [['12mc', 'position', 2]]);
+  r = await json(await api('/api/tags?q=' + encodeURIComponent('12/3 mind center'))); // the spelled-out form finds the stored code
+  assert.deepEqual(r.body.map((t) => t.name), ['12mc']);
+  r = await json(await api('/api/images?ids=1,2,999'));
+  assert.equal(r.body.items.length, 2); assert.equal(r.body.total, 2);
   r = await json(await api('/api/tags?within=12mc'));
   assert.deepEqual(r.body.map((t) => t.name).sort(), ['personA', 'personB', 'politics']); // 12mc itself excluded, thinking not combinable
   r = await json(await api('/api/tags?q=%25')); // LIKE wildcard typed by user is literal

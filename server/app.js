@@ -103,7 +103,8 @@ export function createApp(db, { log = console.log } = {}) {
   app.get('/api/images', (req, res) => {
     const limit = Math.min(Math.max(Number(req.query.limit) || 60, 1), 200);
     const offset = Math.max(Number(req.query.offset) || 0, 0);
-    res.json(listImages(db, { tags: asList(req.query.tag), onlyUploaded: req.query.uploaded === '1', kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', limit, offset }));
+    const ids = req.query.ids ? String(req.query.ids).split(',').map(Number) : null;
+    res.json(listImages(db, { tags: asList(req.query.tag), onlyUploaded: req.query.uploaded === '1', kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', limit, offset, ids }));
   });
   app.get('/api/images/:id', (req, res) => {
     const img = getImage(db, Number(req.params.id));

@@ -133,3 +133,16 @@ Brought the app in line with the new-app playbook from the first app:
   chart card. "Save" draws the chart to a PNG in the browser (app styles and
   the font inlined) and PUTs it to /api/quick/save, which files it as a chart
   tagged with the typed name and opens it with its tag sheet.
+
+## 2026-10-15 Tag codes spelled out, recently opened row
+- The owner's tags are codes ("19fn", "12mc", "4combo9ec"). Decoded them
+  against the charts: recompute each tagged chart from its date and name
+  (vault-inputs.json) and look the number up in every position; the owner
+  confirmed the rest. Table: `.brain/numerology/tag-codes.md`.
+- `public/tag-codes.js` turns a code into words for the screen and a typed
+  "12/3 mind center" into the stored forms for search (server loads the same
+  file through vm). Stored names never change: filename = identity, tag =
+  identity. Unknown codes read as written, so nothing is hidden.
+- Recently opened: the last 12 charts opened on this phone, a row above the
+  grid on the plain list. Browser storage, wrapped in try/catch; a cleared
+  browser just empties the row.

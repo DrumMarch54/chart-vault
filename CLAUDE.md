@@ -25,6 +25,8 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   README). Read `chart-construction.md` before touching `public/numeroscope.js`
   or the Quick chart screen. The owner's Google Drive folder "Hub" is readable
   from a cloud session with the Drive connector; ids are in that README.
+- Tag codes ("19fn") are decoded in `.brain/numerology/tag-codes.md` and
+  spelled out on screen by `public/tag-codes.js`; the stored tag never changes.
 - Number colors and exact positions come from the vault's own screenshots
   (`.brain/numerology/number-colors.md`, `tools/color-study/`): measure
   against them, never guess a color or a position. `public/number-colors.js`

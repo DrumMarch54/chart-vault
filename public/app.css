@@ -55,6 +55,11 @@ input:focus { outline: none; border-color: var(--blue); }
 .chip.app::after { content: "✎"; font-size: 12px; opacity: .7; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 
+/* recently opened */
+.recent-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; margin-bottom: 4px; }
+.recent-row::-webkit-scrollbar { display: none; }
+.recent-row .cell { flex: 0 0 31%; }
+@media (min-width: 700px) { .recent-row .cell { flex-basis: 19%; } }
 /* grid */
 .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
 @media (min-width: 700px) { .grid { grid-template-columns: repeat(5, 1fr); gap: 8px; } }
