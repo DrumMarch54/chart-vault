@@ -122,6 +122,8 @@ body.fullscreen { padding-bottom: 0; overflow: hidden; }
 .gear { font-size: 24px; min-height: var(--tap); }
 .viewer .vtop { transition: opacity .2s; }
 .viewer.bare .vtop, .viewer.bare .varrow { opacity: 0; pointer-events: none; }
+/* while the picture is dragged loose, the viewer's black fades so the screen underneath shows */
+.viewer.dragging .vsheet { display: none; }
 
 /* quick chart (numeroscope) – white card, the paid tool's font and shape colors */
 @font-face { font-family: "Open Sans"; src: url("/fonts/open-sans.woff2") format("woff2"); font-weight: 300 800; font-display: swap; }
@@ -201,9 +203,17 @@ body.noscroll { overflow: hidden; }
 .showsheet .chip.off { background: var(--panel2); color: var(--muted); }
 .showsheet .chip.preset { background: var(--chip-pos); }
 .showsheet .done { margin-top: 16px; }
-/* home: the way to every tag */
-.alltags { justify-content: space-between; margin-top: 4px; }
-.alltags .small { flex: 1; text-align: left; padding-left: 10px; }
+/* home screen: the title row, a tall search box, the quick chart button, then the recently opened charts */
+.hometop { justify-content: space-between; padding: 8px 0 12px; }
+.hometop h1 { font-size: 26px; letter-spacing: -.3px; }
+.home .searchbar { position: static; padding: 0; }
+.home .searchbox input { min-height: 56px; font-size: 18px; padding-left: 46px; background: var(--panel) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%23a5abbd' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.8-3.8'/%3E%3C/svg%3E") 14px center no-repeat; }
+.home .searchbox .clear { top: 8px; }
+.quickbtn { min-height: 56px; font-size: 18px; margin-top: 12px; gap: 10px; }
+.quickbtn .qicon { font-size: 22px; }
+.home .recent { margin-top: 26px; }
+.rhead { padding-bottom: 6px; font-size: 13px; text-transform: uppercase; letter-spacing: .6px; }
+.alltags { justify-content: space-between; }
 /* search dropdown while nothing is typed: recent searches, then All tags */
 .suggest .shead { padding: 10px 14px 4px; color: var(--muted); font-size: 14px; }
 .suggest .rsearch { min-height: 52px; margin: 0; border-bottom: 1px solid var(--panel2); }

@@ -5,7 +5,7 @@ import { config } from './config.js';
 import { requireAuth, isAuthed, NO_TOKEN_MSG, passwordMatches, setSessionCookie, clearSessionCookie, isValidSession, loginAllowed, recordFailure, clearFailures } from './auth.js';
 import { parseUserTagBackup, importTags, addTagToImage, removeTagFromImage, markAlbumMember, ImportError } from './import.js';
 import { receiveUpload, createQuickChart, UploadError, fullPathFor, thumbPathFor, makeThumb, findLostFiles } from './storage.js';
-import { listImages, getImage, imageContext, suggestTags, allTags, statusReport, exportTags, bumpUsage, usageReport } from './queries.js';
+import { listImages, getImage, imageContext, suggestTags, allTags, tagNames, statusReport, exportTags, bumpUsage, usageReport } from './queries.js';
 import { runBackup, streamZip, isBackupRunning } from './backup.js';
 import { snapshot } from './snapshot.js';
 import { deployGuard } from './deployguard.js';
@@ -121,6 +121,7 @@ export function createApp(db, { log = console.log } = {}) {
     res.json(suggestTags(db, { q: String(req.query.q || ''), within: asList(req.query.within), kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', limit }));
   });
   app.get('/api/tags/all', (req, res) => res.json(allTags(db)));
+  app.get('/api/tags/names', (req, res) => res.json(tagNames(db)));
 
   // Edit tags on one chart
   app.post('/api/images/:id/tags', express.json({ limit: '10kb' }), (req, res) => {

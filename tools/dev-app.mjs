@@ -34,7 +34,7 @@ const db = openDb(paths.db);
 
 // Fake tag file: 40 charts, a mix of position, number and name tags; the first
 // newest 24 get a generated screenshot, the oldest 16 stay "missing".
-const people = ['Alex', 'Sam', 'Jordan', 'Riley', 'Casey', 'Morgan'];
+const people = ['alexjones', 'JimmyRowe', 'kanyewest', 'Erica', 'schoolshooter', 'joshprovencio']; // run together, like the real tags
 const rows = [];
 const names = [];
 for (let i = 0; i < 40; i++) {

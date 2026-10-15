@@ -50,16 +50,26 @@
   };
   const count = (name) => { try { fetch('/api/usage', { method: 'POST', credentials: 'same-origin', keepalive: true, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name }) }).catch(() => {}); } catch { /* counting never breaks a tap */ } };
 
+  // How a tag reads on screen ("alexjones" -> "Alex Jones"). The server decides (server/tagnames.js); every tag
+  // row it sends carries `display`, and this map remembers them so a bare name (a search in the address, a
+  // stored recent search) reads the same way. The stored tag itself never changes.
+  const tagNames = new Map();
+  try { for (const [k, v] of Object.entries(JSON.parse(localStorage.getItem('tagnames') || '{}'))) tagNames.set(k, v); } catch {}
+  const learnTags = (list) => { for (const t of list || []) if (t && t.display && t.display !== t.name) tagNames.set(t.name, t.display); };
+  const pretty = (name) => tagNames.get(name) || (TagCodes.parse(name) ? TagCodes.pretty(name) : String(name).replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^\p{Ll}/u, (c) => c.toUpperCase()));
+  let namesLoaded = false;
+  const loadTagNames = () => api('/api/tags/names').then((m) => { namesLoaded = true; for (const [k, v] of Object.entries(m)) tagNames.set(k, v); try { localStorage.setItem('tagnames', JSON.stringify(m)); } catch {} }).catch(() => {});
   const chip = (tag, { onclick, active, removable } = {}) =>
     h('button', { class: `chip ${tag.kind || ''} ${active ? 'active' : ''} ${tag.source === 'app' ? 'app' : ''}`, type: 'button', onclick, title: tag.name },
-      h('span', { class: 't' }, TagCodes.pretty(tag.name)),
+      h('span', { class: 't' }, pretty(tag.name)),
       tag.count !== undefined ? h('span', { class: 'count' }, ` ${fmtN(tag.count)}`) : null,
       removable ? h('span', { class: 'x' }, '×') : null);
 
   // ---------- routing ----------
   const routes = {};
-  let lastRoute = null; // the screen shown before this one (null = this is the first screen since the page loaded)
+  let lastRoute = null, lastHash = null; // the screen shown before this one (null = this is the first screen since the page loaded)
   let viewerFromApp = false; // the viewer was opened from another screen here, so Back can use the browser's own history
+  let underHash = null; // the screen still drawn under the viewer: closing the viewer onto it needs no redraw, so the list keeps its place
   function route() {
     const hash = location.hash || '#/';
     const [, name = '', arg = ''] = /^#\/([^/?]*)\/?([^?]*)/.exec(hash) || [];
@@ -67,9 +77,12 @@
     const view = routes[name] || routes[''];
     closeOverlays();
     if (viewerCleanup) { viewerCleanup(); viewerCleanup = null; }
-    if (name === 'chart' && lastRoute !== 'chart') viewerFromApp = lastRoute !== null;
-    lastRoute = name;
+    if (name === 'chart' && lastRoute !== 'chart') { viewerFromApp = lastRoute !== null; underHash = viewerFromApp ? lastHash : null; }
+    const keep = name !== 'chart' && lastRoute === 'chart' && underHash === hash;
+    lastRoute = name; lastHash = hash;
     count('screen.' + (name || 'home'));
+    if (name !== 'chart') underHash = null;
+    if (keep) return;
     view(arg, query);
   }
   window.addEventListener('hashchange', route);
@@ -178,6 +191,12 @@
         clamp(); apply();
       } else if (pts.length === 1 && start.x !== undefined && scale > 1) {
         tx = start.tx + (e.clientX - start.x); ty = start.ty + (e.clientY - start.y); clamp(); apply();
+      } else if (pts.length === 1 && swipe && scale === 1) {
+        // Not zoomed: the first clear move decides. Mostly downward, and the owner of the box agrees, and the
+        // picture comes loose and follows the finger (on.drag); anything else is a plain swipe, judged on release.
+        const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y;
+        if (!swipe.mode && Math.hypot(dx, dy) > 12) swipe.mode = (dy > Math.abs(dx) * 1.2 && on.dragStart?.() !== false) ? 'drag' : 'swipe';
+        if (swipe.mode === 'drag') on.drag?.(dx, Math.max(dy, 0));
       }
     });
     const up = (e) => {
@@ -185,7 +204,8 @@
       const pts = [...pointers.values()];
       if (swipe && scale === 1 && pts.length === 0) {
         const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y;
-        if (Math.abs(dx) > 70 && Math.abs(dy) < Math.abs(dx) * 0.7) (dx < 0 ? on.left : on.right)?.();
+        if (swipe.mode === 'drag') on.dragEnd?.(dx, dy, Date.now() - swipe.t);
+        else if (Math.abs(dx) > 70 && Math.abs(dy) < Math.abs(dx) * 0.7) (dx < 0 ? on.left : on.right)?.();
         else if (dy < -70 && Math.abs(dx) < 60) on.up?.();
         else if (dy > 90 && Math.abs(dx) < 60) on.down?.();
         else if (Math.abs(dx) < 8 && Math.abs(dy) < 8 && Date.now() - swipe.t < 300) on.tap?.();
@@ -201,24 +221,25 @@
 
   // ---------- tag suggestion box ----------
   // `empty` gives what the box shows while nothing is typed (the home screen's recent searches).
-  function suggestBox($input, { within = () => [], onPick, allowNew = false, kind = null, alsoArchetype = false, empty = null }) {
+  function suggestBox($input, { onPick, allowNew = false, kind = null, alsoArchetype = false, empty = null }) {
     const $list = h('div', { class: 'suggest hidden' });
     let timer, seq = 0;
     const hide = () => $list.classList.add('hidden');
     const show = (items, q) => {
       fill($list);
       if (!q && empty) { $list.append(...empty()); $list.classList.toggle('hidden', !$list.children.length); return; }
-      const exact = items.some((t) => t.name === q);
+      learnTags(items);
+      const exact = items.some((t) => t.name === q || (t.display || '').toLowerCase() === q.toLowerCase());
       if (allowNew && q && !exact) $list.append(h('button', { type: 'button', onclick: () => { onPick(q); hide(); } }, h('span', {}, `Add new tag “${q}”`), h('span', { class: 'count' }, 'new')));
       for (const t of items) $list.append(h('button', { type: 'button', onclick: () => { onPick(t.name, t.pickKind); hide(); } },
-        h('span', { class: `chip ${t.kind}`, style: 'min-height:32px;font-size:15px;pointer-events:none' }, TagCodes.pretty(t.name)),
+        h('span', { class: `chip ${t.kind}`, style: 'min-height:32px;font-size:15px;pointer-events:none' }, pretty(t.name)),
         h('span', { class: 'count' }, t.pickKind === 'archetype' ? `${fmtN(t.count)} archetype pic${t.count === 1 ? '' : 's'}` : `${fmtN(t.count)} chart${t.count === 1 ? '' : 's'}`)));
       $list.classList.toggle('hidden', !$list.children.length);
     };
     const refresh = async () => {
       const q = $input.value.trim(); const my = ++seq;
       if (!q && empty) { show([], ''); return; }
-      const params = new URLSearchParams({ q, limit: 25 }); if (kind) params.set('kind', kind); for (const w of within()) params.append('within', w);
+      const params = new URLSearchParams({ q, limit: 25 }); if (kind) params.set('kind', kind);
       try {
         let items = await api('/api/tags?' + params);
         if (alsoArchetype && q) {
@@ -238,45 +259,50 @@
 
   // ---------- browse ----------
   routes[''] = function browse(_, query) {
-    const tags = query.getAll('tag');
+    // One tag at a time: picking a tag replaces the search, never narrows it.
+    const tag = query.get('tag') || '';
     const kind = query.get('kind') === 'archetype' ? 'archetype' : 'chart';
-    const setTags = (t, k = kind) => { const p = new URLSearchParams(); if (k === 'archetype') p.set('kind', 'archetype'); for (const x of t) p.append('tag', x); go('#/' + ((t.length || k === 'archetype') ? '?' + p : '')); };
-    const $quick = h('a', { class: 'btn iconbtn gear', href: '#/quick', 'aria-label': 'Quick chart', title: 'Quick chart' }, '◈');
+    const setTag = (t, k = kind) => { const p = new URLSearchParams(); if (k === 'archetype') p.set('kind', 'archetype'); if (t) p.set('tag', t); go('#/' + (p.toString() ? '?' + p : '')); };
+    const home = !tag && kind === 'chart';
+    const $quickIcon = h('a', { class: 'btn iconbtn gear', href: '#/quick', 'aria-label': 'Quick chart', title: 'Quick chart' }, '◈');
     const $gear = h('a', { class: 'btn iconbtn gear', href: '#/settings', 'aria-label': 'Settings', title: 'Settings' }, '⚙');
-    const $input = h('input', { type: 'search', placeholder: tags.length ? 'Add another tag…' : 'Search (12/3 mind center, politics, a name…)', autocomplete: 'off', enterkeyhint: 'search' });
-    const $sugg = suggestBox($input, { within: () => tags, kind, alsoArchetype: kind === 'chart', empty: tags.length || kind === 'archetype' ? null : () => recentNodes(setTags), onPick: (name, pickKind) => { if (pickKind && pickKind !== kind) setTags([name], pickKind); else if (!tags.includes(name)) setTags([...tags, name]); $input.value = ''; } });
-    const $clear = h('button', { type: 'button', class: 'clear', 'aria-label': 'Clear', onclick: () => { $input.value = ''; $input.focus(); $sugg.classList.add('hidden'); } }, '×');
-    const $filters = h('div', { class: 'filters' },
-      kind === 'archetype' ? chip({ name: 'Archetype pics', kind: 'name' }, { active: true, removable: true, onclick: () => setTags(tags, 'chart') }) : null,
-      ...tags.map((t) => chip({ name: t, kind: kindOf(t) }, { active: true, removable: true, onclick: () => setTags(tags.filter((x) => x !== t)) })),
-      tags.length > 1 ? h('button', { type: 'button', class: 'chip', onclick: () => setTags([]) }, 'Clear all') : null);
+    const $input = h('input', { type: 'search', placeholder: 'Search names, tags, numbers', autocomplete: 'off', enterkeyhint: 'search' });
+    if (tag) $input.value = pretty(tag); // the search box shows what is being searched; typing replaces it
+    const showClear = () => $clear.classList.toggle('hidden', !$input.value); // the × only when there is something to clear
+    $input.addEventListener('input', showClear);
+    const $sugg = suggestBox($input, { kind, alsoArchetype: kind === 'chart', empty: home ? () => recentNodes(setTag) : null, onPick: (name, pickKind) => setTag(name, pickKind || kind) });
+    $input.addEventListener('focus', () => { if (tag && $input.value === pretty(tag)) $input.select(); });
+    const $clear = h('button', { type: 'button', class: 'clear', 'aria-label': 'Clear the search', onclick: () => { if (tag) { setTag('', 'chart'); return; } $input.value = ''; showClear(); $input.focus(); $sugg.classList.add('hidden'); } }, '×');
+    showClear();
+    const $filters = kind === 'archetype' ? h('div', { class: 'filters' }, chip({ name: 'Archetype pics', kind: 'name' }, { active: true, removable: true, onclick: () => setTag(tag, 'chart') })) : null;
     const $summary = h('div', { class: 'summary' }, 'Loading…');
     const $grid = h('div', { class: 'grid' });
     const $sentinel = h('div', { class: 'sentinel' });
     const $recent = h('div', { class: 'recent hidden' });
-    // The home screen (nothing searched) shows the way into every tag and the recently opened charts, not
-    // every chart newest first: the owner always starts from a search. The recent searches live inside the
-    // search box: they drop down when it is tapped and stay out of the way otherwise.
-    const home = !tags.length && kind === 'chart';
-    if (tags.length) rememberSearch(tags, kind);
-    const $alltags = home ? h('a', { class: 'btn btn-block alltags', href: '#/tags' }, 'All tags', h('span', { class: 'muted small' }, 'words · positions · numbers'), h('span', { class: 'muted' }, '›')) : null;
-    render(h('div', { class: 'screen' },
-      h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), $quick, $gear), (tags.length || kind === 'archetype') ? $filters : null),
-      $alltags, $recent, home ? null : $summary, home ? null : $grid, home ? null : $sentinel));
+    // The home screen is the search box and the way into the quick chart; the recently opened charts sit
+    // below. The recent searches and the way to every tag drop down from the search box when it is tapped.
+    if (tag) rememberSearch([tag], kind);
+    if (!namesLoaded) loadTagNames().then(() => { if (tag && document.activeElement !== $input) $input.value = pretty(tag); });
+    const $quick = h('a', { class: 'btn btn-primary btn-block quickbtn', href: '#/quick' }, h('span', { class: 'qicon' }, '◈'), 'Quick chart');
+    render(h('div', { class: `screen ${home ? 'home' : ''}` },
+      home ? h('div', { class: 'pagetop hometop' }, h('h1', {}, 'Chart Vault'), $gear) : null,
+      h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), home ? null : $quickIcon, home ? null : $gear), $filters),
+      home ? $quick : null,
+      $recent, home ? null : $summary, home ? null : $grid, home ? null : $sentinel));
     // Recently opened charts (this phone remembers the last 48), a grid like a search result, only on the home screen.
     if (home && recentIds().length) {
       api('/api/images?ids=' + recentIds().join(',') + '&limit=50').then((r) => {
         const byId = new Map(r.items.map((i) => [i.id, i]));
         const items = recentIds().map((id) => byId.get(id)).filter(Boolean);
         if (!items.length) return;
-        fill($recent, h('div', { class: 'summary', style: 'padding-bottom:4px' }, 'Recently opened'), h('div', { class: 'grid' }, ...items.map(cell)));
+        fill($recent, h('div', { class: 'summary rhead' }, 'Recently opened'), h('div', { class: 'grid' }, ...items.map(cell)));
         $recent.classList.remove('hidden');
       }).catch(() => {});
     }
     if (home) return;
 
     let offset = 0, total = null, loading = false, done = false;
-    const params = () => { const p = new URLSearchParams({ limit: 60, offset, kind }); for (const t of tags) p.append('tag', t); return p; };
+    const params = () => { const p = new URLSearchParams({ limit: 60, offset, kind }); if (tag) p.append('tag', tag); return p; };
     async function more() {
       if (loading || done) return; loading = true; $sentinel.textContent = 'Loading…';
       try {
@@ -285,15 +311,16 @@
         for (const img of r.items) $grid.append(cell(img));
         done = offset >= total || r.items.length === 0;
         const noun = kind === 'archetype' ? 'archetype pic' : 'chart';
-        $summary.textContent = tags.length ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with ${tags.map(TagCodes.pretty).join(' and ')}` : `${fmtN(total)} ${noun}s, newest first`;
-        $sentinel.textContent = done ? (total === 0 ? (kind === 'archetype' && !tags.length ? 'No archetype pics yet. Add them on the Upload page.' : `No ${noun}s match.`) : '') : '';
+        $summary.textContent = `${fmtN(total)} ${noun}${total === 1 ? '' : 's'}${tag ? '' : ', newest first'}`;
+        $sentinel.textContent = done ? (total === 0 ? (kind === 'archetype' && !tag ? 'No archetype pics yet. Add them on the Upload page.' : `No ${noun}s match.`) : '') : '';
       } catch (err) { $sentinel.textContent = err.message; }
       loading = false;
     }
     function cell(img) {
+      learnTags(img.tags);
       const label = img.kind === 'archetype'
-        ? img.tags.map((t) => t.name).join(', ')
-        : (img.tags.find((t) => t.kind === 'name') || img.tags[0] || {}).name || '';
+        ? img.tags.map((t) => pretty(t.name)).join(', ')
+        : pretty((img.tags.find((t) => t.kind === 'name') || img.tags[0] || {}).name || '');
       return h('a', { class: 'cell', href: `#/chart/${img.id}${location.hash.includes('?') ? '?' + location.hash.split('?')[1] : ''}` },
         img.has_file ? h('img', { class: 'thumb', src: `/thumb/${img.id}`, loading: 'lazy', alt: label }) : h('div', { class: 'nofile' }, 'no file yet'),
         h('div', { class: `label ${label ? '' : 'muted'}` }, label || img.filename));
@@ -306,8 +333,7 @@
   // The last charts opened on this phone, newest first (browser storage; may be empty or blocked).
   const recentIds = () => { try { return (JSON.parse(localStorage.getItem('recent') || '[]') || []).filter(Number.isInteger).slice(0, 48); } catch { return []; } };
   const rememberOpened = (id) => { try { localStorage.setItem('recent', JSON.stringify([id, ...recentIds().filter((x) => x !== id)].slice(0, 48))); } catch {} };
-  // The last searches made on this phone, newest first: [{ tags, kind }]. Adding a tag to a search
-  // replaces the narrower search it grew from, so one lookup does not leave a trail of half-searches.
+  // The last searches made on this phone, newest first: [{ tags, kind }]. Searching the same tag again moves it to the top.
   const recentSearches = () => { try { return (JSON.parse(localStorage.getItem('searches') || '[]') || []).filter((s) => s && Array.isArray(s.tags) && s.tags.length).slice(0, 20); } catch { return []; } };
   const rememberSearch = (tags, kind) => {
     try {
@@ -316,13 +342,13 @@
     } catch {}
   };
   // What drops down from an empty search box: the recent searches (tap one to run it again) and the way to every tag.
-  const recentNodes = (setTags) => {
+  const recentNodes = (setTag) => {
     const searches = recentSearches();
     return [
       h('div', { class: 'shead' }, searches.length ? 'Recent searches' : 'Your recent searches will show here'),
-      ...searches.map((s) => h('button', { type: 'button', class: 'rsearch', onclick: () => setTags(s.tags, s.kind) },
+      ...searches.map((s) => h('button', { type: 'button', class: 'rsearch', onclick: () => setTag(s.tags[0], s.kind) },
         h('span', { class: 'chips' }, s.kind === 'archetype' ? h('span', { class: 'chip name', style: 'pointer-events:none' }, 'Archetype pics') : null,
-          ...s.tags.map((t) => h('span', { class: `chip ${kindOf(t)}`, style: 'pointer-events:none' }, TagCodes.pretty(t)))),
+          ...s.tags.slice(0, 1).map((t) => h('span', { class: `chip ${kindOf(t)}`, style: 'pointer-events:none' }, pretty(t)))),
         h('span', { class: 'muted', style: 'padding-left:8px' }, '›'))),
       h('a', { class: 'rsearch alltags', href: '#/tags' }, h('span', {}, 'All tags'), h('span', { class: 'muted' }, '›')),
     ];
@@ -337,6 +363,10 @@
     // Back goes to the screen the viewer was opened from (the list, a search, the quick chart). Opened from a
     // link or a fresh load, there is no such screen, so it goes to the list this chart belongs to.
     const back = () => (viewerFromApp ? history.back() : swap(backHash));
+    // The viewer lies over the screen it was opened from, which stays drawn underneath: dragging the picture
+    // down shows it, and closing the viewer lands back on it exactly where it was. Opened from a link or a
+    // fresh load, there is no such screen, so the list this chart belongs to is drawn first.
+    if (!viewerFromApp) { routes['']('', listQ); underHash = backHash; }
     document.body.classList.add('fullscreen');
     viewerCleanup = () => document.body.classList.remove('fullscreen');
 
@@ -358,33 +388,71 @@
     const $next = h('button', { type: 'button', class: 'iconbtn varrow right hidden', 'aria-label': 'Next' }, '›');
     const $sheetBody = h('div', { class: 'vsheet-body stack' });
     const $sheet = h('div', { class: 'vsheet' }, h('div', { class: 'vsheet-grip', onclick: () => closeSheet() }, h('span', {})), $sheetBody);
-    const $root = h('div', { class: 'viewer' },
+    // Nothing over the picture until it is tapped: no back button, no name. The phone's own Back closes it.
+    const $root = h('div', { class: 'viewer bare' },
       $stage,
       h('div', { class: 'vtop' }, h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'Back to the list', onclick: back }, '‹'), $name, $count),
       $prev, $next, $sheet);
-    render($root);
+    document.body.append($root);
 
     let img, ctx = { prev: null, next: null, index: null, total: 0 }, sheetOpen = false;
     const openSheet = () => { sheetOpen = true; $sheet.classList.add('open'); $root.classList.remove('bare'); };
     const closeSheet = () => { sheetOpen = false; $sheet.classList.remove('open'); };
     const toggleBare = () => $root.classList.toggle('bare'); // tap: hide or show the top bar
     const goTo = (nid) => { if (nid) swap(`#/chart/${nid}${qs ? '?' + qs : ''}`); };
-    const z = zoomable($stage, $img, { left: () => goTo(ctx.next), right: () => goTo(ctx.prev), up: openSheet, down: () => (sheetOpen ? closeSheet() : back()), tap: () => (sheetOpen ? closeSheet() : toggleBare()) });
+    // Drag down and the picture comes loose: it follows the finger, shrinks a little, and the screen underneath
+    // shows through. Let go after a real pull and it flies back into its place in the list (or off the bottom
+    // when that place is not on screen) and the viewer closes; a short pull settles back.
+    let dismissing = false;
+    const base = () => { const W = $stage.clientWidth, H = $stage.clientHeight, w = $img.offsetWidth, hh = $img.offsetHeight; return { x: (W - w) / 2, y: (H - hh) / 2, w, h: hh }; };
+    const cellOf = () => { for (const a of $app.querySelectorAll('a.cell')) { const m = /^#\/chart\/(\d+)(\?|$)/.exec(a.getAttribute('href') || ''); if (m && Number(m[1]) === Number(id)) { const r = a.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight ? r : null; } } return null; };
+    const drag = (dx, dy) => {
+      if (dismissing) return;
+      const p = Math.min(dy / 300, 1);
+      $root.classList.add('bare', 'dragging');
+      $img.style.transformOrigin = '50% 50%';
+      $img.style.transform = `translate(${dx}px, ${dy}px) scale(${1 - 0.25 * p})`;
+      $root.style.background = `rgba(0,0,0,${(1 - 0.92 * p).toFixed(3)})`;
+    };
+    const settle = () => {
+      if (dismissing) return;
+      $img.style.transition = 'transform .2s ease'; $root.style.transition = 'background .2s ease';
+      $img.style.transform = 'translate(0px, 0px) scale(1)'; $root.style.background = '';
+      setTimeout(() => { $img.style.transition = ''; $root.style.transition = ''; $img.style.transformOrigin = ''; $root.classList.remove('dragging'); }, 220);
+    };
+    const flyOut = (dx, dy) => {
+      if (dismissing) return; dismissing = true;
+      const b = base(), cell = cellOf();
+      $img.style.transition = 'transform .25s ease, opacity .25s ease'; $root.style.transition = 'background .25s ease';
+      if (cell) {
+        const sc = cell.width / b.w;
+        $img.style.transform = `translate(${cell.left + cell.width / 2 - (b.x + b.w / 2)}px, ${cell.top + cell.height / 2 - (b.y + b.h / 2)}px) scale(${sc})`;
+      } else $img.style.transform = `translate(${dx}px, ${innerHeight}px) scale(0.5)`;
+      $img.style.opacity = '0.35'; $root.style.background = 'rgba(0,0,0,0)';
+      setTimeout(back, 240);
+    };
+    const z = zoomable($stage, $img, {
+      left: () => goTo(ctx.next), right: () => goTo(ctx.prev), up: openSheet,
+      down: () => (sheetOpen ? closeSheet() : back()), tap: () => (sheetOpen ? closeSheet() : toggleBare()),
+      dragStart: () => !sheetOpen && img && img.has_file, drag,
+      dragEnd: (dx, dy, ms) => ((dy > 110 || (dy > 50 && dy / Math.max(ms, 1) > 0.6)) ? flyOut(dx, dy) : settle()),
+    });
     $prev.onclick = () => goTo(ctx.prev); $next.onclick = () => goTo(ctx.next);
     const keys = (e) => { if (e.key === 'ArrowLeft') goTo(ctx.prev); else if (e.key === 'ArrowRight') goTo(ctx.next); else if (e.key === 'Escape') (sheetOpen ? closeSheet() : back()); };
     window.addEventListener('keydown', keys);
-    viewerCleanup = () => { document.body.classList.remove('fullscreen'); window.removeEventListener('keydown', keys); window.removeEventListener('resize', fit); z.destroy(); };
+    viewerCleanup = () => { $root.remove(); document.body.classList.remove('fullscreen'); window.removeEventListener('keydown', keys); window.removeEventListener('resize', fit); z.destroy(); };
     // swipe down on the sheet grip closes it
     let gripY = null;
     $sheet.addEventListener('pointerdown', (e) => { if (e.target.closest('.vsheet-grip')) gripY = e.clientY; });
     $sheet.addEventListener('pointerup', (e) => { if (gripY !== null && e.clientY - gripY > 40) closeSheet(); gripY = null; });
 
     try { img = await api(`/api/images/${id}`); } catch (err) { fill($sheetBody, h('p', { class: 'err' }, err.message)); openSheet(); return; }
+    learnTags(img.tags);
     if (query.get('sheet')) openSheet();
     if (img.kind === 'chart') rememberOpened(img.id);
     // The full picture replaces the thumbnail only once it has arrived, so nothing blank or broken shows in between.
     if (img.has_file) { const full = new Image(); full.onload = () => { if ($img.isConnected) $img.src = full.src; }; full.src = `/img/${img.id}`; } else { $img.removeAttribute('src'); fill($stage, h('div', { class: 'center', style: 'min-height:100%' }, h('p', { class: 'muted' }, 'No picture for this chart yet.'), h('a', { class: 'btn', href: '#/upload' }, 'Go to Upload'))); }
-    $name.textContent = img.kind === 'archetype' ? img.tags.map((t) => t.name).join(', ') : ((img.tags.find((t) => t.kind === 'name') || {}).name || '');
+    $name.textContent = img.kind === 'archetype' ? img.tags.map((t) => pretty(t.name)).join(', ') : pretty((img.tags.find((t) => t.kind === 'name') || {}).name || '');
     api(`/api/images/${id}/context?${listQ}`).then((c) => {
       ctx = c;
       $count.textContent = c.index ? `${c.index} / ${c.total}` : '';
@@ -401,9 +469,9 @@
         catch (err) { toast(err.message, true); }
       };
       const $sugg = suggestBox($tagInput, { onPick: addTag, allowNew: true });
-      const tagBtn = (t) => chip(t, { onclick: () => sheet(t.name, [
-        { label: `▦ Show all ${img.kind === 'archetype' ? 'archetype pics' : 'charts'} tagged “${t.name}”`, run: () => go(`#/?${img.kind === 'archetype' ? 'kind=archetype&' : ''}tag=${encodeURIComponent(t.name)}`) },
-        { label: `✕ Remove “${t.name}” from this ${img.kind === 'archetype' ? 'picture' : 'chart'}`, cls: 'btn-danger', run: async () => {
+      const tagBtn = (t) => chip(t, { onclick: () => sheet(pretty(t.name), [
+        { label: `▦ Show all ${img.kind === 'archetype' ? 'archetype pics' : 'charts'} tagged “${pretty(t.name)}”`, run: () => go(`#/?${img.kind === 'archetype' ? 'kind=archetype&' : ''}tag=${encodeURIComponent(t.name)}`) },
+        { label: `✕ Remove “${pretty(t.name)}” from this ${img.kind === 'archetype' ? 'picture' : 'chart'}`, cls: 'btn-danger', run: async () => {
           try { const r = await postJson(`/api/images/${img.id}/tags/remove`, { name: t.name }); img = r.image; toast(`Removed “${t.name}”`); draw(); } catch (err) { toast(err.message, true); }
         } },
       ]) });
@@ -974,10 +1042,11 @@
     render(h('div', { class: 'screen' }, pageTop('All tags', '#/'), $tabs, $body));
     let all;
     try { all = await api('/api/tags/all'); } catch (err) { fill($body, h('p', { class: 'err' }, err.message)); return; }
+    learnTags(all);
     const used = all.filter((t) => t.count > 0);
     const n = (t) => t.charts || t.archetypes;
     const search = (t) => `#/?${!t.charts && t.archetypes ? 'kind=archetype&' : ''}tag=${encodeURIComponent(t.name)}`;
-    const tagLink = (t, label) => h('a', { class: `chip ${t.kind}`, href: search(t), title: t.name }, h('span', { class: 't' }, label || TagCodes.pretty(t.name)), h('span', { class: 'count' }, fmtN(n(t))));
+    const tagLink = (t, label) => h('a', { class: `chip ${t.kind}`, href: search(t), title: t.name }, h('span', { class: 't' }, label || pretty(t.name)), h('span', { class: 'count' }, fmtN(n(t))));
     const sumOf = (list) => list.reduce((a, t) => a + n(t), 0);
     const charts = (list) => `${fmtN(list.length)} tag${list.length === 1 ? '' : 's'} · ${fmtN(sumOf(list))} chart${sumOf(list) === 1 ? '' : 's'}`;
     const group = (title, list, chips, open = false) => {
