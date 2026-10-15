@@ -1,9 +1,8 @@
 // Read-only queries used by the browse screens.
-import fs from 'node:fs';
-import vm from 'node:vm';
-const codesCtx = {};
-vm.runInNewContext(fs.readFileSync(new URL('../public/tag-codes.js', import.meta.url), 'utf8'), codesCtx);
-export const TagCodes = codesCtx.TagCodes;
+import { TagCodes, displayName } from './tagnames.js';
+export { TagCodes };
+// Every tag row that leaves the server carries how it reads on screen ("alexjones" -> "Alex Jones").
+const withDisplay = (t) => ({ ...t, display: displayName(t.name) });
 
 // Newest first by the date in the filename; charts without a date go last.
 const ORDER = '(i.taken_at IS NULL), i.taken_at DESC, i.id DESC';
@@ -31,7 +30,7 @@ export function listImages(db, { tags = [], onlyUploaded = false, kind = 'chart'
     const tagRows = db.prepare(`SELECT it.image_id, t.name, t.kind FROM image_tags it JOIN tags t ON t.id = it.tag_id
       WHERE it.image_id IN (${ids.map(() => '?').join(',')}) ORDER BY t.kind, t.name`).all(...ids);
     const byImage = new Map(ids.map((id) => [id, []]));
-    for (const r of tagRows) byImage.get(r.image_id).push({ name: r.name, kind: r.kind });
+    for (const r of tagRows) byImage.get(r.image_id).push(withDisplay({ name: r.name, kind: r.kind }));
     for (const r of rows) { r.tags = byImage.get(r.id); r.has_file = !!r.has_file; }
   }
   return { total, items: rows, limit, offset };
@@ -51,7 +50,7 @@ export function getImage(db, id) {
   const img = db.prepare('SELECT * FROM images WHERE id = ?').get(id);
   if (!img) return null;
   const tags = db.prepare(`SELECT t.name, t.kind, it.source FROM image_tags it JOIN tags t ON t.id = it.tag_id
-    WHERE it.image_id = ? ORDER BY t.kind, t.name`).all(id);
+    WHERE it.image_id = ? ORDER BY t.kind, t.name`).all(id).map(withDisplay);
   const paths = db.prepare('SELECT path FROM image_paths WHERE image_id = ? ORDER BY path').all(id).map((r) => r.path);
   return {
     id: img.id, filename: img.filename, kind: img.kind, taken_at: img.taken_at, uploaded_at: img.uploaded_at,
@@ -74,8 +73,9 @@ export function suggestTags(db, { q = '', within = [], kind = 'chart', limit = 3
   let match = '';
   const needle = q.trim();
   if (needle) {
-    // "19/1 first" also finds the stored "19fn" (public/tag-codes.js).
+    // "19/1 first" also finds the stored "19fn" (public/tag-codes.js); "alex jones" finds the stored "alexjones".
     const forms = [`%${escapeLike(needle)}%`, ...TagCodes.expandQuery(needle).map((f) => escapeLike(f))];
+    if (/\s/.test(needle)) forms.push(`%${escapeLike(needle.replace(/\s+/g, ''))}%`);
     params.push(...forms);
     match = `AND (${forms.map(() => "t.name LIKE ? ESCAPE '\\' COLLATE NOCASE").join(' OR ')})`;
   }
@@ -86,16 +86,17 @@ export function suggestTags(db, { q = '', within = [], kind = 'chart', limit = 3
     WHERE 1=1 ${match} ${excl}
     GROUP BY t.id HAVING count > 0
     ORDER BY count DESC, t.name COLLATE NOCASE LIMIT ?`).all(...params, limit * 3);
-  // Prefer tags that start with what was typed.
-  const lower = needle.toLowerCase();
+  // Prefer tags that start with what was typed (spaces aside).
+  const lower = needle.toLowerCase(), tight = lower.replace(/\s+/g, '');
+  const starts = (t) => t.name.toLowerCase().startsWith(lower) || t.name.toLowerCase().startsWith(tight) || displayName(t.name).toLowerCase().startsWith(lower);
   rows.sort((a, b) => {
-    const as = a.name.toLowerCase().startsWith(lower) ? 0 : 1;
-    const bs = b.name.toLowerCase().startsWith(lower) ? 0 : 1;
+    const as = starts(a) ? 0 : 1;
+    const bs = starts(b) ? 0 : 1;
     if (as !== bs) return as - bs;
     if (b.count !== a.count) return b.count - a.count;
     return a.name.localeCompare(b.name);
   });
-  return rows.slice(0, limit);
+  return rows.slice(0, limit).map(withDisplay);
 }
 
 // Every tag with how many charts and how many archetype pics carry it (the All tags screen).
@@ -103,7 +104,14 @@ export function allTags(db) {
   return db.prepare(`SELECT t.name, t.kind, count(it.image_id) AS count,
       count(CASE WHEN i.kind = 'chart' THEN 1 END) AS charts, count(CASE WHEN i.kind = 'archetype' THEN 1 END) AS archetypes
     FROM tags t LEFT JOIN image_tags it ON it.tag_id = t.id LEFT JOIN images i ON i.id = it.image_id
-    GROUP BY t.id ORDER BY t.name COLLATE NOCASE`).all();
+    GROUP BY t.id ORDER BY t.name COLLATE NOCASE`).all().map(withDisplay);
+}
+
+// How every tag reads on screen, only where that differs from the stored name: { stored: shown }.
+export function tagNames(db) {
+  const out = {};
+  for (const { name } of db.prepare('SELECT name FROM tags').all()) { const d = displayName(name); if (d !== name) out[name] = d; }
+  return out;
 }
 
 export function statusReport(db) {

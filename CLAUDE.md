@@ -45,7 +45,11 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 
 ## Rules that must hold
 - Never lose or mix up a chart or a tag. Filename = identity. Tags are kept
-  exactly as written, never renamed or "fixed".
+  exactly as written, never renamed or "fixed". How a tag READS is separate:
+  `server/tagnames.js` splits run-together names ("alexjones" → "Alex Jones");
+  every tag row the API sends carries `display`, `/api/tags/names` lists them
+  all, and the screen goes through `pretty()`. A wrong split reads worse than
+  none, so the splitter prefers leaving a name whole; fix a bad one in FIXED.
 - Re-importing a tag file must only add. Tags removed in the app stay removed
   (`removed_tags`). Tags added in the app survive imports.
 - No paid AI or API calls. No user accounts; one shared password (WEB_TOKEN).
@@ -71,6 +75,13 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   or the chrome-devtools MCP (`.mcp.json`). Screen rules: `public/CLAUDE.md`.
 - No build step: public/ is served as is. Bump `version` in package.json for
   user-visible releases.
+- One tag per search, never two: picking a tag replaces the search. The search
+  box shows the tag's screen name; × goes home.
+- The viewer is an overlay over the screen it was opened from, which stays
+  drawn under it (`underHash`): closing it never redraws the list, so the list
+  keeps its place. It opens bare (tap shows the top bar); drag down and the
+  picture comes loose, let go and it flies back into its cell (`zoomable`
+  `drag`/`dragEnd`). Keep both when touching the viewer.
 
 ## Seeing the live app (do this instead of asking the owner)
 Read the live report yourself with the script whenever you need to know what

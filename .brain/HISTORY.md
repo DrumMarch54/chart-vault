@@ -268,3 +268,25 @@ day the first step adds nothing and the second still applies. Fixed, and the
 ⋮ menu on the quick chart now has "Augmentation on / off" (remembered per
 phone) because the owner wants to see the raw values sometimes. The psyche
 month keeps the course rule regardless; the sub-charts never augment.
+
+## 2026-10-15 Home layout, tag names with spaces, swipe-down viewer
+The owner: name tags should read with spaces and capitals in the search box;
+two-tag search is annoying, remove it; nothing but the search box and the
+quick chart matter on the home screen; a chart should close like the Samsung
+gallery (drag down, the picture comes loose, let go and you are back on the
+grid); nothing over the picture until it is tapped.
+- Tag names: the stored tag never changes (rule). `server/tagnames.js` decides
+  how it reads, with a 60,000-word frequency list and a 9,000-first-name list
+  vendored as .gz. Tried a plain wordninja-style split first: it minced
+  surnames into scraps ("Steven Crow Der", "Greta Thun Berg"). What works is
+  three tries in order (whole word · all common words · first name + the rest),
+  with short pieces nearly forbidden, and leaving a name whole when unsure.
+  Tuned against all 796 live name tags (read with the password, never
+  committed). The list lives server-side only; the phone gets `display` on
+  every tag row and the map from `/api/tags/names`. A search typed with spaces
+  matches the run-together form.
+- Viewer as an overlay: before, the viewer replaced the list and Back redrew
+  it from the top. Now the list stays under it and Back lands on the same
+  scroll position; this is also what lets the screen show through while the
+  picture is dragged. Fresh loads of a chart address draw the list first.
+- Dev app people are now run-together names, so the splitter is visible there.

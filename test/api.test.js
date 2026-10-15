@@ -168,6 +168,11 @@ test('tag suggestions: by prefix, with counts, narrowed by current filter', asyn
   assert.deepEqual(r.body.map((t) => [t.name, t.kind, t.count]), [['12mc', 'position', 2]]);
   r = await json(await api('/api/tags?q=' + encodeURIComponent('12/3 mind center'))); // the spelled-out form finds the stored code
   assert.deepEqual(r.body.map((t) => t.name), ['12mc']);
+  assert.equal(r.body[0].display, '12/3 Mind center'); // every tag row says how it reads on screen
+  r = await json(await api('/api/tags?q=' + encodeURIComponent('person a'))); // typed with a space, finds the run-together tag
+  assert.deepEqual(r.body.map((t) => t.name), ['personA']);
+  r = await json(await api('/api/tags/names'));
+  assert.equal(r.body['12mc'], '12/3 Mind center'); assert.equal(r.body.personA, 'Person A'); assert.equal(r.body.politics, 'Politics'); assert.equal(r.body.Friend, undefined);
   r = await json(await api('/api/images?ids=1,2,999'));
   assert.equal(r.body.items.length, 2); assert.equal(r.body.total, 2);
   r = await json(await api('/api/tags?within=12mc'));
@@ -387,7 +392,7 @@ test('archetype pics: separate kind, number tags from the album name, kept out o
   const all = await json(await api('/api/tags/all'));
   const t15 = all.body.find((t) => t.name === '15');
   assert.equal(t15.archetypes, 1); assert.ok(t15.charts >= 1); assert.equal(t15.count, t15.charts + t15.archetypes);
-  assert.deepEqual(all.body.find((t) => t.name === '69'), { name: '69', kind: 'number', count: 1, charts: 0, archetypes: 1 });
+  assert.deepEqual(all.body.find((t) => t.name === '69'), { name: '69', kind: 'number', count: 1, charts: 0, archetypes: 1, display: '69/6' });
   // status counts them apart; missing list is charts only
   const st = await json(await api('/api/status'));
   assert.equal(st.body.archetypes, 2);
