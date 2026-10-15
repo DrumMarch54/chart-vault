@@ -61,6 +61,23 @@ looks like. A diagnostic that is computed and not on a screen does not exist.
 - The data behind it is `GET /api/debug/snapshot` (`?scope=short`, `?id=`),
   password-protected like everything else, plain text, never includes secrets.
 
+## Sibling repos: read any of them whenever it helps (owner's rule 2026-10-15)
+The owner's other apps are `DrumMarch54/tiktok-shop-pipeline` (the video app;
+the playbook `.brain/NEW-APP-PLAYBOOK.md` lives there) and
+`DrumMarch54/TikTok-Ebay-Drafter` (the eBay app). All three are set up the
+same way. Before building anything, look at how the others did it and copy
+what fits; when the question is how something is set up, check them without
+being asked. Read-only: never push to a sibling from here, never copy secrets.
+Not in the session: `add_repo` (owner `DrumMarch54`, repo `<name>`, access
+`read`), shallow-clone to `/home/user/<name>`, then `register_repo_root`.
+The owner never needs to act.
+
+## Plugins
+`superpowers`, `caveman`, `frontend-design`, `playground`, `claude-md-management`
+and `pr-review-toolkit` are copied into `.claude/skills|agents|commands`
+(why: `.claude/vendor/README.md`), the same set as the other two apps, so they
+load in a cloud session whether or not the marketplace does.
+
 ## Working rules
 - Diagnose before patching: read the live report first. The VPS's running
   build is the truth over the repo.
