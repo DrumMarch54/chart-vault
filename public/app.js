@@ -38,6 +38,18 @@
   }
   const postJson = (path, data) => api(path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(data) });
 
+  // Which buttons and screens get used, shown on Status as "What you use most".
+  // A NAME and a count only: never what was typed, never a chart, a tag or a
+  // filename. Never throws, never waits, so a count can never break a tap.
+  // A renamed or removed button changes its name and its label here, same commit.
+  const USAGE_LABELS = {
+    'screen.home': 'Home screen', 'screen.chart': 'Chart viewer', 'screen.settings': 'Settings', 'screen.quick': 'Quick chart',
+    'screen.tags': 'All tags', 'screen.upload': 'Upload screenshots', 'screen.import': 'Import tags', 'screen.status': 'Status and backup',
+    'viewer.add_tag': 'Add a tag to a chart', 'quick.save': 'Save a quick chart', 'quick.full_screen': 'Quick chart full screen',
+    'quick.year_rows': 'Year rows and day vibrations', 'quick.show_parts': 'Show and hide parts', 'status.backup': 'Back up now', 'status.logout': 'Log out',
+  };
+  const count = (name) => { try { fetch('/api/usage', { method: 'POST', credentials: 'same-origin', keepalive: true, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name }) }).catch(() => {}); } catch { /* counting never breaks a tap */ } };
+
   const chip = (tag, { onclick, active, removable } = {}) =>
     h('button', { class: `chip ${tag.kind || ''} ${active ? 'active' : ''} ${tag.source === 'app' ? 'app' : ''}`, type: 'button', onclick, title: tag.name },
       h('span', { class: 't' }, TagCodes.pretty(tag.name)),
@@ -57,6 +69,7 @@
     if (viewerCleanup) { viewerCleanup(); viewerCleanup = null; }
     if (name === 'chart' && lastRoute !== 'chart') viewerFromApp = lastRoute !== null;
     lastRoute = name;
+    count('screen.' + (name || 'home'));
     view(arg, query);
   }
   window.addEventListener('hashchange', route);
@@ -399,7 +412,7 @@
         groups.name.length ? h('div', { class: 'chips' }, ...groups.name.map(tagBtn)) : null,
         groups.position.length ? h('div', {}, h('div', { class: 'muted small', style: 'margin-bottom:6px' }, 'Positions'), h('div', { class: 'chips' }, ...groups.position.map(tagBtn))) : null,
         groups.number.length ? h('div', {}, h('div', { class: 'muted small', style: 'margin-bottom:6px' }, 'Numbers'), h('div', { class: 'chips' }, ...groups.number.map(tagBtn))) : null,
-        h('div', { class: 'addtag row', style: 'flex-wrap:nowrap' }, $tagInput, h('button', { type: 'button', class: 'btn-primary', onclick: () => { const v = $tagInput.value.trim(); if (v) { addTag(v); $tagInput.value = ''; } } }, 'Add'), $sugg),
+        h('div', { class: 'addtag row', style: 'flex-wrap:nowrap' }, $tagInput, h('button', { type: 'button', class: 'btn-primary', onclick: () => { const v = $tagInput.value.trim(); if (v) { count('viewer.add_tag'); addTag(v); $tagInput.value = ''; } } }, 'Add'), $sugg),
         h('div', { class: 'small muted' },
           h('div', {}, img.kind === 'archetype' ? 'Type: archetype pic (a picture that represents a number)' : 'Type: chart'),
           h('div', {}, `Taken: ${img.taken_at ? img.taken_at.replace('T', ' ') : 'unknown'}`),
@@ -907,8 +920,8 @@
     // The ⋮ menu sits beside the name field, never on the chart: Full screen and Save to vault. Taps outside close it.
     const $full = h('button', { type: 'button', class: 'cmenu-item' }, 'Full screen');
     const $save = h('button', { type: 'button', class: 'cmenu-item' }, 'Save to vault');
-    const $showBtn = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { $menu.classList.add('hidden'); showSheet(show, () => applyShow(svg, show)); } }, 'Show and hide parts');
-    const $rows = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { $menu.classList.add('hidden'); openForecast({ day: $day.value, month: $month.value, year: $year.value, name: $name.value }); } }, 'Year rows and day vibrations');
+    const $showBtn = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { count('quick.show_parts'); $menu.classList.add('hidden'); showSheet(show, () => applyShow(svg, show)); } }, 'Show and hide parts');
+    const $rows = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { count('quick.year_rows'); $menu.classList.add('hidden'); openForecast({ day: $day.value, month: $month.value, year: $year.value, name: $name.value }); } }, 'Year rows and day vibrations');
     const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $full, $showBtn, $rows, $save);
     const $dots = h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'More', title: 'More', onclick: (e) => { e.stopPropagation(); $menu.classList.toggle('hidden'); } }, '⋮');
     document.addEventListener('click', (e) => { if (!$menu.contains(e.target)) $menu.classList.add('hidden'); });
@@ -916,6 +929,7 @@
     // Full screen: the chart alone, edge to edge, until the X is tapped. The chart element moves into the
     // overlay and back, so what was typed stays. Leaving the screen closes it (route() clears overlays).
     $full.onclick = () => {
+      count('quick.full_screen');
       $menu.classList.add('hidden');
       const close = () => { $ov.remove(); overlays = overlays.filter((o) => o !== $ov); document.body.classList.remove('fullscreen'); $home.prepend($chart); window.removeEventListener('keydown', keys); };
       const keys = (e) => { if (e.key === 'Escape') close(); };
@@ -924,6 +938,7 @@
     };
     // Save to vault: the drawing becomes a chart picture tagged with the typed name, then opens with its tags.
     $save.onclick = async () => {
+      count('quick.save');
       const name = $name.value.trim();
       if (!name) { toast('Type a name first.', true); $name.focus(); return; }
       const d = Number($day.value), m = Number($month.value), y = Number($year.value);
@@ -1136,14 +1151,16 @@
         h('button', { type: 'button', class: 'btn-block', onclick: (e) => { $missing.classList.toggle('hidden'); e.target.textContent = $missing.classList.contains('hidden') ? `Show the ${fmtN(s.missing_count)} missing filenames` : 'Hide list'; } }, `Show the ${fmtN(s.missing_count)} missing filenames`),
         $missing, h('a', { class: 'btn btn-primary btn-block', href: '#/upload' }, 'Upload screenshots')) : null,
       h('div', { class: 'card stack' }, h('h2', { style: 'margin-top:0' }, 'Backup'), $backupMsg,
-        h('button', { type: 'button', class: 'btn-block', onclick: async (e) => { e.target.disabled = true; e.target.textContent = 'Backing up…'; try { const r = await api('/api/backup/run', { method: 'POST' }); $backupMsg.textContent = `Last backup: ${fmtDate(r.at)} (${r.result})`; toast('Backup done'); } catch (err) { toast(err.message, true); } e.target.disabled = false; e.target.textContent = 'Back up now'; } }, 'Back up now'),
+        h('button', { type: 'button', class: 'btn-block', onclick: async (e) => { count('status.backup'); e.target.disabled = true; e.target.textContent = 'Backing up…'; try { const r = await api('/api/backup/run', { method: 'POST' }); $backupMsg.textContent = `Last backup: ${fmtDate(r.at)} (${r.result})`; toast('Backup done'); } catch (err) { toast(err.message, true); } e.target.disabled = false; e.target.textContent = 'Back up now'; } }, 'Back up now'),
         h('a', { class: 'btn btn-block', href: '/api/backup/download', download: '' }, `Download everything as one zip (${fmtBytes(s.bytes)})`),
         h('a', { class: 'btn btn-block', href: '/api/export/tags.json', download: '' }, 'Download tags only (small JSON file)')),
+      s.usage && s.usage.length ? h('div', { class: 'card stack' }, h('h2', { style: 'margin-top:0' }, 'What you use most'),
+        ...s.usage.slice(0, 20).map((u) => stat(USAGE_LABELS[u.name] || u.name, u.count))) : null,
       h('div', { class: 'card stack' },
         s.last_import ? h('p', { class: 'muted small' }, `Last tag import: ${fmtDate(s.last_import.imported_at)}, ${fmtN(s.last_import.images_in_file)} images in file`) : h('p', { class: 'muted small' }, 'No tag file imported yet.'),
         h('p', { class: 'muted small' }, `Chart Vault version ${s.version}, build ${s.commit}`),
         s.updates ? h('p', { class: `small ${s.updates.ok ? 'muted' : 'err'}` }, s.updates.note) : null,
-        h('button', { type: 'button', class: 'btn-block', onclick: async () => { await api('/api/logout', { method: 'POST' }).catch(() => {}); showLogin(); } }, 'Log out')));
+        h('button', { type: 'button', class: 'btn-block', onclick: async () => { count('status.logout'); await api('/api/logout', { method: 'POST' }).catch(() => {}); showLogin(); } }, 'Log out')));
   };
 
   // ---------- new version notice ----------

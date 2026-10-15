@@ -5,7 +5,7 @@ import { config } from './config.js';
 import { requireAuth, isAuthed, NO_TOKEN_MSG, passwordMatches, setSessionCookie, clearSessionCookie, isValidSession, loginAllowed, recordFailure, clearFailures } from './auth.js';
 import { parseUserTagBackup, importTags, addTagToImage, removeTagFromImage, markAlbumMember, ImportError } from './import.js';
 import { receiveUpload, createQuickChart, UploadError, fullPathFor, thumbPathFor, makeThumb, findLostFiles } from './storage.js';
-import { listImages, getImage, imageContext, suggestTags, allTags, statusReport, exportTags } from './queries.js';
+import { listImages, getImage, imageContext, suggestTags, allTags, statusReport, exportTags, bumpUsage, usageReport } from './queries.js';
 import { runBackup, streamZip, isBackupRunning } from './backup.js';
 import { snapshot } from './snapshot.js';
 import { deployGuard } from './deployguard.js';
@@ -246,9 +246,19 @@ export function createApp(db, { log = console.log } = {}) {
     }
   });
 
+  // Which buttons and screens get used: a name and a count, nothing else.
+  // Always 200: a count may never fail a tap, and a bad name is just dropped.
+  app.post('/api/usage', express.json({ limit: '2kb' }), (req, res) => {
+    let counted = false;
+    try { counted = bumpUsage(db, req.body && req.body.name); } catch (err) { log(`usage: ${err && err.message}`); }
+    res.json({ ok: true, counted });
+  });
+  app.get('/api/usage', (req, res) => res.json(usageReport(db)));
+
   // Status, export, backup
   app.get('/api/status', (req, res) => {
     const report = statusReport(db);
+    report.usage = usageReport(db, 40);
     report.lost_files = findLostFiles(db);
     report.disk = diskInfo();
     report.version = appVersion();

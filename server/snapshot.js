@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { config, paths } from './config.js';
-import { statusReport, getImage } from './queries.js';
+import { statusReport, getImage, usageReport } from './queries.js';
 import { recentLogs } from './logbuf.js';
 import { fullPathFor, thumbPathFor } from './storage.js';
 import { deployGuard } from './deployguard.js';
@@ -50,6 +50,11 @@ export function snapshot(db, { scope = 'full', id = null, commit = 'unknown', bu
   line(`charts with tags ${s.images}   uploaded ${s.uploaded}   missing screenshot ${s.missing_count}   archetype pics ${s.archetypes} (${s.archetypes_uploaded} uploaded)`);
   line(`distinct tags ${s.tags}   image-tag links ${s.links}   added in app ${s.added_in_app}   removed in app ${s.removed_in_app}`);
   line(`screenshot bytes ${fmtB(s.bytes)}   lost files (recorded but not on disk) ${s.lost_files ? s.lost_files.length : 0}`);
+  line('');
+  const used = usageReport(db, scope === 'short' ? 15 : 60);
+  line(`WHAT YOU USE MOST (${used.length} names; counts only, never what was typed)`);
+  for (const u of used) line(`  ${u.name} ${u.count}  last ${u.last_at}`);
+  if (!used.length) line('  nothing counted yet');
   line('');
   line('LAST IMPORT ', s.last_import ? `${s.last_import.imported_at} build ${s.last_import.build || 'unknown'} ${s.last_import.filename}: rows ${s.last_import.rows}, images ${s.last_import.images_in_file}, new images ${s.last_import.new_images}, new tags ${s.last_import.new_tags}, new links ${s.last_import.new_links}, skipped removed ${s.last_import.skipped_removed}` : 'none');
   line('LAST BACKUP ', s.last_backup ? `${s.last_backup} ${s.last_backup_result}` : 'none');

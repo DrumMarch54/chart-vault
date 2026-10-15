@@ -81,16 +81,25 @@ looks like. A diagnostic that is computed and not on a screen does not exist.
 - The data behind it is `GET /api/debug/snapshot` (`?scope=short`, `?id=`),
   password-protected like everything else, plain text, never includes secrets.
 
-## Sibling repos: read any of them whenever it helps (owner's rule 2026-10-15)
+## Sibling repos: one shared setup, read them when it helps (owner's rule 2026-10-15)
 The owner's other apps are `DrumMarch54/tiktok-shop-pipeline` (the video app;
 the playbook `.brain/NEW-APP-PLAYBOOK.md` lives there) and
-`DrumMarch54/TikTok-Ebay-Drafter` (the eBay app). All three are set up the
-same way. Before building anything, look at how the others did it and copy
-what fits; when the question is how something is set up, check them without
-being asked. Read-only: never push to a sibling from here, never copy secrets.
-Not in the session: `add_repo` (owner `DrumMarch54`, repo `<name>`, access
-`read`), shallow-clone to `/home/user/<name>`, then `register_repo_root`.
-The owner never needs to act.
+`DrumMarch54/TikTok-Ebay-Drafter` (the eBay app). All three share one setup:
+deploy, login, live report, verify, plugins, reply style, tap counting. For
+anything about THAT shared setup, or when the owner points at another app,
+read the sibling and copy its shape without being asked. For this app's own
+features think for this app: the siblings are other stacks and a copied
+feature rarely fits. Never scan them on every change. Read-only: never push
+to a sibling from here, never copy secrets. Not in the session: `add_repo`
+(owner `DrumMarch54`, repo `<name>`, access `read`), shallow-clone to
+`/home/user/<name>`, then `register_repo_root`. The owner never needs to act.
+
+## Tap counting ("What you use most")
+Screens count themselves in `route()` (`screen.<name>`); a button that matters
+calls `count('<area>.<name>')`. Names and counts only, never what was typed,
+never a chart, a tag or a filename; a count never throws and never waits.
+Shown on Status, in the snapshot, `GET /api/usage`. A renamed or removed
+button changes its name and its `USAGE_LABELS` entry in the same commit.
 
 ## Plugins
 `superpowers`, `caveman`, `frontend-design`, `playground`, `claude-md-management`

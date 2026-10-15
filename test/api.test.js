@@ -435,3 +435,18 @@ test('quick chart "Save to vault": a PNG becomes a chart tagged with the typed n
   assert.equal(db.prepare('SELECT COUNT(*) AS n FROM images').get().n, before);
   assert.equal((await json(await api('/api/quick/save?name=Bob', { method: 'GET' }))).status, 404);
 });
+
+test('usage: names and counts only, bad names dropped, shown on status and in the snapshot', async () => {
+  const bump = (name) => api('/api/usage', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name }) });
+  assert.equal((await fetch(base + '/api/usage', { method: 'POST' })).status, 401);
+  for (const n of ['screen.status', 'screen.status', 'viewer.add_tag']) assert.equal((await bump(n)).status, 200);
+  // a name that is not a plain name (a tag, a filename, typed text) is dropped, never stored, never an error the phone sees
+  for (const bad of ['Screenshot_20251008.jpg', 'tag with spaces', 'x'.repeat(61), '', 42]) assert.equal((await bump(bad)).status, 200);
+  const list = (await json(await api('/api/usage'))).body;
+  assert.deepEqual(list.map((r) => [r.name, r.count]), [['screen.status', 2], ['viewer.add_tag', 1]]);
+  const status = (await json(await api('/api/status'))).body;
+  assert.equal(status.usage[0].name, 'screen.status');
+  const snap = await (await api('/api/debug/snapshot?scope=short')).text();
+  assert.match(snap, /WHAT YOU USE MOST[\s\S]*screen\.status 2/);
+  assert.doesNotMatch(snap, /Screenshot_20251008\.jpg 1/);
+});

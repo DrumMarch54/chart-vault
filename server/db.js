@@ -73,6 +73,9 @@ export const MIGRATIONS = [
     db.exec("ALTER TABLE images ADD COLUMN kind TEXT NOT NULL DEFAULT 'chart'");
     db.exec('CREATE INDEX IF NOT EXISTS idx_images_kind ON images(kind)');
   },
+  // 4: which buttons and screens get used, by NAME and count only (never
+  //    what was typed, never a chart or a tag), for "What you use most"
+  (db) => db.exec('CREATE TABLE IF NOT EXISTS usage (name TEXT PRIMARY KEY, count INTEGER NOT NULL DEFAULT 0, last_at TEXT)'),
 ];
 
 export function migrate(db) {

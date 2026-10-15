@@ -145,3 +145,17 @@ export function exportTags(db) {
 }
 
 function escapeLike(s) { return s.replace(/[\\%_]/g, (c) => '\\' + c); }
+
+// Which buttons and screens get used: a NAME and a count, nothing else (never
+// what was typed, never a chart, a tag or a filename). The Status screen shows
+// them as "What you use most". A bad name is dropped; a count may never fail.
+export const USAGE_NAME = /^[a-z0-9][a-z0-9_.-]{0,59}$/;
+export function bumpUsage(db, name) {
+  if (typeof name !== 'string' || !USAGE_NAME.test(name)) return false;
+  db.prepare(`INSERT INTO usage (name, count, last_at) VALUES (?, 1, ?)
+    ON CONFLICT(name) DO UPDATE SET count = count + 1, last_at = excluded.last_at`).run(name, new Date().toISOString());
+  return true;
+}
+export function usageReport(db, limit = 100) {
+  return db.prepare('SELECT name, count, last_at FROM usage ORDER BY count DESC, name LIMIT ?').all(limit);
+}
