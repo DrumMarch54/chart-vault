@@ -46,7 +46,7 @@
     'screen.home': 'Home screen', 'screen.chart': 'Chart viewer', 'screen.settings': 'Settings', 'screen.quick': 'Quick chart',
     'screen.tags': 'All tags', 'screen.upload': 'Upload screenshots', 'screen.import': 'Import tags', 'screen.status': 'Status and backup',
     'viewer.add_tag': 'Add a tag to a chart', 'quick.save': 'Save a quick chart', 'quick.full_screen': 'Quick chart full screen',
-    'quick.year_rows': 'Year rows and day vibrations', 'quick.show_parts': 'Show and hide parts', 'status.backup': 'Back up now', 'status.logout': 'Log out',
+    'quick.year_rows': 'Year rows and day vibrations', 'quick.show_parts': 'Show and hide parts', 'quick.augment': 'Augmentation on or off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
   };
   const count = (name) => { try { fetch('/api/usage', { method: 'POST', credentials: 'same-origin', keepalive: true, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name }) }).catch(() => {}); } catch { /* counting never breaks a tap */ } };
 
@@ -911,8 +911,12 @@
     const $chart = h('div', { class: 'nscope-box' });
     let data = null, svg = null;
     const show = loadShow();
+    // Augmentation (the course rule that lifts a one-digit name value: Sj 4 -> 13/4) is on unless switched
+    // off in the menu to see the raw values. Remembered per phone.
+    let augment = true; try { augment = localStorage.getItem('quickAugment') !== 'off'; } catch {}
+    const input = () => ({ day: $day.value, month: $month.value, year: $year.value, name: $name.value, augment });
     const draw = () => {
-      data = Numeroscope.numeroscope({ day: $day.value, month: $month.value, year: $year.value, name: $name.value });
+      data = Numeroscope.numeroscope(input());
       svg = numeroscopeSvg(data); fill($chart, svg); applyShow(svg, show);
     };
     $chart.addEventListener('click', (e) => { const t = e.target.closest && e.target.closest('[data-word]'); if (t) openWord(t.getAttribute('data-word'), data && data.essence.day); });
@@ -921,8 +925,13 @@
     const $full = h('button', { type: 'button', class: 'cmenu-item' }, 'Full screen');
     const $save = h('button', { type: 'button', class: 'cmenu-item' }, 'Save to vault');
     const $showBtn = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { count('quick.show_parts'); $menu.classList.add('hidden'); showSheet(show, () => applyShow(svg, show)); } }, 'Show and hide parts');
-    const $rows = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { count('quick.year_rows'); $menu.classList.add('hidden'); openForecast({ day: $day.value, month: $month.value, year: $year.value, name: $name.value }); } }, 'Year rows and day vibrations');
-    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $full, $showBtn, $rows, $save);
+    const $rows = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { count('quick.year_rows'); $menu.classList.add('hidden'); openForecast(input()); } }, 'Year rows and day vibrations');
+    const augmentLabel = () => (augment ? 'Augmentation on' : 'Augmentation off');
+    const $augment = h('button', { type: 'button', class: 'cmenu-item', role: 'menuitemcheckbox', 'aria-checked': String(augment), onclick: () => {
+      count('quick.augment'); augment = !augment; try { localStorage.setItem('quickAugment', augment ? 'on' : 'off'); } catch {}
+      $augment.textContent = augmentLabel(); $augment.setAttribute('aria-checked', String(augment)); $menu.classList.add('hidden'); draw();
+    } }, augmentLabel());
+    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $full, $showBtn, $rows, $augment, $save);
     const $dots = h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'More', title: 'More', onclick: (e) => { e.stopPropagation(); $menu.classList.toggle('hidden'); } }, '⋮');
     document.addEventListener('click', (e) => { if (!$menu.contains(e.target)) $menu.classList.add('hidden'); });
     const $home = h('div', { class: 'nscope-home' }, $chart);

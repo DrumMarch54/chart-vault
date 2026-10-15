@@ -22,7 +22,9 @@ course text and still waits for a screenshot with a full date and a middle name.
   and 9 more if that is still under 10. Jr = 3 with day 2 -> 3+2 = 5 -> 14/5;
   with day 14 -> 3+5 = 8 -> 17/8; Sir = 6 with day 22 -> 10/1; Sr = 5 with
   day 24 -> 11/2. The augmented value is the word's value everywhere (LE, big
-  LE, auras). Without a day nothing is added. The consonant and vowel charts
+  LE, auras). Without a day, step 1 has nothing to add and step 2 still lifts a
+  one-digit value by 9: Sj (4) -> 13/4 (owner, 2026-10-15). The quick chart's
+  menu can switch augmentation off to see the raw values. The consonant and vowel charts
   never augment (they show 3/3, 0/0 and "e 5/5" as they are), and the inner
   psyche month stays 5/5; the outer psyche month is the same idea (day ds +
   month ds, +9 while under 10).

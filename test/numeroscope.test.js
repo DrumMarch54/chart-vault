@@ -198,7 +198,14 @@ test('augmentation of one-digit names on the main chart (vault screenshots)', ()
   assert.equal(line({ day: 24, month: 8, year: 1961, name: 'Paul William Chek Sr' }), '18/9 19/1 15/6 11/2'); // 5 + 6 = 11, stays
   assert.equal(line({ day: 22, month: 1, year: 1990, name: 'Sir Robert Bryson Hall II' }), '10/1 22/4 20/2 12/3 15/6'); // Sir 6 + 4 = 10
   assert.equal(line({ day: 28, month: 10, year: 1955, name: 'William Henry Gates III' }), '19/1 18/9 16/7 13/4'); // 3 + 1 = 4 -> 13
-  assert.equal(line({ name: 'Billy Camrick Carson II' }), '10/1 16/7 21/3 2/2'); // no day: nothing to add
+  // No day: step 1 has nothing to add, step 2 still lifts a one-digit value by 9 (owner: "Sj should be 13/4")
+  assert.equal(line({ name: 'Billy Camrick Carson II' }), '10/1 16/7 21/3 11/2');
+  assert.equal(line({ name: 'Sj' }), '13/4');
+  assert.equal(line({ day: 19, name: 'Sj' }), '14/5'); // 4 + 1 = 5, under 10 so + 9
+  assert.equal(line({ day: 19, month: 5, name: 'Sj', augment: false }), '4/4'); // switched off: raw value
+  assert.equal(line({ day: 2, month: 1, year: 1965, name: 'Charles Christopher White Jr.', augment: false }), '22/4 45/9 21/3 3/3');
+  assert.equal(N.numeroscope({ day: 2, month: 1, year: 1965, name: 'Charles Christopher White Jr.', augment: false }).name.le.text, '19/1'); // raw 3 feeds LE
+  assert.equal(N.numeroscope({ day: 2, month: 1, year: 1965, name: 'Charles Christopher White Jr.', augment: false }).psyche.outer.words[0].value.text, N.numeroscope({ day: 2, month: 1, year: 1965, name: 'Charles Christopher White Jr.' }).psyche.outer.words[0].value.text); // the psyche month keeps the course rule
   assert.equal(N.numeroscope({ day: 1, name: 'Test test' }).vowels.words.map((w) => w.value.text).join(' '), '5/5 5/5'); // sub-charts never augment
 });
 

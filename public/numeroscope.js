@@ -130,15 +130,19 @@
   }
 
   // Everything the quick chart shows, from the four boxes.
-  function numeroscope({ day, month, year, name }) {
+  // augment: the course's augmentation rule on the main name line, on unless the owner switches it off
+  // in the quick chart to see the raw values.
+  function numeroscope({ day, month, year, name, augment = true }) {
     const e = essence(day, month, year);
     const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
     const all = parts.map((p) => nameWord(p));
-    // Augmentation on the main name chart only (13 vault charts with Jr, Sr, Sir, II, III): a one-digit
-    // name value gets the day's digit sum added, and 9 more if that is still under 10. Jr (3) with day 2
-    // -> 14/5, with day 14 -> 17/8; Sir (6) with day 22 -> 10/1. The augmented value feeds LE, big LE
-    // and the auras. The consonant and vowel charts never augment (they show 3/3, 0/0, 5/5 as they are).
-    if (e.day) for (const w of all) if (w.value && w.value.sum < 10) { let n = w.value.sum + e.day.ds; if (n < 10) n += 9; w.value = val(n); }
+    // Augmentation on the main name chart only (course video "The augmentation rule"; 13 vault charts with
+    // Jr, Sr, Sir, II, III): a one-digit name value gets the day's digit sum added, and 9 more if that is
+    // still under 10 ("octavized"). Jr (3) with day 2 -> 14/5, with day 14 -> 17/8; Sir (6) with day 22
+    // -> 10/1. With no day there is nothing to add in step 1, so step 2 alone lifts it: Sj (4) -> 13/4
+    // (owner, 2026-10-15). The augmented value feeds LE, big LE and the auras. The consonant and vowel
+    // charts never augment (they show 3/3, 0/0, 5/5 as they are).
+    if (augment) for (const w of all) if (w.value && w.value.sum < 10) { let n = w.value.sum + (e.day ? e.day.ds : 0); if (n < 10) n += 9; w.value = val(n); }
     const cons = parts.map((p) => nameWord(p, (c) => !VOWELS.has(c)));
     const vow = parts.map((p) => nameWord(p, (c) => VOWELS.has(c)));
     return { essence: e, birth: e, psyche: psyche(e), name: rhombus(all, e.day), consonants: rhombus(cons, e.day), vowels: rhombus(vow, e.day) };
@@ -314,11 +318,11 @@
   // The year rows of one calendar year for a person. Needs the birth date; the name gives the life
   // expression and pillar rows (blank without one). Rows: { month, day, label, main, aura, shadow,
   // vertical, verticalShadow, psyche: { main, aura, shadow, vertical, verticalShadow }, until }.
-  function yearRows({ day, month, year, name }, forYear) {
+  function yearRows({ day, month, year, name, augment }, forYear) {
     const Y = Number(forYear) || 0, by = Number(year) || 0;
     const f = by >= 1000 ? yearFormula(by, Y) : null;
     if (!f || Y < by) return null;
-    const data = numeroscope({ day, month, year, name });
+    const data = numeroscope({ day, month, year, name, augment });
     const e = data.essence, n = data.name, p = data.psyche.outer;
     const dayDs = e.day ? e.day.ds : null;
     const common = { day: dayDs, age: digitSum(f.age), last: f.previous ? f.previous.number : null, this: f.period.number, leaving: f.period.number };
@@ -339,8 +343,8 @@
   // The fulfillment number (case book, Wimbledon 2017) is the spine ds + the date ds.
   const DAY_FORMULA = [[0, 0, 'date'], [0, 0, 'day'], [0, 0, 'sum'], [0, 0, 'le'], [0, 0, 'sum'], [0, 0, 'month'], [0, 0, 'sum'], [0, 0, 'year'], [0, 0, 'sum']];
   const DAY_MINUTES = 24 * 60 / DAY_FORMULA.length; // 160
-  function dayRows({ day, month, year, name }, y, m, d) {
-    const data = numeroscope({ day, month, year, name });
+  function dayRows({ day, month, year, name, augment }, y, m, d) {
+    const data = numeroscope({ day, month, year, name, augment });
     const e = data.essence, n = data.name, p = data.psyche.outer;
     const common = { day: e.day ? e.day.ds : null, month: digitSum(m) };
     const dateDs = digitSum(d), shadowDate = d < 10 ? 0 : d % 10, yr = digitSum(digitsOf(y));

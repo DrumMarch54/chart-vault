@@ -258,3 +258,13 @@ numerology README) before any chart-content work, never guess what it defines;
 and merge origin/main into the branch at the start of every session before
 planning, so what the other chats built is in view. Grep before building was
 already a rule; it does not help when the checkout is stale.
+
+## 2026-10-15 Augmentation with no day, and a switch for it
+Owner typed "Sj" in the quick chart with no date and saw 4/4; expected 13/4.
+The engine only augmented when a day was typed ("no day: nothing to add"),
+a guess the course never states. The course rule (video "The augmentation
+rule"): under 10 → add the day digit sum; still under 10 → add 9. With no
+day the first step adds nothing and the second still applies. Fixed, and the
+⋮ menu on the quick chart now has "Augmentation on / off" (remembered per
+phone) because the owner wants to see the raw values sometimes. The psyche
+month keeps the course rule regardless; the sub-charts never augment.
