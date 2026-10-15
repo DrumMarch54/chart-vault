@@ -100,6 +100,14 @@ export const MIGRATIONS = [
     CREATE INDEX IF NOT EXISTS idx_chart_values_sum ON chart_values(sum, chart, position);
     CREATE INDEX IF NOT EXISTS idx_chart_values_ds ON chart_values(ds, chart, position);
   `),
+  // 6: who a chart is, in the owner's words ("Charlie Sheen", "Kyle Forgeard · NELK"): the label under
+  //    the thumbnail and the viewer's title. Separate from the tags, which never change. title_source =
+  //    known | typed | tag | owner (how it was decided); title_check = 1 while the owner still has to confirm it.
+  (db) => {
+    db.exec('ALTER TABLE images ADD COLUMN title TEXT');
+    db.exec('ALTER TABLE images ADD COLUMN title_source TEXT');
+    db.exec('ALTER TABLE images ADD COLUMN title_check INTEGER NOT NULL DEFAULT 0');
+  },
 ];
 
 export function migrate(db) {

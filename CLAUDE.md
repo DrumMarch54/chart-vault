@@ -55,6 +55,11 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   every tag row the API sends carries `display`, `/api/tags/names` lists them
   all, and the screen goes through `pretty()`. A wrong split reads worse than
   none, so the splitter prefers leaving a name whole; fix a bad one in FIXED.
+- Who a chart is = `images.title` (server/titles.js), the label under the thumbnail
+  and the viewer's title; never a tag. First + last, or the stage name, or
+  "Name · Group"; no middle names. Seed `server/chart-titles.json` fills blanks at
+  startup, never over an owner edit; guesses carry `check` and show in Settings →
+  "Names to check". Search box: "Everyone named X" = word-start match on the name.
 - Re-importing a tag file must only add. Tags removed in the app stay removed
   (`removed_tags`). Tags added in the app survive imports.
 - No paid AI or API calls. No user accounts; one shared password (WEB_TOKEN).

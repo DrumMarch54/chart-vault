@@ -4,6 +4,7 @@ import { createApp } from './app.js';
 import { scheduleBackups } from './backup.js';
 import { ensureThumbs, cleanTempFiles } from './storage.js';
 import { seedInputs, loadSeedFile } from './positions.js';
+import { seedTitles, loadTitleSeed } from './titles.js';
 
 import { remember } from './logbuf.js';
 import { COMMIT } from './build.js';
@@ -18,6 +19,10 @@ const db = openDb(paths.db);
 // have none yet, never over what is already there.
 try { const r = seedInputs(db, loadSeedFile()); if (r.added) log(`position search: loaded inputs for ${r.added} chart(s) from the repo (${r.skipped} already there, ${r.unknown} not in this vault)`); }
 catch (err) { log(`position search seed failed: ${err.message}`); }
+// Who each chart is (server/chart-titles.json): the name under the thumbnail, added for charts that have
+// none yet, never over an owner edit.
+try { const r = seedTitles(db, loadTitleSeed()); if (r.added) log(`names: loaded ${r.added} chart name(s) from the repo (${r.skipped} already there, ${r.unknown} not in this vault)`); }
+catch (err) { log(`chart name seed failed: ${err.message}`); }
 const app = createApp(db, { log });
 
 app.listen(config.port, config.host, () => {

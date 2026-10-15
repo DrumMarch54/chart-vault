@@ -1,6 +1,7 @@
 // Read-only queries used by the browse screens.
 import { TagCodes, displayName } from './tagnames.js';
 import { positionSql } from './positions.js';
+import { nameSql } from './titles.js';
 export { TagCodes };
 // Every tag row that leaves the server carries how it reads on screen ("alexjones" -> "Alex Jones").
 const withDisplay = (t) => ({ ...t, display: displayName(t.name) });
@@ -8,9 +9,9 @@ const withDisplay = (t) => ({ ...t, display: displayName(t.name) });
 // Newest first by the date in the filename; charts without a date go last.
 const ORDER = '(i.taken_at IS NULL), i.taken_at DESC, i.id DESC';
 
-function filterSql(tags, params, position = null) {
-  // Images that carry ALL of the given tags (AND), and the number in the position when one is asked for.
-  let sql = position ? ' ' + positionSql(position, params) : '';
+function filterSql(tags, params, position = null, name = '') {
+  // Images that carry ALL of the given tags (AND), the number in the position and the word in the name when asked for.
+  let sql = (position ? ' ' + positionSql(position, params) : '') + nameSql(name, params);
   if (!tags.length) return sql;
   const marks = tags.map(() => '?').join(',');
   params.push(...tags, tags.length);
@@ -19,13 +20,13 @@ function filterSql(tags, params, position = null) {
     WHERE t.name IN (${marks}) GROUP BY it.image_id HAVING count(DISTINCT t.id) = ?)`;
 }
 
-export function listImages(db, { tags = [], position = null, onlyUploaded = false, kind = 'chart', limit = 60, offset = 0, ids = null } = {}) {
+export function listImages(db, { tags = [], position = null, name = '', onlyUploaded = false, kind = 'chart', limit = 60, offset = 0, ids = null } = {}) {
   const params = [kind];
   let idSql = '';
   if (ids) { const list = ids.filter((n) => Number.isInteger(n)).slice(0, 50); idSql = list.length ? `AND i.id IN (${list.map(() => '?').join(',')})` : 'AND 0'; params.push(...list); }
-  const where = `WHERE i.kind = ? ${filterSql(tags, params, position)} ${idSql} ${onlyUploaded ? 'AND i.stored_path IS NOT NULL' : ''}`;
+  const where = `WHERE i.kind = ? ${filterSql(tags, params, position, name)} ${idSql} ${onlyUploaded ? 'AND i.stored_path IS NOT NULL' : ''}`;
   const total = db.prepare(`SELECT count(*) c FROM images i ${where}`).get(...params).c;
-  const rows = db.prepare(`SELECT i.id, i.filename, i.taken_at, i.width, i.height, i.kind, (i.stored_path IS NOT NULL) AS has_file
+  const rows = db.prepare(`SELECT i.id, i.filename, i.title, i.taken_at, i.width, i.height, i.kind, (i.stored_path IS NOT NULL) AS has_file
     FROM images i ${where} ORDER BY ${ORDER} LIMIT ? OFFSET ?`).all(...params, limit, offset);
   if (rows.length) {
     const ids = rows.map((r) => r.id);
@@ -40,9 +41,9 @@ export function listImages(db, { tags = [], position = null, onlyUploaded = fals
 
 // Where one picture sits in the current browse list (same filter, same order),
 // so the viewer can swipe to the previous / next one.
-export function imageContext(db, id, { tags = [], position = null, kind = 'chart' } = {}) {
+export function imageContext(db, id, { tags = [], position = null, name = '', kind = 'chart' } = {}) {
   const params = [kind];
-  const ids = db.prepare(`SELECT i.id FROM images i WHERE i.kind = ? ${filterSql(tags, params, position)} ORDER BY ${ORDER}`).all(...params).map((r) => r.id);
+  const ids = db.prepare(`SELECT i.id FROM images i WHERE i.kind = ? ${filterSql(tags, params, position, name)} ORDER BY ${ORDER}`).all(...params).map((r) => r.id);
   const at = ids.indexOf(id);
   if (at < 0) return { index: null, total: ids.length, prev: null, next: null };
   return { index: at + 1, total: ids.length, prev: at > 0 ? ids[at - 1] : null, next: at < ids.length - 1 ? ids[at + 1] : null };
@@ -57,6 +58,7 @@ export function getImage(db, id) {
   return {
     id: img.id, filename: img.filename, kind: img.kind, taken_at: img.taken_at, uploaded_at: img.uploaded_at,
     has_file: !!img.stored_path, size: img.size, width: img.width, height: img.height, sha256: img.sha256,
+    title: img.title, title_source: img.title_source, title_check: !!img.title_check,
     tags, paths,
   };
 }
