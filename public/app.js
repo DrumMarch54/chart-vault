@@ -663,20 +663,23 @@
     const g = sv('g');
     g.append(sv('polygon', { points: `${cx},${cy - hh} ${cx + hw},${cy} ${cx},${cy + hh} ${cx - hw},${cy}`, fill }));
     g.append(sv('rect', { x: cx - hw, y: cy - o.line / 2, width: hw * 2, height: o.line, fill: '#fff' }));
-    g.append(sv('circle', { cx, cy: cy - o.up, r: o.r, fill: '#fff' }), sv('circle', { cx, cy: cy + (o.down || o.up), r: o.r, fill: '#fff' }));
+    const [rx, ry] = Array.isArray(o.r) ? o.r : [o.r, o.r]; // the paid tool's circles are a touch wider than tall
+    g.append(sv('ellipse', { cx, cy: cy - o.up, rx, ry, fill: '#fff' }), sv('ellipse', { cx, cy: cy + (o.down || o.up), rx, ry, fill: '#fff' }));
     g.append(sv('polygon', { points: `${cx},${o.tri[0]} ${cx + o.tri[2]},${o.tri[1]} ${cx - o.tri[2]},${o.tri[1]}`, fill }));
     if (o.big) g.append(sv('circle', { cx: o.big[0], cy: o.big[1], r: o.big[2], fill: o.faded }));
     return g;
   }
   function numeroscopeSvg(data) {
-    const svg = sv('svg', { viewBox: '-32 20 806 1270', class: 'nscope', role: 'img', 'aria-label': 'Numeroscope' });
+    // 960 units across the screen, the drawing centered: the paid tool's chart takes about four fifths
+    // of the phone's width, so the psyche numbers never touch the edges.
+    const svg = sv('svg', { viewBox: `${371 - 480} 20 960 1270`, class: 'nscope', role: 'img', 'aria-label': 'Numeroscope' });
     const M = L.main, H = L.hex, P = L.psy, S = L.sub;
     // Essence shape: a cube seen from the front, light top and sides, dark front triangle, tinted circles.
     svg.append(sv('polygon', { points: `371,${H.top} ${371 + H.hw},${H.ul} ${371 - H.hw},${H.ul}`, fill: '#ced0e5' }),
       sv('polygon', { points: `${371 - H.hw},${H.ul} ${371 - H.hw},${H.ll} 371,${H.bottom}`, fill: '#ced0e5' }), sv('polygon', { points: `${371 + H.hw},${H.ul} ${371 + H.hw},${H.ll} 371,${H.bottom}`, fill: '#ced0e5' }),
       sv('polygon', { points: `${371 - H.hw},${H.ul} ${371 + H.hw},${H.ul} 371,${H.bottom}`, fill: '#afafd5' }),
       sv('circle', { cx: 371, cy: H.circle[0], r: H.circle[1], fill: '#efeff7' }), sv('circle', { cx: 371, cy: H.small[0], r: H.small[1], fill: '#d6d7eb' }));
-    for (const [cx, fill] of [[P.cxL, '#dde6ef'], [P.cxR, '#c3d5e1']]) svg.append(rhombusShape(cx, P.cy, P.hw, P.hh, fill, { line: P.line, up: P.up, r: P.r, tri: P.tri }));
+    for (const [cx, fill] of [[P.cxL, '#dde6ef'], [P.cxR, '#c3d5e1']]) svg.append(rhombusShape(cx, P.cy, P.hw, P.hh, fill, { line: P.line, up: P.up, down: P.down, r: P.r, tri: P.tri }));
     svg.append(rhombusShape(M.cx, M.lineY, M.hw, M.hh, '#eec186', { line: M.line, up: M.circleUp, down: M.circleDown, r: M.r, tri: M.tri, big: M.big, faded: '#f5efe3' }));
     svg.append(rhombusShape(S.left.cx, S.cy, S.hw, S.hh, '#faddd7', { line: S.line, up: S.up, down: S.down, r: S.r, tri: S.tri, big: [S.left.bigX, S.bigY, S.bigR], faded: '#fef0ed' }));
     svg.append(rhombusShape(S.right.cx, S.cy, S.hw, S.hh, '#dae7e0', { line: S.line, up: S.up, down: S.down, r: S.r, tri: S.tri, big: [S.right.bigX, S.bigY, S.bigR], faded: '#f6f8f7' }));
@@ -698,7 +701,7 @@
         c.upperLeft && txt(aL, t.upY, c.upperLeft, tone(pre + 'ul', c.upperLeft), t.small, an), c.upperRight && txt(aR, t.upY, c.upperRight, tone(pre + 'ur', c.upperRight), t.small, an),
         c.heart && txt(cx, t.heartY, c.heart, tone(pre + 'heart', c.heart, true), t.heart),
         ...c.heartExtra.map((v, i) => txt(cx + spread(c.heartExtra.length, t.extra2, i), t.heartY + t.extraUp, v, tone(pre + 'heartExtra', v), t.extra)),
-        t.spineX && c.spine && txt(t.spineX, t.spineY, c.spine, tone(pre + 'spine', c.spine), t.small),
+        t.spineX && c.spine && txt(t.spineX, t.spineY, c.spine, tone(pre + 'spine', c.spine), t.spine || t.small),
         c.first && txt(nL, t.nameY, c.first.text, 'n-dark', t.name), c.first && txt(nL, t.lineY, c.first.value, tone(pre + 'first', c.first.value, lineBold), t.lineFont),
         ...c.middle.flatMap((w, i) => { const x = t.middle2 && c.middle.length <= 2 ? cx + spread(c.middle.length, t.middle2, i) : nL + (nR - nL) * (i + 1) / (c.middle.length + 1); return [txt(x, t.nameY, w.text, 'n-dark', t.name), txt(x, t.lineY, w.value, tone(pre + 'middle', w.value, lineBold), t.lineFont)]; }),
         c.last && txt(nR, t.nameY, c.last.text, 'n-dark', t.name), c.last && txt(nR, t.lineY, c.last.value, tone(pre + 'last', c.last.value, lineBold), t.lineFont),
@@ -815,11 +818,11 @@
     const rules = [];
     for (const sheet of document.styleSheets) { try { for (const rule of sheet.cssRules) if (rule.selectorText && rule.selectorText.includes('.nscope')) rules.push(rule.cssText); } catch {} }
     const clone = svg.cloneNode(true);
-    const [, , vw, vh] = clone.getAttribute('viewBox').split(' ').map(Number);
+    const [vx, vy, vw, vh] = clone.getAttribute('viewBox').split(' ').map(Number);
     const height = Math.round(width * vh / vw);
     clone.setAttribute('width', width); clone.setAttribute('height', height); clone.setAttribute('xmlns', SVGNS);
     clone.prepend(sv('style', {}, `@font-face{font-family:"Open Sans";src:url(${fontData}) format("woff2");font-weight:300 800}\n${rules.join('\n')}`));
-    clone.prepend(sv('rect', { x: -32, y: 20, width: vw, height: vh, fill: '#fff' }));
+    clone.prepend(sv('rect', { x: vx, y: vy, width: vw, height: vh, fill: '#fff' }));
     const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(clone)], { type: 'image/svg+xml' }));
     try {
       const img = new Image();

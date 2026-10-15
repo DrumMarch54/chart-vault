@@ -213,22 +213,26 @@
   // screenshot; every number's position calibrated against 436 vault screenshots of the paid tool
   // (tools/color-study, .brain/numerology/number-colors.md).
   const LAYOUT = {
-    main: { cx: 371, hw: 277, hh: 378, lineY: 735, line: 12, circleUp: 150, circleDown: 144, r: 111, tri: [1185, 1270, 65], big: [269, 1145, 51], letter: [664, 636.5, 28.5],
-      text: { dvY: 334.5, day: 36.6, auraL: 210, auraR: 531, upY: 524.2, heartY: 540.6, heart: 38, extraUp: 89.4, extra: 25.5, spineX: 525.5, spineY: 640.8, nameL: 76.5, nameR: 661, extra2: [-59.4, 64.7], solarExtra2: [-59.4, 70.1], nameY: 723, name: 27, lineY: 770.5, lineFont: 36, lowY: 948.8, solarY: 833.6, solar: 37, extraDown: 91, leY: 1157, le: 36.6, pillarY: 1252, pillar: 34, small: 25, letterY: 646.4, letterFont: 26.6 } },
-    hex: { top: 49, ul: 109, ll: 232.5, bottom: 293, hw: 110, circle: [171, 48.6], small: [247, 15],
-      text: { topAuraY: 100.6, monthX: 238.5, yearX: 502.8, monthY: 99.5, lpY: 165.6, bigLpY: 197.1, lp: 27.4, auraY: 208.1, auraL: 284, auraR: 455, aura: 22, corner: 24.6 } },
+    // Re-measured 2026-10-15 on the owner's paid-tool screenshot (Peter Joshua Shicora, 21 10 1985) with
+    // tools/color-study-style box and shape detection; every shape and number compared in these units.
+    // Circles are slightly wider than tall in the paid tool (r = [rx, ry]); center lines are thin.
+    main: { cx: 371, hw: 277, hh: 378, lineY: 735, line: 5, circleUp: 148.5, circleDown: 145, r: [110, 106.5], tri: [1179.5, 1268, 64.5], big: [269, 1147, 52], letter: [662, 637.5, 28.5],
+      text: { dvY: 335.3, day: 37.8, auraL: 210, auraR: 531, upY: 523.4, heartY: 540.1, heart: 34.8, extraUp: 89.5, extra: 24.3, spineX: 524, spineY: 641.5, spine: 23.3, nameL: 78.5, nameR: 660, extra2: [-59.4, 64.7], solarExtra2: [-59.4, 70.1], nameY: 722.1, name: 27.7, lineY: 769.6, lineFont: 35.3, lowY: 946.4, solarY: 831.5, solar: 35.4, extraDown: 90.7, leY: 1154, le: 35.8, pillarY: 1249.7, pillar: 26, small: 25.4, letterY: 647.6, letterFont: 23.8 } },
+    hex: { top: 51.3, ul: 111.5, ll: 234, bottom: 300, hw: 110, circle: [175, 44.5], small: [251, 13.5],
+      text: { topAuraY: 100.5, monthX: 246, yearX: 502.8, monthY: 100.5, lpY: 165.6, bigLpY: 198.1, lp: 25.8, auraY: 210, auraL: 286, auraR: 454.5, aura: 24, corner: 24.2 } },
     // sideDx shifts the line values and auras of one psyche chart against its center column (measured).
-    psy: { cxL: 132, cxR: 609, cy: 326.5, hw: 92.5, hh: 138.5, line: 6, up: 55, r: 41, tri: [489.5, 540, 24], sideDxL: 1, sideDxR: 4,
-      text: { dvY: 179.7, day: 21.6, auraDx: 70, upY: 254.4, heartY: 276.3, heart: 24.6, nameDxL: -125, nameDxR: 125, lineY: 334, lineFont: 25, lowY: 423.7, solarY: 390.7, leY: 493.1, le: 22.8, pillarY: 536.5, pillar: 21, pillarBold: false, small: 23 } },
+    psy: { cxL: 133.2, cxR: 608.3, cy: 330.4, hw: 101, hh: 139, line: 3, up: 55.2, down: 54, r: [40.5, 39.4], tri: [505, 539, 24.6], sideDxL: 1, sideDxR: 3.4,
+      text: { dvY: 181.8, day: 22.5, auraDx: 70, upY: 254.3, heartY: 275.9, heart: 24.2, nameDxL: -125, nameDxR: 125, lineY: 335.2, lineFont: 23.3, lowY: 422.8, solarY: 389.9, leY: 493.3, le: 21, pillarY: 535.8, pillar: 18.9, pillarBold: false, small: 19.2 } },
     // The two sub-charts are not mirror images: the paid tool anchors the consonant chart's auras at their
     // left edge and the vowel chart's at their right edge, and its line values sit off-center. Measured.
     // Middle names: one sits at the center (main chart: halfway between first and last); two sit at middle2
     // (main chart: evenly spaced). Two extra vibrations sit side by side at extra2 / solarExtra2.
-    sub: { cy: 1049.6, hw: 98.4, hh: 139, line: 5, up: 55.6, down: 53.4, r: 41.3, tri: [1225, 1272, 29], bigY: 1203, bigR: 28.5,
-      left: { cx: 114, auraL: 19.5, auraR: 169, auraAnchor: 'start', nameL: 20.4, nameR: 223.8, middle2: [-43, 56], extra2: [-32.6, 27.3], solarExtra2: [-36.6, 24.1], bigX: 56.4 },
-      right: { cx: 621, auraL: 566.3, auraR: 721.2, auraAnchor: 'end', nameL: 514.5, nameR: 718.2, middle2: [-51, 45], extra2: [-31.5, 25.7], solarExtra2: [-29, 29], bigX: 558.9 },
-      text: { dvY: 895, day: 19.1, upY: 983.8, heartY: 984.4, heart: 22.8, extraUp: 30.8, extra: 14.6, nameY: 1039, name: 16, lineY: 1062.7, lineFont: 19, lowY: 1133.4, solarY: 1100.1, solar: 22.8, extraDown: 27, leY: 1210.4, le: 22.8, pillarY: 1264, pillar: 17.3, small: 20 } },
+    sub: { cy: 1047.4, hw: 101.5, hh: 140, line: 2, up: 52.9, down: 54.3, r: 41.2, tri: [1220, 1267.5, 34], bigY: 1200.3, bigR: 25.3,
+      left: { cx: 115.4, auraL: 21.2, auraR: 170, auraAnchor: 'start', nameL: 21.6, nameR: 224.3, middle2: [-43, 56], extra2: [-32.6, 27.3], solarExtra2: [-36.6, 24.1], bigX: 55.5 },
+      right: { cx: 620.4, auraL: 563.6, auraR: 716.9, auraAnchor: 'end', nameL: 513.8, nameR: 716.7, middle2: [-51, 45], extra2: [-31.5, 25.7], solarExtra2: [-29, 29], bigX: 557.1 },
+      text: { dvY: 892.6, day: 19.4, upY: 981.4, heartY: 982.8, heart: 21, extraUp: 29.1, extra: 15.7, nameY: 1034.3, name: 14.2, lineY: 1060.7, lineFont: 19.3, lowY: 1129.8, solarY: 1097.1, solar: 21, extraDown: 26.3, leY: 1208.1, le: 21, pillarY: 1260.4, pillar: 17, small: 19.4 } },
   };
+
 
   const api = { LAYOUT, LETTERS, VOWELS, PLANETS, TENSION, digitSum, val, add, joined, letterValue, lettersOf, nameWord, rhombus, essence, birth: essence, psyche, rhythm, numeroscope, letterWords, pyramid, weighPyramid, singleName };
   root.Numeroscope = api;

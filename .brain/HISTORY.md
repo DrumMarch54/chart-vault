@@ -177,3 +177,22 @@ Brought the app in line with the new-app playbook from the first app:
   screen is white end to end (`html.light`, set on the root, undone through
   viewerCleanup when another screen takes over), fields 40px, chart edge to
   edge. The white on body alone left the band: html has its own background.
+
+## 2026-10-15 Quick chart layout re-measured against the paid tool
+- The owner sent the paid tool's chart and ours for the same name and date
+  (Peter Joshua Shicora, 21 10 1985) and called the psyche and sub-chart
+  numbers "wonky", the pillar number too big, the pillar triangles and
+  psyche diamonds wrong, the whole set too big. Measured (tools in
+  `tools/color-study/layout/`): numbers were within 1-3 units already, but
+  the psyche diamonds were 8% too narrow (hw 92.5 → 101), the psyche pillar
+  triangle 50 tall instead of 33, the sub-chart pillar triangles too narrow
+  (hw 29 → 34), the center lines 2-3x too thick (12/6/5 → 5/3/2), the pillar
+  font 34 → 26, the psyche aura font 23 → 19, the essence circle smaller and
+  lower, and the paid tool's circles are ellipses (rx 110, ry 106.5). Every
+  text size and baseline was re-derived from box heights; sub-charts sit
+  2-4 units higher. The drawing is 960 units wide on screen (was 806), so
+  the set takes about four fifths of the width like the website.
+- First scare: the main diamond looked 10% wider in the new screenshot than
+  in the vault (aspect 0.80 vs 0.72). It was the diamond finder picking up
+  a wrong right edge; the shape detector gave 0.725. Measure twice before
+  rebuilding a layout.

@@ -31,6 +31,9 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   (`.brain/numerology/number-colors.md`, `tools/color-study/`): measure
   against them, never guess a color or a position. `public/number-colors.js`
   is generated; regenerate it, do not hand-edit.
+- A layout complaint comes with a paid-tool screenshot: run
+  `tools/color-study/layout/` (compare.py) against it and change only what it
+  measures as off. The numbers it prints beat anyone's eye.
 
 ## Rules that must hold
 - Never lose or mix up a chart or a tag. Filename = identity. Tags are kept
