@@ -197,7 +197,7 @@
           h('p', { class: 'muted small' }, 'The key lets the app pay for readings and questions. It is kept on the server only and never shown again: this screen says only its last 4 characters. Pasting a new one replaces the old one.'),
           $key,
           h('h2', {}, 'Monthly cap, in dollars'),
-          h('p', { class: 'muted small' }, 'Readings and questions stop when the month\'s spend reaches this. You are warned here and in the app at 80% and at the cap. A reading costs about 10 cents (Short) to 60 cents (In Depth); a question about a chart about 5 to 20 cents; an Ask the Vault question about a cent. Every price shows on its button before you tap.'),
+          h('p', { class: 'muted small' }, 'Readings and questions stop when the month\'s spend reaches this. You are warned here and in the app at 80% and at the cap. A reading costs about 25 cents (Short) to 40 cents (In Depth); a question about a chart about 3 to 10 cents; an Ask the Vault question about a cent. Every price shows on its button before you tap.'),
           $cap, $msg,
           h('div', { class: 'row', style: 'flex-wrap:nowrap' }, h('button', { type: 'button', class: 'btn-primary', style: 'flex:1', onclick: () => save(false) }, 'Save'), h('button', { type: 'button', class: 'btn-danger', onclick: () => save(true) }, 'Remove key')))));
       api('/api/ai/settings').then((s) => { show(s); $msg.textContent = s.key_set ? 'Leave the key box empty to keep the current key.' : 'No key yet. Paste one and tap Save.'; }).catch((err) => { $msg.textContent = err.message; $msg.className = 'err small'; });

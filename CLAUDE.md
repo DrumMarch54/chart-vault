@@ -127,8 +127,8 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - Screens: `public/reading.js` (viewer sheet "Reading", `#/ask`, Settings → `#/ai` for the key and cap,
   the cap banner on home). Owner's cap: $8 a month; warn in the app at 80 % and at the cap. The key is
   shown as "ends in …xxxx" only. The dev app has a FAKE model (`tools/dev-app.mjs`); `test/ai.test.js`
-  proves the key never leaks and the cap blocks. A real reading costs about 30 cents; a question about a
-  chart about 10 cents; a vault question about a cent. Never call the model from a test or a tool.
+  proves the key never leaks and the cap blocks. Measured 2026-10-16: a reading about 25-40 cents (about 50k tokens in,
+  mostly course passages); a question about a chart about 3 cents while cached; a vault question about a cent. Never call the model from a test or a tool.
 
 ## Dev
 - `npm run verify` before saying done: syntax of every file + all tests. Spends nothing.
