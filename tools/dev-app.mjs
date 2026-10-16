@@ -31,10 +31,13 @@ const sharp = (await import('sharp')).default;
 
 ensureDirs();
 const db = openDb(paths.db);
+// A saved "My chart" so the tools that start from a person have one (a fake person, like the charts).
+const { setMyChart } = await import('../server/mychart.js');
+setMyChart({ name: 'Josh Provencio', day: 21, month: 10, year: 1985 });
 
 // Fake tag file: 40 charts, a mix of position, number and name tags; the first
 // newest 24 get a generated screenshot, the oldest 16 stay "missing".
-const people = ['Alex', 'Sam', 'Jordan', 'Riley', 'Casey', 'Morgan'];
+const people = ['alexjones', 'JimmyRowe', 'kanyewest', 'Erica', 'schoolshooter', 'joshprovencio']; // run together, like the real tags
 const rows = [];
 const names = [];
 for (let i = 0; i < 40; i++) {
@@ -58,6 +61,16 @@ for (let i = 16; i < 40; i++) {
   req.headers = { 'content-length': String(jpg.length) };
   await receiveUpload(db, req, { filename: names[i] });
 }
+
+// Names and dates for the fake charts, so the position search and the chart page's numbers can be looked at.
+const { setInputs } = await import('../server/positions.js');
+const fakePeople = [['Alex Emric Jones', 11, 2, 1974], ['Jimmy Rowe', 1, 11, 1999], ['Kanye Omari West', 8, 6, 1977], ['Erica', 3, 3, 1991], ['Katrine Ditte Pilmark', 19, 8, 1984], ['Josh Provencio', 21, 10, 1985]];
+db.prepare("SELECT id FROM images WHERE kind = 'chart' ORDER BY id").all().forEach((r, i) => { if (i % 5 !== 4) { const [name, day, month, year] = fakePeople[i % fakePeople.length]; setInputs(db, r.id, { name, day, month, year }, { source: 'read' }); } });
+
+// Names under the thumbnails, like the seed gives the real vault: most confirmed, a few left to check, one missing.
+const { seedTitles } = await import('../server/titles.js');
+const fakeNames = ['Alex Jones', 'Jimmy Rowe', 'Kanye West', 'Erica', 'Patrick Crusius', 'Josh Provencio'];
+seedTitles(db, names.map((filename, i) => (i % 7 === 6 ? null : { filename, title: i % 5 === 4 ? '' : i % 6 === 3 ? 'Erica' : fakeNames[i % fakeNames.length], source: 'known', check: i % 6 === 3 || i % 5 === 4 })).filter(Boolean));
 
 const app = createApp(db, { log: (m) => console.log(m) });
 const server = app.listen(port, '127.0.0.1', () => {

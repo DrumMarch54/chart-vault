@@ -5,6 +5,7 @@ import crypto from 'node:crypto';
 import sharp from 'sharp';
 import { paths } from './config.js';
 import { COMMIT } from './build.js';
+import { tagKind } from './tags.js';
 
 export const THUMB_WIDTH = 480;
 const MAX_UPLOAD = 60 * 1024 * 1024;
@@ -146,4 +147,25 @@ export function cleanTempFiles(log = () => {}) {
   let n = 0;
   try { for (const f of fs.readdirSync(dir)) { fs.unlinkSync(path.join(dir, f)); n++; } } catch {}
   if (n) log(`removed ${n} unfinished upload file(s)`);
+}
+
+// A Quick chart saved to the vault: a new chart record named after the person and date, tagged with
+// the typed name, filed under /Quick chart/. The picture itself then arrives through receiveUpload.
+export function createQuickChart(db, { name, date }) {
+  const person = String(name || '').trim().replace(/\s+/g, ' ');
+  if (!person) throw new UploadError('Type a name first.');
+  if (person.length > 120) throw new UploadError('The name is too long.');
+  const when = /^\d{4}-\d{2}-\d{2}$/.test(String(date || '')) ? String(date) : '';
+  const now = new Date().toISOString();
+  const stamp = now.slice(0, 19).replace(/[-:]/g, '').replace('T', '_');
+  const filename = `Quick_${person.replace(/[^\p{L}\p{N} ]/gu, '')}${when ? '_' + when : ''}_${stamp}.png`.replace(/ /g, '-');
+  return db.transaction(() => {
+    db.prepare("INSERT INTO images (filename, taken_at, kind) VALUES (?, ?, 'chart')").run(filename, now.slice(0, 19));
+    const id = db.prepare('SELECT id FROM images WHERE filename = ?').get(filename).id;
+    db.prepare('INSERT OR IGNORE INTO image_paths (image_id, path) VALUES (?, ?)').run(id, `/Quick chart/${filename}`);
+    db.prepare('INSERT OR IGNORE INTO tags (name, kind) VALUES (?, ?)').run(person, tagKind(person));
+    const tagId = db.prepare('SELECT id FROM tags WHERE name = ?').get(person).id;
+    db.prepare("INSERT OR IGNORE INTO image_tags (image_id, tag_id, source) VALUES (?, ?, 'app')").run(id, tagId);
+    return { id, filename };
+  })();
 }

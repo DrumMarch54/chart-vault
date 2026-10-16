@@ -73,6 +73,41 @@ export const MIGRATIONS = [
     db.exec("ALTER TABLE images ADD COLUMN kind TEXT NOT NULL DEFAULT 'chart'");
     db.exec('CREATE INDEX IF NOT EXISTS idx_images_kind ON images(kind)');
   },
+  // 4: which buttons and screens get used, by NAME and count only (never
+  //    what was typed, never a chart or a tag), for "What you use most"
+  (db) => db.exec('CREATE TABLE IF NOT EXISTS usage (name TEXT PRIMARY KEY, count INTEGER NOT NULL DEFAULT 0, last_at TEXT)'),
+  // 5: search by chart position. chart_inputs = the name and birth date typed into the paid tool
+  //    for a chart (read off the picture, or fixed by the owner); chart_values = every number of
+  //    every position the engine computes from them (server/positions.js).
+  (db) => db.exec(`
+    CREATE TABLE IF NOT EXISTS chart_inputs (
+      image_id INTEGER PRIMARY KEY REFERENCES images(id) ON DELETE CASCADE,
+      day INTEGER, month INTEGER, year INTEGER,
+      name TEXT NOT NULL DEFAULT '',
+      source TEXT NOT NULL,                   -- ocr | read | owner | seed
+      build TEXT,
+      updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+    );
+    CREATE TABLE IF NOT EXISTS chart_values (
+      image_id INTEGER NOT NULL REFERENCES images(id) ON DELETE CASCADE,
+      chart TEXT NOT NULL,                    -- essence | name | vocation | personality | outer | inner
+      position TEXT NOT NULL,
+      n INTEGER NOT NULL DEFAULT 0,           -- which one, when a position repeats (two middle names)
+      sum INTEGER NOT NULL,
+      ds INTEGER NOT NULL,
+      PRIMARY KEY (image_id, chart, position, n)
+    );
+    CREATE INDEX IF NOT EXISTS idx_chart_values_sum ON chart_values(sum, chart, position);
+    CREATE INDEX IF NOT EXISTS idx_chart_values_ds ON chart_values(ds, chart, position);
+  `),
+  // 6: who a chart is, in the owner's words ("Charlie Sheen", "Kyle Forgeard · NELK"): the label under
+  //    the thumbnail and the viewer's title. Separate from the tags, which never change. title_source =
+  //    known | typed | tag | owner (how it was decided); title_check = 1 while the owner still has to confirm it.
+  (db) => {
+    db.exec('ALTER TABLE images ADD COLUMN title TEXT');
+    db.exec('ALTER TABLE images ADD COLUMN title_source TEXT');
+    db.exec('ALTER TABLE images ADD COLUMN title_check INTEGER NOT NULL DEFAULT 0');
+  },
 ];
 
 export function migrate(db) {

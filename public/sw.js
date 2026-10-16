@@ -3,7 +3,7 @@
 // with its own cache, and old caches are thrown away.
 const V = '__V__';
 const CACHE = 'chart-vault-' + V;
-const SHELL = ['/', '/app.css?v=' + V, '/app.js?v=' + V, '/manifest.webmanifest', '/icons/icon-192.png'];
+const SHELL = ['/', '/app.css?v=' + V, '/app.js?v=' + V, '/numeroscope.js?v=' + V, '/number-colors.js?v=' + V, '/tag-codes.js?v=' + V, '/numbertools.js?v=' + V, '/tools.js?v=' + V, '/readings.js?v=' + V, '/manifest.webmanifest', '/icons/icon-192.png', ...['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'].map((p) => '/planets/' + p + '.webp')];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).catch(() => {}).then(() => self.skipWaiting()));
