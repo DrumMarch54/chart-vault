@@ -91,11 +91,16 @@
     const view = routes[name] || routes[''];
     closeOverlays();
     if (viewerCleanup) { viewerCleanup(); viewerCleanup = null; }
-    if (name === 'chart' && lastRoute !== 'chart') { viewerFromApp = lastRoute !== null; underHash = viewerFromApp ? lastHash : null; }
+    // The compare screen lies over the same list as the viewer it was opened from, so going between them
+    // keeps what the viewer knows about the screen underneath.
+    if (name === 'chart' && lastRoute !== 'chart' && lastRoute !== 'compare') { viewerFromApp = lastRoute !== null; underHash = viewerFromApp ? lastHash : null; }
     const keep = name !== 'chart' && lastRoute === 'chart' && underHash === hash;
     lastRoute = name; lastHash = hash;
     count('screen.' + (name || 'home'));
-    if (name !== 'chart') underHash = null;
+    if (name !== 'chart' && name !== 'compare') underHash = null;
+    // The compare bar belongs to the list screen (browse draws it); the viewer and compare screen lie over
+    // the list and leave it as is; any other screen replaces the list and hides it.
+    if (name !== '' && name !== 'chart' && name !== 'compare') drawCmpBar(false);
     if (keep) return;
     view(arg, query);
   }
@@ -151,17 +156,23 @@
 
   // Pinch-to-zoom + swipes on an image inside a box (pointer events: works
   // with fingers on Samsung Internet and Chrome, and with a mouse on a laptop).
-  // Swipes only fire when the picture is not zoomed in.
+  // Swipes only fire when the picture is not zoomed in. All positions are
+  // measured from the box's top-left, so the box can sit anywhere on screen
+  // (the compare screen has two half-screen boxes). on.change fires after the
+  // owner zooms or pans; view()/set() let a second picture follow along.
   function zoomable(box, img, on = {}) {
     let scale = 1, tx = 0, ty = 0; // transform: translate(tx,ty) scale(scale) with origin 0 0
-    let base = null; // natural layout box of the image at scale 1
+    let base = null; // layout box of the image at scale 1, relative to the box
+    let org = { x: 0, y: 0 }; // the box's top-left on screen
     const pointers = new Map();
     let start = null, lastTap = 0, swipe = null;
     const apply = () => { img.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`; };
-    const measure = () => { img.style.transform = ''; const r = img.getBoundingClientRect(); base = { x: r.left, y: r.top, w: r.width, h: r.height }; apply(); };
+    const changed = () => { apply(); on.change?.(); };
+    const origin = () => { const b = box.getBoundingClientRect(); org = { x: b.left, y: b.top }; };
+    const loc = (e) => ({ x: e.clientX - org.x, y: e.clientY - org.y });
     const clamp = () => {
       scale = Math.min(Math.max(scale, 1), 8);
-      if (scale === 1) { tx = 0; ty = 0; return; }
+      if (scale === 1 || !base) { tx = 0; ty = 0; return; }
       const W = box.clientWidth, H = box.clientHeight;
       const w = base.w * scale, hh = base.h * scale;
       const left = base.x + tx, right = left + w;
@@ -169,25 +180,40 @@
       const top = base.y + ty, bottom = top + hh;
       if (hh <= H) ty = (H - hh) / 2 - base.y; else { if (top > 0) ty -= top; if (bottom < H) ty += H - bottom; }
     };
+    const measure = () => {
+      img.style.transform = '';
+      const b = box.getBoundingClientRect(), r = img.getBoundingClientRect();
+      base = r.width ? { x: r.left - b.left, y: r.top - b.top, w: r.width, h: r.height } : null;
+      clamp(); apply();
+    };
     const zoomAt = (cx, cy, factor) => {
       if (!base) return;
       const ns = Math.min(Math.max(scale * factor, 1), 8), k = ns / scale;
-      tx = cx - base.x - (cx - base.x - tx) * k; ty = cy - base.y - (cy - base.y - ty) * k; scale = ns; clamp(); apply();
+      tx = cx - base.x - (cx - base.x - tx) * k; ty = cy - base.y - (cy - base.y - ty) * k; scale = ns; clamp(); changed();
     };
     const reset = () => { scale = 1; tx = 0; ty = 0; measure(); };
-    img.addEventListener('load', measure); if (img.complete) measure();
-    const onResize = () => measure();
-    window.addEventListener('resize', onResize);
+    // Which spot of the picture is in the middle of the box, as a fraction of the picture.
+    const view = () => (base ? { scale, u: (box.clientWidth / 2 - base.x - tx) / (base.w * scale), v: (box.clientHeight / 2 - base.y - ty) / (base.h * scale) } : { scale: 1, u: 0.5, v: 0.5 });
+    const set = (vw) => {
+      if (!base) return;
+      scale = vw.scale;
+      tx = box.clientWidth / 2 - base.x - vw.u * base.w * scale; ty = box.clientHeight / 2 - base.y - vw.v * base.h * scale;
+      clamp(); apply();
+    };
+    img.addEventListener('load', () => { measure(); on.load?.(); }); if (img.complete) measure();
+    const ro = new ResizeObserver(() => measure());
+    ro.observe(box);
     box.addEventListener('pointerdown', (e) => {
       if (e.target.closest('button, a, input')) return;
       box.setPointerCapture(e.pointerId);
-      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      origin();
+      pointers.set(e.pointerId, loc(e));
       const pts = [...pointers.values()];
       if (pts.length === 1) {
-        const now = Date.now();
-        if (now - lastTap < 300) { zoomAt(e.clientX, e.clientY, scale > 1.5 ? 1 / scale : 2.5); lastTap = 0; swipe = null; }
-        else { lastTap = now; swipe = scale === 1 ? { x: e.clientX, y: e.clientY, t: now } : null; }
-        start = { tx, ty, x: e.clientX, y: e.clientY, scale };
+        const p = pts[0], now = Date.now();
+        if (now - lastTap < 300) { zoomAt(p.x, p.y, scale > 1.5 ? 1 / scale : 2.5); lastTap = 0; swipe = null; }
+        else { lastTap = now; swipe = scale === 1 ? { x: p.x, y: p.y, t: now } : null; }
+        start = { tx, ty, x: p.x, y: p.y, scale };
       } else if (pts.length === 2) {
         swipe = null;
         start = { tx, ty, scale, dist: Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y), cx: (pts[0].x + pts[1].x) / 2, cy: (pts[0].y + pts[1].y) / 2 };
@@ -195,29 +221,31 @@
     });
     box.addEventListener('pointermove', (e) => {
       if (!pointers.has(e.pointerId) || !start) return;
-      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      const p = loc(e);
+      pointers.set(e.pointerId, p);
       const pts = [...pointers.values()];
-      if (pts.length === 2 && start.dist) {
+      if (pts.length === 2 && start.dist && base) {
         const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
         const cx = (pts[0].x + pts[1].x) / 2, cy = (pts[0].y + pts[1].y) / 2;
         const ns = Math.min(Math.max(start.scale * (dist / start.dist), 1), 8), k = ns / start.scale;
         tx = cx - base.x - (start.cx - base.x - start.tx) * k; ty = cy - base.y - (start.cy - base.y - start.ty) * k; scale = ns;
-        clamp(); apply();
+        clamp(); changed();
       } else if (pts.length === 1 && start.x !== undefined && scale > 1) {
-        tx = start.tx + (e.clientX - start.x); ty = start.ty + (e.clientY - start.y); clamp(); apply();
+        tx = start.tx + (p.x - start.x); ty = start.ty + (p.y - start.y); clamp(); changed();
       } else if (pts.length === 1 && swipe && scale === 1) {
         // Not zoomed: the first clear move decides. Mostly downward, and the owner of the box agrees, and the
         // picture comes loose and follows the finger (on.drag); anything else is a plain swipe, judged on release.
-        const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y;
+        const dx = p.x - swipe.x, dy = p.y - swipe.y;
         if (!swipe.mode && Math.hypot(dx, dy) > 12) swipe.mode = (dy > Math.abs(dx) * 1.2 && on.dragStart?.() !== false) ? 'drag' : 'swipe';
         if (swipe.mode === 'drag') on.drag?.(dx, Math.max(dy, 0));
       }
     });
     const up = (e) => {
+      const p = loc(e);
       pointers.delete(e.pointerId);
       const pts = [...pointers.values()];
       if (swipe && scale === 1 && pts.length === 0) {
-        const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y;
+        const dx = p.x - swipe.x, dy = p.y - swipe.y;
         if (swipe.mode === 'drag') on.dragEnd?.(dx, dy, Date.now() - swipe.t);
         else if (Math.abs(dx) > 70 && Math.abs(dy) < Math.abs(dx) * 0.7) (dx < 0 ? on.left : on.right)?.();
         else if (dy < -70 && Math.abs(dx) < 60) on.up?.();
@@ -228,10 +256,37 @@
       start = pts.length === 1 ? { tx, ty, x: pts[0].x, y: pts[0].y, scale } : null;
     };
     box.addEventListener('pointerup', up); box.addEventListener('pointercancel', up);
-    box.addEventListener('wheel', (e) => { e.preventDefault(); zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.15 : 1 / 1.15); }, { passive: false });
+    box.addEventListener('wheel', (e) => { e.preventDefault(); origin(); const p = loc(e); zoomAt(p.x, p.y, e.deltaY < 0 ? 1.15 : 1 / 1.15); }, { passive: false });
     box.addEventListener('dblclick', (e) => e.preventDefault());
-    return { reset, destroy: () => window.removeEventListener('resize', onResize) };
+    return { reset, view, set, destroy: () => ro.disconnect() };
   }
+
+  // ---------- compare: the chart picked to compare with ----------
+  // Kept on this phone only (survives a reload), never on the server.
+  const PICK_KEY = 'comparePick', CMPVIEW_KEY = 'compareView';
+  const readStore = (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
+  const writeStore = (k, v) => { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+  let comparePick = readStore(PICK_KEY); // { id, name } or null
+  if (comparePick && !Number.isInteger(comparePick.id)) comparePick = null;
+  const setPick = (p) => { comparePick = p; writeStore(PICK_KEY, p); drawCmpBar(); };
+  // While a chart is picked, a bar at the bottom of the list screens says so (tap it to open that chart, × to stop).
+  let $cmpbar = null, cmpBarScreen = false;
+  const drawCmpBar = (onList = cmpBarScreen) => {
+    cmpBarScreen = onList;
+    const want = onList && comparePick;
+    document.body.classList.toggle('withcmp', !!want);
+    if ($cmpbar) { $cmpbar.remove(); $cmpbar = null; }
+    if (!want) return;
+    $cmpbar = h('div', { class: 'cmpbar' },
+      h('a', { class: 'cmpbar-main', href: `#/chart/${comparePick.id}` },
+        h('img', { src: `/thumb/${comparePick.id}`, alt: '' }),
+        h('span', { class: 'cmpbar-text' }, h('b', {}, `Comparing ${comparePick.name || 'a chart'}`), h('span', { class: 'muted small' }, 'Open another chart, tap Compare'))),
+      h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'Stop comparing', onclick: () => { count('compare.cancel'); setPick(null); } }, '×'));
+    document.body.append($cmpbar);
+  };
+  let compareReturn = null; // where the compare screen's back arrow goes
+  // Who a chart is, as the viewer's title shows it.
+  const imgName = (img) => (img.kind === 'archetype' ? img.tags.map((t) => pretty(t.name)).join(', ') : (img.title || pretty((img.tags.find((t) => t.kind === 'name') || {}).name || '')));
 
   // ---------- tag suggestion box ----------
   // `empty` gives what the box shows while nothing is typed (the home screen's recent searches).
@@ -320,6 +375,7 @@
     if (!namesLoaded) loadTagNames().then(() => { if (tag && document.activeElement !== $input) $input.value = pretty(tag); });
     const $quick = h('a', { class: 'btn btn-primary btn-block quickbtn', href: '#/quick' }, h('span', { class: 'qicon' }, '◈'), 'Quick Chart');
     const $byPos = h('a', { class: 'btn btn-block quickbtn posbtn', href: '#/position' }, h('span', { class: 'qicon' }, '⌖'), 'Search by Position');
+    drawCmpBar(true);
     render(h('div', { class: `screen ${home ? 'home' : ''}` },
       home ? h('div', { class: 'pagetop hometop' }, h('h1', {}, 'Chart Vault'), $gear) : null,
       h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), home ? null : $quickIcon, home ? null : $gear), $filters),
@@ -428,6 +484,7 @@
     $img.src = `/thumb/${id}`;
     const $count = h('span', { class: 'vcount' }, '');
     const $name = h('span', { class: 'vname' }, '');
+    const $cmp = h('button', { type: 'button', class: 'vbtn hidden' }, 'Compare');
     const $prev = h('button', { type: 'button', class: 'iconbtn varrow left hidden', 'aria-label': 'Previous' }, '‹');
     const $next = h('button', { type: 'button', class: 'iconbtn varrow right hidden', 'aria-label': 'Next' }, '›');
     const $sheetBody = h('div', { class: 'vsheet-body stack' });
@@ -435,7 +492,7 @@
     // Nothing over the picture until it is tapped: no back button, no name. The phone's own Back closes it.
     const $root = h('div', { class: 'viewer bare' },
       $stage,
-      h('div', { class: 'vtop' }, h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'Back to the list', onclick: back }, '‹'), $name, $count),
+      h('div', { class: 'vtop' }, h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'Back to the list', onclick: back }, '‹'), $name, $count, $cmp),
       $prev, $next, $sheet);
     document.body.append($root);
 
@@ -496,8 +553,24 @@
     if (img.kind === 'chart') rememberOpened(img.id);
     // The full picture replaces the thumbnail only once it has arrived, so nothing blank or broken shows in between.
     if (img.has_file) { const full = new Image(); full.onload = () => { if ($img.isConnected) $img.src = full.src; }; full.src = `/img/${img.id}`; } else { $img.removeAttribute('src'); fill($stage, h('div', { class: 'center', style: 'min-height:100%' }, h('p', { class: 'muted' }, 'No picture for this chart yet.'), h('a', { class: 'btn', href: '#/upload' }, 'Go to Upload'))); }
-    const showName = () => { $name.textContent = img.kind === 'archetype' ? img.tags.map((t) => pretty(t.name)).join(', ') : (img.title || pretty((img.tags.find((t) => t.kind === 'name') || {}).name || '')); };
+    const showName = () => { $name.textContent = imgName(img); };
     showName();
+    // Compare: on the first chart "Compare" picks it; on another chart the button opens both side by
+    // side; on the picked chart it says "✓ Picked" and a tap unpicks it.
+    const drawCmp = () => {
+      const p = comparePick, mine = !!p && p.id === img.id;
+      $cmp.classList.remove('hidden');
+      $cmp.classList.toggle('go', !!p && !mine);
+      $cmp.classList.toggle('picked', mine);
+      $cmp.textContent = !p ? 'Compare' : mine ? '✓ Picked' : '⇄ Compare';
+      $cmp.setAttribute('aria-label', !p ? 'Pick this chart to compare' : mine ? 'Picked to compare; tap to unpick' : `Compare with ${p.name || 'the picked chart'}`);
+      $cmp.onclick = () => {
+        if (!p) { count('compare.pick'); setPick({ id: img.id, name: imgName(img) }); toast('Picked. Now open the other chart, tap it, and tap Compare.'); drawCmp(); }
+        else if (mine) { count('compare.unpick'); setPick(null); toast('No chart picked to compare.'); drawCmp(); }
+        else { count('compare.open'); compareReturn = location.hash; go(`#/compare/${p.id}/${img.id}`); }
+      };
+    };
+    drawCmp();
     api(`/api/images/${id}/context?${listQ}`).then((c) => {
       ctx = c;
       $count.textContent = c.index ? `${c.index} / ${c.total}` : '';
@@ -607,6 +680,74 @@
           ...img.paths.map((p) => h('div', { style: 'word-break:break-all;padding-left:8px' }, p))));
     };
     draw();
+  };
+
+  // ---------- compare two charts ----------
+  // Two panes, side by side or one above the other, each pinch-zoomable.
+  // "Together" makes both follow the same zoom and position.
+  routes.compare = function compareView(arg) {
+    const [aId, bId] = arg.split('/');
+    if (!/^\d+$/.test(aId || '') || !/^\d+$/.test(bId || '')) return swap('#/');
+    const pref = { layout: 'side', linked: true, ...(readStore(CMPVIEW_KEY) || {}) };
+    const savePref = () => writeStore(CMPVIEW_KEY, pref);
+    // Like the viewer, it lies over the screen underneath. Opened from the viewer, Back returns to it;
+    // opened from a link or a fresh load, the home screen is drawn underneath and Back goes there.
+    const fromApp = compareReturn !== null;
+    const back = () => (fromApp ? history.back() : swap('#/'));
+    if (!fromApp) routes['']('', new URLSearchParams());
+    document.body.classList.add('fullscreen');
+
+    const pane = (id) => {
+      const p = { id };
+      p.img = h('img', { class: 'vimg', alt: '', draggable: 'false' });
+      p.label = h('a', { class: 'cplabel', href: `#/chart/${id}` }, '');
+      p.box = h('div', { class: 'cpane' }, p.img, p.label);
+      return p;
+    };
+    const A = pane(aId), B = pane(bId);
+    const $link = h('button', { type: 'button', class: 'vbtn', onclick: () => {
+      pref.linked = !pref.linked; savePref(); drawBar(); count(pref.linked ? 'compare.together' : 'compare.apart');
+      if (pref.linked) B.z.set(A.z.view());
+      toast(pref.linked ? 'Together: both charts zoom and move as one.' : 'Apart: each chart zooms on its own.');
+    } });
+    const $layout = h('button', { type: 'button', class: 'iconbtn', onclick: () => {
+      pref.layout = pref.layout === 'side' ? 'stack' : 'side'; savePref(); drawBar(); count('compare.layout');
+      toast(pref.layout === 'side' ? 'Side by side' : 'One above the other');
+    } });
+    const $swap = h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'Swap the two charts', title: 'Swap', onclick: () => { count('compare.swap'); swap(`#/compare/${bId}/${aId}`); } }, '⇄');
+    const $hint = h('div', { class: 'cphint' }, 'Pinch to zoom · double-tap to zoom in or out');
+    const $root = h('div', { class: 'viewer compare' },
+      h('div', { class: 'cpanes' }, A.box, B.box),
+      h('div', { class: 'vtop' }, h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'Back', onclick: back }, '‹'), h('span', { class: 'vname' }, 'Compare'), $link, $layout, $swap),
+      $hint);
+    const drawBar = () => {
+      $root.classList.toggle('stacked', pref.layout === 'stack');
+      $link.classList.toggle('go', pref.linked);
+      $link.textContent = pref.linked ? '🔗 Together' : 'Apart';
+      $link.setAttribute('aria-label', pref.linked ? 'Zoom together is on' : 'Zoom together is off');
+      $layout.textContent = pref.layout === 'side' ? '⬒' : '◫';
+      $layout.setAttribute('aria-label', pref.layout === 'side' ? 'Put one above the other' : 'Put side by side');
+    };
+    drawBar();
+    document.body.append($root);
+    setTimeout(() => $hint.classList.add('gone'), 3500);
+
+    const follow = (from, to) => () => { if (pref.linked) to.z.set(from.z.view()); };
+    const keys = (e) => { if (e.key === 'Escape') back(); };
+    window.addEventListener('keydown', keys);
+    for (const [p, other] of [[A, B], [B, A]]) {
+      p.z = zoomable(p.box, p.img, { change: follow(p, other), load: () => { if (pref.linked && other.z) p.z.set(other.z.view()); } });
+    }
+    viewerCleanup = () => { $root.remove(); document.body.classList.remove('fullscreen'); window.removeEventListener('keydown', keys); A.z.destroy(); B.z.destroy(); };
+
+    for (const p of [A, B]) {
+      api(`/api/images/${p.id}`).then((img) => {
+        learnTags(img.tags);
+        p.label.textContent = imgName(img) || img.filename;
+        if (img.has_file) p.img.src = `/img/${img.id}`;
+        else fill(p.box, h('p', { class: 'cpmsg' }, 'No picture for this chart yet.'), p.label);
+      }).catch((err) => { fill(p.box, h('p', { class: 'cpmsg err' }, `Could not open this chart: ${err.message}`)); });
+    }
   };
 
   // ---------- import tags ----------
