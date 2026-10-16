@@ -17,9 +17,21 @@
   const remember = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
   const recall = (k, fallback) => { try { const v = JSON.parse(localStorage.getItem(k)); return v === null || v === undefined ? fallback : v; } catch { return fallback; } };
 
-  // The book's words load once, when a tool first needs them (246 KB, kept out of the app's first paint).
-  let readingsLoading = null;
-  const readings = () => { if (root.Readings) return Promise.resolve(root.Readings); if (!readingsLoading) readingsLoading = new Promise((res) => { const s = document.createElement('script'); s.src = '/readings.js?v=' + (root.APP_VERSION || '0'); s.onload = () => res(root.Readings || {}); s.onerror = () => res({}); document.head.append(s); }); return readingsLoading; };
+  // The books' words load once, when a tool first needs them (kept out of the app's first paint): the day books
+  // in readings.js (273 KB), the business books in bizwords.js (86 KB). Both generated, both in the app shell.
+  const loading = {};
+  const lazy = (file, name) => () => { if (root[name]) return Promise.resolve(root[name]); if (!loading[name]) loading[name] = new Promise((res) => { const s = document.createElement('script'); s.src = `/${file}?v=` + (root.APP_VERSION || '0'); s.onload = () => res(root[name] || {}); s.onerror = () => res({}); document.head.append(s); }); return loading[name]; };
+  const readings = lazy('readings.js', 'Readings');
+  const bizwords = lazy('bizwords.js', 'BizWords');
+  // The books' words on screen: their short forms spelled out (DV = day vibration, LP = life path, which the app
+  // calls the essence) and the paid tool's own names left out. Everything else stays word for word.
+  const plain = (t) => String(t || '').replace(/\bDVs?(\d)\b/g, 'day vibration $1').replace(/\bDV\b/g, 'day vibration').replace(/\bLP\b/g, 'essence')
+    .replace(/\bLife Path\b/g, 'essence').replace(/\bin the Superdates Tool\b/g, 'in the calendar').replace(/\bthe Superdates Tool\b/g, 'the calendar');
+  const noPage = (t) => String(t).replace(/ \(pp?\. [\d, -]+\)$/, '');
+  const BIZ_COLOR_WORD = { green: 'Excellent', black: 'Good', orange: 'Can Be Okay', red: 'Avoid' };
+  // The success-code group a number belongs to (Superdates pp. 24-27), the one matching the code's kind first.
+  const KIND_CAT = { strong: 1, soft: 1, strength: 2, limited: 2, special: 3 };
+  const codeGroup = (R, n, kind) => { const gs = (R.codes || []).filter((g) => g.nums.includes(n)); return gs.find((g) => g.cat === KIND_CAT[kind]) || gs[0] || null; };
 
   // ---------- shared pieces ----------
   const light = () => { document.documentElement.classList.add('light'); A.setCleanup(() => document.documentElement.classList.remove('light')); };
@@ -36,7 +48,7 @@
   const bigNum = (v, note) => A.h('div', { class: 'bignum' }, A.h('b', {}, v.text), A.h('span', { class: 'nm' }, nameOf(v)), note ? A.h('span', { class: 'ty' }, note) : null);
   // A sheet with everything the books say about one number in one position. Tap anywhere outside to close.
   async function numberSheet(v, pos, extra) {
-    const R = await readings();
+    const [R, B] = await Promise.all([readings(), bizwords()]);
     const n = v.sum, name = nameOf(v);
     const parts = [];
     const para = (t) => (t ? String(t).split('\n\n').map((p) => A.h('p', {}, p)) : []);
@@ -51,9 +63,21 @@
     if (about) parts.push(head(`About ${v.text}`), ...para(about));
     if (N.MEANINGS[n]) parts.push(head('In the year rows'), A.h('p', {}, N.MEANINGS[n]));
     if (!parts.length && n < 10 && R.dayVibration && R.dayVibration[n]) parts.push(head(R.dayVibration[n].keywords), ...para(R.dayVibration[n].text));
+    const kind = T.codeKind(n), group = kind ? codeGroup(R, n, kind) : null;
+    if (group) parts.push(head(`Success code · ${group.name}`), A.h('p', {}, group.text));
+    parts.push(...bizParts(B, n, head));
     if (!parts.length) parts.push(A.h('p', { class: 'muted' }, 'The books have no page for this number in this place yet.'));
-    const kind = T.codeKind(n);
     A.sheet(A.h('div', { class: 'numsheet' }, A.h('h3', {}, `${v.text} ${name}`), kind ? A.h('div', { class: 'codes' }, A.h('span', { class: kind === 'avoid' || kind === 'care' ? 'warn' : kind === 'soft' ? 'soft' : '' }, T.CODE_WORDS[kind])) : null, extra || null, ...parts));
+  }
+  // What the business books say about a number 1-99: The Numbers 10-99 in Business (with its color code), the
+  // summary of its family for 1-9, and the general meaning from Numbers Overview 1-99.
+  function bizParts(B, n, head) {
+    const out = [], b = B.business && B.business[n], fam = B.businessFamilies && B.businessFamilies[n < 10 ? n : 0], o = B.overview && B.overview[n];
+    if (b) out.push(head(`In business · ${b.name}${b.color && BIZ_COLOR_WORD[b.color] ? ' · ' + BIZ_COLOR_WORD[b.color] : ''}`), A.h('p', {}, b.text), b.warn ? A.h('p', { class: 'warnline' }, '⚠ ' + b.warn) : null,
+      b.color && B.businessColors && B.businessColors[b.color] ? A.h('p', { class: 'muted small' }, `${BIZ_COLOR_WORD[b.color]}: ${B.businessColors[b.color]}.`) : null);
+    if (fam) out.push(head(`In business · the ${n} numbers · ${fam.title}`), A.h('p', {}, fam.text));
+    if (o) out.push(head(`The number · ${o.name}`), A.h('p', {}, o.text));
+    return out.filter(Boolean);
   }
   const POS_WORDS = { dv: 'Day Vibration', lp: 'Essence of the Day', bigLp: 'Big Essence', outer: 'Outer Diamond · Day + Month', inner: 'Inner Diamond · Day + Year', dvlp: 'Natural Talent · Day + Essence', dharma: 'Dharma of the Month · Month + Year', target: 'Target Number · Day + Dharma' };
   const POS_INTRO = { dv: 'The main vibration of the day and where to focus your attention.', lp: 'The emotional energy of the day: what inspiration you receive and how you feel.', outer: 'The day\'s radiance and action: what kind of actions are best to take.', inner: 'The day\'s inner motivation and drive: how the mind, thoughts and emotions work.', dvlp: 'How to connect to the greatest flow, creativity and productivity of the day.', dharma: 'The same for the whole month: the qualities you need to awaken to be successful.', target: 'The day\'s portal to success: the one adjustment that aligns your tone with the day.' };
@@ -74,11 +98,58 @@
     return svg;
   }
   // The codes a date holds, as chips: green strong, blue soft, red to avoid.
-  const codeChips = (e) => A.h('div', { class: 'codes' }, ...e.codes.map((c) => A.h('span', { class: c.kind === 'avoid' || c.kind === 'care' || c.kind === 'limited' ? 'warn' : c.kind === 'soft' ? 'soft' : '', onclick: () => numberSheet(c.value, c.pos) }, `${c.value.text} ${T.POSITION_WORDS[c.pos] || c.pos} · ${c.words}`)));
+  // With the book's words loaded, a success code also says which group it belongs to ("World Conqueror Code").
+  const codeChips = (e, R) => A.h('div', { class: 'codes' }, ...e.codes.map((c) => { const g = R && codeGroup(R, c.value.sum, c.kind) && !['avoid', 'care'].includes(c.kind) ? codeGroup(R, c.value.sum, c.kind) : null;
+    return A.h('span', { class: c.kind === 'avoid' || c.kind === 'care' || c.kind === 'limited' ? 'warn' : c.kind === 'soft' ? 'soft' : '', onclick: () => numberSheet(c.value, c.pos) }, `${c.value.text} ${T.POSITION_WORDS[c.pos] || c.pos} · ${g ? g.name.toLowerCase() : c.words}`); }));
   // Why the date is rated as it is: the rule's own reasons, in the course's words.
   const WHY_WORDS = { super: 'Why a Super Date', good: 'Why only a Good Date', beware: 'Why Beware' };
-  const whyBox = (e) => A.h('div', { class: 'why ' + e.rating }, A.h('div', { class: 'head' }, A.h('span', { class: `rate ${e.rating}` }, T.RATING_WORDS[e.rating]), A.h('span', { class: 'pos' }, WHY_WORDS[e.rating])),
-    A.h('ul', {}, ...e.reasons.map((r) => A.h('li', {}, r))));
+  // With the book's words loaded, the box also says what a day of that color is for (Cosmic Calendar p. 288).
+  const whyBox = (e, R) => { const use = R && R.ratings && R.ratings[e.rating];
+    return A.h('div', { class: 'why ' + e.rating }, A.h('div', { class: 'head' }, A.h('span', { class: `rate ${e.rating}` }, T.RATING_WORDS[e.rating]), A.h('span', { class: 'pos' }, WHY_WORDS[e.rating])),
+      use ? A.h('p', { class: 'use' }, `${use.practice}: ${use.light}.`) : null,
+      A.h('ul', {}, ...e.reasons.map((r) => A.h('li', {}, r)))); };
+  // How to use the day, in the book's words: the outer diamond's "How to Act Today", the inner diamond's "Inner
+  // Success Codes (How to Use Your Mind Today)", the target's "Fastest Bridge (What to Do Now)", and the target's
+  // one-word adjustment (Superdates pp. 113-200).
+  function useDay(e, R, sentences = 2) {
+    const o = (R.outer || {})[e.outer.sum], i = (R.inner || {})[e.inner.sum], t = (R.target || {})[e.target.sum], q = (R.quality || {})[e.target.ds];
+    const item = (label, text, v, pos) => (text ? A.h('div', { class: 'useitem', onclick: () => numberSheet(v, pos) }, A.h('b', {}, label), A.h('p', {}, snippet(text, sentences))) : null);
+    if (!o && !i && !t) return null;
+    return A.h('div', { class: 'reading useday' },
+      A.h('div', { class: 'head' }, A.h('b', {}, 'How to Use the Day'), q ? A.h('span', { class: 'pos' }, 'Your Adjustment: ', A.h('span', { class: 'qword' }, q[0].toUpperCase() + q.slice(1))) : null),
+      item('How to Act', o && o['How to Act Today'], e.outer, 'outer'),
+      item('How to Use Your Mind', i && i['Inner Success Codes'], e.inner, 'inner'),
+      item('What to Do Now', t && t['Fastest Bridge'], e.target, 'target'));
+  }
+  // The ruler of the day (Cosmic Calendar pp. 51-108): its chapter's title words, keywords and business themes, and
+  // Pluto's undertone on days of 9, 18, 27 or with a 0 (p. 104). Tap for the chapter's numerology part.
+  function rulerSheet(R, planet) {
+    const r = (R.ruler || {})[planet]; if (!r) return;
+    const head = (t) => A.h('div', { class: 'muted small', style: 'margin:10px 0 2px;text-transform:uppercase;letter-spacing:.06em' }, t);
+    A.sheet(A.h('div', { class: 'numsheet' }, A.h('h3', {}, planet), A.h('p', {}, A.h('b', {}, r.title)), A.h('p', { class: 'kw' }, r.keywords),
+      head('The Planet of the Day'), A.h('p', {}, plain(r.essence)), r.link ? A.h('p', {}, r.link) : null, r.dates ? A.h('p', {}, plain(r.dates)) : null,
+      head('Business Themes'), A.h('ul', {}, ...r.themes.map((x) => A.h('li', {}, x)))));
+  }
+  function rulerCard(e, R) {
+    const r = (R.ruler || {})[e.ruler]; if (!r) return null;
+    const pluto = T.plutoUndertone(e.dv) && R.ruler.Pluto;
+    return A.h('div', { class: 'reading', onclick: () => { A.count('today.ruler'); rulerSheet(R, e.ruler); } },
+      A.h('div', { class: 'head' }, A.h('b', {}, e.ruler), A.h('span', { class: 'nm' }, r.title), A.h('span', { class: 'pos' }, 'Ruler of the Day')),
+      A.h('p', { class: 'kw' }, r.keywords),
+      A.h('ul', { class: 'themes' }, ...r.themes.map((x) => A.h('li', {}, x))),
+      pluto ? A.h('p', { class: 'muted small', onclick: (ev) => { ev.stopPropagation(); rulerSheet(R, 'Pluto'); } }, `Pluto undertone (a day of ${e.dv.text}): ${R.ruler.Pluto.keywords}. Tap for Pluto.`) : null);
+  }
+  // A company started on this date (Business Manual pp. 12-18): its day vibration as a business, and the essence.
+  function companyCard(e, B) {
+    const c = (B.companyDay || {})[e.dv.ds], l = (B.companyDay || {})[e.lp.ds]; if (!c) return null;
+    const head = (t) => A.h('div', { class: 'muted small', style: 'margin:10px 0 2px;text-transform:uppercase;letter-spacing:.06em' }, t);
+    const full = () => { A.count('today.company'); A.sheet(A.h('div', { class: 'numsheet' }, A.h('h3', {}, 'A Company Started This Day'),
+      head(`Day vibration ${e.dv.ds} · a ${e.dv.ds} business`), A.h('p', {}, plain(c.head)), A.h('p', { class: 'kw' }, c.keywords), head('Examples'), A.h('p', {}, plain(c.examples)), c.contra ? A.h('p', { class: 'warnline' }, '⚠ ' + plain(c.contra)) : null, head('Who?'), A.h('p', {}, plain(c.who)),
+      l && e.lp.ds !== e.dv.ds ? [head(`Essence ${e.lp.ds} · a ${e.lp.ds} business`), A.h('p', {}, plain(l.head)), A.h('p', { class: 'kw' }, l.keywords)] : null)); };
+    return A.h('div', { class: 'reading', onclick: full },
+      A.h('div', { class: 'head' }, A.h('b', {}, String(e.dv.ds)), A.h('span', { class: 'nm' }, 'Business'), A.h('span', { class: 'pos' }, 'A Company Started This Day')),
+      A.h('p', {}, plain(c.head) + '.'), A.h('p', { class: 'kw' }, c.keywords));
+  }
   const psyToggle = (on, onclick) => A.h('button', { type: 'button', class: 'psytog', onclick }, on ? 'Hide Psyche Charts' : 'Show Psyche Charts');
 
   // ---------- the day's scene: a real photo of the ruler of the day over a starry sky (the paid tool's Today page) ----------
@@ -134,10 +205,17 @@
       const e = T.dayEnergy(cur.y, cur.m, cur.d); if (!e) return;
       $pop.style.setProperty('--tint', TINTS[e.ruler] || TINTS.Venus);
       $title.textContent = `${DOW[e.weekday].slice(0, 3)}, ${MON[cur.m - 1]} ${cur.d}, ${cur.y}`;
+      // The book's words for the day arrive with readings.js; until then the day shows without them.
+      const R = root.Readings || null;
+      if (!R) readings().then(() => { if (document.body.contains($pop)) draw(); });
+      const guide = R && R.planetGuide && R.planetGuide[e.ruler];
       A.fill($box, planetScene(e, 200),
         A.h('div', { class: 'nscope-box' }, dateCharts(cur.y, cur.m, cur.d, psyche.on)),
         A.h('div', { class: 'under' }, psyToggle(psyche.on, () => { psyche.on = !psyche.on; remember('toolsPsyche', psyche.on); draw(); })),
-        whyBox(e),
+        whyBox(e, R),
+        R && R.dayVibration && R.dayVibration[e.dv.sum] ? A.h('p', { class: 'daykw' }, `${e.dv.text} ${nameOf(e.dv)} · ${R.dayVibration[e.dv.sum].keywords}`) : null,
+        guide ? A.h('p', { class: 'daykw muted' }, `Ruler ${e.ruler}: ${guide.role}`) : null,
+        R ? useDay(e, R, 1) : null,
         A.h('button', { type: 'button', class: 'btn btn-block readbtn', onclick: () => { close(); if (onReadings) onReadings(cur); else A.go(`#/today/${iso(cur.y, cur.m, cur.d)}`); } }, 'Readings for This Day ›'));
     };
     const move = (by) => { cur = shift(cur, by); A.count('dayfull.move'); draw(); };
@@ -178,7 +256,7 @@
       const isToday = date.y === now.y && date.m === now.m && date.d === now.d;
       $title.textContent = `${DOW[e.weekday].slice(0, 3)}, ${MON[date.m - 1]} ${date.d}, ${date.y}`;
       $sub.textContent = isToday ? 'Today in Arizona' : 'Tap the date to come back to today';
-      const R = await readings();
+      const [R, B] = await Promise.all([readings(), bizwords()]);
       const row = (pos, v) => {
         const b = bookBits(R, pos, v);
         return A.h('div', { class: 'reading', onclick: () => numberSheet(v, pos) },
@@ -191,11 +269,14 @@
         A.h('div', { class: 'scenebox', onclick: () => { A.count('today.full'); dayFull(date); } }, planetScene(e, 200)),
         A.h('div', { class: 'nscope-box', role: 'button', 'aria-label': 'Full screen', onclick: () => { A.count('today.full'); dayFull(date); } }, dateCharts(date.y, date.m, date.d, psyche.on)),
         A.h('div', { class: 'under' }, A.h('span', { class: 'muted small' }, 'Tap the chart for full screen'), psyToggle(psyche.on, () => { psyche.on = !psyche.on; remember('toolsPsyche', psyche.on); A.count('today.psyche'); draw(); })),
-        whyBox(e),
+        whyBox(e, R),
         A.h('div', { class: 'bignum', onclick: () => numberSheet(e.dv, 'dv') }, A.h('b', {}, e.dv.text), A.h('span', { class: 'nm' }, nameOf(e.dv)), A.h('span', { class: 'ty' }, `Day Vibration · Ruler ${e.ruler}`)),
-        codeChips(e),
+        codeChips(e, R),
+        useDay(e, R),
+        rulerCard(e, R),
         row('dv', e.dv), row('lp', e.lp), row('outer', e.outer), row('inner', e.inner), row('dvlp', e.dvlp), row('dharma', e.dharma), row('target', e.target),
-        A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Tap a number for the book\'s whole page. Super, Good and Beware follow the success codes and the numbers to avoid in "Success Codes & Superdates".'));
+        companyCard(e, B),
+        A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Tap a number for the book\'s whole page. Super, Good and Beware follow the success codes and the numbers to avoid in "Success Codes & Superdates"; the ruler of the day and what each color is for come from the "Superdates Cosmic Calendar"; a company started this day from the "Business Manual".'));
     };
     A.render(A.h('div', { class: 'screen qscreen tscreen' },
       A.h('div', { class: 'pagetop ttop' }, A.h('a', { class: 'btn iconbtn', href: '#/', 'aria-label': 'Back' }, '‹'), A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Previous day', onclick: () => { date = shift(date, -1); draw(); } }, '‹'), $title, A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Next day', onclick: () => { date = shift(date, 1); draw(); } }, '›'), A.h('a', { class: 'btn iconbtn', href: '#/coming', 'aria-label': 'Coming Days', title: 'Coming Days' }, '▦')),
@@ -214,8 +295,11 @@
     $date.addEventListener('change', () => { const p = parseIso($date.value); if (p) { start = p; draw(); } });
     const open = (e) => { A.count('coming.open_day'); dayFull({ y: e.y, m: e.m, d: e.d }); };
     const isToday = (e) => e.y === now.y && e.m === now.m && e.d === now.d;
+    // The day vibration's keywords from the book (one short line per row) arrive with readings.js.
+    if (!root.Readings) readings().then(() => { if ($body.isConnected) draw(); });
     const draw = () => {
       $date.value = iso(start.y, start.m, start.d);
+      const R = root.Readings || {};
       const first = T.dayEnergy(start.y, start.m, start.d); night(first ? first.ruler : 'Venus');
       A.fill($chips, chip('Charts', view.mode === 'charts', () => { view.mode = 'charts'; remember('comingMode', 'charts'); draw(); }), chip('List', view.mode === 'list', () => { view.mode = 'list'; remember('comingMode', 'list'); A.count('coming.list'); draw(); }),
         chip('Super Dates Only', view.superOnly, () => { view.superOnly = !view.superOnly; A.count('coming.super_only'); draw(); }),
@@ -229,13 +313,15 @@
         A.fill($body, A.h('div', { class: 'days' }, ...days.map((e) => A.h('div', { class: 'dayrow' + (isToday(e) ? ' today' : ''), role: 'button', onclick: () => open(e) },
           A.h('div', { class: 'd' }, A.h('b', {}, String(e.d)), A.h('span', {}, `${DOW[e.weekday].slice(0, 3)} ${MON[e.m - 1]}`)),
           A.h('div', { class: 'nums' }, num('Day', e.dv), num('Essence', e.lp), num('Outer', e.outer), num('Inner', e.inner), num('Target', e.target)),
-          A.h('span', { class: `rate ${e.rating}` }, T.RATING_WORDS[e.rating].replace(' date', ''))))));
+          A.h('span', { class: `rate ${e.rating}` }, T.RATING_WORDS[e.rating].replace(/ Date$/, '')),
+          R.dayVibration && R.dayVibration[e.dv.sum] ? A.h('div', { class: 'kw' }, R.dayVibration[e.dv.sum].keywords) : null))));
       } else {
         A.fill($body, A.h('div', { class: 'minis cols' + view.cols }, ...days.map((e) => A.h('div', { class: 'mini' + (isToday(e) ? ' today' : '') + (e.rating === 'super' ? ' super' : ''), role: 'button', onclick: () => open(e) },
-          A.h('div', { class: 'mhead' }, A.h('span', { class: 'd' }, `${DOW[e.weekday].slice(0, 3)} ${MON[e.m - 1]} ${e.d}`), A.h('span', { class: `rate ${e.rating}` }, T.RATING_WORDS[e.rating].replace(' date', ''))),
+          A.h('div', { class: 'mhead' }, A.h('span', { class: 'd' }, `${DOW[e.weekday].slice(0, 3)} ${MON[e.m - 1]} ${e.d}`), A.h('span', { class: `rate ${e.rating}` }, T.RATING_WORDS[e.rating].replace(/ Date$/, ''))),
           dateCharts(e.y, e.m, e.d, view.psyche),
           A.h('div', { class: 'mfoot' }, A.h('b', {}, e.dv.text), A.h('span', { class: 'muted small nm' }, nameOf(e.dv))),
-          A.h('div', { class: 'mfoot muted small' }, `Essence ${e.lp.text} · Outer ${e.outer.text} · Inner ${e.inner.text}`)))));
+          A.h('div', { class: 'mfoot muted small' }, `Essence ${e.lp.text} · Outer ${e.outer.text} · Inner ${e.inner.text}`),
+          view.cols === 1 && R.dayVibration && R.dayVibration[e.dv.sum] ? A.h('div', { class: 'mfoot muted small' }, R.dayVibration[e.dv.sum].keywords) : null))));
       }
     };
     A.render(A.h('div', { class: 'screen qscreen tscreen' }, top('Coming Days', '#/', A.h('a', { class: 'btn iconbtn', href: '#/today', 'aria-label': 'Today', title: 'Today' }, '☀')),
@@ -328,35 +414,87 @@
   }
 
   // ---------- Price Tool ----------
+  // Rules in numbertools.js (priceCheck / priceFind); the books' words in bizwords.js: Marketing Numerology pp. 37-55
+  // (the price of each vibration, the $100-$900 prices, the example prices), The Numbers 10-99 in Business (each
+  // number's business words and color), Module 12 (which numbers suit which customers and purposes).
+  // The words the book gives a price vibration: the summary (pp. 52-53), else the note of its example price (p. 53),
+  // else the number's business name.
+  function vibeWords(B, n) {
+    const L = (B.prices && B.prices.labels) || {};
+    const lab = L['sum' + n] || L['clean' + n] || L['soft' + n];
+    if (lab) return lab.words;
+    const ex = ((B.prices && B.prices.examples) || []).find((x) => x.sum === n && x.note);
+    if (ex) return ex.note.replace(/^an? /, '');
+    return (B.business && B.business[n] && B.business[n].name) || '';
+  }
+  // The book's own text for a price vibration: its digit-sum section (pp. 41-44), else its clean-price section (pp. 38-39).
+  const vibeText = (B, n) => { const P = B.prices || {}; const x = (P.sums || {})[n] || (P.clean || {})[n]; return x ? { text: x.text, title: x.title || '', page: x.page } : null; };
   function priceView() {
     light();
     const state = recall('priceTool', { vibe: 23, range: 1, price: '' });
+    if (!T.PRICE_VIBES.some(([v]) => v === state.vibe)) state.vibe = 23;
     const $check = A.h('div', {}), $list = A.h('div', {}), $vibes = A.h('div', { class: 'vib' }), $ranges = A.h('div', { class: 'vib' });
     const $in = A.h('input', { type: 'text', inputmode: 'decimal', placeholder: 'any price', 'aria-label': 'Price' });
     const fmt = (p) => '$' + Number(p).toLocaleString('en-US');
     const topCls = (w) => (w.top && N.TENSION[w.top.sum] ? 'r' : w.ratio >= 0.3 ? 'r' : w.ratio > 0 ? 'y' : 'g');
+    let B = root.BizWords || {};
+    const head = (t) => A.h('div', { class: 'muted small', style: 'margin:10px 0 2px;text-transform:uppercase;letter-spacing:.06em' }, t);
+    // One card of the book's words about a number in the price; tap for everything the books say about it.
+    const bizCard = (n, label) => {
+      const b = (B.business || {})[n], fam = n < 10 ? (B.businessFamilies || {})[n] : null;
+      if (!b && !fam) return null;
+      return A.h('div', { class: 'reading', onclick: () => { A.count('price.number'); numberSheet(T.val(n), 'about'); } },
+        A.h('div', { class: 'head' }, A.h('b', {}, T.val(n).text), A.h('span', { class: 'nm' }, b ? b.name : fam.title), A.h('span', { class: 'pos' }, label)),
+        b && b.color && BIZ_COLOR_WORD[b.color] ? A.h('span', { class: 'bizcolor ' + b.color }, BIZ_COLOR_WORD[b.color] + ' for Business') : null,
+        A.h('p', {}, b ? b.text : fam.text), b && b.warn ? A.h('p', { class: 'warnline' }, '⚠ ' + b.warn) : null);
+    };
     const drawCheck = () => {
       remember('priceTool', state);
       const c = T.priceCheck($in.value);
-      if (!c) { A.fill($check, A.h('p', { class: 'muted small', style: 'margin:6px 2px' }, 'Type a price to read it: digit sum, clean number, the pyramid and the book\'s warnings.')); return; }
+      if (!c) { A.fill($check, A.h('p', { class: 'muted small', style: 'margin:6px 2px' }, 'Type a price to read it: digit sum, clean number, the pyramid, the book\'s rules and what each number in it means in business.')); return; }
       const rows = c.pyramid.slice().reverse();
       const W = c.weight;
+      const P = B.prices || {};
+      const ex = (P.examples || []).find((x) => x.price === c.price);
+      const own = vibeText(B, c.clean || c.sum);
+      const hund = (P.hundreds || {})[c.value.ds], fam = (P.families || {})[c.value.ds];
+      // The numbers in the price the book reads: the digit sum, the clean number, the first two digits (p. 51).
+      const shown = [[c.sum, 'Digit Sum']];
+      if (c.clean && c.clean !== c.sum) shown.push([c.clean, 'Clean Number']);
+      if (c.lead && !shown.some(([n]) => n === c.lead)) shown.push([c.lead, 'First Two Digits']);
+      for (const n of c.rowNums) if (!shown.some(([m]) => m === n)) shown.push([n, 'In the Price']);
+      // Which purposes and customers these numbers suit (Module 12 pp. 4, 10).
+      const nums = shown.map(([n]) => n);
+      const fits = (B.codes || []).filter((x) => x.nums && x.nums.some((n) => nums.includes(n))).map((x) => x.name)
+        .concat((B.customers || []).filter((x) => x.digits.includes(c.value.ds)).map((x) => x.who));
       A.fill($check,
         A.h('div', { class: 'bignum', onclick: () => numberSheet(c.value, 'about') }, A.h('b', {}, c.value.text), A.h('span', { class: 'nm' }, c.name), A.h('span', { class: 'ty' }, 'digit sum')),
-        A.h('div', { class: 'codes' }, ...c.warnings.map((w) => A.h('span', { class: 'warn' }, w)), ...c.notes.map((t) => A.h('span', { class: 'soft' }, t))),
+        A.h('div', { class: 'codes' }, ...c.warnings.map((w) => A.h('span', { class: 'warn' }, noPage(w))), ...c.cautions.map((w) => A.h('span', { class: 'care' }, noPage(w))), ...c.notes.map((t) => A.h('span', { class: 'soft' }, noPage(t)))),
         A.h('div', { class: 'pyr' }, ...rows.map((row, i) => A.h('div', { class: 'pyr-row' }, ...row.map((v) => A.h('span', { class: (N.TENSION[v.sum] ? (i === 0 ? 'top-tense' : 'tense') : '') }, i === rows.length - 1 ? String(v.sum) : v.text))))),
-        A.h('div', { class: 'verdict' }, A.h('div', {}, A.h('span', { class: 'muted small' }, 'Pyramid top'), A.h('b', {}, W.top ? W.top.text : '–')), A.h('div', {}, A.h('span', { class: 'muted small' }, 'Weight'), A.h('b', {}, String(Number(W.total.toFixed(3))))), A.h('div', {}, A.h('span', { class: 'muted small' }, 'Ratio'), A.h('b', { class: W.ratio < 0.3 ? 'ok' : 'err' }, W.ratio.toFixed(3))), A.h('div', {}, A.h('span', { class: 'muted small' }, 'Verdict'), A.h('b', { class: c.good ? 'ok' : 'err' }, c.good ? 'Good price' : 'Avoid'))));
+        A.h('div', { class: 'verdict' }, A.h('div', {}, A.h('span', { class: 'muted small' }, 'Pyramid top'), A.h('b', {}, W.top ? W.top.text : '–')), A.h('div', {}, A.h('span', { class: 'muted small' }, 'Weight'), A.h('b', {}, String(Number(W.total.toFixed(3))))), A.h('div', {}, A.h('span', { class: 'muted small' }, 'Ratio'), A.h('b', { class: W.ratio < 0.3 ? 'ok' : 'err' }, W.ratio.toFixed(3))), A.h('div', {}, A.h('span', { class: 'muted small' }, 'Verdict'), A.h('b', { class: { good: 'ok', care: 'mid', avoid: 'err' }[c.verdict] }, T.VERDICT_WORDS[c.verdict]))),
+        B.prices ? A.h('div', { class: 'wlabel tl', style: 'padding-top:14px' }, 'What the Books Say') : null,
+        ex ? A.h('p', { class: 'bookex' }, `One of the book's own example prices: ${fmt(ex.price)} = ${T.val(ex.sum).text}${ex.note ? ', ' + ex.note : ''}.`) : null,
+        own ? A.h('div', { class: 'reading' }, A.h('div', { class: 'head' }, A.h('b', {}, T.val(c.clean || c.sum).text), A.h('span', { class: 'nm' }, own.title ? own.title.replace(/^./, (x) => x.toUpperCase()) : (vibeWords(B, c.clean || c.sum) || '')), A.h('span', { class: 'pos' }, c.clean ? 'Clean Price' : 'Digit Sum Price')), A.h('p', {}, own.text)) : null,
+        hund || fam ? A.h('div', { class: 'reading' }, A.h('div', { class: 'head' }, A.h('b', {}, String(c.value.ds)), A.h('span', { class: 'nm' }, fam ? fam.words : ''), A.h('span', { class: 'pos' }, `A ${c.value.ds} Price`)), hund ? A.h('p', {}, `Like $${c.value.ds}00: ${hund.text}${/[.!?]$/.test(hund.text) ? '' : '.'}`) : null) : null,
+        ...shown.map(([n, label]) => bizCard(n, label)),
+        fits.length ? A.h('div', {}, head('Suits'), A.h('div', { class: 'codes' }, ...fits.map((f) => A.h('span', { class: 'soft' }, f.replace(/(^|[\s/,])([a-z])/g, (m, a, b) => a + b.toUpperCase()))))) : null);
     };
     const drawFind = () => {
       remember('priceTool', state);
-      A.fill($vibes, ...T.PRICE_VIBES.map(([v, why]) => A.h('button', { type: 'button', class: 'chip' + (state.vibe === v ? ' active' : ''), title: why, onclick: () => { state.vibe = v; A.count('price.vibe'); drawFind(); } }, T.val(v).text, A.h('small', {}, why.split(/[,;:(]/)[0].toLowerCase()))));
+      A.fill($vibes, ...T.PRICE_VIBES.map(([v]) => { const w = vibeWords(B, v); return A.h('button', { type: 'button', class: 'chip' + (state.vibe === v ? ' active' : ''), title: w, onclick: () => { state.vibe = v; A.count('price.vibe'); drawFind(); } }, T.val(v).text, w ? A.h('small', {}, w.split(/[,;:(]| and /)[0].replace(/^(a|the) /i, '').toLowerCase()) : null); }));
       A.fill($ranges, ...T.PRICE_RANGES.map(([lo, hi], i) => A.h('button', { type: 'button', class: 'chip' + (state.range === i ? ' active' : ''), onclick: () => { state.range = i; A.count('price.range'); drawFind(); } }, `${fmt(lo)}–${fmt(hi)}`)));
-      const found = T.priceFind(state.vibe, T.PRICE_RANGES[state.range], 60);
-      const why = (T.PRICE_VIBES.find(([v]) => v === state.vibe) || [])[1] || '';
-      A.fill($list, A.h('p', { class: 'muted small', style: 'margin:2px 2px 8px' }, `${T.val(state.vibe).text}: ${why}.`),
-        found.length ? A.h('div', { class: 'prices' }, ...found.map((c) => A.h('div', { class: 'prow', role: 'button', onclick: () => { $in.value = String(c.price); state.price = $in.value; A.count('price.pick'); drawCheck(); window.scrollTo({ top: 0, behavior: 'smooth' }); } },
-          A.h('b', {}, fmt(c.price)), A.h('span', { class: 'ds' }, c.value.text), A.h('span', { class: 'top ' + topCls(c.weight) }, `top ${c.weight.top ? c.weight.top.text : '–'}`)))) : A.h('p', { class: 'muted' }, 'No price in this range lands on that number without a warning.'),
-        A.h('p', { class: 'muted small', style: 'margin:10px 2px' }, 'The book\'s rules: the digit sum lands on the chosen vibration, the last digit is 5, 7 or 9 (or a clean 21, 23, 24, 32 with zeros), never 4 and 8 together, never 12/3, 16/7 or a bare 18. Green, yellow and red is the number pyramid\'s weight, lightest first. Tap a price to read it above.'));
+      const range = T.PRICE_RANGES[state.range];
+      const found = T.priceFind(state.vibe, range, 60);
+      const words = vibeWords(B, state.vibe), own = vibeText(B, state.vibe);
+      const examples = ((B.prices || {}).examples || []).filter((x) => x.sum === state.vibe && x.price >= range[0] && x.price <= range[1]);
+      const isEx = new Set(examples.map((x) => x.price));
+      const pick = (p) => { $in.value = String(p); state.price = $in.value; A.count('price.pick'); drawCheck(); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+      A.fill($list, A.h('p', { class: 'muted small', style: 'margin:2px 2px 8px' }, `${T.val(state.vibe).text}${words ? ': ' + words : ''}.`),
+        own ? A.h('div', { class: 'reading', onclick: () => { A.count('price.vibe_text'); A.sheet(A.h('div', { class: 'numsheet' }, A.h('h3', {}, `${T.val(state.vibe).text} Prices`), A.h('p', {}, own.text))); } }, A.h('p', {}, snippet(own.text, 2)), A.h('p', { class: 'muted small' }, 'Tap for the whole page.')) : null,
+        examples.length ? A.h('div', {}, head('The Book\'s Own Examples'), A.h('div', { class: 'codes' }, ...examples.map((x) => A.h('span', { class: 'soft', role: 'button', onclick: () => pick(x.price) }, fmt(x.price) + (x.note ? ' · ' + x.note : ''))))) : null,
+        found.length ? A.h('div', { class: 'prices' }, ...found.map((c) => A.h('div', { class: 'prow', role: 'button', onclick: () => pick(c.price) },
+          A.h('b', {}, fmt(c.price), isEx.has(c.price) ? A.h('small', { class: 'inbook' }, ' in the book') : null), A.h('span', { class: 'ds' }, c.clean && c.sum !== state.vibe ? 'clean' : c.value.text), A.h('span', { class: 'top ' + topCls(c.weight) }, `top ${c.weight.top ? c.weight.top.text : '–'}`)))) : A.h('p', { class: 'muted' }, 'No price in this range lands on that number without a warning.'),
+        A.h('p', { class: 'muted small', style: 'margin:10px 2px' }, 'The book\'s rules: the digit sum lands on the chosen number (or the number stands in the price followed by zeros), the last digit is 5, 7 or 9, never 4 and 8 together, never 12/3 or 16/7, of the 8s only 8 and 17/8, 18/9 only as a sharp offer. Green, yellow and red is the number pyramid\'s weight, lightest first. Tap a price to read it above.'));
     };
     $in.addEventListener('input', () => { state.price = $in.value; drawCheck(); });
     $in.value = state.price || '';
@@ -364,6 +502,8 @@
       A.h('div', { class: 'wlabel tl' }, 'Check a Price'), A.h('div', { class: 'pricebox' }, A.h('span', { class: 'cur' }, '$'), $in), $check,
       A.h('div', { class: 'wlabel tl', style: 'padding-top:16px' }, 'Find a Price'), $vibes, $ranges, $list));
     drawCheck(); drawFind();
+    // The books' words arrive with bizwords.js: draw again with them.
+    if (!root.BizWords) bizwords().then((w) => { B = w; if ($list.isConnected) { drawCheck(); drawFind(); } });
   }
 
   // ---------- Relationship ----------
@@ -467,8 +607,8 @@
   const USAGE_LABELS = {
     'screen.today': 'Today', 'screen.coming': 'Coming Days', 'screen.numberfun': 'Number Fun', 'screen.price': 'Price Tool', 'screen.relation': 'Relationship', 'screen.karmic': 'Karmic Connections', 'screen.mychart': 'My Chart (settings)',
     'home.today': 'Home → Today', 'home.coming': 'Home → Coming Days', 'home.numberfun': 'Home → Number Fun', 'home.price': 'Home → Price Tool', 'home.relation': 'Home → Relationship', 'home.karmic': 'Home → Karmic Connections', 'home.mychart': 'Home → My Chart',
-    'today.psyche': 'Today: psyche charts on or off', 'today.full': 'Today: full screen day', 'dayfull.move': 'Full screen day: previous or next day', 'coming.open_day': 'Coming Days: open a day', 'coming.size': 'Coming Days: bigger or smaller', 'coming.list': 'Coming Days: list view', 'coming.charts': 'Coming Days: charts view', 'coming.super_only': 'Coming Days: super dates only', 'numberfun.type': 'Number Fun: type a number', 'numberfun.tap_diamond': 'Number Fun: tap a diamond', 'numberfun.tap_other': 'Number Fun: tap a number it appears in',
-    'price.vibe': 'Price Tool: pick a vibration', 'price.range': 'Price Tool: pick a range', 'price.pick': 'Price Tool: pick a found price', 'relation.use_me': 'Relationship: me as the first person', 'mychart.save': 'My Chart: save',
+    'today.psyche': 'Today: psyche charts on or off', 'today.full': 'Today: full screen day', 'today.ruler': 'Today: ruler of the day', 'today.company': 'Today: a company started this day', 'dayfull.move': 'Full screen day: previous or next day', 'coming.open_day': 'Coming Days: open a day', 'coming.size': 'Coming Days: bigger or smaller', 'coming.list': 'Coming Days: list view', 'coming.charts': 'Coming Days: charts view', 'coming.super_only': 'Coming Days: super dates only', 'numberfun.type': 'Number Fun: type a number', 'numberfun.tap_diamond': 'Number Fun: tap a diamond', 'numberfun.tap_other': 'Number Fun: tap a number it appears in',
+    'price.vibe': 'Price Tool: pick a vibration', 'price.range': 'Price Tool: pick a range', 'price.pick': 'Price Tool: pick a found price', 'price.number': 'Price Tool: a number in the price', 'price.vibe_text': 'Price Tool: the book\'s page for a vibration', 'relation.use_me': 'Relationship: me as the first person', 'mychart.save': 'My Chart: save',
   };
 
   function install(app) {

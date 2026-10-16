@@ -471,3 +471,24 @@ html.night .bignum { flex-wrap: nowrap; } html.night .bignum .ty { max-width: 42
 .optchips .chip { min-height: 34px; font-size: 14px; background: var(--panel2); }
 .optchips .chip.active { background: var(--accent); color: var(--accent-text); font-weight: 700; }
 .viewer:has(.vsheet.open) .varrow { display: none; }
+/* The books' words on Today, the full-screen day, Coming Days and the Price Tool (2026-10-16) */
+.codes span.care { background: #fff3d6; color: #7a5200; }
+.verdict b.mid { color: #b07d00; }
+.warnline { color: #9b2c2c; }
+.bizcolor { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-top: 4px; }
+.bizcolor.green { background: #d9f3e1; color: #1f6b3a; } .bizcolor.black { background: #e6e7ea; color: #303030; } .bizcolor.orange { background: #ffe6cc; color: #8a4600; } .bizcolor.red { background: #fde8e8; color: #9b2c2c; }
+.bookex { margin: 4px 2px 8px; font-size: 14px; color: #1f6b3a; font-weight: 600; }
+.prow b small.inbook { font-size: 11px; font-weight: 600; color: #1f6b3a; }
+.reading ul.themes, .numsheet ul { margin: 6px 0 0; padding-left: 18px; font-size: 14px; line-height: 1.4; }
+.useday .head .pos { text-transform: none; letter-spacing: 0; font-size: 13px; }
+.useday .qword { font-weight: 700; color: #b8860b; }
+.useitem { margin-top: 8px; }
+.useitem b { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: #8a8f9c; font-weight: 600; }
+.useitem p { margin-top: 2px; }
+.why p.use { margin: 6px 0 0; font-size: 14px; color: #e9edf7; font-weight: 600; }
+.daykw { margin: 8px 10px 0; font-size: 14px; line-height: 1.35; color: #e9edf7; }
+.daykw.muted { color: #aab3cc; margin-top: 2px; }
+.dayfull .useday { margin: 10px 8px; }
+.dayrow .kw { grid-column: 1 / -1; font-size: 12px; color: #8a8f9c; line-height: 1.3; overflow-wrap: anywhere; }
+html.night .useday .qword { color: var(--tint, #f2c9a0); } html.night .useitem b { color: #8e98b4; }
+html.night .warnline { color: #f3c6c6; } html.night .dayrow .kw { color: #aab3cc; }
