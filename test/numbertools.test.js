@@ -94,7 +94,9 @@ test('prices: the book\'s own verdicts (Marketing Numerology pp. 38-54)', () => 
   assert.equal(T.priceCheck(549).verdict, 'care'); assert.ok(T.priceCheck(549).cautions[0].startsWith('18/9'));
   assert.equal(T.priceCheck(1800).verdict, 'care'); assert.ok(T.priceCheck(1800).cautions.some((w) => w.startsWith('18 reinforced')));
   // The digit sum must land on 5, 9 or 1 (p. 40); a 6 or 20/2 for a softer price (p. 53). $250 = 7, $300 = 3.
-  assert.equal(T.priceCheck(250).verdict, 'care'); assert.equal(T.priceCheck(300).verdict, 'care'); assert.equal(T.priceCheck(285).verdict, 'good');
+  // a digit sum outside 1, 5, 9 is a tip, not a caution (owner's call 2026-10-16)
+  assert.equal(T.priceCheck(250).verdict, 'good'); assert.ok(T.priceCheck(250).notes.some((n) => n.startsWith('Lands on 7')));
+  assert.equal(T.priceCheck(300).verdict, 'good'); assert.equal(T.priceCheck(285).verdict, 'good');
   // 36 as the first two digits of 3695 (p. 51), a magnetic number in the row (p. 40).
   const c3695 = T.priceCheck(3695); assert.equal(c3695.lead, 36); assert.ok(c3695.rowNums.includes(36)); assert.ok(c3695.good);
   // Find a Price lands on the vibration, never on a warning; the book's 995 is among the 23/5 prices.

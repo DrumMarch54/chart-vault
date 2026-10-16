@@ -168,8 +168,10 @@
   //         sum numbers should not be used": "end in 8" is the digit sum, not the last digit; the book's rule for the
   //         last digit is p. 40 "The last number can be a 5, 7 or 9").
   //  care   allowed only in a certain way: 18/9 "except as a strong offer" (pp. 40, 53); 18 reinforced by zeros is "a
-  //         little too hard" (p. 51, $1800); a digit sum the book does not use (p. 40 "The digit sum must land on 5, 9
-  //         or 1", p. 53 a 6 or 20/2 for a softer price, p. 46 597 = 21/3).
+  //         little too hard" (p. 51, $1800).
+  //  A digit sum other than 1, 5 or 9 (p. 40 "The digit sum must land on 5, 9 or 1") is only a tip, never a caution:
+  //  the owner's call 2026-10-16 ("we don't have to avoid digit sums other than those numbers, just be smart"), and
+  //  the book itself prices on 6, 20/2 (p. 53) and 21/3 (p. 46, 597).
   //  good   everything else.
   // The rules alone (string work, no pyramid): shared by priceCheck and the fast search of priceFind.
   function priceRules(digitsStr) {
@@ -188,7 +190,7 @@
     if (sum === 18) cautions.push('18/9: avoid, except as a competitive, sharp offer (pp. 40, 53)');
     if (visible === 18 && sum !== 18) cautions.push('18 reinforced by zeros: a little too hard (p. 51)');
     const bookSum = [1, 5, 9].includes(value.ds) || sum === 8 || sum === 17 || value.ds === 6 || sum === 20 || sum === 21 || clean;
-    if (!bookSum && !warnings.length) cautions.push(`Lands on ${value.ds}: the book's digit sums land on 1, 5 or 9 (8 only as 8 or 17/8; a 6 or 20/2 for a softer price) (pp. 40, 53)`);
+    if (!bookSum && !warnings.length) notes.push(`Lands on ${value.ds}: the book's favorite prices land on 1, 5 or 9 (a 6 or 20/2 for a softer price); fine when ${value.ds} suits what you sell (pp. 40, 53)`);
     const last = digits[digits.length - 1];
     if ([5, 7, 9].includes(last)) notes.push(`Ends in ${last}: a good last digit (p. 40)`);
     if (clean) notes.push(`Clean ${val(clean).text} price: the number is visible, not only in the digit sum (pp. 38-39)`);

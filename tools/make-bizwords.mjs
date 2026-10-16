@@ -73,7 +73,8 @@ function business99(pdf) {
   }
   // The color codes: the list line under each summary is printed in green / black / orange / red (the book's key,
   // p. 1). pdftohtml keeps each run's font color. A few numbers are printed in the heading blue, which the key does
-  // not name: they are kept as "blue" and the app shows no color word for them.
+  // not name: they are kept as "blue" and the app shows no color word for them. The owner's call 2026-10-16 ("use
+  // your common sense"): the heading blue is the book's plain heading color, not a fifth rating, so no color word.
   const COLORS = { '#008000': 'green', '#000000': 'black', '#ff6600': 'orange', '#ff0000': 'red', '#345a8a': 'blue' };
   const xml = execFileSync('pdftohtml', ['-xml', '-i', '-stdout', '-q', pdf], { maxBuffer: 64 << 20 }).toString('utf8');
   const fonts = {};

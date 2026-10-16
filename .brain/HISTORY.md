@@ -419,3 +419,6 @@ $8 with a warning in the app when close and when reached, every Hub document tha
   Coming Days gained the Superdates books' day words. Open questions for the owner (NotebookLM): what dark blue
   means in The Numbers 10-99 in Business; whether a business Super Date must contain 23/5 (Business Manual p. 19);
   whether a digit sum other than 5, 9 or 1 is "Only With Care" or "Avoid" (Marketing pp. 40, 46, 54).
+  Owner's answers: blue = "use your common sense" (taken as the book's heading color, no rating shown); a business
+  Super Date need not contain 23/5 (no change); other digit sums are not avoided, "just be smart" (now a tip, the
+  verdict stays Good).
