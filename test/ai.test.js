@@ -97,9 +97,11 @@ test('a reading is written once, stored, paid once, and shown again from the sto
   const req = requests.at(-1);
   assert.equal(req.key, KEY);
   assert.equal(req.params.model, MODELS.reading.id);
-  assert.match(req.params.messages[0].content, /THE CHART/);
-  assert.match(req.params.messages[0].content, /Peter Jensen/);
-  assert.match(req.params.messages[0].content, /WHAT THE RULES FOUND/);
+  const chartPart = req.params.messages[0].content[0].text;
+  assert.match(chartPart, /THE CHART/);
+  assert.match(chartPart, /Peter Jensen/);
+  assert.match(chartPart, /WHAT THE RULES FOUND/);
+  assert.match(req.params.messages[0].content.at(-1).text, /450 to 800 words/, 'default length is Normal');
   assert.ok(req.params.system.some((b) => /Nexus/.test(b.text)), 'the style block names the Nexus');
   // second time: no call, no charge
   const calls = requests.length;
@@ -111,12 +113,42 @@ test('a reading is written once, stored, paid once, and shown again from the sto
   assert.match(snap, /ai readings: reading by claude-opus-5-5 build aitest/);
 });
 
-test('a question about a chart is answered and stored under the reading', async () => {
+test('reading options: a different length or focus is a new reading; the same choices are free', async () => {
+  const before = requests.length;
+  script.push(msg([{ type: 'text', text: '- 16/7 mind center: fear [Name Numeroscope Guide].\nOne sentence.' }], 'end_turn', { input_tokens: 2000, output_tokens: 300, cache_read_input_tokens: 38000 }));
+  let r = await json(await post('/api/images/1/reading', { length: 'short', focus: 'pain-points', note: 'compare the 8 and the 4' }));
+  assert.equal(r.status, 200, JSON.stringify(r.body));
+  assert.equal(r.body.cached, false);
+  assert.deepEqual(r.body.reading.options, { length: 'short', focus: 'pain-points', note: 'compare the 8 and the 4' });
+  assert.match(r.body.reading.label, /Short · Pain Points/);
+  assert.equal(r.body.readings.length, 2, 'both readings are kept');
+  const req = requests.at(-1).params;
+  const tail = req.messages[0].content.at(-1).text;
+  assert.match(tail, /120 to 250 words/); assert.match(tail, /pain points only/); assert.match(tail, /compare the 8 and the 4/);
+  // the chart block and the core block are marked for reuse; the options sit after them
+  assert.ok(req.messages[0].content[0].cache_control, 'chart block cached');
+  assert.ok(req.system.at(-1).cache_control, 'core block cached');
+  assert.ok(!req.system.some((b) => /pain points only/.test(b.text)), 'options never in the system part');
+  // same choices again (note in another case): no call
+  r = await json(await post('/api/images/1/reading', { length: 'short', focus: 'pain-points', note: 'Compare the 8 and the 4' }));
+  assert.equal(r.body.cached, true); assert.equal(requests.length, before + 1);
+  r = await json(await api('/api/images/1/reading'));
+  assert.equal(r.body.readings.length, 2);
+  assert.ok(r.body.estimate.per.short < r.body.estimate.per.deep);
+  assert.ok(r.body.choices.focuses.some((f) => f.key === 'love'));
+});
+
+test('a question about a chart is answered and stored under the reading and stored under the reading', async () => {
   script.push(msg([{ type: 'text', text: 'The 16/7 in the mind center shuts down what the 1 wants to shine [Name Numeroscope Guide].' }]));
-  let r = await json(await post('/api/images/1/ask', { question: 'What does the 16 do?' }));
+  let r = await json(await post('/api/images/1/ask', { question: 'What does the 16 do?', length: 'deep' }));
   assert.equal(r.status, 200, JSON.stringify(r.body));
   assert.equal(r.body.answers.length, 1); assert.equal(r.body.answers[0].question, 'What does the 16 do?');
-  assert.match(requests.at(-1).params.messages[0].content, /THE READING WRITTEN EARLIER/);
+  const req = requests.at(-1).params;
+  assert.match(req.messages[0].content.at(-1).text, /THE READING WRITTEN EARLIER/);
+  assert.match(req.messages[0].content.at(-1).text, /250 to 600 words/);
+  // the chart part of a question is byte-identical to the chart part of a reading: the API reuses it
+  const readingReq = requests.find((x) => x.params.messages[0].content.at(-1).text.startsWith('WRITE THE READING'));
+  assert.equal(req.messages[0].content[0].text, readingReq.params.messages[0].content[0].text);
   r = await json(await post('/api/images/1/ask', { question: '' }));
   assert.equal(r.status, 400);
 });

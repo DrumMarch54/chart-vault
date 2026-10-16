@@ -116,7 +116,11 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   `server/knowledge.js`: `coreText()` (how to read) and `contextFor(values)` (the course on this chart's
   numbers). The AI gets course words only, cited by source; never a guessed meaning.
 - `server/reading.js`: Claude Opus 5.5 writes a reading from the numbers, the facts and the course passages;
-  stored in `readings` (migration 7) so a chart is paid for once ("Write Again" replaces it). Questions about
+  stored in `readings` (migration 7) with the owner's choices: Length (Short = straight to the point /
+  Normal / In Depth), Focus (Everything, Nexus, Mind and Emotion, Pain Points, Strengths, Name Chart, Psyche,
+  Career and Money, Love, Business) and a free note. Same choices again = the stored one, free; "Write
+  Again" pays for a new one; every reading is kept. The request is cache-friendly: system (style + core)
+  and the chart block are byte-stable and marked for reuse; the choices and the question come last. Questions about
   a chart are stored under it. `server/ask.js`: Claude Haiku 5.5 answers "Ask the Vault" with tools that run
   the app's own searches and ranks (`find_charts`, `rank_charts`, `chart_numbers`, `find_people`,
   `show_charts`); the answer carries the ids to show. Both go through `server/ai.js`.

@@ -15,7 +15,7 @@ import { catalog, positionCounts, parseNumber, getInputs, setInputs, clearInputs
 import { COMMIT } from './build.js';
 import { paths } from './config.js';
 import { aiSettings, setAiSettings, spendState, pendingWarning, markWarningSeen, AiError } from './ai.js';
-import { readingFor, writeReading, answerQuestion, deleteReadings, readingEstimate } from './reading.js';
+import { readingFor, writeReading, answerQuestion, deleteReadings, readingEstimate, readingChoices } from './reading.js';
 import { askVault } from './ask.js';
 import { factsFor } from './facts.js';
 
@@ -361,7 +361,7 @@ export function createApp(db, { log = console.log } = {}) {
   app.get('/api/images/:id/reading', (req, res) => {
     const img = getImage(db, Number(req.params.id));
     if (!img) return res.status(404).json({ error: 'No such chart.' });
-    res.json({ ...readingFor(db, img.id), estimate: readingEstimate(db, img.id), spend: spendState(), warning: pendingWarning() });
+    res.json({ ...readingFor(db, img.id), estimate: readingEstimate(db, img.id), choices: readingChoices(), spend: spendState(), warning: pendingWarning() });
   });
   const aiRoute = (fn) => async (req, res, next) => {
     const img = getImage(db, Number(req.params.id));
@@ -369,13 +369,13 @@ export function createApp(db, { log = console.log } = {}) {
     try { res.json(await fn(img, req.body || {})); } catch (err) { if (err instanceof AiError) return res.status(400).json({ error: err.message }); next(err); }
   };
   app.post('/api/images/:id/reading', express.json({ limit: '2kb' }), aiRoute(async (img, body) => {
-    const r = await writeReading(db, img.id, { force: !!body.force });
-    if (!r.cached) log(`reading written for #${img.id}: $${r.usd} in ${r.seconds}s`);
+    const r = await writeReading(db, img.id, { length: body.length, focus: body.focus, note: body.note }, { force: !!body.force });
+    if (!r.cached) log(`reading written for #${img.id} (${r.reading.label}): $${r.usd} in ${r.seconds}s`);
     return { ...r, spend: spendState(), warning: pendingWarning() };
   }));
   app.delete('/api/images/:id/reading', aiRoute(async (img) => ({ deleted: deleteReadings(db, img.id), ...readingFor(db, img.id) })));
   app.post('/api/images/:id/ask', express.json({ limit: '4kb' }), aiRoute(async (img, body) => {
-    const r = await answerQuestion(db, img.id, body.question);
+    const r = await answerQuestion(db, img.id, body.question, { length: body.length });
     return { ...r, spend: spendState(), warning: pendingWarning() };
   }));
   app.post('/api/ask', express.json({ limit: '4kb' }), async (req, res, next) => {

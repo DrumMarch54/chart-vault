@@ -32,7 +32,7 @@ function normalize(o) {
     key: typeof o.key === 'string' ? o.key.trim() : '',
     cap: Number.isFinite(cap) && cap >= 0 ? cap : DEFAULT_CAP,
     spend: o.spend && typeof o.spend === 'object' ? o.spend : {}, // { '2026-10': { usd, calls } }
-    warned: o.warned && typeof o.warned === 'object' ? o.warned : {}, // { '2026-10': 'near' | 'over' } the last warning shown
+    warned: o.warned && typeof o.warned === 'object' ? o.warned : {}, // { '2026-10': { level: 'near' | 'over', cap } } the last warning seen
   };
 }
 function save(o) {
@@ -82,13 +82,14 @@ export function pendingWarning() {
   const o = load();
   const s = spendState(o);
   if (s.level === 'ok') return null;
-  const shown = o.warned[s.month];
-  if (shown === s.level || (shown === 'over' && s.level === 'near')) return null;
+  // Seen at this cap already: quiet. A raised (or lowered) cap starts the warnings over.
+  const seen = o.warned[s.month];
+  if (seen && seen.cap === o.cap && (seen.level === s.level || (seen.level === 'over' && s.level === 'near'))) return null;
   return { level: s.level, text: s.level === 'over' ? `AI spending reached the monthly cap of $${o.cap.toFixed(2)}. Readings and questions are paused until the cap is raised in Settings → AI Reading.` : `AI spending is at $${s.spent.toFixed(2)} of the $${o.cap.toFixed(2)} monthly cap.` };
 }
 export function markWarningSeen(level) {
   const o = load();
-  if (level === 'near' || level === 'over') { o.warned[month()] = level; save(o); }
+  if (level === 'near' || level === 'over') { o.warned[month()] = { level, cap: o.cap }; save(o); }
 }
 
 const round = (n) => Math.round((n || 0) * 10000) / 10000;

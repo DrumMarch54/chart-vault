@@ -86,7 +86,9 @@ useClientFactory(() => ({ messages: { create: async (params) => {
     if (last.content[0] && last.content[0].tool_use_id === 't1') { const ids = JSON.parse(last.content[0].content).charts.map((c) => c.id); return { content: [{ type: 'tool_use', id: 't2', name: 'show_charts', input: { ids } }], stop_reason: 'tool_use', usage: { input_tokens: 3200, output_tokens: 60 } }; }
     return { content: [{ type: 'text', text: 'These five carry the most unbalanced numbers in weighty positions: a 16/7 or 12/3 in a center, or an 18/9 on the name line.' }], stop_reason: 'end_turn', usage: { input_tokens: 3400, output_tokens: 90 } };
   }
-  const q = /THE QUESTION\n([^\n]+)/.exec(params.messages[0].content);
+  const all = [].concat(params.messages[0].content).map((b) => (typeof b === 'string' ? b : b.text)).join('\n');
+  const q = /THE QUESTION\n([^\n]+)/.exec(all);
+  if (!q && /Length: 120 to 250 words/.test(all)) return { content: [{ type: 'text', text: '- Nexus 16/7: the Heavenly Prince carrying the Awakening Soul [Chart Notes].\n- 16/7 mind center: fear and overthinking [Name Numeroscope Guide].\n- 12/3 love aura: misunderstandings at home [Name Chart Auras].\nA radiant leader whose mind must learn to trust itself.' }], stop_reason: 'end_turn', usage: { input_tokens: 2000, output_tokens: 300, cache_read_input_tokens: 40000 } };
   return { content: [{ type: 'text', text: q ? `About "${q[1]}": the 16/7 in the mind center is the fear reflex of the 7; next to the 19/1 day it shows as a brilliant mind that doubts itself in public [Name Numeroscope Guide].` : FAKE_READING }], stop_reason: 'end_turn', usage };
 } } }));
 

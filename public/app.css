@@ -447,7 +447,7 @@ html.night .readbtn, .dayfull .readbtn { background: rgba(255,255,255,.12); colo
 html.night .bignum { flex-wrap: nowrap; } html.night .bignum .ty { max-width: 42%; white-space: normal; line-height: 1.2; }
 
 /* Reading: the facts from the rules, the AI reading and the questions (viewer sheet, Ask the Vault) */
-.reading { border-top: 1px solid var(--panel2); padding-top: 10px; }
+.chartread { border-top: 1px solid var(--panel2); padding-top: 10px; }
 .fact { font-size: 15px; line-height: 1.35; padding: 8px 10px; border-radius: 10px; background: var(--panel2); }
 .fact.pain { background: #4a2626; }
 .fact.note { background: #4a3d1f; }
@@ -461,3 +461,13 @@ html.night .bignum { flex-wrap: nowrap; } html.night .bignum .ty { max-width: 42
 .aiwarn.over { background: #4a2626; }
 .aiwarn button { min-height: 36px; padding: 0 12px; flex: none; }
 .warn { color: var(--accent); }
+.rd-card { background: var(--panel); border-radius: 12px; padding: 10px 12px; }
+.rd-label { font-size: 14px; color: var(--accent); font-weight: 600; min-width: 0; }
+.rd-card .row > button { min-height: 36px; padding: 0 12px; white-space: nowrap; }
+.rd-pick { width: 100%; justify-content: space-between; background: var(--panel); text-align: left; }
+.rd-opts { background: var(--panel); border-radius: 12px; padding: 10px 12px; }
+.optlabel { font-size: 13px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); }
+.optchips { margin-top: 4px !important; }
+.optchips .chip { min-height: 34px; font-size: 14px; background: var(--panel2); }
+.optchips .chip.active { background: var(--accent); color: var(--accent-text); font-weight: 700; }
+.viewer:has(.vsheet.open) .varrow { display: none; }

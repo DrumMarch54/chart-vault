@@ -80,7 +80,8 @@ export async function askVault(db, question) {
   const shown = [];
   let usd = 0, seconds = 0, turns = 0, text = '';
   const est = estimate('ask', { inputChars: SYSTEM.length + 4000, outputTokens: 800 }) * 3;
-  while (turns++ < MAX_TURNS) {
+  while (turns < MAX_TURNS) {
+    turns++;
     const r = await callModel('ask', { max_tokens: 2000, output_config: { effort: 'low' }, system: SYSTEM, tools: TOOLS, messages }, { estimateUsd: turns === 1 ? est : 0, what: `ask turn ${turns}` });
     usd += r.usd; seconds += r.seconds;
     const msg = r.message;
@@ -99,6 +100,6 @@ export async function askVault(db, question) {
   const items = shown.length ? listImages(db, { ids: shown, limit: 50 }).items : [];
   const order = new Map(shown.map((id, i) => [id, i]));
   items.sort((a, b) => order.get(a.id) - order.get(b.id));
-  return { question: q, answer: text, ids: shown, items, usd: Math.round(usd * 10000) / 10000, seconds, turns: turns - 1 };
+  return { question: q, answer: text, ids: shown, items, usd: Math.round(usd * 10000) / 10000, seconds, turns };
 }
 export const ASK_TOOLS = TOOLS;

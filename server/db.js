@@ -109,14 +109,16 @@ export const MIGRATIONS = [
     db.exec('ALTER TABLE images ADD COLUMN title_check INTEGER NOT NULL DEFAULT 0');
   },
   // 7: AI readings and answers about a chart (server/reading.js). kind = reading (the whole chart) |
-  //    answer (one question, kept in `question`). Each row remembers the model, what it cost and the
-  //    build that made it, so a chart is paid for once and "which build wrote this" is never a guess.
+  //    answer (one question, kept in `question`). `options` = how the owner asked for it (JSON: length,
+  //    focus, note). Each row remembers the model, what it cost and the build that made it, so the same
+  //    reading is paid for once and "which build wrote this" is never a guess.
   (db) => db.exec(`
     CREATE TABLE IF NOT EXISTS readings (
       id INTEGER PRIMARY KEY,
       image_id INTEGER NOT NULL REFERENCES images(id) ON DELETE CASCADE,
       kind TEXT NOT NULL,
       question TEXT,
+      options TEXT,
       text TEXT NOT NULL,
       model TEXT NOT NULL,
       usd REAL NOT NULL DEFAULT 0,
