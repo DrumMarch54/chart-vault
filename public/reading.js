@@ -78,7 +78,7 @@
         const saved = readings.find((r) => sameOpts(r.options, opts));
         const shown = readings.find((r) => r.id === shownId) || saved || readings[0] || null;
         const price = est.per && est.per[opts.length] ? ` · about ${money(Math.max(est.per[opts.length], 0.05))}` : '';
-        const $note = h('input', { type: 'text', placeholder: 'Anything else? e.g. "compare the 8 and the 4"', autocomplete: 'off', maxlength: 300, value: opts.note || '' });
+        const $note = h('input', { type: 'text', placeholder: 'Anything else? (optional)', autocomplete: 'off', maxlength: 300, value: opts.note || '' });
         $note.addEventListener('input', () => { opts.note = $note.value; const nowSaved = readings.find((r) => sameOpts(r.options, opts)); $write.textContent = nowSaved ? 'Show Saved Reading · free' : `Write Reading${price}`; });
         const write = async (force) => {
           opts.note = $note.value.trim();
