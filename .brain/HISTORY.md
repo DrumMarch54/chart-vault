@@ -414,3 +414,8 @@ $8 with a warning in the app when close and when reached, every Hub document tha
 - The Hub lives in the repo as text (`knowledge/`) with an index per number and topic, so a reading sends
   only the passages about that chart's numbers (about 30k tokens) rather than the whole course.
 - The dev app runs a FAKE model so screens can be looked at for free; the fake answers after a second.
+- Same day: the owner added the Drive folder "Business PDF's" as a standing source. The Price Tool's rules were
+  checked against Marketing Numerology and three were wrong (8 sums, 18/9, the 5-9-1 digit-sum rule); Today and
+  Coming Days gained the Superdates books' day words. Open questions for the owner (NotebookLM): what dark blue
+  means in The Numbers 10-99 in Business; whether a business Super Date must contain 23/5 (Business Manual p. 19);
+  whether a digit sum other than 5, 9 or 1 is "Only With Care" or "Avoid" (Marketing pp. 40, 46, 54).
