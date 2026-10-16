@@ -112,10 +112,11 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - Coming Days is a grid of day charts only (the list of numbers is gone, owner 2026-10-16); − / + set how many
   across (2 to 5 on a phone, more on a laptop), remembered per device. The Price Tool has two modes, Check a
   Price and Find a Price (two pickers: the vibration, the range), never a wall of chips. Today has no row of
-  code chips under the chart; the day charts are drawn in light lines on the night sky, never on a pale card.
-- Today, Coming Days and the full-screen day use the night look (`night()` in tools.js, `html.night` in
-  app.css): the sky under the whole page, the accent `--tint` from the ruler of the day, the essence's
-  planet small in the sky, the charts on a soft light card. The other tools stay on the white page.
+  code chips under the chart.
+- Today, Coming Days and the full-screen day use the day look (`day()` in tools.js, `html.day` in app.css,
+  the owner's pick C on 2026-10-16): a soft light page, the planets in a small banner, and the charts drawn
+  by `numeroscopeSvg` on white EXACTLY as the Quick Chart draws them: never recolor, rescale or move a chart
+  for a screen's mood. The other tools stay on the white page.
 - My chart (`server/mychart.js`, `data/mychart.json`, GET/PUT `/api/mychart`): the owner's own name
   and birth date; the home "My chart" button opens the quick chart with them (`#/quick?me=1`).
 

@@ -450,3 +450,14 @@ The owner wrote a list and sent it in one message. What changed and why:
   1100 px and the Today scene filled half a laptop screen.
 - Today: no row of code chips under the chart (pointless, the owner said; the Why box has the reasons). The
   day charts are drawn in light lines straight on the night sky; the pale card had made them hard to see.
+
+## 2026-10-16 Today and Coming Days: the night look goes, the chart is the paid tool's chart
+After the eleven fixes the owner looked at Today and Coming Days and said no: the charts must look exactly as
+the source material draws them (scale, placement, colors), and the dark sky with recolored light-line charts
+"looks bad". Three mockups (A sky on top / white below, B night page with a white chart card, C light page with
+a small planet banner) went up as a design artifact; the owner chose C. Now `day()` puts Today, Coming Days and
+the full-screen day on a soft light page (#f3f4f8), the planet scene is a 150 px banner with only the ruler's
+name, the day's number, name and rating sit in one row under it, and every chart is `numeroscopeSvg` on a white
+card with none of the night recoloring. `html.night` and its 40 rules are gone. Lesson, twice now: the chart is
+the product; a mood for the page must never touch the chart's colors, size or place. The mockups of the day
+chart in the artifact were drawn by hand; the app draws the real one.

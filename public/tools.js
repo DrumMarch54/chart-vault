@@ -35,10 +35,11 @@
 
   // ---------- shared pieces ----------
   const light = () => { document.documentElement.classList.add('light'); A.setCleanup(() => document.documentElement.classList.remove('light')); };
-  // The night look of Today and Coming Days: the sky continues under the whole page, the accent follows
-  // the ruler of the day (approved as mockup B, 2026-10-15).
+  // The day look of Today and Coming Days (the owner's pick C, 2026-10-16): a soft light page, the planets in a
+  // small banner, and the charts drawn exactly as the Quick Chart draws them, on white. The tints color the
+  // banner's nebula after the ruler of the day.
   const TINTS = { Sun: '#f6c453', Moon: '#d3d9e8', Mercury: '#9fc9d9', Venus: '#f2c9a0', Mars: '#e58a72', Jupiter: '#dba66b', Saturn: '#e3c995', Uranus: '#8fd3e0', Neptune: '#8aa4f5' };
-  const night = (planet) => { const el = document.documentElement; el.classList.add('night'); el.style.setProperty('--tint', TINTS[planet] || TINTS.Venus); A.setCleanup(() => { el.classList.remove('night'); el.style.removeProperty('--tint'); }); };
+  const day = () => { document.documentElement.classList.add('day'); A.setCleanup(() => document.documentElement.classList.remove('day')); };
   // The first sentences of a book passage, for the reading rows (tap for the whole page).
   const snippet = (t, n = 2) => (t ? String(t).split(/(?<=[.!?])\s+/).slice(0, n).join(' ') : '');
   const top = (title, back = '#/', right = null) => A.h('div', { class: 'pagetop ttop' }, A.h('a', { class: 'btn iconbtn', href: back, 'aria-label': 'Back' }, '‹'), A.h('h1', {}, title), right);
@@ -155,7 +156,7 @@
   // photo's black background disappears. The sky: star dust, mid stars, a few bright ones with a glint, a
   // Milky Way band and a nebula in the ruler's tint, all seeded by the date so a day always looks the same.
   // The essence (life path) has its own, smaller planet high in the sky.
-  function planetScene(e, h = 200) {
+  function planetScene(e, h = 200, { compact = false } = {}) {
     const sv = A.sv, W = 390;
     const planet = e.ruler, key = planet.toLowerCase(), tint = TINTS[planet] || TINTS.Venus;
     const id = 'sc' + h;
@@ -184,6 +185,10 @@
     svg.append(sv('image', { href: `/planets/${eKey}.webp`, x: ex - eSize / 2, y: ey - eSize / 2, width: eSize, height: eSize, class: 'planet', preserveAspectRatio: 'xMidYMid meet' }));
     const t = (x, y, str, fs, cls, anchor) => sv('text', { x, y, 'font-size': fs, class: cls, 'text-anchor': anchor || 'start' }, str);
     svg.append(t(W - 14, ey + eSize / 2 + 10, `ESSENCE ${e.lp.text} · ${e.essenceRuler.toUpperCase()}`, 9, 'sc-label', 'end'));
+    if (compact) { // the banner on Today: only the ruler; the number and the rating sit in the row under it
+      svg.append(t(170, cy + 14, 'RULER OF THE DAY', 9.5, 'sc-label'), t(170, cy + 40, planet, 24, 'sc-day'));
+      return svg;
+    }
     const tx = 178, ty = cy + 30;
     svg.append(t(tx, ty - 22, 'RULER OF THE DAY', 9.5, 'sc-label'), t(tx, ty, planet, 22, 'sc-day'), t(tx, ty + 22, `${e.dv.text} ${nameOf(e.dv)}`, 14, 'sc-num'));
     const word = T.RATING_WORDS[e.rating], pw = word.length * 6.6 + 16;
@@ -248,7 +253,7 @@
       const e = T.dayEnergy(date.y, date.m, date.d);
       $date.value = iso(date.y, date.m, date.d);
       if (!e) { A.fill($body, A.h('p', { class: 'err' }, 'That is not a real date.')); return; }
-      night(e.ruler);
+      day();
       const isToday = date.y === now.y && date.m === now.m && date.d === now.d;
       $title.textContent = `${DOW[e.weekday].slice(0, 3)}, ${MON[date.m - 1]} ${date.d}, ${date.y}`;
       $sub.textContent = isToday ? 'Today in Arizona' : 'Tap the date to come back to today';
@@ -262,11 +267,11 @@
           pos === 'lp' ? A.h('p', { class: 'muted small', style: 'margin-top:4px' }, `Big essence ${e.bigLp.text} ${nameOf(e.bigLp)}.`) : null);
       };
       A.fill($body,
-        A.h('div', { class: 'scenebox', onclick: () => { A.count('today.full'); dayFull(date); } }, planetScene(e, 200)),
+        A.h('div', { class: 'scenebox', onclick: () => { A.count('today.full'); dayFull(date); } }, planetScene(e, 150, { compact: true })),
+        A.h('div', { class: 'dayhead', onclick: () => numberSheet(e.dv, 'dv') }, A.h('b', {}, e.dv.text), A.h('span', { class: 'nm' }, nameOf(e.dv)), A.h('span', { class: `rate ${e.rating}` }, T.RATING_WORDS[e.rating])),
         A.h('div', { class: 'nscope-box', role: 'button', 'aria-label': 'Full screen', onclick: () => { A.count('today.full'); dayFull(date); } }, dateCharts(date.y, date.m, date.d, psyche.on)),
         A.h('div', { class: 'under' }, A.h('span', { class: 'muted small' }, 'Tap the chart for full screen'), psyToggle(psyche.on, () => { psyche.on = !psyche.on; remember('toolsPsyche', psyche.on); A.count('today.psyche'); draw(); })),
         whyBox(e, R),
-        A.h('div', { class: 'bignum', onclick: () => numberSheet(e.dv, 'dv') }, A.h('b', {}, e.dv.text), A.h('span', { class: 'nm' }, nameOf(e.dv)), A.h('span', { class: 'ty' }, `Day Vibration · Ruler ${e.ruler}`)),
         useDay(e, R),
         rulerCard(e, R),
         row('dv', e.dv), row('lp', e.lp), row('outer', e.outer), row('inner', e.inner), row('dvlp', e.dvlp), row('dharma', e.dharma), row('target', e.target),
@@ -301,7 +306,7 @@
     const draw = () => {
       $date.value = iso(start.y, start.m, start.d);
       const R = root.Readings || {};
-      const first = T.dayEnergy(start.y, start.m, start.d); night(first ? first.ruler : 'Venus');
+      day();
       A.fill($chips, chip('Super Dates Only', view.superOnly, () => { view.superOnly = !view.superOnly; A.count('coming.super_only'); draw(); }),
         chip('Psyche Charts', view.psyche, () => { view.psyche = !view.psyche; remember('comingPsyche', view.psyche); draw(); }),
         A.h('span', { class: 'sizectl', role: 'group', 'aria-label': 'Chart size' },

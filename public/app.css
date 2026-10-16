@@ -411,61 +411,22 @@ html.light .tscreen .reading .rate { margin-left: auto; }
 .dia text.big { font-size: 1.05em; }
 .dia .tri { cursor: pointer; }
 
-/* ---- the night look: Today, Coming Days and the full-screen day (mockup B, 2026-10-15) ---- */
-html.night, html.night body { background: #070a14; color: #e9edf7; }
-html.night body { background-image: radial-gradient(60% 40% at 80% 0%, rgba(90,70,160,.28), transparent 70%), radial-gradient(50% 35% at 10% 100%, rgba(40,110,130,.22), transparent 70%), url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22420%22 height=%22420%22%3E%3Ccircle cx=%22384%22 cy=%2283%22 r=%221.0%22 fill=%22%23fff%22 opacity=%220.15%22/%3E%3Ccircle cx=%22346%22 cy=%2213%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.39%22/%3E%3Ccircle cx=%22177%22 cy=%22166%22 r=%221.0%22 fill=%22%23fff%22 opacity=%220.52%22/%3E%3Ccircle cx=%22332%22 cy=%22209%22 r=%220.5%22 fill=%22%23fff%22 opacity=%220.59%22/%3E%3Ccircle cx=%22232%22 cy=%2226%22 r=%220.8%22 fill=%22%23fff%22 opacity=%220.18%22/%3E%3Ccircle cx=%22285%22 cy=%22100%22 r=%221.0%22 fill=%22%23fff%22 opacity=%220.23%22/%3E%3Ccircle cx=%2210%22 cy=%22289%22 r=%220.5%22 fill=%22%23fff%22 opacity=%220.39%22/%3E%3Ccircle cx=%22179%22 cy=%22372%22 r=%221.0%22 fill=%22%23fff%22 opacity=%220.37%22/%3E%3Ccircle cx=%2248%22 cy=%2229%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.39%22/%3E%3Ccircle cx=%22402%22 cy=%22234%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.36%22/%3E%3Ccircle cx=%22197%22 cy=%22385%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.41%22/%3E%3Ccircle cx=%22299%22 cy=%22411%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.32%22/%3E%3Ccircle cx=%22390%22 cy=%22301%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.19%22/%3E%3Ccircle cx=%2214%22 cy=%22162%22 r=%220.8%22 fill=%22%23fff%22 opacity=%220.53%22/%3E%3Ccircle cx=%22174%22 cy=%22294%22 r=%221.0%22 fill=%22%23fff%22 opacity=%220.48%22/%3E%3Ccircle cx=%22124%22 cy=%2216%22 r=%220.8%22 fill=%22%23fff%22 opacity=%220.21%22/%3E%3Ccircle cx=%22199%22 cy=%22292%22 r=%221.0%22 fill=%22%23fff%22 opacity=%220.27%22/%3E%3Ccircle cx=%22318%22 cy=%22314%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.55%22/%3E%3Ccircle cx=%22384%22 cy=%22412%22 r=%220.5%22 fill=%22%23fff%22 opacity=%220.47%22/%3E%3Ccircle cx=%22177%22 cy=%22401%22 r=%221.0%22 fill=%22%23fff%22 opacity=%220.51%22/%3E%3Ccircle cx=%22234%22 cy=%22392%22 r=%220.5%22 fill=%22%23fff%22 opacity=%220.33%22/%3E%3Ccircle cx=%22148%22 cy=%22145%22 r=%220.5%22 fill=%22%23fff%22 opacity=%220.60%22/%3E%3Ccircle cx=%2214%22 cy=%22242%22 r=%220.5%22 fill=%22%23fff%22 opacity=%220.48%22/%3E%3Ccircle cx=%22408%22 cy=%229%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.28%22/%3E%3Ccircle cx=%22137%22 cy=%22368%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.43%22/%3E%3Ccircle cx=%22124%22 cy=%22356%22 r=%220.5%22 fill=%22%23fff%22 opacity=%220.40%22/%3E%3Ccircle cx=%22107%22 cy=%22131%22 r=%221.0%22 fill=%22%23fff%22 opacity=%220.42%22/%3E%3Ccircle cx=%22136%22 cy=%22414%22 r=%221.0%22 fill=%22%23fff%22 opacity=%220.17%22/%3E%3Ccircle cx=%22266%22 cy=%22401%22 r=%220.8%22 fill=%22%23fff%22 opacity=%220.60%22/%3E%3Ccircle cx=%22141%22 cy=%22281%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.53%22/%3E%3Ccircle cx=%22380%22 cy=%2260%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.50%22/%3E%3Ccircle cx=%22159%22 cy=%2271%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.39%22/%3E%3Ccircle cx=%22382%22 cy=%22389%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.50%22/%3E%3Ccircle cx=%22385%22 cy=%22297%22 r=%220.8%22 fill=%22%23fff%22 opacity=%220.20%22/%3E%3Ccircle cx=%22335%22 cy=%2275%22 r=%221.0%22 fill=%22%23fff%22 opacity=%220.31%22/%3E%3Ccircle cx=%22160%22 cy=%22176%22 r=%221.0%22 fill=%22%23fff%22 opacity=%220.46%22/%3E%3Ccircle cx=%2250%22 cy=%22379%22 r=%220.5%22 fill=%22%23fff%22 opacity=%220.42%22/%3E%3Ccircle cx=%22262%22 cy=%22169%22 r=%220.5%22 fill=%22%23fff%22 opacity=%220.27%22/%3E%3Ccircle cx=%22216%22 cy=%22159%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.21%22/%3E%3Ccircle cx=%2226%22 cy=%22128%22 r=%221.0%22 fill=%22%23fff%22 opacity=%220.24%22/%3E%3Ccircle cx=%22362%22 cy=%22282%22 r=%220.5%22 fill=%22%23fff%22 opacity=%220.54%22/%3E%3Ccircle cx=%22108%22 cy=%2255%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.39%22/%3E%3Ccircle cx=%22237%22 cy=%2271%22 r=%220.5%22 fill=%22%23fff%22 opacity=%220.15%22/%3E%3Ccircle cx=%22105%22 cy=%22198%22 r=%220.5%22 fill=%22%23fff%22 opacity=%220.18%22/%3E%3Ccircle cx=%2215%22 cy=%22371%22 r=%220.8%22 fill=%22%23fff%22 opacity=%220.53%22/%3E%3Ccircle cx=%22355%22 cy=%2265%22 r=%220.5%22 fill=%22%23fff%22 opacity=%220.53%22/%3E%3Ccircle cx=%2288%22 cy=%22241%22 r=%221.0%22 fill=%22%23fff%22 opacity=%220.54%22/%3E%3Ccircle cx=%2228%22 cy=%22294%22 r=%220.8%22 fill=%22%23fff%22 opacity=%220.31%22/%3E%3Ccircle cx=%22162%22 cy=%22121%22 r=%221.0%22 fill=%22%23fff%22 opacity=%220.42%22/%3E%3Ccircle cx=%22277%22 cy=%22237%22 r=%220.8%22 fill=%22%23fff%22 opacity=%220.50%22/%3E%3Ccircle cx=%22386%22 cy=%22347%22 r=%220.8%22 fill=%22%23fff%22 opacity=%220.41%22/%3E%3Ccircle cx=%22388%22 cy=%2278%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.51%22/%3E%3Ccircle cx=%22356%22 cy=%22377%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.53%22/%3E%3Ccircle cx=%2241%22 cy=%22100%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.37%22/%3E%3Ccircle cx=%22128%22 cy=%22148%22 r=%220.5%22 fill=%22%23fff%22 opacity=%220.41%22/%3E%3Ccircle cx=%22278%22 cy=%2219%22 r=%221.0%22 fill=%22%23fff%22 opacity=%220.55%22/%3E%3Ccircle cx=%223%22 cy=%22151%22 r=%221.0%22 fill=%22%23fff%22 opacity=%220.33%22/%3E%3Ccircle cx=%2285%22 cy=%22345%22 r=%221.0%22 fill=%22%23fff%22 opacity=%220.22%22/%3E%3Ccircle cx=%22246%22 cy=%22286%22 r=%221.0%22 fill=%22%23fff%22 opacity=%220.36%22/%3E%3Ccircle cx=%22101%22 cy=%22324%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.29%22/%3E%3Ccircle cx=%2288%22 cy=%22260%22 r=%220.5%22 fill=%22%23fff%22 opacity=%220.40%22/%3E%3Ccircle cx=%2226%22 cy=%2282%22 r=%221.0%22 fill=%22%23fff%22 opacity=%220.43%22/%3E%3Ccircle cx=%22371%22 cy=%22231%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.39%22/%3E%3Ccircle cx=%2230%22 cy=%2217%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.45%22/%3E%3Ccircle cx=%2278%22 cy=%22208%22 r=%220.5%22 fill=%22%23fff%22 opacity=%220.42%22/%3E%3Ccircle cx=%2297%22 cy=%227%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.57%22/%3E%3Ccircle cx=%22365%22 cy=%22259%22 r=%220.6%22 fill=%22%23fff%22 opacity=%220.35%22/%3E%3Ccircle cx=%2273%22 cy=%22411%22 r=%220.8%22 fill=%22%23fff%22 opacity=%220.48%22/%3E%3Ccircle cx=%2266%22 cy=%22206%22 r=%220.8%22 fill=%22%23fff%22 opacity=%220.50%22/%3E%3Ccircle cx=%22338%22 cy=%22310%22 r=%220.8%22 fill=%22%23fff%22 opacity=%220.31%22/%3E%3C/svg%3E"); background-attachment: fixed; }
-html.night .tscreen { color: #e9edf7; }
-html.night .ttop .btn, html.night .ttop .iconbtn, html.night .cbtn { background: rgba(255,255,255,.1); color: #e9edf7; }
-html.night .datebox { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.14); color: #e9edf7; color-scheme: dark; }
-html.night .tsub { color: #8e98b4; }
-html.night .tscreen .chip, html.night .tscreen .chip.off { background: rgba(255,255,255,.1); color: #d6dcf0; }
-html.night .tscreen .chip.active { background: var(--tint, #f2c9a0); color: #1a1408; }
-html.night .scenebox .scene { border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.45); }
+/* ---- the planet banner of Today, Coming Days and the full-screen day ---- */
 .scene .sc-pill.super { fill: #f0c75e; } .scene .sc-pill.good { fill: #cfe8d6; } .scene .sc-pill.beware { fill: #f3c6c6; }
 .scene .sc-pilltext { font-weight: 700; } .scene .sc-pilltext.super { fill: #2b2000; } .scene .sc-pilltext.good { fill: #15402a; } .scene .sc-pilltext.beware { fill: #6b1c1c; }
 .scene .sc-num { fill: var(--tint, #f0b64a); }
-html.night .nscope-box, .dayfull .nscope-box { background: transparent; border-radius: 14px; padding: 0; margin-top: 10px; }
-/* The day charts are drawn in light lines on the sky itself: the pale card hid them (owner 2026-10-16). */
-html.night .daychart text, .dayfull .daychart text { fill: #eef1fb; }
-html.night .daychart .n-dark, .dayfull .daychart .n-dark { fill: #eef1fb; }
-html.night .daychart .n-gray, .dayfull .daychart .n-gray { fill: #aab3cc; }
-html.night .daychart .n-blue, .dayfull .daychart .n-blue, html.night .daychart .n-blue.n-bold, .dayfull .daychart .n-blue.n-bold { fill: #a9c8f0; }
-html.night .daychart .n-green1, .dayfull .daychart .n-green1 { fill: #8fd49a; } html.night .daychart .n-green2, .dayfull .daychart .n-green2 { fill: #7fe08a; } html.night .daychart .n-green3, .dayfull .daychart .n-green3 { fill: #6cf07a; } html.night .daychart .n-green4, .dayfull .daychart .n-green4 { fill: #5bff6c; }
-html.night .daychart .n-red1, .dayfull .daychart .n-red1 { fill: #f0a8a8; } html.night .daychart .n-red2, .dayfull .daychart .n-red2 { fill: #ff9d9d; } html.night .daychart .n-red3, .dayfull .daychart .n-red3 { fill: #ff8a8a; }
-html.night .daychart .n-faded, .dayfull .daychart .n-faded { fill: rgba(238,241,251,.4); }
-html.night .daychart [data-kind=shape] polygon, .dayfull .daychart [data-kind=shape] polygon { fill: rgba(255,255,255,.16); }
-html.night .daychart [data-chart=ess] polygon[fill="#afafd5"], .dayfull .daychart [data-chart=ess] polygon[fill="#afafd5"] { fill: rgba(255,255,255,.3); }
-html.night .daychart [data-kind=shape] circle, .dayfull .daychart [data-kind=shape] circle, html.night .daychart [data-kind=shape] ellipse, .dayfull .daychart [data-kind=shape] ellipse, html.night .daychart [data-kind=shape] rect, .dayfull .daychart [data-kind=shape] rect { fill: rgba(255,255,255,.1); }
-html.night .daychart [data-chart=ess] circle[fill="#efeff7"], .dayfull .daychart [data-chart=ess] circle[fill="#efeff7"] { fill: rgba(255,255,255,.08); }
 .under { display: flex; justify-content: space-between; align-items: center; padding: 4px 4px 0; gap: 8px; }
-.psytog { min-height: 32px; padding: 0 12px; font-size: 13px; border-radius: 16px; background: rgba(255,255,255,.1); color: #d6dcf0; margin-left: auto; }
-.why { border-radius: 14px; padding: 10px 12px 8px; margin: 10px 0 4px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08); }
+.psytog { min-height: 32px; padding: 0 12px; font-size: 13px; border-radius: 16px; background: #fff; border: 1px solid #dcdfe7; color: #1d2130; margin-left: auto; }
+.why { border-radius: 14px; padding: 10px 12px 8px; margin: 10px 0 4px; background: #fff; border: 1px solid #e6e8f0; }
 .why .head { display: flex; align-items: center; gap: 10px; }
 .why .head .pos { color: #8e98b4; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
-.why ul { margin: 6px 0 0; padding-left: 18px; font-size: 14px; line-height: 1.4; color: #d8ddee; }
+.why ul { margin: 6px 0 0; padding-left: 18px; font-size: 14px; line-height: 1.4; color: #3a3f52; }
 .why li { margin: 2px 0; }
-.why.beware { border-color: rgba(243,198,198,.35); } .why.super { border-color: rgba(240,199,94,.45); }
-html.night .rate.super, .dayfull .rate.super { background: #f0c75e; color: #2b2000; } html.night .rate.good, .dayfull .rate.good { background: #cfe8d6; color: #15402a; } .rate.beware { background: #fde8e8; color: #9b2c2c; } html.night .rate.beware, .dayfull .rate.beware { background: #f3c6c6; color: #6b1c1c; }
-html.night .bignum { color: #fff; } html.night .bignum .nm { color: var(--tint, #f2c9a0); } html.night .bignum .ty { color: #8e98b4; }
-html.night .codes span { background: rgba(255,255,255,.1); color: #d6dcf0; } html.night .codes span.warn { background: rgba(243,198,198,.18); color: #f3c6c6; } html.night .codes span.soft { background: rgba(207,219,255,.16); color: #cfdbff; }
-html.night .reading { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08); color: #d8ddee; }
-html.night .reading .head b { color: #fff; } html.night .reading .head .nm { color: var(--tint, #f2c9a0); } html.night .reading .head .pos { color: #8e98b4; }
-.reading p.kw { color: #b8860b; font-weight: 600; font-size: 13px; margin-top: 4px; } html.night .reading p.kw { color: var(--tint, #f2c9a0); }
-html.night .reading .muted { color: #8e98b4; }
-html.night .mini { background: rgba(255,255,255,.06); color: #e9edf7; border: 1px solid rgba(255,255,255,.08); }
-html.night .mini .daychart { background: transparent; }
-html.night .mini .mfoot.small, html.night .mini .mhead .d { color: #c3cbe3; } html.night .mini .mfoot .nm { color: var(--tint, #f2c9a0); }
-html.night .mini.super { background: rgba(240,199,94,.1); outline: 2px solid rgba(240,199,94,.55); }
-html.night .mini.today { outline: 2px solid var(--tint, #f2c9a0); }
-html.night .readbtn, .dayfull .readbtn { background: rgba(255,255,255,.12); color: #fff; }
-.dayfull { background: #070a14; color: #e9edf7; }
-.dayfull .ttop .btn, .dayfull .ttop .iconbtn, .dayfull .cbtn { background: rgba(255,255,255,.1); color: #e9edf7; }
-.dayfull .why, .dayfull .under { margin-left: 8px; margin-right: 8px; }
+.why.beware { background: #fff5f5; border-color: #f3cdcd; } .why.super { background: #fffbea; border-color: #ecd27a; } .why.good { background: #f3faf5; border-color: #cfe8d6; }
+.rate.beware { background: #fde8e8; color: #9b2c2c; } .reading p.kw { color: #b8860b; font-weight: 600; font-size: 13px; margin-top: 4px; } .dayfull .why, .dayfull .under { margin-left: 8px; margin-right: 8px; }
 .dayfull .nscope-box { margin: 8px; }
 .two-people .dmy { display: grid; grid-template-columns: 0.85fr 1.15fr 1.2fr; gap: 4px; }
 .two-people .dmy input { padding: 0 8px; font-size: 14px; }
-html.night .bignum { flex-wrap: nowrap; } html.night .bignum .ty { max-width: 42%; white-space: normal; line-height: 1.2; }
-
 /* Reading: the facts from the rules, the AI reading and the questions (viewer sheet, Ask the Vault) */
 .chartread { border-top: 1px solid var(--panel2); padding-top: 10px; }
 .fact { font-size: 15px; line-height: 1.35; padding: 8px 10px; border-radius: 10px; background: var(--panel2); }
@@ -505,13 +466,10 @@ html.night .bignum { flex-wrap: nowrap; } html.night .bignum .ty { max-width: 42
 .useitem { margin-top: 8px; }
 .useitem b { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: #8a8f9c; font-weight: 600; }
 .useitem p { margin-top: 2px; }
-.why p.use { margin: 6px 0 0; font-size: 14px; color: #e9edf7; font-weight: 600; }
+.why p.use { margin: 6px 0 0; font-size: 14px; color: #1d2130; font-weight: 600; }
 .daykw { margin: 8px 10px 0; font-size: 14px; line-height: 1.35; color: #e9edf7; }
 .daykw.muted { color: #aab3cc; margin-top: 2px; }
 .dayfull .useday { margin: 10px 8px; }
-html.night .useday .qword { color: var(--tint, #f2c9a0); } html.night .useitem b { color: #8e98b4; }
-html.night .warnline { color: #f3c6c6; }
-
 /* compare: "Compare" button in the viewer, banner on Browse, two-pane screen */
 .vbtn { pointer-events: auto; min-height: 40px; padding: 0 14px; border-radius: 20px; background: rgba(40,40,50,.75); color: #fff; font-size: 15px; white-space: nowrap; max-width: 48vw; overflow: hidden; text-overflow: ellipsis; display: inline-block; line-height: 40px; }
 .vbtn.go { background: var(--accent); color: var(--accent-text); font-weight: 700; }
@@ -546,3 +504,24 @@ body.withcmp .screen { padding-bottom: calc(100px + env(safe-area-inset-bottom))
 @media (min-width: 1000px) {
   .tools { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+
+/* The day look of Today, Coming Days and the full-screen day (the owner's pick C, 2026-10-16): a soft light page,
+   the real chart on white exactly as the Quick Chart draws it, the planets in a small banner. */
+html.day, html.day body { background: #f3f4f8; color: #1d2130; }
+html.day .tscreen { color: #1d2130; }
+html.day .ttop .btn, html.day .ttop .iconbtn, html.day .cbtn, .dayfull .ttop .btn, .dayfull .ttop .iconbtn, .dayfull .cbtn { background: #e6e8f0; color: #1d2130; }
+html.day .datebox { background: #fff; border-color: #dcdfe7; }
+html.day .tscreen .chip.off { background: #e6e8f0; color: #3a3f52; }
+html.day .scenebox .scene, .dayfull .scene { border-radius: 16px; }
+html.day .nscope-box, .dayfull .nscope-box { background: #fff; border: 1px solid #e6e8f0; border-radius: 14px; padding: 4px 0; margin-top: 10px; }
+html.day .reading, .dayfull .reading { background: #fff; border: 1px solid #e6e8f0; }
+html.day .mini { background: #fff; border: 1px solid #e6e8f0; color: #303030; }
+html.day .mini.super { background: #fffbea; outline: 2px solid #e0b84a; }
+html.day .mini.today { outline: 2px solid #7fa6ff; }
+.dayfull { background: #f3f4f8; color: #1d2130; }
+.dayfull .readbtn { background: #e6e8f0; color: #1d2130; }
+html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; white-space: normal; line-height: 1.2; }
+/* Under the banner: the day's number, its name and the rating in one row. */
+.dayhead { display: flex; align-items: center; gap: 10px; margin: 10px 2px 0; }
+.dayhead b { font-size: 26px; } .dayhead .nm { font-size: 17px; font-weight: 700; color: #5f7990; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dayhead .rate { margin-left: auto; font-size: 14px; padding: 6px 12px; }
