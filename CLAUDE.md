@@ -27,6 +27,12 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   Hub from a cloud session). Never guess a position name, a formula or a meaning the
   Hub defines; never ask the owner for one before reading it. A chat that built or
   labelled anything about charts without reading the Hub got it wrong (HISTORY 2026-10-15).
+- Second source folder (owner's rule 2026-10-16): Drive folder "Business PDF's"
+  (id 1icGqT828pD6Rxkk5j8jbSiBBDjr6vQaW): business numerology, product numeroscopes, Your Business
+  and Brand, Marketing Numerology, the two Superdates books (Success Codes & Superdates, Superdates
+  Cosmic Calendar: the day-by-day interpretations), the numbers 1-99 for business, transcripts.
+  Anything in the app about prices, business, brands, day forecasts or coming days must take its
+  words from there; the index is `.brain/numerology/README.md` "Business PDF's".
 - Start of every session: `git fetch origin main` and merge it into the branch
   before planning. A stale checkout hid all of this from one chat for an hour.
 - The course rules for the charts live in `.brain/numerology/` (start with its

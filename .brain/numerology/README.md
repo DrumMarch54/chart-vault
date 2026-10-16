@@ -41,6 +41,22 @@ website 1-99 descriptions. Not yet read: the big course PDFs (Essence,
 Diamond Method, Name numeroscopes, forecasting), Jung date correspondence,
 Class Transcripts.
 
+## Business PDF's (second Drive folder, owner's rule 2026-10-16)
+Folder id 1icGqT828pD6Rxkk5j8jbSiBBDjr6vQaW. The owner: "other good info about business numerology and
+related things; the price tool should use it; the two super date PDFs have actual interpretations for the day
+forecast and coming days." Files (ids): NPE-YourBusinessAndBrand-v1 1ddm4trQIf4Y2Lb0611ubB-SeHo-HTE8g ·
+NPE-SuperdatesCosmicCalendar-v1 1JUZt2sypoJc6ylkDOBD1z5ZkLr2hu00D (12.7 MB) · NU-Superdates-INT-v1
+1kwdLhHkLABzh7SS4Cj3AWa1dKR4Wz72S (= Success Codes & Superdates) · NPB-MarketingNumerology-v1
+1j6_OMBMKDlIFtdujMkY2nqwcGiV0b2Ws (10.5 MB) · module 12 biz num 15NgqVliiLnx1_0MaJu1Kyed13hz4wAZl ·
+NPB-BusinessManual-INT-ver1 1kijLz9JKwg6Mw-obMJqA4i6cgU7fFEoe · NPB-Module8-ProductNumeroscopes
+1YdUeMh4WgTao0ryVxqI2hC21mvN_8-6o · NP-ProductNumeroscopes-INT-v1 1UEnRBA7EeyeezvdmWeojfM5k4ektD44G ·
+NP-NumbersOverview1-99 1aQqdr6C_dtbQvDYg7lTu7Xn27gcOhCbi · NBE-TheNumbers1-99Business-v1
+1nQfokg0P2wlYGm3tzEznlsfA9MuJhrJE · NBE-Module6-Powerpoint 1F3nQWs2C0APJsAWtxSmEfrwXqqpM0T7i ·
+NBE-Theme3-NumerologyMarketing-INT 1749fTcJ-w0OAqDoIpfixazz9ZSoQQZkr · folders "Transcripts .MD"
+1GfOChrM7LKyRB1di4pybFhQ6d4F5Xtya, "Transcripts (from Johaness)" 1tvkGrr7RvH4qlTPH3uley-erB4aOl-44,
+"List of video titles" 14QrTYLvr0P6U8F5_EHUZQWgxAmC-Db2S · BusinessNumerologyCertificationTest.docx.
+Text copies live in `knowledge/raw/` (topic `business`).
+
 ## Reading PDFs as pictures (2026-10-15)
 The Drive connector returns a PDF as text only, and refuses files over 10 MB. Both limits are easy to get past:
 1. Find the file: `search_files` (title or fullText). Its id is in the result.
