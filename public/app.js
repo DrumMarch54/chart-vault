@@ -323,7 +323,8 @@
     render(h('div', { class: `screen ${home ? 'home' : ''}` },
       home ? h('div', { class: 'pagetop hometop' }, h('h1', {}, 'Chart Vault'), $gear) : null,
       h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), home ? null : $quickIcon, home ? null : $gear), $filters),
-      home ? $quick : null, home ? $byPos : null, home && toolsUi ? toolsUi.homeButtons() : null,
+      home && readingUi ? readingUi.homeBanner() : null,
+      home ? $quick : null, home ? $byPos : null, home && readingUi ? readingUi.homeButton() : null, home && toolsUi ? toolsUi.homeButtons() : null,
       $recent, home ? null : $summary, home ? null : $grid, home ? null : $sentinel));
     // Recently Opened charts (this phone remembers the last 48), a grid like a search result, only on the home screen.
     if (home && recentIds().length) {
@@ -597,6 +598,7 @@
         groups.number.length ? h('div', {}, h('div', { class: 'muted small', style: 'margin-bottom:6px' }, 'Numbers'), h('div', { class: 'chips' }, ...groups.number.map(tagBtn))) : null,
         h('div', { class: 'addtag row', style: 'flex-wrap:nowrap' }, $tagInput, h('button', { type: 'button', class: 'btn-primary', onclick: () => { const v = $tagInput.value.trim(); if (v) { count('viewer.add_tag'); addTag(v); $tagInput.value = ''; } } }, 'Add'), $sugg),
         $numbers,
+        img.kind === 'chart' && readingUi ? readingUi.section(img) : null,
         h('div', { class: 'small muted' },
           h('div', {}, img.kind === 'archetype' ? 'Type: archetype pic (a picture that represents a number)' : 'Type: chart'),
           h('div', {}, `Taken: ${img.taken_at ? img.taken_at.replace('T', ' ') : 'unknown'}`),
@@ -859,6 +861,7 @@
       h('a', { class: 'btn btn-block', href: '#/upload', style: 'justify-content:space-between' }, 'Upload Screenshots', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/import', style: 'justify-content:space-between' }, 'Import Tags', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/mychart', style: 'justify-content:space-between' }, 'My Chart (your own name and birth date)', h('span', { class: 'muted' }, '›')),
+      h('a', { class: 'btn btn-block', href: '#/ai', style: 'justify-content:space-between' }, 'AI Reading (key and monthly cap)', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/status', style: 'justify-content:space-between' }, 'Status and backup', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/?kind=archetype', style: 'justify-content:space-between' }, 'Archetype Pics', h('span', { class: 'muted' }, '›'))));
   };
@@ -1438,6 +1441,10 @@
         s.positions.check ? h('div', { class: 'stat' }, h('span', {}, 'Your position tags that agree with the computed charts'), h('b', {}, `${fmtN(s.positions.check.agree)} of ${fmtN(s.positions.check.tags)}`)) : null,
         h('p', { class: 'muted small' }, 'A tag that disagrees usually means the name or date was misread: open the chart, tap "Wrong? Fix". Charts not read yet get their name and date the same way.'),
         h('button', { type: 'button', class: 'btn-block', onclick: async (e) => { count('status.recompute'); e.target.disabled = true; e.target.textContent = 'Recomputing…'; try { const r = await api('/api/positions/recompute', { method: 'POST' }); toast(`Recomputed ${fmtN(r.recomputed)} charts`); } catch (err) { toast(err.message, true); } e.target.disabled = false; e.target.textContent = 'Recompute Every Chart'; } }, 'Recompute Every Chart')) : null,
+      s.ai ? h('div', { class: 'card stack' }, h('h2', { style: 'margin-top:0' }, 'AI Reading'),
+        h('div', { class: 'stat' }, h('span', {}, 'AI key'), h('b', { class: s.ai.key_set ? 'ok' : 'err' }, s.ai.key_set ? 'Set' : 'Not set')),
+        h('div', { class: 'stat' }, h('span', {}, 'Spent this month'), h('b', {}, `$${Number(s.ai.spent).toFixed(2)} of $${Number(s.ai.cap).toFixed(2)}`)),
+        h('a', { class: 'btn btn-block', href: '#/ai' }, 'AI Reading Settings')) : null,
       s.usage && s.usage.length ? h('div', { class: 'card stack' }, h('h2', { style: 'margin-top:0' }, 'What You Use Most'),
         ...s.usage.slice(0, 20).map((u) => stat(USAGE_LABELS[u.name] || u.name, u.count))) : null,
       h('div', { class: 'card stack' },
@@ -1475,6 +1482,9 @@
   };
   const toolsUi = window.Tools ? window.Tools.install({ routes, h, sv, fill, render, count, toast, api, go, numeroscopeSvg, sheet: wordsSheet, overlay: (o) => overlays.push(o), overlayGone: (o) => { overlays = overlays.filter((x) => x !== o); }, setCleanup: (fn) => { viewerCleanup = fn; } }) : null;
   if (toolsUi) Object.assign(USAGE_LABELS, toolsUi.USAGE_LABELS);
+  // Reading a chart (facts, AI reading, questions), Ask the Vault and the AI settings live in reading.js.
+  const readingUi = window.Reading ? window.Reading.install({ routes, h, fill, api, toast, count, go, render, pageTop }) : null;
+  if (readingUi) Object.assign(USAGE_LABELS, readingUi.USAGE_LABELS);
 
   // ---------- start ----------
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js?v=' + (window.APP_VERSION || '0'), { updateViaCache: 'none' }).catch(() => {});

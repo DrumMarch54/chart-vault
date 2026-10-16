@@ -62,7 +62,9 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   "Names to check". Search box: "Everyone named X" = word-start match on the name.
 - Re-importing a tag file must only add. Tags removed in the app stay removed
   (`removed_tags`). Tags added in the app survive imports.
-- No paid AI or API calls. No user accounts; one shared password (WEB_TOKEN).
+- Paid AI calls go through ONE door, `server/ai.js` (`callModel`): key, monthly cap and spend in
+  `data/ai.json`, every call recorded and in the snapshot, `canSpend` refuses at the cap. No other
+  outside or paid call anywhere. No user accounts; one shared password (WEB_TOKEN).
   No WEB_TOKEN = nobody gets in (503), never everyone. Sign-in link: `/?t=<password>`.
 - Runtime files (data/, backups/, .env, the real UserTag.backup) stay out of git.
   `test/repo.test.js` fails if a file is both ignored and tracked.
@@ -98,6 +100,25 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   planet small in the sky, the charts on a soft light card. The other tools stay on the white page.
 - My chart (`server/mychart.js`, `data/mychart.json`, GET/PUT `/api/mychart`): the owner's own name
   and birth date; the home "My chart" button opens the quick chart with them (`#/quick?me=1`).
+
+## Reading a chart (built 2026-10-16): facts, AI reading, Ask the Vault
+- `server/facts.js`: the rules from the Hub, free and instant (nexus, repeated numbers, unbalanced and
+  karmic numbers by position, center balance, 4-8 tension, rarity, weaving pairs; `BALANCE` is the one
+  list; `chartScores` / `rankCharts` give "worst charts" and "most influenced by N"). No AI in it.
+- `knowledge/`: the Hub as text (`knowledge/raw/`, one file per Drive doc), indexed per number and
+  topic by `tools/build-knowledge.mjs` into `knowledge/index.json` (rebuild after adding a document).
+  `server/knowledge.js`: `coreText()` (how to read) and `contextFor(values)` (the course on this chart's
+  numbers). The AI gets course words only, cited by source; never a guessed meaning.
+- `server/reading.js`: Claude Opus 5.5 writes a reading from the numbers, the facts and the course passages;
+  stored in `readings` (migration 7) so a chart is paid for once ("Write Again" replaces it). Questions about
+  a chart are stored under it. `server/ask.js`: Claude Haiku 5.5 answers "Ask the Vault" with tools that run
+  the app's own searches and ranks (`find_charts`, `rank_charts`, `chart_numbers`, `find_people`,
+  `show_charts`); the answer carries the ids to show. Both go through `server/ai.js`.
+- Screens: `public/reading.js` (viewer sheet "Reading", `#/ask`, Settings → `#/ai` for the key and cap,
+  the cap banner on home). Owner's cap: $8 a month; warn in the app at 80 % and at the cap. The key is
+  shown as "ends in …xxxx" only. The dev app has a FAKE model (`tools/dev-app.mjs`); `test/ai.test.js`
+  proves the key never leaks and the cap blocks. A real reading costs about 30 cents; a question about a
+  chart about 10 cents; a vault question about a cent. Never call the model from a test or a tool.
 
 ## Dev
 - `npm run verify` before saying done: syntax of every file + all tests. Spends nothing.

@@ -14,6 +14,10 @@ import { deployGuard } from './deployguard.js';
 import { catalog, positionCounts, parseNumber, getInputs, setInputs, clearInputs, valuesFor, recomputeAll, inputStats, tagCheck, InputError, CHARTS } from './positions.js';
 import { COMMIT } from './build.js';
 import { paths } from './config.js';
+import { aiSettings, setAiSettings, spendState, pendingWarning, markWarningSeen, AiError } from './ai.js';
+import { readingFor, writeReading, answerQuestion, deleteReadings, readingEstimate } from './reading.js';
+import { askVault } from './ask.js';
+import { factsFor } from './facts.js';
 
 const MAX_IMPORT = 50 * 1024 * 1024;
 
@@ -335,6 +339,53 @@ export function createApp(db, { log = console.log } = {}) {
     res.json(saved);
   });
 
+  // --- AI: readings, questions, the vault search; the key, the cap and the spend (server/ai.js) ---
+  // The key never comes back out: the settings answer says set / not set and the last 4 characters.
+  app.get('/api/ai/settings', (req, res) => res.json({ ...aiSettings(), warning: pendingWarning() }));
+  app.put('/api/ai/settings', express.json({ limit: '4kb' }), (req, res, next) => {
+    try {
+      const b = req.body || {};
+      const out = setAiSettings({ key: typeof b.key === 'string' ? b.key : undefined, cap: b.cap });
+      log(`ai settings saved: key ${out.key_set ? 'set' : 'cleared'}, cap $${out.cap}`);
+      res.json(out);
+    } catch (err) { if (err instanceof AiError) return res.status(400).json({ error: err.message }); next(err); }
+  });
+  app.get('/api/ai/spend', (req, res) => res.json({ ...spendState(), warning: pendingWarning() }));
+  app.post('/api/ai/warning-seen', express.json({ limit: '1kb' }), (req, res) => { markWarningSeen(req.body && req.body.level); res.json({ ok: true }); });
+  // Rule-based facts about one chart: free, instant, no AI.
+  app.get('/api/images/:id/facts', (req, res) => {
+    const img = getImage(db, Number(req.params.id));
+    if (!img) return res.status(404).json({ error: 'No such chart.' });
+    res.json(factsFor(db, img.id));
+  });
+  app.get('/api/images/:id/reading', (req, res) => {
+    const img = getImage(db, Number(req.params.id));
+    if (!img) return res.status(404).json({ error: 'No such chart.' });
+    res.json({ ...readingFor(db, img.id), estimate: readingEstimate(db, img.id), spend: spendState(), warning: pendingWarning() });
+  });
+  const aiRoute = (fn) => async (req, res, next) => {
+    const img = getImage(db, Number(req.params.id));
+    if (!img) return res.status(404).json({ error: 'No such chart.' });
+    try { res.json(await fn(img, req.body || {})); } catch (err) { if (err instanceof AiError) return res.status(400).json({ error: err.message }); next(err); }
+  };
+  app.post('/api/images/:id/reading', express.json({ limit: '2kb' }), aiRoute(async (img, body) => {
+    const r = await writeReading(db, img.id, { force: !!body.force });
+    if (!r.cached) log(`reading written for #${img.id}: $${r.usd} in ${r.seconds}s`);
+    return { ...r, spend: spendState(), warning: pendingWarning() };
+  }));
+  app.delete('/api/images/:id/reading', aiRoute(async (img) => ({ deleted: deleteReadings(db, img.id), ...readingFor(db, img.id) })));
+  app.post('/api/images/:id/ask', express.json({ limit: '4kb' }), aiRoute(async (img, body) => {
+    const r = await answerQuestion(db, img.id, body.question);
+    return { ...r, spend: spendState(), warning: pendingWarning() };
+  }));
+  app.post('/api/ask', express.json({ limit: '4kb' }), async (req, res, next) => {
+    try {
+      const r = await askVault(db, req.body && req.body.question);
+      log(`ask: ${r.ids.length} charts, ${r.turns} turns, $${r.usd}`);
+      res.json({ ...r, spend: spendState(), warning: pendingWarning() });
+    } catch (err) { if (err instanceof AiError) return res.status(400).json({ error: err.message }); next(err); }
+  });
+
   // Status, export, backup
   app.get('/api/status', (req, res) => {
     const report = statusReport(db);
@@ -346,6 +397,7 @@ export function createApp(db, { log = console.log } = {}) {
     report.updates = deployGuard();
     report.positions = inputStats(db);
     report.positions.check = (({ tags, agree, disagree, unknown }) => ({ tags, agree, disagree, unknown }))(tagCheck(db));
+    report.ai = aiSettings();
     res.json(report);
   });
   app.get('/api/export/tags.json', (req, res) => {

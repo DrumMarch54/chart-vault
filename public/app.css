@@ -445,3 +445,19 @@ html.night .readbtn, .dayfull .readbtn { background: rgba(255,255,255,.12); colo
 .two-people .dmy { display: grid; grid-template-columns: 0.85fr 1.15fr 1.2fr; gap: 4px; }
 .two-people .dmy input { padding: 0 8px; font-size: 14px; }
 html.night .bignum { flex-wrap: nowrap; } html.night .bignum .ty { max-width: 42%; white-space: normal; line-height: 1.2; }
+
+/* Reading: the facts from the rules, the AI reading and the questions (viewer sheet, Ask the Vault) */
+.reading { border-top: 1px solid var(--panel2); padding-top: 10px; }
+.fact { font-size: 15px; line-height: 1.35; padding: 8px 10px; border-radius: 10px; background: var(--panel2); }
+.fact.pain { background: #4a2626; }
+.fact.note { background: #4a3d1f; }
+.fact b { display: block; margin-bottom: 2px; }
+.rd-text p { margin: 6px 0; font-size: 16px; line-height: 1.45; }
+.rd-text .rd-h { margin: 12px 0 2px; font-size: 16px; color: var(--accent); }
+.rd-text .rd-list { margin: 4px 0; padding-left: 20px; }
+.rd-answer { background: var(--panel2); border-radius: 10px; padding: 10px 12px; }
+.rd-q { font-weight: 700; margin-bottom: 4px; }
+.aiwarn { display: flex; gap: 10px; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 10px; background: #4a3d1f; font-size: 15px; }
+.aiwarn.over { background: #4a2626; }
+.aiwarn button { min-height: 36px; padding: 0 12px; flex: none; }
+.warn { color: var(--accent); }

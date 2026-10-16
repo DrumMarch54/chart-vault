@@ -399,3 +399,18 @@ the owner's NotebookLM pass before it is code, and the app must show its reasons
 this a Beware day" is a guess again. The first draft rated 317 of 365 days Beware because every psyche
 number and every aura was read as a key position; auras repeat the diamonds, and a use-with-care number in
 a psyche center now only blocks Super. Settled at about 30 / 100 / 235 for 2026.
+
+## 2026-10-16 Interpretation: facts, AI readings, Ask the Vault
+The owner asked for interpretation: patterns and the big picture of a chart in words, stats useful for
+reading, patterns across the vault, an AI that reads a chart and answers questions, an AI search ("five
+worst charts", "five people most influenced by 8"). Approved (owner's words): paid calls allowed, Claude
+Opus 5.5 for readings and Claude Haiku 5.5 for vault questions, the key pasted in Settings, a monthly cap of
+$8 with a warning in the app when close and when reached, every Hub document that helps (the chat decides).
+- The "no paid AI" rule became "one door": `server/ai.js` is the only place a paid call happens. Key, cap and
+  spend in one store, every call recorded and in the snapshot, refused at the cap, the key redacted from any
+  text going out and never returned by the API (set / not set + last 4). A test proves it.
+- Two layers: rules first (`server/facts.js`, free, instant, from the Hub's balance lists and hierarchy), AI
+  on top (course passages for the chart's numbers, cited by source). Readings are stored: paid once per chart.
+- The Hub lives in the repo as text (`knowledge/`) with an index per number and topic, so a reading sends
+  only the passages about that chart's numbers (about 30k tokens) rather than the whole course.
+- The dev app runs a FAKE model so screens can be looked at for free; the fake answers after a second.

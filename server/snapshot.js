@@ -10,6 +10,7 @@ import { deployGuard } from './deployguard.js';
 import { getMyChart } from './mychart.js';
 import { titleStats } from './titles.js';
 import { inputStats, tagCheck, chartsWithoutInputs, getInputs, valuesFor, chartLabel } from './positions.js';
+import { aiReport, redact } from './ai.js';
 
 const started = Date.now();
 const fmtB = (b) => (b >= 1e9 ? (b / 1e9).toFixed(2) + ' GB' : b >= 1e6 ? (b / 1e6).toFixed(1) + ' MB' : Math.round((b || 0) / 1e3) + ' KB');
@@ -45,7 +46,9 @@ export function snapshot(db, { scope = 'full', id = null, commit = 'unknown', bu
       line(`inputs: ${inp.day ?? '?'}.${inp.month ?? '?'}.${inp.year ?? '?'} "${inp.name}" (source ${inp.source}, build ${inp.build || 'unknown'}, ${inp.updated_at})`);
       for (const c of valuesFor(db, img.id)) line(`  ${c.label}: ${c.values.map((v) => `${v.label}${v.n ? ' ' + (v.n + 1) : ''} ${v.text}`).join(' · ')}`);
     }
-    return out.join('\n');
+    const rd = db.prepare('SELECT kind, question, model, usd, build, created_at, length(text) AS chars FROM readings WHERE image_id = ? ORDER BY id').all(img.id);
+    line(`ai readings: ${rd.length ? rd.map((r) => `${r.kind}${r.question ? ` "${r.question}"` : ''} by ${r.model} build ${r.build || '?'} $${r.usd} ${r.chars} chars ${r.created_at}`).join(' | ') : 'none'}`);
+    return redact(out.join('\n'));
   }
 
   line('CHART VAULT SNAPSHOT  ', new Date().toISOString());
@@ -97,6 +100,10 @@ export function snapshot(db, { scope = 'full', id = null, commit = 'unknown', bu
     for (const r of none) line(`  #${r.id} ${r.filename}${r.has_file ? '' : ' (no file)'}`);
   }
   line('');
+  for (const l of aiReport()) line(l);
+  const rc = db.prepare("SELECT count(*) c, sum(kind = 'reading') r, sum(kind = 'answer') a, round(sum(usd), 4) usd FROM readings").get();
+  line(`stored readings: ${rc.r || 0} readings, ${rc.a || 0} answers, $${rc.usd || 0} all time`);
+  line('');
   const n = scope === 'short' ? 20 : 300;
   line(`LAST ${n} LOG LINES`);
   for (const l of recentLogs(n)) line('  ', blank(l));
@@ -129,5 +136,5 @@ export function snapshot(db, { scope = 'full', id = null, commit = 'unknown', bu
       try { line(`  ${d}: ${fs.readdirSync(d).filter((f) => !f.startsWith('.')).length} entries`); } catch { line(`  ${d}: missing`); }
     }
   }
-  return out.join('\n');
+  return redact(out.join('\n'));
 }

@@ -72,6 +72,24 @@ const { seedTitles } = await import('../server/titles.js');
 const fakeNames = ['Alex Jones', 'Jimmy Rowe', 'Kanye West', 'Erica', 'Patrick Crusius', 'Josh Provencio'];
 seedTitles(db, names.map((filename, i) => (i % 7 === 6 ? null : { filename, title: i % 5 === 4 ? '' : i % 6 === 3 ? 'Erica' : fakeNames[i % fakeNames.length], source: 'known', check: i % 6 === 3 || i % 5 === 4 })).filter(Boolean));
 
+// A FAKE AI model: the Reading section, Ask the Vault and the AI settings can be looked at without spending
+// a cent. A fake key is stored in the throwaway data folder; answers arrive after a second, like the real thing.
+const { useClientFactory, setAiSettings } = await import('../server/ai.js');
+setAiSettings({ key: 'sk-ant-dev-fake-key-0000000000000000', cap: 8 });
+const FAKE_READING = '## Nexus\nThe 19/1 day vibration with the 6/6 life path makes a 16/7 nexus: the Heavenly Prince carrying the Awakening Soul [Chart Notes].\n\n## Big Picture\nEnthusiastic (19/1) magnetism (15/6) in the outer diamond, read with the 36/9 pillar: a charismatic group leader [Main Combo Guide].\n\n## Pain Points\n- 16/7 in the mind center: fear and overthinking shut the communication down [Name Numeroscope Guide].\n- 12/3 in the love aura: misunderstandings at home [Name Chart Auras].\n\n## One Sentence\nA radiant leader whose mind must learn to trust what it already knows.';
+useClientFactory(() => ({ messages: { create: async (params) => {
+  await new Promise((r) => setTimeout(r, 1000));
+  const usage = { input_tokens: 42000, output_tokens: 700 };
+  if (params.tools) {
+    const last = params.messages.at(-1);
+    if (last.role === 'user' && typeof last.content === 'string') return { content: [{ type: 'tool_use', id: 't1', name: 'rank_charts', input: { by: 'imbalance', limit: 5 } }], stop_reason: 'tool_use', usage: { input_tokens: 3000, output_tokens: 80 } };
+    if (last.content[0] && last.content[0].tool_use_id === 't1') { const ids = JSON.parse(last.content[0].content).charts.map((c) => c.id); return { content: [{ type: 'tool_use', id: 't2', name: 'show_charts', input: { ids } }], stop_reason: 'tool_use', usage: { input_tokens: 3200, output_tokens: 60 } }; }
+    return { content: [{ type: 'text', text: 'These five carry the most unbalanced numbers in weighty positions: a 16/7 or 12/3 in a center, or an 18/9 on the name line.' }], stop_reason: 'end_turn', usage: { input_tokens: 3400, output_tokens: 90 } };
+  }
+  const q = /THE QUESTION\n([^\n]+)/.exec(params.messages[0].content);
+  return { content: [{ type: 'text', text: q ? `About "${q[1]}": the 16/7 in the mind center is the fear reflex of the 7; next to the 19/1 day it shows as a brilliant mind that doubts itself in public [Name Numeroscope Guide].` : FAKE_READING }], stop_reason: 'end_turn', usage };
+} } }));
+
 const app = createApp(db, { log: (m) => console.log(m) });
 const server = app.listen(port, '127.0.0.1', () => {
   console.log(`Dev Chart Vault (throwaway data in ${tmp}) at http://127.0.0.1:${port}`);
