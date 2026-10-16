@@ -173,6 +173,9 @@ const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 const pos = (r) => ({ chart: r.chart, position: r.position, sum: r.sum, ds: r.ds });
 const list = (items) => (items.length <= 1 ? items.join('') : `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`);
 
+// Positions that are a copy of another position by construction (chart-construction.md), so they do not
+// count as a repeat: the inner psyche line is the month and year, its LE is the essence dharma line.
+const STRUCTURAL_COPY = new Set(['inner.first', 'inner.last', 'inner.le', 'outer.last']);
 const VALUES_SQL = 'SELECT chart, position, n, sum, ds FROM chart_values WHERE image_id = ? ORDER BY rowid';
 
 // ---------------------------------------------------------------------------------------------------
@@ -321,9 +324,6 @@ export function factsFor(db, imageId) {
   const s = scoreRows(rows);
   return { inputs: getInputs(db, imageId), facts, scores: { imbalance: s.imbalance, influence: Object.fromEntries([...s.influence].sort((a, b) => a[0] - b[0]).map(([d, w]) => [String(d), w])) }, missing: false };
 }
-// Positions that are a copy of another position by construction (chart-construction.md), so they do not
-// count as a repeat: the inner psyche line is the month and year, its LE is the essence dharma line.
-const STRUCTURAL_COPY = new Set(['inner.first', 'inner.last', 'inner.le', 'outer.last']);
 
 // ---------------------------------------------------------------------------------------------------
 // Scores. One pass over chart_values; rows come back as arrays (raw) and the lookups are two-level maps,
