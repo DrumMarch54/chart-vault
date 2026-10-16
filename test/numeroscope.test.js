@@ -86,6 +86,9 @@ test('Katrine Ditte Pilmark (class manual, middle name)', () => {
   assert.equal(t(n.solar), '15/6'); assert.equal(t(n.solarExtra[0]), '15/6');
   assert.equal(t(n.spine), '6/6'); assert.equal(t(n.pillar), '41/5');
   assert.equal(n.middle.length, 1); assert.equal(n.middle[0].text, 'Ditte');
+  // The name line diamond (first beside last) only exists for a first + last name: a middle name sits between them.
+  assert.equal(n.leDiamond, null);
+  assert.equal(t(N.numeroscope({ day: 19, month: 8, year: 1984, name: 'Katrine Pilmark' }).name.leDiamond), '23/5');
   const e = r.essence;
   assert.equal(t(e.day), '19/1'); assert.equal(t(e.month), '8/8'); assert.equal(t(e.year), '22/4');
   assert.equal(t(e.littleLp), '13/4'); assert.equal(t(e.bigLp), '40/4');

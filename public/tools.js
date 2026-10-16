@@ -97,10 +97,6 @@
     svg.setAttribute('viewBox', withPsyche ? `${371 - 425} 20 850 540` : `${371 - 215} 24 430 330`);
     return svg;
   }
-  // The codes a date holds, as chips: green strong, blue soft, red to avoid.
-  // With the book's words loaded, a success code also says which group it belongs to ("World Conqueror Code").
-  const codeChips = (e, R) => A.h('div', { class: 'codes' }, ...e.codes.map((c) => { const g = R && codeGroup(R, c.value.sum, c.kind) && !['avoid', 'care'].includes(c.kind) ? codeGroup(R, c.value.sum, c.kind) : null;
-    return A.h('span', { class: c.kind === 'avoid' || c.kind === 'care' || c.kind === 'limited' ? 'warn' : c.kind === 'soft' ? 'soft' : '', onclick: () => numberSheet(c.value, c.pos) }, `${c.value.text} ${T.POSITION_WORDS[c.pos] || c.pos} · ${g ? g.name.toLowerCase() : c.words}`); }));
   // Why the date is rated as it is: the rule's own reasons, in the course's words.
   const WHY_WORDS = { super: 'Why a Super Date', good: 'Why only a Good Date', beware: 'Why Beware' };
   // With the book's words loaded, the box also says what a day of that color is for (Cosmic Calendar p. 288).
@@ -271,7 +267,6 @@
         A.h('div', { class: 'under' }, A.h('span', { class: 'muted small' }, 'Tap the chart for full screen'), psyToggle(psyche.on, () => { psyche.on = !psyche.on; remember('toolsPsyche', psyche.on); A.count('today.psyche'); draw(); })),
         whyBox(e, R),
         A.h('div', { class: 'bignum', onclick: () => numberSheet(e.dv, 'dv') }, A.h('b', {}, e.dv.text), A.h('span', { class: 'nm' }, nameOf(e.dv)), A.h('span', { class: 'ty' }, `Day Vibration · Ruler ${e.ruler}`)),
-        codeChips(e, R),
         useDay(e, R),
         rulerCard(e, R),
         row('dv', e.dv), row('lp', e.lp), row('outer', e.outer), row('inner', e.inner), row('dvlp', e.dvlp), row('dharma', e.dharma), row('target', e.target),
@@ -289,42 +284,42 @@
   function comingView(arg) {
     const now = todayIn();
     let start = parseIso(arg) || now;
-    const view = { mode: recall('comingMode', 'charts'), superOnly: false, psyche: recall('comingPsyche', false), cols: recall('comingCols', 2) };
+    // How many charts across: − and + change it and the device remembers (owner 2026-10-16: two across was still
+    // too big, one across never used, the list of numbers useless). Phones go up to 5 across, wide screens further.
+    const wide = window.innerWidth >= 700;
+    const MIN_COLS = 2, MAX_COLS = window.innerWidth >= 1000 ? 8 : wide ? 6 : 5;
+    const clampCols = (c) => Math.min(MAX_COLS, Math.max(MIN_COLS, Number(c) || 0));
+    const view = { superOnly: false, psyche: recall('comingPsyche', false), cols: clampCols(recall('comingCols', wide ? 4 : 3)) };
     const $body = A.h('div', {}), $chips = A.h('div', { class: 'togglerow' });
     const $date = A.h('input', { type: 'date', class: 'datebox', 'aria-label': 'First day' });
     $date.addEventListener('change', () => { const p = parseIso($date.value); if (p) { start = p; draw(); } });
     const open = (e) => { A.count('coming.open_day'); dayFull({ y: e.y, m: e.m, d: e.d }); };
     const isToday = (e) => e.y === now.y && e.m === now.m && e.d === now.d;
-    // The day vibration's keywords from the book (one short line per row) arrive with readings.js.
+    const setCols = (c) => { view.cols = clampCols(c); remember('comingCols', view.cols); A.count('coming.size'); draw(); };
+    // The day vibration's keywords from the book (one short line per chart) arrive with readings.js.
     if (!root.Readings) readings().then(() => { if ($body.isConnected) draw(); });
     const draw = () => {
       $date.value = iso(start.y, start.m, start.d);
       const R = root.Readings || {};
       const first = T.dayEnergy(start.y, start.m, start.d); night(first ? first.ruler : 'Venus');
-      A.fill($chips, chip('Charts', view.mode === 'charts', () => { view.mode = 'charts'; remember('comingMode', 'charts'); draw(); }), chip('List', view.mode === 'list', () => { view.mode = 'list'; remember('comingMode', 'list'); A.count('coming.list'); draw(); }),
-        chip('Super Dates Only', view.superOnly, () => { view.superOnly = !view.superOnly; A.count('coming.super_only'); draw(); }),
-        view.mode === 'charts' ? chip('Psyche Charts', view.psyche, () => { view.psyche = !view.psyche; remember('comingPsyche', view.psyche); draw(); }) : null,
-        view.mode === 'charts' ? chip(view.cols === 2 ? 'Bigger' : 'Smaller', false, () => { view.cols = view.cols === 2 ? 1 : 2; remember('comingCols', view.cols); A.count('coming.size'); draw(); }) : null);
+      A.fill($chips, chip('Super Dates Only', view.superOnly, () => { view.superOnly = !view.superOnly; A.count('coming.super_only'); draw(); }),
+        chip('Psyche Charts', view.psyche, () => { view.psyche = !view.psyche; remember('comingPsyche', view.psyche); draw(); }),
+        A.h('span', { class: 'sizectl', role: 'group', 'aria-label': 'Chart size' },
+          A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Smaller charts', disabled: view.cols >= MAX_COLS, onclick: () => setCols(view.cols + 1) }, '−'),
+          A.h('span', { class: 'small' }, 'Size'),
+          A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Bigger charts', disabled: view.cols <= MIN_COLS, onclick: () => setCols(view.cols - 1) }, '+')));
       let days = T.comingDays(start.y, start.m, start.d, 31).filter(Boolean);
       if (view.superOnly) days = days.filter((e) => e.rating === 'super');
       if (!days.length) { A.fill($body, A.h('p', { class: 'muted' }, 'No Super Dates in these 31 days. Try the next month.')); return; }
-      const num = (label, v) => A.h('div', {}, A.h('span', {}, label), A.h('b', {}, v.text));
-      if (view.mode === 'list') {
-        A.fill($body, A.h('div', { class: 'days' }, ...days.map((e) => A.h('div', { class: 'dayrow' + (isToday(e) ? ' today' : ''), role: 'button', onclick: () => open(e) },
-          A.h('div', { class: 'd' }, A.h('b', {}, String(e.d)), A.h('span', {}, `${DOW[e.weekday].slice(0, 3)} ${MON[e.m - 1]}`)),
-          A.h('div', { class: 'nums' }, num('Day', e.dv), num('Essence', e.lp), num('Outer', e.outer), num('Inner', e.inner), num('Target', e.target)),
-          A.h('span', { class: `rate ${e.rating}` }, T.RATING_WORDS[e.rating].replace(/ Date$/, '')),
-          R.dayVibration && R.dayVibration[e.dv.sum] ? A.h('div', { class: 'kw' }, R.dayVibration[e.dv.sum].keywords) : null))));
-      } else {
-        A.fill($body, A.h('div', { class: 'minis cols' + view.cols }, ...days.map((e) => A.h('div', { class: 'mini' + (isToday(e) ? ' today' : '') + (e.rating === 'super' ? ' super' : ''), role: 'button', onclick: () => open(e) },
-          A.h('div', { class: 'mhead' }, A.h('span', { class: 'd' }, `${DOW[e.weekday].slice(0, 3)} ${MON[e.m - 1]} ${e.d}`), A.h('span', { class: `rate ${e.rating}` }, T.RATING_WORDS[e.rating].replace(/ Date$/, ''))),
-          dateCharts(e.y, e.m, e.d, view.psyche),
-          A.h('div', { class: 'mfoot' }, A.h('b', {}, e.dv.text), A.h('span', { class: 'muted small nm' }, nameOf(e.dv))),
-          A.h('div', { class: 'mfoot muted small' }, `Essence ${e.lp.text} · Outer ${e.outer.text} · Inner ${e.inner.text}`),
-          view.cols === 1 && R.dayVibration && R.dayVibration[e.dv.sum] ? A.h('div', { class: 'mfoot muted small' }, R.dayVibration[e.dv.sum].keywords) : null))));
-      }
+      const c = view.cols, tight = c >= 3;
+      A.fill($body, A.h('div', { class: 'minis', 'data-cols': String(c), style: `grid-template-columns: repeat(${c}, minmax(0, 1fr))` }, ...days.map((e) => A.h('div', { class: 'mini' + (isToday(e) ? ' today' : '') + (e.rating === 'super' ? ' super' : ''), role: 'button', onclick: () => open(e) },
+        A.h('div', { class: 'mhead' }, A.h('span', { class: 'd' }, tight ? `${MON[e.m - 1]} ${e.d}` : `${DOW[e.weekday].slice(0, 3)} ${MON[e.m - 1]} ${e.d}`), A.h('span', { class: `rate ${e.rating}` }, T.RATING_WORDS[e.rating].replace(/ Date$/, ''))),
+        dateCharts(e.y, e.m, e.d, view.psyche),
+        c <= 2 ? A.h('div', { class: 'mfoot' }, A.h('b', {}, e.dv.text), A.h('span', { class: 'muted small nm' }, nameOf(e.dv))) : null,
+        c <= 2 ? A.h('div', { class: 'mfoot muted small' }, `Essence ${e.lp.text} · Outer ${e.outer.text} · Inner ${e.inner.text}`) : null,
+        c <= 2 && R.dayVibration && R.dayVibration[e.dv.sum] ? A.h('div', { class: 'mfoot muted small' }, R.dayVibration[e.dv.sum].keywords) : null))));
     };
-    A.render(A.h('div', { class: 'screen qscreen tscreen' }, top('Coming Days', '#/', A.h('a', { class: 'btn iconbtn', href: '#/today', 'aria-label': 'Today', title: 'Today' }, '☀')),
+    A.render(A.h('div', { class: 'screen qscreen tscreen wide' }, top('Coming Days', '#/', A.h('a', { class: 'btn iconbtn', href: '#/today', 'aria-label': 'Today', title: 'Today' }, '☀')),
       $chips,
       A.h('div', { class: 'row ynav tnav' }, A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'A month earlier', onclick: () => { start = shift(start, -31); draw(); } }, '‹'), $date, A.h('span', { class: 'muted small' }, '31 days'), A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'A month later', onclick: () => { start = shift(start, 31); draw(); } }, '›')),
       $body,
@@ -431,9 +426,14 @@
   const vibeText = (B, n) => { const P = B.prices || {}; const x = (P.sums || {})[n] || (P.clean || {})[n]; return x ? { text: x.text, title: x.title || '', page: x.page } : null; };
   function priceView() {
     light();
-    const state = recall('priceTool', { vibe: 23, range: 1, price: '' });
+    const state = recall('priceTool', { vibe: 23, range: 1, price: '', mode: 'check' });
     if (!T.PRICE_VIBES.some(([v]) => v === state.vibe)) state.vibe = 23;
-    const $check = A.h('div', {}), $list = A.h('div', {}), $vibes = A.h('div', { class: 'vib' }), $ranges = A.h('div', { class: 'vib' });
+    if (!T.PRICE_RANGES[state.range]) state.range = 1;
+    state.mode = state.mode === 'find' ? 'find' : 'check';
+    const $check = A.h('div', {}), $list = A.h('div', {});
+    // Find a Price: two pickers (the vibration the price should carry, the range) instead of 22 chips (owner 2026-10-16: "a total mess").
+    const $vibe = A.h('select', { class: 'pickbox', 'aria-label': 'What the price should feel like' });
+    const $range = A.h('select', { class: 'pickbox', 'aria-label': 'Price range' });
     const $in = A.h('input', { type: 'text', inputmode: 'decimal', placeholder: 'any price', 'aria-label': 'Price' });
     const fmt = (p) => '$' + Number(p).toLocaleString('en-US');
     const topCls = (w) => (w.top && N.TENSION[w.top.sum] ? 'r' : w.ratio >= 0.3 ? 'r' : w.ratio > 0 ? 'y' : 'g');
@@ -451,7 +451,7 @@
     const drawCheck = () => {
       remember('priceTool', state);
       const c = T.priceCheck($in.value);
-      if (!c) { A.fill($check, A.h('p', { class: 'muted small', style: 'margin:6px 2px' }, 'Type a price to read it: digit sum, clean number, the pyramid, the book\'s rules and what each number in it means in business.')); return; }
+      if (!c) { A.fill($check, A.h('p', { class: 'muted small', style: 'margin:6px 2px' }, 'Type a price to read it: its digit sum, clean number, pyramid, the book\'s rules and what each number in it means in business. Or tap Find a Price to be given prices that fit.')); return; }
       const rows = c.pyramid.slice().reverse();
       const W = c.weight;
       const P = B.prices || {};
@@ -479,29 +479,49 @@
         ...shown.map(([n, label]) => bizCard(n, label)),
         fits.length ? A.h('div', {}, head('Suits'), A.h('div', { class: 'codes' }, ...fits.map((f) => A.h('span', { class: 'soft' }, f.replace(/(^|[\s/,])([a-z])/g, (m, a, b) => a + b.toUpperCase()))))) : null);
     };
+    const shortWords = (v) => { const w = vibeWords(B, v); return w ? w.split(/[,;:(]| and /)[0].replace(/^(a|the) /i, '').toLowerCase() : ''; };
+    const fillPicks = () => {
+      A.fill($vibe, ...T.PRICE_VIBES.map(([v]) => A.h('option', { value: String(v), selected: state.vibe === v }, `${T.val(v).text}${shortWords(v) ? ' · ' + shortWords(v) : ''}`)));
+      A.fill($range, ...T.PRICE_RANGES.map(([lo, hi], i) => A.h('option', { value: String(i), selected: state.range === i }, `${fmt(lo)} to ${fmt(hi)}`)));
+    };
+    $vibe.onchange = () => { state.vibe = Number($vibe.value); A.count('price.vibe'); drawFind(); };
+    $range.onchange = () => { state.range = Number($range.value); A.count('price.range'); drawFind(); };
     const drawFind = () => {
       remember('priceTool', state);
-      A.fill($vibes, ...T.PRICE_VIBES.map(([v]) => { const w = vibeWords(B, v); return A.h('button', { type: 'button', class: 'chip' + (state.vibe === v ? ' active' : ''), title: w, onclick: () => { state.vibe = v; A.count('price.vibe'); drawFind(); } }, T.val(v).text, w ? A.h('small', {}, w.split(/[,;:(]| and /)[0].replace(/^(a|the) /i, '').toLowerCase()) : null); }));
-      A.fill($ranges, ...T.PRICE_RANGES.map(([lo, hi], i) => A.h('button', { type: 'button', class: 'chip' + (state.range === i ? ' active' : ''), onclick: () => { state.range = i; A.count('price.range'); drawFind(); } }, `${fmt(lo)}–${fmt(hi)}`)));
+      fillPicks();
       const range = T.PRICE_RANGES[state.range];
       const found = T.priceFind(state.vibe, range, 60);
-      const words = vibeWords(B, state.vibe), own = vibeText(B, state.vibe);
+      const words = vibeWords(B, state.vibe), own = vibeText(B, state.vibe), v = T.val(state.vibe);
       const examples = ((B.prices || {}).examples || []).filter((x) => x.sum === state.vibe && x.price >= range[0] && x.price <= range[1]);
       const isEx = new Set(examples.map((x) => x.price));
-      const pick = (p) => { $in.value = String(p); state.price = $in.value; A.count('price.pick'); drawCheck(); window.scrollTo({ top: 0, behavior: 'smooth' }); };
-      A.fill($list, A.h('p', { class: 'muted small', style: 'margin:2px 2px 8px' }, `${T.val(state.vibe).text}${words ? ': ' + words : ''}.`),
-        own ? A.h('div', { class: 'reading', onclick: () => { A.count('price.vibe_text'); A.sheet(A.h('div', { class: 'numsheet' }, A.h('h3', {}, `${T.val(state.vibe).text} Prices`), A.h('p', {}, own.text))); } }, A.h('p', {}, snippet(own.text, 2)), A.h('p', { class: 'muted small' }, 'Tap for the whole page.')) : null,
+      // A found price goes into Check a Price, which opens on it.
+      const pick = (p) => { $in.value = String(p); state.price = $in.value; A.count('price.pick'); setMode('check'); drawCheck(); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+      A.fill($list,
+        A.h('div', { class: 'bignum', onclick: () => numberSheet(v, 'about') }, A.h('b', {}, v.text), A.h('span', { class: 'nm' }, nameOf(v)), words ? A.h('span', { class: 'ty' }, words.replace(/^./, (x) => x.toUpperCase())) : null),
+        own ? A.h('div', { class: 'reading', onclick: () => { A.count('price.vibe_text'); A.sheet(A.h('div', { class: 'numsheet' }, A.h('h3', {}, `${v.text} Prices`), A.h('p', {}, own.text))); } }, A.h('p', {}, snippet(own.text, 2)), A.h('p', { class: 'muted small' }, 'Tap for the whole page.')) : null,
         examples.length ? A.h('div', {}, head('The Book\'s Own Examples'), A.h('div', { class: 'codes' }, ...examples.map((x) => A.h('span', { class: 'soft', role: 'button', onclick: () => pick(x.price) }, fmt(x.price) + (x.note ? ' · ' + x.note : ''))))) : null,
-        found.length ? A.h('div', { class: 'prices' }, ...found.map((c) => A.h('div', { class: 'prow', role: 'button', onclick: () => pick(c.price) },
-          A.h('b', {}, fmt(c.price), isEx.has(c.price) ? A.h('small', { class: 'inbook' }, ' in the book') : null), A.h('span', { class: 'ds' }, c.clean && c.sum !== state.vibe ? 'clean' : c.value.text), A.h('span', { class: 'top ' + topCls(c.weight) }, `top ${c.weight.top ? c.weight.top.text : '–'}`)))) : A.h('p', { class: 'muted' }, 'No price in this range lands on that number without a warning.'),
-        A.h('p', { class: 'muted small', style: 'margin:10px 2px' }, 'The book\'s rules: the digit sum lands on the chosen number (or the number stands in the price followed by zeros), the last digit is 5, 7 or 9, never 4 and 8 together, never 12/3 or 16/7, of the 8s only 8 and 17/8, 18/9 only as a sharp offer. Green, yellow and red is the number pyramid\'s weight, lightest first. Tap a price to read it above.'));
+        head(found.length ? `${found.length} Prices That Fit` : 'Prices That Fit'),
+        found.length ? A.h('div', { class: 'prices' }, ...found.map((c) => A.h('button', { type: 'button', class: 'prow', onclick: () => pick(c.price) },
+          A.h('b', {}, fmt(c.price)),
+          A.h('span', { class: 'pmeta' }, A.h('span', { class: 'ds' }, c.clean && c.sum !== state.vibe ? 'clean' : c.value.text), A.h('span', { class: 'top ' + topCls(c.weight) }, `top ${c.weight.top ? c.weight.top.text : '–'}`), isEx.has(c.price) ? A.h('span', { class: 'inbook' }, 'in the book') : null))))
+          : A.h('p', { class: 'muted' }, 'No price in this range lands on that number without a warning. Try another range.'),
+        A.h('p', { class: 'muted small', style: 'margin:10px 2px' }, 'Every price here follows the book\'s rules: it adds up to the chosen number (or the number stands in the price followed by zeros), ends in 5, 7 or 9, never puts 4 and 8 together, and is never 12/3 or 16/7. Green, yellow and red is the number pyramid\'s weight, lightest first. Tap a price to read it.'));
+    };
+    // Two jobs, one at a time: Check a Price (type one) or Find a Price (pick what it should feel like).
+    const $tabs = A.h('div', { class: 'chips tabs ptabs' });
+    const $checkSec = A.h('div', {}, A.h('div', { class: 'pricebox' }, A.h('span', { class: 'cur' }, '$'), $in), $check);
+    const $findSec = A.h('div', {},
+      A.h('div', { class: 'picks' }, A.h('label', { class: 'pick' }, A.h('span', { class: 'muted small' }, 'The price should feel like'), $vibe), A.h('label', { class: 'pick' }, A.h('span', { class: 'muted small' }, 'Between'), $range)),
+      $list);
+    const setMode = (m) => {
+      if (m) { state.mode = m; remember('priceTool', state); }
+      A.fill($tabs, chip('Check a Price', state.mode === 'check', () => setMode('check')), chip('Find a Price', state.mode === 'find', () => { A.count('price.find'); setMode('find'); }));
+      $checkSec.classList.toggle('hidden', state.mode !== 'check'); $findSec.classList.toggle('hidden', state.mode !== 'find');
     };
     $in.addEventListener('input', () => { state.price = $in.value; drawCheck(); });
     $in.value = state.price || '';
-    A.render(A.h('div', { class: 'screen qscreen tscreen' }, top('Price Tool'),
-      A.h('div', { class: 'wlabel tl' }, 'Check a Price'), A.h('div', { class: 'pricebox' }, A.h('span', { class: 'cur' }, '$'), $in), $check,
-      A.h('div', { class: 'wlabel tl', style: 'padding-top:16px' }, 'Find a Price'), $vibes, $ranges, $list));
-    drawCheck(); drawFind();
+    A.render(A.h('div', { class: 'screen qscreen tscreen' }, top('Price Tool'), $tabs, $checkSec, $findSec));
+    setMode(); drawCheck(); drawFind();
     // The books' words arrive with bizwords.js: draw again with them.
     if (!root.BizWords) bizwords().then((w) => { B = w; if ($list.isConnected) { drawCheck(); drawFind(); } });
   }
@@ -607,8 +627,8 @@
   const USAGE_LABELS = {
     'screen.today': 'Today', 'screen.coming': 'Coming Days', 'screen.numberfun': 'Number Fun', 'screen.price': 'Price Tool', 'screen.relation': 'Relationship', 'screen.karmic': 'Karmic Connections', 'screen.mychart': 'My Chart (settings)',
     'home.today': 'Home → Today', 'home.coming': 'Home → Coming Days', 'home.numberfun': 'Home → Number Fun', 'home.price': 'Home → Price Tool', 'home.relation': 'Home → Relationship', 'home.karmic': 'Home → Karmic Connections', 'home.mychart': 'Home → My Chart',
-    'today.psyche': 'Today: psyche charts on or off', 'today.full': 'Today: full screen day', 'today.ruler': 'Today: ruler of the day', 'today.company': 'Today: a company started this day', 'dayfull.move': 'Full screen day: previous or next day', 'coming.open_day': 'Coming Days: open a day', 'coming.size': 'Coming Days: bigger or smaller', 'coming.list': 'Coming Days: list view', 'coming.charts': 'Coming Days: charts view', 'coming.super_only': 'Coming Days: super dates only', 'numberfun.type': 'Number Fun: type a number', 'numberfun.tap_diamond': 'Number Fun: tap a diamond', 'numberfun.tap_other': 'Number Fun: tap a number it appears in',
-    'price.vibe': 'Price Tool: pick a vibration', 'price.range': 'Price Tool: pick a range', 'price.pick': 'Price Tool: pick a found price', 'price.number': 'Price Tool: a number in the price', 'price.vibe_text': 'Price Tool: the book\'s page for a vibration', 'relation.use_me': 'Relationship: me as the first person', 'mychart.save': 'My Chart: save',
+    'today.psyche': 'Today: psyche charts on or off', 'today.full': 'Today: full screen day', 'today.ruler': 'Today: ruler of the day', 'today.company': 'Today: a company started this day', 'dayfull.move': 'Full screen day: previous or next day', 'coming.open_day': 'Coming Days: open a day', 'coming.size': 'Coming Days: chart size', 'coming.super_only': 'Coming Days: super dates only', 'numberfun.type': 'Number Fun: type a number', 'numberfun.tap_diamond': 'Number Fun: tap a diamond', 'numberfun.tap_other': 'Number Fun: tap a number it appears in',
+    'price.find': 'Price Tool: Find a Price', 'price.vibe': 'Price Tool: pick a vibration', 'price.range': 'Price Tool: pick a range', 'price.pick': 'Price Tool: pick a found price', 'price.number': 'Price Tool: a number in the price', 'price.vibe_text': 'Price Tool: the book\'s page for a vibration', 'relation.use_me': 'Relationship: me as the first person', 'mychart.save': 'My Chart: save',
   };
 
   function install(app) {

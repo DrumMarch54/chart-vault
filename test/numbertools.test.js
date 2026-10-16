@@ -73,6 +73,12 @@ test('coming days and ratings', () => {
   // Good: nothing to avoid, but not the full set of codes. The reasons say what is missing.
   const good = T.comingDays(2026, 1, 1, 365).find((d) => d.rating === 'good');
   assert.ok(good && good.reasons.some((r) => r.startsWith('no ') || r.includes('use with care')));
+  // A primary code as the BIG essence alone is not enough: 31 Oct 2026 (31/4 day, essence 6, big essence 15/6, 46/1
+  // natural talent) is not a Super Date (owner, 2026-10-16); the day or the essence itself must carry the code.
+  const oct31 = T.dayEnergy(2026, 10, 31);
+  assert.equal(oct31.rating, 'good'); assert.ok(oct31.reasons.some((r) => r.startsWith('no primary success code as the day or the essence')));
+  const oct17 = T.dayEnergy(2026, 10, 17); // 17/8 day: a soft primary code as the day itself, 10/1 strong as the essence
+  assert.equal(oct17.rating, 'super');
   assert.equal(T.dayEnergy(2026, 2, 30), null);
 });
 

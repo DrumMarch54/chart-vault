@@ -47,7 +47,7 @@
     'screen.tags': 'All Tags', 'screen.upload': 'Upload Screenshots', 'screen.import': 'Import Tags', 'screen.status': 'Status and backup',
     'viewer.add_tag': 'Add a tag to a chart', 'quick.save': 'Save a quick chart', 'quick.full_screen': 'Quick Chart full screen',
     'quick.year_rows': 'Year Rows and Day Vibrations', 'quick.show_parts': 'Show and Hide Parts', 'quick.augment': 'Augmentation On or Off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
-    'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'viewer.number_tap': 'Tap a number on a chart', 'status.recompute': 'Recompute chart numbers',
+    'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'viewer.number_tap': 'Tap a number on a chart', 'status.recompute': 'Recompute chart numbers',
   };
   const count = (name) => { try { fetch('/api/usage', { method: 'POST', credentials: 'same-origin', keepalive: true, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name }) }).catch(() => {}); } catch { /* counting never breaks a tap */ } };
 
@@ -75,7 +75,7 @@
   const chartLabel = (key) => (key === '*' ? 'any chart' : ((catalog && catalog.charts.find((c) => c.key === key)) || {}).label || key);
   const posLabel = (pos) => { const [chart, key = '*'] = String(pos).split('.'); if (key === '*') return chart === '*' ? 'anywhere' : `anywhere in the ${chartLabel(chart).toLowerCase()}`; const p = catalog && catalog.positions.find((x) => x.chart === chart && x.key === key); return `${p ? p.label : key} · ${chartLabel(chart)}`; };
   // "12" reads 12/3; "/3" reads "digit sum 3".
-  const numLabel = (num) => { const m = /^(\d+)?(?:\/(\d))?$/.exec(String(num)); if (!m) return String(num); if (!m[1]) return `digit sum ${m[2]}`; const n = Number(m[1]); return n < 10 ? String(n) : `${n}/${TagCodes.digitSum(n)}`; };
+  const numLabel = (num) => { if (/\+/.test(String(num))) return String(num).split('+').map(numLabel).join(' and '); const m = /^(\d+)?(?:\/(\d))?$/.exec(String(num)); if (!m) return String(num); if (!m[1]) return `digit sum ${m[2]}`; const n = Number(m[1]); return n < 10 ? String(n) : `${n}/${TagCodes.digitSum(n)}`; };
   const searchLabel = (pos, num) => `${numLabel(num)} in ${posLabel(pos)}`;
   const positionHash = (pos, num) => `#/?pos=${encodeURIComponent(pos)}&num=${encodeURIComponent(num)}`;
 
@@ -373,14 +373,17 @@
     if (position) rememberSearch([], kind, position);
     if (name) rememberSearch([], kind, { name });
     if (!namesLoaded) loadTagNames().then(() => { if (tag && document.activeElement !== $input) $input.value = pretty(tag); });
-    const $quick = h('a', { class: 'btn btn-primary btn-block quickbtn', href: '#/quick' }, h('span', { class: 'qicon' }, '◈'), 'Quick Chart');
-    const $byPos = h('a', { class: 'btn btn-block quickbtn posbtn', href: '#/position' }, h('span', { class: 'qicon' }, '⌖'), 'Search by Position');
+    // Under the search bar: three small tiles side by side (the three big stacked buttons were too much, owner 2026-10-16).
+    const $acts = h('div', { class: 'acts' },
+      h('a', { class: 'act primary', href: '#/quick', onclick: () => count('home.quick') }, h('span', { class: 'qicon' }, '◈'), h('span', { class: 'al' }, 'Quick Chart')),
+      h('a', { class: 'act', href: '#/position', onclick: () => count('home.position') }, h('span', { class: 'qicon' }, '⌖'), h('span', { class: 'al' }, 'By Position')),
+      readingUi ? readingUi.homeButton() : null);
     drawCmpBar(true);
     render(h('div', { class: `screen ${home ? 'home' : ''}` },
       home ? h('div', { class: 'pagetop hometop' }, h('h1', {}, 'Chart Vault'), $gear) : null,
       h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), home ? null : $quickIcon, home ? null : $gear), $filters),
       home && readingUi ? readingUi.homeBanner() : null,
-      home ? $quick : null, home ? $byPos : null, home && readingUi ? readingUi.homeButton() : null, home && toolsUi ? toolsUi.homeButtons() : null,
+      home ? $acts : null, home && toolsUi ? toolsUi.homeButtons() : null,
       $recent, home ? null : $summary, home ? null : $grid, home ? null : $sentinel));
     // Recently Opened charts (this phone remembers the last 48), a grid like a search result, only on the home screen.
     if (home && recentIds().length) {
@@ -1279,12 +1282,16 @@
     // off in the menu to see the raw values. Remembered per phone.
     let augment = true; try { augment = localStorage.getItem('quickAugment') !== 'off'; } catch {}
     const input = () => ({ day: $day.value, month: $month.value, year: $year.value, name: $name.value, augment });
+    // What was typed stays on this device: back out, come back, and it is still there (owner's rule 2026-10-16).
+    const DRAFT = 'quickDraft';
+    const saveDraft = () => { try { localStorage.setItem(DRAFT, JSON.stringify({ day: $day.value, month: $month.value, year: $year.value, name: $name.value })); } catch {} };
+    const loadDraft = () => { try { const d = JSON.parse(localStorage.getItem(DRAFT) || 'null'); if (d) { $day.value = d.day || ''; $month.value = d.month || ''; $year.value = d.year || ''; $name.value = d.name || ''; } } catch {} };
     const draw = () => {
       data = Numeroscope.numeroscope(input());
       svg = numeroscopeSvg(data); fill($chart, svg); applyShow(svg, show);
     };
     $chart.addEventListener('click', (e) => { const t = e.target.closest && e.target.closest('[data-word]'); if (t) openWord(t.getAttribute('data-word'), data && data.essence.day); });
-    for (const el of [$day, $month, $year, $name]) el.addEventListener('input', draw);
+    for (const el of [$day, $month, $year, $name]) el.addEventListener('input', () => { saveDraft(); draw(); });
     // The ⋮ menu sits beside the name field, never on the chart: Full screen and Save to Vault. Taps outside close it.
     const $full = h('button', { type: 'button', class: 'cmenu-item' }, 'Full screen');
     const $save = h('button', { type: 'button', class: 'cmenu-item' }, 'Save to Vault');
@@ -1333,9 +1340,10 @@
       h('div', { class: 'row qfields qname' }, $name, $dots, $menu), $home));
     // Opened from the home screen's "My Chart" button: the saved name and birth date fill the boxes.
     const me = query && query.get('me') && toolsUi ? toolsUi.myChart() : null;
-    if (me && me.day) { $day.value = String(me.day); $month.value = String(me.month); $year.value = String(me.year); $name.value = me.name || ''; }
+    if (me && me.day) { $day.value = String(me.day); $month.value = String(me.month); $year.value = String(me.year); $name.value = me.name || ''; saveDraft(); }
+    else loadDraft();
     draw();
-    if (!(me && me.day)) setTimeout(() => $name.focus(), 50);
+    if (!$name.value) setTimeout(() => $name.focus(), 50);
   };
 
   // ---------- all tags ----------
@@ -1347,20 +1355,24 @@
   routes.position = async function positionView(_, query) {
     const startPos = query.get('pos') || '', startNum = query.get('num') || '';
     let chart = startPos ? startPos.split('.')[0] : 'name'; try { if (!startPos) chart = localStorage.getItem('posChart') || 'name'; } catch {}
-    const $num = h('input', { type: 'text', inputmode: 'numeric', placeholder: 'Number, like 12', autocomplete: 'off', maxlength: 3, value: startNum.replace('/', ''), enterkeyhint: 'search' });
+    // Two numbers ("4" and "9") look for a combination: the two parts of a center or a diamond, either way round.
+    const [startA, startB = ''] = startNum.split('+');
+    const $num = h('input', { type: 'text', inputmode: 'numeric', placeholder: 'Number, like 12', autocomplete: 'off', maxlength: 3, value: startA.replace('/', ''), enterkeyhint: 'search' });
+    const $num2 = h('input', { type: 'text', inputmode: 'numeric', placeholder: 'and…', autocomplete: 'off', maxlength: 3, value: startB.replace('/', ''), enterkeyhint: 'search', 'aria-label': 'Second number of a combination' });
     const $ds = h('button', { type: 'button', class: 'chip off', title: 'Digit sum' }, 'as a digit sum');
-    let ds = startNum.startsWith('/');
+    let ds = startA.startsWith('/');
+    const combo = () => !!($num.value.trim() && $num2.value.trim());
     const $charts = h('div', { class: 'chips tabs' });
     const $list = h('div', { class: 'stack poslist' });
     const $hint = h('p', { class: 'muted small' });
     render(h('div', { class: 'screen' }, pageTop('Search by Position', '#/'),
-      h('div', { class: 'row posnum', style: 'flex-wrap:nowrap' }, $num, $ds), $hint, $charts, $list));
+      h('div', { class: 'row posnum', style: 'flex-wrap:nowrap' }, $num, h('span', { class: 'muted small andword' }, 'and'), $num2, $ds), $hint, $charts, $list));
     try { await loadCatalog(); } catch (err) { fill($list, h('p', { class: 'err' }, err.message)); return; }
     let counts = null, seq = 0;
-    const numText = () => { const n = $num.value.trim(); if (!n) return ''; return ds ? `/${n.slice(-1)}` : n; };
+    const numText = () => { const n = $num.value.trim(); if (!n) return ''; if (combo()) return `${n}+${$num2.value.trim()}`; return ds ? `/${n.slice(-1)}` : n; };
     const refresh = async () => {
       const n = numText(); const my = ++seq;
-      $ds.classList.toggle('hidden', !/^\d$/.test($num.value.trim()));
+      $ds.classList.toggle('hidden', combo() || !/^\d$/.test($num.value.trim()));
       if (!n) { counts = null; drawList(); return; }
       try { const c = await api('/api/positions/counts?num=' + encodeURIComponent(n)); if (my === seq) { counts = c; drawList(); } } catch (err) { if (my === seq) { counts = { error: err.message }; drawList(); } }
     };
@@ -1368,7 +1380,7 @@
     const pick = (pos) => { const n = numText(); if (!n) { $num.focus(); toast('Type a number first', true); return; } count('position.search'); go(positionHash(pos, n)); };
     const drawList = () => {
       const n = numText();
-      $hint.textContent = n ? (counts && !counts.error ? `${fmtN(counts.total)} chart${counts.total === 1 ? '' : 's'} have ${numLabel(n)} somewhere. Tap a position.` : '') : 'Type a number, then tap the position to look in. Charts are found by their name and date, tags or not.';
+      $hint.textContent = n ? (counts && !counts.error ? `${fmtN(counts.total)} chart${counts.total === 1 ? '' : 's'} have ${numLabel(n)}${combo() ? ' meeting in a center or diamond (one digit means the digit sum, so 4 finds a 13/4 or a 22/4)' : ' somewhere'}. Tap a position.` : '') : 'Type a number, then tap the position to look in. Two numbers find a combination: 4 and 9 meeting in a center or a diamond. Charts are found by their name and date, tags or not.';
       if (counts && counts.error) { fill($list, h('p', { class: 'err' }, counts.error)); return; }
       const cnt = (pos) => (counts ? (pos.endsWith('.*') ? (pos === '*.*' ? counts.total : counts.perChart[pos.split('.')[0]] || 0) : counts.counts[pos] || 0) : null);
       const row = (pos, label, note) => { const c = cnt(pos); return h('button', { type: 'button', class: `posrow ${c === 0 ? 'none' : ''}`, onclick: () => pick(pos) }, h('span', { class: 'pl' }, h('span', {}, label), note ? h('span', { class: 'muted small' }, note) : null), h('b', {}, c === null ? '' : fmtN(c))); };
@@ -1376,12 +1388,15 @@
       if (chart === '*') out.push(row('*.*', 'Anywhere', 'Any position of any chart'), ...catalog.charts.map((c) => row(`${c.key}.*`, `Anywhere in the ${c.label.toLowerCase()}`, c.note)));
       else {
         const c = catalog.charts.find((x) => x.key === chart);
-        out.push(row(`${chart}.*`, `Anywhere in the ${c.label.toLowerCase()}`, c.note), ...catalog.positions.filter((p) => p.chart === chart).map((p) => row(`${chart}.${p.key}`, p.label)));
+        const list = catalog.positions.filter((p) => p.chart === chart && (!combo() || p.combo));
+        out.push(row(`${chart}.*`, `Anywhere in the ${c.label.toLowerCase()}`, combo() ? 'Any center or diamond of it' : c.note), ...list.map((p) => row(`${chart}.${p.key}`, p.label)));
       }
       fill($list, ...out);
     };
-    $num.addEventListener('input', () => { clearTimeout($num.t); $num.t = setTimeout(refresh, 150); });
-    $num.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $num.blur(); } });
+    for (const el of [$num, $num2]) {
+      el.addEventListener('input', () => { clearTimeout($num.t); $num.t = setTimeout(refresh, 150); });
+      el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); el.blur(); } });
+    }
     $ds.onclick = () => { ds = !ds; $ds.classList.toggle('active', ds); $ds.classList.toggle('off', !ds); refresh(); };
     $ds.classList.toggle('active', ds); $ds.classList.toggle('off', !ds);
     drawCharts(); refresh();

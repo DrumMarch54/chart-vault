@@ -87,7 +87,9 @@
       words: live, first, last, middle, le, big,
       upperLeft: ul, upperRight: ur, heart, heartExtra, mindDiamond: joined(ul, ur),
       lowerLeft: ll, lowerRight: lr, solar, solarExtra, emotionDiamond: joined(ll, lr),
-      leDiamond: first && last ? joined(first.value, last.value) : null,
+      // The name line diamond is the first name beside the last name. It only exists when the line is those two
+      // words: a middle name sits between them and there is no diamond (owner's rule, 2026-10-16).
+      leDiamond: first && last && !middle.length ? joined(first.value, last.value) : null,
       pillar, spineDiamond, spine, letters,
     };
   }

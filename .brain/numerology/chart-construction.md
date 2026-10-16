@@ -61,6 +61,9 @@ CONFIRMED for the name chart, consonant chart and vowel chart:
 9. Letter count of all names (8 for "Test test") in the small blue circle to
    the right of the name chart.
 Nothing above the name line is computed without a day.
+The name line diamond (first name beside last name, tag `nldiamond`) only exists when the line is exactly
+those two words; with a middle name there is no name line diamond at all (owner's rule, 2026-10-16;
+`rhombus` returns `leDiamond: null` then, and the position search stores nothing for it).
 
 From the class manual (Katrine Ditte Pilmark, born 19 August 1984), middle
 names:

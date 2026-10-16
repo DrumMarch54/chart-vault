@@ -28,7 +28,7 @@ chart was recomputed and the tagged number looked up in every position.
 | ed | emotional diamond = lower auras side by side | 4 of 4 |
 | sd | spine diamond = day beside LE | 24 of 27 |
 | plr | pillar | 1 of 1 |
-| nldiamond | name line diamond = first beside last | 4 of 4 |
+| nldiamond | name line diamond = first beside last; only exists for a first + last name, a middle name means no diamond (owner 2026-10-16) | 4 of 4 |
 | psn | personality number (consonants LE, little or big) | 33 of 33 |
 | hd | heart's desire (vowels LE, little or big) | 11 of 11 |
 | vmd / ved | vocation mental / emotional diamond | owner, 1 of 1 |

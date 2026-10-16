@@ -32,7 +32,10 @@ const at = (rows, chart, position, n = 0) => rows.find((r) => r.chart === chart 
 
 test('every catalog position yields a number for a full input, and the class manual example is right', () => {
   const rows = P.computeValues(KATRINE);
-  for (const p of P.POSITIONS) assert.ok(at(rows, p.chart, p.key), `${p.chart}.${p.key} computed nothing`);
+  // Katrine has a middle name, so the name charts' name line diamond (first beside last) does not exist for her.
+  const noDiamond = (p) => p.key === 'leDiamond' && ['name', 'vocation', 'personality'].includes(p.chart);
+  for (const p of P.POSITIONS) assert.equal(!!at(rows, p.chart, p.key), !noDiamond(p), `${p.chart}.${p.key}`);
+  assert.equal(at(P.computeValues({ ...KATRINE, name: 'Katrine Pilmark' }), 'name', 'leDiamond').sum, 23);
   assert.equal(at(rows, 'name', 'pillar').sum, 41);
   assert.equal(at(rows, 'name', 'heart').sum, 7); assert.equal(at(rows, 'name', 'heartExtra').sum, 16);
   assert.equal(at(rows, 'name', 'middle').sum, 18); assert.equal(at(rows, 'name', 'first').sum, 20); assert.equal(at(rows, 'name', 'last').sum, 21);
@@ -67,6 +70,17 @@ test('store, search by position, tag check, fix and clear', () => {
   assert.deepEqual(ids({ chart: '*', position: '*', number: 41 }), [k]);
   assert.deepEqual(ids({ chart: 'name', position: 'pillar', number: 5, ds: true }), [k]);
   assert.deepEqual(ids({ chart: 'name', position: 'heart', number: 99 }), []);
+  // Combinations: Katrine's lower auras are 3 and 4 (tag 4combo3mc is the mind center: upper auras 4 and 3).
+  const combo = (a, b) => ({ combo: [{ number: a, ds: a < 10 }, { number: b, ds: b < 10 }] });
+  assert.deepEqual(ids({ chart: 'name', position: 'heart', ...combo(4, 3) }), [k]);
+  assert.deepEqual(ids({ chart: 'name', position: 'heart', ...combo(3, 4) }), [k]); // either way round
+  assert.deepEqual(ids({ chart: 'name', position: 'heart', ...combo(4, 9) }), []);
+  assert.deepEqual(ids({ chart: 'name', position: '*', ...combo(4, 3) }), [k]);
+  assert.deepEqual(ids({ chart: '*', position: '*', ...combo(4, 3) }), [k]);
+  assert.deepEqual(ids({ chart: 'name', position: 'first', ...combo(4, 3) }), []); // not a center or diamond
+  const cc = P.positionCounts(db, combo(4, 3));
+  assert.equal(cc.counts['name.heart'], 1); assert.equal(cc.counts['name.mindDiamond'], 1); assert.equal(cc.perChart.name, 1); assert.equal(cc.total, 1);
+  assert.ok(P.comboPositions('name').some((p) => p.key === 'heart') && !P.comboPositions('name').some((p) => p.key === 'first'));
   const c = P.positionCounts(db, { number: 16 });
   assert.equal(c.counts['name.heart'], 1); assert.equal(c.counts['name.heartExtra'], 1); assert.equal(c.perChart.name, 2); assert.equal(c.total, 2);
   // the owner's tags: 7mc, 16mc (extra), 41plr, 34md, 43md (digits the other way), 9lp (digit sum of 13/4? no: 18/9 is the outer diamond; LP is 13/4 -> disagrees), 4combo3mc (auras 3 and 4), 19day agree; 8mc disagrees
@@ -115,6 +129,12 @@ test('parseNumber reads what the owner types', () => {
   assert.deepEqual(P.parseNumber('/3'), { number: 3, ds: true });
   assert.deepEqual(P.parseNumber(' 7 '), { number: 7, ds: false });
   for (const bad of ['', 'abc', '1234', '12/34', null]) assert.equal(P.parseNumber(bad), null, String(bad));
+  // Two numbers = a combination in a center or diamond; a one-digit part is the digit sum, a bigger one exact.
+  const c = P.parseNumber('4+9');
+  assert.deepEqual(c.combo, [{ number: 4, ds: true }, { number: 9, ds: true }]); assert.equal(c.number, 4);
+  assert.deepEqual(P.parseNumber('13 and 18').combo, [{ number: 13, ds: false }, { number: 18, ds: false }]);
+  assert.deepEqual(P.parseNumber('4 9').combo, P.parseNumber('4, 9').combo);
+  assert.equal(P.parseNumber('4+abc'), null);
 });
 
 // --- API ---

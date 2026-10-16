@@ -46,6 +46,12 @@ course's wording, checked with NotebookLM (owner pasted its answer 2026-10-15):
   somewhere in the day chart; no use-with-care number in a psyche center, pillar or life expression.
 - Good: everything else. Over 2026 this gives about 30 Super, 100 Good, 235 Beware days (2026 is a 10/1 year,
   so essences of 11/2 and 12/3 are common). The reasons are listed on the Today screen and the full-screen day.
+2026-10-16, owner: 31 Oct 2026 (31/4 day, essence 6, big essence 15/6, 46/1 natural talent, 41/5 diamonds) is
+"definitely not" a Super Date. The rule had counted a primary code as the BIG essence as the dominant position; the
+book's strongest positions are the day vibration and the essence ("GV or ST", p. 31), and the big essence only repeats
+the essence's digit sum. Now a Super Date needs the primary code as the day or the essence itself. 2026: 22 Super,
+106 Good, 237 Beware. Still open if the owner disagrees with another date: the Superdates intro/outro transcripts
+(knowledge/raw/biz-transcript-superdates-*.md) give the codes and the numbers to avoid but no count or threshold.
 Still unread: the "Module 4" lesson the Cosmic Calendar refers to (how the tool itself computes the colors);
 if the owner finds the paid tool disagreeing with the app on a date, that is where to look.
 

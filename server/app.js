@@ -33,7 +33,7 @@ function positionOf(q) {
   if (!pos || !num) return null;
   const [chart, position = '*'] = pos.split('.');
   if (!CHART_KEYS.has(chart) || !/^[A-Za-z*]+$/.test(position)) return null;
-  return { chart, position, number: num.number, ds: num.ds };
+  return { chart, position, number: num.number, ds: num.ds, combo: num.combo || null };
 }
 
 export function createApp(db, { log = console.log } = {}) {

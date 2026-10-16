@@ -209,7 +209,7 @@
       api('/api/ai/spend').then((s) => fill($b, warningNode(s.warning))).catch(() => {});
       return $b;
     }
-    const homeButton = () => h('a', { class: 'btn btn-block quickbtn posbtn', href: '#/ask', onclick: () => count('home.ask') }, h('span', { class: 'qicon' }, '?'), 'Ask the Vault');
+    const homeButton = () => h('a', { class: 'act', href: '#/ask', onclick: () => count('home.ask') }, h('span', { class: 'qicon' }, '?'), h('span', { class: 'al' }, 'Ask the Vault'));
 
     return { section, homeBanner, homeButton, USAGE_LABELS };
   }

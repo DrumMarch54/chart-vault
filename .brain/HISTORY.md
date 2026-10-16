@@ -422,3 +422,31 @@ $8 with a warning in the app when close and when reached, every Hub document tha
   Owner's answers: blue = "use your common sense" (taken as the book's heading color, no rating shown); a business
   Super Date need not contain 23/5 (no change); other digit sums are not avoided, "just be smart" (now a tip, the
   verdict stays Good).
+
+## 2026-10-16 The owner's list after a day on the phone: eleven fixes
+The owner wrote a list and sent it in one message. What changed and why:
+- Search by Position takes two numbers: "4" and "9" find every chart with 4 and 9 meeting in a center or a
+  diamond, either way round (`comboSql` over `PARTS`, the same two-part table the combo tags use). One digit
+  means the digit sum (the owner's tags: 4combo9ec), two digits the exact number. `num=4+9` in the address so
+  the browse screen, the summary and the recent searches needed nothing new.
+- Quick Chart: what was typed is kept on the device (`quickDraft` in localStorage) and comes back on the next
+  visit. "My Chart" fills the boxes and overwrites the draft.
+- The name line diamond (first beside last) only exists for a first + last name. With a middle name the engine
+  had still recorded one; now `rhombus` returns null and the position search stores nothing. The live values
+  need "Recompute every chart" once after the deploy (done from the chat with the token).
+- Super Dates: 31 Oct 2026 was Super because a soft code (15/6) stood as the BIG essence. The book's strongest
+  positions are the day and the essence; the big essence only repeats the essence's digit sum. Dominant positions
+  are now the day vibration and the essence. 2026: 22 Super / 106 Good / 237 Beware (was 30 / 100 / 235).
+  Lesson: a position list in code must match the book's words position by position; "big essence" was never
+  named in the rule and crept in as "close enough".
+- Price Tool: two modes (Check a Price / Find a Price) and two pickers instead of 22 chips. The owner's word:
+  "a total mess". A picker with words beats chips when there are more than six choices.
+- Coming Days: the list of numbers is gone; − / + set how many charts across (2-5 on a phone, up to 8 on a
+  laptop); at three or more across the cards drop the name and the essence line. The owner: two across still
+  too big, one across never used.
+- Home: the three stacked big buttons (Quick Chart gold and huge, Search by Position, Ask the Vault) became
+  three small tiles in one row under the search bar. Tools become a two- or three-column grid on a laptop.
+- Desktop: reading screens stay a 760 px column; grids use the width. Before, every screen stretched to
+  1100 px and the Today scene filled half a laptop screen.
+- Today: no row of code chips under the chart (pointless, the owner said; the Why box has the reasons). The
+  day charts are drawn in light lines straight on the night sky; the pale card had made them hard to see.

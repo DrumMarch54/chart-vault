@@ -89,6 +89,11 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   look at the picture, fix on the chart page ("Wrong? Fix") or in the seed.
 - Changing the engine: tap "Recompute every chart" on Status (or POST
   /api/positions/recompute). Values are never edited by hand.
+- Two numbers ("4" and "9", `num=4+9`) search a combination: the two parts of a center or a diamond
+  (`PARTS` in positions.js, `comboSql`), either way round; a one-digit part is the digit sum. The name line
+  diamond exists only for a first + last name (no middle name); the engine stores nothing for it otherwise.
+- The Quick Chart keeps what was typed on the device (`quickDraft`) and brings it back on the next visit;
+  "My Chart" overwrites it.
 
 ## Number tools (built 2026-10-15): Today, Coming days, Number fun, Price tool, Relationship, Karmic connections, My chart
 - Screens in `public/tools.js` (app.js hands over its plumbing through `Tools.install`), math in
@@ -100,9 +105,14 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   `tools/make-bizwords.mjs` from the Business PDF's books; `make-readings.mjs` also reads the Cosmic Calendar.
 - Super / Good / Beware on a date (`rateDate` in numbertools.js) follows the course as NotebookLM
   summarized it on 2026-10-15 (`.brain/numerology/software-tools.md` "Rating a date"): a number to avoid
-  anywhere in the day chart or a psyche center = Beware; a primary code as the day or the essence plus a
-  strong and a soft code, psyche clean = Super. The reasons are on the screen ("Why …"); never change the
-  lists without the book page. Screen titles, buttons and chips are Title Case everywhere (owner's rule).
+  anywhere in the day chart or a psyche center = Beware; a primary code as the day or the essence ITSELF
+  (never the big essence: 31 Oct 2026, owner 2026-10-16) plus a strong and a soft code, psyche clean = Super.
+  The reasons are on the screen ("Why …"); never change the lists without the book page. Screen titles,
+  buttons and chips are Title Case everywhere (owner's rule).
+- Coming Days is a grid of day charts only (the list of numbers is gone, owner 2026-10-16); − / + set how many
+  across (2 to 5 on a phone, more on a laptop), remembered per device. The Price Tool has two modes, Check a
+  Price and Find a Price (two pickers: the vibration, the range), never a wall of chips. Today has no row of
+  code chips under the chart; the day charts are drawn in light lines on the night sky, never on a pale card.
 - Today, Coming Days and the full-screen day use the night look (`night()` in tools.js, `html.night` in
   app.css): the sky under the whole page, the accent `--tint` from the ruler of the day, the essence's
   planet small in the sky, the charts on a soft light card. The other tools stay on the white page.

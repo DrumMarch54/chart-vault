@@ -53,7 +53,7 @@ function rhombusPositions(chart) {
     { key: 'solar', label: 'Emotion center', get: (r) => r.solar },
     line[1] ? { key: 'solarExtra', label: 'Emotion center extra vibration', get: (r) => r.solarExtra } : null,
     { key: 'emotionDiamond', label: 'Emotional diamond', get: (r) => r.emotionDiamond },
-    { key: 'leDiamond', label: line[1] ? 'Name line diamond' : 'Life expression diamond', get: (r) => r.leDiamond },
+    { key: 'leDiamond', label: line[1] ? 'Name line diamond (first + last only)' : 'Life expression diamond', get: (r) => r.leDiamond },
     { key: 'publicDiamond', label: chart === 'name' ? 'Public diamond (day + first name)' : `Day + ${line[0].toLowerCase()} diamond`, get: (r, day) => Numeroscope.joined(day, r.first && r.first.value) },
     { key: 'spine', label: 'Spine', get: (r) => r.spine },
     { key: 'spineDiamond', label: 'Spine diamond', get: (r) => r.spineDiamond },
@@ -215,7 +215,25 @@ export function loadSeedFile() {
 // --- search ---
 // The SQL fragment that narrows images to those with `number` in a position. chart '*' = any chart,
 // position '*' = any position of that chart. ds: match the digit sum instead of the exact number.
-export function positionSql({ chart, position, number, ds = false }, params) {
+// Which positions are made of two parts a combination can be looked for in (the centers and the diamonds), per chart.
+export const comboPositions = (chart) => POSITIONS.filter((p) => (chart === '*' || !chart || p.chart === chart) && PARTS[p.key] && !p.hidden);
+// One part of a combination: a one-digit number is the digit sum (4 = a 13/4 or a 22/4), a bigger one the number itself.
+const partSql = (alias, part) => `${alias}.${part.ds ? 'ds' : 'sum'} = ?`;
+// "4 and 9 in the emotion center" = the lower left aura is 4 and the lower right 9, or the other way round
+// (the owner's combo tags: 4combo9ec). A part may live in another chart (the public diamond's day).
+function comboSql(chart, position, [a, b], params) {
+  const targets = position && position !== '*' ? comboPositions(chart).filter((p) => p.key === position) : comboPositions(chart);
+  if (!targets.length) return 'AND 0';
+  const one = (p) => {
+    const [c1, k1] = PARTS[p.key][0].includes('.') ? PARTS[p.key][0].split('.') : [p.chart, PARTS[p.key][0]];
+    const [c2, k2] = PARTS[p.key][1].includes('.') ? PARTS[p.key][1].split('.') : [p.chart, PARTS[p.key][1]];
+    params.push(c1, k1, c2, k2, a.number, b.number, b.number, a.number);
+    return `EXISTS (SELECT 1 FROM chart_values x JOIN chart_values y ON y.image_id = x.image_id WHERE x.image_id = i.id AND x.chart = ? AND x.position = ? AND y.chart = ? AND y.position = ? AND ((${partSql('x', a)} AND ${partSql('y', b)}) OR (${partSql('x', b)} AND ${partSql('y', a)})))`;
+  };
+  return 'AND (' + targets.map(one).join(' OR ') + ')';
+}
+export function positionSql({ chart, position, number, ds = false, combo = null }, params) {
+  if (combo) return comboSql(chart, position, combo, params);
   const col = ds ? 'ds' : 'sum';
   let where = `${col} = ?`; params.push(number);
   if (chart && chart !== '*') { where += ' AND chart = ?'; params.push(chart); }
@@ -223,15 +241,29 @@ export function positionSql({ chart, position, number, ds = false }, params) {
   return `AND i.id IN (SELECT image_id FROM chart_values WHERE ${where})`;
 }
 // "12", "12/3", "3" -> { number, ds }. A number typed as "/3" means any number whose digit sum is 3.
+// Two numbers ("4+9", "4 and 9", "13+18") -> { combo: [part, part] }: a combination in a center or diamond.
 export function parseNumber(text) {
-  const m = /^\s*(\d{1,3})?\s*(?:\/\s*(\d))?\s*$/.exec(String(text || ''));
+  const t = String(text || '').trim();
+  const two = /^(\S+?)\s*(?:\+|&|,|and)\s*(\S+)$/i.exec(t) || /^(\d+)\s+(\d+)$/.exec(t);
+  if (two) {
+    const parts = [two[1], two[2]].map((x) => { const n = parseNumber(x); return n && !n.combo ? (n.number < 10 && !n.ds ? { number: n.number, ds: true } : n) : null; });
+    return parts.every(Boolean) ? { number: parts[0].number, ds: parts[0].ds, combo: parts } : null;
+  }
+  const m = /^(\d{1,3})?\s*(?:\/\s*(\d))?$/.exec(t);
   if (!m || (!m[1] && !m[2])) return null;
   if (!m[1]) return { number: Number(m[2]), ds: true };
   return { number: Number(m[1]), ds: false };
 }
 
 // How many charts hold `number` in each position (the picker shows the count beside every position).
-export function positionCounts(db, { number, ds = false }) {
+// For a combination: how many charts have the two parts meeting in each center or diamond.
+export function positionCounts(db, { number, ds = false, combo = null }) {
+  if (combo) {
+    const count = (chart, position) => { const params = []; return db.prepare(`SELECT count(*) AS c FROM images i WHERE i.kind = 'chart' ${positionSql({ chart, position, combo }, params)}`).get(...params).c; };
+    const counts = {}; for (const p of comboPositions('*')) counts[`${p.chart}.${p.key}`] = count(p.chart, p.key);
+    const perChart = {}; for (const c of CHARTS) perChart[c.key] = count(c.key, '*');
+    return { number, ds, combo, counts, perChart, total: count('*', '*') };
+  }
   const col = ds ? 'ds' : 'sum';
   const rows = db.prepare(`SELECT chart, position, count(DISTINCT image_id) AS c FROM chart_values WHERE ${col} = ? GROUP BY chart, position`).all(number);
   const counts = {}; for (const r of rows) counts[`${r.chart}.${r.position}`] = r.c;
@@ -239,7 +271,7 @@ export function positionCounts(db, { number, ds = false }) {
   const total = db.prepare(`SELECT count(DISTINCT image_id) AS c FROM chart_values WHERE ${col} = ?`).get(number).c;
   return { number, ds, counts, perChart, total };
 }
-export const catalog = () => ({ charts: CHARTS, positions: POSITIONS.filter((p) => !p.hidden).map((p) => ({ chart: p.chart, key: p.key, label: p.label })) });
+export const catalog = () => ({ charts: CHARTS, positions: POSITIONS.filter((p) => !p.hidden).map((p) => ({ chart: p.chart, key: p.key, label: p.label, combo: !!PARTS[p.key] })) });
 
 // --- the quality gate: do the owner's position tags agree with the computed charts? ---
 export function tagCheck(db) {

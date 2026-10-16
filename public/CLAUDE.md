@@ -1,6 +1,8 @@
 # Screen rules (public/)
 
-- Phone first: 390×844 is the screen. No sideways scroll anywhere.
+- Phone first: 390×844 is the screen. No sideways scroll anywhere. A laptop must look right too
+  (owner 2026-10-16): reading screens (`.qscreen`, `.tscreen`) stay a 760 px column, grids of charts
+  (`.wide`, the browse grid, the home tools) use the width. Check both sizes when a layout changes.
 - If you changed what it looks like, open it and look at it before saying it
   is done: run `node tools/dev-app.mjs`, screenshot it (report.mjs `screens`
   or the chrome-devtools MCP), and read the PNG as a picture. A DOM check alone

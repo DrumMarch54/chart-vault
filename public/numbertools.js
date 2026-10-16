@@ -83,7 +83,10 @@
     piHeart: 'inner psyche heart', piSolar: 'inner psyche solar plexus', piLe: 'inner psyche life expression', piPillar: 'inner psyche pillar',
     poHeart: 'outer psyche heart', poSolar: 'outer psyche solar plexus', poLe: 'outer psyche life expression', poPillar: 'outer psyche pillar',
   };
-  const DOMINANT = ['dv', 'lp', 'bigLp']; // where a primary code counts most
+  // Where a primary code must stand for a Super Date: the day vibration or the essence, the book's "strongest
+  // positions" (GV / ST, p. 31). The big essence repeats the essence's digit sum and does not count: 31 Oct 2026
+  // (31/4 day, 6 essence, 15/6 big essence) was called Super for its big essence alone (owner, 2026-10-16).
+  const DOMINANT = ['dv', 'lp'];
   const STRONG_POS = ['dv', 'lp']; // the strongest positions (GV and ST in the book): the day and the essence
   const isPsyche = (pos) => /^p[io]/.test(pos);
   // Super / Good / Beware, the paid tool's three colors (gold, green, red), from the course's rules:
@@ -91,7 +94,7 @@
   //          12, 57, 75, 39, 48, 84 or 11 as the day or the essence; 18, 81, 99 as the day, the essence or
   //          the target; 4 and 8 meeting (day, month, year) in a diamond (the 4-12/3-8 clash).
   //  Super:  nothing of that, the psyche charts free of use-with-care numbers (the video: "good in both the
-  //          main chart and the psyche chart"), a primary code (strong or soft) as the day or the essence,
+  //          main chart and the psyche chart"), a primary code (strong or soft) as the day or the essence itself,
   //          and both a strong and a soft code in the day chart (p. 23: "a balanced combination of both").
   //  Good:   everything else.
   function rateDate(positions, pairs) {
