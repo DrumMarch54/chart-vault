@@ -48,7 +48,7 @@
     'viewer.add_tag': 'Add a tag to a chart', 'quick.save': 'Save a quick chart', 'quick.full_screen': 'Quick Chart full screen',
     'quick.year_rows': 'Year Rows and Day Vibrations', 'quick.show_parts': 'Show and Hide Parts', 'quick.augment': 'Augmentation On or Off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
     'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'viewer.number_tap': 'Tap a number on a chart', 'status.recompute': 'Recompute chart numbers',
-    'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart',
+    'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart', 'viewer.year_rows': 'Year Rows from a chart',
   };
   const count = (name) => { try { fetch('/api/usage', { method: 'POST', credentials: 'same-origin', keepalive: true, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name }) }).catch(() => {}); } catch { /* counting never breaks a tap */ } };
 
@@ -502,7 +502,12 @@
     const drawnEl = (inp) => { const el = drawnChart(inp); el.classList.add('vimg', 'drawn'); return el; };
     const $count = h('span', { class: 'vcount' }, '');
     const $name = h('span', { class: 'vname' }, '');
-    const $orig = h('button', { type: 'button', class: 'vbtn hidden' }, 'Screenshot');
+    // The ⋮ menu (like the Quick Chart's): the chart's year rows and day vibrations, and the original screenshot.
+    const $orig = h('button', { type: 'button', class: 'cmenu-item hidden' }, 'Screenshot');
+    const $rows = h('button', { type: 'button', class: 'cmenu-item' }, 'Year Rows and Day Vibrations');
+    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $rows, $orig);
+    const $dots = h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'More', title: 'More', onclick: (e) => { e.stopPropagation(); $menu.classList.toggle('hidden'); } }, '⋮');
+    const $more = h('div', { class: 'vmore hidden' }, $dots, $menu);
     const $cmp = h('button', { type: 'button', class: 'vbtn hidden' }, 'Compare');
     const $prev = h('button', { type: 'button', class: 'iconbtn varrow left hidden', 'aria-label': 'Previous' }, '‹');
     const $next = h('button', { type: 'button', class: 'iconbtn varrow right hidden', 'aria-label': 'Next' }, '›');
@@ -511,7 +516,7 @@
     // Nothing over the picture until it is tapped: no back button, no name. The phone's own Back closes it.
     const $root = h('div', { class: 'viewer bare' },
       $stage,
-      h('div', { class: 'vtop' }, h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'Back to the list', onclick: back }, '‹'), $name, $count, $orig, $cmp),
+      h('div', { class: 'vtop' }, h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'Back to the list', onclick: back }, '‹'), $name, $count, $cmp, $more),
       $prev, $next, $sheet);
     document.body.append($root);
 
@@ -566,6 +571,7 @@
       left: () => goTo(ctx.next), right: () => goTo(ctx.prev), up: openSheet,
       down: () => (sheetOpen ? closeSheet() : back()),
       tap: (target) => {
+        $menu.classList.add('hidden');
         const w = mode === 'drawn' && target && target.closest ? target.closest('[data-word]') : null;
         if (w && img && img.inputs) { count('viewer.name_tap'); openWord(w.getAttribute('data-word'), dayOf(img.inputs)); return; }
         if (sheetOpen) closeSheet(); else toggleBare();
@@ -601,10 +607,20 @@
     const drawOrig = () => {
       const can = !!(img.inputs && img.has_file);
       $orig.classList.toggle('hidden', !can);
+      $more.classList.toggle('hidden', !img.inputs);
       if (!can) return;
       $orig.textContent = mode === 'drawn' ? 'Screenshot' : 'Drawn';
       $orig.setAttribute('aria-label', mode === 'drawn' ? 'See the original screenshot' : 'Back to the drawn chart');
-      $orig.onclick = () => { if (mode === 'drawn') { count('viewer.show_screenshot'); showPhoto(); } else { count('viewer.show_drawn'); showDrawn(); } drawOrig(); };
+      $orig.onclick = () => { $menu.classList.add('hidden'); if (mode === 'drawn') { count('viewer.show_screenshot'); showPhoto(); } else { count('viewer.show_drawn'); showDrawn(); } drawOrig(); };
+    };
+    // Year rows and day vibrations for this person (destiny periods, one year's rows, a day), from the
+    // chart's own name and date; the same popup as the Quick Chart's. Needs the whole birth date.
+    $rows.onclick = () => {
+      $menu.classList.add('hidden');
+      const inp = img.inputs;
+      if (!inp || !(inp.day && inp.month && inp.year)) { toast('This chart has no full birth date yet. Swipe up and tap "Wrong? Fix" to add it.', true); return; }
+      count('viewer.year_rows');
+      openForecast({ day: inp.day, month: inp.month, year: inp.year, name: inp.name || '', augment: true });
     };
     if (img.inputs) { inputsById.set(img.id, img.inputs); if (!(cached && sameInputs(cached, img.inputs) && mode === 'drawn')) showDrawn(); }
     else { inputsById.delete(img.id); showPhoto(); }

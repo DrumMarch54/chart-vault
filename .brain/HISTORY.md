@@ -484,3 +484,13 @@ own charts, and handle the leftovers afterwards (remind them).
   them and the drawing follows at once).
 - Looked at in the dev app at 390x844 and 1100 wide: grid, viewer, name popup, Screenshot toggle,
   sheet, Compare, Settings, the undrawn list. No sideways scroll, no console errors.
+
+## 2026-10-17 Year rows and destiny rhythms on every vault chart
+The owner, right after the drawn charts: "give me the ability to see the person's destiny rhythms
+and yearly rows for every chart in the database". The popup already existed on the Quick Chart
+(`openForecast`: destiny periods, one year's rows, day vibrations); the viewer now opens it from the
+chart's own stored name and date. A ⋮ menu in the viewer's top bar (the Quick Chart's menu, the owner
+knows it) holds "Year Rows and Day Vibrations" and "Screenshot" / "Drawn"; Compare stays a pill
+because it is a two-step flow. Three pills did not fit beside the name at 390 px. A chart with no
+full birth date says so and points at "Wrong? Fix". The first menu wrapped its long item onto two
+centered lines: `.cmenu-item` needed `white-space: nowrap` and a wider menu.

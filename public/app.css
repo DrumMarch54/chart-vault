@@ -540,3 +540,7 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .cpane.drawn { background: #fff; }
 .cpane.drawn .cplabel { color: #22252e; text-shadow: none; background: rgba(255,255,255,.8); border-radius: 8px; padding: 2px 6px; }
 .cpane .vimg.drawn { width: 100%; height: auto; max-height: 100%; }
+.vmore { position: relative; pointer-events: auto; }
+.vmore .cmenu { min-width: 290px; }
+.vmore .cmenu-item { white-space: nowrap; text-align: left; min-height: 46px; }
+.viewer.bare .vmore { opacity: 0; pointer-events: none; }
