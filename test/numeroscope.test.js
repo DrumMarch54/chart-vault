@@ -349,3 +349,15 @@ test('day rows: Wimbledon 2017 final at 2 PM (case book): the 2 PM triple, the f
   assert.ok(v.rows[0].psyche.main && v.rows[3].psyche.main);
   assert.equal(N.dayRows({ day: 1, month: 1, year: 2000 }, 2026, 1, 1).fulfillment, null);
 });
+
+// Whole name pyramid (owner 2026-10-17): every name run together with no spaces is one word, so the pyramid of
+// "Katrine Ditte Pilmark" is the pyramid of "KatrineDittePilmark": spaces never count, letters only.
+test('whole name pyramid: spaces do not count, the letter row is every letter of every name', () => {
+  const whole = N.singleName('KatrineDittePilmark', 19), spaced = N.singleName('Katrine Ditte Pilmark', 19);
+  assert.equal(whole.letters, 19);
+  assert.deepEqual(whole.pyramid.map((r) => r.map((v) => v.sum)), spaced.pyramid.map((r) => r.map((v) => v.sum)));
+  assert.equal(whole.pyramid.length, 19); assert.equal(whole.pyramid[0].length, 19); assert.equal(whole.pyramid[18].length, 1);
+  assert.equal(whole.weight.ratio, spaced.weight.ratio);
+  // its bottom row is the letters K A T R I N E D I T T E P I L M A R K with the course's letter values (T = 4, R = 2, P = 8)
+  assert.deepEqual(Array.from(whole.pyramid[0], (v) => v.sum), [2, 1, 4, 2, 1, 5, 5, 4, 1, 4, 4, 5, 8, 1, 3, 4, 1, 2, 2]); // the course's letter values
+});

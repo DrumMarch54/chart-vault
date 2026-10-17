@@ -95,9 +95,16 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   look at the picture, fix on the chart page ("Wrong? Fix") or in the seed.
 - Changing the engine: tap "Recompute every chart" on Status (or POST
   /api/positions/recompute). Values are never edited by hand.
-- Two numbers ("4" and "9", `num=4+9`) search a combination: the two parts of a center or a diamond
+- Two numbers ("4 meets 9", `num=4+9`) search a combination: the two parts of a center or a diamond
   (`PARTS` in positions.js, `comboSql`), either way round; a one-digit part is the digit sum. The name line
   diamond exists only for a first + last name (no middle name); the engine stores nothing for it otherwise.
+- Several positions at once (owner 2026-10-17, "day 8 AND first name 15"): a search is a list of conditions,
+  pairwise in the address (`?pos=essence.day&num=8&pos=name.first&num=15`, `conditionsSql`); the grid shows one
+  chip per condition (tap = change it, × = drop it) and "+ Another number", which reopens the picker with the
+  conditions kept and every count narrowed to them (`/api/positions/counts?num=&fixed=pos:num,…`).
+- Whole Name Pyramid (owner 2026-10-17): every name run together with no spaces as one word, pyramid only
+  (`openWord(..., { wholeName: true })`); "Pyramid" beside the name in the viewer's sheet, in the viewer's ⋮ menu
+  and in the Quick Chart's ⋮ menu.
 - The Quick Chart keeps what was typed on the device (`quickDraft`) and brings it back on the next visit;
   "My Chart" overwrites it.
 

@@ -78,6 +78,22 @@ test('store, search by position, tag check, fix and clear', () => {
   assert.deepEqual(ids({ chart: 'name', position: '*', ...combo(4, 3) }), [k]);
   assert.deepEqual(ids({ chart: '*', position: '*', ...combo(4, 3) }), [k]);
   assert.deepEqual(ids({ chart: 'name', position: 'first', ...combo(4, 3) }), []); // not a center or diamond
+  // Several conditions at once (day 19 AND mind center 7): every one must hold. Katrine: day 19, heart 7; Test: day 1, heart 16.
+  const both = (list) => { const params = []; return db.prepare(`SELECT i.id FROM images i WHERE 1=1${P.conditionsSql(list, params)}`).all(...params).map((r) => r.id); };
+  const day19 = P.parseCondition('essence.day', '19'), heart7 = P.parseCondition('name.heart', '7'), heart16 = P.parseCondition('name.heart', '16');
+  assert.deepEqual(both([day19, heart7]), [k]);
+  assert.deepEqual(both([day19, heart16]), []); // each holds on a different chart, never both on one
+  assert.deepEqual(both([P.parseCondition('*.*', '16'), P.parseCondition('name.heart', '4+3')]), [k]); // a plain number and a combination mix
+  assert.deepEqual(both([]), [k, other, none].filter((id) => both([]).includes(id))); // no condition narrows nothing
+  assert.equal(both([]).length, 3);
+  assert.equal(P.parseCondition('bogus.heart', '7'), null); assert.equal(P.parseCondition('name.heart', 'abc'), null); assert.equal(P.parseCondition('', '7'), null);
+  assert.deepEqual(P.parseFixed('essence.day:19,name.heart:4+3,junk,bogus.x:1'), [day19, P.parseCondition('name.heart', '4+3')]);
+  // Counts narrowed by what is fixed: with day 19 fixed, 16 is found only on Katrine's chart (her extra vibration), not on Test's heart.
+  const narrowed = P.positionCounts(db, { number: 16 }, [day19]);
+  assert.equal(narrowed.fixedTotal, 1); assert.equal(narrowed.total, 1); assert.equal(narrowed.counts['name.heart'] || 0, 0); assert.equal(narrowed.counts['name.heartExtra'], 1);
+  assert.equal(P.positionCounts(db, { number: 16 }).fixedTotal, null); assert.equal(P.positionCounts(db, { number: 16 }).total, 2);
+  const narrowedCombo = P.positionCounts(db, combo(4, 3), [P.parseCondition('essence.day', '1')]);
+  assert.equal(narrowedCombo.total, 0); assert.equal(narrowedCombo.fixedTotal, 1);
   const cc = P.positionCounts(db, combo(4, 3));
   assert.equal(cc.counts['name.heart'], 1); assert.equal(cc.counts['name.mindDiamond'], 1); assert.equal(cc.perChart.name, 1); assert.equal(cc.total, 1);
   assert.ok(P.comboPositions('name').some((p) => p.key === 'heart') && !P.comboPositions('name').some((p) => p.key === 'first'));
@@ -169,6 +185,12 @@ test('API: catalog, counts, search, context, numbers, fix, recompute, status, sn
   r = (await json(await api('/api/images?pos=*.*&num=%2F7'))).body; assert.equal(r.total, 2); // digit sum 7
   r = (await json(await api('/api/images?pos=name.heart&num=7&tag=7mc'))).body; assert.equal(r.total, 1);
   r = (await json(await api('/api/images?pos=bogus.heart&num=7'))).body; assert.equal(r.total, 2); // an unknown chart is ignored, not an error
+  // Two positions at once, pairwise in the address: day 19 AND mind center 7 is Katrine alone; day 1 AND mind center 7 is nobody.
+  r = (await json(await api('/api/images?pos=essence.day&num=19&pos=name.heart&num=7'))).body; assert.equal(r.total, 1); assert.equal(r.items[0].id, k);
+  r = (await json(await api('/api/images?pos=essence.day&num=1&pos=name.heart&num=7'))).body; assert.equal(r.total, 0);
+  const ctx2 = (await json(await api(`/api/images/${k}/context?pos=essence.day&num=19&pos=name.heart&num=7`))).body; assert.equal(ctx2.total, 1);
+  const narrowed = (await json(await api('/api/positions/counts?num=16&fixed=' + encodeURIComponent('essence.day:19')))).body;
+  assert.equal(narrowed.fixedTotal, 1); assert.equal(narrowed.total, 1);
   const ctx = (await json(await api(`/api/images/${o}/context?pos=name.*&num=16`))).body;
   assert.equal(ctx.total, 2); assert.equal(ctx.index, 1); assert.equal(ctx.next, k);
   let n = (await json(await api(`/api/images/${k}/numbers`))).body;

@@ -503,3 +503,24 @@ calls `setInputs` with the typed name and date (source `quick`); `seedQuickInput
 gives older saves theirs from the app-added name tag and the date in the filename
 (Quick_<Name>_<YYYY-MM-DD>_<stamp>.png). One live chart needed it (#732). Lesson: a new way to make a
 chart must feed every store a chart has (inputs, title, tags), not only the picture.
+
+## 2026-10-17 Search several positions at once; the pyramid of the whole name
+- Owner: "search for specific combinations in a specific center" and "the day is one number and the first
+  name is another number", and "make it easy to use". The first already existed (two numbers meeting in a
+  center or diamond, `num=4+9`); the second did not: a search was ONE position with ONE number.
+- A position search is now a list of conditions a chart must all meet. Server: `conditionsSql` joins one
+  `positionSql` per condition; `/api/images` and `/context` read `pos`/`num` pairwise (repeated params,
+  backward compatible with every old link and recent search); `/api/positions/counts` takes `fixed=` so the
+  picker's counts are narrowed to the charts that already match ("6 have day 8; 0 of those have first name 15").
+- Screen: the flow the owner already used stays (type a number, tap the position, see the charts). Above the
+  charts, one chip per condition (tap the words to change it, × to drop it) and a dashed "+ Another number"
+  chip that reopens the picker with "Every chart found must have:" at the top and the counts narrowed. The
+  combination boxes read "4 meets 9" so the two kinds of "and" are not confused: "meets" = in one center,
+  "+ Another number" = a second position.
+- Whole Name Pyramid: every name run together with no spaces ("KanyeOmariWest") as one word, through the
+  existing single-name popup with only the pyramid card (`openWord(..., { wholeName: true })`); the letter
+  charts of a 20-letter word would be unreadable. Cells shrink to fit (`--cell`, never under 22 px); a longer
+  name scrolls sideways inside the card, starting at the middle, with a line saying to swipe. "Pyramid" button
+  beside the name in the viewer's sheet, in the viewer's ⋮ menu and in the Quick Chart's ⋮ menu.
+- Test gotcha: arrays made inside the `vm` context fail `assert.deepEqual` from `node:assert/strict` against
+  a literal (different realm, "same structure but not reference-equal"); copy with `Array.from` first.

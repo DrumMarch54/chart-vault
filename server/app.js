@@ -11,7 +11,7 @@ import { setTitle, acceptTitle, titlesToCheck, titleStats, suggestNames, MAX_TIT
 import { snapshot } from './snapshot.js';
 import { getMyChart, setMyChart } from './mychart.js';
 import { deployGuard } from './deployguard.js';
-import { catalog, positionCounts, parseNumber, getInputs, setInputs, clearInputs, valuesFor, recomputeAll, inputStats, tagCheck, InputError, CHARTS } from './positions.js';
+import { catalog, positionCounts, parseNumber, parseCondition, parseFixed, getInputs, setInputs, clearInputs, valuesFor, recomputeAll, inputStats, tagCheck, InputError } from './positions.js';
 import { COMMIT } from './build.js';
 import { paths } from './config.js';
 import { aiSettings, setAiSettings, spendState, pendingWarning, markWarningSeen, AiError } from './ai.js';
@@ -25,15 +25,12 @@ function asList(v) {
   if (v === undefined || v === null || v === '') return [];
   return (Array.isArray(v) ? v : [v]).map(String).filter((s) => s.length);
 }
-// ?pos=name.heart&num=12 (or num=/3 for a digit sum): the position search, or null when not asked for.
-const CHART_KEYS = new Set(['*', ...CHARTS.map((c) => c.key)]);
-function positionOf(q) {
-  const pos = typeof q.pos === 'string' ? q.pos : '';
-  const num = parseNumber(q.num);
-  if (!pos || !num) return null;
-  const [chart, position = '*'] = pos.split('.');
-  if (!CHART_KEYS.has(chart) || !/^[A-Za-z*]+$/.test(position)) return null;
-  return { chart, position, number: num.number, ds: num.ds, combo: num.combo || null };
+// ?pos=name.heart&num=12 (or num=/3 for a digit sum): the position search. pos and num may repeat, pairwise
+// (?pos=essence.day&num=8&pos=name.first&num=15): a chart must meet every pair. A pair that cannot be read
+// is dropped, not an error.
+function positionsOf(q) {
+  const pos = asList(q.pos), num = asList(q.num);
+  return pos.map((p, i) => parseCondition(p, num[i])).filter(Boolean);
 }
 
 export function createApp(db, { log = console.log } = {}) {
@@ -123,7 +120,7 @@ export function createApp(db, { log = console.log } = {}) {
     const limit = Math.min(Math.max(Number(req.query.limit) || 60, 1), 200);
     const offset = Math.max(Number(req.query.offset) || 0, 0);
     const ids = req.query.ids ? String(req.query.ids).split(',').map(Number) : null;
-    res.json(listImages(db, { tags: asList(req.query.tag), position: positionOf(req.query), name: String(req.query.name || ''), onlyUploaded: req.query.uploaded === '1', kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', limit, offset, ids, drawn: drawnOf(req.query) }));
+    res.json(listImages(db, { tags: asList(req.query.tag), positions: positionsOf(req.query), name: String(req.query.name || ''), onlyUploaded: req.query.uploaded === '1', kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', limit, offset, ids, drawn: drawnOf(req.query) }));
   });
   app.get('/api/images/:id', (req, res) => {
     const img = getImage(db, Number(req.params.id));
@@ -133,7 +130,7 @@ export function createApp(db, { log = console.log } = {}) {
   app.get('/api/images/:id/context', (req, res) => {
     const id = Number(req.params.id);
     if (!getImage(db, id)) return res.status(404).json({ error: 'No such chart.' });
-    res.json(imageContext(db, id, { tags: asList(req.query.tag), position: positionOf(req.query), name: String(req.query.name || ''), kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', drawn: drawnOf(req.query) }));
+    res.json(imageContext(db, id, { tags: asList(req.query.tag), positions: positionsOf(req.query), name: String(req.query.name || ''), kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', drawn: drawnOf(req.query) }));
   });
 
   // Who a chart is: the name under the thumbnail. The owner types or fixes it ("Who is this?"), or
@@ -162,7 +159,7 @@ export function createApp(db, { log = console.log } = {}) {
   app.get('/api/positions/counts', (req, res) => {
     const num = parseNumber(req.query.num);
     if (!num) return res.status(400).json({ error: 'Type a number first, like 12 or 12/3.' });
-    res.json(positionCounts(db, num));
+    res.json(positionCounts(db, num, parseFixed(req.query.fixed)));
   });
   app.get('/api/images/:id/numbers', (req, res) => {
     const img = getImage(db, Number(req.params.id));

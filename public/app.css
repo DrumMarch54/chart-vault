@@ -544,3 +544,17 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .vmore .cmenu { min-width: 290px; }
 .vmore .cmenu-item { white-space: nowrap; text-align: left; min-height: 46px; }
 .viewer.bare .vmore { opacity: 0; pointer-events: none; }
+
+/* Search by position: the conditions a chart must meet (one chip each; tap the words to change it, × to drop it)
+   and the dashed "+ Another number" chip that narrows the charts by a second position. */
+.chip button.t, .chip button.x { background: none; border: 0; color: inherit; font: inherit; padding: 0; min-height: 0; width: auto; margin: 0; border-radius: 0; }
+.chip button.t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chip button.x { padding: 0 2px 0 4px; }
+.chip.add { background: transparent; border: 1.5px dashed var(--chip-pos); color: #9fb6d0; }
+.fixedconds { background: var(--panel); border-radius: var(--radius); padding: 10px 12px 4px; }
+.fixedconds .linkbtn { display: inline-flex; margin-top: 2px; }
+/* A whole name's pyramid can be 20 letters wide: the card scrolls sideways on its own, the page never does. */
+.pyr.wide .pyr-row span { min-width: var(--cell, 34px); padding: 0; font-size: clamp(9px, calc(var(--cell, 34px) * 0.46), 14px); }
+.pyr.wide .pyr-row.letters span { font-size: clamp(9px, calc(var(--cell, 34px) * 0.42), 13px); }
+.wordpop .pagetop h1.whole { font-size: 22px; }
+.posnum input.second { flex: 0 1 110px; }

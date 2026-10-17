@@ -41,7 +41,7 @@ function runTool(db, name, input, shown) {
     case 'find_charts': {
       const chart = CHART_KEYS.has(input.chart) ? input.chart : '*';
       const position = input.position && /^[A-Za-z*]+$/.test(input.position) ? input.position : '*';
-      const r = listImages(db, { position: { chart, position, number: input.number, ds: !!input.ds }, limit: Math.min(input.limit || 20, 50) });
+      const r = listImages(db, { positions: [{ chart, position, number: input.number, ds: !!input.ds }], limit: Math.min(input.limit || 20, 50) });
       return { matched: r.total, charts: brief(db, r.items) };
     }
     case 'count_by_position': return positionCounts(db, { number: input.number, ds: !!input.ds });

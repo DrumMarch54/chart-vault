@@ -1,6 +1,6 @@
 // Read-only queries used by the browse screens.
 import { TagCodes, displayName } from './tagnames.js';
-import { positionSql } from './positions.js';
+import { conditionsSql } from './positions.js';
 import { nameSql } from './titles.js';
 export { TagCodes };
 // Every tag row that leaves the server carries how it reads on screen ("alexjones" -> "Alex Jones").
@@ -12,9 +12,9 @@ const ORDER = '(i.taken_at IS NULL), i.taken_at DESC, i.id DESC';
 // drawn: true = only charts whose name and date are known (the app draws them itself), false = only the
 // ones still shown as the screenshot (no name and date yet), null = both.
 const drawnSql = (drawn) => (drawn === true ? ' AND i.id IN (SELECT image_id FROM chart_inputs)' : drawn === false ? ' AND i.id NOT IN (SELECT image_id FROM chart_inputs)' : '');
-function filterSql(tags, params, position = null, name = '', drawn = null) {
-  // Images that carry ALL of the given tags (AND), the number in the position and the word in the name when asked for.
-  let sql = (position ? ' ' + positionSql(position, params) : '') + nameSql(name, params) + drawnSql(drawn);
+function filterSql(tags, params, positions = [], name = '', drawn = null) {
+  // Images that carry ALL of the given tags (AND), every asked-for number in its position and the word in the name.
+  let sql = conditionsSql(positions, params) + nameSql(name, params) + drawnSql(drawn);
   if (!tags.length) return sql;
   const marks = tags.map(() => '?').join(',');
   params.push(...tags, tags.length);
@@ -29,11 +29,11 @@ const inputsOf = (r) => (r.input_name !== null && r.input_name !== undefined ? {
 const INPUT_COLS = 'ci.day, ci.month, ci.year, ci.name AS input_name';
 const INPUT_JOIN = 'LEFT JOIN chart_inputs ci ON ci.image_id = i.id';
 
-export function listImages(db, { tags = [], position = null, name = '', onlyUploaded = false, kind = 'chart', limit = 60, offset = 0, ids = null, drawn = null } = {}) {
+export function listImages(db, { tags = [], positions = [], name = '', onlyUploaded = false, kind = 'chart', limit = 60, offset = 0, ids = null, drawn = null } = {}) {
   const params = [kind];
   let idSql = '';
   if (ids) { const list = ids.filter((n) => Number.isInteger(n)).slice(0, 50); idSql = list.length ? `AND i.id IN (${list.map(() => '?').join(',')})` : 'AND 0'; params.push(...list); }
-  const where = `WHERE i.kind = ? ${filterSql(tags, params, position, name, drawn)} ${idSql} ${onlyUploaded ? 'AND i.stored_path IS NOT NULL' : ''}`;
+  const where = `WHERE i.kind = ? ${filterSql(tags, params, positions, name, drawn)} ${idSql} ${onlyUploaded ? 'AND i.stored_path IS NOT NULL' : ''}`;
   const total = db.prepare(`SELECT count(*) c FROM images i ${where}`).get(...params).c;
   const rows = db.prepare(`SELECT i.id, i.filename, i.title, i.taken_at, i.width, i.height, i.kind, (i.stored_path IS NOT NULL) AS has_file, ${INPUT_COLS}
     FROM images i ${INPUT_JOIN} ${where} ORDER BY ${ORDER} LIMIT ? OFFSET ?`).all(...params, limit, offset);
@@ -51,9 +51,9 @@ export function listImages(db, { tags = [], position = null, name = '', onlyUplo
 
 // Where one picture sits in the current browse list (same filter, same order),
 // so the viewer can swipe to the previous / next one.
-export function imageContext(db, id, { tags = [], position = null, name = '', kind = 'chart', drawn = null } = {}) {
+export function imageContext(db, id, { tags = [], positions = [], name = '', kind = 'chart', drawn = null } = {}) {
   const params = [kind];
-  const ids = db.prepare(`SELECT i.id FROM images i WHERE i.kind = ? ${filterSql(tags, params, position, name, drawn)} ORDER BY ${ORDER}`).all(...params).map((r) => r.id);
+  const ids = db.prepare(`SELECT i.id FROM images i WHERE i.kind = ? ${filterSql(tags, params, positions, name, drawn)} ORDER BY ${ORDER}`).all(...params).map((r) => r.id);
   const at = ids.indexOf(id);
   if (at < 0) return { index: null, total: ids.length, prev: null, next: null };
   return { index: at + 1, total: ids.length, prev: at > 0 ? ids[at - 1] : null, next: at < ids.length - 1 ? ids[at + 1] : null };

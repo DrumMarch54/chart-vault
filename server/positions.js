@@ -254,6 +254,22 @@ export function positionSql({ chart, position, number, ds = false, combo = null 
   if (position && position !== '*') { where += ' AND position = ?'; params.push(position); }
   return `AND i.id IN (SELECT image_id FROM chart_values WHERE ${where})`;
 }
+// Several conditions at once (owner's ask 2026-10-17: "the day is one number AND the first name is another"):
+// a chart must meet every one of them. Each is a position search of its own, so a combination in a center
+// (4+9) and a plain number mix freely.
+export const conditionsSql = (list, params) => (list || []).map((c) => ' ' + positionSql(c, params)).join('');
+// One condition from what the address carries: pos "name.heart" (chart.position, * = any) and the number text
+// ("12", "/3", "4+9"). null when either part is not usable, so a bad address searches nothing rather than erring.
+const CHART_KEYS = new Set(['*', ...CHARTS.map((c) => c.key)]);
+export function parseCondition(pos, numText) {
+  const num = parseNumber(numText);
+  if (typeof pos !== 'string' || !pos || !num) return null;
+  const [chart, position = '*'] = pos.split('.');
+  if (!CHART_KEYS.has(chart) || !/^[A-Za-z*]+$/.test(position)) return null;
+  return { chart, position, number: num.number, ds: num.ds, combo: num.combo || null };
+}
+// Conditions already fixed, as the counts endpoint receives them: "essence.day:8,name.first:4+9".
+export const parseFixed = (text) => String(text || '').split(',').filter(Boolean).map((part) => { const i = part.indexOf(':'); return i < 0 ? null : parseCondition(part.slice(0, i), part.slice(i + 1)); }).filter(Boolean);
 // "12", "12/3", "3" -> { number, ds }. A number typed as "/3" means any number whose digit sum is 3.
 // Two numbers ("4+9", "4 and 9", "13+18") -> { combo: [part, part] }: a combination in a center or diamond.
 export function parseNumber(text) {
@@ -271,19 +287,24 @@ export function parseNumber(text) {
 
 // How many charts hold `number` in each position (the picker shows the count beside every position).
 // For a combination: how many charts have the two parts meeting in each center or diamond.
-export function positionCounts(db, { number, ds = false, combo = null }) {
+// `fixed`: conditions already chosen; only charts meeting all of them are counted, so the picker shows
+// how far the next number narrows the search ("41 have day 8; 3 of them have first name 15").
+export function positionCounts(db, { number, ds = false, combo = null }, fixed = []) {
+  const fp = [];
+  const within = fixed.length ? `AND image_id IN (SELECT i.id FROM images i WHERE i.kind = 'chart'${conditionsSql(fixed, fp)})` : '';
+  const fixedTotal = fixed.length ? db.prepare(`SELECT count(*) AS c FROM images i WHERE i.kind = 'chart'${conditionsSql(fixed, [])}`).get(...fp).c : null;
   if (combo) {
-    const count = (chart, position) => { const params = []; return db.prepare(`SELECT count(*) AS c FROM images i WHERE i.kind = 'chart' ${positionSql({ chart, position, combo }, params)}`).get(...params).c; };
+    const count = (chart, position) => { const params = []; const sql = positionSql({ chart, position, combo }, params); return db.prepare(`SELECT count(*) AS c FROM images i WHERE i.kind = 'chart' ${sql}${conditionsSql(fixed, params)}`).get(...params).c; };
     const counts = {}; for (const p of comboPositions('*')) counts[`${p.chart}.${p.key}`] = count(p.chart, p.key);
     const perChart = {}; for (const c of CHARTS) perChart[c.key] = count(c.key, '*');
-    return { number, ds, combo, counts, perChart, total: count('*', '*') };
+    return { number, ds, combo, counts, perChart, total: count('*', '*'), fixedTotal };
   }
   const col = ds ? 'ds' : 'sum';
-  const rows = db.prepare(`SELECT chart, position, count(DISTINCT image_id) AS c FROM chart_values WHERE ${col} = ? GROUP BY chart, position`).all(number);
+  const rows = db.prepare(`SELECT chart, position, count(DISTINCT image_id) AS c FROM chart_values WHERE ${col} = ? ${within} GROUP BY chart, position`).all(number, ...fp);
   const counts = {}; for (const r of rows) counts[`${r.chart}.${r.position}`] = r.c;
-  const perChart = {}; for (const r of db.prepare(`SELECT chart, count(DISTINCT image_id) AS c FROM chart_values WHERE ${col} = ? GROUP BY chart`).all(number)) perChart[r.chart] = r.c;
-  const total = db.prepare(`SELECT count(DISTINCT image_id) AS c FROM chart_values WHERE ${col} = ?`).get(number).c;
-  return { number, ds, counts, perChart, total };
+  const perChart = {}; for (const r of db.prepare(`SELECT chart, count(DISTINCT image_id) AS c FROM chart_values WHERE ${col} = ? ${within} GROUP BY chart`).all(number, ...fp)) perChart[r.chart] = r.c;
+  const total = db.prepare(`SELECT count(DISTINCT image_id) AS c FROM chart_values WHERE ${col} = ? ${within}`).get(number, ...fp).c;
+  return { number, ds, counts, perChart, total, fixedTotal };
 }
 export const catalog = () => ({ charts: CHARTS, positions: POSITIONS.filter((p) => !p.hidden).map((p) => ({ chart: p.chart, key: p.key, label: p.label, combo: !!PARTS[p.key] })) });
 

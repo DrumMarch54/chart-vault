@@ -49,6 +49,7 @@
     'quick.year_rows': 'Year Rows and Day Vibrations', 'quick.show_parts': 'Show and Hide Parts', 'quick.augment': 'Augmentation On or Off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
     'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'viewer.number_tap': 'Tap a number on a chart', 'status.recompute': 'Recompute chart numbers',
     'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart', 'viewer.year_rows': 'Year Rows from a chart',
+    'position.search_more': 'Narrow a position search by another number', 'position.add_more': 'Tap + Another number', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
   };
   const count = (name) => { try { fetch('/api/usage', { method: 'POST', credentials: 'same-origin', keepalive: true, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name }) }).catch(() => {}); } catch { /* counting never breaks a tap */ } };
 
@@ -77,8 +78,14 @@
   const posLabel = (pos) => { const [chart, key = '*'] = String(pos).split('.'); if (key === '*') return chart === '*' ? 'anywhere' : `anywhere in the ${chartLabel(chart).toLowerCase()}`; const p = catalog && catalog.positions.find((x) => x.chart === chart && x.key === key); return `${p ? p.label : key} · ${chartLabel(chart)}`; };
   // "12" reads 12/3; "/3" reads "digit sum 3".
   const numLabel = (num) => { if (/\+/.test(String(num))) return String(num).split('+').map(numLabel).join(' and '); const m = /^(\d+)?(?:\/(\d))?$/.exec(String(num)); if (!m) return String(num); if (!m[1]) return `digit sum ${m[2]}`; const n = Number(m[1]); return n < 10 ? String(n) : `${n}/${TagCodes.digitSum(n)}`; };
-  const searchLabel = (pos, num) => `${numLabel(num)} in ${posLabel(pos)}`;
-  const positionHash = (pos, num) => `#/?pos=${encodeURIComponent(pos)}&num=${encodeURIComponent(num)}`;
+  // A position search is a list of conditions [{ pos, num }], all of which a chart must meet (day 8 AND first
+  // name 15). The address carries them pairwise (?pos=essence.day&num=8&pos=name.first&num=15).
+  const condLabel = (c) => `${numLabel(c.num)} in ${posLabel(c.pos)}`;
+  const searchLabel = (conds) => conds.map(condLabel).join(' and ');
+  const condsOf = (query) => { const pos = query.getAll('pos'), num = query.getAll('num'); return pos.map((p, i) => ({ pos: p, num: num[i] || '' })).filter((c) => c.pos && c.num); };
+  const condsQuery = (conds, more = {}) => { const p = new URLSearchParams(more); for (const c of conds) { p.append('pos', c.pos); p.append('num', c.num); } return p; };
+  const positionHash = (conds) => '#/?' + condsQuery(conds);
+  const sameConds = (a, b) => a.length === b.length && a.every((c) => b.some((d) => d.pos === c.pos && d.num === c.num));
 
   // ---------- routing ----------
   const routes = {};
@@ -343,8 +350,8 @@
     const kind = query.get('kind') === 'archetype' ? 'archetype' : 'chart';
     // A position search (?pos=name.heart&num=12): every chart with that number in that position, computed
     // from the chart's name and date. Shown and remembered like a tag search.
-    const pos = query.get('pos') || '', num = query.get('num') || '';
-    const position = pos && num ? { pos, num } : null;
+    const conds = condsOf(query);
+    const position = conds.length ? conds : null;
     // A name search (?name=john): every chart whose name has a word starting with that, from the search box.
     const name = query.get('name') || '';
     // ?drawn=0: only the charts still shown as the screenshot (no name and date read yet), from Settings.
@@ -357,7 +364,7 @@
     const $input = h('input', { type: 'search', placeholder: 'Search names, tags, numbers', autocomplete: 'off', enterkeyhint: 'search' });
     if (tag) $input.value = pretty(tag); // the search box shows what is being searched; typing replaces it
     if (name) $input.value = name;
-    if (position) { $input.value = searchLabel(pos, num); loadCatalog().then(() => { if (document.activeElement !== $input) $input.value = searchLabel(pos, num); }).catch(() => {}); }
+    if (position) { $input.value = searchLabel(conds); loadCatalog().then(() => { if (document.activeElement !== $input) $input.value = searchLabel(conds); }).catch(() => {}); }
     const showClear = () => $clear.classList.toggle('hidden', !$input.value); // the × only when there is something to clear
     $input.addEventListener('input', showClear);
     const $sugg = suggestBox($input, { kind, alsoArchetype: kind === 'chart', names: kind === 'chart', empty: home ? () => recentNodes(setTag, setName) : null, onPick: (picked, pickKind) => setTag(picked, pickKind || kind), onPickName: setName });
@@ -366,7 +373,13 @@
     showClear();
     const $filters = kind === 'archetype' ? h('div', { class: 'filters' }, chip({ name: 'Archetype Pics', kind: 'name' }, { active: true, removable: true, onclick: () => setTag(tag, 'chart') }))
       : drawn === false ? h('div', { class: 'filters' }, chip({ name: 'Still the screenshot', kind: 'name' }, { active: true, removable: true, onclick: () => setTag('', 'chart') }))
-      : position ? h('div', { class: 'filters' }, h('a', { class: 'chip position', href: '#/position?' + new URLSearchParams({ pos, num }) }, h('span', { class: 't' }, 'Change position or number'), h('span', { class: 'x' }, '›'))) : null;
+      // One chip per condition: tap it to change that one (the picker opens with the others kept), tap × to drop it.
+      // "+ Another number" opens the picker with every condition kept, so the next number narrows these charts.
+      : position ? h('div', { class: 'filters' },
+        ...conds.map((c, i) => { const rest = conds.filter((_, j) => j !== i); return h('span', { class: 'chip position', title: 'Tap to change, × to remove' },
+          h('button', { type: 'button', class: 't', onclick: () => go('#/position?' + condsQuery(rest, { edit: c.num })) }, condLabel(c)),
+          h('button', { type: 'button', class: 'x', 'aria-label': `Remove ${condLabel(c)}`, onclick: () => go(rest.length ? positionHash(rest) : '#/') }, '×')); }),
+        h('a', { class: 'chip position add', href: '#/position?' + condsQuery(conds), onclick: () => count('position.add_more') }, h('span', { class: 't' }, '+ Another number'))) : null;
     const $summary = h('div', { class: 'summary' }, 'Loading…');
     const $grid = h('div', { class: 'grid' });
     const $sentinel = h('div', { class: 'sentinel' });
@@ -374,7 +387,7 @@
     // The home screen is the search box and the way into the quick chart; the recently opened charts sit
     // below. The recent searches and the way to every tag drop down from the search box when it is tapped.
     if (tag) rememberSearch([tag], kind);
-    if (position) rememberSearch([], kind, position);
+    if (position) rememberSearch([], kind, { conds });
     if (name) rememberSearch([], kind, { name });
     if (!namesLoaded) loadTagNames().then(() => { if (tag && document.activeElement !== $input) $input.value = pretty(tag); });
     // Under the search bar: three small tiles side by side (the three big stacked buttons were too much, owner 2026-10-16).
@@ -402,7 +415,7 @@
     if (home) return;
 
     let offset = 0, total = null, loading = false, done = false;
-    const params = () => { const p = new URLSearchParams({ limit: 60, offset, kind }); if (tag) p.append('tag', tag); if (position) { p.set('pos', pos); p.set('num', num); } if (name) p.set('name', name); if (drawn !== null) p.set('drawn', drawn ? '1' : '0'); return p; };
+    const params = () => { const p = new URLSearchParams({ limit: 60, offset, kind }); if (tag) p.append('tag', tag); if (position) for (const c of conds) { p.append('pos', c.pos); p.append('num', c.num); } if (name) p.set('name', name); if (drawn !== null) p.set('drawn', drawn ? '1' : '0'); return p; };
     async function more() {
       if (loading || done) return; loading = true; $sentinel.textContent = 'Loading…';
       try {
@@ -411,8 +424,8 @@
         for (const img of r.items) $grid.append(cell(img));
         done = offset >= total || r.items.length === 0;
         const noun = kind === 'archetype' ? 'archetype pic' : 'chart';
-        $summary.textContent = drawn === false ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} still showing the screenshot` : position ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with ${searchLabel(pos, num)}` : name ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} named ${name}` : `${fmtN(total)} ${noun}${total === 1 ? '' : 's'}${tag ? '' : ', newest first'}`;
-        $sentinel.textContent = done ? (total === 0 ? (drawn === false ? 'Every chart is drawn by the app now.' : kind === 'archetype' && !tag ? 'No archetype pics yet. Add them on the Upload page.' : position ? 'No chart has that number there. Only charts whose name and date have been read can be found this way.' : `No ${noun}s match.`) : '') : '';
+        $summary.textContent = drawn === false ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} still showing the screenshot` : position ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with ${searchLabel(conds)}` : name ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} named ${name}` : `${fmtN(total)} ${noun}${total === 1 ? '' : 's'}${tag ? '' : ', newest first'}`;
+        $sentinel.textContent = done ? (total === 0 ? (drawn === false ? 'Every chart is drawn by the app now.' : kind === 'archetype' && !tag ? 'No archetype pics yet. Add them on the Upload page.' : position ? (conds.length > 1 ? 'No chart has all of these. Remove one with its × to widen the search.' : 'No chart has that number there. Only charts whose name and date have been read can be found this way.') : `No ${noun}s match.`) : '') : '';
       } catch (err) { $sentinel.textContent = err.message; }
       loading = false;
     }
@@ -437,24 +450,25 @@
   const recentIds = () => { try { return (JSON.parse(localStorage.getItem('recent') || '[]') || []).filter(Number.isInteger).slice(0, 48); } catch { return []; } };
   const rememberOpened = (id) => { try { localStorage.setItem('recent', JSON.stringify([id, ...recentIds().filter((x) => x !== id)].slice(0, 48))); } catch {} };
   // The last searches made on this phone, newest first: [{ tags, kind }]. Searching the same tag again moves it to the top.
-  // A position search is remembered too: { tags: [], kind, pos, num }.
+  // A position search is remembered too: { tags: [], kind, conds: [{ pos, num }] } (older entries: { pos, num }).
   // A name search is remembered too: { tags: [], kind, name }.
-  const recentSearches = () => { try { return (JSON.parse(localStorage.getItem('searches') || '[]') || []).filter((s) => s && Array.isArray(s.tags) && (s.tags.length || (s.pos && s.num) || s.name)).slice(0, 20); } catch { return []; } };
+  const condsIn = (s) => (Array.isArray(s.conds) ? s.conds : s.pos && s.num ? [{ pos: s.pos, num: s.num }] : []);
+  const recentSearches = () => { try { return (JSON.parse(localStorage.getItem('searches') || '[]') || []).filter((s) => s && Array.isArray(s.tags) && (s.tags.length || condsIn(s).length || s.name)).slice(0, 20); } catch { return []; } };
   const rememberSearch = (tags, kind, position = null) => {
     try {
-      const kept = recentSearches().filter((s) => (position && position.name ? s.name !== position.name : position ? !(s.pos === position.pos && s.num === position.num) : !(s.kind === kind && s.tags.length && (s.tags.every((t) => tags.includes(t)) || tags.every((t) => s.tags.includes(t))))));
+      const kept = recentSearches().filter((s) => (position && position.name ? s.name !== position.name : position ? !sameConds(condsIn(s), position.conds) : !(s.kind === kind && s.tags.length && (s.tags.every((t) => tags.includes(t)) || tags.every((t) => s.tags.includes(t))))));
       localStorage.setItem('searches', JSON.stringify([{ tags, kind, ...(position || {}) }, ...kept].slice(0, 20)));
     } catch {}
   };
-  const runSearch = (s) => (s.pos ? go(positionHash(s.pos, s.num)) : null);
+  const runSearch = (s) => (condsIn(s).length ? go(positionHash(condsIn(s))) : null);
   // What drops down from an empty search box: the recent searches (tap one to run it again) and the way to every tag.
   const recentNodes = (setTag, setName) => {
     const searches = recentSearches();
     return [
       h('div', { class: 'shead' }, searches.length ? 'Recent Searches' : 'Your recent searches will show here'),
-      ...searches.map((s) => h('button', { type: 'button', class: 'rsearch', onclick: () => (s.pos ? runSearch(s) : s.name ? setName(s.name) : setTag(s.tags[0], s.kind)) },
+      ...searches.map((s) => h('button', { type: 'button', class: 'rsearch', onclick: () => (condsIn(s).length ? runSearch(s) : s.name ? setName(s.name) : setTag(s.tags[0], s.kind)) },
         h('span', { class: 'chips' }, s.kind === 'archetype' ? h('span', { class: 'chip name', style: 'pointer-events:none' }, 'Archetype Pics') : null,
-          s.pos ? h('span', { class: 'chip position', style: 'pointer-events:none' }, searchLabel(s.pos, s.num)) : null,
+          condsIn(s).length ? h('span', { class: 'chip position', style: 'pointer-events:none' }, searchLabel(condsIn(s))) : null,
           s.name ? h('span', { class: 'chip who', style: 'pointer-events:none' }, s.name) : null,
           ...s.tags.slice(0, 1).map((t) => h('span', { class: `chip ${kindOf(t)}`, style: 'pointer-events:none' }, pretty(t)))),
         h('span', { class: 'muted', style: 'padding-left:8px' }, '›'))),
@@ -468,7 +482,8 @@
   routes.chart = async function viewer(id, query) {
     const qs = query.toString();
     const listQ = new URLSearchParams(); for (const t of query.getAll('tag')) listQ.append('tag', t); if (query.get('kind') === 'archetype') listQ.set('kind', 'archetype'); if (query.get('name')) listQ.set('name', query.get('name'));
-    for (const k of ['pos', 'num', 'drawn']) if (query.get(k)) listQ.set(k, query.get(k));
+    for (const k of ['pos', 'num']) for (const v of query.getAll(k)) listQ.append(k, v);
+    if (query.get('drawn')) listQ.set('drawn', query.get('drawn'));
     const backHash = '#/' + (listQ.toString() ? '?' + listQ : '');
     // Back goes to the screen the viewer was opened from (the list, a search, the quick chart). Opened from a
     // link or a fresh load, there is no such screen, so it goes to the list this chart belongs to.
@@ -505,7 +520,8 @@
     // The ⋮ menu (like the Quick Chart's): the chart's year rows and day vibrations, and the original screenshot.
     const $orig = h('button', { type: 'button', class: 'cmenu-item hidden' }, 'Screenshot');
     const $rows = h('button', { type: 'button', class: 'cmenu-item' }, 'Year Rows and Day Vibrations');
-    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $rows, $orig);
+    const $pyrItem = h('button', { type: 'button', class: 'cmenu-item' }, 'Whole Name Pyramid');
+    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $rows, $pyrItem, $orig);
     const $dots = h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'More', title: 'More', onclick: (e) => { e.stopPropagation(); $menu.classList.toggle('hidden'); } }, '⋮');
     const $more = h('div', { class: 'vmore hidden' }, $dots, $menu);
     const $cmp = h('button', { type: 'button', class: 'vbtn hidden' }, 'Compare');
@@ -622,6 +638,15 @@
       count('viewer.year_rows');
       openForecast({ day: inp.day, month: inp.month, year: inp.year, name: inp.name || '', augment: true });
     };
+    // The pyramid of every name run together, from the chart's own name (also a button in the sheet).
+    const wholePyramid = () => {
+      $menu.classList.add('hidden');
+      const inp = img.inputs;
+      if (!inp || !inp.name) { toast('This chart has no name read yet. Swipe up and tap "Type them" to add it.', true); return; }
+      count('viewer.whole_pyramid');
+      openWord(inp.name, dayOf(inp), { wholeName: true });
+    };
+    $pyrItem.onclick = wholePyramid;
     if (img.inputs) { inputsById.set(img.id, img.inputs); if (!(cached && sameInputs(cached, img.inputs) && mode === 'drawn')) showDrawn(); }
     else { inputsById.delete(img.id); showPhoto(); }
     drawOrig();
@@ -689,12 +714,13 @@
       const groups = numbers.charts.map((c) => {
         const $chips = h('div', { class: 'chips tchips' });
         $chips.hidden = c.chart !== 'name';
-        for (const v of c.values) $chips.append(h('button', { type: 'button', class: 'chip position', onclick: () => { count('viewer.number_tap'); go(positionHash(`${c.chart}.${v.position}`, String(v.sum))); } }, h('span', { class: 't' }, `${v.label}${v.n ? ' ' + (v.n + 1) : ''}`), h('span', { class: 'count' }, v.sum < 10 ? String(v.sum) : v.text)));
+        for (const v of c.values) $chips.append(h('button', { type: 'button', class: 'chip position', onclick: () => { count('viewer.number_tap'); go(positionHash([{ pos: `${c.chart}.${v.position}`, num: String(v.sum) }])); } }, h('span', { class: 't' }, `${v.label}${v.n ? ' ' + (v.n + 1) : ''}`), h('span', { class: 'count' }, v.sum < 10 ? String(v.sum) : v.text)));
         const $arrow = h('span', { class: 'arrow' }, $chips.hidden ? '⌄' : '⌃');
         return [h('button', { type: 'button', class: 'tgroup', onclick: () => { $chips.hidden = !$chips.hidden; $arrow.textContent = $chips.hidden ? '⌄' : '⌃'; } }, h('span', { class: 'tg-title' }, c.label), h('span', { class: 'muted small' }, `${c.values.length} numbers`), $arrow), $chips];
       });
       fill($numbers,
-        h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('div', {}, h('b', {}, inp.name || '(no name)'), h('div', { class: 'muted small' }, when ? `Born ${when}` : 'No date: name chart only')), h('button', { type: 'button', onclick: () => { fixing = true; drawNumbers(); } }, 'Wrong? Fix')),
+        h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('div', { style: 'min-width:0' }, h('b', {}, inp.name || '(no name)'), h('div', { class: 'muted small' }, when ? `Born ${when}` : 'No date: name chart only')),
+          h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:6px' }, inp.name ? h('button', { type: 'button', onclick: wholePyramid }, 'Pyramid') : null, h('button', { type: 'button', onclick: () => { fixing = true; drawNumbers(); } }, 'Wrong? Fix'))),
         h('div', { class: 'muted small' }, 'Tap a number to find every chart with it in that position.'),
         ...groups.flat());
     };
@@ -1286,7 +1312,8 @@
     const rows = r.pyramid.slice().reverse();
     const W = r.weight, topCell = W.top;
     const cls = (v, i) => { const t = Numeroscope.TENSION[v.sum]; return 'n-' + (v.sum < 10 ? 'dark' : NumberColors.lookup('first', v.text, false)) + (t ? (i === 0 ? ' top-tense' : ' tense') : ''); };
-    return h('div', { class: 'pyr' },
+    const n = rows.length, wide = n > 8;
+    return h('div', { class: 'pyr' + (wide ? ' wide' : ''), style: wide ? `--cell:${Math.max(22, Math.floor((Math.min(innerWidth, 760) - 42) / n))}px` : '' },
       ...rows.map((row, i) => h('div', { class: 'pyr-row' }, ...row.map((v) => h('span', { class: cls(v, i) }, i === rows.length - 1 ? String(v.sum) : v.text)))),
       h('div', { class: 'pyr-row letters' }, ...r.name.words.map((w) => h('span', {}, w.text))),
       topCell && Numeroscope.TENSION[topCell.sum] ? h('p', { class: 'err small', style: 'margin:8px 0 0' }, `The top of the pyramid is ${topCell.text}: ${fmtW(W.penalty)} penalty points added.`) : null);
@@ -1304,7 +1331,11 @@
   }
   // The popup for one word of the name line: pyramid first with its weight, then the word's own chart,
   // then its vocation and personality charts. The full weight table stays behind "Details".
-  function openWord(word, day) {
+  // wholeName (owner's ask 2026-10-17): every name run together with no spaces ("MatthewDavidMcConaughey")
+  // as one word, so the pyramid of the whole name shows; only the pyramid, the letter charts of a 20-letter
+  // "word" would not be readable.
+  function openWord(word, day, { wholeName = false } = {}) {
+    if (wholeName) word = String(word || '').replace(/\s+/g, '');
     const r = Numeroscope.singleName(word, day);
     if (!r.letters) return;
     day = day && day.text ? day : null;
@@ -1314,19 +1345,23 @@
     const $table = h('div', { class: 'hidden' }, weightEl(W));
     const $more = h('button', { type: 'button', class: 'linkbtn', onclick: () => { $table.classList.toggle('hidden'); $more.textContent = $table.classList.contains('hidden') ? 'Details' : 'Hide details'; } }, 'Details');
     const small = (title, c, pre) => h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, title), singleNameSvg(c, pre, c.words.length, day));
+    const $pyr = pyramidEl(r);
     const $pop = h('div', { class: 'wordpop' },
-      h('div', { class: 'pagetop' }, h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Close', onclick: close }, '‹'), h('h1', {}, word), h('span', { class: 'muted small' }, `${r.letters} letters`)),
-      h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'Number Pyramid'), pyramidEl(r),
+      h('div', { class: 'pagetop' }, h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Close', onclick: close }, '‹'), h('h1', { class: wholeName ? 'whole' : '' }, wholeName ? 'Whole Name Pyramid' : word), h('span', { class: 'muted small' }, `${r.letters} letters`)),
+      wholeName ? h('p', { class: 'muted small', style: 'margin:0 0 8px;word-break:break-all' }, `All the names together, no spaces: ${word}`) : null,
+      h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'Number Pyramid'), $pyr,
         h('div', { class: 'verdict' },
           h('div', {}, h('span', { class: 'muted small' }, 'Weight'), h('b', {}, fmtW(W.total))),
           h('div', {}, h('span', { class: 'muted small' }, 'Ratio'), h('b', { class: W.approved ? 'ok' : 'err' }, W.ratio.toFixed(3))),
           h('div', {}, h('span', { class: 'muted small' }, W.approved ? 'Under 0.3' : '0.3 or over'), h('b', { class: W.approved ? 'ok' : 'err' }, W.approved ? 'Approved' : 'Not approved')),
           $more),
         $table),
-      day ? null : h('p', { class: 'muted small', style: 'margin:0 0 8px' }, 'Type a birth day to see the top half of the charts and the pillars.'),
-      h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'Name Chart'), singleNameSvg(r.name, '', r.letters, day)),
-      h('div', { class: 'two' }, small('Vocation', r.vowels, 'v.'), small('Personality', r.consonants, 'c.')));
+      wholeName || day ? null : h('p', { class: 'muted small', style: 'margin:0 0 8px' }, 'Type a birth day to see the top half of the charts and the pillars.'),
+      wholeName ? null : h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'Name Chart'), singleNameSvg(r.name, '', r.letters, day)),
+      wholeName ? null : h('div', { class: 'two' }, small('Vocation', r.vowels, 'v.'), small('Personality', r.consonants, 'c.')));
     overlays.push($pop); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
+    // A pyramid wider than the card starts scrolled to its middle, where the top sits, and says it can be swiped.
+    if ($pyr.scrollWidth > $pyr.clientWidth) { $pyr.scrollLeft = ($pyr.scrollWidth - $pyr.clientWidth) / 2; $pyr.after(h('p', { class: 'muted small', style: 'margin:2px 6px 0;color:#8a8f9c' }, 'Wider than the screen: swipe the pyramid sideways to see its edges.')); }
   }
 
   // The chart drawing as a PNG (the app's own styles and font inlined, so the picture is what the screen shows).
@@ -1377,12 +1412,13 @@
     const $save = h('button', { type: 'button', class: 'cmenu-item' }, 'Save to Vault');
     const $showBtn = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { count('quick.show_parts'); $menu.classList.add('hidden'); showSheet(show, () => applyShow(svg, show)); } }, 'Show and Hide Parts');
     const $rows = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { count('quick.year_rows'); $menu.classList.add('hidden'); openForecast(input()); } }, 'Year Rows and Day Vibrations');
+    const $pyrItem = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { $menu.classList.add('hidden'); if (!$name.value.trim()) { toast('Type a name first.', true); $name.focus(); return; } count('quick.whole_pyramid'); openWord($name.value, data && data.essence.day, { wholeName: true }); } }, 'Whole Name Pyramid');
     const augmentLabel = () => (augment ? 'Augmentation On' : 'Augmentation Off');
     const $augment = h('button', { type: 'button', class: 'cmenu-item', role: 'menuitemcheckbox', 'aria-checked': String(augment), onclick: () => {
       count('quick.augment'); augment = !augment; try { localStorage.setItem('quickAugment', augment ? 'on' : 'off'); } catch {}
       $augment.textContent = augmentLabel(); $augment.setAttribute('aria-checked', String(augment)); $menu.classList.add('hidden'); draw();
     } }, augmentLabel());
-    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $full, $showBtn, $rows, $augment, $save);
+    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $full, $showBtn, $rows, $pyrItem, $augment, $save);
     const $dots = h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'More', title: 'More', onclick: (e) => { e.stopPropagation(); $menu.classList.toggle('hidden'); } }, '⋮');
     document.addEventListener('click', (e) => { if (!$menu.contains(e.target)) $menu.classList.add('hidden'); });
     const $home = h('div', { class: 'nscope-home' }, $chart);
@@ -1433,34 +1469,53 @@
   // Type a number, see how many charts hold it in every position of every chart, tap one. The counts come
   // from the server's stored chart numbers; the search itself is the browse screen with ?pos=&num=.
   routes.position = async function positionView(_, query) {
-    const startPos = query.get('pos') || '', startNum = query.get('num') || '';
-    let chart = startPos ? startPos.split('.')[0] : 'name'; try { if (!startPos) chart = localStorage.getItem('posChart') || 'name'; } catch {}
+    // Conditions already chosen (?pos=&num=, pairwise) are kept and shown at the top: the next number narrows
+    // the charts that meet them ("day 8" first, then "first name 15" among those). ?edit= is a number to start with.
+    const fixed = condsOf(query);
+    const startNum = query.get('edit') || '';
+    let chart = 'name'; try { chart = localStorage.getItem('posChart') || 'name'; } catch {}
     // Two numbers ("4" and "9") look for a combination: the two parts of a center or a diamond, either way round.
     const [startA, startB = ''] = startNum.split('+');
-    const $num = h('input', { type: 'text', inputmode: 'numeric', placeholder: 'Number, like 12', autocomplete: 'off', maxlength: 3, value: startA.replace('/', ''), enterkeyhint: 'search' });
-    const $num2 = h('input', { type: 'text', inputmode: 'numeric', placeholder: 'and…', autocomplete: 'off', maxlength: 3, value: startB.replace('/', ''), enterkeyhint: 'search', 'aria-label': 'Second number of a combination' });
+    const $num = h('input', { type: 'text', inputmode: 'numeric', placeholder: fixed.length ? 'Next number' : 'Number, like 12', autocomplete: 'off', maxlength: 3, value: startA.replace('/', ''), enterkeyhint: 'search' });
+    const $num2 = h('input', { type: 'text', class: 'second', inputmode: 'numeric', placeholder: 'number', autocomplete: 'off', maxlength: 3, value: startB.replace('/', ''), enterkeyhint: 'search', 'aria-label': 'Second number of a combination, meeting the first in a center or diamond' });
     const $ds = h('button', { type: 'button', class: 'chip off', title: 'Digit sum' }, 'as a digit sum');
     let ds = startA.startsWith('/');
     const combo = () => !!($num.value.trim() && $num2.value.trim());
+    const $fixed = h('div', { class: 'fixedconds' });
     const $charts = h('div', { class: 'chips tabs' });
     const $list = h('div', { class: 'stack poslist' });
     const $hint = h('p', { class: 'muted small' });
-    render(h('div', { class: 'screen' }, pageTop('Search by Position', '#/'),
-      h('div', { class: 'row posnum', style: 'flex-wrap:nowrap' }, $num, h('span', { class: 'muted small andword' }, 'and'), $num2, $ds), $hint, $charts, $list));
+    render(h('div', { class: 'screen' }, pageTop('Search by Position', fixed.length ? positionHash(fixed) : '#/'), $fixed,
+      h('div', { class: 'row posnum', style: 'flex-wrap:nowrap' }, $num, h('span', { class: 'muted small andword' }, 'meets'), $num2, $ds), $hint, $charts, $list));
     try { await loadCatalog(); } catch (err) { fill($list, h('p', { class: 'err' }, err.message)); return; }
     let counts = null, seq = 0;
     const numText = () => { const n = $num.value.trim(); if (!n) return ''; if (combo()) return `${n}+${$num2.value.trim()}`; return ds ? `/${n.slice(-1)}` : n; };
+    const fixedParam = () => fixed.map((c) => `${c.pos}:${c.num}`).join(',');
     const refresh = async () => {
       const n = numText(); const my = ++seq;
       $ds.classList.toggle('hidden', combo() || !/^\d$/.test($num.value.trim()));
       if (!n) { counts = null; drawList(); return; }
-      try { const c = await api('/api/positions/counts?num=' + encodeURIComponent(n)); if (my === seq) { counts = c; drawList(); } } catch (err) { if (my === seq) { counts = { error: err.message }; drawList(); } }
+      try { const c = await api('/api/positions/counts?num=' + encodeURIComponent(n) + (fixed.length ? '&fixed=' + encodeURIComponent(fixedParam()) : '')); if (my === seq) { counts = c; drawList(); } } catch (err) { if (my === seq) { counts = { error: err.message }; drawList(); } }
+    };
+    // The conditions kept so far, each with its × (dropping one re-opens this picker without it), and the way to
+    // the charts that meet them as they are.
+    const drawFixed = () => {
+      if (!fixed.length) { fill($fixed); return; }
+      const total = counts && !counts.error && counts.fixedTotal !== null && counts.fixedTotal !== undefined ? counts.fixedTotal : null;
+      fill($fixed, h('div', { class: 'muted small', style: 'margin-bottom:6px' }, 'Every chart found must have:'),
+        h('div', { class: 'chips' }, ...fixed.map((c, i) => h('span', { class: 'chip position' }, h('span', { class: 't' }, condLabel(c)),
+          h('button', { type: 'button', class: 'x', 'aria-label': `Remove ${condLabel(c)}`, onclick: () => { const rest = fixed.filter((_, j) => j !== i); swap('#/position?' + condsQuery(rest, numText() ? { edit: numText() } : {})); } }, '×')))),
+        h('a', { class: 'linkbtn', href: positionHash(fixed) }, total === null ? 'See these charts ›' : `See these ${fmtN(total)} chart${total === 1 ? '' : 's'} ›`));
     };
     const drawCharts = () => fill($charts, ...[{ key: '*', label: 'Any chart' }, ...catalog.charts].map((c) => h('button', { type: 'button', class: `chip ${chart === c.key ? 'active' : 'off'}`, onclick: () => { chart = c.key; try { localStorage.setItem('posChart', chart); } catch {} drawCharts(); drawList(); } }, c.label)));
-    const pick = (pos) => { const n = numText(); if (!n) { $num.focus(); toast('Type a number first', true); return; } count('position.search'); go(positionHash(pos, n)); };
+    const pick = (pos) => { const n = numText(); if (!n) { $num.focus(); toast('Type a number first', true); return; } count(fixed.length ? 'position.search_more' : 'position.search'); go(positionHash([...fixed, { pos, num: n }])); };
     const drawList = () => {
+      drawFixed();
       const n = numText();
-      $hint.textContent = n ? (counts && !counts.error ? `${fmtN(counts.total)} chart${counts.total === 1 ? '' : 's'} have ${numLabel(n)}${combo() ? ' meeting in a center or diamond (one digit means the digit sum, so 4 finds a 13/4 or a 22/4)' : ' somewhere'}. Tap a position.` : '') : 'Type a number, then tap the position to look in. Two numbers find a combination: 4 and 9 meeting in a center or a diamond. Charts are found by their name and date, tags or not.';
+      const have = `${fmtN(counts ? counts.total : 0)} chart${counts && counts.total === 1 ? '' : 's'}${fixed.length ? ' of these' : ''} have ${numLabel(n)}${combo() ? ' meeting in a center or diamond (one digit means the digit sum, so 4 finds a 13/4 or a 22/4)' : ' somewhere'}. Tap the position it must be in.`;
+      $hint.textContent = n ? (counts && !counts.error ? have : '')
+        : fixed.length ? 'Type the next number, then tap the position it must be in. Only charts with everything above are counted.'
+        : 'Type a number, then tap the position it must be in. Two numbers side by side, like 4 and 9, find them meeting in a center or diamond. Once the charts show, tap “+ Another number” above them to ask for a second position too, like day 8 with first name 15. Charts are found by their name and date, tags or not.';
       if (counts && counts.error) { fill($list, h('p', { class: 'err' }, counts.error)); return; }
       const cnt = (pos) => (counts ? (pos.endsWith('.*') ? (pos === '*.*' ? counts.total : counts.perChart[pos.split('.')[0]] || 0) : counts.counts[pos] || 0) : null);
       const row = (pos, label, note) => { const c = cnt(pos); return h('button', { type: 'button', class: `posrow ${c === 0 ? 'none' : ''}`, onclick: () => pick(pos) }, h('span', { class: 'pl' }, h('span', {}, label), note ? h('span', { class: 'muted small' }, note) : null), h('b', {}, c === null ? '' : fmtN(c))); };
