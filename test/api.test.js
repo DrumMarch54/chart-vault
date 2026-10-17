@@ -472,3 +472,32 @@ test('my chart: locked, empty at first, saved on the server, bad dates refused, 
   const cleared = await (await api('/api/mychart', { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name: 'Peter', day: '', month: '', year: '' }) })).json();
   assert.equal(cleared.day, 0); assert.equal(cleared.name, 'Peter');
 });
+
+test('drawn charts: list rows and the chart carry the read name and date; ?drawn=0 lists the ones still showing the screenshot', async () => {
+  const { setInputs } = await import('../server/positions.js');
+  const all = (await json(await api('/api/images?limit=200'))).body.items;
+  assert.ok(all.length >= 2);
+  const drawnOne = all[0], plainOne = all[1];
+  setInputs(db, drawnOne.id, { day: 21, month: 10, year: 1985, name: 'Peter Joshua Shicora' }, { source: 'owner' });
+  const after = (await json(await api('/api/images?limit=200'))).body.items;
+  const d = after.find((i) => i.id === drawnOne.id), p = after.find((i) => i.id === plainOne.id);
+  assert.deepEqual(d.inputs, { day: 21, month: 10, year: 1985, name: 'Peter Joshua Shicora' });
+  assert.equal(p.inputs, null);
+  const one = (await json(await api(`/api/images/${drawnOne.id}`))).body;
+  assert.deepEqual(one.inputs, { day: 21, month: 10, year: 1985, name: 'Peter Joshua Shicora' });
+  assert.equal((await json(await api(`/api/images/${plainOne.id}`))).body.inputs, null);
+  const undrawn = (await json(await api('/api/images?drawn=0&limit=200'))).body;
+  assert.ok(!undrawn.items.some((i) => i.id === drawnOne.id));
+  assert.ok(undrawn.items.some((i) => i.id === plainOne.id));
+  assert.equal(undrawn.total, after.length - 1);
+  const drawn = (await json(await api('/api/images?drawn=1&limit=200'))).body;
+  assert.deepEqual(drawn.items.map((i) => i.id), [drawnOne.id]);
+  // the viewer's swipes follow the same list
+  const ctx = (await json(await api(`/api/images/${plainOne.id}/context?drawn=0`))).body;
+  assert.equal(ctx.total, after.length - 1);
+  const snap = await (await api('/api/debug/snapshot?scope=short')).text();
+  assert.match(snap, /DRAWN CHARTS: 1 charts are drawn/);
+  assert.match(snap, /still show the screenshot/);
+  db.prepare('DELETE FROM chart_inputs WHERE image_id = ?').run(drawnOne.id);
+  db.prepare('DELETE FROM chart_values WHERE image_id = ?').run(drawnOne.id);
+});

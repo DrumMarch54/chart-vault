@@ -55,6 +55,12 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   measures as off. The numbers it prints beat anyone's eye.
 
 ## Rules that must hold
+- Drawn charts (owner's ask 2026-10-17): a chart whose name and date are known is drawn by the app
+  (`drawnChart`, the Quick Chart drawing) on the grid, in the viewer and in Compare; the screenshot
+  stays one tap away ("Screenshot" in the viewer's top bar) and is never deleted. Charts without a
+  name and date still show the screenshot: Settings -> "Charts Still Showing the Screenshot"
+  (`#/?drawn=0`). **Open item: the owner asked to be reminded to go through those** (count in the
+  snapshot's DRAWN CHARTS line); remind them at the start of a session until that list is empty.
 - Never lose or mix up a chart or a tag. Filename = identity. Tags are kept
   exactly as written, never renamed or "fixed". How a tag READS is separate:
   `server/tagnames.js` splits run-together names ("alexjones" → "Alex Jones");

@@ -93,6 +93,7 @@ export function snapshot(db, { scope = 'full', id = null, commit = 'unknown', bu
   line('POSITION SEARCH (name + date read for a chart -> every position computed; see server/positions.js)');
   line(`charts with inputs ${ps.with_inputs} of ${ps.charts} (full date ${ps.with_date}; by source ${Object.entries(ps.by_source).map(([k, v]) => `${k} ${v}`).join(', ') || 'none'})   without inputs ${ps.without_inputs}   stored numbers ${ps.values}`);
   line(`owner's position tags checked against the computed charts: ${check.tags} tags, agree ${check.agree}, DISAGREE ${check.disagree}, unknown code ${check.unknown}`);
+  line(`DRAWN CHARTS: ${ps.with_inputs} charts are drawn by the app from their name and date (grid, viewer, Compare); ${ps.without_inputs} still show the screenshot and wait for the owner (Settings -> Charts Still Showing the Screenshot). Remind the owner.`);
   if (scope !== 'short') {
     for (const d of check.disagreeing.slice(0, 200)) line(`  disagree: #${d.id} ${d.filename} tag "${d.tag}"`);
     const none = chartsWithoutInputs(db);

@@ -48,6 +48,7 @@
     'viewer.add_tag': 'Add a tag to a chart', 'quick.save': 'Save a quick chart', 'quick.full_screen': 'Quick Chart full screen',
     'quick.year_rows': 'Year Rows and Day Vibrations', 'quick.show_parts': 'Show and Hide Parts', 'quick.augment': 'Augmentation On or Off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
     'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'viewer.number_tap': 'Tap a number on a chart', 'status.recompute': 'Recompute chart numbers',
+    'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart',
   };
   const count = (name) => { try { fetch('/api/usage', { method: 'POST', credentials: 'same-origin', keepalive: true, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name }) }).catch(() => {}); } catch { /* counting never breaks a tap */ } };
 
@@ -212,7 +213,7 @@
       if (pts.length === 1) {
         const p = pts[0], now = Date.now();
         if (now - lastTap < 300) { zoomAt(p.x, p.y, scale > 1.5 ? 1 / scale : 2.5); lastTap = 0; swipe = null; }
-        else { lastTap = now; swipe = scale === 1 ? { x: p.x, y: p.y, t: now } : null; }
+        else { lastTap = now; swipe = scale === 1 ? { x: p.x, y: p.y, t: now, target: e.target } : null; }
         start = { tx, ty, x: p.x, y: p.y, scale };
       } else if (pts.length === 2) {
         swipe = null;
@@ -250,7 +251,7 @@
         else if (Math.abs(dx) > 70 && Math.abs(dy) < Math.abs(dx) * 0.7) (dx < 0 ? on.left : on.right)?.();
         else if (dy < -70 && Math.abs(dx) < 60) on.up?.();
         else if (dy > 90 && Math.abs(dx) < 60) on.down?.();
-        else if (Math.abs(dx) < 8 && Math.abs(dy) < 8 && Date.now() - swipe.t < 300) on.tap?.();
+        else if (Math.abs(dx) < 8 && Math.abs(dy) < 8 && Date.now() - swipe.t < 300) on.tap?.(swipe.target);
       }
       swipe = null;
       start = pts.length === 1 ? { tx, ty, x: pts[0].x, y: pts[0].y, scale } : null;
@@ -346,9 +347,11 @@
     const position = pos && num ? { pos, num } : null;
     // A name search (?name=john): every chart whose name has a word starting with that, from the search box.
     const name = query.get('name') || '';
+    // ?drawn=0: only the charts still shown as the screenshot (no name and date read yet), from Settings.
+    const drawn = query.get('drawn') === '0' ? false : query.get('drawn') === '1' ? true : null;
     const setName = (n) => go('#/?' + new URLSearchParams({ name: n }));
     const setTag = (t, k = kind) => { const p = new URLSearchParams(); if (k === 'archetype') p.set('kind', 'archetype'); if (t) p.set('tag', t); go('#/' + (p.toString() ? '?' + p : '')); };
-    const home = !tag && !position && !name && kind === 'chart';
+    const home = !tag && !position && !name && kind === 'chart' && drawn === null;
     const $quickIcon = h('a', { class: 'btn iconbtn gear', href: '#/quick', 'aria-label': 'Quick Chart', title: 'Quick Chart' }, '◈');
     const $gear = h('a', { class: 'btn iconbtn gear', href: '#/settings', 'aria-label': 'Settings', title: 'Settings' }, '⚙');
     const $input = h('input', { type: 'search', placeholder: 'Search names, tags, numbers', autocomplete: 'off', enterkeyhint: 'search' });
@@ -362,6 +365,7 @@
     const $clear = h('button', { type: 'button', class: 'clear', 'aria-label': 'Clear the search', onclick: () => { if (tag || position || name) { setTag('', 'chart'); return; } $input.value = ''; showClear(); $input.focus(); $sugg.classList.add('hidden'); } }, '×');
     showClear();
     const $filters = kind === 'archetype' ? h('div', { class: 'filters' }, chip({ name: 'Archetype Pics', kind: 'name' }, { active: true, removable: true, onclick: () => setTag(tag, 'chart') }))
+      : drawn === false ? h('div', { class: 'filters' }, chip({ name: 'Still the screenshot', kind: 'name' }, { active: true, removable: true, onclick: () => setTag('', 'chart') }))
       : position ? h('div', { class: 'filters' }, h('a', { class: 'chip position', href: '#/position?' + new URLSearchParams({ pos, num }) }, h('span', { class: 't' }, 'Change position or number'), h('span', { class: 'x' }, '›'))) : null;
     const $summary = h('div', { class: 'summary' }, 'Loading…');
     const $grid = h('div', { class: 'grid' });
@@ -398,7 +402,7 @@
     if (home) return;
 
     let offset = 0, total = null, loading = false, done = false;
-    const params = () => { const p = new URLSearchParams({ limit: 60, offset, kind }); if (tag) p.append('tag', tag); if (position) { p.set('pos', pos); p.set('num', num); } if (name) p.set('name', name); return p; };
+    const params = () => { const p = new URLSearchParams({ limit: 60, offset, kind }); if (tag) p.append('tag', tag); if (position) { p.set('pos', pos); p.set('num', num); } if (name) p.set('name', name); if (drawn !== null) p.set('drawn', drawn ? '1' : '0'); return p; };
     async function more() {
       if (loading || done) return; loading = true; $sentinel.textContent = 'Loading…';
       try {
@@ -407,8 +411,8 @@
         for (const img of r.items) $grid.append(cell(img));
         done = offset >= total || r.items.length === 0;
         const noun = kind === 'archetype' ? 'archetype pic' : 'chart';
-        $summary.textContent = position ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with ${searchLabel(pos, num)}` : name ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} named ${name}` : `${fmtN(total)} ${noun}${total === 1 ? '' : 's'}${tag ? '' : ', newest first'}`;
-        $sentinel.textContent = done ? (total === 0 ? (kind === 'archetype' && !tag ? 'No archetype pics yet. Add them on the Upload page.' : position ? 'No chart has that number there. Only charts whose name and date have been read can be found this way.' : `No ${noun}s match.`) : '') : '';
+        $summary.textContent = drawn === false ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} still showing the screenshot` : position ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with ${searchLabel(pos, num)}` : name ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} named ${name}` : `${fmtN(total)} ${noun}${total === 1 ? '' : 's'}${tag ? '' : ', newest first'}`;
+        $sentinel.textContent = done ? (total === 0 ? (drawn === false ? 'Every chart is drawn by the app now.' : kind === 'archetype' && !tag ? 'No archetype pics yet. Add them on the Upload page.' : position ? 'No chart has that number there. Only charts whose name and date have been read can be found this way.' : `No ${noun}s match.`) : '') : '';
       } catch (err) { $sentinel.textContent = err.message; }
       loading = false;
     }
@@ -417,8 +421,11 @@
       const label = img.kind === 'archetype'
         ? img.tags.map((t) => pretty(t.name)).join(', ')
         : img.title || pretty((img.tags.find((t) => t.kind === 'name') || img.tags[0] || {}).name || '');
+      // A chart whose name and date are known is drawn by the app (every chart looks the same); the rest show the screenshot.
+      if (img.inputs) inputsById.set(img.id, img.inputs); else inputsById.delete(img.id);
       return h('a', { class: 'cell', href: `#/chart/${img.id}${location.hash.includes('?') ? '?' + location.hash.split('?')[1] : ''}` },
-        img.has_file ? h('img', { class: 'thumb', src: `/thumb/${img.id}`, loading: 'lazy', alt: label }) : h('div', { class: 'nofile' }, 'no file yet'),
+        img.inputs ? h('div', { class: 'thumb drawn', role: 'img', 'aria-label': label }, drawnChart(img.inputs))
+          : img.has_file ? h('img', { class: 'thumb', src: `/thumb/${img.id}`, loading: 'lazy', alt: label }) : h('div', { class: 'nofile' }, 'no file yet'),
         h('div', { class: `label ${label ? '' : 'muted'}` }, label || img.filename));
     }
     const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) more(); }, { rootMargin: '600px' });
@@ -461,7 +468,7 @@
   routes.chart = async function viewer(id, query) {
     const qs = query.toString();
     const listQ = new URLSearchParams(); for (const t of query.getAll('tag')) listQ.append('tag', t); if (query.get('kind') === 'archetype') listQ.set('kind', 'archetype'); if (query.get('name')) listQ.set('name', query.get('name'));
-    for (const k of ['pos', 'num']) if (query.get(k)) listQ.set(k, query.get(k));
+    for (const k of ['pos', 'num', 'drawn']) if (query.get(k)) listQ.set(k, query.get(k));
     const backHash = '#/' + (listQ.toString() ? '?' + listQ : '');
     // Back goes to the screen the viewer was opened from (the list, a search, the quick chart). Opened from a
     // link or a fresh load, there is no such screen, so it goes to the list this chart belongs to.
@@ -473,20 +480,29 @@
     document.body.classList.add('fullscreen');
     viewerCleanup = () => document.body.classList.remove('fullscreen');
 
-    // alt is empty on purpose: with text in it the browser draws a "missing picture" icon until the file arrives.
-    const $img = h('img', { class: 'vimg', alt: '', draggable: 'false' });
-    const $stage = h('div', { class: 'vstage' }, $img);
+    // What fills the stage: the app's own drawing of the chart when its name and date are known (the Quick
+    // Chart drawing, so every chart looks the same), else the screenshot. "Screenshot" in the top bar shows
+    // the original picture; "Drawn" comes back. $img is whichever is on the stage now.
+    let $img = null, z = null, mode = 'photo';
+    const cached = inputsById.get(Number(id)) || null;
+    const $stage = h('div', { class: 'vstage' });
     // The picture is sized from its own proportions to fill the stage, so the small thumbnail shown first
     // (already on the phone from the list) and the full picture that replaces it take exactly the same space.
+    // A drawing has its proportions in its viewBox.
+    const ratioOf = (el) => { if (el.tagName === 'svg') { const v = (el.getAttribute('viewBox') || '').split(' ').map(Number); return v[2] && v[3] ? v[2] / v[3] : 0; } return el.naturalWidth ? el.naturalWidth / el.naturalHeight : 0; };
     const fit = () => {
-      if (!$img.naturalWidth || !$img.isConnected) return;
-      const W = $stage.clientWidth, H = $stage.clientHeight, r = $img.naturalWidth / $img.naturalHeight;
+      if (!$img || !$img.isConnected) return;
+      const r = ratioOf($img); if (!r) return;
+      const W = $stage.clientWidth, H = $stage.clientHeight;
       const w = Math.min(W, H * r); $img.style.width = `${w}px`; $img.style.height = `${w / r}px`;
     };
-    $img.addEventListener('load', fit); window.addEventListener('resize', fit);
-    $img.src = `/thumb/${id}`;
+    window.addEventListener('resize', fit);
+    // alt is empty on purpose: with text in it the browser draws a "missing picture" icon until the file arrives.
+    const photoEl = (src) => { const el = h('img', { class: 'vimg', alt: '', draggable: 'false' }); el.addEventListener('load', fit); el.src = src; return el; };
+    const drawnEl = (inp) => { const el = drawnChart(inp); el.classList.add('vimg', 'drawn'); return el; };
     const $count = h('span', { class: 'vcount' }, '');
     const $name = h('span', { class: 'vname' }, '');
+    const $orig = h('button', { type: 'button', class: 'vbtn hidden' }, 'Screenshot');
     const $cmp = h('button', { type: 'button', class: 'vbtn hidden' }, 'Compare');
     const $prev = h('button', { type: 'button', class: 'iconbtn varrow left hidden', 'aria-label': 'Previous' }, '‹');
     const $next = h('button', { type: 'button', class: 'iconbtn varrow right hidden', 'aria-label': 'Next' }, '›');
@@ -495,11 +511,19 @@
     // Nothing over the picture until it is tapped: no back button, no name. The phone's own Back closes it.
     const $root = h('div', { class: 'viewer bare' },
       $stage,
-      h('div', { class: 'vtop' }, h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'Back to the list', onclick: back }, '‹'), $name, $count, $cmp),
+      h('div', { class: 'vtop' }, h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'Back to the list', onclick: back }, '‹'), $name, $count, $orig, $cmp),
       $prev, $next, $sheet);
     document.body.append($root);
 
     let img, ctx = { prev: null, next: null, index: null, total: 0 }, sheetOpen = false;
+    // Put a picture or a drawing on the stage; the zoom, swipes and drag start over on it.
+    const mount = (el, drawn) => {
+      if (z) z.destroy();
+      $img = el; mode = drawn ? 'drawn' : 'photo';
+      $root.classList.toggle('drawn', drawn);
+      fill($stage, el); if (drawn) trimDrawn(el); fit();
+      z = zoomable($stage, el, zoomOn);
+    };
     const openSheet = () => { sheetOpen = true; $sheet.classList.add('open'); $root.classList.remove('bare'); };
     const closeSheet = () => { sheetOpen = false; $sheet.classList.remove('open'); };
     const toggleBare = () => $root.classList.toggle('bare'); // tap: hide or show the top bar
@@ -508,7 +532,7 @@
     // shows through. Let go after a real pull and it flies back into its place in the list (or off the bottom
     // when that place is not on screen) and the viewer closes; a short pull settles back.
     let dismissing = false;
-    const base = () => { const W = $stage.clientWidth, H = $stage.clientHeight, w = $img.offsetWidth, hh = $img.offsetHeight; return { x: (W - w) / 2, y: (H - hh) / 2, w, h: hh }; };
+    const base = () => { const W = $stage.clientWidth, H = $stage.clientHeight, w = parseFloat($img.style.width) || $img.offsetWidth || 0, hh = parseFloat($img.style.height) || $img.offsetHeight || 0; return { x: (W - w) / 2, y: (H - hh) / 2, w, h: hh }; };
     const cellOf = () => { for (const a of $app.querySelectorAll('a.cell')) { const m = /^#\/chart\/(\d+)(\?|$)/.exec(a.getAttribute('href') || ''); if (m && Number(m[1]) === Number(id)) { const r = a.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight ? r : null; } } return null; };
     const drag = (dx, dy) => {
       if (dismissing) return;
@@ -516,7 +540,7 @@
       $root.classList.add('bare', 'dragging');
       $img.style.transformOrigin = '50% 50%';
       $img.style.transform = `translate(${dx}px, ${dy}px) scale(${1 - 0.25 * p})`;
-      $root.style.background = `rgba(0,0,0,${(1 - 0.92 * p).toFixed(3)})`;
+      $root.style.background = `rgba(${mode === 'drawn' ? '255,255,255' : '0,0,0'},${(1 - 0.92 * p).toFixed(3)})`;
     };
     const settle = () => {
       if (dismissing) return;
@@ -535,16 +559,26 @@
       $img.style.opacity = '0.35'; $root.style.background = 'rgba(0,0,0,0)';
       setTimeout(back, 240);
     };
-    const z = zoomable($stage, $img, {
+    // A tap on a name on the drawn chart's name line opens that name's own charts (pyramid, name chart,
+    // vocation, personality), like on the Quick Chart. Any other tap hides or shows the top bar.
+    const dayOf = (inp) => (inp ? Numeroscope.numeroscope({ day: inp.day ?? '', month: inp.month ?? '', year: inp.year ?? '', name: inp.name || '' }).essence.day : null);
+    const zoomOn = {
       left: () => goTo(ctx.next), right: () => goTo(ctx.prev), up: openSheet,
-      down: () => (sheetOpen ? closeSheet() : back()), tap: () => (sheetOpen ? closeSheet() : toggleBare()),
-      dragStart: () => !sheetOpen && img && img.has_file, drag,
+      down: () => (sheetOpen ? closeSheet() : back()),
+      tap: (target) => {
+        const w = mode === 'drawn' && target && target.closest ? target.closest('[data-word]') : null;
+        if (w && img && img.inputs) { count('viewer.name_tap'); openWord(w.getAttribute('data-word'), dayOf(img.inputs)); return; }
+        if (sheetOpen) closeSheet(); else toggleBare();
+      },
+      dragStart: () => !sheetOpen && img && (img.has_file || img.inputs), drag,
       dragEnd: (dx, dy, ms) => ((dy > 110 || (dy > 50 && dy / Math.max(ms, 1) > 0.6)) ? flyOut(dx, dy) : settle()),
-    });
+    };
+    // Something shows at once: the drawing when the list already knew the name and date, else the thumbnail.
+    if (cached) mount(drawnEl(cached), true); else mount(photoEl(`/thumb/${id}`), false);
     $prev.onclick = () => goTo(ctx.prev); $next.onclick = () => goTo(ctx.next);
     const keys = (e) => { if (e.key === 'ArrowLeft') goTo(ctx.prev); else if (e.key === 'ArrowRight') goTo(ctx.next); else if (e.key === 'Escape') (sheetOpen ? closeSheet() : back()); };
     window.addEventListener('keydown', keys);
-    viewerCleanup = () => { $root.remove(); document.body.classList.remove('fullscreen'); window.removeEventListener('keydown', keys); window.removeEventListener('resize', fit); z.destroy(); };
+    viewerCleanup = () => { $root.remove(); document.body.classList.remove('fullscreen'); window.removeEventListener('keydown', keys); window.removeEventListener('resize', fit); if (z) z.destroy(); };
     // swipe down on the sheet grip closes it
     let gripY = null;
     $sheet.addEventListener('pointerdown', (e) => { if (e.target.closest('.vsheet-grip')) gripY = e.clientY; });
@@ -554,8 +588,27 @@
     learnTags(img.tags);
     if (query.get('sheet')) openSheet();
     if (img.kind === 'chart') rememberOpened(img.id);
-    // The full picture replaces the thumbnail only once it has arrived, so nothing blank or broken shows in between.
-    if (img.has_file) { const full = new Image(); full.onload = () => { if ($img.isConnected) $img.src = full.src; }; full.src = `/img/${img.id}`; } else { $img.removeAttribute('src'); fill($stage, h('div', { class: 'center', style: 'min-height:100%' }, h('p', { class: 'muted' }, 'No picture for this chart yet.'), h('a', { class: 'btn', href: '#/upload' }, 'Go to Upload'))); }
+    // The screenshot: the thumbnail first, the full picture replacing it only once it has arrived, so nothing
+    // blank or broken shows in between. The drawing: made on the phone from the name and date, at once.
+    const showPhoto = () => {
+      if (!img.has_file) { if (z) z.destroy(); z = null; $img = null; mode = 'photo'; $root.classList.remove('drawn'); fill($stage, h('div', { class: 'center', style: 'min-height:100%' }, h('p', { class: 'muted' }, 'No picture for this chart yet.'), h('a', { class: 'btn', href: '#/upload' }, 'Go to Upload'))); return; }
+      if (!$img || $img.tagName !== 'IMG') mount(photoEl(`/thumb/${img.id}`), false);
+      const full = new Image(); full.onload = () => { if ($img && $img.tagName === 'IMG' && $img.isConnected) $img.src = full.src; }; full.src = `/img/${img.id}`;
+    };
+    const showDrawn = () => mount(drawnEl(img.inputs), true);
+    const sameInputs = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+    // "Screenshot" / "Drawn" in the top bar, only when the chart has both.
+    const drawOrig = () => {
+      const can = !!(img.inputs && img.has_file);
+      $orig.classList.toggle('hidden', !can);
+      if (!can) return;
+      $orig.textContent = mode === 'drawn' ? 'Screenshot' : 'Drawn';
+      $orig.setAttribute('aria-label', mode === 'drawn' ? 'See the original screenshot' : 'Back to the drawn chart');
+      $orig.onclick = () => { if (mode === 'drawn') { count('viewer.show_screenshot'); showPhoto(); } else { count('viewer.show_drawn'); showDrawn(); } drawOrig(); };
+    };
+    if (img.inputs) { inputsById.set(img.id, img.inputs); if (!(cached && sameInputs(cached, img.inputs) && mode === 'drawn')) showDrawn(); }
+    else { inputsById.delete(img.id); showPhoto(); }
+    drawOrig();
     const showName = () => { $name.textContent = imgName(img); };
     showName();
     // Compare: on the first chart "Compare" picks it; on another chart the button opens both side by
@@ -578,7 +631,7 @@
       ctx = c;
       $count.textContent = c.index ? `${c.index} / ${c.total}` : '';
       $prev.classList.toggle('hidden', !c.prev); $next.classList.toggle('hidden', !c.next);
-      for (const nid of [c.next, c.prev]) if (nid) { const pre = new Image(); pre.src = `/img/${nid}`; }
+      for (const nid of [c.next, c.prev]) if (nid && !inputsById.has(nid)) { const pre = new Image(); pre.src = `/img/${nid}`; }
     }).catch(() => {});
 
     // The chart's own numbers: the name and date read off the picture and every position computed from
@@ -602,6 +655,9 @@
             count('viewer.fix_inputs');
             numbers = await api(`/api/images/${img.id}/inputs`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ day: $day.value.trim(), month: $month.value.trim(), year: $year.value.trim(), name: $name.value }) });
             fixing = false; toast('Numbers recomputed'); drawNumbers();
+            const ni = numbers.inputs; img.inputs = ni ? { day: ni.day, month: ni.month, year: ni.year, name: ni.name } : null;
+            if (img.inputs) { inputsById.set(img.id, img.inputs); showDrawn(); } else { inputsById.delete(img.id); showPhoto(); }
+            drawOrig();
           } catch (err) { $msg.textContent = err.message; }
         };
         fill($numbers, h('b', {}, inp ? 'Fix the name or date' : 'Type the name and date'),
@@ -710,7 +766,7 @@
     const A = pane(aId), B = pane(bId);
     const $link = h('button', { type: 'button', class: 'vbtn', onclick: () => {
       pref.linked = !pref.linked; savePref(); drawBar(); count(pref.linked ? 'compare.together' : 'compare.apart');
-      if (pref.linked) B.z.set(A.z.view());
+      if (pref.linked && A.z && B.z) B.z.set(A.z.view());
       toast(pref.linked ? 'Together: both charts zoom and move as one.' : 'Apart: each chart zooms on its own.');
     } });
     const $layout = h('button', { type: 'button', class: 'iconbtn', onclick: () => {
@@ -735,19 +791,19 @@
     document.body.append($root);
     setTimeout(() => $hint.classList.add('gone'), 3500);
 
-    const follow = (from, to) => () => { if (pref.linked) to.z.set(from.z.view()); };
+    const follow = (from, to) => () => { if (pref.linked && to.z && from.z) to.z.set(from.z.view()); };
     const keys = (e) => { if (e.key === 'Escape') back(); };
     window.addEventListener('keydown', keys);
-    for (const [p, other] of [[A, B], [B, A]]) {
-      p.z = zoomable(p.box, p.img, { change: follow(p, other), load: () => { if (pref.linked && other.z) p.z.set(other.z.view()); } });
-    }
-    viewerCleanup = () => { $root.remove(); document.body.classList.remove('fullscreen'); window.removeEventListener('keydown', keys); A.z.destroy(); B.z.destroy(); };
+    viewerCleanup = () => { $root.remove(); document.body.classList.remove('fullscreen'); window.removeEventListener('keydown', keys); if (A.z) A.z.destroy(); if (B.z) B.z.destroy(); };
 
-    for (const p of [A, B]) {
+    // Each pane shows the app's drawing when the chart's name and date are known, else the screenshot.
+    for (const [p, other] of [[A, B], [B, A]]) {
       api(`/api/images/${p.id}`).then((img) => {
         learnTags(img.tags);
         p.label.textContent = imgName(img) || img.filename;
-        if (img.has_file) p.img.src = `/img/${img.id}`;
+        const on = { change: follow(p, other), load: () => { if (pref.linked && other.z && p.z) p.z.set(other.z.view()); } };
+        if (img.inputs) { const el = drawnChart(img.inputs); el.classList.add('vimg', 'drawn'); p.box.classList.add('drawn'); fill(p.box, el, p.label); trimDrawn(el); p.z = zoomable(p.box, el, on); }
+        else if (img.has_file) { p.img.src = `/img/${img.id}`; p.z = zoomable(p.box, p.img, on); }
         else fill(p.box, h('p', { class: 'cpmsg' }, 'No picture for this chart yet.'), p.label);
       }).catch((err) => { fill(p.box, h('p', { class: 'cpmsg err' }, `Could not open this chart: ${err.message}`)); });
     }
@@ -1001,6 +1057,7 @@
       h('a', { class: 'btn btn-block', href: '#/quick', style: 'justify-content:space-between' }, 'Quick Chart', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/tags', style: 'justify-content:space-between' }, 'All Tags', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/names', style: 'justify-content:space-between' }, 'Names to Check', h('span', { class: 'muted' }, '›')),
+      h('a', { class: 'btn btn-block', href: '#/?drawn=0', style: 'justify-content:space-between' }, 'Charts Still Showing the Screenshot', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/position', style: 'justify-content:space-between' }, 'Search by Position', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/upload', style: 'justify-content:space-between' }, 'Upload Screenshots', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/import', style: 'justify-content:space-between' }, 'Import Tags', h('span', { class: 'muted' }, '›')),
@@ -1169,6 +1226,13 @@
       txt(371, T.lpY, e.littleLp, 'n-dark n-bold k-center', T.lp), txt(371, T.bigLpY, e.bigLp, 'n-dark n-bold k-center', T.lp)));
     return svg;
   }
+  // A vault chart drawn by the app from its read name and birth date (the Quick Chart drawing, everything
+  // shown): the grid, the viewer and Compare show this instead of the screenshot, so every chart looks the
+  // same. The name and date of every chart the list has shown are kept here so the viewer can draw at once.
+  function drawnChart(inp) { return numeroscopeSvg(Numeroscope.numeroscope({ day: inp.day ?? '', month: inp.month ?? '', year: inp.year ?? '', name: inp.name || '' })); }
+  // Cut the blank above and below the drawing once it is on the page (same width), so zooming centers on the chart.
+  const trimDrawn = (svg) => { if (!svg.isConnected) return; const b = svg.getBBox(); if (!b.height) return; const y0 = Math.max(20, Math.floor(b.y - 20)), y1 = Math.min(1290, Math.ceil(b.y + b.height + 20)); svg.setAttribute('viewBox', `${371 - 425} ${y0} 850 ${y1 - y0}`); };
+  const inputsById = new Map();
   // One word's own charts (Module 12): the numeroscope with every letter as a name, its vowel
   // (vocation) and consonant (personality) charts, the number pyramid and its tension weight.
   // Drawn in its own 400x440 box; the small charts are the same drawing at a smaller width.

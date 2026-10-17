@@ -461,3 +461,26 @@ name, the day's number, name and rating sit in one row under it, and every chart
 card with none of the night recoloring. `html.night` and its 40 rules are gone. Lesson, twice now: the chart is
 the product; a mood for the page must never touch the chart's colors, size or place. The mockups of the day
 chart in the artifact were drawn by hand; the app draws the real one.
+
+## 2026-10-17 Every chart drawn by the app: uniform grid, screenshot one tap away
+The owner: the vault's screenshots are not uniform ("some scaled way back, some more fittingly");
+draw every chart with our own tool so they all look the same, tap a name for its pyramid and
+own charts, and handle the leftovers afterwards (remind them).
+- Design: no stored pictures. The list and the chart API carry the read name and date (`inputs`),
+  the phone draws the numeroscope itself (`drawnChart` = `numeroscopeSvg(Numeroscope.numeroscope)`),
+  so a fix to the engine or to a chart's inputs shows at once and nothing can go stale. Stored PNGs
+  were rejected for that reason (the engine was corrected a dozen times in three days).
+- Where: grid cells (white tile, the drawing at full width, `content-visibility: auto` so 700 inline
+  drawings scroll fine), the viewer (white page, pinch/swipe/drag as before, a tap on a name on the
+  line opens `openWord`, "Screenshot" / "Drawn" in the top bar), Compare (each pane drawn when it can
+  be), Recently Opened. Charts without inputs keep the screenshot everywhere. `inputsById` remembers
+  what the list showed so the viewer draws before its own request answers.
+- The zoom helper now passes the element under the finger to `on.tap`, so a tap on the invisible
+  name target is told apart from a tap on the page.
+- Leftovers for the owner: `?drawn=0` (Settings -> Charts Still Showing the Screenshot) lists the
+  charts with no name and date read; the snapshot's DRAWN CHARTS line counts them and says to remind
+  the owner. Live at the time: 680 of 711 drawn, 31 still the screenshot, 20 position tags that
+  disagree with the computed chart (those draw from possibly wrong inputs; "Wrong? Fix" corrects
+  them and the drawing follows at once).
+- Looked at in the dev app at 390x844 and 1100 wide: grid, viewer, name popup, Screenshot toggle,
+  sheet, Compare, Settings, the undrawn list. No sideways scroll, no console errors.

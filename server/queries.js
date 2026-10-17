@@ -9,9 +9,12 @@ const withDisplay = (t) => ({ ...t, display: displayName(t.name) });
 // Newest first by the date in the filename; charts without a date go last.
 const ORDER = '(i.taken_at IS NULL), i.taken_at DESC, i.id DESC';
 
-function filterSql(tags, params, position = null, name = '') {
+// drawn: true = only charts whose name and date are known (the app draws them itself), false = only the
+// ones still shown as the screenshot (no name and date yet), null = both.
+const drawnSql = (drawn) => (drawn === true ? ' AND i.id IN (SELECT image_id FROM chart_inputs)' : drawn === false ? ' AND i.id NOT IN (SELECT image_id FROM chart_inputs)' : '');
+function filterSql(tags, params, position = null, name = '', drawn = null) {
   // Images that carry ALL of the given tags (AND), the number in the position and the word in the name when asked for.
-  let sql = (position ? ' ' + positionSql(position, params) : '') + nameSql(name, params);
+  let sql = (position ? ' ' + positionSql(position, params) : '') + nameSql(name, params) + drawnSql(drawn);
   if (!tags.length) return sql;
   const marks = tags.map(() => '?').join(',');
   params.push(...tags, tags.length);
@@ -20,14 +23,21 @@ function filterSql(tags, params, position = null, name = '') {
     WHERE t.name IN (${marks}) GROUP BY it.image_id HAVING count(DISTINCT t.id) = ?)`;
 }
 
-export function listImages(db, { tags = [], position = null, name = '', onlyUploaded = false, kind = 'chart', limit = 60, offset = 0, ids = null } = {}) {
+// The name and birth date a chart was made from, when known: the phone draws the chart itself from them
+// (the same drawing as the Quick Chart), so every chart looks the same. null = not read yet, the screenshot shows.
+const inputsOf = (r) => (r.input_name !== null && r.input_name !== undefined ? { day: r.day, month: r.month, year: r.year, name: r.input_name } : null);
+const INPUT_COLS = 'ci.day, ci.month, ci.year, ci.name AS input_name';
+const INPUT_JOIN = 'LEFT JOIN chart_inputs ci ON ci.image_id = i.id';
+
+export function listImages(db, { tags = [], position = null, name = '', onlyUploaded = false, kind = 'chart', limit = 60, offset = 0, ids = null, drawn = null } = {}) {
   const params = [kind];
   let idSql = '';
   if (ids) { const list = ids.filter((n) => Number.isInteger(n)).slice(0, 50); idSql = list.length ? `AND i.id IN (${list.map(() => '?').join(',')})` : 'AND 0'; params.push(...list); }
-  const where = `WHERE i.kind = ? ${filterSql(tags, params, position, name)} ${idSql} ${onlyUploaded ? 'AND i.stored_path IS NOT NULL' : ''}`;
+  const where = `WHERE i.kind = ? ${filterSql(tags, params, position, name, drawn)} ${idSql} ${onlyUploaded ? 'AND i.stored_path IS NOT NULL' : ''}`;
   const total = db.prepare(`SELECT count(*) c FROM images i ${where}`).get(...params).c;
-  const rows = db.prepare(`SELECT i.id, i.filename, i.title, i.taken_at, i.width, i.height, i.kind, (i.stored_path IS NOT NULL) AS has_file
-    FROM images i ${where} ORDER BY ${ORDER} LIMIT ? OFFSET ?`).all(...params, limit, offset);
+  const rows = db.prepare(`SELECT i.id, i.filename, i.title, i.taken_at, i.width, i.height, i.kind, (i.stored_path IS NOT NULL) AS has_file, ${INPUT_COLS}
+    FROM images i ${INPUT_JOIN} ${where} ORDER BY ${ORDER} LIMIT ? OFFSET ?`).all(...params, limit, offset);
+  for (const r of rows) { r.inputs = inputsOf(r); delete r.day; delete r.month; delete r.year; delete r.input_name; }
   if (rows.length) {
     const ids = rows.map((r) => r.id);
     const tagRows = db.prepare(`SELECT it.image_id, t.name, t.kind FROM image_tags it JOIN tags t ON t.id = it.tag_id
@@ -41,9 +51,9 @@ export function listImages(db, { tags = [], position = null, name = '', onlyUplo
 
 // Where one picture sits in the current browse list (same filter, same order),
 // so the viewer can swipe to the previous / next one.
-export function imageContext(db, id, { tags = [], position = null, name = '', kind = 'chart' } = {}) {
+export function imageContext(db, id, { tags = [], position = null, name = '', kind = 'chart', drawn = null } = {}) {
   const params = [kind];
-  const ids = db.prepare(`SELECT i.id FROM images i WHERE i.kind = ? ${filterSql(tags, params, position, name)} ORDER BY ${ORDER}`).all(...params).map((r) => r.id);
+  const ids = db.prepare(`SELECT i.id FROM images i WHERE i.kind = ? ${filterSql(tags, params, position, name, drawn)} ORDER BY ${ORDER}`).all(...params).map((r) => r.id);
   const at = ids.indexOf(id);
   if (at < 0) return { index: null, total: ids.length, prev: null, next: null };
   return { index: at + 1, total: ids.length, prev: at > 0 ? ids[at - 1] : null, next: at < ids.length - 1 ? ids[at + 1] : null };
@@ -55,11 +65,12 @@ export function getImage(db, id) {
   const tags = db.prepare(`SELECT t.name, t.kind, it.source FROM image_tags it JOIN tags t ON t.id = it.tag_id
     WHERE it.image_id = ? ORDER BY t.kind, t.name`).all(id).map(withDisplay);
   const paths = db.prepare('SELECT path FROM image_paths WHERE image_id = ? ORDER BY path').all(id).map((r) => r.path);
+  const inputs = inputsOf(db.prepare('SELECT day, month, year, name AS input_name FROM chart_inputs WHERE image_id = ?').get(id) || {});
   return {
     id: img.id, filename: img.filename, kind: img.kind, taken_at: img.taken_at, uploaded_at: img.uploaded_at,
     has_file: !!img.stored_path, size: img.size, width: img.width, height: img.height, sha256: img.sha256,
     title: img.title, title_source: img.title_source, title_check: !!img.title_check,
-    tags, paths,
+    inputs, tags, paths,
   };
 }
 

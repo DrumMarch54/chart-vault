@@ -525,3 +525,18 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .dayhead { display: flex; align-items: center; gap: 10px; margin: 10px 2px 0; }
 .dayhead b { font-size: 26px; } .dayhead .nm { font-size: 17px; font-weight: 700; color: #5f7990; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .dayhead .rate { margin-left: auto; font-size: 14px; padding: 6px 12px; }
+
+/* Drawn charts (2026-10-17): a chart whose name and date are known is drawn by the app on the grid, in the
+   viewer and in Compare, on white, the same drawing as the Quick Chart. The screenshot stays one tap away. */
+.cell { content-visibility: auto; contain-intrinsic-size: auto 120px auto 240px; }
+.cell .thumb.drawn { aspect-ratio: 9 / 16; width: 100%; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.cell .thumb.drawn .nscope { width: 100%; height: auto; display: block; pointer-events: none; }
+.viewer.drawn { background: #fff; }
+.viewer.drawn .vtop { background: linear-gradient(rgba(255,255,255,.92), rgba(255,255,255,0)); }
+.viewer.drawn .vname { color: #22252e; text-shadow: none; }
+.viewer.drawn .vcount { color: #666; text-shadow: none; }
+.vstage .vimg.drawn { background: #fff; display: block; }
+.vstage .vimg.drawn .n-tap { cursor: pointer; }
+.cpane.drawn { background: #fff; }
+.cpane.drawn .cplabel { color: #22252e; text-shadow: none; background: rgba(255,255,255,.8); border-radius: 8px; padding: 2px 6px; }
+.cpane .vimg.drawn { width: 100%; height: auto; max-height: 100%; }
