@@ -6,6 +6,7 @@ import sharp from 'sharp';
 import { paths } from './config.js';
 import { COMMIT } from './build.js';
 import { tagKind } from './tags.js';
+import { setInputs } from './positions.js';
 
 export const THUMB_WIDTH = 480;
 const MAX_UPLOAD = 60 * 1024 * 1024;
@@ -166,6 +167,10 @@ export function createQuickChart(db, { name, date }) {
     db.prepare('INSERT OR IGNORE INTO tags (name, kind) VALUES (?, ?)').run(person, tagKind(person));
     const tagId = db.prepare('SELECT id FROM tags WHERE name = ?').get(person).id;
     db.prepare("INSERT OR IGNORE INTO image_tags (image_id, tag_id, source) VALUES (?, ?, 'app')").run(id, tagId);
+    // The typed name and date are the chart's inputs too (owner's ask 2026-10-17): the saved chart is drawn
+    // by the app like every other, can be found by position and has its year rows.
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(when);
+    setInputs(db, id, { day: m ? Number(m[3]) : '', month: m ? Number(m[2]) : '', year: m ? Number(m[1]) : '', name: person }, { source: 'quick' });
     return { id, filename };
   })();
 }

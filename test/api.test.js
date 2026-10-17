@@ -433,6 +433,19 @@ test('quick chart "Save to vault": a PNG becomes a chart tagged with the typed n
   assert.equal(img.has_file, true); assert.equal(img.kind, 'chart');
   assert.deepEqual(img.tags.map((t) => [t.name, t.kind]), [['Peter Joshua Shicora', 'name']]);
   assert.ok(img.paths.includes(`/Quick chart/${img.filename}`)); assert.ok(img.taken_at);
+  // the typed name and date are its inputs: drawn by the app, searchable by position, year rows
+  assert.deepEqual(img.inputs, { day: 19, month: 5, year: 1998, name: 'Peter Joshua Shicora' });
+  assert.equal(db.prepare('SELECT source FROM chart_inputs WHERE image_id = ?').get(img.id).source, 'quick');
+  assert.ok((await json(await api(`/api/images/${img.id}/numbers`))).body.charts.length > 0);
+  // a save from before 2026-10-17 had no inputs: the startup sweep reads them off the tag and the filename
+  const { seedQuickInputs } = await import('../server/positions.js');
+  db.prepare("INSERT INTO images (filename, taken_at, kind) VALUES ('Quick_Jane-Doe_1990-02-03_20261010_101010.png', '2026-10-10T10:10:10', 'chart')").run();
+  const old = db.prepare("SELECT id FROM images WHERE filename = 'Quick_Jane-Doe_1990-02-03_20261010_101010.png'").get().id;
+  db.prepare("INSERT OR IGNORE INTO tags (name, kind) VALUES ('Jane Doe', 'name')").run();
+  db.prepare("INSERT INTO image_tags (image_id, tag_id, source) VALUES (?, (SELECT id FROM tags WHERE name = 'Jane Doe'), 'app')").run(old);
+  assert.deepEqual(seedQuickInputs(db), { added: 1, looked: 1 });
+  assert.deepEqual((await json(await api(`/api/images/${old}`))).body.inputs, { day: 3, month: 2, year: 1990, name: 'Jane Doe' });
+  assert.deepEqual(seedQuickInputs(db), { added: 0, looked: 0 });
   // refused: no name, or not a picture; nothing is left behind
   const before = db.prepare('SELECT COUNT(*) AS n FROM images').get().n;
   r = await json(await api('/api/quick/save?name=', { method: 'PUT', body: png })); assert.equal(r.status, 400);
@@ -475,7 +488,7 @@ test('my chart: locked, empty at first, saved on the server, bad dates refused, 
 
 test('drawn charts: list rows and the chart carry the read name and date; ?drawn=0 lists the ones still showing the screenshot', async () => {
   const { setInputs } = await import('../server/positions.js');
-  const all = (await json(await api('/api/images?limit=200'))).body.items;
+  const all = (await json(await api('/api/images?limit=200'))).body.items.filter((i) => !i.inputs);
   assert.ok(all.length >= 2);
   const drawnOne = all[0], plainOne = all[1];
   setInputs(db, drawnOne.id, { day: 21, month: 10, year: 1985, name: 'Peter Joshua Shicora' }, { source: 'owner' });
@@ -489,14 +502,16 @@ test('drawn charts: list rows and the chart carry the read name and date; ?drawn
   const undrawn = (await json(await api('/api/images?drawn=0&limit=200'))).body;
   assert.ok(!undrawn.items.some((i) => i.id === drawnOne.id));
   assert.ok(undrawn.items.some((i) => i.id === plainOne.id));
-  assert.equal(undrawn.total, after.length - 1);
+  assert.equal(undrawn.total, after.filter((i) => !i.inputs).length);
   const drawn = (await json(await api('/api/images?drawn=1&limit=200'))).body;
-  assert.deepEqual(drawn.items.map((i) => i.id), [drawnOne.id]);
+  assert.ok(drawn.items.some((i) => i.id === drawnOne.id));
+  assert.ok(!drawn.items.some((i) => i.id === plainOne.id));
+  assert.equal(drawn.total, after.filter((i) => i.inputs).length);
   // the viewer's swipes follow the same list
   const ctx = (await json(await api(`/api/images/${plainOne.id}/context?drawn=0`))).body;
-  assert.equal(ctx.total, after.length - 1);
+  assert.equal(ctx.total, undrawn.total);
   const snap = await (await api('/api/debug/snapshot?scope=short')).text();
-  assert.match(snap, /DRAWN CHARTS: 1 charts are drawn/);
+  assert.match(snap, new RegExp(`DRAWN CHARTS: ${drawn.total} charts are drawn`));
   assert.match(snap, /still show the screenshot/);
   db.prepare('DELETE FROM chart_inputs WHERE image_id = ?').run(drawnOne.id);
   db.prepare('DELETE FROM chart_values WHERE image_id = ?').run(drawnOne.id);

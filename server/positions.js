@@ -208,6 +208,20 @@ export function seedInputs(db, seed, { build = COMMIT } = {}) {
   })();
   return { added, skipped, unknown };
 }
+// Charts saved from the Quick Chart before 2026-10-17 carry their name in the app-added tag and their date in
+// the filename (Quick_<Name>_<YYYY-MM-DD>_<stamp>.png) but had no inputs row. Give them one at startup, once.
+export function seedQuickInputs(db, { build = COMMIT } = {}) {
+  const rows = db.prepare(`SELECT i.id, i.filename, (SELECT t.name FROM image_tags it JOIN tags t ON t.id = it.tag_id WHERE it.image_id = i.id AND t.kind = 'name' AND it.source = 'app' ORDER BY it.rowid LIMIT 1) AS tag
+    FROM images i WHERE i.kind = 'chart' AND i.filename LIKE 'Quick\\_%' ESCAPE '\\' AND i.id NOT IN (SELECT image_id FROM chart_inputs)`).all();
+  let added = 0;
+  for (const r of rows) {
+    const m = /^Quick_(.+?)(?:_(\d{4})-(\d{2})-(\d{2}))?_\d{8}_\d{6}\.png$/.exec(r.filename);
+    const name = r.tag || (m ? m[1].replace(/-/g, ' ') : '');
+    if (!name) continue;
+    try { setInputs(db, r.id, { day: m && m[4] ? Number(m[4]) : '', month: m && m[3] ? Number(m[3]) : '', year: m && m[2] ? Number(m[2]) : '', name }, { source: 'quick', build }); added++; } catch { /* a name that cannot be read stays as it is */ }
+  }
+  return { added, looked: rows.length };
+}
 export function loadSeedFile() {
   try { return JSON.parse(fs.readFileSync(new URL('./chart-inputs.json', import.meta.url), 'utf8')); } catch { return []; }
 }

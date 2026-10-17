@@ -494,3 +494,12 @@ knows it) holds "Year Rows and Day Vibrations" and "Screenshot" / "Drawn"; Compa
 because it is a two-step flow. Three pills did not fit beside the name at 390 px. A chart with no
 full birth date says so and points at "Wrong? Fix". The first menu wrapped its long item onto two
 centered lines: `.cmenu-item` needed `white-space: nowrap` and a wider menu.
+
+## 2026-10-17 Quick Chart saves get their name and date
+The owner: "what about the charts that were added through the Quick Chart tool? Those need to be done
+too." A "Save to Vault" wrote the PNG and a name tag but no `chart_inputs` row, so the saved chart was
+"still the screenshot", had no year rows and could not be found by position. `createQuickChart` now
+calls `setInputs` with the typed name and date (source `quick`); `seedQuickInputs` runs at startup and
+gives older saves theirs from the app-added name tag and the date in the filename
+(Quick_<Name>_<YYYY-MM-DD>_<stamp>.png). One live chart needed it (#732). Lesson: a new way to make a
+chart must feed every store a chart has (inputs, title, tags), not only the picture.
