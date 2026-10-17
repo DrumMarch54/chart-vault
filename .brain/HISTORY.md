@@ -524,3 +524,8 @@ chart must feed every store a chart has (inputs, title, tags), not only the pict
   beside the name in the viewer's sheet, in the viewer's ⋮ menu and in the Quick Chart's ⋮ menu.
 - Test gotcha: arrays made inside the `vm` context fail `assert.deepEqual` from `node:assert/strict` against
   a literal (different realm, "same structure but not reference-equal"); copy with `Array.from` first.
+- Follow-up the same day: on the owner's phone "4 meets 9" in the name chart listed NO centers, only
+  "Anywhere in the name chart". The picker filtered positions by `p.combo`, and the list of positions was
+  remembered in browser storage from a build before that flag existed. The dev app never showed it (fresh
+  storage). Rule: the picker fetches the position list fresh every time it opens; the remembered copy is
+  only for labels while offline. Anything cached on the phone outlives the build that wrote it.

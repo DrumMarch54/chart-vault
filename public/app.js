@@ -73,7 +73,9 @@
   // a search in the address or a recent search reads right before the fetch answers.
   let catalog = null;
   try { catalog = JSON.parse(localStorage.getItem('positions') || 'null'); } catch {}
-  const loadCatalog = async () => { if (catalog) return catalog; catalog = await api('/api/positions'); try { localStorage.setItem('positions', JSON.stringify(catalog)); } catch {} return catalog; };
+  // fresh: fetch again even when remembered. The picker always does: a list remembered from an older build
+  // lacked the `combo` flag, so "4 meets 9" showed no centers at all on the owner's phone (2026-10-17).
+  const loadCatalog = async (fresh = false) => { if (catalog && !fresh) return catalog; catalog = await api('/api/positions'); try { localStorage.setItem('positions', JSON.stringify(catalog)); } catch {} return catalog; };
   const chartLabel = (key) => (key === '*' ? 'any chart' : ((catalog && catalog.charts.find((c) => c.key === key)) || {}).label || key);
   const posLabel = (pos) => { const [chart, key = '*'] = String(pos).split('.'); if (key === '*') return chart === '*' ? 'anywhere' : `anywhere in the ${chartLabel(chart).toLowerCase()}`; const p = catalog && catalog.positions.find((x) => x.chart === chart && x.key === key); return `${p ? p.label : key} · ${chartLabel(chart)}`; };
   // "12" reads 12/3; "/3" reads "digit sum 3".
@@ -1487,7 +1489,7 @@
     const $hint = h('p', { class: 'muted small' });
     render(h('div', { class: 'screen' }, pageTop('Search by Position', fixed.length ? positionHash(fixed) : '#/'), $fixed,
       h('div', { class: 'row posnum', style: 'flex-wrap:nowrap' }, $num, h('span', { class: 'muted small andword' }, 'meets'), $num2, $ds), $hint, $charts, $list));
-    try { await loadCatalog(); } catch (err) { fill($list, h('p', { class: 'err' }, err.message)); return; }
+    try { await loadCatalog(true); } catch (err) { if (!catalog) { fill($list, h('p', { class: 'err' }, err.message)); return; } }
     let counts = null, seq = 0;
     const numText = () => { const n = $num.value.trim(); if (!n) return ''; if (combo()) return `${n}+${$num2.value.trim()}`; return ds ? `/${n.slice(-1)}` : n; };
     const fixedParam = () => fixed.map((c) => `${c.pos}:${c.num}`).join(',');
