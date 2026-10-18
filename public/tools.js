@@ -417,6 +417,9 @@
   // Rules in numbertools.js (priceCheck / priceFind); the books' words in bizwords.js: Marketing Numerology pp. 37-55
   // (the price of each vibration, the $100-$900 prices, the example prices), The Numbers 10-99 in Business (each
   // number's business words and color), Module 12 (which numbers suit which customers and purposes).
+  // Layout: design 2a (2026-10-18, owner: "looks like it was thrown together"): the verdict beside the digit sum at
+  // the top, the rules as a list (Avoid / Care / Note), the pyramid with its top, weight and ratio in one card, the
+  // books' words in matching cards cut to three lines (tap for the whole page). CSS: the `.pt` block in app.css.
   // The words the book gives a price vibration: the summary (pp. 52-53), else the note of its example price (p. 53),
   // else the number's business name.
   function vibeWords(B, n) {
@@ -441,27 +444,38 @@
     const $range = A.h('select', { class: 'pickbox', 'aria-label': 'Price range' });
     const $in = A.h('input', { type: 'text', inputmode: 'decimal', placeholder: 'any price', 'aria-label': 'Price' });
     const fmt = (p) => '$' + Number(p).toLocaleString('en-US');
+    const cap = (s) => String(s || '').replace(/^./, (x) => x.toUpperCase());
     const topCls = (w) => (w.top && N.TENSION[w.top.sum] ? 'r' : w.ratio >= 0.3 ? 'r' : w.ratio > 0 ? 'y' : 'g');
     let B = root.BizWords || {};
-    const head = (t) => A.h('div', { class: 'muted small', style: 'margin:10px 0 2px;text-transform:uppercase;letter-spacing:.06em' }, t);
-    // One card of the book's words about a number in the price; tap for everything the books say about it.
-    const bizCard = (n, label) => {
+    const label = (t) => A.h('div', { class: 'pt-label' }, t);
+    const KIND_WORD = { warn: 'Avoid', care: 'Care', soft: 'Note' };
+    const textSheet = (title, text) => A.sheet(A.h('div', { class: 'numsheet' }, A.h('h3', {}, title), ...String(text).split('\n\n').map((p) => A.h('p', {}, p))));
+    // One card of the books' words: the number, its name, where it sits in the price; three lines, tap for the whole page.
+    const wordCard = ({ num, name, pos, color, text, warn, open }) => {
+      const long = String(text || '').length > 190;
+      return A.h('div', { class: 'reading pt-card', onclick: open || null },
+        A.h('div', { class: 'head' }, A.h('b', {}, num), A.h('span', { class: 'nm' }, name || ''), A.h('span', { class: 'pos' }, pos)),
+        color ? A.h('span', { class: 'bizcolor ' + color }, BIZ_COLOR_WORD[color] + ' for Business') : null,
+        text ? A.h('p', { class: long ? 'pt-clamp' : '' }, text) : null,
+        warn ? A.h('p', { class: 'warnline' }, '⚠ ' + warn) : null,
+        long && open ? A.h('div', { class: 'pt-more' }, 'Read more ›') : null);
+    };
+    const bizCard = (n, pos) => {
       const b = (B.business || {})[n], fam = n < 10 ? (B.businessFamilies || {})[n] : null;
       if (!b && !fam) return null;
-      return A.h('div', { class: 'reading', onclick: () => { A.count('price.number'); numberSheet(T.val(n), 'about'); } },
-        A.h('div', { class: 'head' }, A.h('b', {}, T.val(n).text), A.h('span', { class: 'nm' }, b ? b.name : fam.title), A.h('span', { class: 'pos' }, label)),
-        b && b.color && BIZ_COLOR_WORD[b.color] ? A.h('span', { class: 'bizcolor ' + b.color }, BIZ_COLOR_WORD[b.color] + ' for Business') : null,
-        A.h('p', {}, b ? b.text : fam.text), b && b.warn ? A.h('p', { class: 'warnline' }, '⚠ ' + b.warn) : null);
+      return wordCard({ num: T.val(n).text, name: b ? b.name : fam.title, pos, color: b && b.color && BIZ_COLOR_WORD[b.color] ? b.color : null, text: b ? b.text : fam.text, warn: b && b.warn,
+        open: () => { A.count('price.number'); numberSheet(T.val(n), 'about'); } });
     };
+    const stat = (name, value, cls = '') => A.h('div', {}, A.h('span', {}, name), A.h('b', { class: cls }, value));
     const drawCheck = () => {
       remember('priceTool', state);
       const c = T.priceCheck($in.value);
-      if (!c) { A.fill($check, A.h('p', { class: 'muted small', style: 'margin:6px 2px' }, 'Type a price to read it: its digit sum, clean number, pyramid, the book\'s rules and what each number in it means in business. Or tap Find a Price to be given prices that fit.')); return; }
+      if (!c) { A.fill($check, A.h('p', { class: 'pt-hint' }, 'Type a price to read it: its digit sum, clean number, pyramid, the book\'s rules and what each number in it means in business. Or tap Find a Price to be given prices that fit.')); return; }
       const rows = c.pyramid.slice().reverse();
       const W = c.weight;
       const P = B.prices || {};
       const ex = (P.examples || []).find((x) => x.price === c.price);
-      const own = vibeText(B, c.clean || c.sum);
+      const ownN = c.clean || c.sum, own = vibeText(B, ownN);
       const hund = (P.hundreds || {})[c.value.ds], fam = (P.families || {})[c.value.ds];
       // The numbers in the price the book reads: the digit sum, the clean number, the first two digits (p. 51).
       const shown = [[c.sum, 'Digit Sum']];
@@ -472,17 +486,27 @@
       const nums = shown.map(([n]) => n);
       const fits = (B.codes || []).filter((x) => x.nums && x.nums.some((n) => nums.includes(n))).map((x) => x.name)
         .concat((B.customers || []).filter((x) => x.digits.includes(c.value.ds)).map((x) => x.who));
+      const rules = [...c.warnings.map((t) => ['warn', t]), ...c.cautions.map((t) => ['care', t]), ...c.notes.map((t) => ['soft', t])];
+      const ratioNote = W.ratio >= 0.3 ? 'A heavy pyramid: ratio at or over 0.3' : W.ratio > 0 ? 'Some weight in the pyramid, under the 0.3 line' : 'A light pyramid: no tension numbers';
+      const hundText = hund ? `Like $${c.value.ds}00: ${hund.text}${/[.!?]$/.test(hund.text) ? '' : '.'}` : '';
       A.fill($check,
-        A.h('div', { class: 'bignum', onclick: () => numberSheet(c.value, 'about') }, A.h('b', {}, c.value.text), A.h('span', { class: 'nm' }, c.name), A.h('span', { class: 'ty' }, 'digit sum')),
-        A.h('div', { class: 'codes' }, ...c.warnings.map((w) => A.h('span', { class: 'warn' }, noPage(w))), ...c.cautions.map((w) => A.h('span', { class: 'care' }, noPage(w))), ...c.notes.map((t) => A.h('span', { class: 'soft' }, noPage(t)))),
-        A.h('div', { class: 'pyr' }, ...rows.map((row, i) => A.h('div', { class: 'pyr-row' }, ...row.map((v) => A.h('span', { class: (N.TENSION[v.sum] ? (i === 0 ? 'top-tense' : 'tense') : '') }, i === rows.length - 1 ? String(v.sum) : v.text))))),
-        A.h('div', { class: 'verdict' }, A.h('div', {}, A.h('span', { class: 'muted small' }, 'Pyramid top'), A.h('b', {}, W.top ? W.top.text : '–')), A.h('div', {}, A.h('span', { class: 'muted small' }, 'Weight'), A.h('b', {}, String(Number(W.total.toFixed(3))))), A.h('div', {}, A.h('span', { class: 'muted small' }, 'Ratio'), A.h('b', { class: W.ratio < 0.3 ? 'ok' : 'err' }, W.ratio.toFixed(3))), A.h('div', {}, A.h('span', { class: 'muted small' }, 'Verdict'), A.h('b', { class: { good: 'ok', care: 'mid', avoid: 'err' }[c.verdict] }, T.VERDICT_WORDS[c.verdict]))),
-        B.prices ? A.h('div', { class: 'wlabel tl', style: 'padding-top:14px' }, 'What the Books Say') : null,
-        ex ? A.h('p', { class: 'bookex' }, `One of the book's own example prices: ${fmt(ex.price)} = ${T.val(ex.sum).text}${ex.note ? ', ' + ex.note : ''}.`) : null,
-        own ? A.h('div', { class: 'reading' }, A.h('div', { class: 'head' }, A.h('b', {}, T.val(c.clean || c.sum).text), A.h('span', { class: 'nm' }, own.title ? own.title.replace(/^./, (x) => x.toUpperCase()) : (vibeWords(B, c.clean || c.sum) || '')), A.h('span', { class: 'pos' }, c.clean ? 'Clean Price' : 'Digit Sum Price')), A.h('p', {}, own.text)) : null,
-        hund || fam ? A.h('div', { class: 'reading' }, A.h('div', { class: 'head' }, A.h('b', {}, String(c.value.ds)), A.h('span', { class: 'nm' }, fam ? fam.words : ''), A.h('span', { class: 'pos' }, `A ${c.value.ds} Price`)), hund ? A.h('p', {}, `Like $${c.value.ds}00: ${hund.text}${/[.!?]$/.test(hund.text) ? '' : '.'}`) : null) : null,
-        ...shown.map(([n, label]) => bizCard(n, label)),
-        fits.length ? A.h('div', {}, head('Suits'), A.h('div', { class: 'codes' }, ...fits.map((f) => A.h('span', { class: 'soft' }, f.replace(/(^|[\s/,])([a-z])/g, (m, a, b) => a + b.toUpperCase()))))) : null);
+        A.h('div', { class: 'pt-box pt-sum' },
+          A.h('div', { class: 'pt-sumrow' },
+            A.h('div', { class: 'pt-sumnum', onclick: () => numberSheet(c.value, 'about') }, label('Digit sum'), A.h('div', { class: 'bignum' }, A.h('b', {}, c.value.text), A.h('span', { class: 'nm' }, c.name))),
+            A.h('span', { class: 'pt-verdict ' + c.verdict }, T.VERDICT_WORDS[c.verdict])),
+          rules.length ? A.h('div', { class: 'pt-rules' }, ...rules.map(([k, t]) => A.h('div', { class: 'pt-rule' }, A.h('span', { class: 'pt-kind ' + k }, KIND_WORD[k]), A.h('span', {}, noPage(t))))) : null),
+        A.h('div', { class: 'pt-box pt-pyrbox' }, label('Number pyramid'),
+          A.h('div', { class: 'pyr' }, ...rows.map((row, i) => A.h('div', { class: 'pyr-row' }, ...row.map((v) => A.h('span', { class: (N.TENSION[v.sum] ? (i === 0 ? 'top-tense' : 'tense') : '') }, i === rows.length - 1 ? String(v.sum) : v.text))))),
+          A.h('div', { class: 'pt-stats' }, stat('Top', W.top ? W.top.text : '–'), stat('Weight', String(Number(W.total.toFixed(3)))), stat('Ratio', W.ratio.toFixed(3), W.ratio < 0.3 ? 'ok' : 'err')),
+          A.h('p', { class: 'pt-ratio' }, ratioNote)),
+        B.prices ? A.h('div', { class: 'wlabel tl pt-section' }, 'What the Books Say') : null,
+        ex ? A.h('p', { class: 'bookex pt-ex' }, `One of the book's own example prices: ${fmt(ex.price)} = ${T.val(ex.sum).text}${ex.note ? ', ' + ex.note : ''}.`) : null,
+        A.h('div', { class: 'pt-cards' },
+          own ? wordCard({ num: T.val(ownN).text, name: own.title ? cap(own.title) : (vibeWords(B, ownN) || ''), pos: c.clean ? 'Clean Price' : 'Digit Sum Price', text: own.text,
+            open: () => { A.count('price.vibe_text'); textSheet(`${T.val(ownN).text} Prices`, own.text); } }) : null,
+          hund || fam ? wordCard({ num: String(c.value.ds), name: fam ? fam.words : '', pos: `A ${c.value.ds} Price`, text: hundText }) : null,
+          ...shown.map(([n, pos]) => bizCard(n, pos))),
+        fits.length ? A.h('div', { class: 'pt-fits' }, label('Suits'), A.h('div', { class: 'codes' }, ...fits.map((f) => A.h('span', { class: 'soft' }, f.replace(/(^|[\s/,])([a-z])/g, (m, a, b) => a + b.toUpperCase()))))) : null);
     };
     const shortWords = (v) => { const w = vibeWords(B, v); return w ? w.split(/[,;:(]| and /)[0].replace(/^(a|the) /i, '').toLowerCase() : ''; };
     const fillPicks = () => {
@@ -501,31 +525,36 @@
       const isEx = new Set(examples.map((x) => x.price));
       // A found price goes into Check a Price, which opens on it.
       const pick = (p) => { $in.value = String(p); state.price = $in.value; A.count('price.pick'); setMode('check'); drawCheck(); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+      const dot = (cls, t) => A.h('span', {}, A.h('i', { class: cls }), t);
       A.fill($list,
-        A.h('div', { class: 'bignum', onclick: () => numberSheet(v, 'about') }, A.h('b', {}, v.text), A.h('span', { class: 'nm' }, nameOf(v)), words ? A.h('span', { class: 'ty' }, words.replace(/^./, (x) => x.toUpperCase())) : null),
-        own ? A.h('div', { class: 'reading', onclick: () => { A.count('price.vibe_text'); A.sheet(A.h('div', { class: 'numsheet' }, A.h('h3', {}, `${v.text} Prices`), A.h('p', {}, own.text))); } }, A.h('p', {}, snippet(own.text, 2)), A.h('p', { class: 'muted small' }, 'Tap for the whole page.')) : null,
-        examples.length ? A.h('div', {}, head('The Book\'s Own Examples'), A.h('div', { class: 'codes' }, ...examples.map((x) => A.h('span', { class: 'soft', role: 'button', onclick: () => pick(x.price) }, fmt(x.price) + (x.note ? ' · ' + x.note : ''))))) : null,
-        head(found.length ? `${found.length} Prices That Fit` : 'Prices That Fit'),
+        A.h('div', { class: 'pt-vibe' },
+          A.h('div', { class: 'bignum', onclick: () => numberSheet(v, 'about') }, A.h('b', {}, v.text), A.h('span', { class: 'nm' }, nameOf(v))),
+          words ? A.h('div', { class: 'pt-words' }, cap(words)) : null),
+        own ? A.h('div', { class: 'reading pt-card', onclick: () => { A.count('price.vibe_text'); textSheet(`${v.text} Prices`, own.text); } }, A.h('p', {}, snippet(own.text, 2)), A.h('div', { class: 'pt-more' }, 'Read the whole page ›')) : null,
+        examples.length ? A.h('div', { class: 'pt-fits' }, label('The Book\'s Own Examples'), A.h('div', { class: 'pt-examples' }, ...examples.map((x) => A.h('button', { type: 'button', class: 'pt-example', onclick: () => pick(x.price) }, fmt(x.price) + (x.note ? ' · ' + x.note : ''))))) : null,
+        A.h('div', { class: 'pt-listhead' }, A.h('span', { class: 'wlabel tl' }, found.length ? `${found.length} Prices That Fit` : 'Prices That Fit'), A.h('span', { class: 'pt-legend' }, dot('g', 'light'), dot('y', 'medium'), dot('r', 'heavy'))),
         found.length ? A.h('div', { class: 'prices' }, ...found.map((c) => A.h('button', { type: 'button', class: 'prow', onclick: () => pick(c.price) },
-          A.h('b', {}, fmt(c.price)),
-          A.h('span', { class: 'pmeta' }, A.h('span', { class: 'ds' }, c.clean && c.sum !== state.vibe ? 'clean' : c.value.text), A.h('span', { class: 'top ' + topCls(c.weight) }, `top ${c.weight.top ? c.weight.top.text : '–'}`), isEx.has(c.price) ? A.h('span', { class: 'inbook' }, 'in the book') : null))))
-          : A.h('p', { class: 'muted' }, 'No price in this range lands on that number without a warning. Try another range.'),
-        A.h('p', { class: 'muted small', style: 'margin:10px 2px' }, 'Every price here follows the book\'s rules: it adds up to the chosen number (or the number stands in the price followed by zeros), ends in 5, 7 or 9, never puts 4 and 8 together, and is never 12/3 or 16/7. Green, yellow and red is the number pyramid\'s weight, lightest first. Tap a price to read it.'));
+          A.h('span', { class: 'pt-prow-top' }, A.h('b', {}, fmt(c.price)), isEx.has(c.price) ? A.h('span', { class: 'inbook' }, 'book') : null),
+          A.h('span', { class: 'pmeta' }, A.h('span', { class: 'ds' }, c.clean && c.sum !== state.vibe ? 'clean' : c.value.text), A.h('span', { class: 'top ' + topCls(c.weight) }, `top ${c.weight.top ? c.weight.top.text : '–'}`)))))
+          : A.h('p', { class: 'pt-hint' }, 'No price in this range lands on that number without a warning. Try another range.'),
+        A.h('p', { class: 'pt-foot' }, 'Every price here follows the book\'s rules: it adds up to the chosen number (or the number stands in the price followed by zeros), ends in 5, 7 or 9, never puts 4 and 8 together, and is never 12/3 or 16/7. Lightest pyramid first. Tap a price to read it.'));
     };
-    // Two jobs, one at a time: Check a Price (type one) or Find a Price (pick what it should feel like).
-    const $tabs = A.h('div', { class: 'chips tabs ptabs' });
-    const $checkSec = A.h('div', {}, A.h('div', { class: 'pricebox' }, A.h('span', { class: 'cur' }, '$'), $in), $check);
+    // Two jobs, one at a time: Check a Price (type one) or Find a Price (pick what it should feel like). One switch.
+    const $tabs = A.h('div', { class: 'pt-switch' });
+    const $checkSec = A.h('div', {}, A.h('label', { class: 'pricebox pt-pricebox' }, A.h('span', { class: 'cur' }, '$'), $in), $check);
     const $findSec = A.h('div', {},
-      A.h('div', { class: 'picks' }, A.h('label', { class: 'pick' }, A.h('span', { class: 'muted small' }, 'The price should feel like'), $vibe), A.h('label', { class: 'pick' }, A.h('span', { class: 'muted small' }, 'Between'), $range)),
+      A.h('div', { class: 'picks pt-box' }, A.h('label', { class: 'pick' }, A.h('span', { class: 'muted small' }, 'The price should feel like'), $vibe), A.h('label', { class: 'pick' }, A.h('span', { class: 'muted small' }, 'Between'), $range)),
       $list);
+    const tab = (label, on, onclick) => A.h('button', { type: 'button', class: 'pt-tab' + (on ? ' on' : ''), 'aria-pressed': on ? 'true' : 'false', onclick }, label);
     const setMode = (m) => {
       if (m) { state.mode = m; remember('priceTool', state); }
-      A.fill($tabs, chip('Check a Price', state.mode === 'check', () => setMode('check')), chip('Find a Price', state.mode === 'find', () => { A.count('price.find'); setMode('find'); }));
+      A.fill($tabs, tab('Check a Price', state.mode === 'check', () => setMode('check')), tab('Find a Price', state.mode === 'find', () => { A.count('price.find'); setMode('find'); }));
       $checkSec.classList.toggle('hidden', state.mode !== 'check'); $findSec.classList.toggle('hidden', state.mode !== 'find');
     };
     $in.addEventListener('input', () => { state.price = $in.value; drawCheck(); });
     $in.value = state.price || '';
-    A.render(A.h('div', { class: 'screen qscreen tscreen' }, top('Price Tool'), $tabs, $checkSec, $findSec));
+    // The empty box on the right balances the back button, so the title sits in the true middle.
+    A.render(A.h('div', { class: 'screen qscreen tscreen pt' }, top('Price Tool', '#/', A.h('span', { class: 'pt-spacer', 'aria-hidden': 'true' })), $tabs, $checkSec, $findSec));
     setMode(); drawCheck(); drawFind();
     // The books' words arrive with bizwords.js: draw again with them.
     if (!root.BizWords) bizwords().then((w) => { B = w; if ($list.isConnected) { drawCheck(); drawFind(); } });

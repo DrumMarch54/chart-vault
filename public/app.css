@@ -558,3 +558,83 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .pyr.wide .pyr-row.letters span { font-size: clamp(9px, calc(var(--cell, 34px) * 0.42), 13px); }
 .wordpop .pagetop h1.whole { font-size: 22px; }
 .posnum input.second { flex: 0 1 110px; }
+/* Price Tool, cleaned up (design 2a, 2026-10-18). Everything is scoped to .pt (the Price Tool screen) or uses
+   pt-* classes, so no other screen changes. Colors are the ones the light tool screens already use. */
+.screen.tscreen.pt { padding: 6px 12px 28px; }
+.pt .pt-spacer { width: 48px; min-width: 48px; }
+.pt-switch { display: flex; gap: 4px; padding: 4px; margin: 8px 0 14px; background: #eef0f4; border-radius: 22px; }
+.pt-tab { flex: 1; min-height: 40px; padding: 0 10px; border-radius: 18px; background: transparent; color: #5a5f6e; font-size: 16px; font-weight: 600; }
+.pt-tab.on { background: var(--accent); color: var(--accent-text); font-weight: 700; }
+.pt-pricebox { gap: 6px; height: 60px; padding: 0 14px; border-radius: 14px; border: 1px solid #e1e3e9; background: #f3f4f7; }
+.pt-pricebox:focus-within { border-color: var(--blue); }
+.pt-pricebox .cur { font-size: 28px; }
+.pricebox.pt-pricebox input { font: 700 30px system-ui; height: 100%; min-height: 0; border: 0; border-radius: 0; background: transparent; padding: 0; font-variant-numeric: tabular-nums; }
+.pt-hint { margin: 12px 4px 0; color: #8a8f9c; font-size: 14px; line-height: 1.45; }
+.pt-box { background: #f6f7f9; border-radius: 14px; padding: 14px; margin-top: 10px; color: #303030; }
+.pt-sum { margin-top: 12px; }
+.pt-label { color: #8a8f9c; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+.pt-sumrow { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.pt-sumnum { min-width: 0; cursor: pointer; }
+.pt .pt-sumnum .bignum, .pt .pt-vibe .bignum { padding: 0; gap: 10px; }
+.pt .pt-sumnum .bignum b, .pt .pt-vibe .bignum b { line-height: 1.15; color: #22252e; }
+.pt .pt-sumnum .bignum .nm, .pt .pt-vibe .bignum .nm { font-size: 17px; line-height: 1.25; }
+.pt-verdict { flex: none; margin-top: 2px; font-size: 14px; font-weight: 700; padding: 6px 12px; border-radius: 14px; white-space: nowrap; }
+.pt-verdict.good { background: #d9f3e1; color: #1f6b3a; }
+.pt-verdict.care { background: #fff3d6; color: #7a5200; }
+.pt-verdict.avoid { background: #fde8e8; color: #9b2c2c; }
+.pt-rules { margin-top: 12px; border-top: 1px solid #e6e8ee; }
+.pt-rule { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 10px; align-items: start; padding-top: 10px; font-size: 14px; line-height: 1.4; text-wrap: pretty; }
+.pt-kind { justify-self: start; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+.pt-kind.warn { background: #fde8e8; color: #9b2c2c; }
+.pt-kind.care { background: #fff3d6; color: #7a5200; }
+.pt-kind.soft { background: #eef2fb; color: #2e4a8b; }
+.pt-pyrbox { padding: 12px 14px 4px; }
+.pt-pyrbox .pyr { padding: 8px 0 10px; }
+.pt-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid #e6e8ee; }
+.pt-stats > div { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 4px; }
+.pt-stats > div + div { border-left: 1px solid #e6e8ee; }
+.pt-stats span { color: #8a8f9c; font-size: 12px; }
+.pt-stats b { font-size: 18px; color: #303030; }
+.pt-stats b.ok { color: #2fa64a; }
+.pt-stats b.err { color: #c43c3c; }
+.pt-ratio { margin: 0 0 10px; text-align: center; font-size: 12px; color: #8a8f9c; }
+.pt .wlabel.pt-section { padding: 22px 4px 8px; }
+.pt .bookex.pt-ex { margin: 0 0 8px; padding: 10px 12px; border-radius: 12px; background: #eef8f1; line-height: 1.4; }
+.pt-cards { display: flex; flex-direction: column; gap: 8px; }
+.pt .reading.pt-card { margin: 0; padding: 12px; cursor: pointer; }
+.pt .pt-card .head { flex-wrap: nowrap; }
+.pt .pt-card .head b { color: #22252e; }
+.pt .pt-card .head .nm { flex: 1; min-width: 0; font-size: 16px; line-height: 1.3; }
+.pt .pt-card .head .pos { flex: none; margin-left: 0; font-size: 11px; }
+.pt .pt-card .bizcolor { margin-top: 6px; }
+.pt .pt-card p { line-height: 1.45; }
+.pt-clamp { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+.pt-more { margin-top: 6px; font-size: 14px; font-weight: 600; color: #5f7990; }
+.pt-fits { padding-top: 18px; }
+.pt-fits .pt-label { padding: 0 4px 8px; }
+.pt-fits .codes { margin: 0; }
+.pt-fits .codes span { padding: 4px 10px; }
+/* Find a Price */
+.pt .picks.pt-box { padding: 12px; gap: 10px; margin-top: 0; }
+.pt .pick .muted { color: #8a8f9c; font-size: 13px; }
+.pt .pickbox { border-radius: 10px; }
+.pt-vibe { padding: 16px 4px 4px; }
+.pt-words { font-size: 14px; color: #5f7990; font-weight: 600; margin-top: 2px; }
+.pt .pt-vibe + .pt-card { margin-top: 8px; }
+.pt .pt-vibe + .pt-card p { margin: 0; }
+.pt-examples { display: flex; gap: 6px; flex-wrap: wrap; }
+.pt-example { min-height: 36px; padding: 0 12px; border-radius: 18px; background: #eef8f1; color: #1f6b3a; font-size: 14px; font-weight: 600; text-align: left; }
+.pt-listhead { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 20px 4px 8px; }
+.pt .pt-listhead .wlabel { padding: 0; }
+.pt-legend { display: flex; gap: 8px; font-size: 12px; color: #8a8f9c; }
+.pt-legend span { display: flex; align-items: center; gap: 4px; }
+.pt-legend i { display: block; width: 8px; height: 8px; border-radius: 4px; }
+.pt-legend i.g { background: #2fa64a; }
+.pt-legend i.y { background: #e0b000; }
+.pt-legend i.r { background: #c43c3c; }
+.pt .prow { gap: 6px; }
+.pt-prow-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; width: 100%; }
+.pt .prow b { color: #22252e; font-variant-numeric: tabular-nums; }
+.pt .prow .top { padding: 3px 8px; }
+.pt .prow .inbook { font-size: 11px; font-weight: 700; color: #1f6b3a; background: #eef8f1; padding: 2px 6px; border-radius: 8px; }
+.pt-foot { margin: 14px 4px 0; color: #8a8f9c; font-size: 13px; line-height: 1.45; }
