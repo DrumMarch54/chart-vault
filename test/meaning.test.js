@@ -134,14 +134,20 @@ test('a long course section is one card, and the short points ride with it (Alli
   assert.ok(m.pair.bits && m.pair.bits.groups[0].points.length >= 3);
   assert.equal(meaningFor({ chart: 'name', position: 'heart', sum: 9 }).bits, null, 'no points written yet = none shown');
   // every point file entry is well formed and names real course files
-  const all = JSON.parse(fs.readFileSync(new URL('../knowledge/bits.json', import.meta.url), 'utf8')).bits;
-  for (const [key, b] of Object.entries(all)) {
+  const file = JSON.parse(fs.readFileSync(new URL('../knowledge/bits.json', import.meta.url), 'utf8'));
+  const sets = { ...(file.sets || {}) }, pages = { ...(file.pages || {}) };
+  for (const [key, b] of Object.entries(file.bits || {})) { sets[key] = b; pages[key] = key; }
+  for (const [key, id] of Object.entries(pages)) {
     assert.match(key, /^[a-z]+\.[A-Za-z]+:\d{1,2}(\+\d{1,2})?$/, key);
-    assert.ok(b.groups.length && b.groups.every((g) => typeof g.title === 'string' && g.points.length), key);
-    for (const g of b.groups) for (const pt of g.points) assert.equal((pt.match(/\*\*/g) || []).length % 2, 0, `${key}: unpaired ** in "${pt}"`);
-    for (const src of b.sources) assert.ok(fs.existsSync(new URL(`../knowledge/raw/${src}.md`, import.meta.url)), `${key}: ${src}`);
+    assert.ok(sets[id], `${key} -> ${id}`);
     assert.ok(bitsFor(key));
   }
+  for (const [id, b] of Object.entries(sets)) {
+    assert.ok(b.groups.length && b.groups.every((g) => ['In balance', 'Out of balance', ''].includes(g.title) && g.points.length), id);
+    for (const g of b.groups) for (const pt of g.points) assert.equal((pt.match(/\*\*/g) || []).length % 2, 0, `${id}: unpaired ** in "${pt}"`);
+    for (const src of b.sources) assert.ok(fs.existsSync(new URL(`../knowledge/raw/${src}.md`, import.meta.url)), `${id}: ${src}`);
+  }
+  assert.ok(Object.keys(pages).length >= 2);
 });
 
 let db, server, base;
