@@ -43,7 +43,7 @@
   // filename. Never throws, never waits, so a count can never break a tap.
   // A renamed or removed button changes its name and its label here, same commit.
   const USAGE_LABELS = {
-    'screen.home': 'Home Screen', 'screen.chart': 'Chart Viewer', 'screen.settings': 'Settings', 'screen.quick': 'Quick Chart',
+    'screen.home': 'Home Screen', 'screen.chart': 'Chart Viewer', 'screen.settings': 'Settings', 'settings.search': 'Settings: search', 'screen.quick': 'Quick Chart',
     'screen.tags': 'All Tags', 'screen.upload': 'Upload Screenshots', 'screen.import': 'Import Tags', 'screen.status': 'Status and backup',
     'viewer.add_tag': 'Add a tag to a chart', 'quick.save': 'Save a quick chart', 'quick.full_screen': 'Quick Chart full screen',
     'quick.year_rows': 'Year Rows and Day Vibrations', 'quick.show_parts': 'Show and Hide Parts', 'quick.augment': 'Augmentation On or Off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
@@ -1207,21 +1207,37 @@
   };
 
   // ---------- settings ----------
+  // Every entry has the words a search may use for it (what the page is called, what is on it, what the owner
+  // calls it), so "backup", "key", "trash" or "duplicates" find the right row (owner's ask 2026-10-19).
+  const SETTINGS = [
+    ['Quick Chart', '#/quick', 'draw a chart, name and date, numeroscope, pyramid'],
+    ['All Tags', '#/tags', 'every tag, counts, tag list'],
+    ['Names to Check', '#/names', 'who is this, guessed names, confirm a name, titles'],
+    ['Possible Duplicates', '#/duplicates', 'same chart twice, same picture, same name and birth date, repeats'],
+    ['Deleted Charts', '#/deleted', 'trash, put back, restore, undelete'],
+    ['Charts Still Showing the Screenshot', '#/?drawn=0', 'not drawn yet, no name and date read, photo only'],
+    ['Search by Position', '#/position', 'find charts by number in a position, combination, life path, center, diamond'],
+    ['Upload Screenshots', '#/upload', 'add pictures, missing files, photos from the phone'],
+    ['Import Tags', '#/import', 'UserTag.backup, Smart Switch, gallery tags, tag file'],
+    ['My Chart (your own name and birth date)', '#/mychart', 'me, my own chart, my name, my birthday, year rows'],
+    ['AI Reading (key and monthly cap)', '#/ai', 'AI key, spend, cost, money, cap, readings, ask the vault, model'],
+    ['Status and backup', '#/status', 'backup, back up now, updates, build, version, missing files, recompute, what you use most, usage, space, server'],
+    ['Archetype Pics', '#/?kind=archetype', 'pictures for a number, archetype images'],
+  ];
   routes.settings = function settingsView() {
-    render(h('div', { class: 'screen stack' }, pageTop('Settings', '#/'),
-      h('a', { class: 'btn btn-block', href: '#/quick', style: 'justify-content:space-between' }, 'Quick Chart', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/tags', style: 'justify-content:space-between' }, 'All Tags', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/names', style: 'justify-content:space-between' }, 'Names to Check', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/duplicates', style: 'justify-content:space-between' }, 'Possible Duplicates', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/deleted', style: 'justify-content:space-between' }, 'Deleted Charts', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/?drawn=0', style: 'justify-content:space-between' }, 'Charts Still Showing the Screenshot', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/position', style: 'justify-content:space-between' }, 'Search by Position', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/upload', style: 'justify-content:space-between' }, 'Upload Screenshots', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/import', style: 'justify-content:space-between' }, 'Import Tags', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/mychart', style: 'justify-content:space-between' }, 'My Chart (your own name and birth date)', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/ai', style: 'justify-content:space-between' }, 'AI Reading (key and monthly cap)', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/status', style: 'justify-content:space-between' }, 'Status and backup', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/?kind=archetype', style: 'justify-content:space-between' }, 'Archetype Pics', h('span', { class: 'muted' }, '›'))));
+    const $q = h('input', { type: 'search', placeholder: 'Search settings', autocomplete: 'off', enterkeyhint: 'search', 'aria-label': 'Search settings' });
+    const $list = h('div', { class: 'stack' });
+    const $none = h('p', { class: 'muted hidden' }, 'Nothing in Settings matches that.');
+    const row = ([label, href]) => h('a', { class: 'btn btn-block', href, style: 'justify-content:space-between' }, label, h('span', { class: 'muted' }, '›'));
+    const draw = () => {
+      const words = $q.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+      const hit = words.length ? SETTINGS.filter(([label, , keys]) => { const hay = `${label} ${keys}`.toLowerCase(); return words.every((w) => hay.includes(w)); }) : SETTINGS;
+      fill($list, ...hit.map(row));
+      $none.classList.toggle('hidden', hit.length > 0);
+    };
+    $q.addEventListener('input', () => { count('settings.search'); draw(); });
+    render(h('div', { class: 'screen stack' }, pageTop('Settings', '#/'), h('div', { class: 'searchbox' }, $q), $list, $none));
+    draw();
   };
 
   // ---------- similar charts ----------
