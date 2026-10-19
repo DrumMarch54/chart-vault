@@ -36,29 +36,30 @@ const IMPLIES = {
 };
 const PRIORITY = ['leDiamond', 'mindDiamond', 'emotionDiamond', 'outerDiamond', 'innerDiamond', 'dharmaDiamond', 'nexus', 'challengeDiamond', 'spineDiamond', 'publicDiamond', 'heart', 'solar', 'le', 'big', 'littleLp', 'bigLp', 'pillar', 'spine', 'day', 'first', 'last', 'middle', 'heartExtra', 'solarExtra', 'upperLeft', 'upperRight', 'lowerLeft', 'lowerRight', 'outerAura', 'innerAura', 'topAura', 'month', 'year', 'target', 'letters', 'mentalFlow'];
 const rank = (key) => { const i = PRIORITY.indexOf(key); return i < 0 ? PRIORITY.length : i; };
+// Too small to be worth a word on the line (they still count in the score).
+const TRIVIAL = new Set(['letters', 'month', 'year', 'target']);
 // The named structures that match in one chart, biggest first, parts of a matched structure left out.
 export function namedMatches(chart, keys) {
   const set = new Set(keys);
   const implies = IMPLIES[chart === 'essence' ? 'essence' : 'rhombus'];
   const covered = new Set();
   for (const k of set) for (const part of implies[k] || []) covered.add(part);
-  return [...set].filter((k) => !covered.has(k)).sort((a, b) => rank(a) - rank(b)).map((k) => positionName(chart, k));
+  return [...set].filter((k) => !covered.has(k) && !TRIVIAL.has(k)).sort((a, b) => rank(a) - rank(b)).map((k) => positionName(chart, k));
 }
 // One line for a similar chart: whole charts that are the same, nearly the same ones, then the biggest matching
-// structures by name (two per chart, four phrases in all, the ranking chart first).
+// structures by name (two per chart, three phrases in all, the ranking chart first). The gist, not a list.
 export function gistOf({ per, of, matches }, by = 'all') {
   const order = CHARTS.map((c) => c.key).sort((a, b) => (a === by ? -1 : b === by ? 1 : 0));
-  const phrases = []; let more = 0;
+  const phrases = [];
   for (const chart of order) {
     const total = of[chart] || 0, same = per[chart] || 0; if (!total || !same) continue;
     if (same === total) { phrases.push(`Same ${CHART_NAME[chart]}`); continue; }
     if (same / total >= 0.75) { phrases.push(`${CHART_NAME[chart]} Nearly the Same`); continue; }
     const names = namedMatches(chart, (matches || []).filter((m) => m.startsWith(chart + '.')).map((m) => m.slice(chart.length + 1)));
-    phrases.push(...names.slice(0, 2)); more += Math.max(0, names.length - 2);
+    phrases.push(...names.slice(0, 2));
   }
   if (!phrases.length) return 'A few scattered numbers';
-  const shown = phrases.slice(0, 4); more += phrases.length - shown.length;
-  return shown.join(' · ') + (more ? ` · ${more} more` : '');
+  return phrases.slice(0, 3).join(' · ');
 }
 
 const HIDDEN = POSITIONS.filter((p) => p.hidden).map((p) => `${p.chart}.${p.key}`);
