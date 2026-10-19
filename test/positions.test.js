@@ -70,10 +70,13 @@ test('store, search by position, tag check, fix and clear', () => {
   assert.deepEqual(ids({ chart: '*', position: '*', number: 41 }), [k]);
   assert.deepEqual(ids({ chart: 'name', position: 'pillar', number: 5, ds: true }), [k]);
   assert.deepEqual(ids({ chart: 'name', position: 'heart', number: 99 }), []);
-  // Combinations: Katrine's lower auras are 3 and 4 (tag 4combo3mc is the mind center: upper auras 4 and 3).
+  // Combinations. A center's = the two numbers in its circle (main and extra vibration): Katrine's mind center is
+  // 7 with 16/7 under it. A diamond's = its two parts: her upper auras 3 and 4 make the mental diamond 34.
   const combo = (a, b) => ({ combo: [{ number: a, ds: a < 10 }, { number: b, ds: b < 10 }] });
-  assert.deepEqual(ids({ chart: 'name', position: 'heart', ...combo(4, 3) }), [k]);
-  assert.deepEqual(ids({ chart: 'name', position: 'heart', ...combo(3, 4) }), [k]); // either way round
+  assert.deepEqual(ids({ chart: 'name', position: 'heart', ...combo(7, 16) }), [k]);
+  assert.deepEqual(ids({ chart: 'name', position: 'heart', ...combo(16, 7) }), [k]); // either way round
+  assert.deepEqual(ids({ chart: 'name', position: 'heart', ...combo(4, 3) }), [], 'the auras are not the circle');
+  assert.deepEqual(ids({ chart: 'name', position: 'mindDiamond', ...combo(4, 3) }), [k]);
   assert.deepEqual(ids({ chart: 'name', position: 'heart', ...combo(4, 9) }), []);
   assert.deepEqual(ids({ chart: 'name', position: '*', ...combo(4, 3) }), [k]);
   assert.deepEqual(ids({ chart: '*', position: '*', ...combo(4, 3) }), [k]);
@@ -83,11 +86,11 @@ test('store, search by position, tag check, fix and clear', () => {
   const day19 = P.parseCondition('essence.day', '19'), heart7 = P.parseCondition('name.heart', '7'), heart16 = P.parseCondition('name.heart', '16');
   assert.deepEqual(both([day19, heart7]), [k]);
   assert.deepEqual(both([day19, heart16]), []); // each holds on a different chart, never both on one
-  assert.deepEqual(both([P.parseCondition('*.*', '16'), P.parseCondition('name.heart', '4+3')]), [k]); // a plain number and a combination mix
+  assert.deepEqual(both([P.parseCondition('*.*', '16'), P.parseCondition('name.mindDiamond', '4+3')]), [k]); // a plain number and a combination mix
   assert.deepEqual(both([]), [k, other, none].filter((id) => both([]).includes(id))); // no condition narrows nothing
   assert.equal(both([]).length, 3);
   assert.equal(P.parseCondition('bogus.heart', '7'), null); assert.equal(P.parseCondition('name.heart', 'abc'), null); assert.equal(P.parseCondition('', '7'), null);
-  assert.deepEqual(P.parseFixed('essence.day:19,name.heart:4+3,junk,bogus.x:1'), [day19, P.parseCondition('name.heart', '4+3')]);
+  assert.deepEqual(P.parseFixed('essence.day:19,name.heart:4+3,junk,bogus.x:1'), [day19, P.parseCondition('name.heart', '4+3')]); // parsing only
   // Counts narrowed by what is fixed: with day 19 fixed, 16 is found only on Katrine's chart (her extra vibration), not on Test's heart.
   const narrowed = P.positionCounts(db, { number: 16 }, [day19]);
   assert.equal(narrowed.fixedTotal, 1); assert.equal(narrowed.total, 1); assert.equal(narrowed.counts['name.heart'] || 0, 0); assert.equal(narrowed.counts['name.heartExtra'], 1);
@@ -95,7 +98,8 @@ test('store, search by position, tag check, fix and clear', () => {
   const narrowedCombo = P.positionCounts(db, combo(4, 3), [P.parseCondition('essence.day', '1')]);
   assert.equal(narrowedCombo.total, 0); assert.equal(narrowedCombo.fixedTotal, 1);
   const cc = P.positionCounts(db, combo(4, 3));
-  assert.equal(cc.counts['name.heart'], 1); assert.equal(cc.counts['name.mindDiamond'], 1); assert.equal(cc.perChart.name, 1); assert.equal(cc.total, 1);
+  assert.equal(cc.counts['name.heart'] || 0, 0); assert.equal(cc.counts['name.mindDiamond'], 1); assert.equal(cc.perChart.name, 1); assert.equal(cc.total, 1);
+  assert.equal(P.positionCounts(db, combo(7, 16)).counts['name.heart'], 1);
   assert.ok(P.comboPositions('name').some((p) => p.key === 'heart') && !P.comboPositions('name').some((p) => p.key === 'first'));
   const c = P.positionCounts(db, { number: 16 });
   assert.equal(c.counts['name.heart'], 1); assert.equal(c.counts['name.heartExtra'], 1); assert.equal(c.perChart.name, 2); assert.equal(c.total, 2);

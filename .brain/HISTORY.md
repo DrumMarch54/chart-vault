@@ -555,3 +555,22 @@ in the same position; no vault statistics on the page beyond that count.
 - Not done yet, on purpose: the celebrity statistics PDF (NP-Statistics) is not in the knowledge store; general
   descriptions as their own section on every page (the owner wants specific first).
 
+## 2026-10-19 later: select then open; a center's combination is its circle; no number's-own-diamond text
+- Owner: tap should first put an outline round the number, a second tap opens the page. Done in `pickNumber`
+  (app.js); a tap on blank chart space removes the outline; the PNG export never carries it.
+- Owner on Allison Frank (mind center 7 with 13/4): the page "recommended 7 and 11/2". Her stored numbers were
+  right. The course scrape puts several pairs under one heading ("7 MV" held a paragraph "11/2 and 7 in a heart
+  center ..."); paragraphs and list lines that open on another pair are now cut. And "Made of" used the upper
+  auras, while the course and the owner mean the circle: main + extra vibration.
+- Owner: searching "12/3 and 8 in the mind center" came back wrong. Checked all 38 of the owner's combo tags
+  against the live vault: 37 name the circle (main + extra), 0 only the auras (the 38th chart has no numbers).
+  The search's PARTS for heart/solar were the auras (a 2026-10-15 guess from "4combo9ec", whose charts all fit the
+  circle too). Now the circle; a two-number search on the mental/emotional DIAMOND still means its two auras.
+- Owner on the outer aura 7: the page showed "THE NUMBER 7 - DIAMOND", the course's symbol of the number itself,
+  not a person's diamond. Every number's-own-diamond passage is gone (Diamond Method book, Big/Little/Small
+  Diamond headings). Also: essence auras no longer read name chart aura pages; the outer DIAMOND is shown as its
+  own section with the Essence Codes pages; heart/emotional diamond pages of the vocation and personality charts
+  are no longer used for the name chart's diamonds.
+- Owner asked how to choose a diamond vs an aura vs a center: diamonds are not drawn, so the page of the number
+  that makes one shows it as a section (agreed in principle by the owner's own suggestion).
+

@@ -53,7 +53,8 @@ Learned from the position search gate (2026-10-15, `server/positions.js`
 `TAG_POSITIONS`): "mc"/"ec" also mean the center's diamond (66mc = mind
 diamond 66); "osle" = outer psyche LE diamond; a one-digit tag is a digit sum
 (9lp = 18/9); "NcomboM<pos>" names the two parts of a center or diamond
-(4combo9ec = lower auras 4 and 9, 8combo15publicdiamond = day 8 beside first
+(4combo9ec = 13/4 and 9 in the emotion center's circle, main and extra vibration; checked
+2026-10-19: 37 of 38 combo tags name the circle, none only the auras; 8combo15publicdiamond = day 8 beside first
 name 15/6); a diamond may be tagged with its digits the other way round
 (68pd for 86). With these, 1230 of the 1267 position tags on charts with
 known inputs agree with the computed charts.

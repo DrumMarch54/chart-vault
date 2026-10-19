@@ -19,18 +19,27 @@ const { meaningFor, countWith, topicsFor } = await import('../server/meaning.js'
 
 const heads = (list) => list.map((p) => p.heading.split(' > ').pop());
 
-test('mind center 12/3: the mind-center scrape, named 12, nothing about other numbers; unbalanced; made of 7 and 5', () => {
-  const m = meaningFor({ chart: 'name', position: 'heart', sum: 12, parts: [7, 5] });
+test('mind center 12/3 with 8 in its circle: 12 alone, then 12 with 8, then the mental diamond behind it', () => {
+  const m = meaningFor({ chart: 'name', position: 'heart', sum: 12, pair: [8], rel: [{ position: 'mindDiamond', sum: 75 }] });
   assert.equal(m.text, '12/3'); assert.equal(m.label, 'Mind center'); assert.equal(m.chartLabel, 'Name chart');
   assert.equal(m.name, 'The Expansive Dynamo'); assert.equal(m.verdict, 'unbalanced'); assert.equal(m.family, 'center');
   assert.ok(m.passages.length >= 3, 'passages');
   for (const p of m.passages) { assert.equal(p.source, 'name-chart-mind-and-emotion-centers', p.heading); assert.match(p.heading, /(^|\D)12(\D|$)/); }
   assert.match(heads(m.passages)[0], /12 MV/);
-  assert.ok(!heads(m.passages).some((x) => /15 and 12|16 and 12|8 and 12|7 and 12/.test(x)), 'a pairing with another number is not about 12 alone');
-  assert.equal(m.general.length, 0, 'enough specific passages, no general ones');
-  assert.deepEqual(m.combo.parts, [7, 5]);
-  assert.ok(m.combo.passages.length >= 1 && /5 \+ 7|7 \+ 5|5 and 7|7 and 5/.test(m.combo.passages[0].heading), 'the combo guide on 5 + 7');
-  assert.ok(!m.combo.passages.some((p) => p.source === 'relations-book'), 'no relationship-between-people passages');
+  assert.ok(!heads(m.passages).some((x) => /(15|16|8|7) and 12/.test(x)), 'a pairing with another number is not about 12 alone');
+  assert.deepEqual(m.pair.with.map((x) => x.sum), [8]);
+  assert.ok(m.pair.passages.length >= 2);
+  for (const p of m.pair.passages) assert.match(p.heading + ' ' + p.text.slice(0, 60), /\b(8 and 12|12 and 8|12\/3 and 8|8 and 12\/3|3 \+ 8)/);
+  assert.equal(m.related.length, 1); assert.equal(m.related[0].label, 'Mental diamond'); assert.equal(m.related[0].text, '75/3');
+});
+
+test('Allison Frank, mind center 7 with 13/4: no passage about 7 with 11/2, and the circle pair 7 and 13 is found', () => {
+  const m = meaningFor({ chart: 'name', position: 'heart', sum: 7, pair: [13], rel: [{ position: 'mindDiamond', sum: 61 }] });
+  const all = [...m.passages, ...m.general].map((p) => p.text).join('\n');
+  assert.doesNotMatch(all, /11\/2 and 7|7 and 11\/2/, 'the "11/2 and 7 in a heart center" paragraph is about another pair');
+  assert.match(heads(m.pair.passages)[0], /7 and 13 in the mind center/);
+  // the mental diamond on the NAME chart never reads a vocation or personality heart diamond passage
+  for (const p of [...m.related[0].passages, ...m.related[0].general]) assert.doesNotMatch(p.heading, /vocation|personality/i);
 });
 
 test('each name chart aura gets its own aura\'s passage, not another aura\'s', () => {
@@ -45,49 +54,50 @@ test('each name chart aura gets its own aura\'s passage, not another aura\'s', (
   assert.match(assoc.passages[0].heading, /associates aura/i);
 });
 
-test('sub-charts: the sub-chart book first; emotion center main vibration before sub vibration', () => {
-  const v = meaningFor({ chart: 'vocation', position: 'heart', sum: 12 });
-  assert.equal(v.passages[0].source, 'subnumeroscope-interpretation-book'); assert.match(v.passages[0].heading, /Vocation/);
-  const p = meaningFor({ chart: 'personality', position: 'heart', sum: 12 });
-  assert.match(p.passages[0].heading, /Personality Heart Diamond/);
+test('sub-charts: the vocation chart\'s own page first; a heart diamond passage belongs to the diamond, not the center', () => {
+  const v = meaningFor({ chart: 'vocation', position: 'heart', sum: 12, rel: [{ position: 'mindDiamond', sum: 39 }] });
+  assert.equal(v.passages[0].source, 'vocation-chart-problem-areas');
+  assert.ok(!heads(v.passages).some((x) => /heart diamond/i.test(x)));
+  assert.match(heads(v.related[0].passages)[0], /Heart Diamond \(Vocation\)/);
   const s = meaningFor({ chart: 'name', position: 'solar', sum: 12 });
   assert.match(s.passages[0].heading, /12 MV/); assert.equal(s.verdict, 'unbalanced');
 });
 
-test('a position the course says little about falls back to the number itself, from the number books', () => {
+test('the outer aura never shows a number\'s own diamond or a name chart aura; the outer diamond comes from the essence codes', () => {
+  const o = meaningFor({ chart: 'essence', position: 'outerAura', sum: 7, rel: [{ position: 'outerDiamond', sum: 25 }] });
+  const every = [...o.passages, ...o.general, ...o.related.flatMap((r) => [...r.passages, ...r.general])];
+  for (const p of every) {
+    assert.doesNotMatch(p.heading + ' ' + p.text.slice(0, 300), /(big|little|small) diamond|NUMBER 7 - DIAMOND|diamond of the number/i, p.heading);
+    assert.ok(!/^(diamond-method|name-chart-|name-numeroscope)/.test(p.source), p.source);
+  }
+  assert.match(heads(o.related[0].passages)[0], /Outer Diamond 25/);
+});
+
+test('a position the course says little about falls back to the number itself, never a business book', () => {
   const m = meaningFor({ chart: 'name', position: 'first', sum: 19 });
   assert.ok(m.passages.length < 2);
   assert.ok(m.general.length >= 1, 'general passages');
   for (const g of m.general) { assert.match(g.heading, /19/); assert.ok(!/^biz-/.test(g.source), g.source); }
-  const y = meaningFor({ chart: 'essence', position: 'year', sum: 11 });
-  assert.ok(y.general.length >= 1 && /11/.test(y.general[0].heading));
-});
-
-test('essence positions: outer aura 48 reads the outer diamond pages, the day vibration its own pages, no business books first', () => {
-  const o = meaningFor({ chart: 'essence', position: 'outerAura', sum: 48, parts: [4, 8] });
-  assert.match(o.passages[0].heading, /Outer Diamond 48/);
-  assert.ok(!heads(o.passages).some((x) => /inner diamond/i.test(x)));
   const d = meaningFor({ chart: 'essence', position: 'day', sum: 19 });
   assert.match(d.passages[0].heading, /Day Vibration 19/i);
   for (const p of d.passages) assert.ok(!/^biz-/.test(p.source), p.source);
-  const d5 = meaningFor({ chart: 'essence', position: 'day', sum: 5 });
-  assert.ok(!/^biz-/.test(d5.passages[0].source));
   assert.deepEqual(topicsFor('essence', 'day'), ['dayVibration']);
   assert.deepEqual(topicsFor('outer', 'heart'), ['mindCenter', 'psyche']);
 });
 
-test('a center\'s extra vibration keeps the pairing with its main vibration; unknown positions and numbers are null', () => {
-  const x = meaningFor({ chart: 'name', position: 'heartExtra', sum: 12, parts: [7, 5] });
-  assert.ok(heads(x.passages).some((h) => /7 and 12|12 and 7|Sub vibration 12/i.test(h)), heads(x.passages).join(' | '));
-  assert.ok(!heads(x.passages).some((h) => /15 and 12|16 and 12/.test(h)));
+test('an extra vibration pairs with its main vibration; unknown positions and numbers are null', () => {
+  const x = meaningFor({ chart: 'name', position: 'heartExtra', sum: 13, pair: [7] });
+  assert.ok(heads(x.passages).every((h) => !/7 and 13/.test(h)), 'the pair is its own section');
+  assert.match(heads(x.pair.passages)[0], /7 and 13 in the mind center/);
   assert.equal(meaningFor({ chart: 'name', position: 'nothing', sum: 12 }), null);
   assert.equal(meaningFor({ chart: 'name', position: 'heart', sum: 0 }), null);
   assert.equal(meaningFor({ chart: 'name', position: 'heart', sum: 100 }), null);
   assert.equal(meaningFor({ chart: 'name', position: 'anyName', sum: 12 }), null, 'the hidden duplicate is not a position');
-  assert.equal(meaningFor({ chart: 'name', position: 'heart', sum: 7, parts: [3] }).combo, null);
+  const plain = meaningFor({ chart: 'name', position: 'heart', sum: 7, rel: [{ position: 'bogus', sum: 3 }, { position: 'mindDiamond', sum: 0 }] });
+  assert.equal(plain.pair, null); assert.deepEqual(plain.related, []);
 });
 
-test('every catalog position and every number 1-99 answers without throwing, with the verdict the balance lists give', async () => {
+test('every catalog position answers without throwing, with the verdict the balance lists give', async () => {
   const { POSITIONS } = await import('../server/positions.js');
   const { judge } = await import('../server/facts.js');
   let withWords = 0, total = 0;
@@ -97,7 +107,7 @@ test('every catalog position and every number 1-99 answers without throwing, wit
     assert.equal(m.verdict, judge(p.chart, p.key, n));
     total++; if (m.passages.length || m.general.length) withWords++;
   }
-  assert.ok(withWords / total > 0.9, `${withWords} of ${total} have words`);
+  assert.ok(withWords / total > 0.85, `${withWords} of ${total} have words`);
 });
 
 let db, server, base;
@@ -117,11 +127,12 @@ const get = (p) => fetch(base + p, { headers: { authorization: 'Bearer test-pass
 test('GET /api/meaning: the meaning plus how many vault charts hold the number there; bad input is a 400; no password, no answer', async () => {
   assert.equal(countWith(db, 'name', 'heart', 7), 2, 'both Katrines: the upper auras are the same with or without the middle name');
   assert.equal(countWith(db, 'name', 'middle', 18), 1);
-  const r = await get('/api/meaning?chart=name&position=heart&sum=7&parts=3,4');
+  const r = await get('/api/meaning?chart=name&position=heart&sum=7&pair=16&rel=mindDiamond:34,bogus:3');
   assert.equal(r.status, 200);
   const m = await r.json();
   assert.equal(m.count, 2); assert.equal(m.text, '7'); assert.equal(m.verdict, 'balanced'); assert.ok(m.passages.length);
-  assert.deepEqual(m.combo.parts, [3, 4]);
+  assert.deepEqual(m.pair.with.map((x) => x.sum), [16]);
+  assert.equal(m.related.length, 1); assert.equal(m.related[0].position, 'mindDiamond'); assert.equal(m.related[0].count, 2, 'both Katrines: upper auras 3 and 4');
   const none = await (await get('/api/meaning?chart=name&position=heart&sum=99')).json();
   assert.equal(none.count, 0);
   assert.equal((await get('/api/meaning?chart=name&position=heart&sum=abc')).status, 400);

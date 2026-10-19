@@ -157,14 +157,18 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   mostly course passages); a question about a chart about 3 cents while cached; a vault question about a cent. Never call the model from a test or a tool.
 
 ## What a number means where it sits (built 2026-10-19)
-- Tap any number on a drawn chart (viewer, Quick Chart; not Today) and a page opens: the course's passages for
-  that number IN THAT POSITION, the balance verdict, "N charts with 12/3 here ›" (the position search), the two
-  parts a center or aura is made of. `server/meaning.js` ranks the knowledge index per position (own-chart sources,
-  the position's topic and words, the number named in the heading; a heading naming another number is a pair or a
-  case and is skipped); `GET /api/meaning`; screen `public/meaning.js`. Every number of `numeroscopeSvg` carries
-  `data-pos` / `data-num` / `data-parts` plus an invisible pad; a name's own tap covers the name text only.
-  Tap = meaning, never hold (hold is for destructive taps). General descriptions are a fallback for now (owner:
-  "specific first, general later"). The celebrity statistics PDF is NOT in the knowledge store yet.
+- Tap a number on a drawn chart (viewer, Quick Chart; not Today): an outline goes round it; tap it again and its
+  page opens (owner's ask: never straight to the page). The page: the course's passages for that number IN THAT
+  POSITION, the balance verdict, "N charts with 12/3 here ›", the number with the others in its circle ("7 with 13/4
+  in the Mind Center"), and the diamond(s) behind it (diamonds are not drawn: mental diamond behind a mind center
+  and its upper auras, outer diamond behind the outer aura, nexus behind day and life path, ...).
+- A center's COMBINATION is the two numbers in its circle, main + extra vibration, in the course, in the owner's
+  combo tags (37 of 38) and in the position search (`PARTS` heart/solar). The auras around it make the DIAMOND.
+- `server/meaning.js` ranks per position and keeps context: a passage about another chart (vocation heart diamond on
+  the name chart, a name chart aura on the essence), about a pair that is not this circle, about a NUMBER'S OWN
+  diamond (Diamond Method, "small diamond of the number 7"), or a point-scoring table is never shown. Business
+  books are never "specific". `GET /api/meaning?pair=&rel=`; screen `public/meaning.js`; numbers carry
+  `data-pos/num/pair/rel` from `numeroscopeSvg`. The celebrity statistics PDF is NOT in the knowledge store yet.
 
 ## Dev
 - `npm run verify` before saying done: syntax of every file + all tests. Spends nothing.

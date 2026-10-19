@@ -94,7 +94,7 @@ export const chartLabel = (chart) => (CHARTS.find((c) => c.key === chart) || {})
 // (tools/color-study/vault-inputs.json): "mc" and "ec" also cover the center's diamond (66mc on Michael
 // Jackson is the mind diamond 66), "osle" is the outer psyche LE diamond (61osle), a one-digit tag
 // means the digit sum (9lp = life path 18/9), a combo tag names the two parts of a center or diamond
-// (4combo9ec = lower auras 4 and 9; 8combo15publicdiamond = day 8 beside first name 15/6), and a
+// (4combo9ec = 13/4 and 9 in the emotion center's circle; 8combo15publicdiamond = day 8 beside first name 15/6), and a
 // diamond may be tagged with its digits the other way round (68pd for 86). "nr" codes compare the digit sum.
 export const TAG_POSITIONS = {
   day: [['essence', 'day']], month: [['essence', 'month']], year: [['essence', 'year']],
@@ -113,9 +113,12 @@ export const TAG_POSITIONS = {
 };
 // The two parts a center or diamond is made of (for combo tags): "4combo9ec" = 4 and 9 in the lower auras.
 const DIAMONDS = new Set(['mindDiamond', 'emotionDiamond', 'leDiamond', 'publicDiamond', 'spineDiamond', 'outerDiamond', 'innerDiamond', 'dharmaDiamond', 'nexus', 'target', 'challengeDiamond', 'mentalFlow']);
+// A CENTER's combination is the two numbers in its circle: the main vibration and an extra vibration ("12/3 and 8
+// in the mind center"). The owner's combo tags say so: 37 of 38 name the circle, none only the auras (live vault,
+// 2026-10-19). The auras around a center make its DIAMOND (mindDiamond, emotionDiamond).
 const PARTS = {
-  heart: ['upperLeft', 'upperRight'], heartExtra: ['heart', 'middle'], mindDiamond: ['upperLeft', 'upperRight'],
-  solar: ['lowerLeft', 'lowerRight'], solarExtra: ['solar', 'middle'], emotionDiamond: ['lowerLeft', 'lowerRight'],
+  heart: ['heart', 'heartExtra'], heartExtra: ['heart', 'middle'], mindDiamond: ['upperLeft', 'upperRight'],
+  solar: ['solar', 'solarExtra'], solarExtra: ['solar', 'middle'], emotionDiamond: ['lowerLeft', 'lowerRight'],
   leDiamond: ['first', 'last'], publicDiamond: ['essence.day', 'first'], spineDiamond: ['essence.day', 'le'],
   outerDiamond: ['day', 'month'], innerDiamond: ['day', 'year'], dharmaDiamond: ['month', 'year'], nexus: ['day', 'littleLp'], target: ['day', 'topAura'], challengeDiamond: ['outerAura', 'month'],
 };
@@ -233,8 +236,8 @@ export function loadSeedFile() {
 export const comboPositions = (chart) => POSITIONS.filter((p) => (chart === '*' || !chart || p.chart === chart) && PARTS[p.key] && !p.hidden);
 // One part of a combination: a one-digit number is the digit sum (4 = a 13/4 or a 22/4), a bigger one the number itself.
 const partSql = (alias, part) => `${alias}.${part.ds ? 'ds' : 'sum'} = ?`;
-// "4 and 9 in the emotion center" = the lower left aura is 4 and the lower right 9, or the other way round
-// (the owner's combo tags: 4combo9ec). A part may live in another chart (the public diamond's day).
+// "4 and 9 in the emotion center" = 4 and 9 in its circle, main and extra vibration, either way round (the owner's
+// combo tags: 4combo9ec); in a diamond, its two parts. A part may live in another chart (the public diamond's day).
 function comboSql(chart, position, [a, b], params) {
   const targets = position && position !== '*' ? comboPositions(chart).filter((p) => p.key === position) : comboPositions(chart);
   if (!targets.length) return 'AND 0';

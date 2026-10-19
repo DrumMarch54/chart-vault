@@ -187,13 +187,15 @@ export function createApp(db, { log = console.log } = {}) {
     log(`recomputed the chart numbers of ${n} charts`);
     res.json({ recomputed: n, ...inputStats(db), check: tagCheck(db) });
   });
-  // What a number means in a position (the tap on a number of a drawn chart): the course's words, the balance
-  // verdict, and how many vault charts hold it there. ?parts=7,5 names the two parts a center is made of.
+  // What a number means in a position (a number tapped twice on a drawn chart): the course's words, the balance
+  // verdict and how many vault charts hold it there. ?pair=13 = the numbers sharing its circle (a center's main and
+  // extra vibrations); ?rel=mindDiamond:61,... = the diamonds behind it on the same chart, each with its own count.
   app.get('/api/meaning', (req, res) => {
-    const parts = String(req.query.parts || '').split(',').map((x) => Number(x)).filter((x) => Number.isInteger(x) && x > 0);
-    const m = meaningFor({ chart: String(req.query.chart || ''), position: String(req.query.position || ''), sum: Number(req.query.sum), parts: parts.length === 2 ? parts : null });
+    const pair = String(req.query.pair || '').split(',').map(Number).filter((x) => Number.isInteger(x) && x > 0).slice(0, 4);
+    const rel = String(req.query.rel || '').split(',').map((x) => x.split(':')).filter((x) => x.length === 2).map(([position, sum]) => ({ position, sum: Number(sum) })).slice(0, 4);
+    const m = meaningFor({ chart: String(req.query.chart || ''), position: String(req.query.position || ''), sum: Number(req.query.sum), pair, rel });
     if (!m) return res.status(400).json({ error: 'That position or number is not one the app knows.' });
-    res.json({ ...m, count: countWith(db, m.chart, m.position, m.sum) });
+    res.json({ ...m, count: countWith(db, m.chart, m.position, m.sum), related: m.related.map((r) => ({ ...r, count: countWith(db, r.chart, r.position, r.sum) })) });
   });
   app.get('/api/tags', (req, res) => {
     const limit = Math.min(Math.max(Number(req.query.limit) || 30, 1), 200);
