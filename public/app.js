@@ -1240,34 +1240,14 @@
     const short = { essence: 'Essence', name: 'Name', vocation: 'Vocation', personality: 'Personality', outer: 'Outer Psyche', inner: 'Inner Psyche' };
     fill($chips, ...[{ key: 'all', label: 'Every Chart' }, ...d.charts.filter((c) => d.of[c.key])].map((c) => h('a', { class: `chip ${by === c.key ? 'active' : 'off'}`, href: `#/similar/${id}?by=${c.key}`, onclick: () => count('similar.by') }, short[c.key] || c.label)));
     if (!d.items.length) { fill($list, h('p', { class: 'muted' }, 'No other chart shares a number here yet.')); return; }
-    // One short line per row saying what is alike (owner 2026-10-19: the gist, not six counts): the charts that are
-    // the same, the ones nearly the same, the ones half the same; nothing else named.
-    const gist = (it) => {
-      const name = (k) => (short[k] || k).toLowerCase();
-      const same = [], nearly = [], half = [];
-      let best = null;
-      for (const c of d.charts) {
-        const of = d.of[c.key] || 0, n = it.per[c.key] || 0; if (!of) continue;
-        const r = n / of;
-        if (!best || r > best.r) best = { k: c.key, r };
-        if (n === of) same.push(name(c.key)); else if (r >= 0.7) nearly.push(name(c.key)); else if (r >= 0.4) half.push(name(c.key));
-      }
-      const list = (a) => (a.length === 1 ? a[0] : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]);
-      const bits = [];
-      if (same.length) bits.push(`Same ${list(same)}`);
-      if (nearly.length) bits.push(`${list(nearly)} nearly the same`);
-      if (half.length && bits.length < 2) bits.push(`half the ${list(half)}`);
-      if (!bits.length) return best && best.r > 0 ? `A few numbers in common, mostly in the ${name(best.k)}` : 'A few numbers in common';
-      const t = bits.join(' · ');
-      return t[0].toUpperCase() + t.slice(1);
-    };
+    // One line per row naming what is alike, in the course's words (server/similar.js gistOf).
     fill($list, ...d.items.map((it) => {
       return h('a', { class: 'card simrow', href: `#/compare/${id}/${it.id}`, onclick: () => { count('similar.compare'); compareReturn = location.hash; } },
         it.inputs && it.inputs.name ? h('div', { class: 'thumb drawn simthumb', role: 'img' }, drawnChart(it.inputs)) : it.has_file ? h('img', { class: 'thumb simthumb', src: `/thumb/${it.id}`, loading: 'lazy', alt: '' }) : h('div', { class: 'nofile simthumb' }, 'no file'),
         h('div', { class: 'stack', style: 'flex:1;min-width:0;gap:4px' },
           h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('b', { class: 'ellip' }, it.title || (it.inputs && it.inputs.name) || it.filename), h('span', { class: 'count' }, by === 'all' ? `${it.total} of ${d.totalOf}` : `${it.per[by] || 0} of ${d.of[by] || 0}`)),
           it.inputs ? h('div', { class: 'muted small' }, `${it.inputs.name || ''}${it.inputs.day ? ` · ${it.inputs.day}.${it.inputs.month}.${it.inputs.year}` : ''}`) : null,
-          h('div', { class: 'simgist' }, gist(it))));
+          h('div', { class: 'simgist' }, it.gist)));
     }));
   };
 

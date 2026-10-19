@@ -647,3 +647,7 @@ in the same position; no vault statistics on the page beyond that count.
 - Built on `chart_values` with one self-join (`server/similar.js`); a chart with no name and date read is
   refused with the reason on screen. Test: same birth date = every essence position the same; same name =
   the name line the same; a saved Quick chart of the same person ranks first (it is the same chart).
+- Owner on the first version's line "Half the outer psyche" (XXXTentacion): wrong words; it should say "Outer
+  Psyche Life Expression Diamond". Rule from now on: a screen names positions by their course names (lingo.md),
+  Title Case; a matched diamond stands for its parts, so only the biggest matching structure is named
+  (`namedMatches`, `IMPLIES`). "Same Essence Chart" / "Name Chart Nearly the Same" for whole charts.

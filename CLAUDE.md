@@ -112,6 +112,9 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - Similar Charts (owner 2026-10-19): viewer ⋮ → "Similar Charts" (`#/similar/<id>?by=`), `server/similar.js`
   scores every other chart by positions holding the same number (same position, repeat and sum; hidden helper
   positions excluded), per chart; chips rank by every chart or one; a row opens Compare. No AI, no guesswork.
+  Each row's line NAMES what is alike in the course's words (`gistOf`, `positionName`, `lingo.md`): the biggest
+  matching structure only ("Outer Psyche Life Expression Diamond", never "half the outer psyche"), Title Case.
+  Owner's rule 2026-10-19: anything on a screen about a position uses the position's course name.
 - Whole Name Pyramid (owner 2026-10-17): every name run together with no spaces as one word, pyramid only
   (`openWord(..., { wholeName: true })`); "Pyramid" beside the name in the viewer's sheet, in the viewer's ⋮ menu
   and in the Quick Chart's ⋮ menu.

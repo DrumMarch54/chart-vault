@@ -643,6 +643,11 @@ test('similar charts: scored per chart by positions holding the same number; ran
   assert.ok(!r.items.some((i) => i.id === a.id), 'never itself');
   assert.ok(!r.items.some((i) => i.id === d.id), 'a chart without numbers never appears');
   assert.equal(B.inputs.name, 'Totally Other Person');
+  // what is alike is named in the course's words, the biggest structure only, Title Case
+  assert.match(B.gist, /^Same Essence Chart/);
+  assert.ok(/Name|Life Expression|Mind Center|Diamond/.test(C.gist), C.gist);
+  assert.ok(!/half|nearly|of \d/i.test(B.gist), B.gist);
+  assert.ok(Array.isArray(B.matches) && B.matches.includes('essence.day'));
   assert.equal(B.total, Object.values(B.per).reduce((x, y) => x + y, 0));
   const byName = (await json(await api(`/api/images/${a.id}/similar?by=name`))).body;
   assert.equal(byName.by, 'name');
