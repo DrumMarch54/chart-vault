@@ -427,13 +427,16 @@ html.light .tscreen .reading .rate { margin-left: auto; }
 .mini.today.super { outline: 2px solid var(--accent); }
 /* the book-style diamond bands */
 .dia.band { border-radius: 10px; margin-bottom: 8px; }
-.dia .lab { fill: #7f8694; }
-.dia .lab.unb { fill: #c08080; }
-.dia .band-title { fill: #5f7990; font-weight: 700; letter-spacing: .06em; }
-.dia .life { fill: #6f7f93; font-weight: 700; letter-spacing: .14em; }
-.dia text.name { fill: #3b78c2; font-weight: 700; }
-.dia text.name.unb { fill: #c45b5b; }
-.dia text.big { font-size: 1.05em; }
+/* The big diamond page, colored as the paid tool colors it (sampled off the owner's screenshot 2026-10-19) */
+.dia .lab { fill: #7a8a9c; }
+.dia .lab.unb { fill: #e39a9a; }
+.dia .band-title { fill: #5a7fa5; font-weight: 700; letter-spacing: .04em; }
+.dia .life { fill: #6f8299; letter-spacing: .14em; }
+.dia .tri text { fill: #1b82c5; }
+.dia .tri.dark text { fill: #303030; }
+.dia .tri text.name { fill: #d4b176; font-weight: 700; }
+.dia .tri.dark text.name { fill: #666; }
+.dia .tri text.name.unb { fill: #c0392b; }
 .dia .tri { cursor: pointer; }
 
 /* ---- the planet banner of Today, Coming Days and the full-screen day ---- */

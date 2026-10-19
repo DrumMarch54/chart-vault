@@ -680,3 +680,19 @@ in the same position; no vault statistics on the page beyond that count.
   brings the grid back. The cells reuse `tri` (the book's triangle) at 76 units wide in a 120-unit box.
 - Not done from the doc: "fix the charts so they look like this" (the paid tool's three-level big diamond
   page). Number Fun already draws that page; the owner is asked what still looks off.
+
+## 2026-10-19 Number Fun redrawn the paid tool's way (owner: "the charts look like shit, nothing like I showed you")
+- The first pass judged our page "close" to the owner's screenshot by eye and moved on. Wrong. Measured against the
+  screenshot (img-001 of the "Chart app Fixes" doc, 852 px wide): the tool's three bands SHRINK going up (main
+  diamond 0.28 of the width, essence 0.20, integration 0.13; the sides and imbalanced ones in step) and the upper
+  levels are pulled in toward the middle (sides at 0.135 / 0.21 / 0.29 of the width, imbalanced at 0.26 / 0.31 /
+  0.38); the names are GOLD (#d4b176) inside every triangle except the physical main (gray) and the imbalanced
+  (red); every number is BLUE (#1b82c5) except on the physical main diamond (#303030); the outlines are all blue,
+  imbalanced ones too; labels are gray lowercase ("main diamond" above, "outer diamond" beside the LE), the
+  imbalanced ones pink; the backgrounds per band (physical #cfdbe7 / #c0d1e1, emotional #dee7ee / #cfdbe7,
+  spiritual #edf2f6 / #dee7ee). `BANDS` in tools.js holds the measured numbers; on a 390 px phone the upper
+  bands are kept a little larger than the tool's ratio (1 : 0.82 : 0.56) so they can still be read.
+- The grid ("10 by 10" page): a cell is the WHOLE big diamond, seven triangles (integration; essence with its outer
+  and inner; main, dark and bigger, with its outer and inner), not the main diamond alone. `cellSvg`.
+- Lesson: "looks close" is not a check. When the owner hands a screenshot, measure positions and sample colors
+  off it before drawing, and compare our screenshot beside theirs before saying done.

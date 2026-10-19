@@ -334,60 +334,92 @@
   // Triangles are drawn the book's way: thin blue outline, the two digits outside the top corners, the
   // auras outside the sides, the center in a circle, the life expression under the point, the archetype
   // name in small blue inside the top. Measured on The Diamond Method p. 35.
+  // One triangle, drawn as the paid tool's Number Fun page draws it (the owner's screenshot, 2026-10-19): a thin
+  // blue outline, the two digits outside the top corners, the archetype name in gold inside the top, the center in
+  // a thin circle, the auras outside the sides, the life expression under the point. Every number is blue except on
+  // the physical main diamond (opts.dark: dark gray, as the tool draws it). An unbalanced diamond's name is red.
   function tri(svg, d, cx, topY, w, opts = {}) {
-    const sv = A.sv, hh = w * 0.75, pad = 0;
-    const g = sv('g', { class: 'tri' + (opts.unbalanced ? ' unb' : ''), role: 'button', 'aria-label': `${d.text} ${d.name}` });
-    const stroke = opts.unbalanced ? '#e0a0a0' : '#4f86c6';
-    g.append(sv('polygon', { points: `${cx - w / 2},${topY} ${cx + w / 2},${topY} ${cx},${topY + hh}`, fill: '#fff', stroke, 'stroke-width': w > 120 ? 2.2 : 1.4 }));
-    const f = (k) => Math.max(6.5, w * k);
+    const sv = A.sv, hh = w * 0.72, floor = opts.minFont || 6.5;
+    const g = sv('g', { class: 'tri' + (opts.dark ? ' dark' : '') + (opts.unbalanced ? ' unb' : ''), role: 'button', 'aria-label': `${d.text} ${d.name}` });
+    g.append(sv('polygon', { points: `${cx - w / 2},${topY} ${cx + w / 2},${topY} ${cx},${topY + hh}`, fill: 'none', stroke: '#2788c7', 'stroke-width': w > 120 ? 2.4 : w > 60 ? 1.6 : 1 }));
+    const f = (k) => Math.max(floor, w * k);
     const t = (x, y, s, size, cls, anchor) => sv('text', { x, y, 'font-size': size, 'text-anchor': anchor || 'middle', class: cls || '' }, s);
-    const bold = (opts.strong ? 'big ' : '') + 'bold';
-    g.append(t(cx - w / 2 - 3, topY - 4, opts.aText || String(d.a), f(0.17), bold, 'end'), t(cx + w / 2 + 3, topY - 4, opts.bText || String(d.b), f(0.17), bold, 'start'));
+    // A long corner text (Relationship: "John 25/7") shrinks so it stays beside its corner.
+    const cornerF = (txt) => f(0.18) * Math.min(1, Math.max(0.45, 4 / String(txt).length));
+    const aT = opts.aText || String(d.a), bT = opts.bText || String(d.b);
+    g.append(t(cx - w / 2 - 3, topY - 3, aT, cornerF(aT), 'bold', 'end'), t(cx + w / 2 + 3, topY - 3, bT, cornerF(bT), 'bold', 'start'));
     const nm = opts.name !== undefined ? opts.name : d.name;
-    if (nm && w >= 56) g.append(t(cx, topY + f(0.12) + 2, nm, Math.min(f(0.075), (w * 0.84) / (nm.length * 0.56)), opts.unbalanced ? 'name unb' : 'name'));
-    const ccy = topY + hh * 0.42, r = w * 0.14;
-    g.append(sv('circle', { cx, cy: ccy, r, fill: '#fff', stroke, 'stroke-width': 1.2 }), t(cx, ccy + f(0.1) * 0.36, d.center.text, f(0.1), 'bold'));
-    // The auras sit outside the sides (book p. 35): the gap is measured where the text is tallest, at its
-    // top, where the triangle is wider than at the baseline.
-    const sideY = topY + hh * 0.62, auraF = f(opts.strong ? 0.1 : 0.11), sideX = (w / 2) * (1 - (sideY - auraF * 0.72 - topY) / hh) + 4;
-    g.append(t(cx - sideX - 2, sideY, d.outer.text, auraF, 'aura', 'end'), t(cx + sideX + 2, sideY, d.inner.text, auraF, 'aura', 'start'));
-    g.append(t(cx, topY + hh + f(0.17) + 1, d.le.text, f(0.16), bold));
+    if (nm && w >= 44) g.append(t(cx, topY + f(0.1) + 3, nm, Math.min(f(0.095), (w * 0.86) / (nm.length * 0.58)), opts.unbalanced ? 'name unb' : opts.dark ? 'name dark' : 'name'));
+    const ccy = topY + hh * 0.44, r = w * 0.155;
+    g.append(sv('circle', { cx, cy: ccy, r, fill: 'none', stroke: '#2788c7', 'stroke-width': w > 120 ? 1.6 : 1 }), t(cx, ccy + f(0.12) * 0.36, d.center.text, f(0.12), 'bold'));
+    // The auras sit outside the sides: the gap is measured where the text is tallest, at its top, where the
+    // triangle is wider than at the baseline.
+    const sideY = topY + hh * 0.64, auraF = f(0.14), sideX = (w / 2) * (1 - (sideY - auraF * 0.72 - topY) / hh) + 3;
+    g.append(t(cx - sideX - 2, sideY, d.outer.text, auraF, 'bold', 'end'), t(cx + sideX + 2, sideY, d.inner.text, auraF, 'bold', 'start'));
+    g.append(t(cx, topY + hh + f(0.17) + 1, d.le.text, f(0.17), 'bold'));
     if (opts.onTap) g.addEventListener('click', () => opts.onTap(d));
     svg.append(g);
     return topY + hh + f(0.17) + 4;
   }
+  // One level of the big diamond as one band, laid out like the paid tool's page (measured on the owner's
+  // screenshot, 2026-10-19, as fractions of the page width): the main diamond in the middle, the outer and inner
+  // diamonds low at the sides, the two imbalanced ones small above them, the labels beside them in gray (pink for
+  // the imbalanced), the left half (outer life) a touch lighter than the right (inner life). The physical band is
+  // the biggest; the emotional and spiritual ones are smaller and pulled in toward the middle, as on the tool's page.
+  const BANDS = {
+    main: { main: 110, side: 66, unb: 41, top: 32, sideTop: 62, unbTop: 10, sideX: 0.135, unbX: 0.24, bg: ['#cfdbe7', '#c0d1e1'], title: 'PHYSICAL', label: 'main diamond', side_: ['diamond'], unb_: ['imbalanced', 'diamond'] },
+    essence: { main: 90, side: 54, unb: 33, top: 30, sideTop: 54, unbTop: 6, sideX: 0.21, unbX: 0.28, bg: ['#dee7ee', '#cfdbe7'], title: 'EMOTIONAL', label: 'essence diamond', side_: ['essence', 'diamond'], unb_: ['imbalanced', 'essence diamond'] },
+    integration: { main: 62, side: 40, unb: 26, top: 38, sideTop: 52, unbTop: 6, sideX: 0.28, unbX: 0.33, bg: ['#edf2f6', '#dee7ee'], title: 'SPIRITUAL', label: 'integration diamond', side_: ['integration', 'diamond'], unb_: ['imbalanced', 'integration diamond'] },
+  };
   function levelSvg(d, lv, labels, onTap) {
-    const sv = A.sv, W = 390, H = labels.noUnbalanced ? 216 : 240;
-    const svg = sv('svg', { viewBox: `0 0 ${W} ${H}`, class: 'dia band', role: 'img' });
-    svg.append(sv('rect', { x: 0, y: 0, width: W / 2, height: H, fill: lv === 'main' ? '#e7eef6' : lv === 'essence' ? '#edf2f8' : '#f3f6fa' }), sv('rect', { x: W / 2, y: 0, width: W / 2, height: H, fill: lv === 'main' ? '#cfdde9' : lv === 'essence' ? '#d9e4ee' : '#e4ecf4' }));
-    const lab = (x, y, s, cls, anchor) => svg.append(sv('text', { x, y, 'font-size': 9, class: cls || 'lab', 'text-anchor': anchor || 'middle' }, s));
-    lab(8, 14, labels.title, 'band-title', 'start'); lab(W - 8, 14, labels.right, 'lab', 'end');
-    const top = labels.noUnbalanced ? 50 : 60;
-    const mainBottom = tri(svg, d, W / 2, top, 140, { onTap, strong: true, aText: labels.aText, bText: labels.bText, name: labels.mainName });
-    lab(W / 2, Math.min(H - 6, mainBottom + 10), labels.mainLabel || (lv === 'main' ? 'Main Diamond' : lv === 'essence' ? 'Essence Diamond' : 'Integration Diamond'));
-    const mid = labels.noUnbalanced ? 96 : 122;
-    const ob = tri(svg, d.outerD, 62, mid, 92, { onTap }); lab(62, Math.min(H - 6, ob + 10), labels.outerLabel || 'Outer Diamond');
-    const ib = tri(svg, d.innerD, W - 62, mid, 92, { onTap }); lab(W - 62, Math.min(H - 6, ib + 10), labels.innerLabel || 'Inner Diamond');
+    const sv = A.sv, W = 390, K = BANDS[lv], dark = lv === 'main';
+    const svg = sv('svg', { class: 'dia band', role: 'img' });
+    const lab = (x, y, s, cls, anchor, size) => svg.append(sv('text', { x, y, 'font-size': size || 9, class: cls || 'lab', 'text-anchor': anchor || 'middle' }, s));
+    const lines = (x, y0, words, cls, anchor, size, lh) => words.forEach((wd, i) => lab(x, y0 + i * lh, wd, cls, anchor, size));
+    const bottoms = [];
+    bottoms.push(tri(svg, d, W / 2, K.top, K.main, { onTap, dark, minFont: 5, aText: labels.aText, bText: labels.bText, name: labels.mainName }));
+    lab(W / 2, K.top - 13, labels.mainLabel || K.label);
+    const sideCx = Math.round(W * K.sideX);
+    bottoms.push(tri(svg, d.outerD, sideCx, K.sideTop, K.side, { onTap, minFont: 5 }), tri(svg, d.innerD, W - sideCx, K.sideTop, K.side, { onTap, minFont: 5 }));
+    // "outer diamond" beside the outer diamond's life expression, a word a line, as on the tool's page.
+    // A label a word a line; a long custom one ("How John Feels It") in two lines.
+    const split = (txt) => { const w = txt.split(' '); if (w.length <= 3) return w; const h = Math.ceil(w.length / 2); return [w.slice(0, h).join(' '), w.slice(h).join(' ')]; };
+    const sideWords = split(labels.outerLabel || `outer ${K.side_.join(' ')}`), innerWords = split(labels.innerLabel || `inner ${K.side_.join(' ')}`);
+    const sideLe = K.sideTop + K.side * 0.72 + K.side * 0.17 - 2;
+    lines(sideCx - 12, sideLe - (sideWords.length - 1) * 4.5, sideWords, 'lab', 'end', 8, 9);
+    lines(W - sideCx + 12, sideLe - (innerWords.length - 1) * 4.5, innerWords, 'lab', 'start', 8, 9);
     if (!labels.noUnbalanced) {
-      tri(svg, d.outerU, 62, 42, 52, { onTap, unbalanced: true }); lab(62, 30, 'Outer Unbalanced', 'lab unb');
-      tri(svg, d.innerU, W - 62, 42, 52, { onTap, unbalanced: true }); lab(W - 62, 30, 'Inner Unbalanced', 'lab unb');
+      const ux = Math.round(W * K.unbX);
+      bottoms.push(tri(svg, d.outerU, ux, K.unbTop, K.unb, { onTap, unbalanced: true, minFont: 4.5 }), tri(svg, d.innerU, W - ux, K.unbTop, K.unb, { onTap, unbalanced: true, minFont: 4.5 }));
+      // The pink labels start under the band's title line, so the two never cross.
+      lines(ux - K.unb / 2 - 9, 26, [`outer ${K.unb_[0]}`, ...K.unb_.slice(1)], 'lab unb', 'end', 7, 8);
+      lines(W - ux + K.unb / 2 + 9, 26, [`inner ${K.unb_[0]}`, ...K.unb_.slice(1)], 'lab unb', 'start', 7, 8);
     }
-    if (lv === 'main') { lab(W / 4, H - 6, 'OUTER LIFE', 'life'); lab((3 * W) / 4, H - 6, 'INNER LIFE', 'life'); }
+    const H = Math.max(...bottoms) + (dark ? 20 : 6);
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.prepend(sv('rect', { x: 0, y: 0, width: W / 2, height: H, fill: K.bg[0] }), sv('rect', { x: W / 2, y: 0, width: W / 2, height: H, fill: K.bg[1] }));
+    lab(8, 15, labels.title || K.title, 'band-title', 'start', 10.5);
+    if (labels.right) lab(W - 8, 15, labels.right, 'lab', 'end', 8);
+    if (dark) { lab(W / 4, H - 6, 'OUTER LIFE', 'life', 'middle', 9.5); lab((3 * W) / 4, H - 6, 'INNER LIFE', 'life', 'middle', 9.5); }
     return svg;
   }
   function bigDiamondEl(B, onTap, labels = {}) {
     return A.h('div', { class: 'bigd' },
-      levelSvg(B.integration, 'integration', { title: 'SPIRITUAL · The Integration Diamond', right: labels.spiritual || 'How It Evolves Fastest', noUnbalanced: labels.noUnbalanced }, onTap),
-      levelSvg(B.essence, 'essence', { title: 'EMOTIONAL · The Essence Diamond', right: labels.emotional || 'Hidden Motivation', noUnbalanced: labels.noUnbalanced }, onTap),
-      levelSvg(B.main, 'main', { title: labels.physicalTitle || 'PHYSICAL · The Main Diamond', right: labels.physical || 'How It Acts', noUnbalanced: labels.noUnbalanced, aText: labels.aText, bText: labels.bText, mainName: labels.mainName, mainLabel: labels.mainLabel, outerLabel: labels.outer, innerLabel: labels.inner }, onTap));
+      levelSvg(B.integration, 'integration', { right: labels.spiritual, noUnbalanced: labels.noUnbalanced }, onTap),
+      levelSvg(B.essence, 'essence', { right: labels.emotional, noUnbalanced: labels.noUnbalanced }, onTap),
+      levelSvg(B.main, 'main', { title: labels.physicalTitle, right: labels.physical, noUnbalanced: labels.noUnbalanced, aText: labels.aText, bText: labels.bText, mainName: labels.mainName, mainLabel: labels.mainLabel, outerLabel: labels.outer, innerLabel: labels.inner }, onTap));
   }
 
   // ---------- Number Fun ----------
-  // One number's main diamond, small, for the grid of every number (the paid tool's "10 by 10" page).
-  function cellSvg(x, withName) {
-    // 120 wide: the two digits outside the top corners and the auras outside the sides need the margin.
-    const svg = A.sv('svg', { viewBox: '0 0 120 100', class: 'dia nfcell', role: 'img', 'aria-label': `${T.val(x).text} ${T.nameOf(x)}` });
-    tri(svg, T.bigDiamond(x).main, 60, 22, 76, { strong: true, name: withName ? undefined : '' });
+  // One number's whole big diamond, small, for the grid of every number: the paid tool's "10 by 10" page draws
+  // seven triangles per cell: the integration diamond on top, the essence diamond with its outer and inner
+  // diamonds beside it, the main diamond (bigger, dark) with its outer and inner diamonds beside it.
+  function cellSvg(x) {
+    const svg = A.sv('svg', { viewBox: '0 0 140 152', class: 'dia nfcell', role: 'img', 'aria-label': `${T.val(x).text} ${T.nameOf(x)}` });
+    const B = T.bigDiamond(x), o = { name: '', minFont: 4 };
+    tri(svg, B.integration, 70, 7, 30, o);
+    tri(svg, B.essence, 70, 42, 40, o); tri(svg, B.essence.outerD, 24, 48, 24, o); tri(svg, B.essence.innerD, 116, 48, 24, o);
+    tri(svg, B.main, 70, 88, 60, { ...o, dark: true }); tri(svg, B.main.outerD, 22, 98, 24, o); tri(svg, B.main.innerD, 118, 98, 24, o);
     return svg;
   }
   function numberFunView(arg) {
@@ -416,8 +448,8 @@
         const c = view.cols;
         A.fill($body, A.h('div', { class: 'minis nfgrid', 'data-cols': String(c), style: `grid-template-columns: repeat(${c}, minmax(0, 1fr))` },
           ...Array.from({ length: 99 }, (_, i) => i + 1).map((x) => A.h('div', { class: 'mini' + (x === n ? ' today' : ''), role: 'button', 'aria-label': `Open ${T.val(x).text}`, onclick: () => { n = x; view.grid = false; A.count('numberfun.tap_cell'); draw(); window.scrollTo(0, 0); } },
-            A.h('div', { class: 'd' }, T.val(x).text), cellSvg(x, c <= 2)))),
-          A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Every number\u2019s main diamond. Tap one for its three levels.'));
+            A.h('div', { class: 'd' }, T.val(x).text), cellSvg(x)))),
+          A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Every number\u2019s big diamond. Tap one to see it large.'));
         return;
       }
       A.fill($row, ...Array.from({ length: 99 }, (_, i) => i + 1).map((x) => A.h('button', { type: 'button', class: x === n ? 'active' : '', onclick: () => { n = x; draw(); } }, String(x))));
@@ -602,7 +634,7 @@
       const B = T.bigDiamond(A1.ds, B1.ds);
       const le = B.main.le, fa = B.main.outerD, fb = B.main.innerD;
       A.fill($body,
-        bigDiamondEl(B, (d) => numberSheet(T.val(d.code), 'about'), { outer: `How ${na} Feels It`, inner: `How ${nb} Feels It`, aText: `${na} ${A1.text}`, bText: `${nb} ${B1.text}`, mainName: `Life expression ${le.text}`, mainLabel: 'The Two Day Vibrations', physicalTitle: 'PHYSICAL · The Two Day Vibrations', physical: 'What Happens When They Meet', emotional: 'The Meeting of Their Emotions', spiritual: 'Where the Relationship Can Grow', noUnbalanced: true }),
+        bigDiamondEl(B, (d) => numberSheet(T.val(d.code), 'about'), { outer: `How ${na} Feels It`, inner: `How ${nb} Feels It`, aText: `${na} ${A1.text}`, bText: `${nb} ${B1.text}`, mainName: `Life expression ${le.text}`, mainLabel: 'The Two Day Vibrations', physicalTitle: 'PHYSICAL', physical: 'What Happens When They Meet', emotional: 'The Meeting of Their Emotions', spiritual: 'Where the Relationship Can Grow', noUnbalanced: true }),
         A.h('div', { class: 'reading', onclick: () => numberSheet(le, 'about') }, A.h('div', { class: 'head' }, A.h('b', {}, le.text), A.h('span', { class: 'nm' }, 'Life Expression of the Relationship')), A.h('p', {}, `${A1.ds} and ${B1.ds} meet in a ${le.text}${nameOf(le) ? ' (' + nameOf(le) + ')' : ''}: the resulting energy, what happens when they are together.`)),
         A.h('div', { class: 'reading' }, A.h('div', { class: 'head' }, A.h('b', {}, fa.text), A.h('span', { class: 'nm' }, `How ${na} Feels It`)), A.h('p', {}, `${na}'s ${A1.ds} with the relationship's ${le.ds}: ${fa.text} ${fa.name}.`)),
         A.h('div', { class: 'reading' }, A.h('div', { class: 'head' }, A.h('b', {}, fb.text), A.h('span', { class: 'nm' }, `How ${nb} Feels It`)), A.h('p', {}, `${nb}'s ${B1.ds} with the relationship's ${le.ds}: ${fb.text} ${fb.name}.`)),
