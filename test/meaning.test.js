@@ -15,7 +15,7 @@ const { ensureDirs } = await import('../server/config.js');
 const { openDb } = await import('../server/db.js');
 const { createApp } = await import('../server/app.js');
 const { setInputs } = await import('../server/positions.js');
-const { meaningFor, countWith, topicsFor } = await import('../server/meaning.js');
+const { meaningFor, countWith, topicsFor, bitsFor } = await import('../server/meaning.js');
 
 const heads = (list) => list.map((p) => p.heading.split(' > ').pop());
 
@@ -123,6 +123,24 @@ test('every catalog position answers without throwing, with the verdict the bala
     total++; if (m.passages.length) withWords++;
   }
   assert.ok(withWords > 100, `${withWords} of ${total} have words`);
+});
+
+test('a long course section is one card, and the short points ride with it (Allison Frank, mind center 7 with 13/4)', () => {
+  const m = meaningFor({ chart: 'name', position: 'heart', sum: 7, pair: [13] });
+  const mv = m.passages.filter((p) => /7 MV$/.test(p.heading));
+  assert.equal(mv.length, 1, 'the "7 MV" section is one card, not two');
+  assert.match(mv[0].text, /^With a 7 in your heart center/); assert.match(mv[0].text, /untrustworthy\.$/);
+  assert.deepEqual(m.bits.groups.map((g) => g.title), ['In balance', 'Out of balance']);
+  assert.ok(m.pair.bits && m.pair.bits.groups[0].points.length >= 3);
+  assert.equal(meaningFor({ chart: 'name', position: 'heart', sum: 9 }).bits, null, 'no points written yet = none shown');
+  // every point file entry is well formed and names real course files
+  const all = JSON.parse(fs.readFileSync(new URL('../knowledge/bits.json', import.meta.url), 'utf8')).bits;
+  for (const [key, b] of Object.entries(all)) {
+    assert.match(key, /^[a-z]+\.[A-Za-z]+:\d{1,2}(\+\d{1,2})?$/, key);
+    assert.ok(b.groups.length && b.groups.every((g) => typeof g.title === 'string' && g.points.length), key);
+    for (const src of b.sources) assert.ok(fs.existsSync(new URL(`../knowledge/raw/${src}.md`, import.meta.url)), `${key}: ${src}`);
+    assert.ok(bitsFor(key));
+  }
 });
 
 let db, server, base;

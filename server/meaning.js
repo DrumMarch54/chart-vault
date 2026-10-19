@@ -22,6 +22,7 @@
 // another number too is about a pair or a case, not about this number alone: left out (it may come back under
 // the pair). Passages about a NUMBER'S OWN diamond (the course's "small diamond of the number 7", "Big Diamond",
 // the Diamond Method book) are never shown: they are about the number, not about a chart's diamond (owner 2026-10-19).
+import fs from 'node:fs';
 import { POSITIONS, positionLabel, chartLabel } from './positions.js';
 import { knowledgeIndex } from './knowledge.js';
 import { judge, familyOf, nameOf, fmt } from './facts.js';
@@ -153,7 +154,28 @@ function take(list, limit, taken) {
   return out;
 }
 
-// The passages ranked for number n in one position (the specific ones only).
+// The short points for a page (knowledge/bits.json): written by a Claude session from the course text, the course's
+// words shortened. Key "chart.position:n" or "chart.position:n+partner". Missing file or key = no points.
+let BITS = null;
+export function bitsFor(key) {
+  if (!BITS) { try { BITS = JSON.parse(fs.readFileSync(new URL('../knowledge/bits.json', import.meta.url), 'utf8')).bits || {}; } catch { BITS = {}; } }
+  const b = BITS[key];
+  return b ? { groups: b.groups.map((g) => ({ title: g.title, points: g.points.slice() })), sources: (b.sources || []).slice() } : null;
+}
+const pairBits = (chart, position, n, p) => bitsFor(`${chart}.${position}:${n}+${p}`) || bitsFor(`${chart}.${position}:${p}+${n}`);
+
+// One heading's whole text: the index cuts a long section into several passages; the page shows it as one card.
+function wholeSection(k, i, allowed) {
+  const c = k.chunks[i], same = (j) => k.chunks[j] && k.chunks[j].source === c.source && k.chunks[j].heading === c.heading;
+  let a = i, b = i;
+  while (same(a - 1)) a--;
+  while (same(b + 1)) b++;
+  const parts = [];
+  for (let j = a; j <= b; j++) { const t = keepOnly(k.chunks[j].text, allowed); if (t && !/→\s*[-+]?\d+\s*pts/.test(t)) parts.push(t); }
+  return { id: `${c.source}#${a}`, source: c.source, title: c.title, heading: c.heading, text: parts.join('\n\n') };
+}
+
+// The passages ranked for number n in one position (the specific ones only), each heading's text whole.
 function forPosition(k, chart, position, n, taken, { limit = 4 } = {}) {
   const topics = topicsFor(chart, position);
   const home = HOME[`${chart}.${position}`];
@@ -176,8 +198,14 @@ function forPosition(k, chart, position, n, taken, { limit = 4 } = {}) {
     scored.push({ c: { ...c, text }, specific, key: [sf + topicFit + wf, named, text.length < 200 ? 1 : 0, -sourceWeight(c.source), i] });
   }
   scored.sort(byKey);
-  const passages = take(scored.filter((s) => s.specific).map((s) => s.c), limit, taken);
-  return passages;
+  const seen = new Set(), whole = [];
+  for (const sc of scored) {
+    if (!sc.specific) continue;
+    const w = wholeSection(k, sc.key[sc.key.length - 1], alone);
+    if (seen.has(w.id) || !w.text) continue;
+    seen.add(w.id); whole.push(w);
+  }
+  return take(whole, limit, taken);
 }
 
 // A center's circle: the course on n together with one of its partners ("7 and 13 in the mind center"), from the
@@ -198,7 +226,7 @@ function forPair(k, chart, position, n, partners, taken) {
       const hm = PAIR_OPEN.exec(head);
       const hp = hm ? [Number(hm[1]), Number(hm[2])] : null;
       let text = '', exactness = 1;
-      if (isPair(hp, exact) || isPair(hp, loose)) { text = keepOnly(c.text, loose); exactness = isPair(hp, exact) ? 0 : 1; }
+      if (isPair(hp, exact) || isPair(hp, loose)) { text = wholeSection(k, i, loose).text; exactness = isPair(hp, exact) ? 0 : 1; }
       else {
         const ps = paragraphs(c.text).filter((q) => isPair(openingPair(q), loose) && !namesOther(q.slice(0, 160), chart));
         if (!ps.length) continue;
@@ -246,13 +274,15 @@ export function meaningFor({ chart, position, sum, pair = null, rel = null } = {
   if (k.missing) return { ...base, passages: wordsFor(chart, position, n), nameChart: null, pair: null, related: [], missing: true };
   const taken = { ids: new Set(), shingles: [] };
   const passages = forSpot(k, chart, position, n, taken, 4);
+  const bits = bitsFor(`${chart}.${position}:${n}`);
   const twin = (chart === 'vocation' || chart === 'personality') && NAME_TWIN.has(position) && known('name', position);
-  const nameChart = twin ? { ...head('name', position, n), passages: forPosition(k, 'name', position, n, taken, { limit: 2 }) } : null;
+  const nameChart = twin ? { ...head('name', position, n), bits: bitsFor(`name.${position}:${n}`), passages: forPosition(k, 'name', position, n, taken, { limit: 2 }) } : null;
   // A sub-chart's circle: its own course words first, then the name chart's words on the same pair in the same center.
   const pairWords = partners.length ? [...forPair(k, chart, position, n, partners, taken), ...(twin ? forPair(k, 'name', position, n, partners, taken) : [])].slice(0, 3) : [];
-  const pairOut = partners.length ? { with: partners.map((p) => ({ sum: p, text: fmt(p, reduce(p)) })), passages: pairWords } : null;
-  const related = rels.map((r) => ({ ...head(chart, r.position, r.sum), passages: forSpot(k, chart, r.position, r.sum, taken, 2) }));
-  return { ...base, passages, nameChart: nameChart && nameChart.passages.length ? nameChart : null, pair: pairOut, related };
+  const pbits = partners.map((p) => pairBits(chart, position, n, p) || (twin ? pairBits('name', position, n, p) : null)).filter(Boolean);
+  const pairOut = partners.length ? { with: partners.map((p) => ({ sum: p, text: fmt(p, reduce(p)) })), bits: pbits.length ? { groups: pbits.flatMap((b) => b.groups), sources: pbits.flatMap((b) => b.sources) } : null, passages: pairWords } : null;
+  const related = rels.map((r) => ({ ...head(chart, r.position, r.sum), bits: bitsFor(`${chart}.${r.position}:${r.sum}`), passages: forSpot(k, chart, r.position, r.sum, taken, 2) }));
+  return { ...base, bits, passages, nameChart: nameChart && nameChart.passages.length ? nameChart : null, pair: pairOut, related };
 }
 
 export function countWith(db, chart, position, sum) {

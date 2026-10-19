@@ -588,3 +588,10 @@ in the same position; no vault statistics on the page beyond that count.
 - The owner asked that the lingo be remembered: `.brain/numerology/lingo.md` lists the many names per position
   and the look-alikes that are not the same.
 
+## 2026-10-19 Short points on the meaning page (test)
+- Owner: the page is a blob. Wanted: the "bits" of the course text as bullet points, as verbatim as possible, only
+  shortened; the full verbatim words behind a drop-down. A Claude session writes them (no paid call): one test page
+  first, Allison Frank's mind center 7 with 13/4 (`knowledge/bits.json`, keys `name.heart:7`, `name.heart:7+13`).
+- Owner: "why split the long description in two?" The knowledge index cuts long headings into passages of up to
+  2500 characters; the page now joins a heading's passages back into one card (`wholeSection`).
+

@@ -16,6 +16,22 @@
     const tail = (heading) => String(heading || '').split(' > ').pop().replace(/\*\*/g, '').replace(/[^\w\s/'’:().,+&-]/g, '').replace(/\s+/g, ' ').trim();
     const card = (p) => h('div', { class: 'mcard' }, h('div', { class: 'mfrom' }, [p.title, tail(p.heading)].filter(Boolean).join(' · ')), ...paras(p.text).map((t) => h('p', {}, t)));
     const label = (text) => h('div', { class: 'wlabel tl' }, text);
+    // A section: the short points first (knowledge/bits.json, the course's words shortened), the full course words
+    // folded under "Course Words" (owner 2026-10-19). With no points yet, the course words show open.
+    const pointsCard = (bits) => h('div', { class: 'mbits' }, ...bits.groups.map((g) => h('div', { class: 'mbits-g' },
+      g.title ? h('div', { class: `mbits-t ${/out of balance|imbalance|unbalanced/i.test(g.title) ? 'err' : /in balance|balanced/i.test(g.title) ? 'ok' : ''}` }, g.title) : null,
+      h('ul', {}, ...g.points.map((t) => h('li', {}, t))))));
+    const section = (bits, passages) => {
+      if (!bits) return passages.map(card);
+      if (!passages.length) return [pointsCard(bits)];
+      const $words = h('div', { class: 'mwords', hidden: true }, ...passages.map(card));
+      const $btn = h('button', { type: 'button', class: 'mmore', 'aria-expanded': 'false', onclick: () => {
+        $words.hidden = !$words.hidden; $btn.setAttribute('aria-expanded', String(!$words.hidden));
+        $btn.textContent = `${$words.hidden ? '▸' : '▾'} Course Words (${passages.length})`;
+        if (!$words.hidden) count('meaning.course_words');
+      } }, `▸ Course Words (${passages.length})`);
+      return [pointsCard(bits), $btn, $words];
+    };
     const where = (m) => titleCase(m.label);
 
     function open({ chart, position, sum, pair, rel }) {
@@ -47,18 +63,18 @@
         const others = p ? p.with.map((x) => x.text).join(' and ') : '';
         fill($body, top(m),
           label(`${m.text} in the ${m.chartLabel.replace(/ chart$/i, ' Chart')}'s ${where(m)}`),
-          ...m.passages.map(card),
-          !m.passages.length ? h('p', { class: 'muted' }, `The course has no words yet for ${m.text} in this position.`) : null,
+          ...section(m.bits, m.passages),
+          !m.passages.length && !m.bits ? h('p', { class: 'muted' }, `The course has no words yet for ${m.text} in this position.`) : null,
           nc ? label(`${nc.text} in the Name Chart's ${where(nc)}`) : null,
-          ...(nc ? nc.passages.map(card) : []),
+          ...(nc ? section(nc.bits, nc.passages) : []),
           p ? label(`${m.text} with ${others} in the ${where(m).replace(/ Extra Vibration$/, '')}`) : null,
-          p && !p.passages.length ? h('p', { class: 'muted small' }, `The course has nothing yet on ${m.text} together with ${others}.`) : null,
-          ...(p ? p.passages.map(card) : []),
+          p && !p.passages.length && !p.bits ? h('p', { class: 'muted small' }, `The course has nothing yet on ${m.text} together with ${others}.`) : null,
+          ...(p ? section(p.bits, p.passages) : []),
           ...m.related.flatMap((r) => [
             h('div', { class: 'mrel' }, h('div', { class: 'mrel-t' }, `${titleCase(r.label)} ${r.text}`), h('div', { class: 'muted small' }, [r.name, 'the diamond behind this number'].filter(Boolean).join(' · '))),
             top(r),
-            ...r.passages.map(card),
-            !r.passages.length ? h('p', { class: 'muted small' }, `The course has no words yet for ${r.text} here.`) : null,
+            ...section(r.bits, r.passages),
+            !r.passages.length && !r.bits ? h('p', { class: 'muted small' }, `The course has no words yet for ${r.text} here.`) : null,
           ]));
       }).catch((err) => fill($body, h('p', { class: 'err' }, err.message)));
     }
