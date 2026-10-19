@@ -24,7 +24,7 @@ before matching course text to a position (server/meaning.js `W`, server/subchar
 | Psyche charts | psychic self, inner psyche (IPS) and outer psyche (OPS), blue diamonds |
 | Day vibration | DV, day number, "the eye/I" |
 | Life path | LP; little LP, big / higher LP (HLP) |
-| Nexus | DV-LP diamond, DVLP, day + life path diamond |
+| Nexus | DV-LP diamond, DVLP, day + life path diamond. ON SCREEN the owner wants "DVLP" (2026-10-19) |
 | Dharma line | top aura of the essence, "dharma number" (month + year) |
 | Outer / inner aura (essence) | day + month / day + year (a SUM); the outer / inner DIAMOND is the two digit sums joined (OD / ID) |
 | Name line diamond | life expression diamond (first + last name only) |
@@ -36,3 +36,9 @@ Not the same thing, though the words look alike:
 - The sub-chart guide's "→ +8 pts" scores are for picking names; its words after the score ARE the position's meaning.
 - A number's general description (the 1-9 / 10-45 / 46-99 books) is a separate layer the owner will add on purpose;
   the meaning page shows only what the course says about the number in that spot.
+
+## On a screen (owner 2026-10-19, Similar Charts chips)
+Name the chart in the name whenever a position exists in several charts: "Name Mind Center", "Vocation Mental
+Diamond", "Outer Psyche Spine", never a bare "Spine" or "Mind Center". Positions only one chart has stay bare
+(Public Aura, Life Expression, Name Line Diamond, DVLP, Outer Diamond). Abbreviate the owner's way to save
+room (DVLP), Title Case. `positionName` in server/similar.js is the one place that spells these.

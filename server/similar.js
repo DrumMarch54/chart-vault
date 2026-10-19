@@ -11,7 +11,7 @@ import { CHARTS, POSITIONS } from './positions.js';
 const CHART_NAME = { essence: 'Essence Chart', name: 'Name Chart', vocation: 'Vocation Chart', personality: 'Personality Chart', outer: 'Outer Psyche Chart', inner: 'Inner Psyche Chart' };
 const PREFIX = { essence: '', name: '', vocation: 'Vocation ', personality: 'Personality ', outer: 'Outer Psyche ', inner: 'Inner Psyche ' };
 const SPECIAL = {
-  'essence.nexus': 'Nexus', 'essence.topAura': 'Dharma Line', 'essence.outerAura': 'Outer Aura', 'essence.innerAura': 'Inner Aura', 'essence.challengeDiamond': 'Challenge Diamond',
+  'essence.nexus': 'DVLP', 'essence.topAura': 'Dharma Line', 'essence.outerAura': 'Outer Aura', 'essence.innerAura': 'Inner Aura', 'essence.challengeDiamond': 'Challenge Diamond',
   'name.leDiamond': 'Name Line Diamond', 'name.publicDiamond': 'Public Diamond', 'name.upperLeft': 'Public Aura', 'name.upperRight': 'Friends Aura', 'name.lowerLeft': 'Associates Aura', 'name.lowerRight': 'Love Aura',
   'vocation.le': "Heart's Desire", 'vocation.big': "Big Heart's Desire", 'personality.le': 'Personality Number', 'personality.big': 'Big Personality Number',
   'outer.first': 'Outer Psyche Challenge Number', 'outer.publicDiamond': 'Outer Psyche Day + Challenge Number Diamond', 'inner.publicDiamond': 'Inner Psyche Day + Month Diamond',
@@ -19,6 +19,10 @@ const SPECIAL = {
 };
 const SMALL = new Set(['and', 'of', 'the', 'a', '+']);
 const titleCase = (t) => t.split(' ').map((w, i) => (i && SMALL.has(w) ? w : w.charAt(0).toUpperCase() + w.slice(1))).join(' ');
+// Every chart has a mind center, a spine, a pillar ...: on the name chart those get "Name" in front, so a chip
+// never leaves the owner asking "which spine?" (owner 2026-10-19). Positions only the name chart has (Public
+// Aura, Life Expression, First Name, Name Line Diamond) stay bare.
+const AMBIGUOUS = new Set(['heart', 'heartExtra', 'solar', 'solarExtra', 'mindDiamond', 'emotionDiamond', 'spine', 'spineDiamond', 'pillar', 'letters']);
 export function positionName(chart, key) {
   const k = `${chart}.${key}`;
   if (SPECIAL[k]) return SPECIAL[k];
@@ -27,7 +31,8 @@ export function positionName(chart, key) {
   const paren = /\(([^)]*)\)/.exec(label);
   label = label.replace(/\s*\([^)]*\)/g, '').trim();
   if (paren && !/\s|\+/.test(paren[1].trim())) label = paren[1].trim();
-  return (PREFIX[chart] || '') + titleCase(label.toLowerCase());
+  const prefix = chart === 'name' && AMBIGUOUS.has(key) ? 'Name ' : (PREFIX[chart] || '');
+  return prefix + titleCase(label.toLowerCase());
 }
 // A matched structure stands for its parts: name the diamond, not the auras it is made of.
 const IMPLIES = {
@@ -48,7 +53,8 @@ export function namedMatches(chart, keys) {
 }
 // One line for a similar chart: whole charts that are the same, nearly the same ones, then the biggest matching
 // structures by name (two per chart, three phrases in all, the ranking chart first). The gist, not a list.
-export function gistOf({ per, of, matches }, by = 'all') {
+export function gistOf(x, by = 'all') { const a = alikeOf(x, by); return a.length ? a.join(' · ') : 'A few scattered numbers'; }
+export function alikeOf({ per, of, matches }, by = 'all') {
   const order = CHARTS.map((c) => c.key).sort((a, b) => (a === by ? -1 : b === by ? 1 : 0));
   const phrases = [];
   for (const chart of order) {
@@ -58,8 +64,7 @@ export function gistOf({ per, of, matches }, by = 'all') {
     const names = namedMatches(chart, (matches || []).filter((m) => m.startsWith(chart + '.')).map((m) => m.slice(chart.length + 1)));
     phrases.push(...names.slice(0, 2));
   }
-  if (!phrases.length) return 'A few scattered numbers';
-  return phrases.slice(0, 3).join(' · ');
+  return phrases.slice(0, 3);
 }
 
 const HIDDEN = POSITIONS.filter((p) => p.hidden).map((p) => `${p.chart}.${p.key}`);
@@ -91,5 +96,5 @@ export function similarCharts(db, imageId, { by = 'all', limit = 60 } = {}) {
   }
   const totalOf = Object.values(of).reduce((a, b) => a + b, 0);
   return { id: imageId, by: key, of, totalOf, charts: CHARTS.map((c) => ({ key: c.key, label: c.label })),
-    items: list.map((e) => { const per = Object.fromEntries(chartKeys.map((k) => [k, e.per[k] || 0])); return { ...e, per, gist: gistOf({ per, of, matches: e.matches }, key) }; }) };
+    items: list.map((e) => { const per = Object.fromEntries(chartKeys.map((k) => [k, e.per[k] || 0])); const x = { per, of, matches: e.matches }; return { ...e, per, alike: alikeOf(x, key), gist: gistOf(x, key) }; }) };
 }

@@ -651,6 +651,10 @@ in the same position; no vault statistics on the page beyond that count.
   Psyche Life Expression Diamond". Rule from now on: a screen names positions by their course names (lingo.md),
   Title Case; a matched diamond stands for its parts, so only the biggest matching structure is named
   (`namedMatches`, `IMPLIES`). "Same Essence Chart" / "Name Chart Nearly the Same" for whole charts.
+- Owner on the second version: charts too small to read while scrolling; the matching text "blobbed" on the
+  card; the "9 of 18" count made too important. Now a card per chart: the drawing at full width, the name as a
+  title, the typed name and date muted, what is alike as pills (whole-chart matches in the accent color), and
+  the count last in 12 px. Rule added to public/CLAUDE.md: a card is laid out, never a blob.
 
 ## 2026-10-19 The owner's "Chart app Fixes" doc and list: shorter screens, Settings search, light look, All Numbers grid
 - The owner wrote a Google Doc ("Chart app Fixes", read from the cloud session with the Drive connector, the
@@ -696,3 +700,6 @@ in the same position; no vault statistics on the page beyond that count.
   and inner; main, dark and bigger, with its outer and inner), not the main diamond alone. `cellSvg`.
 - Lesson: "looks close" is not a check. When the owner hands a screenshot, measure positions and sample colors
   off it before drawing, and compare our screenshot beside theirs before saying done.
+- Owner: the − / + size control from Coming Days belongs on every grid of charts. Added `sizeControl`
+  (app.js) and put it on the browse grid (list, search results, Recently Opened: one setting), Similar Charts
+  and Possible Duplicates; Coming Days and All Numbers keep their own. Rule in public/CLAUDE.md.

@@ -50,6 +50,7 @@
     'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'status.recompute': 'Recompute chart numbers',
     'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart', 'viewer.year_rows': 'Year Rows from a chart',
     'position.search_more': 'Narrow a position search by another number', 'position.add_more': 'Tap + Another number', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
+    'grid.size': 'Chart size on the grid (− / +)', 'similar.size': 'Chart size on Similar Charts (− / +)', 'duplicates.size': 'Chart size on Possible Duplicates (− / +)',
     'viewer.similar': 'Similar Charts from a chart', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
     'viewer.delete': 'Delete a chart from the chart page', 'duplicates.delete': 'Delete a chart from Possible Duplicates', 'duplicates.keep': 'Keep a duplicate group', 'deleted.restore': 'Put a deleted chart back',
     'screen.duplicates': 'Possible Duplicates', 'screen.deleted': 'Deleted Charts', 'search.position': 'Search box → a position',
@@ -194,6 +195,20 @@
     document.body.append(bg); trackOverlay(bg, close);
   }
 
+
+  // − / + size control (owner 2026-10-19: wherever charts sit in a grid, make them bigger or smaller as in
+  // Coming Days). The number of columns is remembered per device under `key`; `apply(cols)` sets the grid.
+  function sizeControl(key, { min, max, def, apply, countName }) {
+    const clamp = (c) => Math.min(max, Math.max(min, Number(c) || def));
+    let cols = clamp(readStore(key) || def);
+    const $minus = h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Smaller' }, '−');
+    const $plus = h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Bigger' }, '+');
+    const set = (c, first = false) => { cols = clamp(c); if (!first) { writeStore(key, cols); if (countName) count(countName); } $minus.disabled = cols >= max; $plus.disabled = cols <= min; apply(cols); };
+    $minus.onclick = () => set(cols + 1); $plus.onclick = () => set(cols - 1);
+    const node = h('span', { class: 'sizectl', role: 'group', 'aria-label': 'Size' }, $minus, h('span', { class: 'small' }, 'Size'), $plus);
+    set(cols, true);
+    return { node, get cols() { return cols; } };
+  }
 
   // Hold to confirm (owner's rule: destructive taps are hold-to-confirm, never a second dialog). The button
   // fills up while the finger stays on it; letting go early cancels; a full second runs the action once.
@@ -489,6 +504,10 @@
         h('a', { class: 'chip position add', href: '#/position?' + condsQuery(conds), onclick: () => count('position.add_more') }, h('span', { class: 't' }, '+ Another number'))) : null;
     const $summary = h('div', { class: 'summary' }, 'Loading…');
     const $grid = h('div', { class: 'grid' });
+    // One size for every grid of charts (the list, the search results, Recently Opened): − / + beside the count.
+    const wide = window.innerWidth >= 1000 ? 2 : window.innerWidth >= 700 ? 1 : 0;
+    const size = sizeControl('gridCols', { min: 2, max: [5, 7, 9][wide], def: [3, 5, 6][wide], countName: 'grid.size', apply: (c) => document.documentElement.style.setProperty('--grid-cols', c) });
+    const $bar = h('div', { class: 'gridbar' }, $summary, size.node);
     const $sentinel = h('div', { class: 'sentinel' });
     const $recent = h('div', { class: 'recent hidden' });
     // The home screen is the search box and the way into the quick chart; the recently opened charts sit
@@ -508,14 +527,14 @@
       h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), home ? null : $quickIcon, home ? null : $gear), $filters),
       home && readingUi ? readingUi.homeBanner() : null,
       home ? $acts : null, home && toolsUi ? toolsUi.homeButtons() : null,
-      $recent, home ? null : $summary, home ? null : $grid, home ? null : $sentinel));
+      $recent, home ? null : $bar, home ? null : $grid, home ? null : $sentinel));
     // Recently Opened charts (this phone remembers the last 48), a grid like a search result, only on the home screen.
     if (home && recentIds().length) {
       api('/api/images?ids=' + recentIds().join(',') + '&limit=50').then((r) => {
         const byId = new Map(r.items.map((i) => [i.id, i]));
         const items = recentIds().map((id) => byId.get(id)).filter(Boolean);
         if (!items.length) return;
-        fill($recent, h('div', { class: 'summary rhead' }, 'Recently Opened'), h('div', { class: 'grid' }, ...items.map(cell)));
+        fill($recent, h('div', { class: 'gridbar' }, h('div', { class: 'summary rhead' }, 'Recently Opened'), size.node), h('div', { class: 'grid' }, ...items.map(cell)));
         $recent.classList.remove('hidden');
       }).catch(() => {});
     }
@@ -1272,9 +1291,10 @@
     if (!/^\d+$/.test(id || '')) return swap('#/');
     const by = query.get('by') || 'all';
     const $chips = h('div', { class: 'chips' });
-    const $list = h('div', { class: 'stack' }, h('p', { class: 'muted' }, 'Scoring every chart…'));
+    const $list = h('div', { class: 'simlist' }, h('p', { class: 'muted' }, 'Scoring every chart…'));
     const $who = h('h1', {}, 'Similar Charts');
-    render(h('div', { class: 'screen stack' }, h('div', { class: 'pagetop' }, h('a', { class: 'btn iconbtn', href: `#/chart/${id}`, 'aria-label': 'Back' }, '‹'), $who),
+    const size = sizeControl('simCols', { min: 1, max: window.innerWidth >= 700 ? 4 : 2, def: 1, countName: 'similar.size', apply: (c) => $list.style.setProperty('--cols', c) });
+    render(h('div', { class: 'screen stack' }, h('div', { class: 'pagetop' }, h('a', { class: 'btn iconbtn', href: `#/chart/${id}`, 'aria-label': 'Back' }, '‹'), $who, size.node),
       h('p', { class: 'muted small' }, 'Charts that hold the same numbers in the same places. Rank by every chart together, or by one chart. Tap a chart to see both side by side.'), $chips, $list));
     let me = null;
     try { me = await api(`/api/images/${id}`); $who.textContent = `Like ${imgName(me) || me.filename}`; } catch {}
@@ -1284,14 +1304,15 @@
     fill($chips, ...[{ key: 'all', label: 'Every Chart' }, ...d.charts.filter((c) => d.of[c.key])].map((c) => h('a', { class: `chip ${by === c.key ? 'active' : 'off'}`, href: `#/similar/${id}?by=${c.key}`, onclick: () => count('similar.by') }, short[c.key] || c.label)));
     if (!d.items.length) { fill($list, h('p', { class: 'muted' }, 'No other chart shares a number here yet.')); return; }
     // One line per row naming what is alike, in the course's words (server/similar.js gistOf).
-    fill($list, ...d.items.map((it) => {
-      return h('a', { class: 'card simrow', href: `#/compare/${id}/${it.id}`, onclick: () => { count('similar.compare'); compareReturn = location.hash; } },
-        it.inputs && it.inputs.name ? h('div', { class: 'thumb drawn simthumb', role: 'img' }, drawnChart(it.inputs)) : it.has_file ? h('img', { class: 'thumb simthumb', src: `/thumb/${it.id}`, loading: 'lazy', alt: '' }) : h('div', { class: 'nofile simthumb' }, 'no file'),
-        h('div', { class: 'stack', style: 'flex:1;min-width:0;gap:4px' },
-          h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('b', { class: 'ellip' }, it.title || (it.inputs && it.inputs.name) || it.filename), h('span', { class: 'count' }, by === 'all' ? `${it.total} of ${d.totalOf}` : `${it.per[by] || 0} of ${d.of[by] || 0}`)),
-          it.inputs ? h('div', { class: 'muted small' }, `${it.inputs.name || ''}${it.inputs.day ? ` · ${it.inputs.day}.${it.inputs.month}.${it.inputs.year}` : ''}`) : null,
-          h('div', { class: 'simgist' }, it.gist)));
-    }));
+    // A card per chart: the chart drawn at full width so it reads while scrolling, the name, the typed name and
+    // date, then what is alike as pills (one per structure); the score last, small, because it is not the point.
+    fill($list, ...d.items.map((it) => h('a', { class: 'card simrow', href: `#/compare/${id}/${it.id}`, onclick: () => { count('similar.compare'); compareReturn = location.hash; } },
+      it.inputs && it.inputs.name ? h('div', { class: 'thumb drawn simthumb', role: 'img' }, drawnChart(it.inputs)) : it.has_file ? h('img', { class: 'thumb simthumb', src: `/thumb/${it.id}`, loading: 'lazy', alt: '' }) : h('div', { class: 'nofile simthumb' }, 'no picture'),
+      h('div', { class: 'simbody' },
+        h('div', { class: 'simname' }, it.title || (it.inputs && it.inputs.name) || it.filename),
+        it.inputs ? h('div', { class: 'muted small' }, `${it.inputs.name || ''}${it.inputs.day ? ` · ${it.inputs.day}.${it.inputs.month}.${it.inputs.year}` : ''}`) : null,
+        h('div', { class: 'simpills' }, ...(it.alike && it.alike.length ? it.alike : ['A few scattered numbers']).map((t) => h('span', { class: `simpill ${/^Same |Nearly the Same$/.test(t) ? 'whole' : ''}` }, t))),
+        h('div', { class: 'simscore muted' }, by === 'all' ? `${it.total} of ${d.totalOf} positions alike` : `${it.per[by] || 0} of ${d.of[by] || 0} positions alike`)))));
   };
 
   // ---------- possible duplicates ----------
@@ -1301,7 +1322,8 @@
   const when = (iso) => (iso ? String(iso).slice(0, 10) : '');
   routes.duplicates = async function duplicatesView() {
     const $list = h('div', { class: 'stack' }, h('p', { class: 'muted' }, 'Looking…'));
-    render(h('div', { class: 'screen stack' }, pageTop('Possible Duplicates'),
+    const size = sizeControl('dupCols', { min: 1, max: window.innerWidth >= 700 ? 6 : 3, def: 2, countName: 'duplicates.size', apply: (c) => $list.style.setProperty('--cols', c) });
+    render(h('div', { class: 'screen stack' }, h('div', { class: 'pagetop' }, h('a', { class: 'btn iconbtn', href: '#/settings', 'aria-label': 'Back' }, '‹'), h('h1', {}, 'Possible Duplicates'), size.node),
       h('p', { class: 'muted small' }, 'Charts that may be the same one twice: the same picture, or the same name and birth date. Several charts of one person can be on purpose: delete only what is really a repeat. Tap a picture to open it.'), $list));
     const draw = async () => {
       let d;
