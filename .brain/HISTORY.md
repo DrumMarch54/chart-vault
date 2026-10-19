@@ -703,3 +703,18 @@ in the same position; no vault statistics on the page beyond that count.
 - Owner: the − / + size control from Coming Days belongs on every grid of charts. Added `sizeControl`
   (app.js) and put it on the browse grid (list, search results, Recently Opened: one setting), Similar Charts
   and Possible Duplicates; Coming Days and All Numbers keep their own. Rule in public/CLAUDE.md.
+
+## 2026-10-19 Number Fun, third pass: the grid is the paid tool's table, the bands blend, a tap pops a sheet
+- Owner on the second pass: the grid "still looks shitty, nothing like the image". Compared cell by cell against
+  the zoomed screenshot this time: the paid cell is white in a thin-lined table, no label, seven triangles of
+  nearly ONE size (26 / 36 / 24 / 36 / 24 in a 103 x 105 cell), only the bottom main row's numbers bold and
+  about 1.4x bigger; rows go by tens, the nineties on top, 0..9 across. `cellSvg` draws exactly that; `.nftable`
+  is the table; a phone may go to 10 across too. The first pass had rounded gray cards with a big label and one
+  oversized main triangle: a different picture.
+- The big diamond page: the owner wants no white gaps between the three bands ("blended together"): one rounded
+  block, bands touching. The upper bands' "outer essence diamond" labels sat over the side diamond's auras; they
+  now sit outside, left and right of the side triangles.
+- A tap on a diamond on that page pops the number's words up from the bottom (`numberSheet` through
+  `wordsSheet`, which now has a grip and closes on a swipe down, Back, a tap outside or Close) with an "Open N"
+  button; it never swaps the page (owner: "that way I don't get lost in screens").
+- Two chats worked the repo at once; `git fetch origin main` + merge before every push, keep both HISTORY entries.

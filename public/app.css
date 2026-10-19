@@ -118,6 +118,10 @@ a.chip { text-decoration: none; }
 .sheet { width: 100%; max-width: 600px; margin: 0 auto; background: var(--panel); color: var(--text); border-radius: 20px 20px 0 0; padding: 16px 16px calc(16px + env(safe-area-inset-bottom)); }
 .sheet h3 { margin: 0 0 12px; font-size: 18px; word-break: break-all; }
 .sheet button { width: 100%; justify-content: flex-start; min-height: 54px; margin-top: 8px; }
+.sheet-grip { padding: 0 0 8px; display: flex; justify-content: center; cursor: pointer; touch-action: none; }
+.sheet-grip span { width: 44px; height: 5px; border-radius: 3px; background: var(--muted); display: block; opacity: .6; }
+.wsheet { max-height: 80vh; display: flex; flex-direction: column; }
+.wsheet .numsheet { max-height: none; flex: 1; min-height: 0; overflow: auto; }
 
 /* progress */
 .bar { height: 14px; background: var(--panel2); border-radius: 7px; overflow: hidden; }
@@ -362,12 +366,12 @@ body.noscroll { overflow: hidden; }
 .bigd .unb .lab { color: #b07c7c; }
 .bigd .who { display: flex; justify-content: space-between; font-size: 13px; color: #5f7990; font-weight: 600; padding: 0 10px 4px; }
 .dia { display: block; margin: 0 auto; max-width: 100%; width: 100%; height: auto; }
-/* Number Fun's grid of every number: one small main diamond per card */
-.nfgrid .mini { padding: 4px 2px 2px; }
-.nfgrid .mini .d { font-size: 14px; }
-.nfgrid[data-cols="5"] .mini .d, .nfgrid[data-cols="6"] .mini .d, .nfgrid[data-cols="7"] .mini .d { font-size: 12px; }
-.nfgrid[data-cols="8"] .mini .d, .nfgrid[data-cols="9"] .mini .d, .nfgrid[data-cols="10"] .mini .d { font-size: 11px; }
-.nfgrid .mini.today { outline: 2px solid var(--accent); }
+/* Number Fun's All Numbers: a white table of every number's big diamond, as the paid tool's grid page */
+.nftable { display: grid; gap: 0; background: #fff; border: 1px solid #cfd5de; border-radius: 6px; overflow: hidden; }
+.nftable .nfc { border: 1px solid #e3e7ee; margin: 0 -1px -1px 0; padding: 2px 1px 1px; background: #fff; cursor: pointer; min-width: 0; }
+.nftable .nfc.today { background: #fff6dc; }
+.bigd { border-radius: 12px; overflow: hidden; }
+.bigd .dia.band { border-radius: 0; margin: 0; display: block; }
 .dia text { fill: #303030; font-family: "Open Sans", system-ui, sans-serif; }
 .dia text.bold { font-weight: 700; }
 .dia text.aura { fill: #5f7990; }
