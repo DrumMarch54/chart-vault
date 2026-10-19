@@ -687,10 +687,9 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 /* Similar Charts: one row per chart, the thumbnail small, the per-chart counts as a wrapped line. */
 .simrow { display: flex; gap: 10px; align-items: flex-start; color: inherit; text-decoration: none; }
 .simrow:active { background: var(--panel2); }
-.simrow .simthumb { width: 72px; flex: none; aspect-ratio: 9 / 16; border-radius: 8px; background: #fff; object-fit: cover; }
+.simrow .simthumb { width: 124px; flex: none; aspect-ratio: 9 / 16; border-radius: 8px; background: #fff; object-fit: cover; }
 .simrow .thumb.drawn { display: flex; align-items: center; justify-content: center; overflow: hidden; }
 .simrow .thumb.drawn .nscope { width: 100%; height: auto; display: block; pointer-events: none; }
 .simrow .nofile { display: flex; align-items: center; justify-content: center; background: var(--panel2); color: var(--muted); font-size: 12px; }
 .simrow .ellip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
-.simparts { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 13px; }
-.simpart.strong { font-weight: 700; color: var(--accent); }
+.simgist { font-size: 15px; line-height: 1.35; color: var(--text); }
