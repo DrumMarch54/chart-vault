@@ -334,6 +334,12 @@ body.noscroll { overflow: hidden; }
 .bigd .unb .lab { color: #b07c7c; }
 .bigd .who { display: flex; justify-content: space-between; font-size: 13px; color: #5f7990; font-weight: 600; padding: 0 10px 4px; }
 .dia { display: block; margin: 0 auto; max-width: 100%; width: 100%; height: auto; }
+/* Number Fun's grid of every number: one small main diamond per card */
+.nfgrid .mini { padding: 4px 2px 2px; }
+.nfgrid .mini .d { font-size: 14px; }
+.nfgrid[data-cols="5"] .mini .d, .nfgrid[data-cols="6"] .mini .d, .nfgrid[data-cols="7"] .mini .d { font-size: 12px; }
+.nfgrid[data-cols="8"] .mini .d, .nfgrid[data-cols="9"] .mini .d, .nfgrid[data-cols="10"] .mini .d { font-size: 11px; }
+.nfgrid .mini.today { outline: 2px solid var(--accent); }
 .dia text { fill: #303030; font-family: "Open Sans", system-ui, sans-serif; }
 .dia text.bold { font-weight: 700; }
 .dia text.aura { fill: #5f7990; }

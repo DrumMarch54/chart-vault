@@ -383,15 +383,43 @@
   }
 
   // ---------- Number Fun ----------
+  // One number's main diamond, small, for the grid of every number (the paid tool's "10 by 10" page).
+  function cellSvg(x, withName) {
+    // 120 wide: the two digits outside the top corners and the auras outside the sides need the margin.
+    const svg = A.sv('svg', { viewBox: '0 0 120 100', class: 'dia nfcell', role: 'img', 'aria-label': `${T.val(x).text} ${T.nameOf(x)}` });
+    tri(svg, T.bigDiamond(x).main, 60, 22, 76, { strong: true, name: withName ? undefined : '' });
+    return svg;
+  }
   function numberFunView(arg) {
     light();
     let n = Math.min(99, Math.max(1, Number(arg) || recall('numberFun', 14)));
-    const $row = A.h('div', { class: 'numrow' }), $body = A.h('div', {});
+    // "All Numbers" (owner 2026-10-19, the paid tool's grid page): every number's main diamond at once, as many
+    // across as the − / + choose (remembered per device); tap one to open that number. The chip brings the grid back.
+    const wide = window.innerWidth >= 700;
+    const MIN_COLS = 2, MAX_COLS = window.innerWidth >= 1000 ? 10 : wide ? 7 : 5;
+    const clampCols = (c) => Math.min(MAX_COLS, Math.max(MIN_COLS, Number(c) || 0));
+    const view = { grid: !!recall('numberFunGrid', false), cols: clampCols(recall('numberFunCols', wide ? 5 : 3)) };
+    const $row = A.h('div', { class: 'numrow' }), $body = A.h('div', {}), $chips = A.h('div', { class: 'togglerow' });
     const $in = A.h('input', { type: 'text', inputmode: 'numeric', class: 'numin', maxlength: 2, 'aria-label': 'Number' });
-    $in.addEventListener('change', () => { const v = Number($in.value); if (v >= 1 && v <= 99) { n = v; A.count('numberfun.type'); draw(); } });
+    $in.addEventListener('change', () => { const v = Number($in.value); if (v >= 1 && v <= 99) { n = v; view.grid = false; A.count('numberfun.type'); draw(); } });
     const jump = (d) => { if (d.code >= 1 && d.code <= 99) { n = d.code; A.count('numberfun.tap_diamond'); draw(); } };
+    const setCols = (c) => { view.cols = clampCols(c); remember('numberFunCols', view.cols); A.count('numberfun.size'); draw(); };
     const draw = async () => {
-      remember('numberFun', n); $in.value = String(n);
+      remember('numberFun', n); remember('numberFunGrid', view.grid); $in.value = String(n);
+      A.fill($chips, chip('All Numbers', view.grid, () => { view.grid = !view.grid; A.count('numberfun.grid'); draw(); }),
+        view.grid ? A.h('span', { class: 'sizectl', role: 'group', 'aria-label': 'Chart size' },
+          A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Smaller charts', disabled: view.cols >= MAX_COLS, onclick: () => setCols(view.cols + 1) }, '−'),
+          A.h('span', { class: 'small' }, 'Size'),
+          A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Bigger charts', disabled: view.cols <= MIN_COLS, onclick: () => setCols(view.cols - 1) }, '+')) : null);
+      $row.classList.toggle('hidden', view.grid);
+      if (view.grid) {
+        const c = view.cols;
+        A.fill($body, A.h('div', { class: 'minis nfgrid', 'data-cols': String(c), style: `grid-template-columns: repeat(${c}, minmax(0, 1fr))` },
+          ...Array.from({ length: 99 }, (_, i) => i + 1).map((x) => A.h('div', { class: 'mini' + (x === n ? ' today' : ''), role: 'button', 'aria-label': `Open ${T.val(x).text}`, onclick: () => { n = x; view.grid = false; A.count('numberfun.tap_cell'); draw(); window.scrollTo(0, 0); } },
+            A.h('div', { class: 'd' }, T.val(x).text), cellSvg(x, c <= 2)))),
+          A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Every number\u2019s main diamond. Tap one for its three levels.'));
+        return;
+      }
       A.fill($row, ...Array.from({ length: 99 }, (_, i) => i + 1).map((x) => A.h('button', { type: 'button', class: x === n ? 'active' : '', onclick: () => { n = x; draw(); } }, String(x))));
       const active = $row.querySelector('.active'); if (active) active.scrollIntoView({ inline: 'center', block: 'nearest' });
       const B = T.bigDiamond(n), v = T.val(n);
@@ -405,7 +433,7 @@
         inOthers.length ? A.h('div', { class: 'reading' }, A.h('div', { class: 'head' }, A.h('span', { class: 'nm' }, `Where ${v.text} Appears in Other Numbers`)), A.h('div', { class: 'chips', style: 'margin-top:6px' }, ...inOthers.map((x) => A.h('button', { type: 'button', class: 'chip', onclick: () => { n = x; A.count('numberfun.tap_other'); draw(); } }, T.val(x).text)))) : null,
         A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Tap any diamond to open that number. The three levels follow the Diamond Method book: the main diamond, the essence diamond made of its two auras, and the integration diamond above that.'));
     };
-    A.render(A.h('div', { class: 'screen qscreen tscreen' }, top('Number Fun', '#/', $in), $row, $body));
+    A.render(A.h('div', { class: 'screen qscreen tscreen wide' }, top('Number Fun', '#/', $in), $chips, $row, $body));
     draw();
   }
 
@@ -657,7 +685,7 @@
   const USAGE_LABELS = {
     'screen.today': 'Today', 'screen.coming': 'Coming Days', 'screen.numberfun': 'Number Fun', 'screen.price': 'Price Tool', 'screen.relation': 'Relationship', 'screen.karmic': 'Karmic Connections', 'screen.mychart': 'My Chart (settings)',
     'home.today': 'Home → Today', 'home.coming': 'Home → Coming Days', 'home.numberfun': 'Home → Number Fun', 'home.price': 'Home → Price Tool', 'home.relation': 'Home → Relationship', 'home.karmic': 'Home → Karmic Connections', 'home.mychart': 'Home → My Chart',
-    'today.psyche': 'Today: psyche charts on or off', 'today.full': 'Today: full screen day', 'today.ruler': 'Today: ruler of the day', 'today.company': 'Today: a company started this day', 'dayfull.move': 'Full screen day: previous or next day', 'coming.open_day': 'Coming Days: open a day', 'coming.size': 'Coming Days: chart size', 'coming.super_only': 'Coming Days: super dates only', 'numberfun.type': 'Number Fun: type a number', 'numberfun.tap_diamond': 'Number Fun: tap a diamond', 'numberfun.tap_other': 'Number Fun: tap a number it appears in',
+    'today.psyche': 'Today: psyche charts on or off', 'today.full': 'Today: full screen day', 'today.ruler': 'Today: ruler of the day', 'today.company': 'Today: a company started this day', 'dayfull.move': 'Full screen day: previous or next day', 'coming.open_day': 'Coming Days: open a day', 'coming.size': 'Coming Days: chart size', 'coming.super_only': 'Coming Days: super dates only', 'numberfun.type': 'Number Fun: type a number', 'numberfun.grid': 'Number Fun: All Numbers grid on or off', 'numberfun.size': 'Number Fun: grid chart size', 'numberfun.tap_cell': 'Number Fun: open a number from the grid', 'numberfun.tap_diamond': 'Number Fun: tap a diamond', 'numberfun.tap_other': 'Number Fun: tap a number it appears in',
     'price.find': 'Price Tool: Find a Price', 'price.vibe': 'Price Tool: pick a vibration', 'price.range': 'Price Tool: pick a range', 'price.pick': 'Price Tool: pick a found price', 'price.number': 'Price Tool: a number in the price', 'price.vibe_text': 'Price Tool: the book\'s page for a vibration', 'relation.use_me': 'Relationship: me as the first person', 'mychart.save': 'My Chart: save',
   };
 
