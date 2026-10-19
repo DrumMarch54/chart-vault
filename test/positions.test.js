@@ -222,8 +222,9 @@ test('API: catalog, counts, search, context, numbers, fix, recompute, status, sn
 test('similar charts name what is alike in the course words: the biggest matching structure, Title Case', async () => {
   const { namedMatches, positionName, gistOf } = await import('../server/similar.js');
   assert.deepEqual(namedMatches('outer', ['leDiamond', 'first', 'last', 'le', 'big', 'spine', 'spineDiamond']), ['Outer Psyche Life Expression Diamond', 'Outer Psyche Spine Diamond']);
-  assert.deepEqual(namedMatches('essence', ['day', 'month', 'outerAura', 'outerDiamond', 'littleLp', 'nexus']), ['Outer Diamond', 'Nexus']);
-  assert.deepEqual(namedMatches('name', ['upperLeft', 'upperRight', 'heart', 'mindDiamond', 'lowerLeft', 'pillar']), ['Mental Diamond', 'Pillar', 'Associates Aura']);
+  assert.deepEqual(namedMatches('essence', ['day', 'month', 'outerAura', 'outerDiamond', 'littleLp', 'nexus']), ['Outer Diamond', 'DVLP']);
+  assert.deepEqual(namedMatches('name', ['upperLeft', 'upperRight', 'heart', 'mindDiamond', 'lowerLeft', 'pillar']), ['Name Mental Diamond', 'Name Pillar', 'Associates Aura']);
+  assert.equal(positionName('name', 'spine'), 'Name Spine'); assert.equal(positionName('name', 'heart'), 'Name Mind Center'); assert.equal(positionName('name', 'le'), 'Life Expression'); assert.equal(positionName('inner', 'spine'), 'Inner Psyche Spine');
   assert.equal(positionName('vocation', 'le'), "Heart's Desire"); assert.equal(positionName('personality', 'big'), 'Big Personality Number');
   assert.equal(positionName('name', 'leDiamond'), 'Name Line Diamond'); assert.equal(positionName('outer', 'first'), 'Outer Psyche Challenge Number'); assert.equal(positionName('essence', 'topAura'), 'Dharma Line');
   const of = { essence: 14, name: 20, vocation: 19, personality: 19, outer: 18, inner: 17 };
