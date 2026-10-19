@@ -136,7 +136,8 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   The reasons are on the screen ("Why …"); never change the lists without the book page. Screen titles,
   buttons and chips are Title Case everywhere (owner's rule).
 - Coming Days is a grid of day charts only (the list of numbers is gone, owner 2026-10-16); − / + set how many
-  across (2 to 5 on a phone, more on a laptop), remembered per device. The Price Tool has two modes, Check a
+  across (2 to 5 on a phone, more on a laptop), remembered per device. Number Fun's "All Numbers" is the same
+  kind of grid: every number's main diamond (`cellSvg`), tap one to open it. The Price Tool has two modes, Check a
   Price and Find a Price (two pickers: the vibration, the range), never a wall of chips. Today has no row of
   code chips under the chart.
 - Today, Coming Days and the full-screen day use the day look (`day()` in tools.js, `html.day` in app.css,
@@ -213,6 +214,13 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   step in the phone's Back history each, so Back closes one thing (owner 2026-10-19). A screen
   change right after an overlay's own Close must go through `go`/`swap` (they wait for the step).
 - Destructive taps: `holdButton` / `confirmSheet`, never a second dialog.
+- Light and dark (owner 2026-10-19): the app follows the phone (`prefers-color-scheme` swaps the `:root`
+  variables at the top of app.css); Settings → Look pins one (`theme` on the device, `applyTheme`). A new color
+  on a dark screen is a variable with a light value, never a hex in a rule; check a changed screen in both looks.
+- Short screens (owner 2026-10-19): a Coming Days card is date, rating, chart. The chart sheet shows no list of
+  position numbers (the drawing does that); position/number tags and file details fold; repeats are one
+  "Most often" line, top five, no positions. The home search never lists position-code tags. Settings has a
+  search box: a new Settings row goes in `SETTINGS` with the words a search may use for it.
 - The viewer is an overlay over the screen it was opened from, which stays
   drawn under it (`underHash`): closing it never redraws the list, so the list
   keeps its place. It opens bare (tap shows the top bar); drag down and the

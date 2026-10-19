@@ -2,8 +2,29 @@
   --bg: #12151d; --panel: #1b1f2a; --panel2: #242938; --text: #f3f4f8; --muted: #a5abbd;
   --accent: #f0b64a; --accent-text: #1b1f2a; --blue: #6fb3ff; --green: #5fd38a; --red: #ff7a7a;
   --chip-pos: #2e4a6b; --chip-num: #5a4a1f; --chip-name: #3a3f52;
+  /* the few colors not drawn from the ones above */
+  --danger-bg: #5a2a2a; --danger-text: #ffd3d3; --who: #2f5a45; --warn-bg: #4a3d1f; --pain-bg: #4a2626;
+  --toast: #2b3140; --chip-add: #9fb6d0; --shadow: rgba(0,0,0,.5);
   --nav-h: 64px; --tap: 48px; --radius: 14px;
   color-scheme: dark;
+}
+/* Light look (owner 2026-10-19): the app follows the phone's own light / dark setting; Settings -> Look can
+   pin either. The same names, lighter values; the tool pages (Today, Number Fun, ...) are light either way. */
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) {
+  --bg: #f3f4f8; --panel: #ffffff; --panel2: #e6e8f0; --text: #1d2130; --muted: #5f6475;
+  --accent: #f0b64a; --accent-text: #1b1f2a; --blue: #2e6fd0; --green: #1f7a38; --red: #c43c3c;
+  --chip-pos: #d7e4f3; --chip-num: #f6e9c4; --chip-name: #e6e8f0;
+  --danger-bg: #fbe3e3; --danger-text: #8a1f1f; --who: #d9f3e1; --warn-bg: #fff3d6; --pain-bg: #fbe3e3;
+  --toast: #2b3140; --chip-add: #2e4a6b; --shadow: rgba(0,0,0,.18);
+  color-scheme: light;
+} }
+:root[data-theme="light"] {
+  --bg: #f3f4f8; --panel: #ffffff; --panel2: #e6e8f0; --text: #1d2130; --muted: #5f6475;
+  --accent: #f0b64a; --accent-text: #1b1f2a; --blue: #2e6fd0; --green: #1f7a38; --red: #c43c3c;
+  --chip-pos: #d7e4f3; --chip-num: #f6e9c4; --chip-name: #e6e8f0;
+  --danger-bg: #fbe3e3; --danger-text: #8a1f1f; --who: #d9f3e1; --warn-bg: #fff3d6; --pain-bg: #fbe3e3;
+  --toast: #2b3140; --chip-add: #2e4a6b; --shadow: rgba(0,0,0,.18);
+  color-scheme: light;
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html { overscroll-behavior-y: none; }
@@ -13,7 +34,7 @@ a { color: var(--blue); }
 button, .btn { font: inherit; min-height: var(--tap); padding: 0 18px; border: 0; border-radius: var(--radius); background: var(--panel2); color: var(--text); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
 button:disabled { opacity: .5; cursor: default; }
 .btn-primary { background: var(--accent); color: var(--accent-text); font-weight: 700; }
-.btn-danger { background: #5a2a2a; color: #ffd3d3; }
+.btn-danger { background: var(--danger-bg); color: var(--danger-text); }
 .btn-block { width: 100%; }
 input[type=text], input[type=password], input[type=search] { font: inherit; width: 100%; min-height: var(--tap); padding: 0 14px; border-radius: var(--radius); border: 2px solid var(--panel2); background: var(--panel); color: var(--text); }
 input:focus { outline: none; border-color: var(--blue); }
@@ -45,7 +66,7 @@ input:focus { outline: none; border-color: var(--blue); }
 /* The browser's own clear button inside a search box: hidden, the app has its own × */
 input[type=search]::-webkit-search-cancel-button, input[type=search]::-webkit-search-decoration { -webkit-appearance: none; appearance: none; display: none; }
 .searchbox .clear { position: absolute; right: 4px; top: 4px; width: 40px; min-height: 40px; height: 40px; padding: 0; border-radius: 10px; background: transparent; color: var(--muted); font-size: 22px; }
-.suggest { position: absolute; left: 0; right: 0; top: 100%; margin-top: 4px; background: var(--panel); border: 1px solid var(--panel2); border-radius: var(--radius); max-height: 55vh; overflow: auto; z-index: 15; box-shadow: 0 12px 30px rgba(0,0,0,.5); }
+.suggest { position: absolute; left: 0; right: 0; top: 100%; margin-top: 4px; background: var(--panel); border: 1px solid var(--panel2); border-radius: var(--radius); max-height: 55vh; overflow: auto; z-index: 15; box-shadow: 0 12px 30px var(--shadow); }
 .suggest button { width: 100%; justify-content: space-between; border-radius: 0; background: transparent; padding: 0 14px; border-bottom: 1px solid var(--panel2); text-align: left; }
 .suggest button:last-child { border-bottom: 0; }
 .suggest .count { color: var(--muted); font-size: 14px; }
@@ -57,7 +78,9 @@ input[type=search]::-webkit-search-cancel-button, input[type=search]::-webkit-se
 .chip span.t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .chip.position { background: var(--chip-pos); }
 .chip.number { background: var(--chip-num); }
-.chip.who { background: #2f5a45; }
+.chip.who { background: var(--who); }
+.chip.off { background: var(--panel2); color: var(--muted); }
+a.chip { text-decoration: none; }
 .chip.active { background: var(--accent); color: var(--accent-text); font-weight: 700; }
 .chip .x { font-size: 18px; opacity: .8; }
 .chip.app::after { content: "✎"; font-size: 12px; opacity: .7; }
@@ -99,9 +122,9 @@ input[type=search]::-webkit-search-cancel-button, input[type=search]::-webkit-se
 input[type=file] { display: none; }
 .filepick { display: block; }
 
-#toast { position: fixed; left: 12px; right: 12px; top: calc(12px + env(safe-area-inset-top)); pointer-events: none; background: #2b3140; color: var(--text); padding: 12px 16px; border-radius: var(--radius); z-index: 60; box-shadow: 0 8px 24px rgba(0,0,0,.5); text-align: center; }
-#toast.err { background: #5a2a2a; }
-#newver { position: fixed; left: 50%; transform: translateX(-50%); top: calc(12px + env(safe-area-inset-top)); z-index: 55; box-shadow: 0 8px 24px rgba(0,0,0,.5); }
+#toast { position: fixed; left: 12px; right: 12px; top: calc(12px + env(safe-area-inset-top)); pointer-events: none; background: var(--toast); color: #f3f4f8; padding: 12px 16px; border-radius: var(--radius); z-index: 60; box-shadow: 0 8px 24px var(--shadow); text-align: center; }
+#toast.err { background: #5a2a2a; color: #ffd3d3; }
+#newver { position: fixed; left: 50%; transform: translateX(-50%); top: calc(12px + env(safe-area-inset-top)); z-index: 55; box-shadow: 0 8px 24px var(--shadow); }
 
 /* full-screen viewer */
 body.fullscreen { padding-bottom: 0; overflow: hidden; }
@@ -260,7 +283,7 @@ body.noscroll { overflow: hidden; }
 .yrows .yv.ps { background: #eef4f8; color: #5f7990; }
 .yrows .yv.ps.num { background: #d7e4ee; color: #2f5673; }
 .yrows .now { box-shadow: inset 0 0 0 100px rgba(240, 182, 74, .28); }
-.tchips .chip .count { color: rgba(255,255,255,.6); font-size: 13px; }
+.tchips .chip .count { color: inherit; opacity: .7; font-size: 13px; }
 .tchips .chip .count::before { content: "·"; margin-right: 4px; }
 
 /* search by position */
@@ -275,7 +298,7 @@ body.noscroll { overflow: hidden; }
 .numbers .tchips[hidden] { display: none; }
 .numbers .row > button { white-space: nowrap; }
 .numbers .tgroup { margin-top: 6px; min-height: 46px; }
-.numbers .chip .count { color: #fff; font-weight: 700; font-size: 15px; }
+.numbers .chip .count { color: inherit; font-weight: 700; font-size: 15px; }
 .numbers .chip .count::before { content: ""; margin: 0; }
 .fixfields { padding: 0; margin: 0; }
 .fixfields input { background: var(--panel2); border: 1px solid var(--panel2); color: var(--text); }
@@ -334,6 +357,12 @@ body.noscroll { overflow: hidden; }
 .bigd .unb .lab { color: #b07c7c; }
 .bigd .who { display: flex; justify-content: space-between; font-size: 13px; color: #5f7990; font-weight: 600; padding: 0 10px 4px; }
 .dia { display: block; margin: 0 auto; max-width: 100%; width: 100%; height: auto; }
+/* Number Fun's grid of every number: one small main diamond per card */
+.nfgrid .mini { padding: 4px 2px 2px; }
+.nfgrid .mini .d { font-size: 14px; }
+.nfgrid[data-cols="5"] .mini .d, .nfgrid[data-cols="6"] .mini .d, .nfgrid[data-cols="7"] .mini .d { font-size: 12px; }
+.nfgrid[data-cols="8"] .mini .d, .nfgrid[data-cols="9"] .mini .d, .nfgrid[data-cols="10"] .mini .d { font-size: 11px; }
+.nfgrid .mini.today { outline: 2px solid var(--accent); }
 .dia text { fill: #303030; font-family: "Open Sans", system-ui, sans-serif; }
 .dia text.bold { font-weight: 700; }
 .dia text.aura { fill: #5f7990; }
@@ -386,8 +415,6 @@ html.light .tscreen .reading .rate { margin-left: auto; }
 .dayfull .readbtn { margin: 10px 8px; width: calc(100% - 16px); }
 .mini .mhead { display: flex; justify-content: space-between; align-items: center; padding: 2px 4px; }
 .mini .mhead .d { font-size: 13px; font-weight: 700; }
-.mini .mfoot { display: flex; align-items: baseline; gap: 6px; padding: 0 4px 2px; font-size: 14px; min-width: 0; white-space: nowrap; overflow: hidden; justify-content: center; }
-.mini .mfoot.small { font-size: 11px; white-space: normal; line-height: 1.25; display: block; }
 .sizectl { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; }
 .sizectl .cbtn { min-width: 36px; min-height: 36px; font-size: 20px; }
 .sizectl .cbtn[disabled] { opacity: .35; }
@@ -396,8 +423,6 @@ html.light .tscreen .reading .rate { margin-left: auto; }
 .minis[data-cols="3"] .mhead, .minis[data-cols="4"] .mhead, .minis[data-cols="5"] .mhead, .minis[data-cols="6"] .mhead, .minis[data-cols="7"] .mhead, .minis[data-cols="8"] .mhead { flex-direction: column; align-items: center; gap: 2px; padding: 0; }
 .minis[data-cols="3"] .mhead .d { font-size: 12px; } .minis[data-cols="3"] .rate { font-size: 10px; padding: 2px 7px; }
 .minis[data-cols="4"] .mini, .minis[data-cols="5"] .mini, .minis[data-cols="6"] .mini, .minis[data-cols="7"] .mini, .minis[data-cols="8"] .mini { padding: 4px 2px; border-radius: 8px; }
-.minis[data-cols="5"] .mfoot b, .minis[data-cols="6"] .mfoot b, .minis[data-cols="7"] .mfoot b, .minis[data-cols="8"] .mfoot b { font-size: 12px; }
-.mini .mfoot .nm { overflow: hidden; text-overflow: ellipsis; }
 .mini.super { background: #eef8f1; outline: 2px solid #9fd7b2; }
 .mini.today.super { outline: 2px solid var(--accent); }
 /* the book-style diamond bands */
@@ -430,16 +455,16 @@ html.light .tscreen .reading .rate { margin-left: auto; }
 /* Reading: the facts from the rules, the AI reading and the questions (viewer sheet, Ask the Vault) */
 .chartread { border-top: 1px solid var(--panel2); padding-top: 10px; }
 .fact { font-size: 15px; line-height: 1.35; padding: 8px 10px; border-radius: 10px; background: var(--panel2); }
-.fact.pain { background: #4a2626; }
-.fact.note { background: #4a3d1f; }
+.fact.pain { background: var(--pain-bg); }
+.fact.note { background: var(--warn-bg); }
 .fact b { display: block; margin-bottom: 2px; }
 .rd-text p { margin: 6px 0; font-size: 16px; line-height: 1.45; }
 .rd-text .rd-h { margin: 12px 0 2px; font-size: 16px; color: var(--accent); }
 .rd-text .rd-list { margin: 4px 0; padding-left: 20px; }
 .rd-answer { background: var(--panel2); border-radius: 10px; padding: 10px 12px; }
 .rd-q { font-weight: 700; margin-bottom: 4px; }
-.aiwarn { display: flex; gap: 10px; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 10px; background: #4a3d1f; font-size: 15px; }
-.aiwarn.over { background: #4a2626; }
+.aiwarn { display: flex; gap: 10px; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 10px; background: var(--warn-bg); font-size: 15px; }
+.aiwarn.over { background: var(--pain-bg); }
 .aiwarn button { min-height: 36px; padding: 0 12px; flex: none; }
 .warn { color: var(--accent); }
 .rd-card { background: var(--panel); border-radius: 12px; padding: 10px 12px; }
@@ -475,7 +500,7 @@ html.light .tscreen .reading .rate { margin-left: auto; }
 .vbtn.go { background: var(--accent); color: var(--accent-text); font-weight: 700; }
 .vbtn.picked { background: #1f5a3a; color: #fff; }
 body.withcmp .screen { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
-.cmpbar { position: fixed; left: 8px; right: 8px; bottom: calc(8px + env(safe-area-inset-bottom)); z-index: 20; display: flex; align-items: center; gap: 8px; background: var(--panel2); border: 2px solid var(--accent); border-radius: var(--radius); padding: 6px 6px 6px 8px; box-shadow: 0 8px 24px rgba(0,0,0,.5); max-width: 600px; margin: 0 auto; }
+.cmpbar { position: fixed; left: 8px; right: 8px; bottom: calc(8px + env(safe-area-inset-bottom)); z-index: 20; display: flex; align-items: center; gap: 8px; background: var(--panel2); border: 2px solid var(--accent); border-radius: var(--radius); padding: 6px 6px 6px 8px; box-shadow: 0 8px 24px var(--shadow); max-width: 600px; margin: 0 auto; }
 .cmpbar-main { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; }
 .cmpbar-main img { width: 36px; height: 64px; object-fit: cover; border-radius: 6px; background: var(--panel); flex: none; }
 .cmpbar-text { min-width: 0; display: flex; flex-direction: column; }
@@ -550,7 +575,7 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .chip button.t, .chip button.x { background: none; border: 0; color: inherit; font: inherit; padding: 0; min-height: 0; width: auto; margin: 0; border-radius: 0; }
 .chip button.t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .chip button.x { padding: 0 2px 0 4px; }
-.chip.add { background: transparent; border: 1.5px dashed var(--chip-pos); color: #9fb6d0; }
+.chip.add { background: transparent; border: 1.5px dashed var(--chip-pos); color: var(--chip-add); }
 .fixedconds { background: var(--panel); border-radius: var(--radius); padding: 10px 12px 4px; }
 .fixedconds .linkbtn { display: inline-flex; margin-top: 2px; }
 /* A whole name's pyramid can be 20 letters wide: the card scrolls sideways on its own, the page never does. */
