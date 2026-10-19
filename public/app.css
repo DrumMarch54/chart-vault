@@ -386,8 +386,6 @@ html.light .tscreen .reading .rate { margin-left: auto; }
 .dayfull .readbtn { margin: 10px 8px; width: calc(100% - 16px); }
 .mini .mhead { display: flex; justify-content: space-between; align-items: center; padding: 2px 4px; }
 .mini .mhead .d { font-size: 13px; font-weight: 700; }
-.mini .mfoot { display: flex; align-items: baseline; gap: 6px; padding: 0 4px 2px; font-size: 14px; min-width: 0; white-space: nowrap; overflow: hidden; justify-content: center; }
-.mini .mfoot.small { font-size: 11px; white-space: normal; line-height: 1.25; display: block; }
 .sizectl { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; }
 .sizectl .cbtn { min-width: 36px; min-height: 36px; font-size: 20px; }
 .sizectl .cbtn[disabled] { opacity: .35; }
@@ -396,8 +394,6 @@ html.light .tscreen .reading .rate { margin-left: auto; }
 .minis[data-cols="3"] .mhead, .minis[data-cols="4"] .mhead, .minis[data-cols="5"] .mhead, .minis[data-cols="6"] .mhead, .minis[data-cols="7"] .mhead, .minis[data-cols="8"] .mhead { flex-direction: column; align-items: center; gap: 2px; padding: 0; }
 .minis[data-cols="3"] .mhead .d { font-size: 12px; } .minis[data-cols="3"] .rate { font-size: 10px; padding: 2px 7px; }
 .minis[data-cols="4"] .mini, .minis[data-cols="5"] .mini, .minis[data-cols="6"] .mini, .minis[data-cols="7"] .mini, .minis[data-cols="8"] .mini { padding: 4px 2px; border-radius: 8px; }
-.minis[data-cols="5"] .mfoot b, .minis[data-cols="6"] .mfoot b, .minis[data-cols="7"] .mfoot b, .minis[data-cols="8"] .mfoot b { font-size: 12px; }
-.mini .mfoot .nm { overflow: hidden; text-overflow: ellipsis; }
 .mini.super { background: #eef8f1; outline: 2px solid #9fd7b2; }
 .mini.today.super { outline: 2px solid var(--accent); }
 /* the book-style diamond bands */

@@ -47,7 +47,7 @@
     'screen.tags': 'All Tags', 'screen.upload': 'Upload Screenshots', 'screen.import': 'Import Tags', 'screen.status': 'Status and backup',
     'viewer.add_tag': 'Add a tag to a chart', 'quick.save': 'Save a quick chart', 'quick.full_screen': 'Quick Chart full screen',
     'quick.year_rows': 'Year Rows and Day Vibrations', 'quick.show_parts': 'Show and Hide Parts', 'quick.augment': 'Augmentation On or Off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
-    'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'viewer.number_tap': 'Tap a number on a chart', 'status.recompute': 'Recompute chart numbers',
+    'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'status.recompute': 'Recompute chart numbers',
     'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart', 'viewer.year_rows': 'Year Rows from a chart',
     'position.search_more': 'Narrow a position search by another number', 'position.add_more': 'Tap + Another number', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
     'viewer.similar': 'Similar Charts from a chart', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
@@ -398,6 +398,10 @@
           items = [...items, ...extra.map((t) => ({ ...t, pickKind: 'archetype' }))];
         }
         const who = await whoP;
+        // The home search (names on): the owner's position-code tags ("42lp") stay out of the list altogether
+        // (owner 2026-10-19): the position search below covers every chart, those tags only the hand-tagged few.
+        // They are still on each chart's page and in All Tags, and still found by the position search.
+        if (names) items = items.filter((t) => t.kind !== 'position');
         const spots = names ? await positionSpots(q, items).catch(() => []) : [];
         if (my === seq) show(items, q, who, spots);
       } catch {}
@@ -821,18 +825,11 @@
         fill($numbers, h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('span', { class: 'muted small' }, 'Name and date not read yet, so this chart cannot be found by position.'), h('button', { type: 'button', onclick: () => { fixing = true; drawNumbers(); } }, 'Type them')));
         return;
       }
-      const groups = numbers.charts.map((c) => {
-        const $chips = h('div', { class: 'chips tchips' });
-        $chips.hidden = c.chart !== 'name';
-        for (const v of c.values) $chips.append(h('button', { type: 'button', class: 'chip position', onclick: () => { count('viewer.number_tap'); go(positionHash([{ pos: `${c.chart}.${v.position}`, num: String(v.sum) }])); } }, h('span', { class: 't' }, `${v.label}${v.n ? ' ' + (v.n + 1) : ''}`), h('span', { class: 'count' }, v.sum < 10 ? String(v.sum) : v.text)));
-        const $arrow = h('span', { class: 'arrow' }, $chips.hidden ? '⌄' : '⌃');
-        return [h('button', { type: 'button', class: 'tgroup', onclick: () => { $chips.hidden = !$chips.hidden; $arrow.textContent = $chips.hidden ? '⌄' : '⌃'; } }, h('span', { class: 'tg-title' }, c.label), h('span', { class: 'muted small' }, `${c.values.length} numbers`), $arrow), $chips];
-      });
+      // Only the name and date here (owner 2026-10-19): the lists of every position's number are gone; the
+      // drawing shows them, and a tap on a number there opens its meaning and "N charts with it here".
       fill($numbers,
         h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('div', { style: 'min-width:0' }, h('b', {}, inp.name || '(no name)'), h('div', { class: 'muted small' }, when ? `Born ${when}` : 'No date: name chart only')),
-          h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:6px' }, inp.name ? h('button', { type: 'button', onclick: wholePyramid }, 'Pyramid') : null, h('button', { type: 'button', onclick: () => { fixing = true; drawNumbers(); } }, 'Wrong? Fix'))),
-        h('div', { class: 'muted small' }, 'Tap a number to find every chart with it in that position.'),
-        ...groups.flat());
+          h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:6px' }, inp.name ? h('button', { type: 'button', onclick: wholePyramid }, 'Pyramid') : null, h('button', { type: 'button', onclick: () => { fixing = true; drawNumbers(); } }, 'Wrong? Fix'))));
     };
     if (img.kind === 'chart') loadNumbers();
     const draw = () => {
@@ -874,21 +871,27 @@
             h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:6px' }, img.title_check ? h('button', { type: 'button', onclick: ok }, 'Yes') : null, h('button', { type: 'button', onclick: () => { fixingName = true; drawWho(); } }, img.title ? 'Fix' : 'Name it'))));
       };
       drawWho();
+      // A folded row: tap to show what is under it (the position and number tags, the file details). The
+      // owner wants the sheet short (2026-10-19): the name tags and the reading stay in view, the rest folds.
+      const folded = (label, ...inside) => {
+        const $in = h('div', { class: 'stack hidden' }, ...inside), $arrow = h('span', { class: 'arrow' }, '⌄');
+        return [h('button', { type: 'button', class: 'tgroup', onclick: () => { $in.classList.toggle('hidden'); $arrow.textContent = $in.classList.contains('hidden') ? '⌄' : '⌃'; } }, h('span', { class: 'tg-title' }, label), $arrow), $in];
+      };
+      const codeTags = [...groups.position, ...groups.number];
       fill($sheetBody,
         $who,
         h('div', { class: 'row', style: 'justify-content:space-between' }, h('b', {}, `${img.tags.length} tag${img.tags.length === 1 ? '' : 's'}`), h('span', { class: 'muted small' }, 'Tap a tag for options')),
         groups.name.length ? h('div', { class: 'chips' }, ...groups.name.map(tagBtn)) : null,
-        groups.position.length ? h('div', {}, h('div', { class: 'muted small', style: 'margin-bottom:6px' }, 'Positions'), h('div', { class: 'chips' }, ...groups.position.map(tagBtn))) : null,
-        groups.number.length ? h('div', {}, h('div', { class: 'muted small', style: 'margin-bottom:6px' }, 'Numbers'), h('div', { class: 'chips' }, ...groups.number.map(tagBtn))) : null,
         h('div', { class: 'addtag row', style: 'flex-wrap:nowrap' }, $tagInput, h('button', { type: 'button', class: 'btn-primary', onclick: () => { const v = $tagInput.value.trim(); if (v) { count('viewer.add_tag'); addTag(v); $tagInput.value = ''; } } }, 'Add'), $sugg),
+        ...(codeTags.length ? folded(`${codeTags.length} position and number tag${codeTags.length === 1 ? '' : 's'}`, h('div', { class: 'chips' }, ...codeTags.map(tagBtn))) : []),
         $numbers,
         img.kind === 'chart' && readingUi ? readingUi.section(img) : null,
-        h('div', { class: 'small muted' },
+        ...folded('File details', h('div', { class: 'small muted' },
           h('div', {}, img.kind === 'archetype' ? 'Type: archetype pic (a picture that represents a number)' : 'Type: chart'),
           h('div', {}, `Taken: ${img.taken_at ? img.taken_at.replace('T', ' ') : 'unknown'}`),
           h('div', {}, img.has_file ? `File: ${fmtBytes(img.size)}, ${img.width}×${img.height}, uploaded ${fmtDate(img.uploaded_at)}` : 'File: not uploaded yet'),
           h('div', { style: 'word-break:break-all' }, img.filename),
-          ...img.paths.map((p) => h('div', { style: 'word-break:break-all;padding-left:8px' }, p))));
+          ...img.paths.map((p) => h('div', { style: 'word-break:break-all;padding-left:8px' }, p)))));
     };
     draw();
   };

@@ -301,11 +301,8 @@
     const open = (e) => { A.count('coming.open_day'); dayFull({ y: e.y, m: e.m, d: e.d }); };
     const isToday = (e) => e.y === now.y && e.m === now.m && e.d === now.d;
     const setCols = (c) => { view.cols = clampCols(c); remember('comingCols', view.cols); A.count('coming.size'); draw(); };
-    // The day vibration's keywords from the book (one short line per chart) arrive with readings.js.
-    if (!root.Readings) readings().then(() => { if ($body.isConnected) draw(); });
     const draw = () => {
       $date.value = iso(start.y, start.m, start.d);
-      const R = root.Readings || {};
       day();
       A.fill($chips, chip('Super Dates Only', view.superOnly, () => { view.superOnly = !view.superOnly; A.count('coming.super_only'); draw(); }),
         chip('Psyche Charts', view.psyche, () => { view.psyche = !view.psyche; remember('comingPsyche', view.psyche); draw(); }),
@@ -319,10 +316,9 @@
       const c = view.cols, tight = c >= 3;
       A.fill($body, A.h('div', { class: 'minis', 'data-cols': String(c), style: `grid-template-columns: repeat(${c}, minmax(0, 1fr))` }, ...days.map((e) => A.h('div', { class: 'mini' + (isToday(e) ? ' today' : '') + (e.rating === 'super' ? ' super' : ''), role: 'button', onclick: () => open(e) },
         A.h('div', { class: 'mhead' }, A.h('span', { class: 'd' }, tight ? `${MON[e.m - 1]} ${e.d}` : `${DOW[e.weekday].slice(0, 3)} ${MON[e.m - 1]} ${e.d}`), A.h('span', { class: `rate ${e.rating}` }, T.RATING_WORDS[e.rating].replace(/ Date$/, ''))),
-        dateCharts(e.y, e.m, e.d, view.psyche),
-        c <= 2 ? A.h('div', { class: 'mfoot' }, A.h('b', {}, e.dv.text), A.h('span', { class: 'muted small nm' }, nameOf(e.dv))) : null,
-        c <= 2 ? A.h('div', { class: 'mfoot muted small' }, `Essence ${e.lp.text} · Outer ${e.outer.text} · Inner ${e.inner.text}`) : null,
-        c <= 2 && R.dayVibration && R.dayVibration[e.dv.sum] ? A.h('div', { class: 'mfoot muted small' }, R.dayVibration[e.dv.sum].keywords) : null))));
+        // Only the date, the rating and the chart on a card (owner 2026-10-19): no day vibration name, no
+        // essence / outer / inner line, no keywords. The full-screen day has the words.
+        dateCharts(e.y, e.m, e.d, view.psyche)))));
     };
     A.render(A.h('div', { class: 'screen qscreen tscreen wide' }, top('Coming Days', '#/', A.h('a', { class: 'btn iconbtn', href: '#/today', 'aria-label': 'Today', title: 'Today' }, '☀')),
       $chips,
