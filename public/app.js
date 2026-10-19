@@ -1234,7 +1234,9 @@
       fill($list, h('p', { class: 'muted small' }, `${d.groups.length} group${d.groups.length === 1 ? '' : 's'}${d.kept ? `, ${d.kept} kept on purpose` : ''}`), ...d.groups.map((g) => {
         const $cards = h('div', { class: 'dupcards' }, ...g.charts.map((c) => {
           const $card = h('div', { class: 'dupcard' },
-            h('a', { href: `#/chart/${c.id}`, class: 'dupthumb' }, c.inputs && c.inputs.name ? h('div', { class: 'thumb drawn', role: 'img', 'aria-label': c.title || c.filename }, drawnChart(c.inputs)) : c.has_file ? h('img', { class: 'thumb', src: `/thumb/${c.id}`, loading: 'lazy', alt: '' }) : h('div', { class: 'nofile' }, 'no file yet')),
+            // The screenshot, not the drawing: two charts with the same name and date draw the same, and the
+            // screenshots are what tells a real repeat from a second chart kept on purpose.
+            h('a', { href: `#/chart/${c.id}`, class: 'dupthumb' }, c.has_file ? h('img', { class: 'thumb', src: `/thumb/${c.id}`, loading: 'lazy', alt: '' }) : c.inputs && c.inputs.name ? h('div', { class: 'thumb drawn', role: 'img', 'aria-label': c.title || c.filename }, drawnChart(c.inputs)) : h('div', { class: 'nofile' }, 'no file yet')),
             h('div', { class: 'small' }, h('b', {}, c.title || '(no name)')),
             h('div', { class: 'muted small' }, `${when(c.taken_at) || 'no date'} · ${c.tag_count} tag${c.tag_count === 1 ? '' : 's'}${c.readings ? ` · ${c.readings} reading${c.readings === 1 ? '' : 's'}` : ''}`),
             h('div', { class: 'muted small wrap' }, c.filename),
