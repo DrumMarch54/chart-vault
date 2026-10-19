@@ -350,8 +350,8 @@
     g.append(t(cx - w / 2 - 3, topY - 3, aT, cornerF(aT), 'bold', 'end'), t(cx + w / 2 + 3, topY - 3, bT, cornerF(bT), 'bold', 'start'));
     const nm = opts.name !== undefined ? opts.name : d.name;
     if (nm && w >= 44) g.append(t(cx, topY + f(0.1) + 3, nm, Math.min(f(0.095), (w * 0.86) / (nm.length * 0.58)), opts.unbalanced ? 'name unb' : opts.dark ? 'name dark' : 'name'));
-    const ccy = topY + hh * 0.44, r = w * 0.155;
-    g.append(sv('circle', { cx, cy: ccy, r, fill: 'none', stroke: '#2788c7', 'stroke-width': w > 120 ? 1.6 : w > 30 ? 1 : 0.5 }), t(cx, ccy + f(0.12) * 0.36, d.center.text, f(0.12), 'bold'));
+    const ccy = topY + hh * 0.44, r = w * 0.155 * (1 + (fk - 1) * 0.5); // bigger numbers (the grid's main row) get a somewhat bigger circle
+    g.append(sv('circle', { cx, cy: ccy, r, fill: 'none', stroke: '#2788c7', 'stroke-width': w > 120 ? 1.6 : w > 30 ? 1 : 0.5 }), t(cx, ccy + f(0.12) * 0.36, d.center.text, f(fk > 1 ? 0.11 : 0.12), 'bold'));
     // The auras sit outside the sides: the gap is measured where the text is tallest, at its top, where the
     // triangle is wider than at the baseline.
     const sideY = topY + hh * 0.64, auraF = f(0.14), sideX = (w / 2) * (1 - (sideY - auraF * 0.72 - topY) / hh) + 3;
@@ -427,11 +427,14 @@
   // (36) the same way at the bottom, its numbers bold and about twice the size, dark. No label: the two digits are
   // the number.
   function cellSvg(x) {
-    const svg = A.sv('svg', { viewBox: '0 0 110 112', class: 'dia nfcell', role: 'img', 'aria-label': `${T.val(x).text} ${T.nameOf(x)}` });
+    // Every number's box was worked out from the font sizes (0.58 em a character) so no two touch: the side
+    // diamonds sit at x 22 / 122, the main row's side diamonds 12 lower than the main, the main's digits clear
+    // of the essence row's life expressions. Change a size here and check a cell at two across again.
+    const svg = A.sv('svg', { viewBox: '0 0 160 120', class: 'dia nfcell', role: 'img', 'aria-label': `${T.val(x).text} ${T.nameOf(x)}` });
     const B = T.bigDiamond(x), o = { name: '', minFont: 3.6 };
-    tri(svg, B.integration, 55, 8, 26, o);
-    tri(svg, B.essence, 55, 38, 36, o); tri(svg, B.essence.outerD, 19, 44, 24, o); tri(svg, B.essence.innerD, 91, 44, 24, o);
-    tri(svg, B.main, 55, 74, 36, { ...o, dark: true, fontK: 1.4, minFont: 4.5 }); tri(svg, B.main.outerD, 19, 80, 24, o); tri(svg, B.main.innerD, 91, 80, 24, o);
+    tri(svg, B.integration, 80, 8, 26, o);
+    tri(svg, B.essence, 80, 40, 36, o); tri(svg, B.essence.outerD, 22, 46, 24, o); tri(svg, B.essence.innerD, 138, 46, 24, o);
+    tri(svg, B.main, 80, 78, 36, { ...o, dark: true, fontK: 1.4, minFont: 4.5 }); tri(svg, B.main.outerD, 22, 90, 24, o); tri(svg, B.main.innerD, 138, 90, 24, o);
     return svg;
   }
   function numberFunView(arg) {
