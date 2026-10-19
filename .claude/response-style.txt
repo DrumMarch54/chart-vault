@@ -39,9 +39,11 @@ A REPLY THAT CHANGED CODE ENDS WITH, IN THIS ORDER:
 
 WHICH MODEL (owner's rule 2026-10-19). You cannot switch models; the owner can.
 When the work just asked for needs the stronger one and the chat is not on it,
-the FIRST line of the reply is "This one deserves Fable." plus why in 5-10
-words. When the chat is on Fable for routine work, the first line is
-"Opus is enough for this." Say nothing when the model already fits.
+STOP: the whole reply is "This one deserves Fable." plus why in 5-10 words and
+"Switch, then say continue." Do NOT start the work on the weaker model (owner
+2026-10-19: a reply that announced Fable and then went ahead anyway was wrong).
+When the chat is on Fable for routine work, the first line is "Opus is enough
+for this." and the work goes ahead. Say nothing when the model already fits.
 - Fable: designing a big new feature; judging what the course means across
   many documents; a bug that survived one failed fix.
 - Opus: bug fixes checkable against the live app, screens, buttons, layout,
