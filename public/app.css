@@ -643,6 +643,35 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .pt .pt-card p { line-height: 1.45; }
 .pt-clamp { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
 .pt-more { margin-top: 6px; font-size: 14px; font-weight: 600; color: #5f7990; }
+/* One card per number in the price: where it sits, the number and its name, the color, then the passages. */
+.pt-numtop { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.pt .pt-card .pt-numtop .bizcolor { margin: 0; }
+.pt .pt-card .bignum.pt-numname { padding: 4px 0 2px; gap: 8px; flex-wrap: nowrap; }
+.pt .pt-numname b { font-size: 28px; line-height: 1.15; color: #22252e; }
+.pt .pt-numname .nm { font-size: 16px; line-height: 1.25; }
+.pt-sub { margin-top: 10px; padding-top: 8px; border-top: 1px solid #e6e8ee; }
+.pt-sheet .pt-sub, .pt-sheet .pt-subhead { margin-top: 14px; }
+.pt-subhead { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.pt-subhead > span:first-child { color: #8a8f9c; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.pt-subnote { color: #5f7990; font-size: 13px; font-weight: 600; }
+.pt .pt-card .pt-sub p { margin-top: 4px; }
+.pt .pt-card .pt-sub .codes { margin: 6px 0 0; }
+.pt .pt-card .pt-sub .codes span { padding: 4px 10px; }
+.pt-sheet .pt-label { margin-top: 4px; }
+.pt-sheet .bizcolor { margin: 0 0 4px; }
+.pt-sheet .codes { margin: 6px 0 0; }
+/* The pyramid card's switch and the price's chart */
+.pt-seg { display: flex; gap: 4px; padding: 3px; margin: 0 0 4px; background: #e9ebf0; border-radius: 16px; }
+.pt-segbtn { flex: 1; min-height: 32px; padding: 0 8px; border-radius: 13px; background: transparent; color: #5a5f6e; font-size: 13px; font-weight: 600; }
+.pt-segbtn.on { background: #fff; color: #22252e; font-weight: 700; box-shadow: 0 1px 2px rgba(0, 0, 0, .08); }
+.pt-chart { padding: 6px 0 8px; }
+.pt-chartsvg .nscope { max-width: 300px; margin: 0 auto; }
+.pt-dayrow { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; padding: 4px 0 6px; }
+.pt-daylab { display: flex; align-items: center; gap: 8px; color: #5a5f6e; font-size: 14px; }
+.pt-daylab input { width: 78px; min-height: 36px; text-align: center; font: 700 18px system-ui; border: 1px solid #e1e3e9; border-radius: 10px; background: #fff; color: #22252e; }
+.pt-daylab input:focus { border-color: var(--blue); outline: none; }
+.pt-chart .linkbtn { min-height: 32px; font-size: 14px; }
+.pt-chart .pt-ratio { margin: 0 8px 4px; }
 .pt-fits { padding-top: 18px; }
 .pt-fits .pt-label { padding: 0 4px 8px; }
 .pt-fits .codes { margin: 0; }

@@ -371,3 +371,18 @@ test('whole name pyramid: spaces do not count, the letter row is every letter of
   // its bottom row is the letters K A T R I N E D I T T E P I L M A R K with the course's letter values (T = 4, R = 2, P = 8)
   assert.deepEqual(Array.from(whole.pyramid[0], (v) => v.sum), [2, 1, 4, 2, 1, 5, 5, 4, 1, 4, 4, 5, 8, 1, 3, 4, 1, 2, 2]); // the course's letter values
 });
+
+// The price's chart: a number sequence on the central line (Six Themes book, "Numeroscopes on number sequences";
+// Price Tool → Price Chart). Checked by hand against the single-name rules: digits as names, 0 drawn but silent.
+test('sequence: digits on the central line, the digit sum at the bottom, a 0 adds nothing', () => {
+  const s = N.sequence('3695', null), c = s.chart;
+  assert.equal(s.digits.join(''), '3695');
+  assert.equal(t(c.le), '23/5'); assert.equal(t(c.lowerLeft), '8/8'); assert.equal(t(c.lowerRight), '10/1'); assert.equal(t(c.solar), '9/9');
+  assert.equal(c.heart, null); assert.equal(c.pillar, null); // no day on top: no upper half
+  const z = N.sequence('2400', null).chart;
+  assert.equal(z.words.length, 4); assert.ok(z.words[2].zero && z.words[3].zero); assert.equal(t(z.le), '6/6'); assert.equal(t(z.last.value), '4/4');
+  const d = N.sequence('995', 19).chart;
+  assert.equal(t(d.upperLeft), '10/1'); assert.equal(t(d.upperRight), '6/6'); assert.equal(t(d.heart), '7/7'); assert.equal(t(d.pillar), '41/5');
+  assert.equal(N.sequence('5', null).chart.le, null); // one digit: only the line
+  assert.equal(N.sequence('', null).digits.length, 0);
+});

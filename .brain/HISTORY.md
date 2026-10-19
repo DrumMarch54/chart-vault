@@ -703,3 +703,24 @@ in the same position; no vault statistics on the page beyond that count.
 - Owner: the − / + size control from Coming Days belongs on every grid of charts. Added `sizeControl`
   (app.js) and put it on the browse grid (list, search results, Recently Opened: one setting), Similar Charts
   and Possible Duplicates; Coming Days and All Numbers keep their own. Rule in public/CLAUDE.md.
+
+## 2026-10-19 Price Tool: the books' words one card per number, and the price drawn as a chart
+The owner, on the Price Tool's "What the Books Say": "sloppily thrown together and unnecessary … organize this and make
+it nice", and: the tool is missing the numeroscope of the price, "the numbers go on the central line, they talk about this
+in the source material somewhere".
+- Before: one card per BOOK passage, so 23/5 appeared twice (the Marketing book's price page, then the business book's
+  words), "5 · Charisma, Desire to buy …" stood as if it were a number in the price, and a digit-sum pill was the only
+  thing saying where a number sat. Now: one card per NUMBER in the price, in the order the book reads them (digit sum,
+  clean number, first two digits, a magnetic number in the row), each with its place as the label, the number and its
+  course name, the business color pill, then the passages under small heads: As a Price, Any N Price, In Business,
+  Suits. Three lines each; a tap opens the same passages in full, same order, in one sheet. The business name is the
+  note of "In Business" (dropped when it is the course name).
+- The source: the Six Themes book, "Numeroscopes on number sequences: The Namescope is a mini-numeroscope that follows
+  the same structure as the Numeroscope and can be used on a phone number, a price or a year"; the chart videos: "we
+  could also put a number sequence here" (the central line). Built as `Numeroscope.sequence`: digits as names, exactly
+  the single-name chart's rules (first digit = first name, last = surname, the rest middle names); a 0 stays on the line
+  in gray and carries nothing; the LE is the price's digit sum. The top is an optional day (none by default: a price has
+  no inception date of its own; the owner can type the launch day or the business's day, or tap "Use my day").
+  Drawn by `singleNameSvg`, which learned to draw a zero word. Test: 3695 → 8/8, 10/1, 9/9, 23/5; 995 with day 19 →
+  10/1, 6/6, 7/7, pillar 41/5. Switch on the pyramid card: Number Pyramid / Price Chart, remembered.
+- Decision, not from the book: single digits on the line, like the price pyramid's cells, not two-digit groups.

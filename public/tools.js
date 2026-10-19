@@ -475,7 +475,8 @@
   // number's business words and color), Module 12 (which numbers suit which customers and purposes).
   // Layout: design 2a (2026-10-18, owner: "looks like it was thrown together"): the verdict beside the digit sum at
   // the top, the rules as a list (Avoid / Care / Note), the pyramid with its top, weight and ratio in one card, the
-  // books' words in matching cards cut to three lines (tap for the whole page). CSS: the `.pt` block in app.css.
+  // books' words one card per number (2026-10-19), each passage under its own small head, cut to three lines (tap
+  // for the whole page). The pyramid card also draws the price's chart (Numeroscope.sequence). CSS: `.pt` in app.css.
   // The words the book gives a price vibration: the summary (pp. 52-53), else the note of its example price (p. 53),
   // else the number's business name.
   function vibeWords(B, n) {
@@ -490,7 +491,8 @@
   const vibeText = (B, n) => { const P = B.prices || {}; const x = (P.sums || {})[n] || (P.clean || {})[n]; return x ? { text: x.text, title: x.title || '', page: x.page } : null; };
   function priceView() {
     light();
-    const state = recall('priceTool', { vibe: 23, range: 1, price: '', mode: 'check' });
+    const state = recall('priceTool', { vibe: 23, range: 1, price: '', mode: 'check', view: 'pyramid', chartDay: '' });
+    state.view = state.view === 'chart' ? 'chart' : 'pyramid'; state.chartDay = String(state.chartDay || '').replace(/\D/g, '').slice(0, 2);
     if (!T.PRICE_VIBES.some(([v]) => v === state.vibe)) state.vibe = 23;
     if (!T.PRICE_RANGES[state.range]) state.range = 1;
     state.mode = state.mode === 'find' ? 'find' : 'check';
@@ -506,23 +508,71 @@
     const label = (t) => A.h('div', { class: 'pt-label' }, t);
     const KIND_WORD = { warn: 'Avoid', care: 'Care', soft: 'Note' };
     const textSheet = (title, text) => A.sheet(A.h('div', { class: 'numsheet' }, A.h('h3', {}, title), ...String(text).split('\n\n').map((p) => A.h('p', {}, p))));
-    // One card of the books' words: the number, its name, where it sits in the price; three lines, tap for the whole page.
-    const wordCard = ({ num, name, pos, color, text, warn, open }) => {
-      const long = String(text || '').length > 190;
-      return A.h('div', { class: 'reading pt-card', onclick: open || null },
-        A.h('div', { class: 'head' }, A.h('b', {}, num), A.h('span', { class: 'nm' }, name || ''), A.h('span', { class: 'pos' }, pos)),
-        color ? A.h('span', { class: 'bizcolor ' + color }, BIZ_COLOR_WORD[color] + ' for Business') : null,
-        text ? A.h('p', { class: long ? 'pt-clamp' : '' }, text) : null,
-        warn ? A.h('p', { class: 'warnline' }, '⚠ ' + warn) : null,
-        long && open ? A.h('div', { class: 'pt-more' }, 'Read more ›') : null);
+    // What the books say, one card per number in the price (owner 2026-10-19: the cards were "sloppily thrown
+    // together", and the same 23/5 came twice, once per book). Each card: where the number sits, the number and its
+    // name, the business color, then the books' passages under their own small heads: As a Price (Marketing
+    // Numerology pp. 38-44), Any N Price (p. 54), In Business (The Numbers 10-99 in Business), Suits (Module 12).
+    // Three lines each; a tap opens the same passages in full, in the same order.
+    const POS_LABEL = { sum: 'Digit Sum', clean: 'Clean Number', lead: 'First Two Digits', row: 'In the Price' };
+    const titleCase = (t) => String(t || '').replace(/(^|[\s/,])([a-z])/g, (m, a, b) => a + b.toUpperCase());
+    const endDot = (t) => (/[.!?]$/.test(t) ? t : t + '.');
+    // The passages the books have for one number as it sits in a price. asPrice: the number is the price's own
+    // vibration (its digit sum, or its clean number). ds: the digit the price lands on, for "Any N Price" and the customers.
+    const passages = (n, { asPrice = false, ds = 0 } = {}) => {
+      const P = B.prices || {}, out = [], b = (B.business || {})[n], fam = n < 10 ? (B.businessFamilies || {})[n] : null, own = asPrice ? vibeText(B, n) : null;
+      if (own) out.push({ head: 'As a Price', note: cap(own.title || vibeWords(B, n)), text: own.text });
+      const hund = ds ? (P.hundreds || {})[ds] : null, hfam = ds ? (P.families || {})[ds] : null;
+      if (hund || hfam) out.push({ head: `Any ${ds} Price`, note: hfam ? cap(hfam.words) : '', text: hund ? `Like $${ds}00: ${endDot(hund.text)}` : '' });
+      if (b) out.push({ head: 'In Business', note: b.name === nameOf(T.val(n)) ? '' : b.name, text: b.text, warn: b.warn, colorNote: b.color && B.businessColors && B.businessColors[b.color] ? `${BIZ_COLOR_WORD[b.color]}: ${B.businessColors[b.color]}.` : '' });
+      else if (fam) out.push({ head: 'In Business', note: fam.title, text: fam.text });
+      return out;
     };
-    const bizCard = (n, pos) => {
-      const b = (B.business || {})[n], fam = n < 10 ? (B.businessFamilies || {})[n] : null;
-      if (!b && !fam) return null;
-      return wordCard({ num: T.val(n).text, name: b ? b.name : fam.title, pos, color: b && b.color && BIZ_COLOR_WORD[b.color] ? b.color : null, text: b ? b.text : fam.text, warn: b && b.warn,
-        open: () => { A.count('price.number'); numberSheet(T.val(n), 'about'); } });
+    const suitsOf = (n, ds) => (B.codes || []).filter((x) => x.nums && x.nums.includes(n)).map((x) => x.name)
+      .concat(ds ? (B.customers || []).filter((x) => x.digits.includes(ds)).map((x) => x.who) : []);
+    const subhead = (head, note) => A.h('div', { class: 'pt-subhead' }, A.h('span', {}, head), note ? A.h('span', { class: 'pt-subnote' }, note) : null);
+    const pills = (list) => A.h('div', { class: 'codes' }, ...list.map((f) => A.h('span', { class: 'soft' }, titleCase(f))));
+    const numCard = (n, pos, opts = {}) => {
+      const parts = passages(n, opts), fits = suitsOf(n, opts.ds || 0);
+      if (!parts.length && !fits.length) return null;
+      const v = T.val(n), b = (B.business || {})[n], color = b && b.color && BIZ_COLOR_WORD[b.color] ? b.color : null;
+      const colorPill = () => (color ? A.h('span', { class: 'bizcolor ' + color }, BIZ_COLOR_WORD[color] + ' for Business') : null);
+      const open = () => {
+        A.count('price.number');
+        A.sheet(A.h('div', { class: 'numsheet pt-sheet' },
+          A.h('div', { class: 'pt-label' }, POS_LABEL[pos]), A.h('h3', {}, `${v.text} ${nameOf(v)}`), colorPill(),
+          ...parts.flatMap((p) => [subhead(p.head, p.note), ...(p.text ? String(p.text).split('\n\n').map((t) => A.h('p', {}, t)) : []),
+            p.warn ? A.h('p', { class: 'warnline' }, '⚠ ' + p.warn) : null, p.colorNote ? A.h('p', { class: 'muted small' }, p.colorNote) : null]),
+          fits.length ? subhead('Suits') : null, fits.length ? pills(fits) : null));
+      };
+      return A.h('div', { class: 'reading pt-card pt-num', onclick: open },
+        A.h('div', { class: 'pt-numtop' }, A.h('span', { class: 'pt-label' }, POS_LABEL[pos]), colorPill()),
+        A.h('div', { class: 'bignum pt-numname' }, A.h('b', {}, v.text), A.h('span', { class: 'nm' }, nameOf(v))),
+        ...parts.map((p) => A.h('div', { class: 'pt-sub' }, subhead(p.head, p.note), p.text ? A.h('p', { class: 'pt-clamp' }, p.text) : null, p.warn ? A.h('p', { class: 'warnline pt-clamp' }, '⚠ ' + p.warn) : null)),
+        fits.length ? A.h('div', { class: 'pt-sub' }, subhead('Suits'), pills(fits)) : null,
+        A.h('div', { class: 'pt-more' }, 'Read the whole page ›'));
     };
     const stat = (name, value, cls = '') => A.h('div', {}, A.h('span', {}, name), A.h('b', { class: cls }, value));
+    // The price's chart: the course's mini-numeroscope for a number sequence (Numeroscope.sequence), the digits on
+    // the central line, the price's digit sum at the bottom, an optional day on top. Drawn by the same drawing as a
+    // single name's chart. The day box keeps its focus while typing: only the drawing and its caption are redrawn.
+    const dayValue = () => { const d = Number(state.chartDay); return d >= 1 && d <= 31 ? T.val(d) : null; };
+    const chartBox = (c) => {
+      const $svg = A.h('div', { class: 'pt-chartsvg' }), $cap = A.h('p', { class: 'pt-ratio' });
+      const draw = () => {
+        const dayV = dayValue(), seq = N.sequence(c.digits.join(''), dayV);
+        A.fill($svg, A.singleNameSvg(seq.chart, '', seq.digits.length, dayV));
+        $cap.textContent = dayV ? `The digits on the central line add up to ${c.value.text} at the bottom; day ${dayV.text} on top gives the upper half.`
+          : `The digits sit on the central line and add up to ${c.value.text} at the bottom. A day on top (the launch day or the business's day) fills the upper half.`;
+      };
+      const $day = A.h('input', { type: 'text', inputmode: 'numeric', maxlength: '2', placeholder: 'none', value: state.chartDay || '', 'aria-label': 'Day on top of the chart' });
+      $day.addEventListener('input', () => { state.chartDay = $day.value.replace(/\D/g, '').slice(0, 2); $day.value = state.chartDay; remember('priceTool', state); A.count('price.chart_day'); draw(); });
+      const me = recall('mychart', null);
+      draw();
+      return A.h('div', { class: 'pt-chart' }, $svg,
+        A.h('div', { class: 'pt-dayrow' }, A.h('label', { class: 'pt-daylab' }, A.h('span', {}, 'Day on top'), $day),
+          me && me.day && String(me.day) !== state.chartDay ? A.h('button', { type: 'button', class: 'linkbtn', onclick: () => { state.chartDay = String(me.day); $day.value = state.chartDay; remember('priceTool', state); A.count('price.chart_day'); draw(); } }, `Use my day (${me.day})`) : null),
+        $cap);
+    };
     const drawCheck = () => {
       remember('priceTool', state);
       const c = T.priceCheck($in.value);
@@ -531,38 +581,35 @@
       const W = c.weight;
       const P = B.prices || {};
       const ex = (P.examples || []).find((x) => x.price === c.price);
-      const ownN = c.clean || c.sum, own = vibeText(B, ownN);
-      const hund = (P.hundreds || {})[c.value.ds], fam = (P.families || {})[c.value.ds];
-      // The numbers in the price the book reads: the digit sum, the clean number, the first two digits (p. 51).
-      const shown = [[c.sum, 'Digit Sum']];
-      if (c.clean && c.clean !== c.sum) shown.push([c.clean, 'Clean Number']);
-      if (c.lead && !shown.some(([n]) => n === c.lead)) shown.push([c.lead, 'First Two Digits']);
-      for (const n of c.rowNums) if (!shown.some(([m]) => m === n)) shown.push([n, 'In the Price']);
-      // Which purposes and customers these numbers suit (Module 12 pp. 4, 10).
-      const nums = shown.map(([n]) => n);
-      const fits = (B.codes || []).filter((x) => x.nums && x.nums.some((n) => nums.includes(n))).map((x) => x.name)
-        .concat((B.customers || []).filter((x) => x.digits.includes(c.value.ds)).map((x) => x.who));
+      // The numbers in the price the book reads: the digit sum, the clean number, the first two digits (p. 51),
+      // a magnetic number standing in the row (p. 40). The book's page for the price's own vibration goes with the
+      // clean number when there is one, else with the digit sum; "Any N Price" always with the digit sum.
+      const cards = [numCard(c.sum, 'sum', { asPrice: !c.clean || c.clean === c.sum, ds: c.value.ds })];
+      if (c.clean && c.clean !== c.sum) cards.push(numCard(c.clean, 'clean', { asPrice: true }));
+      const seen = [c.sum, c.clean];
+      if (c.lead && !seen.includes(c.lead)) { cards.push(numCard(c.lead, 'lead')); seen.push(c.lead); }
+      for (const n of c.rowNums) if (!seen.includes(n)) { cards.push(numCard(n, 'row')); seen.push(n); }
       const rules = [...c.warnings.map((t) => ['warn', t]), ...c.cautions.map((t) => ['care', t]), ...c.notes.map((t) => ['soft', t])];
       const ratioNote = W.ratio >= 0.3 ? 'A heavy pyramid: ratio at or over 0.3' : W.ratio > 0 ? 'Some weight in the pyramid, under the 0.3 line' : 'A light pyramid: no tension numbers';
-      const hundText = hund ? `Like $${c.value.ds}00: ${hund.text}${/[.!?]$/.test(hund.text) ? '' : '.'}` : '';
+      // The pyramid card shows the pyramid or the price's chart: one switch, remembered.
+      const seg = (label, on, onclick) => A.h('button', { type: 'button', class: 'pt-segbtn' + (on ? ' on' : ''), 'aria-pressed': on ? 'true' : 'false', onclick }, label);
+      const setView = (v) => { state.view = v; A.count(v === 'chart' ? 'price.chart' : 'price.pyramid'); drawCheck(); };
+      const chart = state.view === 'chart';
       A.fill($check,
         A.h('div', { class: 'pt-box pt-sum' },
           A.h('div', { class: 'pt-sumrow' },
             A.h('div', { class: 'pt-sumnum', onclick: () => numberSheet(c.value, 'about') }, label('Digit sum'), A.h('div', { class: 'bignum' }, A.h('b', {}, c.value.text), A.h('span', { class: 'nm' }, c.name))),
             A.h('span', { class: 'pt-verdict ' + c.verdict }, T.VERDICT_WORDS[c.verdict])),
           rules.length ? A.h('div', { class: 'pt-rules' }, ...rules.map(([k, t]) => A.h('div', { class: 'pt-rule' }, A.h('span', { class: 'pt-kind ' + k }, KIND_WORD[k]), A.h('span', {}, noPage(t))))) : null),
-        A.h('div', { class: 'pt-box pt-pyrbox' }, label('Number pyramid'),
-          A.h('div', { class: 'pyr' }, ...rows.map((row, i) => A.h('div', { class: 'pyr-row' }, ...row.map((v) => A.h('span', { class: (N.TENSION[v.sum] ? (i === 0 ? 'top-tense' : 'tense') : '') }, i === rows.length - 1 ? String(v.sum) : v.text))))),
-          A.h('div', { class: 'pt-stats' }, stat('Top', W.top ? W.top.text : '–'), stat('Weight', String(Number(W.total.toFixed(3)))), stat('Ratio', W.ratio.toFixed(3), W.ratio < 0.3 ? 'ok' : 'err')),
-          A.h('p', { class: 'pt-ratio' }, ratioNote)),
+        A.h('div', { class: 'pt-box pt-pyrbox' },
+          A.h('div', { class: 'pt-seg', role: 'group', 'aria-label': 'Pyramid or chart' }, seg('Number Pyramid', !chart, () => setView('pyramid')), seg('Price Chart', chart, () => setView('chart'))),
+          chart ? chartBox(c) : A.h('div', {},
+            A.h('div', { class: 'pyr' }, ...rows.map((row, i) => A.h('div', { class: 'pyr-row' }, ...row.map((v) => A.h('span', { class: (N.TENSION[v.sum] ? (i === 0 ? 'top-tense' : 'tense') : '') }, i === rows.length - 1 ? String(v.sum) : v.text))))),
+            A.h('div', { class: 'pt-stats' }, stat('Top', W.top ? W.top.text : '–'), stat('Weight', String(Number(W.total.toFixed(3)))), stat('Ratio', W.ratio.toFixed(3), W.ratio < 0.3 ? 'ok' : 'err')),
+            A.h('p', { class: 'pt-ratio' }, ratioNote))),
         B.prices ? A.h('div', { class: 'wlabel tl pt-section' }, 'What the Books Say') : null,
         ex ? A.h('p', { class: 'bookex pt-ex' }, `One of the book's own example prices: ${fmt(ex.price)} = ${T.val(ex.sum).text}${ex.note ? ', ' + ex.note : ''}.`) : null,
-        A.h('div', { class: 'pt-cards' },
-          own ? wordCard({ num: T.val(ownN).text, name: own.title ? cap(own.title) : (vibeWords(B, ownN) || ''), pos: c.clean ? 'Clean Price' : 'Digit Sum Price', text: own.text,
-            open: () => { A.count('price.vibe_text'); textSheet(`${T.val(ownN).text} Prices`, own.text); } }) : null,
-          hund || fam ? wordCard({ num: String(c.value.ds), name: fam ? fam.words : '', pos: `A ${c.value.ds} Price`, text: hundText }) : null,
-          ...shown.map(([n, pos]) => bizCard(n, pos))),
-        fits.length ? A.h('div', { class: 'pt-fits' }, label('Suits'), A.h('div', { class: 'codes' }, ...fits.map((f) => A.h('span', { class: 'soft' }, f.replace(/(^|[\s/,])([a-z])/g, (m, a, b) => a + b.toUpperCase()))))) : null);
+        A.h('div', { class: 'pt-cards' }, ...cards));
     };
     const shortWords = (v) => { const w = vibeWords(B, v); return w ? w.split(/[,;:(]| and /)[0].replace(/^(a|the) /i, '').toLowerCase() : ''; };
     const fillPicks = () => {
@@ -718,7 +765,7 @@
     'screen.today': 'Today', 'screen.coming': 'Coming Days', 'screen.numberfun': 'Number Fun', 'screen.price': 'Price Tool', 'screen.relation': 'Relationship', 'screen.karmic': 'Karmic Connections', 'screen.mychart': 'My Chart (settings)',
     'home.today': 'Home → Today', 'home.coming': 'Home → Coming Days', 'home.numberfun': 'Home → Number Fun', 'home.price': 'Home → Price Tool', 'home.relation': 'Home → Relationship', 'home.karmic': 'Home → Karmic Connections', 'home.mychart': 'Home → My Chart',
     'today.psyche': 'Today: psyche charts on or off', 'today.full': 'Today: full screen day', 'today.ruler': 'Today: ruler of the day', 'today.company': 'Today: a company started this day', 'dayfull.move': 'Full screen day: previous or next day', 'coming.open_day': 'Coming Days: open a day', 'coming.size': 'Coming Days: chart size', 'coming.super_only': 'Coming Days: super dates only', 'numberfun.type': 'Number Fun: type a number', 'numberfun.grid': 'Number Fun: All Numbers grid on or off', 'numberfun.size': 'Number Fun: grid chart size', 'numberfun.tap_cell': 'Number Fun: open a number from the grid', 'numberfun.tap_diamond': 'Number Fun: tap a diamond', 'numberfun.tap_other': 'Number Fun: tap a number it appears in',
-    'price.find': 'Price Tool: Find a Price', 'price.vibe': 'Price Tool: pick a vibration', 'price.range': 'Price Tool: pick a range', 'price.pick': 'Price Tool: pick a found price', 'price.number': 'Price Tool: a number in the price', 'price.vibe_text': 'Price Tool: the book\'s page for a vibration', 'relation.use_me': 'Relationship: me as the first person', 'mychart.save': 'My Chart: save',
+    'price.find': 'Price Tool: Find a Price', 'price.vibe': 'Price Tool: pick a vibration', 'price.range': 'Price Tool: pick a range', 'price.pick': 'Price Tool: pick a found price', 'price.number': 'Price Tool: a number in the price', 'price.vibe_text': 'Price Tool: the book\'s page for a vibration', 'price.pyramid': 'Price Tool: the number pyramid', 'price.chart': 'Price Tool: the price chart', 'price.chart_day': 'Price Tool: a day on top of the chart', 'relation.use_me': 'Relationship: me as the first person', 'mychart.save': 'My Chart: save',
   };
 
   function install(app) {

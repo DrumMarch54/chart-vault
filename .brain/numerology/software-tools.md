@@ -97,6 +97,13 @@ the price's vibration (pp. 38-44), "A N price" ($100-$900, p. 54), the business 
 number and the first two digits (The Numbers 10-99 in Business; 1-9: the family summaries), "Suits" (Module 12 p. 10
 number codes by purpose, p. 4 customers by digit), the book's own example prices in the chosen range, "in the book" on found
 prices that the book itself lists. The chip words are the summary's (pp. 52-53).
+2026-10-19: the books' words are one card per number in the price (Digit Sum / Clean Number / First Two Digits / In the
+Price), each passage under its own head: As a Price (pp. 38-44), Any N Price (p. 54), In Business (10-99 in Business),
+Suits (Module 12). The pyramid card has a switch, Number Pyramid / Price Chart: the chart is the course's mini-numeroscope
+for a number sequence (Six Themes book, "Numeroscopes on number sequences … can be used on a phone number, a price or a
+year"; the chart videos: "we could also put a number sequence here" on the central line). `Numeroscope.sequence`: every
+digit is a name on the central line (as every letter is in `singleName`), a 0 is drawn gray and adds nothing, the digit
+sum at the bottom is the price's own; an optional day on top (the launch day or the business's day) gives the upper half.
 Color code (The Numbers 10-99 in Business p. 1): green Excellent, black Good, orange Can Be Okay, red Avoid. Read from the
 colored list lines with `pdftohtml -xml`. 13, 49, 52, 67, 70, 76, 90 are printed in the heading blue, which the key does
 not name: shown without a color word (question for the owner). 93-99 are in no list line: no color.
