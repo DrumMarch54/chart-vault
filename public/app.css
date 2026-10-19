@@ -638,3 +638,17 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .pt .prow .top { padding: 3px 8px; }
 .pt .prow .inbook { font-size: 11px; font-weight: 700; color: #1f6b3a; background: #eef8f1; padding: 2px 6px; border-radius: 8px; }
 .pt-foot { margin: 14px 4px 0; color: #8a8f9c; font-size: 13px; line-height: 1.45; }
+
+/* What a number means where it sits (public/meaning.js): the page a tap on a drawn number opens. */
+.nscope .n-hit { cursor: pointer; }
+.mpop .pagetop { align-items: flex-start; }
+.mhead { flex: 1; min-width: 0; }
+.mpop .pagetop h1.mtitle { margin: 0; font-size: 22px; line-height: 1.2; white-space: normal; overflow: visible; text-overflow: clip; }
+.msub { margin-top: 2px; }
+.mtop { gap: 8px 12px; align-items: center; margin: 2px 0 10px; }
+.mverdict { display: inline-block; padding: 6px 12px; border-radius: 14px; font-weight: 700; font-size: 14px; }
+.mverdict.ok { background: #e3f5e8; color: #1f7a38; } .mverdict.mid { background: #fdf1d6; color: #8a5f00; } .mverdict.err { background: #fbe3e3; color: #a52a2a; }
+.mshow { background: var(--panel2); color: var(--text); min-height: 40px; padding: 0 14px; border-radius: 14px; font-size: 15px; }
+.mcard { background: #fff; color: #303030; border-radius: var(--radius); padding: 10px 12px; margin-bottom: 10px; }
+.mcard p { margin: 0 0 8px; font-size: 16px; line-height: 1.45; } .mcard p:last-child { margin-bottom: 0; }
+.mfrom { font-size: 12px; color: #8a8f9c; letter-spacing: .02em; margin-bottom: 6px; }

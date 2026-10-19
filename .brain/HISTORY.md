@@ -529,3 +529,29 @@ chart must feed every store a chart has (inputs, title, tags), not only the pict
   remembered in browser storage from a build before that flag existed. The dev app never showed it (fresh
   storage). Rule: the picker fetches the position list fresh every time it opens; the remembered copy is
   only for labels while offline. Anything cached on the phone outlives the build that wrote it.
+
+## 2026-10-19 Tap a number for what it means where it sits
+The owner asked for "information within the charts": press a number position and see the specific meaning of
+that number in that spot (the sub-chart PDF, the mind and emotion center combinations, the scraped chart
+descriptions, later the general descriptions and statistics). Design agreed: TAP, not press-and-hold (hold
+fights text selection, image saving and the viewer's drag and zoom, and hold is reserved for destructive taps);
+vault charts and the Quick Chart, not Today; a button on the page to show the other charts with the same number
+in the same position; no vault statistics on the page beyond that count.
+- What existed already did most of the work: the position engine knows which number sits where, and the
+  knowledge store had 10,988 passages indexed per number and per position family. The new piece is a ranking
+  PER POSITION (`server/meaning.js`): sources written about that chart first, then the position's topic and its
+  own words in the heading ("brand aura" for the public aura, "MV" for a center's main vibration, "outer diamond"
+  for the outer aura), then the number named in the heading. A heading that names another number too is a pair
+  or a case ("15 and 12 in the mind center", "First name 20/2 + Day Vibration 19/1") and is not about the number
+  alone: skipped, except a center's own pair with its extra vibration. Business books come last; the relations
+  book (people together) never shows under "Made of". When fewer than two passages fit, the number books'
+  general description fills in, under its own heading.
+- Tested by eye on a 30-case matrix before building the screen: every mind / emotion center, aura, sub-chart
+  and essence diamond case read right; name-line and life-expression positions have little position-specific
+  text in the store and fall back to the general description honestly.
+- Bug found on the way: `zoomable` never removed its pointer listeners on destroy, and the viewer mounts twice
+  (thumbnail, then the drawing), so every tap on the drawing fired twice (a name tap opened two word pages; one
+  close closed one). Listeners now go through an AbortController. The meaning page also refuses to open twice.
+- Not done yet, on purpose: the celebrity statistics PDF (NP-Statistics) is not in the knowledge store; general
+  descriptions as their own section on every page (the owner wants specific first).
+

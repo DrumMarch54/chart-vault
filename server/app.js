@@ -18,6 +18,7 @@ import { aiSettings, setAiSettings, spendState, pendingWarning, markWarningSeen,
 import { readingFor, writeReading, answerQuestion, deleteReadings, readingEstimate, readingChoices } from './reading.js';
 import { askVault } from './ask.js';
 import { factsFor } from './facts.js';
+import { meaningFor, countWith } from './meaning.js';
 
 const MAX_IMPORT = 50 * 1024 * 1024;
 
@@ -185,6 +186,14 @@ export function createApp(db, { log = console.log } = {}) {
     const n = recomputeAll(db);
     log(`recomputed the chart numbers of ${n} charts`);
     res.json({ recomputed: n, ...inputStats(db), check: tagCheck(db) });
+  });
+  // What a number means in a position (the tap on a number of a drawn chart): the course's words, the balance
+  // verdict, and how many vault charts hold it there. ?parts=7,5 names the two parts a center is made of.
+  app.get('/api/meaning', (req, res) => {
+    const parts = String(req.query.parts || '').split(',').map((x) => Number(x)).filter((x) => Number.isInteger(x) && x > 0);
+    const m = meaningFor({ chart: String(req.query.chart || ''), position: String(req.query.position || ''), sum: Number(req.query.sum), parts: parts.length === 2 ? parts : null });
+    if (!m) return res.status(400).json({ error: 'That position or number is not one the app knows.' });
+    res.json({ ...m, count: countWith(db, m.chart, m.position, m.sum) });
   });
   app.get('/api/tags', (req, res) => {
     const limit = Math.min(Math.max(Number(req.query.limit) || 30, 1), 200);

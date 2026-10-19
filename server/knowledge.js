@@ -54,6 +54,8 @@ function load() {
   }
   return idx;
 }
+// The loaded index for other readers (server/meaning.js ranks passages its own way).
+export const knowledgeIndex = () => load();
 export function knowledgeInfo() {
   const k = load();
   return { missing: k.missing, chunks: k.chunks.length, sources: k.sourceTopic.size };

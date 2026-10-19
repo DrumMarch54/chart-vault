@@ -50,6 +50,7 @@
     'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'viewer.number_tap': 'Tap a number on a chart', 'status.recompute': 'Recompute chart numbers',
     'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart', 'viewer.year_rows': 'Year Rows from a chart',
     'position.search_more': 'Narrow a position search by another number', 'position.add_more': 'Tap + Another number', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
+    'viewer.meaning': 'Tap a number on a chart for its meaning', 'quick.meaning': 'Tap a number on the Quick Chart for its meaning', 'meaning.show_charts': 'Meaning → show the charts with that number there',
   };
   const count = (name) => { try { fetch('/api/usage', { method: 'POST', credentials: 'same-origin', keepalive: true, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name }) }).catch(() => {}); } catch { /* counting never breaks a tap */ } };
 
@@ -153,6 +154,7 @@
 
   // ---------- overlays (sheet, lightbox) ----------
   let overlays = [];
+  let meaningUi = null; // set once public/meaning.js is installed (bottom of this file)
   function closeOverlays() { for (const o of overlays) o.remove(); overlays = []; document.body.classList.remove('noscroll'); }
   function sheet(title, actions) {
     const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
@@ -213,7 +215,11 @@
     img.addEventListener('load', () => { measure(); on.load?.(); }); if (img.complete) measure();
     const ro = new ResizeObserver(() => measure());
     ro.observe(box);
-    box.addEventListener('pointerdown', (e) => {
+    // Every listener on the box goes through here so destroy() removes it: a viewer mounts a drawing over a
+    // thumbnail, and two live sets of listeners made one tap fire twice (two pages opened, one close closed one).
+    const ac = new AbortController();
+    const listen = (type, fn, opts) => box.addEventListener(type, fn, { ...(opts || {}), signal: ac.signal });
+    listen('pointerdown', (e) => {
       if (e.target.closest('button, a, input')) return;
       box.setPointerCapture(e.pointerId);
       origin();
@@ -229,7 +235,7 @@
         start = { tx, ty, scale, dist: Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y), cx: (pts[0].x + pts[1].x) / 2, cy: (pts[0].y + pts[1].y) / 2 };
       }
     });
-    box.addEventListener('pointermove', (e) => {
+    listen('pointermove', (e) => {
       if (!pointers.has(e.pointerId) || !start) return;
       const p = loc(e);
       pointers.set(e.pointerId, p);
@@ -265,10 +271,10 @@
       swipe = null;
       start = pts.length === 1 ? { tx, ty, x: pts[0].x, y: pts[0].y, scale } : null;
     };
-    box.addEventListener('pointerup', up); box.addEventListener('pointercancel', up);
-    box.addEventListener('wheel', (e) => { e.preventDefault(); origin(); const p = loc(e); zoomAt(p.x, p.y, e.deltaY < 0 ? 1.15 : 1 / 1.15); }, { passive: false });
-    box.addEventListener('dblclick', (e) => e.preventDefault());
-    return { reset, view, set, destroy: () => ro.disconnect() };
+    listen('pointerup', up); listen('pointercancel', up);
+    listen('wheel', (e) => { e.preventDefault(); origin(); const p = loc(e); zoomAt(p.x, p.y, e.deltaY < 0 ? 1.15 : 1 / 1.15); }, { passive: false });
+    listen('dblclick', (e) => e.preventDefault());
+    return { reset, view, set, destroy: () => { ro.disconnect(); ac.abort(); } };
   }
 
   // ---------- compare: the chart picked to compare with ----------
@@ -590,6 +596,8 @@
       down: () => (sheetOpen ? closeSheet() : back()),
       tap: (target) => {
         $menu.classList.add('hidden');
+        const p = mode === 'drawn' && target && target.closest ? target.closest('[data-pos]') : null;
+        if (p && meaningUi) { count('viewer.meaning'); meaningUi.open(meaningUi.fromEl(p)); return; }
         const w = mode === 'drawn' && target && target.closest ? target.closest('[data-word]') : null;
         if (w && img && img.inputs) { count('viewer.name_tap'); openWord(w.getAttribute('data-word'), dayOf(img.inputs)); return; }
         if (sheetOpen) closeSheet(); else toggleBare();
@@ -1224,7 +1232,21 @@
     svg.append(grp('con', 'shape', rhombusShape(S.left.cx, S.cy, S.hw, S.hh, '#faddd7', { line: S.line, up: S.up, down: S.down, r: S.r, tri: S.tri, big: [S.left.bigX, S.bigY, S.bigR], faded: '#fef0ed' })));
     svg.append(grp('vow', 'shape', rhombusShape(S.right.cx, S.cy, S.hw, S.hh, '#dae7e0', { line: S.line, up: S.up, down: S.down, r: S.r, tri: S.tri, big: [S.right.bigX, S.bigY, S.bigR], faded: '#f6f8f7' })));
 
-    const txt = (x, y, v, cls, size, anchor) => (v ? sv('text', { x, y, class: cls, 'font-size': size, 'text-anchor': anchor || 'middle' }, typeof v === 'string' ? v : v.text) : null);
+    // A number that knows its position (pos = { chart, key, parts, n }) is a tap target: it and an invisible pad
+    // behind it (a thumb's width) carry data-pos / data-num / data-parts, and the viewer and the Quick Chart open
+    // its meaning (public/meaning.js). Names and the letter count carry none. A 0/0 word has no meaning to open.
+    const posAttrs = (v, pos) => (pos && v && v.sum > 0 ? { 'data-pos': `${pos.chart}.${pos.key}`, 'data-num': String(v.sum), 'data-parts': pos.parts && pos.parts.every((d) => d > 0) ? pos.parts.join(',') : null, 'data-n': pos.n || null, role: 'button', 'aria-label': `What ${v.text} means in this position` } : {});
+    const txt = (x, y, v, cls, size, anchor, pos) => (v ? sv('text', { x, y, class: cls + (pos && v.sum > 0 ? ' n-hit' : ''), 'font-size': size, 'text-anchor': anchor || 'middle', ...posAttrs(v, pos) }, typeof v === 'string' ? v : v.text) : null);
+    const hit = (x, y, v, cls, size, anchor, pos) => {
+      if (!v || !pos || !(v.sum > 0)) return null;
+      // Rows of numbers sit close side by side, so the pad is only a little wider than the number; rows are far
+      // apart, so it is a good deal taller (about 22 px on a phone for the smallest numbers, more when zoomed in).
+      const w = Math.max(size * 2.2, size * 0.62 * String(v.text).length) + 16, hh = size * 1.25 + 24;
+      const x0 = anchor === 'start' ? x - 8 : anchor === 'end' ? x - w + 8 : x - w / 2;
+      return sv('rect', { x: x0, y: y - size - 12, width: w, height: hh, fill: 'transparent', class: 'n-hit ' + ((/k-\w+/.exec(cls) || [''])[0]), ...posAttrs(v, pos) });
+    };
+    const num = (x, y, v, cls, size, anchor, pos) => [hit(x, y, v, cls, size, anchor, pos), txt(x, y, v, cls, size, anchor, pos)];
+    const dsOf = (vals) => (vals && vals.every((q) => q && q.sum > 0) ? vals.map((q) => q.ds) : null);
     // Color of one number: the paid tool's choice for that position and value (number-colors.js).
     const oneMiddle = data.name.middle.length === 1;
     const tone = (slot, v, bold) => 'n-' + NumberColors.lookup(slot, typeof v === 'string' ? v : (v ? v.text : ''), oneMiddle) + (bold ? ' n-bold' : '') + ' k-' + kindOfSlot(slot);
@@ -1235,25 +1257,28 @@
     const numbers = (pre, c, t, cx, top) => {
       const sd = t.sideDx || 0, aL = t.auraL ?? cx - t.auraDx + sd, aR = t.auraR ?? cx + t.auraDx + sd, an = t.auraAnchor;
       const nL = t.nameL ?? cx + t.nameDxL + sd, nR = t.nameR ?? cx + t.nameDxR + sd, lineBold = pre === '';
+      const chart = { '': 'name', 'c.': 'personality', 'v.': 'vocation', 'po.': 'outer', 'pi.': 'inner' }[pre];
+      const at = (key, parts, n) => ({ chart, key, parts: dsOf(parts), n });
+      const mx = (i) => (t.middle2 && c.middle.length <= 2 ? cx + spread(c.middle.length, t.middle2, i) : nL + (nR - nL) * (i + 1) / (c.middle.length + 1));
       return [
-        txt(cx, t.dvY, top, tone(pre + 'day', top, pre === ''), t.day),
-        c.upperLeft && txt(aL, t.upY, c.upperLeft, tone(pre + 'ul', c.upperLeft), t.small, an), c.upperRight && txt(aR, t.upY, c.upperRight, tone(pre + 'ur', c.upperRight), t.small, an),
-        c.heart && txt(cx, t.heartY, c.heart, tone(pre + 'heart', c.heart, true), t.heart),
-        ...c.heartExtra.map((v, i) => txt(cx + spread(c.heartExtra.length, t.extra2, i), t.heartY + t.extraUp, v, tone(pre + 'heartExtra', v), t.extra)),
-        t.spineX && c.spine && txt(t.spineX, t.spineY, c.spine, tone(pre + 'spine', c.spine), t.spine || t.small),
-        c.first && txt(nL, t.nameY, c.first.text, 'n-dark k-name', t.name), c.first && txt(nL, t.lineY, c.first.value, tone(pre + 'first', c.first.value, lineBold), t.lineFont),
-        ...c.middle.flatMap((w, i) => { const x = t.middle2 && c.middle.length <= 2 ? cx + spread(c.middle.length, t.middle2, i) : nL + (nR - nL) * (i + 1) / (c.middle.length + 1); return [txt(x, t.nameY, w.text, 'n-dark k-name', t.name), txt(x, t.lineY, w.value, tone(pre + 'middle', w.value, lineBold), t.lineFont)]; }),
-        c.last && txt(nR, t.nameY, c.last.text, 'n-dark k-name', t.name), c.last && txt(nR, t.lineY, c.last.value, tone(pre + 'last', c.last.value, lineBold), t.lineFont),
-        c.lowerLeft && txt(aL, t.lowY, c.lowerLeft, tone(pre + 'll', c.lowerLeft), t.small, an), c.lowerRight && txt(aR, t.lowY, c.lowerRight, tone(pre + 'lr', c.lowerRight), t.small, an),
-        c.solar && txt(cx, t.solarY, c.solar, tone(pre + 'solar', c.solar, true), t.solar || t.heart),
-        ...c.solarExtra.map((v, i) => txt(cx + spread(c.solarExtra.length, t.solarExtra2, i), t.solarY + t.extraDown, v, tone(pre + 'solarExtra', v), t.extra)),
-        t.bigX !== undefined && c.big && txt(t.bigX, t.leY, c.big, tone(pre + 'big', c.big, true), t.le), c.le && txt(cx, t.leY, c.le, tone(pre + 'le', c.le, true), t.le),
-        c.pillar && txt(cx, t.pillarY, c.pillar, tone(pre + 'pillar', c.pillar, t.pillarBold !== false), t.pillar),
-        // Main chart only: an invisible tap target over each name and its value opens that word's own charts.
-        ...(lineBold ? [c.first && tap(nL, c.first), ...c.middle.map((w, i) => tap(t.middle2 && c.middle.length <= 2 ? cx + spread(c.middle.length, t.middle2, i) : nL + (nR - nL) * (i + 1) / (c.middle.length + 1), w)), c.last && tap(nR, c.last)] : []),
+        ...num(cx, t.dvY, top, tone(pre + 'day', top, pre === ''), t.day, null, { chart: 'essence', key: 'day' }),
+        ...num(aL, t.upY, c.upperLeft, tone(pre + 'ul', c.upperLeft), t.small, an, at('upperLeft')), ...num(aR, t.upY, c.upperRight, tone(pre + 'ur', c.upperRight), t.small, an, at('upperRight')),
+        ...num(cx, t.heartY, c.heart, tone(pre + 'heart', c.heart, true), t.heart, null, at('heart', [c.upperLeft, c.upperRight])),
+        ...c.heartExtra.flatMap((v, i) => num(cx + spread(c.heartExtra.length, t.extra2, i), t.heartY + t.extraUp, v, tone(pre + 'heartExtra', v), t.extra, null, at('heartExtra', [c.heart, c.middle[i] && c.middle[i].value], i))),
+        ...(t.spineX ? num(t.spineX, t.spineY, c.spine, tone(pre + 'spine', c.spine), t.spine || t.small, null, at('spine', [top, c.le])) : []),
+        c.first && txt(nL, t.nameY, c.first.text, 'n-dark k-name', t.name), ...(c.first ? num(nL, t.lineY, c.first.value, tone(pre + 'first', c.first.value, lineBold), t.lineFont, null, at('first')) : []),
+        ...c.middle.flatMap((w, i) => [txt(mx(i), t.nameY, w.text, 'n-dark k-name', t.name), ...num(mx(i), t.lineY, w.value, tone(pre + 'middle', w.value, lineBold), t.lineFont, null, at('middle', null, i))]),
+        c.last && txt(nR, t.nameY, c.last.text, 'n-dark k-name', t.name), ...(c.last ? num(nR, t.lineY, c.last.value, tone(pre + 'last', c.last.value, lineBold), t.lineFont, null, at('last')) : []),
+        ...num(aL, t.lowY, c.lowerLeft, tone(pre + 'll', c.lowerLeft), t.small, an, at('lowerLeft')), ...num(aR, t.lowY, c.lowerRight, tone(pre + 'lr', c.lowerRight), t.small, an, at('lowerRight')),
+        ...num(cx, t.solarY, c.solar, tone(pre + 'solar', c.solar, true), t.solar || t.heart, null, at('solar', [c.lowerLeft, c.lowerRight])),
+        ...c.solarExtra.flatMap((v, i) => num(cx + spread(c.solarExtra.length, t.solarExtra2, i), t.solarY + t.extraDown, v, tone(pre + 'solarExtra', v), t.extra, null, at('solarExtra', [c.solar, c.middle[i] && c.middle[i].value], i))),
+        ...(t.bigX !== undefined ? num(t.bigX, t.leY, c.big, tone(pre + 'big', c.big, true), t.le, null, at('big')) : []), ...num(cx, t.leY, c.le, tone(pre + 'le', c.le, true), t.le, null, at('le')),
+        ...num(cx, t.pillarY, c.pillar, tone(pre + 'pillar', c.pillar, t.pillarBold !== false), t.pillar, null, at('pillar')),
+        // Main chart only: an invisible tap target over each name opens that word's own charts (its value below opens the meaning).
+        ...(lineBold ? [c.first && tap(nL, c.first), ...c.middle.map((w, i) => tap(mx(i), w)), c.last && tap(nR, c.last)] : []),
       ];
     };
-    const tap = (x, w) => sv('rect', { x: x - 50, y: L.main.text.nameY - 32, width: 100, height: 88, fill: 'transparent', class: 'n-tap k-name', 'data-word': w.text, role: 'button', 'aria-label': `Charts of the name ${w.text}` });
+    const tap = (x, w) => sv('rect', { x: x - 50, y: L.main.text.nameY - 32, width: 100, height: 40, fill: 'transparent', class: 'n-tap k-name', 'data-word': w.text, role: 'button', 'aria-label': `Charts of the name ${w.text}` });
     const day = data.essence.day;
     svg.append(grp('main', null, ...numbers('', data.name, { ...M.text, bigX: M.big[0] }, M.cx, day),
       txt(M.letter[0], M.text.letterY, data.name.letters ? String(data.name.letters) : null, 'n-blue n-bold k-letters', M.text.letterFont)));
@@ -1265,9 +1290,10 @@
     // little and big life path in the circle, outer and inner auras beside it. The small circle stays empty.
     const e = data.essence, T = H.text;
     // little and big life path in the circle, outer and inner auras beside it. All dark in the paid tool.
-    svg.append(grp('ess', null, txt(371, T.topAuraY, e.topAura, 'n-dark k-aura', T.corner), txt(T.monthX, T.monthY, e.month, 'n-dark n-bold k-line', T.corner), txt(T.yearX, T.monthY, e.year, 'n-dark n-bold k-line', T.corner),
-      txt(T.auraL, T.auraY, e.outerAura, 'n-dark k-aura', T.aura), txt(T.auraR, T.auraY, e.innerAura, 'n-dark k-aura', T.aura),
-      txt(371, T.lpY, e.littleLp, 'n-dark n-bold k-center', T.lp), txt(371, T.bigLpY, e.bigLp, 'n-dark n-bold k-center', T.lp)));
+    const ep = (key, parts) => ({ chart: 'essence', key, parts: dsOf(parts) });
+    svg.append(grp('ess', null, ...num(371, T.topAuraY, e.topAura, 'n-dark k-aura', T.corner, null, ep('topAura', [e.month, e.year])), ...num(T.monthX, T.monthY, e.month, 'n-dark n-bold k-line', T.corner, null, ep('month')), ...num(T.yearX, T.monthY, e.year, 'n-dark n-bold k-line', T.corner, null, ep('year')),
+      ...num(T.auraL, T.auraY, e.outerAura, 'n-dark k-aura', T.aura, null, ep('outerAura', [e.day, e.month])), ...num(T.auraR, T.auraY, e.innerAura, 'n-dark k-aura', T.aura, null, ep('innerAura', [e.day, e.year])),
+      ...num(371, T.lpY, e.littleLp, 'n-dark n-bold k-center', T.lp, null, ep('littleLp')), ...num(371, T.bigLpY, e.bigLp, 'n-dark n-bold k-center', T.lp, null, ep('bigLp'))));
     return svg;
   }
   // A vault chart drawn by the app from its read name and birth date (the Quick Chart drawing, everything
@@ -1407,7 +1433,11 @@
       data = Numeroscope.numeroscope(input());
       svg = numeroscopeSvg(data); fill($chart, svg); applyShow(svg, show);
     };
-    $chart.addEventListener('click', (e) => { const t = e.target.closest && e.target.closest('[data-word]'); if (t) openWord(t.getAttribute('data-word'), data && data.essence.day); });
+    $chart.addEventListener('click', (e) => {
+      const p = e.target.closest && e.target.closest('[data-pos]');
+      if (p && meaningUi) { count('quick.meaning'); meaningUi.open(meaningUi.fromEl(p)); return; }
+      const t = e.target.closest && e.target.closest('[data-word]'); if (t) openWord(t.getAttribute('data-word'), data && data.essence.day);
+    });
     for (const el of [$day, $month, $year, $name]) el.addEventListener('input', () => { saveDraft(); draw(); });
     // The ⋮ menu sits beside the name field, never on the chart: Full screen and Save to Vault. Taps outside close it.
     const $full = h('button', { type: 'button', class: 'cmenu-item' }, 'Full screen');
@@ -1778,6 +1808,8 @@
   // Reading a chart (facts, AI reading, questions), Ask the Vault and the AI settings live in reading.js.
   const readingUi = window.Reading ? window.Reading.install({ routes, h, fill, api, toast, count, go, render, pageTop }) : null;
   if (readingUi) Object.assign(USAGE_LABELS, readingUi.USAGE_LABELS);
+  // What a number means where it sits (public/meaning.js): a tap on a number of a drawn chart.
+  meaningUi = window.Meaning ? window.Meaning.install({ h, fill, api, count, go, positionHash, overlay: (o) => overlays.push(o), overlayGone: (o) => { overlays = overlays.filter((x) => x !== o); } }) : null;
 
   // ---------- start ----------
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js?v=' + (window.APP_VERSION || '0'), { updateViaCache: 'none' }).catch(() => {});

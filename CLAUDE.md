@@ -156,6 +156,16 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   proves the key never leaks and the cap blocks. Measured 2026-10-16: a reading about 25-40 cents (about 50k tokens in,
   mostly course passages); a question about a chart about 3 cents while cached; a vault question about a cent. Never call the model from a test or a tool.
 
+## What a number means where it sits (built 2026-10-19)
+- Tap any number on a drawn chart (viewer, Quick Chart; not Today) and a page opens: the course's passages for
+  that number IN THAT POSITION, the balance verdict, "N charts with 12/3 here ›" (the position search), the two
+  parts a center or aura is made of. `server/meaning.js` ranks the knowledge index per position (own-chart sources,
+  the position's topic and words, the number named in the heading; a heading naming another number is a pair or a
+  case and is skipped); `GET /api/meaning`; screen `public/meaning.js`. Every number of `numeroscopeSvg` carries
+  `data-pos` / `data-num` / `data-parts` plus an invisible pad; a name's own tap covers the name text only.
+  Tap = meaning, never hold (hold is for destructive taps). General descriptions are a fallback for now (owner:
+  "specific first, general later"). The celebrity statistics PDF is NOT in the knowledge store yet.
+
 ## Dev
 - `npm run verify` before saying done: syntax of every file + all tests. Spends nothing.
 - `npm test` runs test/*.test.js (node:test). Put the real UserTag.backup at
