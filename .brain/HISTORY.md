@@ -742,3 +742,15 @@ in the source material somewhere".
 - Grid cell, owner's pick (2026-10-19, out of five mock-ups A-E shown as pictures): B, the number's own three-level
   page in miniature (`cellSvg` = `bigDiamondEl`), two across on a phone by default, four on a laptop; the paid
   tool's seven-triangle table (A) is gone. Showing pictures of options before building was what finally worked.
+
+## 2026-10-19 — Short points for every meaning page
+- The owner approved the example pages ("Looks good do the rest"). Every page the meaning screen can open
+  (1,451 single-number pages and 4,220 pair pages, 5,671 in all) was grouped by the exact passages it shows
+  (1,087 distinct sets) and written in 47 batches by subagents following `tools/bits/BRIEF.md`: fragments,
+  bold on what should stand out, nothing about the position itself, nothing added. Result `knowledge/bits.json`
+  ({ sets, pages }): 1,085 sets, 6,047 points. Four sets came back empty on purpose (name lists, a cut-off example).
+- Lessons: writers paste a filler point when a passage has no trait words ("lists examples only", "No course
+  words here") — the merge drops those by pattern and the brief now says to write `[]`. The merge must keep the
+  hand-written pages across re-runs in BOTH shapes of the file; the first re-run silently lost them.
+- Scripts live in `tools/bits/` (`make-jobs`, `check-out`, `merge-bits`, work dir git-ignored). No model is
+  called by any script; the chat writes the points itself.

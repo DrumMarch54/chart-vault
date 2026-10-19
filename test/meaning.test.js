@@ -132,7 +132,10 @@ test('a long course section is one card, and the short points ride with it (Alli
   assert.match(mv[0].text, /^With a 7 in your heart center/); assert.match(mv[0].text, /untrustworthy\.$/);
   assert.deepEqual(m.bits.groups.map((g) => g.title), ['In balance', 'Out of balance']);
   assert.ok(m.pair.bits && m.pair.bits.groups[0].points.length >= 3);
-  assert.equal(meaningFor({ chart: 'name', position: 'heart', sum: 9 }).bits, null, 'no points written yet = none shown');
+  const nine = meaningFor({ chart: 'name', position: 'heart', sum: 9 }).bits;
+  assert.ok(nine && nine.groups.some((g) => g.points.length), 'every page with course words has points');
+  assert.ok(meaningFor({ chart: 'vocation', position: 'heart', sum: 7 }).bits.groups[0].points.length >= 2, 'sub-chart pages too');
+  assert.equal(meaningFor({ chart: 'name', position: 'heart', sum: 99 }).bits, null, 'no course words = no points');
   // every point file entry is well formed and names real course files
   const file = JSON.parse(fs.readFileSync(new URL('../knowledge/bits.json', import.meta.url), 'utf8'));
   const sets = { ...(file.sets || {}) }, pages = { ...(file.pages || {}) };
