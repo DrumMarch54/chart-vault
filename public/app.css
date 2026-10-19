@@ -663,3 +663,23 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .mbits li { font-size: 16px; line-height: 1.4; margin: 0 0 7px; }
 .mmore { background: none; color: var(--muted); min-height: 40px; padding: 0 4px; font-size: 15px; margin: 0 0 8px; }
 .mwords[hidden] { display: none; }
+
+/* Hold to confirm: the button fills while the finger stays on it (destructive taps, owner's rule). */
+.hold { position: relative; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
+.hold .holdfill { position: absolute; inset: 0; width: 0; background: rgba(255, 80, 80, .55); transition: width 0s; pointer-events: none; }
+.hold.holding .holdfill { width: 100%; transition: width 1s linear; }
+.hold .holdlabel { position: relative; }
+.cmenu-item.danger { color: #b3261e; }
+
+/* Possible Duplicates and Deleted Charts: small cards with a thumbnail each. */
+.dupgroup > .row > button { white-space: nowrap; flex: none; }
+.dupcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.dupcard { background: var(--panel2); border-radius: var(--radius); padding: 8px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.dupcard .thumb { width: 100%; aspect-ratio: 9 / 16; object-fit: cover; display: block; background: #fff; border-radius: 8px; }
+.dupcard .thumb.drawn { display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.dupcard .thumb.drawn .nscope { width: 100%; height: auto; display: block; pointer-events: none; }
+.dupcard .thumb.small, .dupcard .nofile.small { width: 96px; flex: none; }
+.dupcard .nofile { aspect-ratio: 9 / 16; display: flex; align-items: center; justify-content: center; background: var(--panel); color: var(--muted); font-size: 13px; border-radius: 8px; }
+.dupcard .wrap { word-break: break-all; }
+.dupcard .hold, .dupcard .btn-primary { width: 100%; min-height: 44px; }
+.dupthumb { display: block; }

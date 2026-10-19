@@ -595,3 +595,31 @@ in the same position; no vault statistics on the page beyond that count.
 - Owner: "why split the long description in two?" The knowledge index cuts long headings into passages of up to
   2500 characters; the page now joins a heading's passages back into one card (`wholeSection`).
 
+
+## 2026-10-19 Delete a chart, possible duplicates, Back closes one thing, "42 life path" in the search box
+- Owner found a bunk chart labelled with a real person's name and no way to delete it. Built: the viewer's ⋮
+  menu → "Delete This Chart", hold to confirm (`holdButton`, `confirmSheet` in app.js; the first hold-to-confirm
+  in the app). The server (`server/trash.js`, migration 8) moves the picture and thumbnail to `data/trash/` and
+  keeps the whole record (tags, phone paths, name, typed inputs, readings) as JSON in `deleted_images`; Settings →
+  "Deleted Charts" puts it back exactly (same filename, new id). Imports (tag file and album) skip a deleted
+  filename, so the tag file never resurrects a deleted chart. The snapshot lists the deleted charts.
+- Owner: delete real duplicates, but several charts of one person are often on purpose. So the app only LISTS:
+  Settings → "Possible Duplicates" groups the same picture (file hash) and the same typed name and birth date;
+  each card has its own Hold to Delete, "Keep Them All" hides a group for good (`duplicates_kept`). Live vault
+  on this day: 0 same-picture groups, 36 same-name-and-date groups (76 charts).
+- Owner: the phone's Back went "all the way home" from several screens in. Measured in the dev app: overlays
+  (the meaning page, the pyramid popup, sheets, the word popups) were not in the browser history, so Back
+  closed the whole screen under them. Now every overlay pushes a history step (`trackOverlay`), Back closes
+  only the top overlay, and an overlay's own Close steps back the same way; `go`/`swap` wait for that step
+  (`afterOverlayClosed`) so "close, then open the charts with this number" lands on the right screen.
+- Owner: typing "42 life path" in the search box offered the old position tags (4 charts) while the position
+  search finds many more. Now a number typed in the box lists the position search first ("42/6 in Little life
+  path · Essence chart — 31 charts", "42/6 anywhere"), and the position-code tags for that number are left out
+  of the suggestions. The tags themselves are untouched (they stay the engine's quality gate, `tagCheck`).
+- Colors: the owner's "Handsome Truth" chart (Jon Eugene Minadeo II, 15.12.1982) against ours: 5 numbers differ,
+  all of them numbers the 436-screenshot study never saw at that spot (44/8 big heart's desire, 50/5 and 60/6
+  sub-chart pillars, 27/9 on a middle name) or a center the "one middle name" guess gets wrong (12/3 vowel
+  mind center: gray in the tool, red in our table). The owner says the paid tool's colors have changed over
+  time, so the study must run on the LIVE tool, not on old screenshots: sign in to numpromember.com (a plain
+  WordPress login, reachable from a cloud session), type names and dates, read every number's color off the
+  page. The owner's first login try (pasted in chat; they should change that password) was refused by the site.

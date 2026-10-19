@@ -44,7 +44,10 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - Number colors and exact positions come from the vault's own screenshots
   (`.brain/numerology/number-colors.md`, `tools/color-study/`): measure
   against them, never guess a color or a position. `public/number-colors.js`
-  is generated; regenerate it, do not hand-edit.
+  is generated; regenerate it, do not hand-edit. Owner 2026-10-19: the paid tool's
+  colors changed over time, so the next study runs on the LIVE tool (numpromember.com,
+  WordPress login with `NUMPRO_USER` / `NUMPRO_PASSWORD` from the environment, never in
+  the repo or the chat), reading colors off the page, not off old screenshots.
 - The course books can be READ AS PICTURES: find the page by text search, render only that page
   (`.brain/numerology/README.md` "Reading PDFs"). The paid tool's real screens are the "TOOL:" boxes
   in the books; the website's images are marketing art. Never print a whole book; never ask the owner
@@ -73,7 +76,11 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   startup, never over an owner edit; guesses carry `check` and show in Settings →
   "Names to check". Search box: "Everyone named X" = word-start match on the name.
 - Re-importing a tag file must only add. Tags removed in the app stay removed
-  (`removed_tags`). Tags added in the app survive imports.
+  (`removed_tags`). Tags added in the app survive imports. A chart deleted in the app
+  (`server/trash.js`, viewer ⋮ → Delete This Chart, hold to confirm) keeps its picture in
+  `data/trash/` and its whole record in `deleted_images`; imports skip its filename; Settings →
+  Deleted Charts puts it back. Possible Duplicates (same picture or same name and date) are only
+  listed, never deleted by the app; "Keep Them All" hides a group (`duplicates_kept`).
 - Paid AI calls go through ONE door, `server/ai.js` (`callModel`): key, monthly cap and spend in
   `data/ai.json`, every call recorded and in the snapshot, `canSpend` refuses at the cap. No other
   outside or paid call anywhere. No user accounts; one shared password (WEB_TOKEN).
@@ -194,7 +201,12 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - No build step: public/ is served as is. Bump `version` in package.json for
   user-visible releases.
 - One tag per search, never two: picking a tag replaces the search. The search
-  box shows the tag's screen name; × goes home.
+  box shows the tag's screen name; × goes home. A number typed in the box lists the
+  position search first (`positionSpots`) and drops that number's position-code tags.
+- Every overlay (sheet, popup, meaning page) goes through `trackOverlay`/`untrackOverlay`: one
+  step in the phone's Back history each, so Back closes one thing (owner 2026-10-19). A screen
+  change right after an overlay's own Close must go through `go`/`swap` (they wait for the step).
+- Destructive taps: `holdButton` / `confirmSheet`, never a second dialog.
 - The viewer is an overlay over the screen it was opened from, which stays
   drawn under it (`underHash`): closing it never redraws the list, so the list
   keeps its place. It opens bare (tap shows the top bar); drag down and the

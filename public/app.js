@@ -50,6 +50,8 @@
     'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'viewer.number_tap': 'Tap a number on a chart', 'status.recompute': 'Recompute chart numbers',
     'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart', 'viewer.year_rows': 'Year Rows from a chart',
     'position.search_more': 'Narrow a position search by another number', 'position.add_more': 'Tap + Another number', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
+    'viewer.delete': 'Delete a chart from the chart page', 'duplicates.delete': 'Delete a chart from Possible Duplicates', 'duplicates.keep': 'Keep a duplicate group', 'deleted.restore': 'Put a deleted chart back',
+    'screen.duplicates': 'Possible Duplicates', 'screen.deleted': 'Deleted Charts', 'search.position': 'Search box → a position',
     'viewer.meaning': 'Tap a number on a chart for its meaning', 'quick.meaning': 'Tap a number on the Quick Chart for its meaning', 'meaning.show_charts': 'Meaning → show the charts with that number there', 'meaning.course_words': 'Meaning → open the full course words',
   };
   const count = (name) => { try { fetch('/api/usage', { method: 'POST', credentials: 'same-origin', keepalive: true, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name }) }).catch(() => {}); } catch { /* counting never breaks a tap */ } };
@@ -126,10 +128,12 @@
     if (touchY === null || e.touches.length !== 1 || !e.cancelable) return;
     if (window.scrollY <= 0 && e.touches[0].clientY > touchY && !scrollsUp(e.target)) e.preventDefault();
   }, { passive: false });
-  const go = (hash) => { location.hash = hash; };
+  // A screen change asked for while an overlay's own Close is still stepping back through the history
+  // (see overlays below) waits for that step, so the new screen lands on top of the right one.
+  const go = (hash) => afterOverlayClosed(() => { location.hash = hash; });
   // Same screen change, but without adding a step to the browser's history (used between charts in the
   // viewer, so the phone's Back button returns to the screen the viewer was opened from, not to the last chart).
-  const swap = (hash) => { location.replace(hash); };
+  const swap = (hash) => afterOverlayClosed(() => { location.replace(hash); });
   // Like replaceChildren, but skips null/false so a conditional part never shows as the word "null".
   const fill = (el, ...nodes) => el.replaceChildren(...nodes.filter((n) => n !== null && n !== undefined && n !== false));
   const render = (...nodes) => { fill($app, ...nodes); window.scrollTo(0, 0); };
@@ -153,18 +157,65 @@
   }
 
   // ---------- overlays (sheet, lightbox) ----------
-  let overlays = [];
+  // Every overlay (a sheet, a popup, the meaning page, the pyramid) is one step in the phone's Back history
+  // (owner 2026-10-19: Back closed the whole screen under the popup and landed on the home screen). Opening one
+  // pushes a history step; the phone's Back then closes only that overlay. An overlay closed by its own button
+  // steps back the same way, so the history never piles up; anything asked for right after (a screen change)
+  // waits for that step through afterOverlayClosed.
+  let overlays = []; // [{ el, close }], oldest first
   let meaningUi = null; // set once public/meaning.js is installed (bottom of this file)
-  function closeOverlays() { for (const o of overlays) o.remove(); overlays = []; document.body.classList.remove('noscroll'); }
+  let closingAll = false, pendingBack = 0, afterBack = [];
+  const trackOverlay = (el, close = null) => { overlays.push({ el, close }); try { history.pushState({ overlay: true }, '', location.href); } catch {} };
+  const untrackOverlay = (el) => {
+    const wasTop = overlays.length && overlays[overlays.length - 1].el === el;
+    overlays = overlays.filter((o) => o.el !== el);
+    if (!closingAll && wasTop && history.state && history.state.overlay) { pendingBack++; history.back(); }
+  };
+  const afterOverlayClosed = (fn) => { if (pendingBack) afterBack.push(fn); else fn(); };
+  function closeOverlays() {
+    closingAll = true;
+    try { for (const o of [...overlays].reverse()) { if (o.close) o.close(); else o.el.remove(); } } finally { closingAll = false; }
+    overlays = []; document.body.classList.remove('noscroll');
+  }
+  window.addEventListener('popstate', () => {
+    if (pendingBack) { pendingBack--; if (!pendingBack) { const fns = afterBack; afterBack = []; for (const fn of fns) fn(); } return; }
+    const top = overlays[overlays.length - 1];
+    if (top) { closingAll = true; try { if (top.close) top.close(); else top.el.remove(); } finally { closingAll = false; } overlays = overlays.filter((o) => o !== top); if (!overlays.length) document.body.classList.remove('noscroll'); return; }
+    // A step left behind by an overlay that was not on top when it closed: skip it, never a dead Back.
+    if (history.state && history.state.overlay) history.back();
+  });
   function sheet(title, actions) {
     const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
-    const close = () => { bg.remove(); overlays = overlays.filter((o) => o !== bg); };
+    const close = () => { bg.remove(); untrackOverlay(bg); };
     bg.append(h('div', { class: 'sheet' }, h('h3', {}, title),
       ...actions.map((a) => h('button', { type: 'button', class: a.cls || '', onclick: async () => { close(); await a.run(); } }, a.label)),
       h('button', { type: 'button', onclick: close }, 'Cancel')));
-    document.body.append(bg); overlays.push(bg);
+    document.body.append(bg); trackOverlay(bg, close);
   }
 
+
+  // Hold to confirm (owner's rule: destructive taps are hold-to-confirm, never a second dialog). The button
+  // fills up while the finger stays on it; letting go early cancels; a full second runs the action once.
+  function holdButton(label, run, { cls = 'btn-danger', ms = 1000 } = {}) {
+    const $fill = h('span', { class: 'holdfill' });
+    const $b = h('button', { type: 'button', class: `hold ${cls}` }, $fill, h('span', { class: 'holdlabel' }, label));
+    let timer = null, done = false;
+    const stop = () => { if (timer) clearTimeout(timer); timer = null; $b.classList.remove('holding'); };
+    $b.addEventListener('pointerdown', (e) => { if (done) return; e.preventDefault(); $b.setPointerCapture(e.pointerId); $b.classList.add('holding'); timer = setTimeout(async () => { timer = null; done = true; $b.disabled = true; try { await run(); } finally { done = false; $b.disabled = false; $b.classList.remove('holding'); } }, ms); });
+    for (const ev of ['pointerup', 'pointercancel', 'pointerleave']) $b.addEventListener(ev, stop);
+    $b.addEventListener('contextmenu', (e) => e.preventDefault());
+    return $b;
+  }
+  // A sheet with words and one hold-to-confirm button. `run` gets a `close` that steps the sheet out of the
+  // history the quiet way, so the action may change screens right after.
+  function confirmSheet(title, words, label, run) {
+    const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
+    const close = () => { bg.remove(); untrackOverlay(bg); };
+    bg.append(h('div', { class: 'sheet' }, h('h3', {}, title), h('p', { class: 'muted small', style: 'margin:0 0 8px' }, words),
+      holdButton(label, () => { close(); return run(); }),
+      h('button', { type: 'button', onclick: close }, 'Cancel')));
+    document.body.append(bg); trackOverlay(bg, close);
+  }
 
   // Pinch-to-zoom + swipes on an image inside a box (pointer events: works
   // with fingers on Samsung Internet and Chrome, and with a mouse on a laptop).
@@ -312,10 +363,15 @@
     const $list = h('div', { class: 'suggest hidden' });
     let timer, seq = 0;
     const hide = () => $list.classList.add('hidden');
-    const show = (items, q, who = null) => {
+    const show = (items, q, who = null, spots = []) => {
       fill($list);
       if (!q && empty) { $list.append(...empty()); $list.classList.toggle('hidden', !$list.children.length); return; }
       learnTags(items);
+      // A number first ("42", "42 life path"): the position search comes first, because it covers every chart
+      // whose name and date are known, while a position tag only covers the charts the owner tagged by hand.
+      for (const sp of spots) $list.append(h('button', { type: 'button', onclick: () => { count('search.position'); hide(); go(positionHash(sp.conds)); } },
+        h('span', { class: 'chip position', style: 'min-height:32px;font-size:15px;pointer-events:none' }, sp.label),
+        h('span', { class: 'count' }, `${fmtN(sp.count)} chart${sp.count === 1 ? '' : 's'}`)));
       if (who && who.count) {
         const one = who.names.length === 1 && who.names[0].count === who.count;
         if (!one) $list.append(h('button', { type: 'button', onclick: () => { count('search.name'); onPickName(q); hide(); } }, h('span', { class: 'chip who', style: 'min-height:32px;font-size:15px;pointer-events:none' }, `Everyone named ${q}`), h('span', { class: 'count' }, `${fmtN(who.count)} chart${who.count === 1 ? '' : 's'}`)));
@@ -341,7 +397,8 @@
           items = [...items, ...extra.map((t) => ({ ...t, pickKind: 'archetype' }))];
         }
         const who = await whoP;
-        if (my === seq) show(items, q, who);
+        const spots = names ? await positionSpots(q, items).catch(() => []) : [];
+        if (my === seq) show(items, q, who, spots);
       } catch {}
     };
     $input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(refresh, 120); });
@@ -349,6 +406,30 @@
     $input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); const first = $list.querySelector('button'); if (allowNew && $input.value.trim()) onPick($input.value.trim()); else if (first) first.click(); hide(); } if (e.key === 'Escape') hide(); });
     document.addEventListener('pointerdown', (e) => { if (!$list.contains(e.target) && e.target !== $input) hide(); });
     return $list;
+  }
+
+  // "42" -> every chart where 42 sits anywhere, then the positions that hold it most; "42 life path" -> only the
+  // positions whose name starts with those words (Little life path, Big life path). The position-code tags for the
+  // same thing ("42lp") are left out of the list: the position search finds everything they find and more.
+  async function positionSpots(q, items) {
+    const m = /^\s*(\d{1,3})(?:\/\d)?\s*([A-Za-z][A-Za-z' ]*)?\s*$/.exec(q);
+    if (!m) return [];
+    const num = Number(m[1]);
+    if (!num) return [];
+    const words = (m[2] || '').trim().toLowerCase().replace(/\s+/g, ' ');
+    const [cat, counts] = await Promise.all([loadCatalog(), api('/api/positions/counts?num=' + num)]);
+    const numText = num < 10 ? String(num) : `${num}/${TagCodes.digitSum(num)}`;
+    const out = [];
+    const matches = (label) => { const l = label.toLowerCase(); return !words || l.startsWith(words) || l.replace(/^(little|big|higher|lower|upper|outer|inner) /, '').startsWith(words) || l.includes(' ' + words); };
+    if (!words && counts.total) out.push({ label: `${numText} anywhere`, count: counts.total, conds: [{ pos: '*.*', num: String(num) }] });
+    // With words typed, a matching position is listed even at 0 charts: the answer to "42 life path" is a count.
+    const rows = cat.positions.filter((p) => (words ? matches(p.label) : counts.counts[`${p.chart}.${p.key}`]))
+      .map((p) => ({ label: `${numText} in ${p.label} · ${chartLabel(p.chart)}`, count: counts.counts[`${p.chart}.${p.key}`] || 0, conds: [{ pos: `${p.chart}.${p.key}`, num: String(num) }] }))
+      .sort((a, b) => b.count - a.count);
+    out.push(...rows.slice(0, words ? 8 : 4));
+    if (words) { const codes = TagCodes.expandQuery(q); const drop = new Set(codes); let i = items.length; while (i--) if (drop.has(items[i].name)) items.splice(i, 1); }
+    else { let i = items.length; while (i--) if (items[i].kind === 'position' && new RegExp(`^${num}[A-Za-z]`).test(items[i].name)) items.splice(i, 1); }
+    return out;
   }
 
   // ---------- browse ----------
@@ -529,7 +610,8 @@
     const $orig = h('button', { type: 'button', class: 'cmenu-item hidden' }, 'Screenshot');
     const $rows = h('button', { type: 'button', class: 'cmenu-item' }, 'Year Rows and Day Vibrations');
     const $pyrItem = h('button', { type: 'button', class: 'cmenu-item' }, 'Whole Name Pyramid');
-    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $rows, $pyrItem, $orig);
+    const $delItem = h('button', { type: 'button', class: 'cmenu-item danger' }, 'Delete This Chart');
+    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $rows, $pyrItem, $orig, $delItem);
     const $dots = h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'More', title: 'More', onclick: (e) => { e.stopPropagation(); $menu.classList.toggle('hidden'); } }, '⋮');
     const $more = h('div', { class: 'vmore hidden' }, $dots, $menu);
     const $cmp = h('button', { type: 'button', class: 'vbtn hidden' }, 'Compare');
@@ -658,6 +740,20 @@
       openWord(inp.name, dayOf(inp), { wholeName: true });
     };
     $pyrItem.onclick = wholePyramid;
+    // Delete (owner's ask 2026-10-19): hold to confirm; the picture and everything about the chart go to
+    // Settings -> Deleted Charts, where it can be put back. Then back to the list, redrawn without it.
+    $delItem.onclick = () => {
+      $menu.classList.add('hidden');
+      confirmSheet(`Delete “${imgName(img) || img.filename}”?`, 'Hold the button to delete. The picture, its tags, name and numbers move to Deleted Charts in Settings, where you can put it back.', 'Hold to Delete', async () => {
+        try {
+          count('viewer.delete');
+          await api(`/api/images/${img.id}`, { method: 'DELETE', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ reason: 'deleted from the chart page' }) });
+          toast('Deleted. Put it back from Settings → Deleted Charts.');
+          underHash = null; // the list underneath is drawn again without this chart
+          afterOverlayClosed(back);
+        } catch (err) { toast(err.message, true); }
+      });
+    };
     if (img.inputs) { inputsById.set(img.id, img.inputs); if (!(cached && sameInputs(cached, img.inputs) && mode === 'drawn')) showDrawn(); }
     else { inputsById.delete(img.id); showPhoto(); }
     drawOrig();
@@ -1110,6 +1206,8 @@
       h('a', { class: 'btn btn-block', href: '#/quick', style: 'justify-content:space-between' }, 'Quick Chart', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/tags', style: 'justify-content:space-between' }, 'All Tags', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/names', style: 'justify-content:space-between' }, 'Names to Check', h('span', { class: 'muted' }, '›')),
+      h('a', { class: 'btn btn-block', href: '#/duplicates', style: 'justify-content:space-between' }, 'Possible Duplicates', h('span', { class: 'muted' }, '›')),
+      h('a', { class: 'btn btn-block', href: '#/deleted', style: 'justify-content:space-between' }, 'Deleted Charts', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/?drawn=0', style: 'justify-content:space-between' }, 'Charts Still Showing the Screenshot', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/position', style: 'justify-content:space-between' }, 'Search by Position', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/upload', style: 'justify-content:space-between' }, 'Upload Screenshots', h('span', { class: 'muted' }, '›')),
@@ -1118,6 +1216,62 @@
       h('a', { class: 'btn btn-block', href: '#/ai', style: 'justify-content:space-between' }, 'AI Reading (key and monthly cap)', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/status', style: 'justify-content:space-between' }, 'Status and backup', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/?kind=archetype', style: 'justify-content:space-between' }, 'Archetype Pics', h('span', { class: 'muted' }, '›'))));
+  };
+
+  // ---------- possible duplicates ----------
+  // Groups of charts that look like the same chart twice: the very same picture, or the same typed name and
+  // birth date (owner 2026-10-19). Only listed: the owner keeps several charts of one person on purpose, so
+  // each chart has its own Hold to Delete, and "Keep Them All" hides a group that is fine.
+  const when = (iso) => (iso ? String(iso).slice(0, 10) : '');
+  routes.duplicates = async function duplicatesView() {
+    const $list = h('div', { class: 'stack' }, h('p', { class: 'muted' }, 'Looking…'));
+    render(h('div', { class: 'screen stack' }, pageTop('Possible Duplicates'),
+      h('p', { class: 'muted small' }, 'Charts that may be the same one twice: the same picture, or the same name and birth date. Several charts of one person can be on purpose: delete only what is really a repeat. Tap a picture to open it.'), $list));
+    const draw = async () => {
+      let d;
+      try { d = await api('/api/duplicates'); } catch (err) { fill($list, h('p', { class: 'err' }, err.message)); return; }
+      if (!d.groups.length) { fill($list, h('p', { class: 'muted' }, d.kept ? `No possible duplicates left. ${d.kept} group${d.kept === 1 ? '' : 's'} kept on purpose.` : 'No possible duplicates.')); return; }
+      fill($list, h('p', { class: 'muted small' }, `${d.groups.length} group${d.groups.length === 1 ? '' : 's'}${d.kept ? `, ${d.kept} kept on purpose` : ''}`), ...d.groups.map((g) => {
+        const $cards = h('div', { class: 'dupcards' }, ...g.charts.map((c) => {
+          const $card = h('div', { class: 'dupcard' },
+            h('a', { href: `#/chart/${c.id}`, class: 'dupthumb' }, c.inputs && c.inputs.name ? h('div', { class: 'thumb drawn', role: 'img', 'aria-label': c.title || c.filename }, drawnChart(c.inputs)) : c.has_file ? h('img', { class: 'thumb', src: `/thumb/${c.id}`, loading: 'lazy', alt: '' }) : h('div', { class: 'nofile' }, 'no file yet')),
+            h('div', { class: 'small' }, h('b', {}, c.title || '(no name)')),
+            h('div', { class: 'muted small' }, `${when(c.taken_at) || 'no date'} · ${c.tag_count} tag${c.tag_count === 1 ? '' : 's'}${c.readings ? ` · ${c.readings} reading${c.readings === 1 ? '' : 's'}` : ''}`),
+            h('div', { class: 'muted small wrap' }, c.filename),
+            holdButton('Hold to Delete', async () => {
+              try { count('duplicates.delete'); await api(`/api/images/${c.id}`, { method: 'DELETE', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ reason: `duplicate (${g.why})` }) }); toast('Deleted. Put it back from Settings → Deleted Charts.'); await draw(); }
+              catch (err) { toast(err.message, true); }
+            }));
+          return $card;
+        }));
+        return h('div', { class: 'card stack dupgroup' },
+          h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('b', {}, g.why === 'same picture' ? 'Same picture' : `Same name and birth date${g.charts[0].inputs ? `: ${g.charts[0].inputs.name}, ${g.charts[0].inputs.day}.${g.charts[0].inputs.month}.${g.charts[0].inputs.year}` : ''}`),
+            h('button', { type: 'button', onclick: async () => { try { count('duplicates.keep'); await postJson('/api/duplicates/keep', { ids: g.charts.map((c) => c.id) }); toast('Kept. This group is not listed again.'); await draw(); } catch (err) { toast(err.message, true); } } }, 'Keep Them All')),
+          $cards);
+      }));
+    };
+    await draw();
+  };
+
+  // ---------- deleted charts ----------
+  routes.deleted = async function deletedView() {
+    const $list = h('div', { class: 'stack' }, h('p', { class: 'muted' }, 'Looking…'));
+    render(h('div', { class: 'screen stack' }, pageTop('Deleted Charts'),
+      h('p', { class: 'muted small' }, 'Charts deleted in the app. Nothing here is lost: Put Back returns the chart with its picture, tags, name and numbers. A deleted chart is not brought back by importing the tag file.'), $list));
+    const draw = async () => {
+      let d;
+      try { d = await api('/api/deleted'); } catch (err) { fill($list, h('p', { class: 'err' }, err.message)); return; }
+      if (!d.items.length) { fill($list, h('p', { class: 'muted' }, 'No deleted charts.')); return; }
+      fill($list, ...d.items.map((c) => h('div', { class: 'card dupcard row', style: 'flex-wrap:nowrap;align-items:flex-start' },
+        c.has_file ? h('img', { class: 'thumb small', src: `/api/deleted/${c.id}/thumb`, loading: 'lazy', alt: '' }) : c.inputs && c.inputs.name ? h('div', { class: 'thumb drawn small', role: 'img' }, drawnChart(c.inputs)) : h('div', { class: 'nofile small' }, 'no picture'),
+        h('div', { class: 'stack', style: 'flex:1;min-width:0;gap:4px' },
+          h('b', {}, c.title || '(no name)'),
+          h('div', { class: 'muted small' }, `Deleted ${when(c.deleted_at)}${c.reason ? ` · ${c.reason}` : ''}`),
+          h('div', { class: 'muted small' }, `${c.tags.length} tag${c.tags.length === 1 ? '' : 's'}${c.inputs && c.inputs.name ? ` · ${c.inputs.name}` : ''}${c.readings ? ` · ${c.readings} reading${c.readings === 1 ? '' : 's'}` : ''}`),
+          h('div', { class: 'muted small wrap' }, c.filename),
+          h('button', { type: 'button', class: 'btn-primary', onclick: async () => { try { count('deleted.restore'); const r = await postJson(`/api/deleted/${c.id}/restore`, {}); toast('Put back.'); await draw(); go(`#/chart/${r.id}`); } catch (err) { toast(err.message, true); } } }, 'Put Back')))));
+    };
+    await draw();
   };
 
   // ---------- names to check ----------
@@ -1189,7 +1343,7 @@
   // The sheet itself: tap a chip to show or hide that chart or part; the chart behind updates at once.
   function showSheet(show, onChange) {
     const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
-    const close = () => { bg.remove(); overlays = overlays.filter((o) => o !== bg); };
+    const close = () => { bg.remove(); untrackOverlay(bg); };
     const $charts = h('div', { class: 'chips' }), $kinds = h('div', { class: 'chips' });
     const draw = () => {
       fill($charts, ...SHOW_CHARTS.map(([k, label]) => h('button', { type: 'button', class: `chip ${shown(show, 'charts', k) ? 'active' : 'off'}`, onclick: () => { show.charts[k] = !shown(show, 'charts', k); change(); } }, label)));
@@ -1202,7 +1356,7 @@
       h('div', { class: 'muted small', style: 'margin:12px 0 6px' }, 'Charts'), $charts,
       h('div', { class: 'muted small', style: 'margin:12px 0 6px' }, 'Numbers'), $kinds,
       h('button', { type: 'button', class: 'btn-primary done', onclick: close }, 'Done')));
-    draw(); document.body.append(bg); overlays.push(bg);
+    draw(); document.body.append(bg); trackOverlay(bg, close);
   }
   // One rhombus with its two circles, white center line, pillar triangle and (optionally) the faded "big" circle.
   function rhombusShape(cx, cy, hw, hh, fill, o) {
@@ -1387,7 +1541,7 @@
     const r = Numeroscope.singleName(word, day);
     if (!r.letters) return;
     day = day && day.text ? day : null;
-    const close = () => { $pop.remove(); overlays = overlays.filter((o) => o !== $pop); document.body.classList.remove('noscroll'); window.removeEventListener('keydown', keys); };
+    const close = () => { $pop.remove(); untrackOverlay($pop); document.body.classList.remove('noscroll'); window.removeEventListener('keydown', keys); };
     const keys = (e) => { if (e.key === 'Escape') close(); };
     const W = r.weight;
     const $table = h('div', { class: 'hidden' }, weightEl(W));
@@ -1407,7 +1561,7 @@
       wholeName || day ? null : h('p', { class: 'muted small', style: 'margin:0 0 8px' }, 'Type a birth day to see the top half of the charts and the pillars.'),
       wholeName ? null : h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'Name Chart'), singleNameSvg(r.name, '', r.letters, day)),
       wholeName ? null : h('div', { class: 'two' }, small('Vocation', r.vowels, 'v.'), small('Personality', r.consonants, 'c.')));
-    overlays.push($pop); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
+    trackOverlay($pop, close); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
     // A pyramid wider than the card starts scrolled to its middle, where the top sits, and says it can be swiped.
     if ($pyr.scrollWidth > $pyr.clientWidth) { $pyr.scrollLeft = ($pyr.scrollWidth - $pyr.clientWidth) / 2; $pyr.after(h('p', { class: 'muted small', style: 'margin:2px 6px 0;color:#8a8f9c' }, 'Wider than the screen: swipe the pyramid sideways to see its edges.')); }
   }
@@ -1481,10 +1635,10 @@
     $full.onclick = () => {
       count('quick.full_screen');
       $menu.classList.add('hidden');
-      const close = () => { $ov.remove(); overlays = overlays.filter((o) => o !== $ov); document.body.classList.remove('fullscreen'); $home.prepend($chart); window.removeEventListener('keydown', keys); };
+      const close = () => { $ov.remove(); untrackOverlay($ov); document.body.classList.remove('fullscreen'); $home.prepend($chart); window.removeEventListener('keydown', keys); };
       const keys = (e) => { if (e.key === 'Escape') close(); };
       const $ov = h('div', { class: 'nsfull' }, h('button', { type: 'button', class: 'cbtn nsfull-x', 'aria-label': 'Leave full screen', onclick: close }, '×'), $chart);
-      overlays.push($ov); document.body.append($ov); document.body.classList.add('fullscreen'); window.addEventListener('keydown', keys);
+      trackOverlay($ov, close); document.body.append($ov); document.body.classList.add('fullscreen'); window.addEventListener('keydown', keys);
     };
     // Save to Vault: the drawing becomes a chart picture tagged with the typed name, then opens with its tags.
     $save.onclick = async () => {
@@ -1678,11 +1832,11 @@
   function meaningSheet(v, vertical) {
     if (!v) return;
     const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
-    const close = () => { bg.remove(); overlays = overlays.filter((o) => o !== bg); };
+    const close = () => { bg.remove(); untrackOverlay(bg); };
     const line = (x) => (x ? h('p', { style: 'margin:0 0 10px' }, h('b', {}, rowText(x)), TagCodes.NAMES[x.sum] ? ` ${TagCodes.NAMES[x.sum]}` : '', h('br'), Numeroscope.MEANINGS[x.sum] || Numeroscope.MEANINGS[x.ds] || '', Numeroscope.combos(x) ? h('span', { class: 'muted' }, h('br'), Numeroscope.combos(x)) : null) : null);
     bg.append(h('div', { class: 'sheet' }, h('h3', {}, 'What it means'), line(v), vertical ? h('p', { class: 'muted small', style: 'margin:0 0 6px' }, 'Read with the two rows above it (vertical):') : null, vertical ? line(vertical) : null,
       h('button', { type: 'button', onclick: close }, 'Close')));
-    document.body.append(bg); overlays.push(bg);
+    document.body.append(bg); trackOverlay(bg, close);
   }
   // The owner's clock: Safford, Arizona (no daylight saving). "Today" and "now" in the rows are read there,
   // whatever the phone's own clock says.
@@ -1701,7 +1855,7 @@
     const now = nowIn(TZ);
     let year = Math.max(now.y, birthYear);
     let date = { y: now.y, m: now.m, d: now.d };
-    const close = () => { $pop.remove(); overlays = overlays.filter((o) => o !== $pop); document.body.classList.remove('noscroll'); window.removeEventListener('keydown', keys); };
+    const close = () => { $pop.remove(); untrackOverlay($pop); document.body.classList.remove('noscroll'); window.removeEventListener('keydown', keys); };
     const keys = (ev) => { if (ev.key === 'Escape') close(); };
     const $periods = h('div', { class: 'periods' }), $yearTitle = h('div', { class: 'wlabel' }), $yearNote = h('p', { class: 'muted small ynote' }), $year = h('div', {});
     const $dayTitle = h('div', { class: 'wlabel' }), $dayNote = h('p', { class: 'muted small ynote', style: 'padding:0 2px 6px' }), $day = h('div', {});
@@ -1752,7 +1906,7 @@
         h('div', { class: 'row ynav' }, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Previous day', onclick: () => shiftDay(-1) }, '‹'), $date, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Next day', onclick: () => shiftDay(1) }, '›')),
         $dayNote, $day,
         h('p', { class: 'muted small', style: 'margin:8px 0 0' }, 'Arizona time. Nine periods of 2 h 40 min from midnight, as in the course book.')));
-    overlays.push($pop); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
+    trackOverlay($pop, close); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
     drawPeriods(); drawAll();
   }
 
@@ -1821,17 +1975,17 @@
   // live in tools.js and get the plumbing here (screens, drawing, counting). A bottom sheet for a number's words.
   const wordsSheet = (content) => {
     const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
-    const close = () => { bg.remove(); overlays = overlays.filter((o) => o !== bg); };
+    const close = () => { bg.remove(); untrackOverlay(bg); };
     bg.append(h('div', { class: 'sheet' }, content, h('button', { type: 'button', onclick: close }, 'Close')));
-    document.body.append(bg); overlays.push(bg);
+    document.body.append(bg); trackOverlay(bg, close);
   };
-  const toolsUi = window.Tools ? window.Tools.install({ routes, h, sv, fill, render, count, toast, api, go, numeroscopeSvg, sheet: wordsSheet, overlay: (o) => overlays.push(o), overlayGone: (o) => { overlays = overlays.filter((x) => x !== o); }, setCleanup: (fn) => { viewerCleanup = fn; } }) : null;
+  const toolsUi = window.Tools ? window.Tools.install({ routes, h, sv, fill, render, count, toast, api, go, numeroscopeSvg, sheet: wordsSheet, overlay: trackOverlay, overlayGone: untrackOverlay, setCleanup: (fn) => { viewerCleanup = fn; } }) : null;
   if (toolsUi) Object.assign(USAGE_LABELS, toolsUi.USAGE_LABELS);
   // Reading a chart (facts, AI reading, questions), Ask the Vault and the AI settings live in reading.js.
   const readingUi = window.Reading ? window.Reading.install({ routes, h, fill, api, toast, count, go, render, pageTop }) : null;
   if (readingUi) Object.assign(USAGE_LABELS, readingUi.USAGE_LABELS);
   // What a number means where it sits (public/meaning.js): a tap on a number of a drawn chart.
-  meaningUi = window.Meaning ? window.Meaning.install({ h, fill, api, count, go, positionHash, overlay: (o) => overlays.push(o), overlayGone: (o) => { overlays = overlays.filter((x) => x !== o); } }) : null;
+  meaningUi = window.Meaning ? window.Meaning.install({ h, fill, api, count, go, positionHash, overlay: trackOverlay, overlayGone: untrackOverlay }) : null;
 
   // ---------- start ----------
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js?v=' + (window.APP_VERSION || '0'), { updateViaCache: 'none' }).catch(() => {});

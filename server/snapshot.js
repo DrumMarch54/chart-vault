@@ -11,6 +11,7 @@ import { getMyChart } from './mychart.js';
 import { titleStats } from './titles.js';
 import { inputStats, tagCheck, chartsWithoutInputs, getInputs, valuesFor, chartLabel } from './positions.js';
 import { aiReport, redact } from './ai.js';
+import { listDeleted, findDuplicates } from './trash.js';
 
 const started = Date.now();
 const fmtB = (b) => (b >= 1e9 ? (b / 1e9).toFixed(2) + ' GB' : b >= 1e6 ? (b / 1e6).toFixed(1) + ' MB' : Math.round((b || 0) / 1e3) + ' KB');
@@ -67,6 +68,9 @@ export function snapshot(db, { scope = 'full', id = null, commit = 'unknown', bu
   line(`screenshot bytes ${fmtB(s.bytes)}   lost files (recorded but not on disk) ${s.lost_files ? s.lost_files.length : 0}`);
   const ts = titleStats(db);
   line(`chart names: ${ts.named} named (${ts.by_owner} by the owner)   ${ts.unnamed} without a name   ${ts.to_check} waiting for the owner to check`);
+  const deleted = listDeleted(db), dups = findDuplicates(db);
+  line(`deleted charts (in the trash, restorable) ${deleted.length}   possible duplicates: ${dups.groups.length} groups (${dups.groups.filter((g) => g.why === 'same picture').length} same picture), ${dups.kept} kept on purpose`);
+  for (const d of deleted.slice(0, 10)) line(`  deleted ${d.deleted_at} build ${d.build || '?'} ${d.filename} "${d.title || ''}" ${d.reason ? `(${d.reason})` : ''}`);
   line('');
   const used = usageReport(db, scope === 'short' ? 15 : 60);
   line(`WHAT YOU USE MOST (${used.length} names; counts only, never what was typed)`);
