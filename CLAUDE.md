@@ -164,10 +164,15 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   and its upper auras, outer diamond behind the outer aura, nexus behind day and life path, ...).
 - A center's COMBINATION is the two numbers in its circle, main + extra vibration, in the course, in the owner's
   combo tags (37 of 38) and in the position search (`PARTS` heart/solar). The auras around it make the DIAMOND.
+- Order on the page: the course's words for THIS spot first. Sub-charts: the sub-chart guide's per-position
+  entries ("Vocation Chart Heart Center: 7 → +8 pts Also excellent ..."; scores cut, words kept) and the sub-chart
+  book's "Number N > Heart Diamond (Vocation)" etc., parsed by `server/subchart-words.js`; then, for a sub-chart
+  CENTER only, the name chart's words for the same center. NO general number descriptions (owner: a separate
+  layer, later). The many names for one position: `.brain/numerology/lingo.md`; read it before matching text.
 - `server/meaning.js` ranks per position and keeps context: a passage about another chart (vocation heart diamond on
   the name chart, a name chart aura on the essence), about a pair that is not this circle, about a NUMBER'S OWN
   diamond (Diamond Method, "small diamond of the number 7"), or a point-scoring table is never shown. Business
-  books are never "specific". `GET /api/meaning?pair=&rel=`; screen `public/meaning.js`; numbers carry
+  books are never shown as the spot's words. `GET /api/meaning?pair=&rel=`; screen `public/meaning.js`; numbers carry
   `data-pos/num/pair/rel` from `numeroscopeSvg`. The celebrity statistics PDF is NOT in the knowledge store yet.
 
 ## Dev

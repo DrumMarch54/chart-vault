@@ -1,6 +1,6 @@
 /* What a number means where it sits. Tap a number on a drawn chart (the viewer, the Quick Chart) once and an
    outline goes round it; tap it again and this page opens: the course's words for that number in that position,
-   whether it is balanced there, the number it shares a center's circle with ("7 and 13/4 in the mind center"),
+   whether it is balanced there, the name chart's words for the same spot on a sub-chart, the number it shares a center's circle with ("7 and 13/4 in the mind center"),
    the diamond behind it (diamonds are not drawn), and buttons to see every vault chart with the same number in
    the same spot. The server does the lookup (GET /api/meaning, server/meaning.js); nothing here guesses a
    meaning. app.js hands over its plumbing through Meaning.install. */
@@ -43,15 +43,14 @@
       api('/api/meaning?' + q).then((m) => {
         $title.textContent = `${m.text} in the ${where(m)}`;
         $sub.textContent = [m.chartLabel, m.name].filter(Boolean).join(' · ');
-        const none = !m.passages.length && !m.general.length;
-        const p = m.pair;
+        const p = m.pair, nc = m.nameChart;
         const others = p ? p.with.map((x) => x.text).join(' and ') : '';
         fill($body, top(m),
-          m.passages.length ? label(`${m.text} in the ${where(m)}`) : null,
+          label(`${m.text} in the ${m.chartLabel.replace(/ chart$/i, ' Chart')}'s ${where(m)}`),
           ...m.passages.map(card),
-          none ? h('p', { class: 'muted' }, `The course has no words yet for ${m.text} in this position.`) : null,
-          m.general.length ? label(`About ${m.text} in general`) : null,
-          ...m.general.map(card),
+          !m.passages.length ? h('p', { class: 'muted' }, `The course has no words yet for ${m.text} in this position.`) : null,
+          nc ? label(`${nc.text} in the Name Chart's ${where(nc)}`) : null,
+          ...(nc ? nc.passages.map(card) : []),
           p ? label(`${m.text} with ${others} in the ${where(m).replace(/ Extra Vibration$/, '')}`) : null,
           p && !p.passages.length ? h('p', { class: 'muted small' }, `The course has nothing yet on ${m.text} together with ${others}.`) : null,
           ...(p ? p.passages.map(card) : []),
@@ -59,9 +58,7 @@
             h('div', { class: 'mrel' }, h('div', { class: 'mrel-t' }, `${titleCase(r.label)} ${r.text}`), h('div', { class: 'muted small' }, [r.name, 'the diamond behind this number'].filter(Boolean).join(' · '))),
             top(r),
             ...r.passages.map(card),
-            r.general.length ? label(`About ${r.text} in general`) : null,
-            ...r.general.map(card),
-            !r.passages.length && !r.general.length ? h('p', { class: 'muted small' }, `The course has no words yet for ${r.text} here.`) : null,
+            !r.passages.length ? h('p', { class: 'muted small' }, `The course has no words yet for ${r.text} here.`) : null,
           ]));
       }).catch((err) => fill($body, h('p', { class: 'err' }, err.message)));
     }

@@ -11,9 +11,9 @@
 //           not drawn, so they come with the number that makes them.
 //     -> { chart, chartLabel, position, label, sum, ds, text, name, verdict, family,
 //          passages: [{ source, title, heading, text }]   the course on this number IN THIS POSITION
-//          general:  [...]                                 about the number itself, only when few passages fit
+//          nameChart: { label, text, passages } | null     a sub-chart center or aura: the name chart's words for it
 //          pair: { with: [{ sum, text }], passages } | null  the circle's combination
-//          related: [{ chart, position, label, sum, text, name, verdict, passages, general }] }
+//          related: [{ chart, position, label, sum, text, name, verdict, passages }] }
 //     or null when the position is not in the catalog or the number is not 1-99.
 //   countWith(db, chart, position, sum) -> how many vault charts hold that number in that position.
 //
@@ -25,6 +25,7 @@
 import { POSITIONS, positionLabel, chartLabel } from './positions.js';
 import { knowledgeIndex } from './knowledge.js';
 import { judge, familyOf, nameOf, fmt } from './facts.js';
+import { wordsFor } from './subchart-words.js';
 
 const BY_KEY = new Map(POSITIONS.map((p) => [`${p.chart}.${p.key}`, p]));
 
@@ -56,9 +57,9 @@ export function topicsFor(chart, position) {
 const PSY = /^(psyche-|psychic-disorders|nlm-psyche|nlm-outer-psyche|nlm-inner-psyche|nlm-25-26-psyche|lecture-psyche|lecture-interpretations-of-your-psyche|six-themes-book-part-1|name-chart-)/;
 const SOURCES = {
   essence: /^(essence-|framework-(?!diamonds)|higher-self-|lecture-positions-in-the-essence|lecture-life-path|nlm-dharma|nlm-dvlp|nlm-day-month|nlm-higher-self|article-dharma|humanity-archetyping)/,
-  name: /^(name-chart-|name-numeroscopes-book|name-numeroscope-|subvibrations|six-themes|lecture-name-chart|lecture-rules-for-pure|powerpoint-undernumeroscopes)/,
-  vocation: /^(subnumeroscope-interpretation|vocation-chart-|sub-charts-overview|framework-vocation|lecture-vocation|lecture-vowels|powerpoint-undernumeroscopes|name-chart-)/,
-  personality: /^(subnumeroscope-interpretation|personality-chart-|sub-charts-overview|framework-vocation|powerpoint-undernumeroscopes|name-chart-)/,
+  name: /^(name-chart-|name-numeroscopes-book|name-numeroscope-|six-themes|lecture-name-chart|lecture-rules-for-pure|powerpoint-undernumeroscopes)/,
+  vocation: /^(subnumeroscope-interpretation|subvibrations|vocation-chart-|sub-charts-overview|framework-vocation|lecture-vocation|lecture-vowels|powerpoint-undernumeroscopes)/,
+  personality: /^(subnumeroscope-interpretation|subvibrations|personality-chart-|sub-charts-overview|framework-vocation|powerpoint-undernumeroscopes)/,
   outer: PSY, inner: PSY,
 };
 const BUSINESS = /^biz-/;
@@ -99,8 +100,8 @@ const ownDiamond = (c) => OWN_DIAMOND_SOURCE.test(c.source) || OWN_DIAMOND.test(
 // passage is about that other position (2); neither, 1.
 const W = {
   upperLeft: /brand|public|top left|upper left/i, upperRight: /friends|top right|upper right/i, lowerLeft: /associates|bottom left|lower left|twenties/i, lowerRight: /love|bottom right|lower right|childhood/i,
-  heart: /\bMV\b|main vibration|heart (?:center|centre)|mind (?:center|centre)/i, heartExtra: /\bSV\b|sub ?vibration|extra vibration/i,
-  solar: /\bMV\b|main vibration|solar plexus(?! diamond)|emotion(?:al)? (?:center|centre)/i, solarExtra: /\bSV\b|sub ?vibration|extra vibration/i,
+  heart: /\bMV\b|main vibration|heart (?:center|centre)|mind (?:center|centre)|\bHC\b|\bMC\b/i, heartExtra: /\bSV\b|sub ?vibration|extra vibration|secondary/i,
+  solar: /\bMV\b|main vibration|solar plexus(?! diamond)|emotion(?:al)? (?:center|centre)|\bSP\b|\bEC\b/i, solarExtra: /\bSV\b|sub ?vibration|extra vibration|secondary/i,
   mindDiamond: /heart diamond|mental diamond|mind diamond/i, emotionDiamond: /solar plexus diamond|emotional? diamond/i,
   leDiamond: /name line diamond|life expression diamond/i, publicDiamond: /public diamond/i, spineDiamond: /spine diamond/i,
   first: /first name|challenge|psychic month/i, middle: /middle name/i, last: /last name|surname|family name/i,
@@ -116,8 +117,6 @@ function wordFit(position, heading) {
 }
 // The owner's own scrape docs that ARE a position: a passage from one counts as specific when it names the number.
 const HOME = { 'outer.lowerRight': /^psyche-childhood-aura/, 'inner.lowerRight': /^psyche-childhood-aura/, 'outer.lowerLeft': /^psyche-twenties-aura/, 'inner.lowerLeft': /^psyche-twenties-aura/, 'outer.first': /^nlm-outer-psyche-challenge/ };
-// General descriptions of a number: the number books and guides, the website's 1-99, the number notes.
-const GENERAL = /^(book-|guide-|other-guide-|numbers-1-99-website|numbers-1-9-chart|number-notes|energy-type|number-title)/;
 
 const reduce = (n) => { while (n > 9) n = String(n).split('').reduce((a, d) => a + Number(d), 0); return n; };
 const numRe = (n) => new RegExp(`(?<![\\d/.:])${n}(?![\\d])`);
@@ -154,8 +153,8 @@ function take(list, limit, taken) {
   return out;
 }
 
-// The passages about number n in one position: { passages (specific), general (fallback) }.
-function forPosition(k, chart, position, n, taken, { limit = 4, generalLimit = 2 } = {}) {
+// The passages ranked for number n in one position (the specific ones only).
+function forPosition(k, chart, position, n, taken, { limit = 4 } = {}) {
   const topics = topicsFor(chart, position);
   const home = HOME[`${chart}.${position}`];
   const alone = new Set([n]);
@@ -170,22 +169,15 @@ function forPosition(k, chart, position, n, taken, { limit = 4, generalLimit = 2
     const topicFit = topics.length ? (has(topics[0]) ? 0 : 2) + (topics.length > 1 && !has(topics[1]) ? 1 : 0) : 2;
     const wf = wordFit(position, c.heading);
     const named = numRe(n).test(c.heading) ? 0 : /\d/.test(c.heading) ? 2 : 1;
-    const general = has('general') || k.sourceTopic.get(c.source) === 'numbers' || GENERAL.test(c.source);
     const sf = sourceFit(chart, c.source);
     // Specific = about this position: its topic, the number in the heading, and either a source written about this
     // chart or the position's own word in the heading. A business book (dates, brands) is never specific here.
     const specific = (topics.length && has(topics[0]) && named === 0 && wf < 2 && (wf === 0 || sf === 0) && !BUSINESS.test(c.source)) || (home && home.test(c.source));
-    scored.push({ c: { ...c, text }, specific, general: general && named === 0 && wf !== 2 && !BUSINESS.test(c.source), key: [sf + topicFit + wf, named, text.length < 200 ? 1 : 0, -sourceWeight(c.source), i] });
+    scored.push({ c: { ...c, text }, specific, key: [sf + topicFit + wf, named, text.length < 200 ? 1 : 0, -sourceWeight(c.source), i] });
   }
   scored.sort(byKey);
   const passages = take(scored.filter((s) => s.specific).map((s) => s.c), limit, taken);
-  // The general description: the passage whose own heading names the number first (the start of the number's
-  // chapter), the course books before the website, longer before shorter.
-  const lastNamed = (c) => (numRe(n).test(String(c.heading).split(' > ').pop()) ? 0 : 1);
-  const aside = (c) => (/tarot|intro\b|planet|astronom/i.test(String(c.heading).split(' > ').pop()) || /^the number \d+ resonates with the planet/i.test(c.text) ? 1 : 0);
-  const gen = scored.filter((s) => !s.specific && s.general).map((s) => ({ c: s.c, key: [aside(s.c), lastNamed(s.c), /^(book-|guide-)/.test(s.c.source) ? 0 : 1, s.c.text.length < 300 ? 1 : 0, s.key[s.key.length - 1]] })).sort(byKey);
-  const general = passages.length < 2 ? take(gen.map((s) => s.c), generalLimit, taken) : [];
-  return { passages, general };
+  return passages;
 }
 
 // A center's circle: the course on n together with one of its partners ("7 and 13 in the mind center"), from the
@@ -232,6 +224,18 @@ function head(chart, position, n) {
 const okNum = (n) => Number.isInteger(n) && n >= 1 && n <= 99;
 const known = (chart, position) => { const p = BY_KEY.get(`${chart}.${position}`); return p && !p.hidden; };
 
+// The books' own words for a position first (the sub-chart guide and book, server/subchart-words.js), then the
+// passages ranked for it. General descriptions of a number are NOT shown (owner 2026-10-19: only what the course
+// says about the number in that spot; the general layer comes later, on purpose).
+function forSpot(k, chart, position, n, taken, limit) {
+  const book = take(wordsFor(chart, position, n), limit, taken);
+  return [...book, ...forPosition(k, chart, position, n, taken, { limit: limit - book.length })];
+}
+// On the vocation and personality charts the name chart's words for the same CENTER come after their own (owner:
+// "I want that information there, but the specific description takes precedence"). Not for auras: a name chart
+// aura is the brand, friends, associates or love aura, which a sub-chart aura is not.
+const NAME_TWIN = new Set(['heart', 'heartExtra', 'solar', 'solarExtra']);
+
 export function meaningFor({ chart, position, sum, pair = null, rel = null } = {}) {
   const n = Number(sum);
   if (!known(chart, position) || !okNum(n)) return null;
@@ -239,12 +243,16 @@ export function meaningFor({ chart, position, sum, pair = null, rel = null } = {
   const base = head(chart, position, n);
   const partners = (Array.isArray(pair) ? pair : []).map(Number).filter(okNum);
   const rels = (Array.isArray(rel) ? rel : []).map((r) => ({ position: String(r.position), sum: Number(r.sum) })).filter((r) => known(chart, r.position) && r.position !== position && okNum(r.sum));
-  if (k.missing) return { ...base, passages: [], general: [], pair: null, related: [], missing: true };
+  if (k.missing) return { ...base, passages: wordsFor(chart, position, n), nameChart: null, pair: null, related: [], missing: true };
   const taken = { ids: new Set(), shingles: [] };
-  const own = forPosition(k, chart, position, n, taken);
-  const pairOut = partners.length ? { with: partners.map((p) => ({ sum: p, text: fmt(p, reduce(p)) })), passages: forPair(k, chart, position, n, partners, taken) } : null;
-  const related = rels.map((r) => ({ ...head(chart, r.position, r.sum), ...forPosition(k, chart, r.position, r.sum, taken, { limit: 2, generalLimit: 1 }) }));
-  return { ...base, ...own, pair: pairOut, related };
+  const passages = forSpot(k, chart, position, n, taken, 4);
+  const twin = (chart === 'vocation' || chart === 'personality') && NAME_TWIN.has(position) && known('name', position);
+  const nameChart = twin ? { ...head('name', position, n), passages: forPosition(k, 'name', position, n, taken, { limit: 2 }) } : null;
+  // A sub-chart's circle: its own course words first, then the name chart's words on the same pair in the same center.
+  const pairWords = partners.length ? [...forPair(k, chart, position, n, partners, taken), ...(twin ? forPair(k, 'name', position, n, partners, taken) : [])].slice(0, 3) : [];
+  const pairOut = partners.length ? { with: partners.map((p) => ({ sum: p, text: fmt(p, reduce(p)) })), passages: pairWords } : null;
+  const related = rels.map((r) => ({ ...head(chart, r.position, r.sum), passages: forSpot(k, chart, r.position, r.sum, taken, 2) }));
+  return { ...base, passages, nameChart: nameChart && nameChart.passages.length ? nameChart : null, pair: pairOut, related };
 }
 
 export function countWith(db, chart, position, sum) {

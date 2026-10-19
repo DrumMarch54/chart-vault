@@ -574,3 +574,17 @@ in the same position; no vault statistics on the page beyond that count.
 - Owner asked how to choose a diamond vs an aura vs a center: diamonds are not drawn, so the page of the number
   that makes one shows it as a section (agreed in principle by the owner's own suggestion).
 
+## 2026-10-19 later still: the sub-chart guide's words, no general descriptions, the lingo file
+- Owner on 7 in the vocation chart's heart center: the page showed a long general 7 from the 1-9 book (never asked
+  for) and NOT the sub-chart PDF's own words for 7 there, while the name chart's mind center words (wanted, but
+  second) were there. Cause: the Subnumeroscopes guide (knowledge/raw/subvibrations-book.md) gives the meaning per
+  position as a scored list, "7 → +8 pts Also excellent. The 7 brings ...", many numbers under one heading. The
+  ranking never saw one passage as "about 7", and an earlier filter of mine dropped every "pts" line as a table.
+  Now `server/subchart-words.js` parses the guide's center lists, pillars and "Personality or Hearts desire number
+  N", and the sub-chart book's "Number N > Heart Diamond (Vocation) ..." sections into words per position and
+  number; they come first. The name chart's words for the same center follow in their own section (centers only:
+  a name chart aura is brand/friends/associates/love, which a sub-chart aura is not).
+- General number descriptions are gone from the page entirely: the owner will add that layer on purpose.
+- The owner asked that the lingo be remembered: `.brain/numerology/lingo.md` lists the many names per position
+  and the look-alikes that are not the same.
+
