@@ -620,3 +620,35 @@ test('possible duplicates: same picture or same name and date are listed; "keep 
   assert.match(snap, /possible duplicates: 1 groups \(1 same picture\), 1 kept on purpose/);
   for (const id of [a.id, b.id, c.id]) { db.prepare('DELETE FROM chart_inputs WHERE image_id = ?').run(id); db.prepare('DELETE FROM chart_values WHERE image_id = ?').run(id); }
 });
+
+test('similar charts: scored per chart by positions holding the same number; rank by one chart; locked and refused without inputs', async () => {
+  const { setInputs } = await import('../server/positions.js');
+  const items = (await json(await api('/api/images?limit=200'))).body.items.filter((i) => !i.inputs);
+  const [a, b, c, d] = items;
+  assert.ok(d, 'needs four charts without inputs');
+  setInputs(db, a.id, { day: 7, month: 3, year: 1977, name: 'Marla Quentin Oakes' }, { source: 'owner' });
+  setInputs(db, b.id, { day: 7, month: 3, year: 1977, name: 'Totally Other Person' }, { source: 'owner' }); // same birth date: the essence chart is identical
+  setInputs(db, c.id, { day: 3, month: 1, year: 1950, name: 'Marla Quentin Oakes' }, { source: 'owner' }); // same name, other date: the name line is the same
+  assert.equal((await fetch(base + `/api/images/${a.id}/similar`)).status, 401);
+  assert.equal((await api(`/api/images/${d.id}/similar`)).status, 400, 'no inputs -> refused with a reason');
+  assert.equal((await api('/api/images/999999/similar')).status, 404);
+  const r = (await json(await api(`/api/images/${a.id}/similar`))).body;
+  assert.equal(r.by, 'all');
+  assert.ok(r.of.essence > 5 && r.of.name > 5, JSON.stringify(r.of));
+  const B = r.items.find((i) => i.id === b.id), C = r.items.find((i) => i.id === c.id);
+  assert.ok(B && C);
+  assert.equal(B.per.essence, r.of.essence, 'same birth date = every essence position the same');
+  assert.ok(C.per.essence < r.of.essence);
+  assert.ok(C.per.name >= 3 && C.per.name > B.per.name, 'same name shares the name line');
+  assert.ok(!r.items.some((i) => i.id === a.id), 'never itself');
+  assert.ok(!r.items.some((i) => i.id === d.id), 'a chart without numbers never appears');
+  assert.equal(B.inputs.name, 'Totally Other Person');
+  assert.equal(B.total, Object.values(B.per).reduce((x, y) => x + y, 0));
+  const byName = (await json(await api(`/api/images/${a.id}/similar?by=name`))).body;
+  assert.equal(byName.by, 'name');
+  assert.equal(byName.items[0].id, c.id, 'ranked by the name chart, the same name comes first');
+  const byEss = (await json(await api(`/api/images/${a.id}/similar?by=essence`))).body;
+  assert.equal(byEss.items[0].id, b.id);
+  assert.equal((await json(await api(`/api/images/${a.id}/similar?by=nonsense`))).body.by, 'all');
+  for (const id of [a.id, b.id, c.id]) { db.prepare('DELETE FROM chart_inputs WHERE image_id = ?').run(id); db.prepare('DELETE FROM chart_values WHERE image_id = ?').run(id); }
+});

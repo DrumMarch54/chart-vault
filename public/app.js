@@ -50,6 +50,7 @@
     'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'viewer.number_tap': 'Tap a number on a chart', 'status.recompute': 'Recompute chart numbers',
     'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart', 'viewer.year_rows': 'Year Rows from a chart',
     'position.search_more': 'Narrow a position search by another number', 'position.add_more': 'Tap + Another number', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
+    'viewer.similar': 'Similar Charts from a chart', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
     'viewer.delete': 'Delete a chart from the chart page', 'duplicates.delete': 'Delete a chart from Possible Duplicates', 'duplicates.keep': 'Keep a duplicate group', 'deleted.restore': 'Put a deleted chart back',
     'screen.duplicates': 'Possible Duplicates', 'screen.deleted': 'Deleted Charts', 'search.position': 'Search box → a position',
     'viewer.meaning': 'Tap a number on a chart for its meaning', 'quick.meaning': 'Tap a number on the Quick Chart for its meaning', 'meaning.show_charts': 'Meaning → show the charts with that number there', 'meaning.course_words': 'Meaning → open the full course words',
@@ -610,8 +611,9 @@
     const $orig = h('button', { type: 'button', class: 'cmenu-item hidden' }, 'Screenshot');
     const $rows = h('button', { type: 'button', class: 'cmenu-item' }, 'Year Rows and Day Vibrations');
     const $pyrItem = h('button', { type: 'button', class: 'cmenu-item' }, 'Whole Name Pyramid');
+    const $simItem = h('button', { type: 'button', class: 'cmenu-item' }, 'Similar Charts');
     const $delItem = h('button', { type: 'button', class: 'cmenu-item danger' }, 'Delete This Chart');
-    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $rows, $pyrItem, $orig, $delItem);
+    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $rows, $simItem, $pyrItem, $orig, $delItem);
     const $dots = h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'More', title: 'More', onclick: (e) => { e.stopPropagation(); $menu.classList.toggle('hidden'); } }, '⋮');
     const $more = h('div', { class: 'vmore hidden' }, $dots, $menu);
     const $cmp = h('button', { type: 'button', class: 'vbtn hidden' }, 'Compare');
@@ -740,6 +742,7 @@
       openWord(inp.name, dayOf(inp), { wholeName: true });
     };
     $pyrItem.onclick = wholePyramid;
+    $simItem.onclick = () => { $menu.classList.add('hidden'); if (!img.inputs) { toast('This chart has no name read yet. Swipe up and tap "Type them" to add it.', true); return; } count('viewer.similar'); go(`#/similar/${img.id}`); };
     // Delete (owner's ask 2026-10-19): hold to confirm; the picture and everything about the chart go to
     // Settings -> Deleted Charts, where it can be put back. Then back to the list, redrawn without it.
     $delItem.onclick = () => {
@@ -1216,6 +1219,36 @@
       h('a', { class: 'btn btn-block', href: '#/ai', style: 'justify-content:space-between' }, 'AI Reading (key and monthly cap)', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/status', style: 'justify-content:space-between' }, 'Status and backup', h('span', { class: 'muted' }, '›')),
       h('a', { class: 'btn btn-block', href: '#/?kind=archetype', style: 'justify-content:space-between' }, 'Archetype Pics', h('span', { class: 'muted' }, '›'))));
+  };
+
+  // ---------- similar charts ----------
+  // Charts like this one (owner 2026-10-19): every other chart scored by how many positions hold the same number,
+  // per chart. Chips rank by every chart together or by one; each row says "Essence 9 of 11 · Name 3 of 15";
+  // tap a row to see the two side by side in Compare.
+  routes.similar = async function similarView(id, query) {
+    if (!/^\d+$/.test(id || '')) return swap('#/');
+    const by = query.get('by') || 'all';
+    const $chips = h('div', { class: 'chips' });
+    const $list = h('div', { class: 'stack' }, h('p', { class: 'muted' }, 'Scoring every chart…'));
+    const $who = h('h1', {}, 'Similar Charts');
+    render(h('div', { class: 'screen stack' }, h('div', { class: 'pagetop' }, h('a', { class: 'btn iconbtn', href: `#/chart/${id}`, 'aria-label': 'Back' }, '‹'), $who),
+      h('p', { class: 'muted small' }, 'Charts that hold the same numbers in the same places. Rank by every chart together, or by one chart. Tap a chart to see both side by side.'), $chips, $list));
+    let me = null;
+    try { me = await api(`/api/images/${id}`); $who.textContent = `Like ${imgName(me) || me.filename}`; } catch {}
+    let d;
+    try { d = await api(`/api/images/${id}/similar?by=${encodeURIComponent(by)}`); } catch (err) { fill($list, h('p', { class: 'err' }, err.message)); return; }
+    const short = { essence: 'Essence', name: 'Name', vocation: 'Vocation', personality: 'Personality', outer: 'Outer Psyche', inner: 'Inner Psyche' };
+    fill($chips, ...[{ key: 'all', label: 'Every Chart' }, ...d.charts.filter((c) => d.of[c.key])].map((c) => h('a', { class: `chip ${by === c.key ? 'active' : 'off'}`, href: `#/similar/${id}?by=${c.key}`, onclick: () => count('similar.by') }, short[c.key] || c.label)));
+    if (!d.items.length) { fill($list, h('p', { class: 'muted' }, 'No other chart shares a number here yet.')); return; }
+    fill($list, ...d.items.map((it) => {
+      const parts = d.charts.filter((c) => d.of[c.key]).map((c) => { const same = it.per[c.key] || 0; const strong = by === c.key || (by === 'all' && same && same === d.of[c.key]); return h('span', { class: `simpart ${strong ? 'strong' : ''} ${same ? '' : 'muted'}` }, `${short[c.key] || c.label} ${same} of ${d.of[c.key]}`); });
+      return h('a', { class: 'card simrow', href: `#/compare/${id}/${it.id}`, onclick: () => { count('similar.compare'); compareReturn = location.hash; } },
+        it.inputs && it.inputs.name ? h('div', { class: 'thumb drawn simthumb', role: 'img' }, drawnChart(it.inputs)) : it.has_file ? h('img', { class: 'thumb simthumb', src: `/thumb/${it.id}`, loading: 'lazy', alt: '' }) : h('div', { class: 'nofile simthumb' }, 'no file'),
+        h('div', { class: 'stack', style: 'flex:1;min-width:0;gap:4px' },
+          h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('b', { class: 'ellip' }, it.title || (it.inputs && it.inputs.name) || it.filename), h('span', { class: 'count' }, by === 'all' ? `${it.total} of ${d.totalOf}` : `${it.per[by] || 0} of ${d.of[by] || 0}`)),
+          it.inputs ? h('div', { class: 'muted small' }, `${it.inputs.name || ''}${it.inputs.day ? ` · ${it.inputs.day}.${it.inputs.month}.${it.inputs.year}` : ''}`) : null,
+          h('div', { class: 'simparts' }, ...parts)));
+    }));
   };
 
   // ---------- possible duplicates ----------

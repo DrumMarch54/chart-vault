@@ -638,3 +638,12 @@ in the same position; no vault statistics on the page beyond that count.
   owner's screenshot matches everywhere the old table was wrong (44/8 red, 50/5 and 60/6 green, 27/9 green,
   the vowel chart's 12/3 gray). The big life expression is the LE table color at opacity .33 (n-big).
 - The owner pasted the password in chat; told them to change it. Still to do from the DOM: exact positions.
+
+## 2026-10-19 Similar Charts
+- Owner: "charts with the same general structure as mine" (Allison Frank's essence and psyche charts are nearly
+  hers; the idea reaches the name and vocation charts too). Design approved in chat: a "Similar Charts" button
+  on the chart page; every other chart scored by how many positions hold the very same number, per chart;
+  rows read "Essence 9 of 11 · Name 3 of 15"; chips rank by every chart or one; tap a row = Compare.
+- Built on `chart_values` with one self-join (`server/similar.js`); a chart with no name and date read is
+  refused with the reason on screen. Test: same birth date = every essence position the same; same name =
+  the name line the same; a saved Quick chart of the same person ranks first (it is the same chart).
