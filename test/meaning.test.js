@@ -138,6 +138,7 @@ test('a long course section is one card, and the short points ride with it (Alli
   for (const [key, b] of Object.entries(all)) {
     assert.match(key, /^[a-z]+\.[A-Za-z]+:\d{1,2}(\+\d{1,2})?$/, key);
     assert.ok(b.groups.length && b.groups.every((g) => typeof g.title === 'string' && g.points.length), key);
+    for (const g of b.groups) for (const pt of g.points) assert.equal((pt.match(/\*\*/g) || []).length % 2, 0, `${key}: unpaired ** in "${pt}"`);
     for (const src of b.sources) assert.ok(fs.existsSync(new URL(`../knowledge/raw/${src}.md`, import.meta.url)), `${key}: ${src}`);
     assert.ok(bitsFor(key));
   }

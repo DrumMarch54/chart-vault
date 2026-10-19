@@ -168,7 +168,8 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   entries ("Vocation Chart Heart Center: 7 → +8 pts Also excellent ..."; scores cut, words kept) and the sub-chart
   book's "Number N > Heart Diamond (Vocation)" etc., parsed by `server/subchart-words.js`; then, for a sub-chart
   CENTER only, the name chart's words for the same center. Each section shows its SHORT POINTS first
-  (`knowledge/bits.json`, written by a Claude session: the course's words shortened, nothing added, sources listed)
+  (`knowledge/bits.json`, written by a Claude session: the course's words shortened, nothing added, sources listed;
+  `**words**` = bold, for what should stand out, owner's ask)
   and the full course words under "Course Words"; a long heading is one card. NO general number descriptions (owner: a separate
   layer, later). The many names for one position: `.brain/numerology/lingo.md`; read it before matching text.
 - `server/meaning.js` ranks per position and keeps context: a passage about another chart (vocation heart diamond on

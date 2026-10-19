@@ -18,9 +18,11 @@
     const label = (text) => h('div', { class: 'wlabel tl' }, text);
     // A section: the short points first (knowledge/bits.json, the course's words shortened), the full course words
     // folded under "Course Words" (owner 2026-10-19). With no points yet, the course words show open.
+    // "**words**" in a point = words that should stand out: shown bold (text nodes only, never HTML).
+    const boldParts = (t) => String(t).split('**').map((part, i) => (i % 2 ? h('b', {}, part) : part)).filter((x) => x !== '');
     const pointsCard = (bits) => h('div', { class: 'mbits' }, ...bits.groups.map((g) => h('div', { class: 'mbits-g' },
       g.title ? h('div', { class: `mbits-t ${/out of balance|imbalance|unbalanced/i.test(g.title) ? 'err' : /in balance|balanced/i.test(g.title) ? 'ok' : ''}` }, g.title) : null,
-      h('ul', {}, ...g.points.map((t) => h('li', {}, t))))));
+      h('ul', {}, ...g.points.map((t) => h('li', {}, ...boldParts(t)))))));
     const section = (bits, passages) => {
       if (!bits) return passages.map(card);
       if (!passages.length) return [pointsCard(bits)];
