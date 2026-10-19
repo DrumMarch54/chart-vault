@@ -1241,14 +1241,15 @@
     fill($chips, ...[{ key: 'all', label: 'Every Chart' }, ...d.charts.filter((c) => d.of[c.key])].map((c) => h('a', { class: `chip ${by === c.key ? 'active' : 'off'}`, href: `#/similar/${id}?by=${c.key}`, onclick: () => count('similar.by') }, short[c.key] || c.label)));
     if (!d.items.length) { fill($list, h('p', { class: 'muted' }, 'No other chart shares a number here yet.')); return; }
     // One line per row naming what is alike, in the course's words (server/similar.js gistOf).
-    fill($list, ...d.items.map((it) => {
-      return h('a', { class: 'card simrow', href: `#/compare/${id}/${it.id}`, onclick: () => { count('similar.compare'); compareReturn = location.hash; } },
-        it.inputs && it.inputs.name ? h('div', { class: 'thumb drawn simthumb', role: 'img' }, drawnChart(it.inputs)) : it.has_file ? h('img', { class: 'thumb simthumb', src: `/thumb/${it.id}`, loading: 'lazy', alt: '' }) : h('div', { class: 'nofile simthumb' }, 'no file'),
-        h('div', { class: 'stack', style: 'flex:1;min-width:0;gap:4px' },
-          h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('b', { class: 'ellip' }, it.title || (it.inputs && it.inputs.name) || it.filename), h('span', { class: 'count' }, by === 'all' ? `${it.total} of ${d.totalOf}` : `${it.per[by] || 0} of ${d.of[by] || 0}`)),
-          it.inputs ? h('div', { class: 'muted small' }, `${it.inputs.name || ''}${it.inputs.day ? ` · ${it.inputs.day}.${it.inputs.month}.${it.inputs.year}` : ''}`) : null,
-          h('div', { class: 'simgist' }, it.gist)));
-    }));
+    // A card per chart: the chart drawn at full width so it reads while scrolling, the name, the typed name and
+    // date, then what is alike as pills (one per structure); the score last, small, because it is not the point.
+    fill($list, ...d.items.map((it) => h('a', { class: 'card simrow', href: `#/compare/${id}/${it.id}`, onclick: () => { count('similar.compare'); compareReturn = location.hash; } },
+      it.inputs && it.inputs.name ? h('div', { class: 'thumb drawn simthumb', role: 'img' }, drawnChart(it.inputs)) : it.has_file ? h('img', { class: 'thumb simthumb', src: `/thumb/${it.id}`, loading: 'lazy', alt: '' }) : h('div', { class: 'nofile simthumb' }, 'no picture'),
+      h('div', { class: 'simbody' },
+        h('div', { class: 'simname' }, it.title || (it.inputs && it.inputs.name) || it.filename),
+        it.inputs ? h('div', { class: 'muted small' }, `${it.inputs.name || ''}${it.inputs.day ? ` · ${it.inputs.day}.${it.inputs.month}.${it.inputs.year}` : ''}`) : null,
+        h('div', { class: 'simpills' }, ...(it.alike && it.alike.length ? it.alike : ['A few scattered numbers']).map((t) => h('span', { class: `simpill ${/^Same |Nearly the Same$/.test(t) ? 'whole' : ''}` }, t))),
+        h('div', { class: 'simscore muted' }, by === 'all' ? `${it.total} of ${d.totalOf} positions alike` : `${it.per[by] || 0} of ${d.of[by] || 0} positions alike`)))));
   };
 
   // ---------- possible duplicates ----------

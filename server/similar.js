@@ -48,7 +48,8 @@ export function namedMatches(chart, keys) {
 }
 // One line for a similar chart: whole charts that are the same, nearly the same ones, then the biggest matching
 // structures by name (two per chart, three phrases in all, the ranking chart first). The gist, not a list.
-export function gistOf({ per, of, matches }, by = 'all') {
+export function gistOf(x, by = 'all') { const a = alikeOf(x, by); return a.length ? a.join(' · ') : 'A few scattered numbers'; }
+export function alikeOf({ per, of, matches }, by = 'all') {
   const order = CHARTS.map((c) => c.key).sort((a, b) => (a === by ? -1 : b === by ? 1 : 0));
   const phrases = [];
   for (const chart of order) {
@@ -58,8 +59,7 @@ export function gistOf({ per, of, matches }, by = 'all') {
     const names = namedMatches(chart, (matches || []).filter((m) => m.startsWith(chart + '.')).map((m) => m.slice(chart.length + 1)));
     phrases.push(...names.slice(0, 2));
   }
-  if (!phrases.length) return 'A few scattered numbers';
-  return phrases.slice(0, 3).join(' · ');
+  return phrases.slice(0, 3);
 }
 
 const HIDDEN = POSITIONS.filter((p) => p.hidden).map((p) => `${p.chart}.${p.key}`);
@@ -91,5 +91,5 @@ export function similarCharts(db, imageId, { by = 'all', limit = 60 } = {}) {
   }
   const totalOf = Object.values(of).reduce((a, b) => a + b, 0);
   return { id: imageId, by: key, of, totalOf, charts: CHARTS.map((c) => ({ key: c.key, label: c.label })),
-    items: list.map((e) => { const per = Object.fromEntries(chartKeys.map((k) => [k, e.per[k] || 0])); return { ...e, per, gist: gistOf({ per, of, matches: e.matches }, key) }; }) };
+    items: list.map((e) => { const per = Object.fromEntries(chartKeys.map((k) => [k, e.per[k] || 0])); const x = { per, of, matches: e.matches }; return { ...e, per, alike: alikeOf(x, key), gist: gistOf(x, key) }; }) };
 }
