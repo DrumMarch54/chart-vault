@@ -595,3 +595,150 @@ in the same position; no vault statistics on the page beyond that count.
 - Owner: "why split the long description in two?" The knowledge index cuts long headings into passages of up to
   2500 characters; the page now joins a heading's passages back into one card (`wholeSection`).
 
+
+## 2026-10-19 Delete a chart, possible duplicates, Back closes one thing, "42 life path" in the search box
+- Owner found a bunk chart labelled with a real person's name and no way to delete it. Built: the viewer's ⋮
+  menu → "Delete This Chart", hold to confirm (`holdButton`, `confirmSheet` in app.js; the first hold-to-confirm
+  in the app). The server (`server/trash.js`, migration 8) moves the picture and thumbnail to `data/trash/` and
+  keeps the whole record (tags, phone paths, name, typed inputs, readings) as JSON in `deleted_images`; Settings →
+  "Deleted Charts" puts it back exactly (same filename, new id). Imports (tag file and album) skip a deleted
+  filename, so the tag file never resurrects a deleted chart. The snapshot lists the deleted charts.
+- Owner: delete real duplicates, but several charts of one person are often on purpose. So the app only LISTS:
+  Settings → "Possible Duplicates" groups the same picture (file hash) and the same typed name and birth date;
+  each card has its own Hold to Delete, "Keep Them All" hides a group for good (`duplicates_kept`). Live vault
+  on this day: 0 same-picture groups, 36 same-name-and-date groups (76 charts).
+- Owner: the phone's Back went "all the way home" from several screens in. Measured in the dev app: overlays
+  (the meaning page, the pyramid popup, sheets, the word popups) were not in the browser history, so Back
+  closed the whole screen under them. Now every overlay pushes a history step (`trackOverlay`), Back closes
+  only the top overlay, and an overlay's own Close steps back the same way; `go`/`swap` wait for that step
+  (`afterOverlayClosed`) so "close, then open the charts with this number" lands on the right screen.
+- Owner: typing "42 life path" in the search box offered the old position tags (4 charts) while the position
+  search finds many more. Now a number typed in the box lists the position search first ("42/6 in Little life
+  path · Essence chart — 31 charts", "42/6 anywhere"), and the position-code tags for that number are left out
+  of the suggestions. The tags themselves are untouched (they stay the engine's quality gate, `tagCheck`).
+- Colors: the owner's "Handsome Truth" chart (Jon Eugene Minadeo II, 15.12.1982) against ours: 5 numbers differ,
+  all of them numbers the 436-screenshot study never saw at that spot (44/8 big heart's desire, 50/5 and 60/6
+  sub-chart pillars, 27/9 on a middle name) or a center the "one middle name" guess gets wrong (12/3 vowel
+  mind center: gray in the tool, red in our table). The owner says the paid tool's colors have changed over
+  time, so the study must run on the LIVE tool, not on old screenshots: sign in to numpromember.com (a plain
+  WordPress login, reachable from a cloud session), type names and dates, read every number's color off the
+  page. The owner's first login try (pasted in chat; they should change that password) was refused by the site.
+
+## 2026-10-19 The paid tool's colors, read off the tool itself
+- The owner: the tool's colors changed over time, so the 436-screenshot study is not the truth; sign in to
+  the live tool instead. Sign-in: the WordPress form (wp-login.php) refused every password; the members' sign-in
+  is a separate system (DigitalAccessPass) at numpromember.com/login/ with its own email + password form, and
+  that one worked. The quick chart is a fold-out on every member page (fields #df #mf #yf #ni).
+- The chart is plain DIVs with ids (heart, hara, topleftaura, USKpillar, USVstorpersonlighed ...), so colors and
+  boxes read straight off the DOM, no OCR. Better: the page's inline script holds the whole rule: ten color
+  tables of 100 entries and one code block per number of name words saying which table each id uses. Saved as
+  `tools/color-study/paid/tables.json` + `rules.json`; `gen.mjs` writes `public/number-colors.js`. The old
+  "exactly one middle name" switch was this rule seen through a keyhole (3 words = main center table).
+- Checked: all 25 colored numbers of Jon Eugene Minadeo II match the live page; the drawn chart beside the
+  owner's screenshot matches everywhere the old table was wrong (44/8 red, 50/5 and 60/6 green, 27/9 green,
+  the vowel chart's 12/3 gray). The big life expression is the LE table color at opacity .33 (n-big).
+- The owner pasted the password in chat; told them to change it. Still to do from the DOM: exact positions.
+
+## 2026-10-19 Similar Charts
+- Owner: "charts with the same general structure as mine" (Allison Frank's essence and psyche charts are nearly
+  hers; the idea reaches the name and vocation charts too). Design approved in chat: a "Similar Charts" button
+  on the chart page; every other chart scored by how many positions hold the very same number, per chart;
+  rows read "Essence 9 of 11 · Name 3 of 15"; chips rank by every chart or one; tap a row = Compare.
+- Built on `chart_values` with one self-join (`server/similar.js`); a chart with no name and date read is
+  refused with the reason on screen. Test: same birth date = every essence position the same; same name =
+  the name line the same; a saved Quick chart of the same person ranks first (it is the same chart).
+- Owner on the first version's line "Half the outer psyche" (XXXTentacion): wrong words; it should say "Outer
+  Psyche Life Expression Diamond". Rule from now on: a screen names positions by their course names (lingo.md),
+  Title Case; a matched diamond stands for its parts, so only the biggest matching structure is named
+  (`namedMatches`, `IMPLIES`). "Same Essence Chart" / "Name Chart Nearly the Same" for whole charts.
+- Owner on the second version: charts too small to read while scrolling; the matching text "blobbed" on the
+  card; the "9 of 18" count made too important. Now a card per chart: the drawing at full width, the name as a
+  title, the typed name and date muted, what is alike as pills (whole-chart matches in the accent color), and
+  the count last in 12 px. Rule added to public/CLAUDE.md: a card is laid out, never a blob.
+
+## 2026-10-19 The owner's "Chart app Fixes" doc and list: shorter screens, Settings search, light look, All Numbers grid
+- The owner wrote a Google Doc ("Chart app Fixes", read from the cloud session with the Drive connector, the
+  pictures by exporting it to PDF and rendering the pages) plus a typed list. Half of the list was already done
+  earlier the same day (delete a chart, Possible Duplicates, Back closes one thing, the paid tool's colors,
+  Similar Charts); the Handsome Truth colors they flagged (heart's desire 44/8, big LE 86/5) were checked
+  against both screenshots and match since build 865ca94. Say so instead of building twice.
+- Coming Days: the card is the date, the rating and the chart. The footer lines (day vibration name, "Essence ·
+  Outer · Inner", keywords) were "junk" at any size; the full-screen day keeps the words.
+- Chart sheet: the per-chart lists of every position's number ("Vocation chart · 17 numbers" and its chips)
+  are gone: the drawing shows every number and a tap opens its meaning with "N charts with it here". The
+  owner's position and number tags fold under one row (still tappable, still removable); "Most often" is one
+  line with the five most repeated numbers and their counts, never where they sit (the owner: "you don't even
+  need to say what position"); the example question and the file details fold away. The ask box stays.
+- Home search: position-code tags ("42lp") never pop up: the position search finds every chart, the tags only
+  the hand-tagged ones. The tags are untouched (All Tags, the chart's sheet, the engine's quality gate).
+- Settings: a search box; every row carries the words a search may use for it (`SETTINGS` in app.js).
+- Light look: `prefers-color-scheme: light` switches the `:root` variables (`app.css` top); Settings -> Look pins
+  Light / Dark / Follows the Phone on the device (`theme` in localStorage, applied by a one-line script in
+  index.html before the first paint, and by `applyTheme` which also keeps the browser bar color in step).
+  Every hard-coded dark color that sat on a dark screen became a variable (--danger-bg, --who, --warn-bg,
+  --pain-bg, --toast, --chip-add, --shadow). The tool pages (html.light / html.day) are light either way.
+  Checked at 390×844 in both looks: home, settings, chart sheet, status, position, tags, browse, duplicates,
+  ask, similar. Still to look at in light: the meaning page, the reading options, the upload page.
+- Number Fun: "All Numbers" shows every number's main diamond in a grid (the paid tool's "10 by 10" page),
+  − / + for how many across (2-5 on a phone, up to 10 on a laptop, remembered), tap one to open it, the chip
+  brings the grid back. The cells reuse `tri` (the book's triangle) at 76 units wide in a 120-unit box.
+- Not done from the doc: "fix the charts so they look like this" (the paid tool's three-level big diamond
+  page). Number Fun already draws that page; the owner is asked what still looks off.
+
+## 2026-10-19 Number Fun redrawn the paid tool's way (owner: "the charts look like shit, nothing like I showed you")
+- The first pass judged our page "close" to the owner's screenshot by eye and moved on. Wrong. Measured against the
+  screenshot (img-001 of the "Chart app Fixes" doc, 852 px wide): the tool's three bands SHRINK going up (main
+  diamond 0.28 of the width, essence 0.20, integration 0.13; the sides and imbalanced ones in step) and the upper
+  levels are pulled in toward the middle (sides at 0.135 / 0.21 / 0.29 of the width, imbalanced at 0.26 / 0.31 /
+  0.38); the names are GOLD (#d4b176) inside every triangle except the physical main (gray) and the imbalanced
+  (red); every number is BLUE (#1b82c5) except on the physical main diamond (#303030); the outlines are all blue,
+  imbalanced ones too; labels are gray lowercase ("main diamond" above, "outer diamond" beside the LE), the
+  imbalanced ones pink; the backgrounds per band (physical #cfdbe7 / #c0d1e1, emotional #dee7ee / #cfdbe7,
+  spiritual #edf2f6 / #dee7ee). `BANDS` in tools.js holds the measured numbers; on a 390 px phone the upper
+  bands are kept a little larger than the tool's ratio (1 : 0.82 : 0.56) so they can still be read.
+- The grid ("10 by 10" page): a cell is the WHOLE big diamond, seven triangles (integration; essence with its outer
+  and inner; main, dark and bigger, with its outer and inner), not the main diamond alone. `cellSvg`.
+- Lesson: "looks close" is not a check. When the owner hands a screenshot, measure positions and sample colors
+  off it before drawing, and compare our screenshot beside theirs before saying done.
+- Owner: the − / + size control from Coming Days belongs on every grid of charts. Added `sizeControl`
+  (app.js) and put it on the browse grid (list, search results, Recently Opened: one setting), Similar Charts
+  and Possible Duplicates; Coming Days and All Numbers keep their own. Rule in public/CLAUDE.md.
+
+## 2026-10-19 Price Tool: the books' words one card per number, and the price drawn as a chart
+The owner, on the Price Tool's "What the Books Say": "sloppily thrown together and unnecessary … organize this and make
+it nice", and: the tool is missing the numeroscope of the price, "the numbers go on the central line, they talk about this
+in the source material somewhere".
+- Before: one card per BOOK passage, so 23/5 appeared twice (the Marketing book's price page, then the business book's
+  words), "5 · Charisma, Desire to buy …" stood as if it were a number in the price, and a digit-sum pill was the only
+  thing saying where a number sat. Now: one card per NUMBER in the price, in the order the book reads them (digit sum,
+  clean number, first two digits, a magnetic number in the row), each with its place as the label, the number and its
+  course name, the business color pill, then the passages under small heads: As a Price, Any N Price, In Business,
+  Suits. Three lines each; a tap opens the same passages in full, same order, in one sheet. The business name is the
+  note of "In Business" (dropped when it is the course name).
+- The source: the Six Themes book, "Numeroscopes on number sequences: The Namescope is a mini-numeroscope that follows
+  the same structure as the Numeroscope and can be used on a phone number, a price or a year"; the chart videos: "we
+  could also put a number sequence here" (the central line). Built as `Numeroscope.sequence`: digits as names, exactly
+  the single-name chart's rules (first digit = first name, last = surname, the rest middle names); a 0 stays on the line
+  in gray and carries nothing; the LE is the price's digit sum. The top is an optional day (none by default: a price has
+  no inception date of its own; the owner can type the launch day or the business's day, or tap "Use my day").
+  Drawn by `singleNameSvg`, which learned to draw a zero word. Test: 3695 → 8/8, 10/1, 9/9, 23/5; 995 with day 19 →
+  10/1, 6/6, 7/7, pillar 41/5. Switch on the pyramid card: Number Pyramid / Price Chart, remembered.
+- Decision, not from the book: single digits on the line, like the price pyramid's cells, not two-digit groups.
+
+## 2026-10-19 Number Fun, third pass: the grid is the paid tool's table, the bands blend, a tap pops a sheet
+- Owner on the second pass: the grid "still looks shitty, nothing like the image". Compared cell by cell against
+  the zoomed screenshot this time: the paid cell is white in a thin-lined table, no label, seven triangles of
+  nearly ONE size (26 / 36 / 24 / 36 / 24 in a 103 x 105 cell), only the bottom main row's numbers bold and
+  about 1.4x bigger; rows go by tens, the nineties on top, 0..9 across. `cellSvg` draws exactly that; `.nftable`
+  is the table; a phone may go to 10 across too. The first pass had rounded gray cards with a big label and one
+  oversized main triangle: a different picture.
+- The big diamond page: the owner wants no white gaps between the three bands ("blended together"): one rounded
+  block, bands touching. The upper bands' "outer essence diamond" labels sat over the side diamond's auras; they
+  now sit outside, left and right of the side triangles.
+- A tap on a diamond on that page pops the number's words up from the bottom (`numberSheet` through
+  `wordsSheet`, which now has a grip and closes on a swipe down, Back, a tap outside or Close) with an "Open N"
+  button; it never swaps the page (owner: "that way I don't get lost in screens").
+- Two chats worked the repo at once; `git fetch origin main` + merge before every push, keep both HISTORY entries.
+- Grid cell, owner's pick (2026-10-19, out of five mock-ups A-E shown as pictures): B, the number's own three-level
+  page in miniature (`cellSvg` = `bigDiamondEl`), two across on a phone by default, four on a laptop; the paid
+  tool's seven-triangle table (A) is gone. Showing pictures of options before building was what finally worked.

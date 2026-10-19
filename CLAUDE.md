@@ -41,10 +41,13 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   from a cloud session with the Drive connector; ids are in that README.
 - Tag codes ("19fn") are decoded in `.brain/numerology/tag-codes.md` and
   spelled out on screen by `public/tag-codes.js`; the stored tag never changes.
-- Number colors and exact positions come from the vault's own screenshots
-  (`.brain/numerology/number-colors.md`, `tools/color-study/`): measure
-  against them, never guess a color or a position. `public/number-colors.js`
-  is generated; regenerate it, do not hand-edit.
+- Number colors are the paid tool's OWN tables, read off its live page script
+  (`tools/color-study/paid/`: fetch.mjs signs in with `NUMPRO_USER` / `NUMPRO_PASSWORD`
+  from the environment, never the repo or the chat; the members' form is
+  numpromember.com/login/, not wp-login; gen.mjs writes `public/number-colors.js`).
+  The rules switch tables by the number of words in the name; `lookup(slot, text, words)`.
+  Never hand-edit the table or guess a color: re-run fetch + gen. Exact positions still
+  come from the screenshot study (`.brain/numerology/number-colors.md`, `tools/color-study/`).
 - The course books can be READ AS PICTURES: find the page by text search, render only that page
   (`.brain/numerology/README.md` "Reading PDFs"). The paid tool's real screens are the "TOOL:" boxes
   in the books; the website's images are marketing art. Never print a whole book; never ask the owner
@@ -73,7 +76,11 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   startup, never over an owner edit; guesses carry `check` and show in Settings →
   "Names to check". Search box: "Everyone named X" = word-start match on the name.
 - Re-importing a tag file must only add. Tags removed in the app stay removed
-  (`removed_tags`). Tags added in the app survive imports.
+  (`removed_tags`). Tags added in the app survive imports. A chart deleted in the app
+  (`server/trash.js`, viewer ⋮ → Delete This Chart, hold to confirm) keeps its picture in
+  `data/trash/` and its whole record in `deleted_images`; imports skip its filename; Settings →
+  Deleted Charts puts it back. Possible Duplicates (same picture or same name and date) are only
+  listed, never deleted by the app; "Keep Them All" hides a group (`duplicates_kept`).
 - Paid AI calls go through ONE door, `server/ai.js` (`callModel`): key, monthly cap and spend in
   `data/ai.json`, every call recorded and in the snapshot, `canSpend` refuses at the cap. No other
   outside or paid call anywhere. No user accounts; one shared password (WEB_TOKEN).
@@ -102,6 +109,12 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   pairwise in the address (`?pos=essence.day&num=8&pos=name.first&num=15`, `conditionsSql`); the grid shows one
   chip per condition (tap = change it, × = drop it) and "+ Another number", which reopens the picker with the
   conditions kept and every count narrowed to them (`/api/positions/counts?num=&fixed=pos:num,…`).
+- Similar Charts (owner 2026-10-19): viewer ⋮ → "Similar Charts" (`#/similar/<id>?by=`), `server/similar.js`
+  scores every other chart by positions holding the same number (same position, repeat and sum; hidden helper
+  positions excluded), per chart; chips rank by every chart or one; a row opens Compare. No AI, no guesswork.
+  Each row's line NAMES what is alike in the course's words (`gistOf`, `positionName`, `lingo.md`): the biggest
+  matching structure only ("Outer Psyche Life Expression Diamond", never "half the outer psyche"), Title Case.
+  Owner's rule 2026-10-19: anything on a screen about a position uses the position's course name.
 - Whole Name Pyramid (owner 2026-10-17): every name run together with no spaces as one word, pyramid only
   (`openWord(..., { wholeName: true })`); "Pyramid" beside the name in the viewer's sheet, in the viewer's ⋮ menu
   and in the Quick Chart's ⋮ menu.
@@ -123,7 +136,8 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   The reasons are on the screen ("Why …"); never change the lists without the book page. Screen titles,
   buttons and chips are Title Case everywhere (owner's rule).
 - Coming Days is a grid of day charts only (the list of numbers is gone, owner 2026-10-16); − / + set how many
-  across (2 to 5 on a phone, more on a laptop), remembered per device. The Price Tool has two modes, Check a
+  across (2 to 5 on a phone, more on a laptop), remembered per device. Number Fun's "All Numbers" is the same
+  kind of grid: every number's main diamond (`cellSvg`), tap one to open it. The Price Tool has two modes, Check a
   Price and Find a Price (two pickers: the vibration, the range), never a wall of chips. Today has no row of
   code chips under the chart.
 - Today, Coming Days and the full-screen day use the day look (`day()` in tools.js, `html.day` in app.css,
@@ -194,7 +208,19 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - No build step: public/ is served as is. Bump `version` in package.json for
   user-visible releases.
 - One tag per search, never two: picking a tag replaces the search. The search
-  box shows the tag's screen name; × goes home.
+  box shows the tag's screen name; × goes home. A number typed in the box lists the
+  position search first (`positionSpots`) and drops that number's position-code tags.
+- Every overlay (sheet, popup, meaning page) goes through `trackOverlay`/`untrackOverlay`: one
+  step in the phone's Back history each, so Back closes one thing (owner 2026-10-19). A screen
+  change right after an overlay's own Close must go through `go`/`swap` (they wait for the step).
+- Destructive taps: `holdButton` / `confirmSheet`, never a second dialog.
+- Light and dark (owner 2026-10-19): the app follows the phone (`prefers-color-scheme` swaps the `:root`
+  variables at the top of app.css); Settings → Look pins one (`theme` on the device, `applyTheme`). A new color
+  on a dark screen is a variable with a light value, never a hex in a rule; check a changed screen in both looks.
+- Short screens (owner 2026-10-19): a Coming Days card is date, rating, chart. The chart sheet shows no list of
+  position numbers (the drawing does that); position/number tags and file details fold; repeats are one
+  "Most often" line, top five, no positions. The home search never lists position-code tags. Settings has a
+  search box: a new Settings row goes in `SETTINGS` with the words a search may use for it.
 - The viewer is an overlay over the screen it was opened from, which stays
   drawn under it (`underHash`): closing it never redraws the list, so the list
   keeps its place. It opens bare (tap shows the top bar); drag down and the

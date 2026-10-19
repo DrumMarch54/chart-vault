@@ -1,4 +1,28 @@
-# Number colors in the paid tool (worked out from the vault, 2026-10-14)
+# Number colors in the paid tool
+
+## The truth since 2026-10-19: the tool's own tables, read off its live page
+The paid tool (numpromember.com, the fold-out Quick Numeroscope on every member page) colors every number
+from ten tables in its own page script, one table per kind of position (name line, aura, aura of a sub-chart,
+center, center of a sub-chart, life expression, spine, pillar, sub-chart life expression and big number), index =
+the number 1..99, each entry an exact rgba. Which table a position uses depends on how many WORDS the typed
+name has (the script has one block per word count, 1 to 5): e.g. the main mind center uses the sub-chart
+center table with 2 or 4 words and the main center table with 3 or 5; the vowel chart's mind center uses the
+main center table with 2 words only. Extra vibrations use their center's table. The big life expression is the
+life expression table's color at opacity 0.33 (that is the "faded" look). Day numbers and the essence chart are
+#303030, the psyche charts and the letter count #517ca4. Numbers of 100 and more have no entry and inherit dark.
+The colors are gray (127,127,127) mixed toward pure green or pure red by a share: 20 %, 30 %, 40 %, 50 %, 60 %,
+80 %, 100 % (classes g20..g100, r10..r100 in public/number-colors.js).
+
+Tools: `tools/color-study/paid/fetch.mjs` signs in (NUMPRO_USER / NUMPRO_PASSWORD from the environment) and
+saves `tables.json` and `rules.json` from the page script; `gen.mjs` writes `public/number-colors.js`. Proven on
+Jon Eugene Minadeo II 15.12.1982 (four words): all 25 colored numbers match the live page
+(test/numeroscope.test.js). The owner said the tool's colors changed over time; re-run fetch + gen when a chart
+looks off, never hand-edit the table.
+
+The page's DOM also gives every number's exact box (x, y, font size) for the 1280-wide layout; a position
+study against those boxes is still to do (the LAYOUT below was measured from screenshots).
+
+## Before that: worked out from 436 vault screenshots (2026-10-14), kept for the method
 
 The owner could not get the color rules, so they were read off 436 paid-tool
 screenshots in the vault (26,820 numbers, each matched by position AND value

@@ -43,13 +43,17 @@
   // filename. Never throws, never waits, so a count can never break a tap.
   // A renamed or removed button changes its name and its label here, same commit.
   const USAGE_LABELS = {
-    'screen.home': 'Home Screen', 'screen.chart': 'Chart Viewer', 'screen.settings': 'Settings', 'screen.quick': 'Quick Chart',
+    'screen.home': 'Home Screen', 'screen.chart': 'Chart Viewer', 'screen.settings': 'Settings', 'settings.search': 'Settings: search', 'settings.look': 'Settings: light or dark look', 'screen.quick': 'Quick Chart',
     'screen.tags': 'All Tags', 'screen.upload': 'Upload Screenshots', 'screen.import': 'Import Tags', 'screen.status': 'Status and backup',
     'viewer.add_tag': 'Add a tag to a chart', 'quick.save': 'Save a quick chart', 'quick.full_screen': 'Quick Chart full screen',
     'quick.year_rows': 'Year Rows and Day Vibrations', 'quick.show_parts': 'Show and Hide Parts', 'quick.augment': 'Augmentation On or Off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
-    'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'viewer.number_tap': 'Tap a number on a chart', 'status.recompute': 'Recompute chart numbers',
+    'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'status.recompute': 'Recompute chart numbers',
     'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart', 'viewer.year_rows': 'Year Rows from a chart',
     'position.search_more': 'Narrow a position search by another number', 'position.add_more': 'Tap + Another number', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
+    'grid.size': 'Chart size on the grid (− / +)', 'similar.size': 'Chart size on Similar Charts (− / +)', 'duplicates.size': 'Chart size on Possible Duplicates (− / +)',
+    'viewer.similar': 'Similar Charts from a chart', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
+    'viewer.delete': 'Delete a chart from the chart page', 'duplicates.delete': 'Delete a chart from Possible Duplicates', 'duplicates.keep': 'Keep a duplicate group', 'deleted.restore': 'Put a deleted chart back',
+    'screen.duplicates': 'Possible Duplicates', 'screen.deleted': 'Deleted Charts', 'search.position': 'Search box → a position',
     'viewer.meaning': 'Tap a number on a chart for its meaning', 'quick.meaning': 'Tap a number on the Quick Chart for its meaning', 'meaning.show_charts': 'Meaning → show the charts with that number there', 'meaning.course_words': 'Meaning → open the full course words',
   };
   const count = (name) => { try { fetch('/api/usage', { method: 'POST', credentials: 'same-origin', keepalive: true, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name }) }).catch(() => {}); } catch { /* counting never breaks a tap */ } };
@@ -126,10 +130,12 @@
     if (touchY === null || e.touches.length !== 1 || !e.cancelable) return;
     if (window.scrollY <= 0 && e.touches[0].clientY > touchY && !scrollsUp(e.target)) e.preventDefault();
   }, { passive: false });
-  const go = (hash) => { location.hash = hash; };
+  // A screen change asked for while an overlay's own Close is still stepping back through the history
+  // (see overlays below) waits for that step, so the new screen lands on top of the right one.
+  const go = (hash) => afterOverlayClosed(() => { location.hash = hash; });
   // Same screen change, but without adding a step to the browser's history (used between charts in the
   // viewer, so the phone's Back button returns to the screen the viewer was opened from, not to the last chart).
-  const swap = (hash) => { location.replace(hash); };
+  const swap = (hash) => afterOverlayClosed(() => { location.replace(hash); });
   // Like replaceChildren, but skips null/false so a conditional part never shows as the word "null".
   const fill = (el, ...nodes) => el.replaceChildren(...nodes.filter((n) => n !== null && n !== undefined && n !== false));
   const render = (...nodes) => { fill($app, ...nodes); window.scrollTo(0, 0); };
@@ -153,18 +159,79 @@
   }
 
   // ---------- overlays (sheet, lightbox) ----------
-  let overlays = [];
+  // Every overlay (a sheet, a popup, the meaning page, the pyramid) is one step in the phone's Back history
+  // (owner 2026-10-19: Back closed the whole screen under the popup and landed on the home screen). Opening one
+  // pushes a history step; the phone's Back then closes only that overlay. An overlay closed by its own button
+  // steps back the same way, so the history never piles up; anything asked for right after (a screen change)
+  // waits for that step through afterOverlayClosed.
+  let overlays = []; // [{ el, close }], oldest first
   let meaningUi = null; // set once public/meaning.js is installed (bottom of this file)
-  function closeOverlays() { for (const o of overlays) o.remove(); overlays = []; document.body.classList.remove('noscroll'); }
+  let closingAll = false, pendingBack = 0, afterBack = [];
+  const trackOverlay = (el, close = null) => { overlays.push({ el, close }); try { history.pushState({ overlay: true }, '', location.href); } catch {} };
+  const untrackOverlay = (el) => {
+    const wasTop = overlays.length && overlays[overlays.length - 1].el === el;
+    overlays = overlays.filter((o) => o.el !== el);
+    if (!closingAll && wasTop && history.state && history.state.overlay) { pendingBack++; history.back(); }
+  };
+  const afterOverlayClosed = (fn) => { if (pendingBack) afterBack.push(fn); else fn(); };
+  function closeOverlays() {
+    closingAll = true;
+    try { for (const o of [...overlays].reverse()) { if (o.close) o.close(); else o.el.remove(); } } finally { closingAll = false; }
+    overlays = []; document.body.classList.remove('noscroll');
+  }
+  window.addEventListener('popstate', () => {
+    if (pendingBack) { pendingBack--; if (!pendingBack) { const fns = afterBack; afterBack = []; for (const fn of fns) fn(); } return; }
+    const top = overlays[overlays.length - 1];
+    if (top) { closingAll = true; try { if (top.close) top.close(); else top.el.remove(); } finally { closingAll = false; } overlays = overlays.filter((o) => o !== top); if (!overlays.length) document.body.classList.remove('noscroll'); return; }
+    // A step left behind by an overlay that was not on top when it closed: skip it, never a dead Back.
+    if (history.state && history.state.overlay) history.back();
+  });
   function sheet(title, actions) {
     const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
-    const close = () => { bg.remove(); overlays = overlays.filter((o) => o !== bg); };
+    const close = () => { bg.remove(); untrackOverlay(bg); };
     bg.append(h('div', { class: 'sheet' }, h('h3', {}, title),
       ...actions.map((a) => h('button', { type: 'button', class: a.cls || '', onclick: async () => { close(); await a.run(); } }, a.label)),
       h('button', { type: 'button', onclick: close }, 'Cancel')));
-    document.body.append(bg); overlays.push(bg);
+    document.body.append(bg); trackOverlay(bg, close);
   }
 
+
+  // − / + size control (owner 2026-10-19: wherever charts sit in a grid, make them bigger or smaller as in
+  // Coming Days). The number of columns is remembered per device under `key`; `apply(cols)` sets the grid.
+  function sizeControl(key, { min, max, def, apply, countName }) {
+    const clamp = (c) => Math.min(max, Math.max(min, Number(c) || def));
+    let cols = clamp(readStore(key) || def);
+    const $minus = h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Smaller' }, '−');
+    const $plus = h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Bigger' }, '+');
+    const set = (c, first = false) => { cols = clamp(c); if (!first) { writeStore(key, cols); if (countName) count(countName); } $minus.disabled = cols >= max; $plus.disabled = cols <= min; apply(cols); };
+    $minus.onclick = () => set(cols + 1); $plus.onclick = () => set(cols - 1);
+    const node = h('span', { class: 'sizectl', role: 'group', 'aria-label': 'Size' }, $minus, h('span', { class: 'small' }, 'Size'), $plus);
+    set(cols, true);
+    return { node, get cols() { return cols; } };
+  }
+
+  // Hold to confirm (owner's rule: destructive taps are hold-to-confirm, never a second dialog). The button
+  // fills up while the finger stays on it; letting go early cancels; a full second runs the action once.
+  function holdButton(label, run, { cls = 'btn-danger', ms = 1000 } = {}) {
+    const $fill = h('span', { class: 'holdfill' });
+    const $b = h('button', { type: 'button', class: `hold ${cls}` }, $fill, h('span', { class: 'holdlabel' }, label));
+    let timer = null, done = false;
+    const stop = () => { if (timer) clearTimeout(timer); timer = null; $b.classList.remove('holding'); };
+    $b.addEventListener('pointerdown', (e) => { if (done) return; e.preventDefault(); $b.setPointerCapture(e.pointerId); $b.classList.add('holding'); timer = setTimeout(async () => { timer = null; done = true; $b.disabled = true; try { await run(); } finally { done = false; $b.disabled = false; $b.classList.remove('holding'); } }, ms); });
+    for (const ev of ['pointerup', 'pointercancel', 'pointerleave']) $b.addEventListener(ev, stop);
+    $b.addEventListener('contextmenu', (e) => e.preventDefault());
+    return $b;
+  }
+  // A sheet with words and one hold-to-confirm button. `run` gets a `close` that steps the sheet out of the
+  // history the quiet way, so the action may change screens right after.
+  function confirmSheet(title, words, label, run) {
+    const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
+    const close = () => { bg.remove(); untrackOverlay(bg); };
+    bg.append(h('div', { class: 'sheet' }, h('h3', {}, title), h('p', { class: 'muted small', style: 'margin:0 0 8px' }, words),
+      holdButton(label, () => { close(); return run(); }),
+      h('button', { type: 'button', onclick: close }, 'Cancel')));
+    document.body.append(bg); trackOverlay(bg, close);
+  }
 
   // Pinch-to-zoom + swipes on an image inside a box (pointer events: works
   // with fingers on Samsung Internet and Chrome, and with a mouse on a laptop).
@@ -282,6 +349,19 @@
   const PICK_KEY = 'comparePick', CMPVIEW_KEY = 'compareView';
   const readStore = (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
   const writeStore = (k, v) => { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+  // Light or dark (owner 2026-10-19): the app follows the phone's own setting unless Settings -> Look pins one.
+  // The choice is on this device only (`theme`: 'light' | 'dark' | nothing). index.html applies it before the first
+  // paint; this keeps the browser's bar color in step with the page.
+  const THEME_KEY = 'theme';
+  const LOOKS = [[null, 'Follows the Phone'], ['light', 'Light'], ['dark', 'Dark']];
+  const applyTheme = () => {
+    const pref = readStore(THEME_KEY);
+    if (pref === 'light' || pref === 'dark') document.documentElement.dataset.theme = pref; else delete document.documentElement.dataset.theme;
+    const meta = document.querySelector('meta[name=theme-color]');
+    if (meta) meta.content = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#1b1f2a';
+  };
+  applyTheme();
+  try { matchMedia('(prefers-color-scheme: light)').addEventListener('change', applyTheme); } catch {}
   let comparePick = readStore(PICK_KEY); // { id, name } or null
   if (comparePick && !Number.isInteger(comparePick.id)) comparePick = null;
   const setPick = (p) => { comparePick = p; writeStore(PICK_KEY, p); drawCmpBar(); };
@@ -312,10 +392,15 @@
     const $list = h('div', { class: 'suggest hidden' });
     let timer, seq = 0;
     const hide = () => $list.classList.add('hidden');
-    const show = (items, q, who = null) => {
+    const show = (items, q, who = null, spots = []) => {
       fill($list);
       if (!q && empty) { $list.append(...empty()); $list.classList.toggle('hidden', !$list.children.length); return; }
       learnTags(items);
+      // A number first ("42", "42 life path"): the position search comes first, because it covers every chart
+      // whose name and date are known, while a position tag only covers the charts the owner tagged by hand.
+      for (const sp of spots) $list.append(h('button', { type: 'button', onclick: () => { count('search.position'); hide(); go(positionHash(sp.conds)); } },
+        h('span', { class: 'chip position', style: 'min-height:32px;font-size:15px;pointer-events:none' }, sp.label),
+        h('span', { class: 'count' }, `${fmtN(sp.count)} chart${sp.count === 1 ? '' : 's'}`)));
       if (who && who.count) {
         const one = who.names.length === 1 && who.names[0].count === who.count;
         if (!one) $list.append(h('button', { type: 'button', onclick: () => { count('search.name'); onPickName(q); hide(); } }, h('span', { class: 'chip who', style: 'min-height:32px;font-size:15px;pointer-events:none' }, `Everyone named ${q}`), h('span', { class: 'count' }, `${fmtN(who.count)} chart${who.count === 1 ? '' : 's'}`)));
@@ -341,7 +426,12 @@
           items = [...items, ...extra.map((t) => ({ ...t, pickKind: 'archetype' }))];
         }
         const who = await whoP;
-        if (my === seq) show(items, q, who);
+        // The home search (names on): the owner's position-code tags ("42lp") stay out of the list altogether
+        // (owner 2026-10-19): the position search below covers every chart, those tags only the hand-tagged few.
+        // They are still on each chart's page and in All Tags, and still found by the position search.
+        if (names) items = items.filter((t) => t.kind !== 'position');
+        const spots = names ? await positionSpots(q, items).catch(() => []) : [];
+        if (my === seq) show(items, q, who, spots);
       } catch {}
     };
     $input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(refresh, 120); });
@@ -349,6 +439,30 @@
     $input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); const first = $list.querySelector('button'); if (allowNew && $input.value.trim()) onPick($input.value.trim()); else if (first) first.click(); hide(); } if (e.key === 'Escape') hide(); });
     document.addEventListener('pointerdown', (e) => { if (!$list.contains(e.target) && e.target !== $input) hide(); });
     return $list;
+  }
+
+  // "42" -> every chart where 42 sits anywhere, then the positions that hold it most; "42 life path" -> only the
+  // positions whose name starts with those words (Little life path, Big life path). The position-code tags for the
+  // same thing ("42lp") are left out of the list: the position search finds everything they find and more.
+  async function positionSpots(q, items) {
+    const m = /^\s*(\d{1,3})(?:\/\d)?\s*([A-Za-z][A-Za-z' ]*)?\s*$/.exec(q);
+    if (!m) return [];
+    const num = Number(m[1]);
+    if (!num) return [];
+    const words = (m[2] || '').trim().toLowerCase().replace(/\s+/g, ' ');
+    const [cat, counts] = await Promise.all([loadCatalog(), api('/api/positions/counts?num=' + num)]);
+    const numText = num < 10 ? String(num) : `${num}/${TagCodes.digitSum(num)}`;
+    const out = [];
+    const matches = (label) => { const l = label.toLowerCase(); return !words || l.startsWith(words) || l.replace(/^(little|big|higher|lower|upper|outer|inner) /, '').startsWith(words) || l.includes(' ' + words); };
+    if (!words && counts.total) out.push({ label: `${numText} anywhere`, count: counts.total, conds: [{ pos: '*.*', num: String(num) }] });
+    // With words typed, a matching position is listed even at 0 charts: the answer to "42 life path" is a count.
+    const rows = cat.positions.filter((p) => (words ? matches(p.label) : counts.counts[`${p.chart}.${p.key}`]))
+      .map((p) => ({ label: `${numText} in ${p.label} · ${chartLabel(p.chart)}`, count: counts.counts[`${p.chart}.${p.key}`] || 0, conds: [{ pos: `${p.chart}.${p.key}`, num: String(num) }] }))
+      .sort((a, b) => b.count - a.count);
+    out.push(...rows.slice(0, words ? 8 : 4));
+    if (words) { const codes = TagCodes.expandQuery(q); const drop = new Set(codes); let i = items.length; while (i--) if (drop.has(items[i].name)) items.splice(i, 1); }
+    else { let i = items.length; while (i--) if (items[i].kind === 'position' && new RegExp(`^${num}[A-Za-z]`).test(items[i].name)) items.splice(i, 1); }
+    return out;
   }
 
   // ---------- browse ----------
@@ -390,6 +504,10 @@
         h('a', { class: 'chip position add', href: '#/position?' + condsQuery(conds), onclick: () => count('position.add_more') }, h('span', { class: 't' }, '+ Another number'))) : null;
     const $summary = h('div', { class: 'summary' }, 'Loading…');
     const $grid = h('div', { class: 'grid' });
+    // One size for every grid of charts (the list, the search results, Recently Opened): − / + beside the count.
+    const wide = window.innerWidth >= 1000 ? 2 : window.innerWidth >= 700 ? 1 : 0;
+    const size = sizeControl('gridCols', { min: 2, max: [5, 7, 9][wide], def: [3, 5, 6][wide], countName: 'grid.size', apply: (c) => document.documentElement.style.setProperty('--grid-cols', c) });
+    const $bar = h('div', { class: 'gridbar' }, $summary, size.node);
     const $sentinel = h('div', { class: 'sentinel' });
     const $recent = h('div', { class: 'recent hidden' });
     // The home screen is the search box and the way into the quick chart; the recently opened charts sit
@@ -409,14 +527,14 @@
       h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), home ? null : $quickIcon, home ? null : $gear), $filters),
       home && readingUi ? readingUi.homeBanner() : null,
       home ? $acts : null, home && toolsUi ? toolsUi.homeButtons() : null,
-      $recent, home ? null : $summary, home ? null : $grid, home ? null : $sentinel));
+      $recent, home ? null : $bar, home ? null : $grid, home ? null : $sentinel));
     // Recently Opened charts (this phone remembers the last 48), a grid like a search result, only on the home screen.
     if (home && recentIds().length) {
       api('/api/images?ids=' + recentIds().join(',') + '&limit=50').then((r) => {
         const byId = new Map(r.items.map((i) => [i.id, i]));
         const items = recentIds().map((id) => byId.get(id)).filter(Boolean);
         if (!items.length) return;
-        fill($recent, h('div', { class: 'summary rhead' }, 'Recently Opened'), h('div', { class: 'grid' }, ...items.map(cell)));
+        fill($recent, h('div', { class: 'gridbar' }, h('div', { class: 'summary rhead' }, 'Recently Opened'), size.node), h('div', { class: 'grid' }, ...items.map(cell)));
         $recent.classList.remove('hidden');
       }).catch(() => {});
     }
@@ -529,7 +647,9 @@
     const $orig = h('button', { type: 'button', class: 'cmenu-item hidden' }, 'Screenshot');
     const $rows = h('button', { type: 'button', class: 'cmenu-item' }, 'Year Rows and Day Vibrations');
     const $pyrItem = h('button', { type: 'button', class: 'cmenu-item' }, 'Whole Name Pyramid');
-    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $rows, $pyrItem, $orig);
+    const $simItem = h('button', { type: 'button', class: 'cmenu-item' }, 'Similar Charts');
+    const $delItem = h('button', { type: 'button', class: 'cmenu-item danger' }, 'Delete This Chart');
+    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $rows, $simItem, $pyrItem, $orig, $delItem);
     const $dots = h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'More', title: 'More', onclick: (e) => { e.stopPropagation(); $menu.classList.toggle('hidden'); } }, '⋮');
     const $more = h('div', { class: 'vmore hidden' }, $dots, $menu);
     const $cmp = h('button', { type: 'button', class: 'vbtn hidden' }, 'Compare');
@@ -658,6 +778,21 @@
       openWord(inp.name, dayOf(inp), { wholeName: true });
     };
     $pyrItem.onclick = wholePyramid;
+    $simItem.onclick = () => { $menu.classList.add('hidden'); if (!img.inputs) { toast('This chart has no name read yet. Swipe up and tap "Type them" to add it.', true); return; } count('viewer.similar'); go(`#/similar/${img.id}`); };
+    // Delete (owner's ask 2026-10-19): hold to confirm; the picture and everything about the chart go to
+    // Settings -> Deleted Charts, where it can be put back. Then back to the list, redrawn without it.
+    $delItem.onclick = () => {
+      $menu.classList.add('hidden');
+      confirmSheet(`Delete “${imgName(img) || img.filename}”?`, 'Hold the button to delete. The picture, its tags, name and numbers move to Deleted Charts in Settings, where you can put it back.', 'Hold to Delete', async () => {
+        try {
+          count('viewer.delete');
+          await api(`/api/images/${img.id}`, { method: 'DELETE', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ reason: 'deleted from the chart page' }) });
+          toast('Deleted. Put it back from Settings → Deleted Charts.');
+          underHash = null; // the list underneath is drawn again without this chart
+          afterOverlayClosed(back);
+        } catch (err) { toast(err.message, true); }
+      });
+    };
     if (img.inputs) { inputsById.set(img.id, img.inputs); if (!(cached && sameInputs(cached, img.inputs) && mode === 'drawn')) showDrawn(); }
     else { inputsById.delete(img.id); showPhoto(); }
     drawOrig();
@@ -722,18 +857,11 @@
         fill($numbers, h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('span', { class: 'muted small' }, 'Name and date not read yet, so this chart cannot be found by position.'), h('button', { type: 'button', onclick: () => { fixing = true; drawNumbers(); } }, 'Type them')));
         return;
       }
-      const groups = numbers.charts.map((c) => {
-        const $chips = h('div', { class: 'chips tchips' });
-        $chips.hidden = c.chart !== 'name';
-        for (const v of c.values) $chips.append(h('button', { type: 'button', class: 'chip position', onclick: () => { count('viewer.number_tap'); go(positionHash([{ pos: `${c.chart}.${v.position}`, num: String(v.sum) }])); } }, h('span', { class: 't' }, `${v.label}${v.n ? ' ' + (v.n + 1) : ''}`), h('span', { class: 'count' }, v.sum < 10 ? String(v.sum) : v.text)));
-        const $arrow = h('span', { class: 'arrow' }, $chips.hidden ? '⌄' : '⌃');
-        return [h('button', { type: 'button', class: 'tgroup', onclick: () => { $chips.hidden = !$chips.hidden; $arrow.textContent = $chips.hidden ? '⌄' : '⌃'; } }, h('span', { class: 'tg-title' }, c.label), h('span', { class: 'muted small' }, `${c.values.length} numbers`), $arrow), $chips];
-      });
+      // Only the name and date here (owner 2026-10-19): the lists of every position's number are gone; the
+      // drawing shows them, and a tap on a number there opens its meaning and "N charts with it here".
       fill($numbers,
         h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('div', { style: 'min-width:0' }, h('b', {}, inp.name || '(no name)'), h('div', { class: 'muted small' }, when ? `Born ${when}` : 'No date: name chart only')),
-          h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:6px' }, inp.name ? h('button', { type: 'button', onclick: wholePyramid }, 'Pyramid') : null, h('button', { type: 'button', onclick: () => { fixing = true; drawNumbers(); } }, 'Wrong? Fix'))),
-        h('div', { class: 'muted small' }, 'Tap a number to find every chart with it in that position.'),
-        ...groups.flat());
+          h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:6px' }, inp.name ? h('button', { type: 'button', onclick: wholePyramid }, 'Pyramid') : null, h('button', { type: 'button', onclick: () => { fixing = true; drawNumbers(); } }, 'Wrong? Fix'))));
     };
     if (img.kind === 'chart') loadNumbers();
     const draw = () => {
@@ -775,21 +903,27 @@
             h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:6px' }, img.title_check ? h('button', { type: 'button', onclick: ok }, 'Yes') : null, h('button', { type: 'button', onclick: () => { fixingName = true; drawWho(); } }, img.title ? 'Fix' : 'Name it'))));
       };
       drawWho();
+      // A folded row: tap to show what is under it (the position and number tags, the file details). The
+      // owner wants the sheet short (2026-10-19): the name tags and the reading stay in view, the rest folds.
+      const folded = (label, ...inside) => {
+        const $in = h('div', { class: 'stack hidden' }, ...inside), $arrow = h('span', { class: 'arrow' }, '⌄');
+        return [h('button', { type: 'button', class: 'tgroup', onclick: () => { $in.classList.toggle('hidden'); $arrow.textContent = $in.classList.contains('hidden') ? '⌄' : '⌃'; } }, h('span', { class: 'tg-title' }, label), $arrow), $in];
+      };
+      const codeTags = [...groups.position, ...groups.number];
       fill($sheetBody,
         $who,
         h('div', { class: 'row', style: 'justify-content:space-between' }, h('b', {}, `${img.tags.length} tag${img.tags.length === 1 ? '' : 's'}`), h('span', { class: 'muted small' }, 'Tap a tag for options')),
         groups.name.length ? h('div', { class: 'chips' }, ...groups.name.map(tagBtn)) : null,
-        groups.position.length ? h('div', {}, h('div', { class: 'muted small', style: 'margin-bottom:6px' }, 'Positions'), h('div', { class: 'chips' }, ...groups.position.map(tagBtn))) : null,
-        groups.number.length ? h('div', {}, h('div', { class: 'muted small', style: 'margin-bottom:6px' }, 'Numbers'), h('div', { class: 'chips' }, ...groups.number.map(tagBtn))) : null,
         h('div', { class: 'addtag row', style: 'flex-wrap:nowrap' }, $tagInput, h('button', { type: 'button', class: 'btn-primary', onclick: () => { const v = $tagInput.value.trim(); if (v) { count('viewer.add_tag'); addTag(v); $tagInput.value = ''; } } }, 'Add'), $sugg),
+        ...(codeTags.length ? folded(`${codeTags.length} position and number tag${codeTags.length === 1 ? '' : 's'}`, h('div', { class: 'chips' }, ...codeTags.map(tagBtn))) : []),
         $numbers,
         img.kind === 'chart' && readingUi ? readingUi.section(img) : null,
-        h('div', { class: 'small muted' },
+        ...folded('File details', h('div', { class: 'small muted' },
           h('div', {}, img.kind === 'archetype' ? 'Type: archetype pic (a picture that represents a number)' : 'Type: chart'),
           h('div', {}, `Taken: ${img.taken_at ? img.taken_at.replace('T', ' ') : 'unknown'}`),
           h('div', {}, img.has_file ? `File: ${fmtBytes(img.size)}, ${img.width}×${img.height}, uploaded ${fmtDate(img.uploaded_at)}` : 'File: not uploaded yet'),
           h('div', { style: 'word-break:break-all' }, img.filename),
-          ...img.paths.map((p) => h('div', { style: 'word-break:break-all;padding-left:8px' }, p))));
+          ...img.paths.map((p) => h('div', { style: 'word-break:break-all;padding-left:8px' }, p)))));
     };
     draw();
   };
@@ -1105,19 +1239,139 @@
   };
 
   // ---------- settings ----------
+  // Every entry has the words a search may use for it (what the page is called, what is on it, what the owner
+  // calls it), so "backup", "key", "trash" or "duplicates" find the right row (owner's ask 2026-10-19).
+  const SETTINGS = [
+    ['Quick Chart', '#/quick', 'draw a chart, name and date, numeroscope, pyramid'],
+    ['All Tags', '#/tags', 'every tag, counts, tag list'],
+    ['Names to Check', '#/names', 'who is this, guessed names, confirm a name, titles'],
+    ['Possible Duplicates', '#/duplicates', 'same chart twice, same picture, same name and birth date, repeats'],
+    ['Deleted Charts', '#/deleted', 'trash, put back, restore, undelete'],
+    ['Charts Still Showing the Screenshot', '#/?drawn=0', 'not drawn yet, no name and date read, photo only'],
+    ['Search by Position', '#/position', 'find charts by number in a position, combination, life path, center, diamond'],
+    ['Upload Screenshots', '#/upload', 'add pictures, missing files, photos from the phone'],
+    ['Import Tags', '#/import', 'UserTag.backup, Smart Switch, gallery tags, tag file'],
+    ['My Chart (your own name and birth date)', '#/mychart', 'me, my own chart, my name, my birthday, year rows'],
+    ['AI Reading (key and monthly cap)', '#/ai', 'AI key, spend, cost, money, cap, readings, ask the vault, model'],
+    ['Status and backup', '#/status', 'backup, back up now, updates, build, version, missing files, recompute, what you use most, usage, space, server'],
+    ['Archetype Pics', '#/?kind=archetype', 'pictures for a number, archetype images'],
+  ];
   routes.settings = function settingsView() {
-    render(h('div', { class: 'screen stack' }, pageTop('Settings', '#/'),
-      h('a', { class: 'btn btn-block', href: '#/quick', style: 'justify-content:space-between' }, 'Quick Chart', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/tags', style: 'justify-content:space-between' }, 'All Tags', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/names', style: 'justify-content:space-between' }, 'Names to Check', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/?drawn=0', style: 'justify-content:space-between' }, 'Charts Still Showing the Screenshot', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/position', style: 'justify-content:space-between' }, 'Search by Position', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/upload', style: 'justify-content:space-between' }, 'Upload Screenshots', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/import', style: 'justify-content:space-between' }, 'Import Tags', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/mychart', style: 'justify-content:space-between' }, 'My Chart (your own name and birth date)', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/ai', style: 'justify-content:space-between' }, 'AI Reading (key and monthly cap)', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/status', style: 'justify-content:space-between' }, 'Status and backup', h('span', { class: 'muted' }, '›')),
-      h('a', { class: 'btn btn-block', href: '#/?kind=archetype', style: 'justify-content:space-between' }, 'Archetype Pics', h('span', { class: 'muted' }, '›'))));
+    const $q = h('input', { type: 'search', placeholder: 'Search settings', autocomplete: 'off', enterkeyhint: 'search', 'aria-label': 'Search settings' });
+    const $list = h('div', { class: 'stack' });
+    const $none = h('p', { class: 'muted hidden' }, 'Nothing in Settings matches that.');
+    const row = ([label, href]) => h('a', { class: 'btn btn-block', href, style: 'justify-content:space-between' }, label, h('span', { class: 'muted' }, '›'));
+    // Look: light, dark, or whatever the phone is set to. A card of its own, found by the search too.
+    const LOOK_KEYS = 'look theme light dark appearance night day mode colors follows the phone system';
+    const $look = h('div', { class: 'card stack' });
+    const drawLook = () => {
+      const cur = readStore(THEME_KEY);
+      fill($look, h('div', { class: 'row', style: 'justify-content:space-between' }, h('b', {}, 'Look'), h('span', { class: 'muted small' }, cur ? `Always ${cur}` : 'Light or dark, like the phone')),
+        h('div', { class: 'chips' }, ...LOOKS.map(([v, label]) => h('button', { type: 'button', class: `chip ${(cur || null) === v ? 'active' : 'off'}`, onclick: () => { writeStore(THEME_KEY, v); applyTheme(); count('settings.look'); drawLook(); } }, label))));
+    };
+    const draw = () => {
+      const words = $q.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+      const hay = (label, keys) => { const t = `${label} ${keys}`.toLowerCase(); return words.every((w) => t.includes(w)); };
+      const hit = words.length ? SETTINGS.filter(([label, , keys]) => hay(label, keys)) : SETTINGS;
+      const lookHit = !words.length || hay('Look', LOOK_KEYS);
+      $look.classList.toggle('hidden', !lookHit);
+      fill($list, ...hit.map(row));
+      $none.classList.toggle('hidden', hit.length > 0 || lookHit);
+    };
+    $q.addEventListener('input', () => { count('settings.search'); draw(); });
+    render(h('div', { class: 'screen stack' }, pageTop('Settings', '#/'), h('div', { class: 'searchbox' }, $q), $look, $list, $none));
+    drawLook(); draw();
+  };
+
+  // ---------- similar charts ----------
+  // Charts like this one (owner 2026-10-19): every other chart scored by how many positions hold the same number,
+  // per chart. Chips rank by every chart together or by one; each row says "Essence 9 of 11 · Name 3 of 15";
+  // tap a row to see the two side by side in Compare.
+  routes.similar = async function similarView(id, query) {
+    if (!/^\d+$/.test(id || '')) return swap('#/');
+    const by = query.get('by') || 'all';
+    const $chips = h('div', { class: 'chips' });
+    const $list = h('div', { class: 'simlist' }, h('p', { class: 'muted' }, 'Scoring every chart…'));
+    const $who = h('h1', {}, 'Similar Charts');
+    const size = sizeControl('simCols', { min: 1, max: window.innerWidth >= 700 ? 4 : 2, def: 1, countName: 'similar.size', apply: (c) => $list.style.setProperty('--cols', c) });
+    render(h('div', { class: 'screen stack' }, h('div', { class: 'pagetop' }, h('a', { class: 'btn iconbtn', href: `#/chart/${id}`, 'aria-label': 'Back' }, '‹'), $who, size.node),
+      h('p', { class: 'muted small' }, 'Charts that hold the same numbers in the same places. Rank by every chart together, or by one chart. Tap a chart to see both side by side.'), $chips, $list));
+    let me = null;
+    try { me = await api(`/api/images/${id}`); $who.textContent = `Like ${imgName(me) || me.filename}`; } catch {}
+    let d;
+    try { d = await api(`/api/images/${id}/similar?by=${encodeURIComponent(by)}`); } catch (err) { fill($list, h('p', { class: 'err' }, err.message)); return; }
+    const short = { essence: 'Essence', name: 'Name', vocation: 'Vocation', personality: 'Personality', outer: 'Outer Psyche', inner: 'Inner Psyche' };
+    fill($chips, ...[{ key: 'all', label: 'Every Chart' }, ...d.charts.filter((c) => d.of[c.key])].map((c) => h('a', { class: `chip ${by === c.key ? 'active' : 'off'}`, href: `#/similar/${id}?by=${c.key}`, onclick: () => count('similar.by') }, short[c.key] || c.label)));
+    if (!d.items.length) { fill($list, h('p', { class: 'muted' }, 'No other chart shares a number here yet.')); return; }
+    // One line per row naming what is alike, in the course's words (server/similar.js gistOf).
+    // A card per chart: the chart drawn at full width so it reads while scrolling, the name, the typed name and
+    // date, then what is alike as pills (one per structure); the score last, small, because it is not the point.
+    fill($list, ...d.items.map((it) => h('a', { class: 'card simrow', href: `#/compare/${id}/${it.id}`, onclick: () => { count('similar.compare'); compareReturn = location.hash; } },
+      it.inputs && it.inputs.name ? h('div', { class: 'thumb drawn simthumb', role: 'img' }, drawnChart(it.inputs)) : it.has_file ? h('img', { class: 'thumb simthumb', src: `/thumb/${it.id}`, loading: 'lazy', alt: '' }) : h('div', { class: 'nofile simthumb' }, 'no picture'),
+      h('div', { class: 'simbody' },
+        h('div', { class: 'simname' }, it.title || (it.inputs && it.inputs.name) || it.filename),
+        it.inputs ? h('div', { class: 'muted small' }, `${it.inputs.name || ''}${it.inputs.day ? ` · ${it.inputs.day}.${it.inputs.month}.${it.inputs.year}` : ''}`) : null,
+        h('div', { class: 'simpills' }, ...(it.alike && it.alike.length ? it.alike : ['A few scattered numbers']).map((t) => h('span', { class: `simpill ${/^Same |Nearly the Same$/.test(t) ? 'whole' : ''}` }, t))),
+        h('div', { class: 'simscore muted' }, by === 'all' ? `${it.total} of ${d.totalOf} positions alike` : `${it.per[by] || 0} of ${d.of[by] || 0} positions alike`)))));
+  };
+
+  // ---------- possible duplicates ----------
+  // Groups of charts that look like the same chart twice: the very same picture, or the same typed name and
+  // birth date (owner 2026-10-19). Only listed: the owner keeps several charts of one person on purpose, so
+  // each chart has its own Hold to Delete, and "Keep Them All" hides a group that is fine.
+  const when = (iso) => (iso ? String(iso).slice(0, 10) : '');
+  routes.duplicates = async function duplicatesView() {
+    const $list = h('div', { class: 'stack' }, h('p', { class: 'muted' }, 'Looking…'));
+    const size = sizeControl('dupCols', { min: 1, max: window.innerWidth >= 700 ? 6 : 3, def: 2, countName: 'duplicates.size', apply: (c) => $list.style.setProperty('--cols', c) });
+    render(h('div', { class: 'screen stack' }, h('div', { class: 'pagetop' }, h('a', { class: 'btn iconbtn', href: '#/settings', 'aria-label': 'Back' }, '‹'), h('h1', {}, 'Possible Duplicates'), size.node),
+      h('p', { class: 'muted small' }, 'Charts that may be the same one twice: the same picture, or the same name and birth date. Several charts of one person can be on purpose: delete only what is really a repeat. Tap a picture to open it.'), $list));
+    const draw = async () => {
+      let d;
+      try { d = await api('/api/duplicates'); } catch (err) { fill($list, h('p', { class: 'err' }, err.message)); return; }
+      if (!d.groups.length) { fill($list, h('p', { class: 'muted' }, d.kept ? `No possible duplicates left. ${d.kept} group${d.kept === 1 ? '' : 's'} kept on purpose.` : 'No possible duplicates.')); return; }
+      fill($list, h('p', { class: 'muted small' }, `${d.groups.length} group${d.groups.length === 1 ? '' : 's'}${d.kept ? `, ${d.kept} kept on purpose` : ''}`), ...d.groups.map((g) => {
+        const $cards = h('div', { class: 'dupcards' }, ...g.charts.map((c) => {
+          const $card = h('div', { class: 'dupcard' },
+            // The screenshot, not the drawing: two charts with the same name and date draw the same, and the
+            // screenshots are what tells a real repeat from a second chart kept on purpose.
+            h('a', { href: `#/chart/${c.id}`, class: 'dupthumb' }, c.has_file ? h('img', { class: 'thumb', src: `/thumb/${c.id}`, loading: 'lazy', alt: '' }) : c.inputs && c.inputs.name ? h('div', { class: 'thumb drawn', role: 'img', 'aria-label': c.title || c.filename }, drawnChart(c.inputs)) : h('div', { class: 'nofile' }, 'no file yet')),
+            h('div', { class: 'small' }, h('b', {}, c.title || '(no name)')),
+            h('div', { class: 'muted small' }, `${when(c.taken_at) || 'no date'} · ${c.tag_count} tag${c.tag_count === 1 ? '' : 's'}${c.readings ? ` · ${c.readings} reading${c.readings === 1 ? '' : 's'}` : ''}`),
+            h('div', { class: 'muted small wrap' }, c.filename),
+            holdButton('Hold to Delete', async () => {
+              try { count('duplicates.delete'); await api(`/api/images/${c.id}`, { method: 'DELETE', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ reason: `duplicate (${g.why})` }) }); toast('Deleted. Put it back from Settings → Deleted Charts.'); await draw(); }
+              catch (err) { toast(err.message, true); }
+            }));
+          return $card;
+        }));
+        return h('div', { class: 'card stack dupgroup' },
+          h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('b', {}, g.why === 'same picture' ? 'Same picture' : `Same name and birth date${g.charts[0].inputs ? `: ${g.charts[0].inputs.name}, ${g.charts[0].inputs.day}.${g.charts[0].inputs.month}.${g.charts[0].inputs.year}` : ''}`),
+            h('button', { type: 'button', onclick: async () => { try { count('duplicates.keep'); await postJson('/api/duplicates/keep', { ids: g.charts.map((c) => c.id) }); toast('Kept. This group is not listed again.'); await draw(); } catch (err) { toast(err.message, true); } } }, 'Keep Them All')),
+          $cards);
+      }));
+    };
+    await draw();
+  };
+
+  // ---------- deleted charts ----------
+  routes.deleted = async function deletedView() {
+    const $list = h('div', { class: 'stack' }, h('p', { class: 'muted' }, 'Looking…'));
+    render(h('div', { class: 'screen stack' }, pageTop('Deleted Charts'),
+      h('p', { class: 'muted small' }, 'Charts deleted in the app. Nothing here is lost: Put Back returns the chart with its picture, tags, name and numbers. A deleted chart is not brought back by importing the tag file.'), $list));
+    const draw = async () => {
+      let d;
+      try { d = await api('/api/deleted'); } catch (err) { fill($list, h('p', { class: 'err' }, err.message)); return; }
+      if (!d.items.length) { fill($list, h('p', { class: 'muted' }, 'No deleted charts.')); return; }
+      fill($list, ...d.items.map((c) => h('div', { class: 'card dupcard row', style: 'flex-wrap:nowrap;align-items:flex-start' },
+        c.has_file ? h('img', { class: 'thumb small', src: `/api/deleted/${c.id}/thumb`, loading: 'lazy', alt: '' }) : c.inputs && c.inputs.name ? h('div', { class: 'thumb drawn small', role: 'img' }, drawnChart(c.inputs)) : h('div', { class: 'nofile small' }, 'no picture'),
+        h('div', { class: 'stack', style: 'flex:1;min-width:0;gap:4px' },
+          h('b', {}, c.title || '(no name)'),
+          h('div', { class: 'muted small' }, `Deleted ${when(c.deleted_at)}${c.reason ? ` · ${c.reason}` : ''}`),
+          h('div', { class: 'muted small' }, `${c.tags.length} tag${c.tags.length === 1 ? '' : 's'}${c.inputs && c.inputs.name ? ` · ${c.inputs.name}` : ''}${c.readings ? ` · ${c.readings} reading${c.readings === 1 ? '' : 's'}` : ''}`),
+          h('div', { class: 'muted small wrap' }, c.filename),
+          h('button', { type: 'button', class: 'btn-primary', onclick: async () => { try { count('deleted.restore'); const r = await postJson(`/api/deleted/${c.id}/restore`, {}); toast('Put back.'); await draw(); go(`#/chart/${r.id}`); } catch (err) { toast(err.message, true); } } }, 'Put Back')))));
+    };
+    await draw();
   };
 
   // ---------- names to check ----------
@@ -1189,7 +1443,7 @@
   // The sheet itself: tap a chip to show or hide that chart or part; the chart behind updates at once.
   function showSheet(show, onChange) {
     const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
-    const close = () => { bg.remove(); overlays = overlays.filter((o) => o !== bg); };
+    const close = () => { bg.remove(); untrackOverlay(bg); };
     const $charts = h('div', { class: 'chips' }), $kinds = h('div', { class: 'chips' });
     const draw = () => {
       fill($charts, ...SHOW_CHARTS.map(([k, label]) => h('button', { type: 'button', class: `chip ${shown(show, 'charts', k) ? 'active' : 'off'}`, onclick: () => { show.charts[k] = !shown(show, 'charts', k); change(); } }, label)));
@@ -1202,7 +1456,7 @@
       h('div', { class: 'muted small', style: 'margin:12px 0 6px' }, 'Charts'), $charts,
       h('div', { class: 'muted small', style: 'margin:12px 0 6px' }, 'Numbers'), $kinds,
       h('button', { type: 'button', class: 'btn-primary done', onclick: close }, 'Done')));
-    draw(); document.body.append(bg); overlays.push(bg);
+    draw(); document.body.append(bg); trackOverlay(bg, close);
   }
   // One rhombus with its two circles, white center line, pillar triangle and (optionally) the faded "big" circle.
   function rhombusShape(cx, cy, hw, hh, fill, o) {
@@ -1252,8 +1506,8 @@
     };
     const num = (x, y, v, cls, size, anchor, pos) => [hit(x, y, v, cls, size, anchor, pos), txt(x, y, v, cls, size, anchor, pos)];
     // Color of one number: the paid tool's choice for that position and value (number-colors.js).
-    const oneMiddle = data.name.middle.length === 1;
-    const tone = (slot, v, bold) => 'n-' + NumberColors.lookup(slot, typeof v === 'string' ? v : (v ? v.text : ''), oneMiddle) + (bold ? ' n-bold' : '') + ' k-' + kindOfSlot(slot);
+    const words = data.name.words.length; // the paid tool's color rules change with how many words the name has
+    const tone = (slot, v, bold) => 'n-' + NumberColors.lookup(slot, typeof v === 'string' ? v : (v ? v.text : ''), words) + (bold ? ' n-bold' : '') + ' k-' + kindOfSlot(slot);
     // x offsets of n items on one row: one at the center, two at the measured pair, more spread evenly across it.
     const spread = (n, pair, i) => (n <= 1 || !pair ? 0 : pair[0] + (pair[1] - pair[0]) * i / (n - 1));
     // The numbers of one rhombus. pre = the position prefix in number-colors.js ('' main, 'c.' consonants,
@@ -1335,18 +1589,21 @@
       sv('circle', { cx, cy: cy + hh + 28, r: 25, fill: '#f0f0f4' }), sv('polygon', { points: `${cx},${cy + hh + 56} ${cx + 22},${cy + hh + 86} ${cx - 22},${cy + hh + 86}`, fill: '#dde6ef' }),
       sv('circle', { cx: cx + hw * 0.74, cy: cy - hh + 14, r: 17, fill: '#fff', stroke: '#c7c7cf', 'stroke-width': 2 }));
     const txt = (x, y, v, cls, size, anchor) => (v ? sv('text', { x, y, class: cls, 'font-size': size, 'text-anchor': anchor || 'middle' }, typeof v === 'string' ? v : v.text) : null);
-    const tone = (slot, v, bold) => 'n-' + NumberColors.lookup(slot, v ? v.text : '', false) + (bold ? ' n-bold' : '');
+    const tone = (slot, v, bold) => 'n-' + NumberColors.lookup(slot, v ? v.text : '', count) + (bold ? ' n-bold' : '');
     const plain = (vals) => vals.map((v) => String(v.sum)).join('  ');
     const letters = c.words, n = letters.length, span = hw * 0.78;
     const xAt = (i) => (n <= 1 ? cx : cx - span + 2 * span * i / (n - 1));
     const hasX = c.heartExtra.length > 0, hasS = c.solarExtra.length > 0;
+    const live = letters.map((w, i) => (w.zero ? -1 : i)).filter((i) => i >= 0), firstI = live[0], lastI = live[live.length - 1];
     svg.append(...[
       day && txt(cx, cy - hh - 14, day, 'n-gray', 21),
       count ? txt(cx + hw * 0.74, cy - hh + 20, String(count), 'n-gray n-bold', 17) : null,
       c.upperLeft && txt(cx - hw * 0.56, cy - hh * 0.46, c.upperLeft, tone(pre + 'ul', c.upperLeft), 21, 'end'), c.upperRight && txt(cx + hw * 0.56, cy - hh * 0.46, c.upperRight, tone(pre + 'ur', c.upperRight), 21, 'start'),
       c.heart && txt(cx, cy - up + (hasX ? -2 : 9), c.heart, tone(pre + 'heart', c.heart, true), 26),
       hasX && txt(cx, cy - up + 22, plain(c.heartExtra), tone(pre + 'heartExtra', c.heartExtra[0]), 14),
-      ...letters.flatMap((w, i) => [txt(xAt(i), cy - 7, w.text, 'n-dark', 22), txt(xAt(i), cy + 21, String(w.value.sum), 'n-dark' + (i === 0 || i === n - 1 ? ' n-bold' : ''), 20)]),
+      // A price's 0 digit (sequence charts) sits on the line in gray: it is drawn, it adds nothing, it is never the first or last word.
+      ...letters.flatMap((w, i) => (w.zero ? [txt(xAt(i), cy + 21, '0', 'n-gray', 20)]
+        : [txt(xAt(i), cy - 7, w.text, 'n-dark', 22), txt(xAt(i), cy + 21, String(w.value.sum), 'n-dark' + (i === firstI || i === lastI ? ' n-bold' : ''), 20)])),
       c.lowerLeft && txt(cx - hw * 0.56, cy + hh * 0.46 + 8, c.lowerLeft, tone(pre + 'll', c.lowerLeft), 21, 'end'), c.lowerRight && txt(cx + hw * 0.56, cy + hh * 0.46 + 8, c.lowerRight, tone(pre + 'lr', c.lowerRight), 21, 'start'),
       c.solar && txt(cx, cy + up + (hasS ? -1 : 9), c.solar, tone(pre + 'solar', c.solar, true), 26),
       hasS && txt(cx, cy + up + 23, plain(c.solarExtra), tone(pre + 'solarExtra', c.solarExtra[0]), 14),
@@ -1359,7 +1616,7 @@
   function pyramidEl(r) {
     const rows = r.pyramid.slice().reverse();
     const W = r.weight, topCell = W.top;
-    const cls = (v, i) => { const t = Numeroscope.TENSION[v.sum]; return 'n-' + (v.sum < 10 ? 'dark' : NumberColors.lookup('first', v.text, false)) + (t ? (i === 0 ? ' top-tense' : ' tense') : ''); };
+    const cls = (v, i) => { const t = Numeroscope.TENSION[v.sum]; return 'n-' + (v.sum < 10 ? 'dark' : NumberColors.lookup('first', v.text, 1)) + (t ? (i === 0 ? ' top-tense' : ' tense') : ''); };
     const n = rows.length, wide = n > 8;
     return h('div', { class: 'pyr' + (wide ? ' wide' : ''), style: wide ? `--cell:${Math.max(22, Math.floor((Math.min(innerWidth, 760) - 42) / n))}px` : '' },
       ...rows.map((row, i) => h('div', { class: 'pyr-row' }, ...row.map((v) => h('span', { class: cls(v, i) }, i === rows.length - 1 ? String(v.sum) : v.text)))),
@@ -1387,7 +1644,7 @@
     const r = Numeroscope.singleName(word, day);
     if (!r.letters) return;
     day = day && day.text ? day : null;
-    const close = () => { $pop.remove(); overlays = overlays.filter((o) => o !== $pop); document.body.classList.remove('noscroll'); window.removeEventListener('keydown', keys); };
+    const close = () => { $pop.remove(); untrackOverlay($pop); document.body.classList.remove('noscroll'); window.removeEventListener('keydown', keys); };
     const keys = (e) => { if (e.key === 'Escape') close(); };
     const W = r.weight;
     const $table = h('div', { class: 'hidden' }, weightEl(W));
@@ -1407,7 +1664,7 @@
       wholeName || day ? null : h('p', { class: 'muted small', style: 'margin:0 0 8px' }, 'Type a birth day to see the top half of the charts and the pillars.'),
       wholeName ? null : h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'Name Chart'), singleNameSvg(r.name, '', r.letters, day)),
       wholeName ? null : h('div', { class: 'two' }, small('Vocation', r.vowels, 'v.'), small('Personality', r.consonants, 'c.')));
-    overlays.push($pop); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
+    trackOverlay($pop, close); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
     // A pyramid wider than the card starts scrolled to its middle, where the top sits, and says it can be swiped.
     if ($pyr.scrollWidth > $pyr.clientWidth) { $pyr.scrollLeft = ($pyr.scrollWidth - $pyr.clientWidth) / 2; $pyr.after(h('p', { class: 'muted small', style: 'margin:2px 6px 0;color:#8a8f9c' }, 'Wider than the screen: swipe the pyramid sideways to see its edges.')); }
   }
@@ -1481,10 +1738,10 @@
     $full.onclick = () => {
       count('quick.full_screen');
       $menu.classList.add('hidden');
-      const close = () => { $ov.remove(); overlays = overlays.filter((o) => o !== $ov); document.body.classList.remove('fullscreen'); $home.prepend($chart); window.removeEventListener('keydown', keys); };
+      const close = () => { $ov.remove(); untrackOverlay($ov); document.body.classList.remove('fullscreen'); $home.prepend($chart); window.removeEventListener('keydown', keys); };
       const keys = (e) => { if (e.key === 'Escape') close(); };
       const $ov = h('div', { class: 'nsfull' }, h('button', { type: 'button', class: 'cbtn nsfull-x', 'aria-label': 'Leave full screen', onclick: close }, '×'), $chart);
-      overlays.push($ov); document.body.append($ov); document.body.classList.add('fullscreen'); window.addEventListener('keydown', keys);
+      trackOverlay($ov, close); document.body.append($ov); document.body.classList.add('fullscreen'); window.addEventListener('keydown', keys);
     };
     // Save to Vault: the drawing becomes a chart picture tagged with the typed name, then opens with its tags.
     $save.onclick = async () => {
@@ -1678,11 +1935,11 @@
   function meaningSheet(v, vertical) {
     if (!v) return;
     const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
-    const close = () => { bg.remove(); overlays = overlays.filter((o) => o !== bg); };
+    const close = () => { bg.remove(); untrackOverlay(bg); };
     const line = (x) => (x ? h('p', { style: 'margin:0 0 10px' }, h('b', {}, rowText(x)), TagCodes.NAMES[x.sum] ? ` ${TagCodes.NAMES[x.sum]}` : '', h('br'), Numeroscope.MEANINGS[x.sum] || Numeroscope.MEANINGS[x.ds] || '', Numeroscope.combos(x) ? h('span', { class: 'muted' }, h('br'), Numeroscope.combos(x)) : null) : null);
     bg.append(h('div', { class: 'sheet' }, h('h3', {}, 'What it means'), line(v), vertical ? h('p', { class: 'muted small', style: 'margin:0 0 6px' }, 'Read with the two rows above it (vertical):') : null, vertical ? line(vertical) : null,
       h('button', { type: 'button', onclick: close }, 'Close')));
-    document.body.append(bg); overlays.push(bg);
+    document.body.append(bg); trackOverlay(bg, close);
   }
   // The owner's clock: Safford, Arizona (no daylight saving). "Today" and "now" in the rows are read there,
   // whatever the phone's own clock says.
@@ -1701,7 +1958,7 @@
     const now = nowIn(TZ);
     let year = Math.max(now.y, birthYear);
     let date = { y: now.y, m: now.m, d: now.d };
-    const close = () => { $pop.remove(); overlays = overlays.filter((o) => o !== $pop); document.body.classList.remove('noscroll'); window.removeEventListener('keydown', keys); };
+    const close = () => { $pop.remove(); untrackOverlay($pop); document.body.classList.remove('noscroll'); window.removeEventListener('keydown', keys); };
     const keys = (ev) => { if (ev.key === 'Escape') close(); };
     const $periods = h('div', { class: 'periods' }), $yearTitle = h('div', { class: 'wlabel' }), $yearNote = h('p', { class: 'muted small ynote' }), $year = h('div', {});
     const $dayTitle = h('div', { class: 'wlabel' }), $dayNote = h('p', { class: 'muted small ynote', style: 'padding:0 2px 6px' }), $day = h('div', {});
@@ -1752,7 +2009,7 @@
         h('div', { class: 'row ynav' }, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Previous day', onclick: () => shiftDay(-1) }, '‹'), $date, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Next day', onclick: () => shiftDay(1) }, '›')),
         $dayNote, $day,
         h('p', { class: 'muted small', style: 'margin:8px 0 0' }, 'Arizona time. Nine periods of 2 h 40 min from midnight, as in the course book.')));
-    overlays.push($pop); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
+    trackOverlay($pop, close); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
     drawPeriods(); drawAll();
   }
 
@@ -1819,19 +2076,27 @@
   // ---------- number tools (public/tools.js) ----------
   // Today, Coming Days, Number Fun, Price Tool, Relationship, Karmic Connections, My Chart: their screens
   // live in tools.js and get the plumbing here (screens, drawing, counting). A bottom sheet for a number's words.
+  // A sheet of words over the screen (owner 2026-10-19: a number's words pop up from the bottom, never a new
+  // screen): a grip on top, swipe down on it (or anywhere while the words are scrolled to the top) closes it,
+  // so does the phone's Back and a tap outside. Returns close.
   const wordsSheet = (content) => {
     const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
-    const close = () => { bg.remove(); overlays = overlays.filter((o) => o !== bg); };
-    bg.append(h('div', { class: 'sheet' }, content, h('button', { type: 'button', onclick: close }, 'Close')));
-    document.body.append(bg); overlays.push(bg);
+    const close = () => { bg.remove(); untrackOverlay(bg); };
+    const $sheet = h('div', { class: 'sheet wsheet' }, h('div', { class: 'sheet-grip' }, h('span', {})), content, h('button', { type: 'button', onclick: close }, 'Close'));
+    let startY = null, scroller = null;
+    $sheet.addEventListener('pointerdown', (e) => { scroller = e.target.closest('.numsheet, .sheet'); startY = !scroller || scroller.scrollTop <= 0 ? e.clientY : null; });
+    $sheet.addEventListener('pointerup', (e) => { if (startY !== null && e.clientY - startY > 60 && (!scroller || scroller.scrollTop <= 0)) close(); startY = null; });
+    bg.append($sheet);
+    document.body.append(bg); trackOverlay(bg, close);
+    return close;
   };
-  const toolsUi = window.Tools ? window.Tools.install({ routes, h, sv, fill, render, count, toast, api, go, numeroscopeSvg, sheet: wordsSheet, overlay: (o) => overlays.push(o), overlayGone: (o) => { overlays = overlays.filter((x) => x !== o); }, setCleanup: (fn) => { viewerCleanup = fn; } }) : null;
+  const toolsUi = window.Tools ? window.Tools.install({ routes, h, sv, fill, render, count, toast, api, go, numeroscopeSvg, singleNameSvg, sheet: wordsSheet, overlay: trackOverlay, overlayGone: untrackOverlay, setCleanup: (fn) => { viewerCleanup = fn; } }) : null;
   if (toolsUi) Object.assign(USAGE_LABELS, toolsUi.USAGE_LABELS);
   // Reading a chart (facts, AI reading, questions), Ask the Vault and the AI settings live in reading.js.
   const readingUi = window.Reading ? window.Reading.install({ routes, h, fill, api, toast, count, go, render, pageTop }) : null;
   if (readingUi) Object.assign(USAGE_LABELS, readingUi.USAGE_LABELS);
   // What a number means where it sits (public/meaning.js): a tap on a number of a drawn chart.
-  meaningUi = window.Meaning ? window.Meaning.install({ h, fill, api, count, go, positionHash, overlay: (o) => overlays.push(o), overlayGone: (o) => { overlays = overlays.filter((x) => x !== o); } }) : null;
+  meaningUi = window.Meaning ? window.Meaning.install({ h, fill, api, count, go, positionHash, overlay: trackOverlay, overlayGone: untrackOverlay }) : null;
 
   // ---------- start ----------
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js?v=' + (window.APP_VERSION || '0'), { updateViaCache: 'none' }).catch(() => {});

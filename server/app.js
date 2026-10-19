@@ -5,6 +5,8 @@ import { config } from './config.js';
 import { requireAuth, isAuthed, NO_TOKEN_MSG, passwordMatches, setSessionCookie, clearSessionCookie, isValidSession, loginAllowed, recordFailure, clearFailures } from './auth.js';
 import { parseUserTagBackup, importTags, addTagToImage, removeTagFromImage, markAlbumMember, ImportError } from './import.js';
 import { receiveUpload, createQuickChart, UploadError, fullPathFor, thumbPathFor, makeThumb, findLostFiles } from './storage.js';
+import { deleteImage, restoreImage, listDeleted, trashFilePath, findDuplicates, keepDuplicates, TrashError } from './trash.js';
+import { similarCharts } from './similar.js';
 import { listImages, getImage, imageContext, suggestTags, allTags, tagNames, statusReport, exportTags, bumpUsage, usageReport } from './queries.js';
 import { runBackup, streamZip, isBackupRunning } from './backup.js';
 import { setTitle, acceptTitle, titlesToCheck, titleStats, suggestNames, MAX_TITLE } from './titles.js';
@@ -128,6 +130,35 @@ export function createApp(db, { log = console.log } = {}) {
     if (!img) return res.status(404).json({ error: 'No such chart.' });
     res.json(img);
   });
+  // Delete a chart (owner's ask 2026-10-19): the picture goes to the trash folder and the whole record is
+  // kept, so Settings -> Deleted Charts can put it back. Nothing is ever lost; imports skip the filename.
+  app.delete('/api/images/:id', express.json({ limit: '2kb' }), (req, res, next) => {
+    try {
+      const img = getImage(db, Number(req.params.id));
+      if (!img) return res.status(404).json({ error: 'No such chart.' });
+      const r = deleteImage(db, img.id, { reason: String((req.body && req.body.reason) || '') });
+      log(`chart deleted by owner #${img.id} ${img.filename} "${img.title || ''}" (${r.tags} tags, picture ${r.file_kept ? 'moved to trash' : 'none'})${r.deleted_id ? ` -> deleted #${r.deleted_id}` : ''}`);
+      res.json(r);
+    } catch (err) { if (err instanceof TrashError) return res.status(err.status).json({ error: err.message }); next(err); }
+  });
+  app.get('/api/deleted', (req, res) => res.json({ items: listDeleted(db) }));
+  app.get('/api/deleted/:id/thumb', (req, res) => {
+    const p = trashFilePath(db, Number(req.params.id));
+    if (!p) return res.status(404).json({ error: 'No picture kept for this chart.' });
+    res.sendFile(p);
+  });
+  app.post('/api/deleted/:id/restore', (req, res, next) => {
+    try {
+      const r = restoreImage(db, Number(req.params.id));
+      log(`chart restored by owner #${r.id} ${r.filename} "${r.title || ''}"`);
+      res.json({ ...r, image: getImage(db, r.id) });
+    } catch (err) { if (err instanceof TrashError) return res.status(err.status).json({ error: err.message }); next(err); }
+  });
+  // Possible duplicates: same picture, or same typed name and birth date. Listed only; the owner decides.
+  app.get('/api/duplicates', (req, res) => res.json(findDuplicates(db)));
+  app.post('/api/duplicates/keep', express.json({ limit: '10kb' }), (req, res, next) => {
+    try { res.json(keepDuplicates(db, req.body && req.body.ids)); } catch (err) { if (err instanceof TrashError) return res.status(err.status).json({ error: err.message }); next(err); }
+  });
   app.get('/api/images/:id/context', (req, res) => {
     const id = Number(req.params.id);
     if (!getImage(db, id)) return res.status(404).json({ error: 'No such chart.' });
@@ -161,6 +192,13 @@ export function createApp(db, { log = console.log } = {}) {
     const num = parseNumber(req.query.num);
     if (!num) return res.status(400).json({ error: 'Type a number first, like 12 or 12/3.' });
     res.json(positionCounts(db, num, parseFixed(req.query.fixed)));
+  });
+  // Charts like this one: every other chart scored by positions holding the same number (server/similar.js).
+  app.get('/api/images/:id/similar', (req, res) => {
+    const img = getImage(db, Number(req.params.id));
+    if (!img) return res.status(404).json({ error: 'No such chart.' });
+    if (!getInputs(db, img.id)) return res.status(400).json({ error: 'This chart has no name and date read yet, so nothing can be compared. Swipe up and tap "Type them".' });
+    res.json(similarCharts(db, img.id, { by: String(req.query.by || 'all'), limit: Math.min(Math.max(Number(req.query.limit) || 60, 1), 200) }));
   });
   app.get('/api/images/:id/numbers', (req, res) => {
     const img = getImage(db, Number(req.params.id));

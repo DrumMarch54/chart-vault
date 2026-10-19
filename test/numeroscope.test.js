@@ -159,21 +159,31 @@ test('Kevin Darnell Hart (vault screenshot): whole 5-chart set', () => {
   assert.equal(t(p.inner.le), '15/6'); assert.equal(t(p.inner.heart), '9/9'); assert.equal(t(p.inner.solar), '9/9'); assert.equal(t(p.inner.pillar), '30/3');
 });
 
-test('number colors: table lookups, one-middle-name switch, fallbacks, no secrets of the study leak', () => {
+test('number colors: the paid tool\'s own tables and word-count rules, fixed positions, fallbacks', () => {
   const c = {};
   vm.runInNewContext(fs.readFileSync(new URL('../public/number-colors.js', import.meta.url), 'utf8'), c);
   const C = c.NumberColors;
-  // Peter Joshua Shicora, checked against the owner's paid-tool screenshot.
-  assert.equal(C.lookup('first', '24/6', true), 'green4'); assert.equal(C.lookup('middle', '23/5', true), 'green4'); assert.equal(C.lookup('last', '22/4', true), 'red3');
-  assert.equal(C.lookup('heart', '12/3', true), 'red3'); assert.equal(C.lookup('heart', '12/3', false), 'gray');
-  assert.equal(C.lookup('solar', '4/4', true), 'red1'); assert.equal(C.lookup('pillar', '36/9', true), 'green4'); assert.equal(C.lookup('le', '15/6', true), 'gray');
-  assert.equal(C.lookup('c.heart', '11/2', true), 'gray'); assert.equal(C.lookup('v.heart', '3/3', true), 'green2'); assert.equal(C.lookup('v.big', '33/6', true), 'green3');
+  // Jon Eugene Minadeo II, 15.12.1982 (four words): every value read off the live tool's page on 2026-10-19.
+  const L = (slot, n, w) => C.lookup(slot, n, w);
+  assert.equal(L('first', '13/4', 4), 'g20'); assert.equal(L('middle', '29/2', 4), 'r40'); assert.equal(L('middle', '27/9', 4), 'g60'); assert.equal(L('last', '17/8', 4), 'g40');
+  assert.equal(L('heart', '6/6', 4), 'g60'); assert.equal(L('heartExtra', '8/8', 4), 'r10'); assert.equal(L('heartExtra', '15/6', 4), 'g60'); assert.equal(L('spine', '11/2', 4), 'r20');
+  assert.equal(L('le', '23/5', 4), 'g100'); assert.equal(L('big', '86/5', 4), 'gray n-big'); assert.equal(L('pillar', '56/2', 4), 'gray');
+  assert.equal(L('ul', '10/1', 4), 'g20'); assert.equal(L('ur', '14/5', 4), 'g60'); assert.equal(L('ll', '9/9', 4), 'gray');
+  assert.equal(L('c.heart', '9/9', 4), 'gray'); assert.equal(L('c.solar', '15/6', 4), 'g20'); assert.equal(L('c.big', '27/9', 4), 'g60'); assert.equal(L('c.pillar', '60/6', 4), 'g20');
+  assert.equal(L('v.heart', '12/3', 4), 'gray'); assert.equal(L('v.heartExtra', '8/8', 4), 'r10'); assert.equal(L('v.big', '44/8', 4), 'r80'); assert.equal(L('v.pillar', '50/5', 4), 'g80');
+  assert.equal(L('v.solar', '7/7', 4), 'g40'); assert.equal(L('v.ll', '15/6', 4), 'g60'); assert.equal(L('v.lr', '10/1', 4), 'g40');
+  // The tool switches tables with the number of words: a 12/3 mind center is red with one middle name, gray otherwise.
+  assert.equal(L('heart', '12/3', 3), 'r60'); assert.equal(L('heart', '12/3', 2), 'gray'); assert.equal(L('heart', '12/3', 4), 'gray');
+  // Handsome truth, 15.12.1982 (two words), against the owner's screenshot of the tool.
+  assert.equal(L('heart', '13/4', 2), 'gray'); assert.equal(L('solar', '12/3', 2), 'gray'); assert.equal(L('le', '10/1', 2), 'g60'); assert.equal(L('v.heart', '4/4', 2), 'r20'); assert.equal(L('c.big', '36/9', 2), 'g60');
   // fixed positions and fallbacks
-  assert.equal(C.lookup('day', '19/1'), 'dark'); assert.equal(C.lookup('e.month', '5/5'), 'dark'); assert.equal(C.lookup('po.pillar', '24/6'), 'blue'); assert.equal(C.lookup('pi.pillar', '30/3'), 'dark');
-  assert.equal(C.lookup('big', '69/6'), 'faded'); assert.equal(C.lookup('first', '99/9'), 'gray'); assert.equal(C.lookup('c.big', '99/9'), 'faded');
-  const classes = new Set(Object.values(C.table).flatMap((t) => Object.values(t)));
-  for (const k of classes) assert.match(k, /^(gray|dark|faded|blue|green[1-4]|red[1-3])$/);
-  assert.ok(Object.keys(C.table).length > 40);
+  assert.equal(L('day', '19/1', 2), 'dark'); assert.equal(L('e.month', '5/5', 2), 'dark'); assert.equal(L('po.pillar', '24/6', 2), 'blue'); assert.equal(L('pi.pillar', '30/3', 2), 'dark');
+  assert.equal(L('first', '104/5', 2), 'dark'); assert.equal(L('first', '', 2), 'gray'); assert.equal(L('first', '24/6', 1), L('first', '24/6', 2)); assert.equal(L('heart', '6/6', 9), L('heart', '6/6', 5));
+  const classes = new Set(Object.values(C.TABLES).flat());
+  for (const k of classes) assert.match(k, /^(gray|g\d+|r\d+)$/);
+  for (const k of classes) if (k !== 'gray') assert.ok(C.PALETTE[k], k);
+  assert.equal(Object.keys(C.TABLES).length, 10);
+  assert.match(C.css, /\.nscope \.n-g60 \{ fill: rgb\(51, 204, 51\); \}/);
 });
 
 test('layout: every text position is a finite number (a NaN here means a number silently never draws)', () => {
@@ -360,4 +370,19 @@ test('whole name pyramid: spaces do not count, the letter row is every letter of
   assert.equal(whole.weight.ratio, spaced.weight.ratio);
   // its bottom row is the letters K A T R I N E D I T T E P I L M A R K with the course's letter values (T = 4, R = 2, P = 8)
   assert.deepEqual(Array.from(whole.pyramid[0], (v) => v.sum), [2, 1, 4, 2, 1, 5, 5, 4, 1, 4, 4, 5, 8, 1, 3, 4, 1, 2, 2]); // the course's letter values
+});
+
+// The price's chart: a number sequence on the central line (Six Themes book, "Numeroscopes on number sequences";
+// Price Tool → Price Chart). Checked by hand against the single-name rules: digits as names, 0 drawn but silent.
+test('sequence: digits on the central line, the digit sum at the bottom, a 0 adds nothing', () => {
+  const s = N.sequence('3695', null), c = s.chart;
+  assert.equal(s.digits.join(''), '3695');
+  assert.equal(t(c.le), '23/5'); assert.equal(t(c.lowerLeft), '8/8'); assert.equal(t(c.lowerRight), '10/1'); assert.equal(t(c.solar), '9/9');
+  assert.equal(c.heart, null); assert.equal(c.pillar, null); // no day on top: no upper half
+  const z = N.sequence('2400', null).chart;
+  assert.equal(z.words.length, 4); assert.ok(z.words[2].zero && z.words[3].zero); assert.equal(t(z.le), '6/6'); assert.equal(t(z.last.value), '4/4');
+  const d = N.sequence('995', 19).chart;
+  assert.equal(t(d.upperLeft), '10/1'); assert.equal(t(d.upperRight), '6/6'); assert.equal(t(d.heart), '7/7'); assert.equal(t(d.pillar), '41/5');
+  assert.equal(N.sequence('5', null).chart.le, null); // one digit: only the line
+  assert.equal(N.sequence('', null).digits.length, 0);
 });

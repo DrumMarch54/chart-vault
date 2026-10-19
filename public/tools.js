@@ -68,7 +68,7 @@
     if (group) parts.push(head(`Success code · ${group.name}`), A.h('p', {}, group.text));
     parts.push(...bizParts(B, n, head));
     if (!parts.length) parts.push(A.h('p', { class: 'muted' }, 'The books have no page for this number in this place yet.'));
-    A.sheet(A.h('div', { class: 'numsheet' }, A.h('h3', {}, `${v.text} ${name}`), kind ? A.h('div', { class: 'codes' }, A.h('span', { class: kind === 'avoid' || kind === 'care' ? 'warn' : kind === 'soft' ? 'soft' : '' }, T.CODE_WORDS[kind])) : null, extra || null, ...parts));
+    return A.sheet(A.h('div', { class: 'numsheet' }, A.h('h3', {}, `${v.text} ${name}`), kind ? A.h('div', { class: 'codes' }, A.h('span', { class: kind === 'avoid' || kind === 'care' ? 'warn' : kind === 'soft' ? 'soft' : '' }, T.CODE_WORDS[kind])) : null, extra || null, ...parts));
   }
   // What the business books say about a number 1-99: The Numbers 10-99 in Business (with its color code), the
   // summary of its family for 1-9, and the general meaning from Numbers Overview 1-99.
@@ -223,7 +223,7 @@
     const $pop = A.h('div', { class: 'wordpop dayfull' },
       A.h('div', { class: 'pagetop ttop' }, A.h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Close', onclick: close }, '‹'), A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Previous day', onclick: () => move(-1) }, '‹'), $title, A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Next day', onclick: () => move(1) }, '›')),
       $box);
-    A.overlay($pop); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
+    A.overlay($pop, close); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
     draw();
   }
 
@@ -301,11 +301,8 @@
     const open = (e) => { A.count('coming.open_day'); dayFull({ y: e.y, m: e.m, d: e.d }); };
     const isToday = (e) => e.y === now.y && e.m === now.m && e.d === now.d;
     const setCols = (c) => { view.cols = clampCols(c); remember('comingCols', view.cols); A.count('coming.size'); draw(); };
-    // The day vibration's keywords from the book (one short line per chart) arrive with readings.js.
-    if (!root.Readings) readings().then(() => { if ($body.isConnected) draw(); });
     const draw = () => {
       $date.value = iso(start.y, start.m, start.d);
-      const R = root.Readings || {};
       day();
       A.fill($chips, chip('Super Dates Only', view.superOnly, () => { view.superOnly = !view.superOnly; A.count('coming.super_only'); draw(); }),
         chip('Psyche Charts', view.psyche, () => { view.psyche = !view.psyche; remember('comingPsyche', view.psyche); draw(); }),
@@ -319,10 +316,9 @@
       const c = view.cols, tight = c >= 3;
       A.fill($body, A.h('div', { class: 'minis', 'data-cols': String(c), style: `grid-template-columns: repeat(${c}, minmax(0, 1fr))` }, ...days.map((e) => A.h('div', { class: 'mini' + (isToday(e) ? ' today' : '') + (e.rating === 'super' ? ' super' : ''), role: 'button', onclick: () => open(e) },
         A.h('div', { class: 'mhead' }, A.h('span', { class: 'd' }, tight ? `${MON[e.m - 1]} ${e.d}` : `${DOW[e.weekday].slice(0, 3)} ${MON[e.m - 1]} ${e.d}`), A.h('span', { class: `rate ${e.rating}` }, T.RATING_WORDS[e.rating].replace(/ Date$/, ''))),
-        dateCharts(e.y, e.m, e.d, view.psyche),
-        c <= 2 ? A.h('div', { class: 'mfoot' }, A.h('b', {}, e.dv.text), A.h('span', { class: 'muted small nm' }, nameOf(e.dv))) : null,
-        c <= 2 ? A.h('div', { class: 'mfoot muted small' }, `Essence ${e.lp.text} · Outer ${e.outer.text} · Inner ${e.inner.text}`) : null,
-        c <= 2 && R.dayVibration && R.dayVibration[e.dv.sum] ? A.h('div', { class: 'mfoot muted small' }, R.dayVibration[e.dv.sum].keywords) : null))));
+        // Only the date, the rating and the chart on a card (owner 2026-10-19): no day vibration name, no
+        // essence / outer / inner line, no keywords. The full-screen day has the words.
+        dateCharts(e.y, e.m, e.d, view.psyche)))));
     };
     A.render(A.h('div', { class: 'screen qscreen tscreen wide' }, top('Coming Days', '#/', A.h('a', { class: 'btn iconbtn', href: '#/today', 'aria-label': 'Today', title: 'Today' }, '☀')),
       $chips,
@@ -338,64 +334,138 @@
   // Triangles are drawn the book's way: thin blue outline, the two digits outside the top corners, the
   // auras outside the sides, the center in a circle, the life expression under the point, the archetype
   // name in small blue inside the top. Measured on The Diamond Method p. 35.
+  // One triangle, drawn as the paid tool's Number Fun page draws it (the owner's screenshot, 2026-10-19): a thin
+  // blue outline, the two digits outside the top corners, the archetype name in gold inside the top, the center in
+  // a thin circle, the auras outside the sides, the life expression under the point. Every number is blue except on
+  // the physical main diamond (opts.dark: dark gray, as the tool draws it). An unbalanced diamond's name is red.
   function tri(svg, d, cx, topY, w, opts = {}) {
-    const sv = A.sv, hh = w * 0.75, pad = 0;
-    const g = sv('g', { class: 'tri' + (opts.unbalanced ? ' unb' : ''), role: 'button', 'aria-label': `${d.text} ${d.name}` });
-    const stroke = opts.unbalanced ? '#e0a0a0' : '#4f86c6';
-    g.append(sv('polygon', { points: `${cx - w / 2},${topY} ${cx + w / 2},${topY} ${cx},${topY + hh}`, fill: '#fff', stroke, 'stroke-width': w > 120 ? 2.2 : 1.4 }));
-    const f = (k) => Math.max(6.5, w * k);
+    const sv = A.sv, hh = w * 0.72, floor = opts.minFont || 6.5, fk = opts.fontK || 1;
+    const g = sv('g', { class: 'tri' + (opts.dark ? ' dark' : '') + (opts.unbalanced ? ' unb' : ''), role: 'button', 'aria-label': `${d.text} ${d.name}` });
+    g.append(sv('polygon', { points: `${cx - w / 2},${topY} ${cx + w / 2},${topY} ${cx},${topY + hh}`, fill: 'none', stroke: '#2788c7', 'stroke-width': w > 120 ? 2.4 : w > 60 ? 1.6 : w > 30 ? 1 : 0.6 }));
+    const f = (k) => Math.max(floor, w * k * fk);
     const t = (x, y, s, size, cls, anchor) => sv('text', { x, y, 'font-size': size, 'text-anchor': anchor || 'middle', class: cls || '' }, s);
-    const bold = (opts.strong ? 'big ' : '') + 'bold';
-    g.append(t(cx - w / 2 - 3, topY - 4, opts.aText || String(d.a), f(0.17), bold, 'end'), t(cx + w / 2 + 3, topY - 4, opts.bText || String(d.b), f(0.17), bold, 'start'));
+    // A long corner text (Relationship: "John 25/7") shrinks so it stays beside its corner.
+    const cornerF = (txt) => f(0.18) * Math.min(1, Math.max(0.45, 4 / String(txt).length));
+    const aT = opts.aText || String(d.a), bT = opts.bText || String(d.b);
+    g.append(t(cx - w / 2 - 3, topY - 3, aT, cornerF(aT), 'bold', 'end'), t(cx + w / 2 + 3, topY - 3, bT, cornerF(bT), 'bold', 'start'));
     const nm = opts.name !== undefined ? opts.name : d.name;
-    if (nm && w >= 56) g.append(t(cx, topY + f(0.12) + 2, nm, Math.min(f(0.075), (w * 0.84) / (nm.length * 0.56)), opts.unbalanced ? 'name unb' : 'name'));
-    const ccy = topY + hh * 0.42, r = w * 0.14;
-    g.append(sv('circle', { cx, cy: ccy, r, fill: '#fff', stroke, 'stroke-width': 1.2 }), t(cx, ccy + f(0.1) * 0.36, d.center.text, f(0.1), 'bold'));
-    // The auras sit outside the sides (book p. 35): the gap is measured where the text is tallest, at its
-    // top, where the triangle is wider than at the baseline.
-    const sideY = topY + hh * 0.62, auraF = f(opts.strong ? 0.1 : 0.11), sideX = (w / 2) * (1 - (sideY - auraF * 0.72 - topY) / hh) + 4;
-    g.append(t(cx - sideX - 2, sideY, d.outer.text, auraF, 'aura', 'end'), t(cx + sideX + 2, sideY, d.inner.text, auraF, 'aura', 'start'));
-    g.append(t(cx, topY + hh + f(0.17) + 1, d.le.text, f(0.16), bold));
+    if (nm && w >= 44) g.append(t(cx, topY + f(0.1) + 3, nm, Math.min(f(0.095), (w * 0.86) / (nm.length * 0.58)), opts.unbalanced ? 'name unb' : opts.dark ? 'name dark' : 'name'));
+    const ccy = topY + hh * 0.44, r = w * 0.155 * (1 + (fk - 1) * 0.5); // bigger numbers (the grid's main row) get a somewhat bigger circle
+    g.append(sv('circle', { cx, cy: ccy, r, fill: 'none', stroke: '#2788c7', 'stroke-width': w > 120 ? 1.6 : w > 30 ? 1 : 0.5 }), t(cx, ccy + f(0.12) * 0.36, d.center.text, f(fk > 1 ? 0.11 : 0.12), 'bold'));
+    // The auras sit outside the sides: the gap is measured where the text is tallest, at its top, where the
+    // triangle is wider than at the baseline.
+    const sideY = topY + hh * 0.64, auraF = f(0.14), sideX = (w / 2) * (1 - (sideY - auraF * 0.72 - topY) / hh) + 3;
+    g.append(t(cx - sideX - 2, sideY, d.outer.text, auraF, 'bold', 'end'), t(cx + sideX + 2, sideY, d.inner.text, auraF, 'bold', 'start'));
+    g.append(t(cx, topY + hh + f(0.17) + 1, d.le.text, f(0.17), 'bold'));
     if (opts.onTap) g.addEventListener('click', () => opts.onTap(d));
     svg.append(g);
     return topY + hh + f(0.17) + 4;
   }
+  // One level of the big diamond as one band, laid out like the paid tool's page (measured on the owner's
+  // screenshot, 2026-10-19, as fractions of the page width): the main diamond in the middle, the outer and inner
+  // diamonds low at the sides, the two imbalanced ones small above them, the labels beside them in gray (pink for
+  // the imbalanced), the left half (outer life) a touch lighter than the right (inner life). The physical band is
+  // the biggest; the emotional and spiritual ones are smaller and pulled in toward the middle, as on the tool's page.
+  const BANDS = {
+    main: { main: 110, side: 66, unb: 41, top: 32, sideTop: 62, unbTop: 10, sideX: 0.135, unbX: 0.24, bg: ['#cfdbe7', '#c0d1e1'], title: 'PHYSICAL', label: 'main diamond', side_: ['diamond'], unb_: ['imbalanced', 'diamond'] },
+    essence: { main: 90, side: 54, unb: 33, top: 30, sideTop: 54, unbTop: 8, sideX: 0.21, unbX: 0.28, bg: ['#dee7ee', '#cfdbe7'], title: 'EMOTIONAL', label: 'essence diamond', side_: ['essence', 'diamond'], unb_: ['imbalanced', 'essence diamond'] },
+    integration: { main: 62, side: 40, unb: 26, top: 38, sideTop: 52, unbTop: 8, sideX: 0.28, unbX: 0.33, bg: ['#edf2f6', '#dee7ee'], title: 'SPIRITUAL', label: 'integration diamond', side_: ['integration', 'diamond'], unb_: ['imbalanced', 'integration diamond'] },
+  };
   function levelSvg(d, lv, labels, onTap) {
-    const sv = A.sv, W = 390, H = labels.noUnbalanced ? 216 : 240;
-    const svg = sv('svg', { viewBox: `0 0 ${W} ${H}`, class: 'dia band', role: 'img' });
-    svg.append(sv('rect', { x: 0, y: 0, width: W / 2, height: H, fill: lv === 'main' ? '#e7eef6' : lv === 'essence' ? '#edf2f8' : '#f3f6fa' }), sv('rect', { x: W / 2, y: 0, width: W / 2, height: H, fill: lv === 'main' ? '#cfdde9' : lv === 'essence' ? '#d9e4ee' : '#e4ecf4' }));
-    const lab = (x, y, s, cls, anchor) => svg.append(sv('text', { x, y, 'font-size': 9, class: cls || 'lab', 'text-anchor': anchor || 'middle' }, s));
-    lab(8, 14, labels.title, 'band-title', 'start'); lab(W - 8, 14, labels.right, 'lab', 'end');
-    const top = labels.noUnbalanced ? 50 : 60;
-    const mainBottom = tri(svg, d, W / 2, top, 140, { onTap, strong: true, aText: labels.aText, bText: labels.bText, name: labels.mainName });
-    lab(W / 2, Math.min(H - 6, mainBottom + 10), labels.mainLabel || (lv === 'main' ? 'Main Diamond' : lv === 'essence' ? 'Essence Diamond' : 'Integration Diamond'));
-    const mid = labels.noUnbalanced ? 96 : 122;
-    const ob = tri(svg, d.outerD, 62, mid, 92, { onTap }); lab(62, Math.min(H - 6, ob + 10), labels.outerLabel || 'Outer Diamond');
-    const ib = tri(svg, d.innerD, W - 62, mid, 92, { onTap }); lab(W - 62, Math.min(H - 6, ib + 10), labels.innerLabel || 'Inner Diamond');
-    if (!labels.noUnbalanced) {
-      tri(svg, d.outerU, 62, 42, 52, { onTap, unbalanced: true }); lab(62, 30, 'Outer Unbalanced', 'lab unb');
-      tri(svg, d.innerU, W - 62, 42, 52, { onTap, unbalanced: true }); lab(W - 62, 30, 'Inner Unbalanced', 'lab unb');
+    const sv = A.sv, W = 390, K = BANDS[lv], dark = lv === 'main';
+    const svg = sv('svg', { class: 'dia band', role: 'img' });
+    const lab = (x, y, s, cls, anchor, size) => svg.append(sv('text', { x, y, 'font-size': size || 9, class: cls || 'lab', 'text-anchor': anchor || 'middle' }, s));
+    const lines = (x, y0, words, cls, anchor, size, lh) => words.forEach((wd, i) => lab(x, y0 + i * lh, wd, cls, anchor, size));
+    const bottoms = [];
+    bottoms.push(tri(svg, d, W / 2, K.top, K.main, { onTap, dark, minFont: 5, aText: labels.aText, bText: labels.bText, name: labels.mainName }));
+    lab(W / 2, K.top - 13, labels.mainLabel || K.label);
+    const sideCx = Math.round(W * K.sideX);
+    bottoms.push(tri(svg, d.outerD, sideCx, K.sideTop, K.side, { onTap, minFont: 5 }), tri(svg, d.innerD, W - sideCx, K.sideTop, K.side, { onTap, minFont: 5 }));
+    // "outer diamond" beside the outer diamond's life expression, a word a line, as on the tool's page.
+    // A label a word a line; a long custom one ("How John Feels It") in two lines.
+    const split = (txt) => { const w = txt.split(' '); if (w.length <= 3) return w; const h = Math.ceil(w.length / 2); return [w.slice(0, h).join(' '), w.slice(h).join(' ')]; };
+    const sideWords = split(labels.outerLabel || `outer ${K.side_.join(' ')}`), innerWords = split(labels.innerLabel || `inner ${K.side_.join(' ')}`);
+    // On the physical band the side diamond sits at the edge, so its label goes below-left beside the life
+    // expression; on the upper bands it goes outside the triangle, left of its left corner, never over the auras.
+    if (dark) {
+      const sideLe = K.sideTop + K.side * 0.72 + K.side * 0.17 - 2;
+      lines(sideCx - 18, sideLe - (sideWords.length - 1) * 4.5, sideWords, 'lab', 'end', 8, 9);
+      lines(W - sideCx + 18, sideLe - (innerWords.length - 1) * 4.5, innerWords, 'lab', 'start', 8, 9);
+    } else {
+      const midY = K.sideTop + K.side * 0.3;
+      lines(sideCx - K.side / 2 - 10, midY - (sideWords.length - 1) * 4.5, sideWords, 'lab', 'end', 8, 9);
+      lines(W - sideCx + K.side / 2 + 10, midY - (innerWords.length - 1) * 4.5, innerWords, 'lab', 'start', 8, 9);
     }
-    if (lv === 'main') { lab(W / 4, H - 6, 'OUTER LIFE', 'life'); lab((3 * W) / 4, H - 6, 'INNER LIFE', 'life'); }
+    if (!labels.noUnbalanced) {
+      const ux = Math.round(W * K.unbX);
+      bottoms.push(tri(svg, d.outerU, ux, K.unbTop, K.unb, { onTap, unbalanced: true, minFont: 4.5 }), tri(svg, d.innerU, W - ux, K.unbTop, K.unb, { onTap, unbalanced: true, minFont: 4.5 }));
+      // The pink labels start under the band's title line, so the two never cross.
+      lines(ux - K.unb / 2 - 9, 26, [`outer ${K.unb_[0]}`, ...K.unb_.slice(1)], 'lab unb', 'end', 7, 8);
+      lines(W - ux + K.unb / 2 + 9, 26, [`inner ${K.unb_[0]}`, ...K.unb_.slice(1)], 'lab unb', 'start', 7, 8);
+    }
+    const H = Math.max(...bottoms) + (dark ? 20 : 6);
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.prepend(sv('rect', { x: 0, y: 0, width: W / 2, height: H, fill: K.bg[0] }), sv('rect', { x: W / 2, y: 0, width: W / 2, height: H, fill: K.bg[1] }));
+    lab(8, 15, labels.title || K.title, 'band-title', 'start', 10.5);
+    if (labels.right) lab(W - 8, 15, labels.right, 'lab', 'end', 8);
+    if (dark) { lab(W / 4, H - 6, 'OUTER LIFE', 'life', 'middle', 9.5); lab((3 * W) / 4, H - 6, 'INNER LIFE', 'life', 'middle', 9.5); }
     return svg;
   }
   function bigDiamondEl(B, onTap, labels = {}) {
     return A.h('div', { class: 'bigd' },
-      levelSvg(B.integration, 'integration', { title: 'SPIRITUAL · The Integration Diamond', right: labels.spiritual || 'How It Evolves Fastest', noUnbalanced: labels.noUnbalanced }, onTap),
-      levelSvg(B.essence, 'essence', { title: 'EMOTIONAL · The Essence Diamond', right: labels.emotional || 'Hidden Motivation', noUnbalanced: labels.noUnbalanced }, onTap),
-      levelSvg(B.main, 'main', { title: labels.physicalTitle || 'PHYSICAL · The Main Diamond', right: labels.physical || 'How It Acts', noUnbalanced: labels.noUnbalanced, aText: labels.aText, bText: labels.bText, mainName: labels.mainName, mainLabel: labels.mainLabel, outerLabel: labels.outer, innerLabel: labels.inner }, onTap));
+      levelSvg(B.integration, 'integration', { right: labels.spiritual, noUnbalanced: labels.noUnbalanced }, onTap),
+      levelSvg(B.essence, 'essence', { right: labels.emotional, noUnbalanced: labels.noUnbalanced }, onTap),
+      levelSvg(B.main, 'main', { title: labels.physicalTitle, right: labels.physical, noUnbalanced: labels.noUnbalanced, aText: labels.aText, bText: labels.bText, mainName: labels.mainName, mainLabel: labels.mainLabel, outerLabel: labels.outer, innerLabel: labels.inner }, onTap));
   }
 
   // ---------- Number Fun ----------
+  // One number's whole big diamond, small, for the grid of every number: the paid tool's "10 by 10" page draws
+  // seven triangles per cell: the integration diamond on top, the essence diamond with its outer and inner
+  // diamonds beside it, the main diamond (bigger, dark) with its outer and inner diamonds beside it.
+  // One cell of All Numbers (owner's pick B, 2026-10-19, out of five mock-ups): the number's own three-level
+  // page in miniature, tinted bands, gold names, imbalanced diamonds and all, so the grid reads like the page.
+  function cellSvg(x) {
+    return A.h('div', { class: 'nfmini' }, bigDiamondEl(T.bigDiamond(x), null, {}));
+  }
   function numberFunView(arg) {
     light();
     let n = Math.min(99, Math.max(1, Number(arg) || recall('numberFun', 14)));
-    const $row = A.h('div', { class: 'numrow' }), $body = A.h('div', {});
+    // "All Numbers" (owner 2026-10-19, the paid tool's grid page): every number's main diamond at once, as many
+    // across as the − / + choose (remembered per device); tap one to open that number. The chip brings the grid back.
+    const wide = window.innerWidth >= 700;
+    const MIN_COLS = 2, MAX_COLS = 10; // the paid tool's page is 10 by 10; a phone can go there too, the − / + choose
+    const clampCols = (c) => Math.min(MAX_COLS, Math.max(MIN_COLS, Number(c) || 0));
+    const view = { grid: !!recall('numberFunGrid', false), cols: clampCols(recall('numberFunCols', wide ? 4 : 2)) };
+    const $row = A.h('div', { class: 'numrow' }), $body = A.h('div', {}), $chips = A.h('div', { class: 'togglerow' });
     const $in = A.h('input', { type: 'text', inputmode: 'numeric', class: 'numin', maxlength: 2, 'aria-label': 'Number' });
-    $in.addEventListener('change', () => { const v = Number($in.value); if (v >= 1 && v <= 99) { n = v; A.count('numberfun.type'); draw(); } });
-    const jump = (d) => { if (d.code >= 1 && d.code <= 99) { n = d.code; A.count('numberfun.tap_diamond'); draw(); } };
+    $in.addEventListener('change', () => { const v = Number($in.value); if (v >= 1 && v <= 99) { n = v; view.grid = false; A.count('numberfun.type'); draw(); } });
+    // A tap on a diamond pops its words up from the bottom (owner 2026-10-19: never a new screen, so the page
+    // underneath stays put); "Open" in the sheet goes to that number on purpose.
+    const jump = async (d) => {
+      if (!(d.code >= 1 && d.code <= 99)) return;
+      A.count('numberfun.tap_diamond');
+      let close = null;
+      const $open = A.h('button', { type: 'button', class: 'btn-primary', onclick: () => { if (close) close(); n = d.code; view.grid = false; A.count('numberfun.open_from_sheet'); draw(); window.scrollTo(0, 0); } }, `Open ${T.val(d.code).text} ${d.name}`);
+      close = await numberSheet(T.val(d.code), 'about', $open);
+    };
+    const setCols = (c) => { view.cols = clampCols(c); remember('numberFunCols', view.cols); A.count('numberfun.size'); draw(); };
     const draw = async () => {
-      remember('numberFun', n); $in.value = String(n);
+      remember('numberFun', n); remember('numberFunGrid', view.grid); $in.value = String(n);
+      A.fill($chips, chip('All Numbers', view.grid, () => { view.grid = !view.grid; A.count('numberfun.grid'); draw(); }),
+        view.grid ? A.h('span', { class: 'sizectl', role: 'group', 'aria-label': 'Chart size' },
+          A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Smaller charts', disabled: view.cols >= MAX_COLS, onclick: () => setCols(view.cols + 1) }, '−'),
+          A.h('span', { class: 'small' }, 'Size'),
+          A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Bigger charts', disabled: view.cols <= MIN_COLS, onclick: () => setCols(view.cols - 1) }, '+')) : null);
+      $row.classList.toggle('hidden', view.grid);
+      if (view.grid) {
+        // The paid tool's order: a row per ten, the nineties on top, 0 to 9 across (ten across = its page exactly).
+        const c = view.cols, order = [];
+        for (let tens = 9; tens >= 0; tens--) for (let u = 0; u <= 9; u++) { const x = tens * 10 + u; if (x >= 1) order.push(x); }
+        A.fill($body, A.h('div', { class: 'nftable', 'data-cols': String(c), style: `grid-template-columns: repeat(${c}, minmax(0, 1fr))` },
+          ...order.map((x) => A.h('div', { class: 'nfc' + (x === n ? ' today' : ''), role: 'button', 'aria-label': `Open ${T.val(x).text}`, onclick: () => { n = x; view.grid = false; A.count('numberfun.tap_cell'); draw(); window.scrollTo(0, 0); } }, cellSvg(x)))),
+          A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Every number\u2019s three levels, the nineties on top. Tap one to see it large.'));
+        return;
+      }
       A.fill($row, ...Array.from({ length: 99 }, (_, i) => i + 1).map((x) => A.h('button', { type: 'button', class: x === n ? 'active' : '', onclick: () => { n = x; draw(); } }, String(x))));
       const active = $row.querySelector('.active'); if (active) active.scrollIntoView({ inline: 'center', block: 'nearest' });
       const B = T.bigDiamond(n), v = T.val(n);
@@ -409,7 +479,7 @@
         inOthers.length ? A.h('div', { class: 'reading' }, A.h('div', { class: 'head' }, A.h('span', { class: 'nm' }, `Where ${v.text} Appears in Other Numbers`)), A.h('div', { class: 'chips', style: 'margin-top:6px' }, ...inOthers.map((x) => A.h('button', { type: 'button', class: 'chip', onclick: () => { n = x; A.count('numberfun.tap_other'); draw(); } }, T.val(x).text)))) : null,
         A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Tap any diamond to open that number. The three levels follow the Diamond Method book: the main diamond, the essence diamond made of its two auras, and the integration diamond above that.'));
     };
-    A.render(A.h('div', { class: 'screen qscreen tscreen' }, top('Number Fun', '#/', $in), $row, $body));
+    A.render(A.h('div', { class: 'screen qscreen tscreen wide' }, top('Number Fun', '#/', $in), $chips, $row, $body));
     draw();
   }
 
@@ -419,7 +489,8 @@
   // number's business words and color), Module 12 (which numbers suit which customers and purposes).
   // Layout: design 2a (2026-10-18, owner: "looks like it was thrown together"): the verdict beside the digit sum at
   // the top, the rules as a list (Avoid / Care / Note), the pyramid with its top, weight and ratio in one card, the
-  // books' words in matching cards cut to three lines (tap for the whole page). CSS: the `.pt` block in app.css.
+  // books' words one card per number (2026-10-19), each passage under its own small head, cut to three lines (tap
+  // for the whole page). The pyramid card also draws the price's chart (Numeroscope.sequence). CSS: `.pt` in app.css.
   // The words the book gives a price vibration: the summary (pp. 52-53), else the note of its example price (p. 53),
   // else the number's business name.
   function vibeWords(B, n) {
@@ -434,7 +505,8 @@
   const vibeText = (B, n) => { const P = B.prices || {}; const x = (P.sums || {})[n] || (P.clean || {})[n]; return x ? { text: x.text, title: x.title || '', page: x.page } : null; };
   function priceView() {
     light();
-    const state = recall('priceTool', { vibe: 23, range: 1, price: '', mode: 'check' });
+    const state = recall('priceTool', { vibe: 23, range: 1, price: '', mode: 'check', view: 'pyramid', chartDay: '' });
+    state.view = state.view === 'chart' ? 'chart' : 'pyramid'; state.chartDay = String(state.chartDay || '').replace(/\D/g, '').slice(0, 2);
     if (!T.PRICE_VIBES.some(([v]) => v === state.vibe)) state.vibe = 23;
     if (!T.PRICE_RANGES[state.range]) state.range = 1;
     state.mode = state.mode === 'find' ? 'find' : 'check';
@@ -450,23 +522,71 @@
     const label = (t) => A.h('div', { class: 'pt-label' }, t);
     const KIND_WORD = { warn: 'Avoid', care: 'Care', soft: 'Note' };
     const textSheet = (title, text) => A.sheet(A.h('div', { class: 'numsheet' }, A.h('h3', {}, title), ...String(text).split('\n\n').map((p) => A.h('p', {}, p))));
-    // One card of the books' words: the number, its name, where it sits in the price; three lines, tap for the whole page.
-    const wordCard = ({ num, name, pos, color, text, warn, open }) => {
-      const long = String(text || '').length > 190;
-      return A.h('div', { class: 'reading pt-card', onclick: open || null },
-        A.h('div', { class: 'head' }, A.h('b', {}, num), A.h('span', { class: 'nm' }, name || ''), A.h('span', { class: 'pos' }, pos)),
-        color ? A.h('span', { class: 'bizcolor ' + color }, BIZ_COLOR_WORD[color] + ' for Business') : null,
-        text ? A.h('p', { class: long ? 'pt-clamp' : '' }, text) : null,
-        warn ? A.h('p', { class: 'warnline' }, '⚠ ' + warn) : null,
-        long && open ? A.h('div', { class: 'pt-more' }, 'Read more ›') : null);
+    // What the books say, one card per number in the price (owner 2026-10-19: the cards were "sloppily thrown
+    // together", and the same 23/5 came twice, once per book). Each card: where the number sits, the number and its
+    // name, the business color, then the books' passages under their own small heads: As a Price (Marketing
+    // Numerology pp. 38-44), Any N Price (p. 54), In Business (The Numbers 10-99 in Business), Suits (Module 12).
+    // Three lines each; a tap opens the same passages in full, in the same order.
+    const POS_LABEL = { sum: 'Digit Sum', clean: 'Clean Number', lead: 'First Two Digits', row: 'In the Price' };
+    const titleCase = (t) => String(t || '').replace(/(^|[\s/,])([a-z])/g, (m, a, b) => a + b.toUpperCase());
+    const endDot = (t) => (/[.!?]$/.test(t) ? t : t + '.');
+    // The passages the books have for one number as it sits in a price. asPrice: the number is the price's own
+    // vibration (its digit sum, or its clean number). ds: the digit the price lands on, for "Any N Price" and the customers.
+    const passages = (n, { asPrice = false, ds = 0 } = {}) => {
+      const P = B.prices || {}, out = [], b = (B.business || {})[n], fam = n < 10 ? (B.businessFamilies || {})[n] : null, own = asPrice ? vibeText(B, n) : null;
+      if (own) out.push({ head: 'As a Price', note: cap(own.title || vibeWords(B, n)), text: own.text });
+      const hund = ds ? (P.hundreds || {})[ds] : null, hfam = ds ? (P.families || {})[ds] : null;
+      if (hund || hfam) out.push({ head: `Any ${ds} Price`, note: hfam ? cap(hfam.words) : '', text: hund ? `Like $${ds}00: ${endDot(hund.text)}` : '' });
+      if (b) out.push({ head: 'In Business', note: b.name === nameOf(T.val(n)) ? '' : b.name, text: b.text, warn: b.warn, colorNote: b.color && B.businessColors && B.businessColors[b.color] ? `${BIZ_COLOR_WORD[b.color]}: ${B.businessColors[b.color]}.` : '' });
+      else if (fam) out.push({ head: 'In Business', note: fam.title, text: fam.text });
+      return out;
     };
-    const bizCard = (n, pos) => {
-      const b = (B.business || {})[n], fam = n < 10 ? (B.businessFamilies || {})[n] : null;
-      if (!b && !fam) return null;
-      return wordCard({ num: T.val(n).text, name: b ? b.name : fam.title, pos, color: b && b.color && BIZ_COLOR_WORD[b.color] ? b.color : null, text: b ? b.text : fam.text, warn: b && b.warn,
-        open: () => { A.count('price.number'); numberSheet(T.val(n), 'about'); } });
+    const suitsOf = (n, ds) => (B.codes || []).filter((x) => x.nums && x.nums.includes(n)).map((x) => x.name)
+      .concat(ds ? (B.customers || []).filter((x) => x.digits.includes(ds)).map((x) => x.who) : []);
+    const subhead = (head, note) => A.h('div', { class: 'pt-subhead' }, A.h('span', {}, head), note ? A.h('span', { class: 'pt-subnote' }, note) : null);
+    const pills = (list) => A.h('div', { class: 'codes' }, ...list.map((f) => A.h('span', { class: 'soft' }, titleCase(f))));
+    const numCard = (n, pos, opts = {}) => {
+      const parts = passages(n, opts), fits = suitsOf(n, opts.ds || 0);
+      if (!parts.length && !fits.length) return null;
+      const v = T.val(n), b = (B.business || {})[n], color = b && b.color && BIZ_COLOR_WORD[b.color] ? b.color : null;
+      const colorPill = () => (color ? A.h('span', { class: 'bizcolor ' + color }, BIZ_COLOR_WORD[color] + ' for Business') : null);
+      const open = () => {
+        A.count('price.number');
+        A.sheet(A.h('div', { class: 'numsheet pt-sheet' },
+          A.h('div', { class: 'pt-label' }, POS_LABEL[pos]), A.h('h3', {}, `${v.text} ${nameOf(v)}`), colorPill(),
+          ...parts.flatMap((p) => [subhead(p.head, p.note), ...(p.text ? String(p.text).split('\n\n').map((t) => A.h('p', {}, t)) : []),
+            p.warn ? A.h('p', { class: 'warnline' }, '⚠ ' + p.warn) : null, p.colorNote ? A.h('p', { class: 'muted small' }, p.colorNote) : null]),
+          fits.length ? subhead('Suits') : null, fits.length ? pills(fits) : null));
+      };
+      return A.h('div', { class: 'reading pt-card pt-num', onclick: open },
+        A.h('div', { class: 'pt-numtop' }, A.h('span', { class: 'pt-label' }, POS_LABEL[pos]), colorPill()),
+        A.h('div', { class: 'bignum pt-numname' }, A.h('b', {}, v.text), A.h('span', { class: 'nm' }, nameOf(v))),
+        ...parts.map((p) => A.h('div', { class: 'pt-sub' }, subhead(p.head, p.note), p.text ? A.h('p', { class: 'pt-clamp' }, p.text) : null, p.warn ? A.h('p', { class: 'warnline pt-clamp' }, '⚠ ' + p.warn) : null)),
+        fits.length ? A.h('div', { class: 'pt-sub' }, subhead('Suits'), pills(fits)) : null,
+        A.h('div', { class: 'pt-more' }, 'Read the whole page ›'));
     };
     const stat = (name, value, cls = '') => A.h('div', {}, A.h('span', {}, name), A.h('b', { class: cls }, value));
+    // The price's chart: the course's mini-numeroscope for a number sequence (Numeroscope.sequence), the digits on
+    // the central line, the price's digit sum at the bottom, an optional day on top. Drawn by the same drawing as a
+    // single name's chart. The day box keeps its focus while typing: only the drawing and its caption are redrawn.
+    const dayValue = () => { const d = Number(state.chartDay); return d >= 1 && d <= 31 ? T.val(d) : null; };
+    const chartBox = (c) => {
+      const $svg = A.h('div', { class: 'pt-chartsvg' }), $cap = A.h('p', { class: 'pt-ratio' });
+      const draw = () => {
+        const dayV = dayValue(), seq = N.sequence(c.digits.join(''), dayV);
+        A.fill($svg, A.singleNameSvg(seq.chart, '', seq.digits.length, dayV));
+        $cap.textContent = dayV ? `The digits on the central line add up to ${c.value.text} at the bottom; day ${dayV.text} on top gives the upper half.`
+          : `The digits sit on the central line and add up to ${c.value.text} at the bottom. A day on top (the launch day or the business's day) fills the upper half.`;
+      };
+      const $day = A.h('input', { type: 'text', inputmode: 'numeric', maxlength: '2', placeholder: 'none', value: state.chartDay || '', 'aria-label': 'Day on top of the chart' });
+      $day.addEventListener('input', () => { state.chartDay = $day.value.replace(/\D/g, '').slice(0, 2); $day.value = state.chartDay; remember('priceTool', state); A.count('price.chart_day'); draw(); });
+      const me = recall('mychart', null);
+      draw();
+      return A.h('div', { class: 'pt-chart' }, $svg,
+        A.h('div', { class: 'pt-dayrow' }, A.h('label', { class: 'pt-daylab' }, A.h('span', {}, 'Day on top'), $day),
+          me && me.day && String(me.day) !== state.chartDay ? A.h('button', { type: 'button', class: 'linkbtn', onclick: () => { state.chartDay = String(me.day); $day.value = state.chartDay; remember('priceTool', state); A.count('price.chart_day'); draw(); } }, `Use my day (${me.day})`) : null),
+        $cap);
+    };
     const drawCheck = () => {
       remember('priceTool', state);
       const c = T.priceCheck($in.value);
@@ -475,38 +595,35 @@
       const W = c.weight;
       const P = B.prices || {};
       const ex = (P.examples || []).find((x) => x.price === c.price);
-      const ownN = c.clean || c.sum, own = vibeText(B, ownN);
-      const hund = (P.hundreds || {})[c.value.ds], fam = (P.families || {})[c.value.ds];
-      // The numbers in the price the book reads: the digit sum, the clean number, the first two digits (p. 51).
-      const shown = [[c.sum, 'Digit Sum']];
-      if (c.clean && c.clean !== c.sum) shown.push([c.clean, 'Clean Number']);
-      if (c.lead && !shown.some(([n]) => n === c.lead)) shown.push([c.lead, 'First Two Digits']);
-      for (const n of c.rowNums) if (!shown.some(([m]) => m === n)) shown.push([n, 'In the Price']);
-      // Which purposes and customers these numbers suit (Module 12 pp. 4, 10).
-      const nums = shown.map(([n]) => n);
-      const fits = (B.codes || []).filter((x) => x.nums && x.nums.some((n) => nums.includes(n))).map((x) => x.name)
-        .concat((B.customers || []).filter((x) => x.digits.includes(c.value.ds)).map((x) => x.who));
+      // The numbers in the price the book reads: the digit sum, the clean number, the first two digits (p. 51),
+      // a magnetic number standing in the row (p. 40). The book's page for the price's own vibration goes with the
+      // clean number when there is one, else with the digit sum; "Any N Price" always with the digit sum.
+      const cards = [numCard(c.sum, 'sum', { asPrice: !c.clean || c.clean === c.sum, ds: c.value.ds })];
+      if (c.clean && c.clean !== c.sum) cards.push(numCard(c.clean, 'clean', { asPrice: true }));
+      const seen = [c.sum, c.clean];
+      if (c.lead && !seen.includes(c.lead)) { cards.push(numCard(c.lead, 'lead')); seen.push(c.lead); }
+      for (const n of c.rowNums) if (!seen.includes(n)) { cards.push(numCard(n, 'row')); seen.push(n); }
       const rules = [...c.warnings.map((t) => ['warn', t]), ...c.cautions.map((t) => ['care', t]), ...c.notes.map((t) => ['soft', t])];
       const ratioNote = W.ratio >= 0.3 ? 'A heavy pyramid: ratio at or over 0.3' : W.ratio > 0 ? 'Some weight in the pyramid, under the 0.3 line' : 'A light pyramid: no tension numbers';
-      const hundText = hund ? `Like $${c.value.ds}00: ${hund.text}${/[.!?]$/.test(hund.text) ? '' : '.'}` : '';
+      // The pyramid card shows the pyramid or the price's chart: one switch, remembered.
+      const seg = (label, on, onclick) => A.h('button', { type: 'button', class: 'pt-segbtn' + (on ? ' on' : ''), 'aria-pressed': on ? 'true' : 'false', onclick }, label);
+      const setView = (v) => { state.view = v; A.count(v === 'chart' ? 'price.chart' : 'price.pyramid'); drawCheck(); };
+      const chart = state.view === 'chart';
       A.fill($check,
         A.h('div', { class: 'pt-box pt-sum' },
           A.h('div', { class: 'pt-sumrow' },
             A.h('div', { class: 'pt-sumnum', onclick: () => numberSheet(c.value, 'about') }, label('Digit sum'), A.h('div', { class: 'bignum' }, A.h('b', {}, c.value.text), A.h('span', { class: 'nm' }, c.name))),
             A.h('span', { class: 'pt-verdict ' + c.verdict }, T.VERDICT_WORDS[c.verdict])),
           rules.length ? A.h('div', { class: 'pt-rules' }, ...rules.map(([k, t]) => A.h('div', { class: 'pt-rule' }, A.h('span', { class: 'pt-kind ' + k }, KIND_WORD[k]), A.h('span', {}, noPage(t))))) : null),
-        A.h('div', { class: 'pt-box pt-pyrbox' }, label('Number pyramid'),
-          A.h('div', { class: 'pyr' }, ...rows.map((row, i) => A.h('div', { class: 'pyr-row' }, ...row.map((v) => A.h('span', { class: (N.TENSION[v.sum] ? (i === 0 ? 'top-tense' : 'tense') : '') }, i === rows.length - 1 ? String(v.sum) : v.text))))),
-          A.h('div', { class: 'pt-stats' }, stat('Top', W.top ? W.top.text : '–'), stat('Weight', String(Number(W.total.toFixed(3)))), stat('Ratio', W.ratio.toFixed(3), W.ratio < 0.3 ? 'ok' : 'err')),
-          A.h('p', { class: 'pt-ratio' }, ratioNote)),
+        A.h('div', { class: 'pt-box pt-pyrbox' },
+          A.h('div', { class: 'pt-seg', role: 'group', 'aria-label': 'Pyramid or chart' }, seg('Number Pyramid', !chart, () => setView('pyramid')), seg('Price Chart', chart, () => setView('chart'))),
+          chart ? chartBox(c) : A.h('div', {},
+            A.h('div', { class: 'pyr' }, ...rows.map((row, i) => A.h('div', { class: 'pyr-row' }, ...row.map((v) => A.h('span', { class: (N.TENSION[v.sum] ? (i === 0 ? 'top-tense' : 'tense') : '') }, i === rows.length - 1 ? String(v.sum) : v.text))))),
+            A.h('div', { class: 'pt-stats' }, stat('Top', W.top ? W.top.text : '–'), stat('Weight', String(Number(W.total.toFixed(3)))), stat('Ratio', W.ratio.toFixed(3), W.ratio < 0.3 ? 'ok' : 'err')),
+            A.h('p', { class: 'pt-ratio' }, ratioNote))),
         B.prices ? A.h('div', { class: 'wlabel tl pt-section' }, 'What the Books Say') : null,
         ex ? A.h('p', { class: 'bookex pt-ex' }, `One of the book's own example prices: ${fmt(ex.price)} = ${T.val(ex.sum).text}${ex.note ? ', ' + ex.note : ''}.`) : null,
-        A.h('div', { class: 'pt-cards' },
-          own ? wordCard({ num: T.val(ownN).text, name: own.title ? cap(own.title) : (vibeWords(B, ownN) || ''), pos: c.clean ? 'Clean Price' : 'Digit Sum Price', text: own.text,
-            open: () => { A.count('price.vibe_text'); textSheet(`${T.val(ownN).text} Prices`, own.text); } }) : null,
-          hund || fam ? wordCard({ num: String(c.value.ds), name: fam ? fam.words : '', pos: `A ${c.value.ds} Price`, text: hundText }) : null,
-          ...shown.map(([n, pos]) => bizCard(n, pos))),
-        fits.length ? A.h('div', { class: 'pt-fits' }, label('Suits'), A.h('div', { class: 'codes' }, ...fits.map((f) => A.h('span', { class: 'soft' }, f.replace(/(^|[\s/,])([a-z])/g, (m, a, b) => a + b.toUpperCase()))))) : null);
+        A.h('div', { class: 'pt-cards' }, ...cards));
     };
     const shortWords = (v) => { const w = vibeWords(B, v); return w ? w.split(/[,;:(]| and /)[0].replace(/^(a|the) /i, '').toLowerCase() : ''; };
     const fillPicks = () => {
@@ -578,7 +695,7 @@
       const B = T.bigDiamond(A1.ds, B1.ds);
       const le = B.main.le, fa = B.main.outerD, fb = B.main.innerD;
       A.fill($body,
-        bigDiamondEl(B, (d) => numberSheet(T.val(d.code), 'about'), { outer: `How ${na} Feels It`, inner: `How ${nb} Feels It`, aText: `${na} ${A1.text}`, bText: `${nb} ${B1.text}`, mainName: `Life expression ${le.text}`, mainLabel: 'The Two Day Vibrations', physicalTitle: 'PHYSICAL · The Two Day Vibrations', physical: 'What Happens When They Meet', emotional: 'The Meeting of Their Emotions', spiritual: 'Where the Relationship Can Grow', noUnbalanced: true }),
+        bigDiamondEl(B, (d) => numberSheet(T.val(d.code), 'about'), { outer: `How ${na} Feels It`, inner: `How ${nb} Feels It`, aText: `${na} ${A1.text}`, bText: `${nb} ${B1.text}`, mainName: `Life expression ${le.text}`, mainLabel: 'The Two Day Vibrations', physicalTitle: 'PHYSICAL', physical: 'What Happens When They Meet', emotional: 'The Meeting of Their Emotions', spiritual: 'Where the Relationship Can Grow', noUnbalanced: true }),
         A.h('div', { class: 'reading', onclick: () => numberSheet(le, 'about') }, A.h('div', { class: 'head' }, A.h('b', {}, le.text), A.h('span', { class: 'nm' }, 'Life Expression of the Relationship')), A.h('p', {}, `${A1.ds} and ${B1.ds} meet in a ${le.text}${nameOf(le) ? ' (' + nameOf(le) + ')' : ''}: the resulting energy, what happens when they are together.`)),
         A.h('div', { class: 'reading' }, A.h('div', { class: 'head' }, A.h('b', {}, fa.text), A.h('span', { class: 'nm' }, `How ${na} Feels It`)), A.h('p', {}, `${na}'s ${A1.ds} with the relationship's ${le.ds}: ${fa.text} ${fa.name}.`)),
         A.h('div', { class: 'reading' }, A.h('div', { class: 'head' }, A.h('b', {}, fb.text), A.h('span', { class: 'nm' }, `How ${nb} Feels It`)), A.h('p', {}, `${nb}'s ${B1.ds} with the relationship's ${le.ds}: ${fb.text} ${fb.name}.`)),
@@ -661,8 +778,8 @@
   const USAGE_LABELS = {
     'screen.today': 'Today', 'screen.coming': 'Coming Days', 'screen.numberfun': 'Number Fun', 'screen.price': 'Price Tool', 'screen.relation': 'Relationship', 'screen.karmic': 'Karmic Connections', 'screen.mychart': 'My Chart (settings)',
     'home.today': 'Home → Today', 'home.coming': 'Home → Coming Days', 'home.numberfun': 'Home → Number Fun', 'home.price': 'Home → Price Tool', 'home.relation': 'Home → Relationship', 'home.karmic': 'Home → Karmic Connections', 'home.mychart': 'Home → My Chart',
-    'today.psyche': 'Today: psyche charts on or off', 'today.full': 'Today: full screen day', 'today.ruler': 'Today: ruler of the day', 'today.company': 'Today: a company started this day', 'dayfull.move': 'Full screen day: previous or next day', 'coming.open_day': 'Coming Days: open a day', 'coming.size': 'Coming Days: chart size', 'coming.super_only': 'Coming Days: super dates only', 'numberfun.type': 'Number Fun: type a number', 'numberfun.tap_diamond': 'Number Fun: tap a diamond', 'numberfun.tap_other': 'Number Fun: tap a number it appears in',
-    'price.find': 'Price Tool: Find a Price', 'price.vibe': 'Price Tool: pick a vibration', 'price.range': 'Price Tool: pick a range', 'price.pick': 'Price Tool: pick a found price', 'price.number': 'Price Tool: a number in the price', 'price.vibe_text': 'Price Tool: the book\'s page for a vibration', 'relation.use_me': 'Relationship: me as the first person', 'mychart.save': 'My Chart: save',
+    'today.psyche': 'Today: psyche charts on or off', 'today.full': 'Today: full screen day', 'today.ruler': 'Today: ruler of the day', 'today.company': 'Today: a company started this day', 'dayfull.move': 'Full screen day: previous or next day', 'coming.open_day': 'Coming Days: open a day', 'coming.size': 'Coming Days: chart size', 'coming.super_only': 'Coming Days: super dates only', 'numberfun.type': 'Number Fun: type a number', 'numberfun.grid': 'Number Fun: All Numbers grid on or off', 'numberfun.size': 'Number Fun: grid chart size', 'numberfun.tap_cell': 'Number Fun: open a number from the grid', 'numberfun.open_from_sheet': 'Number Fun: open a number from its sheet', 'numberfun.tap_diamond': 'Number Fun: tap a diamond', 'numberfun.tap_other': 'Number Fun: tap a number it appears in',
+    'price.find': 'Price Tool: Find a Price', 'price.vibe': 'Price Tool: pick a vibration', 'price.range': 'Price Tool: pick a range', 'price.pick': 'Price Tool: pick a found price', 'price.number': 'Price Tool: a number in the price', 'price.vibe_text': 'Price Tool: the book\'s page for a vibration', 'price.pyramid': 'Price Tool: the number pyramid', 'price.chart': 'Price Tool: the price chart', 'price.chart_day': 'Price Tool: a day on top of the chart', 'relation.use_me': 'Relationship: me as the first person', 'mychart.save': 'My Chart: save',
   };
 
   function install(app) {

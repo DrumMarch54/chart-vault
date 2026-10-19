@@ -58,11 +58,17 @@
       const opts = recallOpts();
       const drawFacts = (f) => {
         if (!f || f.missing) { fill($facts, h('p', { class: 'muted small' }, 'No numbers read for this chart yet, so nothing to read. Tap "Type them" above.')); return; }
-        const all = (f.facts || []).map((x) => h('div', { class: `fact ${x.severity || 'info'}` }, h('b', {}, x.title), h('span', {}, ' ' + x.text)));
-        if (!all.length) { fill($facts, h('p', { class: 'muted small' }, 'Nothing stands out by the rules.')); return; }
+        // Repeated numbers as one short line (owner 2026-10-19): the five most repeated with their counts,
+        // never where they sit. The other facts (nexus, unbalanced, karmic, ...) stay as they are.
+        const facts = f.facts || [];
+        const reps = facts.filter((x) => x.kind === 'repeated' && /^\S+ appears \d+ times/.test(x.title)).slice(0, 5)
+          .map((x) => { const m = /^(\S+) appears (\d+) times/.exec(x.title); return `${m[1]} ×${m[2]}`; });
+        const $reps = reps.length ? h('div', { class: 'fact info' }, h('b', {}, 'Most often'), h('span', {}, ' ' + reps.join(' · '))) : null;
+        const all = facts.filter((x) => x.kind !== 'repeated').map((x) => h('div', { class: `fact ${x.severity || 'info'}` }, h('b', {}, x.title), h('span', {}, ' ' + x.text)));
+        if (!all.length && !$reps) { fill($facts, h('p', { class: 'muted small' }, 'Nothing stands out by the rules.')); return; }
         const first = all.slice(0, 5), rest = all.slice(5);
         const $rest = h('div', { class: 'stack hidden' }, ...rest);
-        fill($facts, ...first, rest.length ? $rest : null, rest.length ? h('button', { type: 'button', class: 'btn-block', onclick: (e) => { $rest.classList.toggle('hidden'); e.target.textContent = $rest.classList.contains('hidden') ? `Show ${rest.length} More` : 'Show Less'; } }, `Show ${rest.length} More`) : null);
+        fill($facts, $reps, ...first, rest.length ? $rest : null, rest.length ? h('button', { type: 'button', class: 'btn-block', onclick: (e) => { $rest.classList.toggle('hidden'); e.target.textContent = $rest.classList.contains('hidden') ? `Show ${rest.length} More` : 'Show Less'; } }, `Show ${rest.length} More`) : null);
       };
       const chipRow = (list, key) => h('div', { class: 'chips optchips' }, ...list.map((c) => h('button', { type: 'button', class: `chip ${opts[key] === c.key ? 'active' : ''}`, onclick: () => { opts[key] = c.key; rememberOpts(opts); drawAi(); } }, c.label)));
       const drawAi = () => {
@@ -121,7 +127,7 @@
             h('div', { class: 'optlabel' }, 'Questions'),
             ...(state.answers || []).map((a) => h('div', { class: 'rd-answer' }, h('div', { class: 'rd-q' }, a.question), h('div', { class: 'rd-text' }, ...richText(a.text)), h('div', { class: 'muted small' }, `${money(a.usd)} · ${new Date(a.created_at).toLocaleDateString()}`))),
             h('div', { class: 'row', style: 'flex-wrap:nowrap' }, $q, $askBtn),
-            h('p', { class: 'muted small', style: 'margin:0' }, `For example: "What does the 16 in the mind center do with the 8 life path?" Answers follow the Length above${est.question ? `; about ${money(Math.max(est.question, 0.03))} each` : ''}.`)),
+            est.question ? h('p', { class: 'muted small', style: 'margin:0' }, `About ${money(Math.max(est.question, 0.03))} a question.`) : null),
           spendLine(state.spend));
       };
       api(`/api/images/${img.id}/facts`).then(drawFacts).catch((err) => fill($facts, h('p', { class: 'err small' }, err.message)));

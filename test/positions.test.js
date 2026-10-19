@@ -218,3 +218,18 @@ test('API: catalog, counts, search, context, numbers, fix, recompute, status, sn
   assert.match(one, /inputs: 1\.\?\.\? "Test test"/); assert.match(one, /Name chart: .*Life expression 14\/5/);
   assert.match(snapshot(db, { id: String(k), commit: 'x' }), /inputs: none/);
 });
+
+test('similar charts name what is alike in the course words: the biggest matching structure, Title Case', async () => {
+  const { namedMatches, positionName, gistOf } = await import('../server/similar.js');
+  assert.deepEqual(namedMatches('outer', ['leDiamond', 'first', 'last', 'le', 'big', 'spine', 'spineDiamond']), ['Outer Psyche Life Expression Diamond', 'Outer Psyche Spine Diamond']);
+  assert.deepEqual(namedMatches('essence', ['day', 'month', 'outerAura', 'outerDiamond', 'littleLp', 'nexus']), ['Outer Diamond', 'DVLP']);
+  assert.deepEqual(namedMatches('name', ['upperLeft', 'upperRight', 'heart', 'mindDiamond', 'lowerLeft', 'pillar']), ['Name Mental Diamond', 'Name Pillar', 'Associates Aura']);
+  assert.equal(positionName('name', 'spine'), 'Name Spine'); assert.equal(positionName('name', 'heart'), 'Name Mind Center'); assert.equal(positionName('name', 'le'), 'Life Expression'); assert.equal(positionName('inner', 'spine'), 'Inner Psyche Spine');
+  assert.equal(positionName('vocation', 'le'), "Heart's Desire"); assert.equal(positionName('personality', 'big'), 'Big Personality Number');
+  assert.equal(positionName('name', 'leDiamond'), 'Name Line Diamond'); assert.equal(positionName('outer', 'first'), 'Outer Psyche Challenge Number'); assert.equal(positionName('essence', 'topAura'), 'Dharma Line');
+  const of = { essence: 14, name: 20, vocation: 19, personality: 19, outer: 18, inner: 17 };
+  assert.equal(gistOf({ per: { essence: 14 }, of, matches: [] }), 'Same Essence Chart');
+  assert.equal(gistOf({ per: { outer: 9 }, of, matches: ['outer.leDiamond', 'outer.first', 'outer.last', 'outer.le', 'outer.big'] }, 'outer'), 'Outer Psyche Life Expression Diamond');
+  assert.equal(gistOf({ per: { name: 16 }, of, matches: [] }), 'Name Chart Nearly the Same');
+  assert.equal(gistOf({ per: {}, of, matches: [] }), 'A few scattered numbers');
+});

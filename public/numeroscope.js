@@ -219,6 +219,22 @@
     };
   }
 
+  // Namescope of a number sequence (Six Themes book, "Numeroscopes on number sequences": the mini-numeroscope
+  // "follows the same structure as the Numeroscope and can be used on a phone number, a price or a year"; the
+  // chart videos: "we could also put a number sequence here" on the central line). Every digit takes the place
+  // of a name, as every letter does in singleName: first digit = first name, last digit = surname, the digits
+  // between = middle names. A 0 stays on the line (the paid tool's price pyramids keep 0 cells) but carries no
+  // vibration: it is not a word of the rhombus and adds nothing. The digit sum at the bottom is the price's own
+  // digit sum. The top is the inception day, if the owner gives one; without it only the lower half exists.
+  function sequence(digits, day) {
+    const top = day ? (typeof day === 'object' ? day : val(Number(day) || 0)) : null;
+    const ds = String(digits || '').replace(/\D/g, '').split('').map(Number);
+    const words = ds.map((d) => ({ text: String(d), letters: [String(d)], value: d ? val(d) : null, zero: !d }));
+    const chart = rhombus(words, top);
+    chart.words = words; // the zeros back on the line, for the drawing
+    return { digits: ds, chart };
+  }
+
   // Layout of the quick chart drawing, in drawing units: the orange diamond's top is y=357, its center
   // x=371, its height 756; text y values are baselines. Shapes measured on the owner's reference
   // screenshot; every number's position calibrated against 436 vault screenshots of the paid tool
@@ -384,6 +400,6 @@
   };
   const combos = (v) => (v ? ROW_COMBOS[v.sum] || null : null);
 
-  const api = { LAYOUT, LETTERS, VOWELS, PLANETS, TENSION, MEANINGS, ROW_COMBOS, combos, FORMULAS, digitSum, val, add, joined, letterValue, lettersOf, nameWord, rhombus, essence, birth: essence, psyche, rhythm, numeroscope, letterWords, pyramid, weighPyramid, singleName, destinyPeriods, yearFormula, yearRows, dayRows };
+  const api = { LAYOUT, LETTERS, VOWELS, PLANETS, TENSION, MEANINGS, ROW_COMBOS, combos, FORMULAS, digitSum, val, add, joined, letterValue, lettersOf, nameWord, rhombus, essence, birth: essence, psyche, rhythm, numeroscope, letterWords, pyramid, weighPyramid, singleName, sequence, destinyPeriods, yearFormula, yearRows, dayRows };
   root.Numeroscope = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

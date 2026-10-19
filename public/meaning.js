@@ -46,7 +46,7 @@
       const $pop = h('div', { class: 'wordpop mpop' },
         h('div', { class: 'pagetop' }, h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Close', onclick: close }, '‹'), h('div', { class: 'mhead' }, $title, $sub)),
         $body);
-      overlay($pop); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
+      overlay($pop, close); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
       const q = new URLSearchParams({ chart, position, sum: String(sum) });
       if (pair && pair.length) q.set('pair', pair.join(','));
       if (rel && rel.length) q.set('rel', rel.map((r) => `${r.position}:${r.sum}`).join(','));

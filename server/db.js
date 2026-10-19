@@ -127,6 +127,28 @@ export const MIGRATIONS = [
     );
     CREATE INDEX IF NOT EXISTS idx_readings_image ON readings(image_id, kind, id);
   `),
+  // 8: deleted charts (server/trash.js). A deleted chart's whole record (tags, paths, name, typed inputs,
+  //    readings) is kept as JSON so it can be put back exactly; the picture waits in data/trash. The
+  //    filename is skipped by imports until the chart is restored. duplicates_kept = groups of look-alike
+  //    charts the owner looked at and chose to keep (ids sorted, comma-joined), so they stop being listed.
+  (db) => db.exec(`
+    CREATE TABLE IF NOT EXISTS deleted_images (
+      id INTEGER PRIMARY KEY,
+      filename TEXT NOT NULL UNIQUE,
+      kind TEXT NOT NULL,
+      title TEXT,
+      record TEXT NOT NULL,
+      trash_path TEXT,
+      thumb_trash_path TEXT,
+      reason TEXT,
+      build TEXT,
+      deleted_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+    );
+    CREATE TABLE IF NOT EXISTS duplicates_kept (
+      ids TEXT PRIMARY KEY,
+      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+    );
+  `),
 ];
 
 export function migrate(db) {

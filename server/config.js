@@ -36,10 +36,11 @@ export const paths = {
   images: path.join(config.dataDir, 'images'),
   thumbs: path.join(config.dataDir, 'thumbs'),
   secret: path.join(config.dataDir, 'cookie-secret'),
+  trash: path.join(config.dataDir, 'trash'),      // pictures of deleted charts, until restored
 };
 
 export function ensureDirs() {
-  for (const dir of [config.dataDir, paths.images, paths.thumbs, config.backupDir]) {
+  for (const dir of [config.dataDir, paths.images, paths.thumbs, paths.trash, config.backupDir]) {
     fs.mkdirSync(dir, { recursive: true });
   }
 }
