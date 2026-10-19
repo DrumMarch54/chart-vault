@@ -739,3 +739,7 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .simpill { display: inline-flex; align-items: center; min-height: 30px; padding: 4px 12px; border-radius: 15px; background: var(--panel2); font-size: 14px; line-height: 1.25; }
 .simpill.whole { background: var(--accent); color: var(--accent-text); font-weight: 600; }
 .simscore { font-size: 12px; margin-top: 2px; }
+
+/* MOCK */
+.nfmini .bigd { border-radius: 4px; } .nfmini .dia.band { display: block; }
+.nfcard { padding: 4px; } .nfhead { display: flex; gap: 6px; align-items: baseline; justify-content: center; } .nfhead b { font-size: 16px; color: #303030; } .nfhead span { font-size: 11px; color: #d4b176; font-weight: 700; }
