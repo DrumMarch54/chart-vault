@@ -684,3 +684,6 @@ in the same position; no vault statistics on the page beyond that count.
   brings the grid back. The cells reuse `tri` (the book's triangle) at 76 units wide in a 120-unit box.
 - Not done from the doc: "fix the charts so they look like this" (the paid tool's three-level big diamond
   page). Number Fun already draws that page; the owner is asked what still looks off.
+- Owner: the − / + size control from Coming Days belongs on every grid of charts. Added `sizeControl`
+  (app.js) and put it on the browse grid (list, search results, Recently Opened: one setting), Similar Charts
+  and Possible Duplicates; Coming Days and All Numbers keep their own. Rule in public/CLAUDE.md.

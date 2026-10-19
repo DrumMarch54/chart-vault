@@ -93,9 +93,14 @@ a.chip { text-decoration: none; }
 .rsearch .chip { min-height: 36px; font-size: 15px; }
 .recent { margin-top: 6px; }
 /* grid */
-.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-@media (min-width: 700px) { .grid { grid-template-columns: repeat(5, 1fr); gap: 8px; } }
-@media (min-width: 1000px) { .grid { grid-template-columns: repeat(6, 1fr); } }
+.grid { display: grid; grid-template-columns: repeat(var(--grid-cols, 3), 1fr); gap: 6px; }
+@media (min-width: 700px) { .grid { grid-template-columns: repeat(var(--grid-cols, 5), 1fr); gap: 8px; } }
+@media (min-width: 1000px) { .grid { grid-template-columns: repeat(var(--grid-cols, 6), 1fr); } }
+/* The − / + size control beside a grid's count line (sizeControl in app.js). */
+.gridbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.gridbar .summary { flex: 1; min-width: 0; }
+.pagetop .sizectl { margin-left: auto; }
+.sizectl { display: inline-flex; align-items: center; gap: 6px; flex: none; }
 .cell { display: block; background: var(--panel); border-radius: 10px; overflow: hidden; text-decoration: none; color: var(--text); }
 .cell .thumb { aspect-ratio: 9 / 16; width: 100%; object-fit: cover; display: block; background: var(--panel2); }
 .cell .nofile { aspect-ratio: 9 / 16; display: flex; align-items: center; justify-content: center; background: var(--panel2); color: var(--muted); font-size: 13px; text-align: center; padding: 8px; }
@@ -698,7 +703,7 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 
 /* Possible Duplicates and Deleted Charts: small cards with a thumbnail each. */
 .dupgroup > .row > button { white-space: nowrap; flex: none; }
-.dupcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.dupcards { display: grid; grid-template-columns: repeat(var(--cols, 2), 1fr); gap: 10px; }
 .dupcard { background: var(--panel2); border-radius: var(--radius); padding: 8px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .dupcard .thumb { width: 100%; aspect-ratio: 9 / 16; object-fit: cover; display: block; background: #fff; border-radius: 8px; }
 .dupcard .thumb.drawn { display: flex; align-items: center; justify-content: center; overflow: hidden; }
@@ -711,6 +716,9 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 
 /* Similar Charts: a card per chart. The drawing fills the card's width so it can be read while scrolling; under
    it the name, the typed name and date, what is alike as pills, and the score last and small. */
+.simlist { display: grid; grid-template-columns: repeat(var(--cols, 1), 1fr); gap: 10px; }
+.simlist > p { grid-column: 1 / -1; }
+.simlist .card { margin: 0; }
 .simrow { display: flex; flex-direction: column; gap: 10px; padding: 10px 10px 12px; color: inherit; text-decoration: none; }
 .simrow:active { background: var(--panel2); }
 .simrow .simthumb { width: 100%; border-radius: 10px; background: #fff; display: block; }
