@@ -651,3 +651,32 @@ in the same position; no vault statistics on the page beyond that count.
   Psyche Life Expression Diamond". Rule from now on: a screen names positions by their course names (lingo.md),
   Title Case; a matched diamond stands for its parts, so only the biggest matching structure is named
   (`namedMatches`, `IMPLIES`). "Same Essence Chart" / "Name Chart Nearly the Same" for whole charts.
+
+## 2026-10-19 The owner's "Chart app Fixes" doc and list: shorter screens, Settings search, light look, All Numbers grid
+- The owner wrote a Google Doc ("Chart app Fixes", read from the cloud session with the Drive connector, the
+  pictures by exporting it to PDF and rendering the pages) plus a typed list. Half of the list was already done
+  earlier the same day (delete a chart, Possible Duplicates, Back closes one thing, the paid tool's colors,
+  Similar Charts); the Handsome Truth colors they flagged (heart's desire 44/8, big LE 86/5) were checked
+  against both screenshots and match since build 865ca94. Say so instead of building twice.
+- Coming Days: the card is the date, the rating and the chart. The footer lines (day vibration name, "Essence ·
+  Outer · Inner", keywords) were "junk" at any size; the full-screen day keeps the words.
+- Chart sheet: the per-chart lists of every position's number ("Vocation chart · 17 numbers" and its chips)
+  are gone: the drawing shows every number and a tap opens its meaning with "N charts with it here". The
+  owner's position and number tags fold under one row (still tappable, still removable); "Most often" is one
+  line with the five most repeated numbers and their counts, never where they sit (the owner: "you don't even
+  need to say what position"); the example question and the file details fold away. The ask box stays.
+- Home search: position-code tags ("42lp") never pop up: the position search finds every chart, the tags only
+  the hand-tagged ones. The tags are untouched (All Tags, the chart's sheet, the engine's quality gate).
+- Settings: a search box; every row carries the words a search may use for it (`SETTINGS` in app.js).
+- Light look: `prefers-color-scheme: light` switches the `:root` variables (`app.css` top); Settings -> Look pins
+  Light / Dark / Follows the Phone on the device (`theme` in localStorage, applied by a one-line script in
+  index.html before the first paint, and by `applyTheme` which also keeps the browser bar color in step).
+  Every hard-coded dark color that sat on a dark screen became a variable (--danger-bg, --who, --warn-bg,
+  --pain-bg, --toast, --chip-add, --shadow). The tool pages (html.light / html.day) are light either way.
+  Checked at 390×844 in both looks: home, settings, chart sheet, status, position, tags, browse, duplicates,
+  ask, similar. Still to look at in light: the meaning page, the reading options, the upload page.
+- Number Fun: "All Numbers" shows every number's main diamond in a grid (the paid tool's "10 by 10" page),
+  − / + for how many across (2-5 on a phone, up to 10 on a laptop, remembered), tap one to open it, the chip
+  brings the grid back. The cells reuse `tri` (the book's triangle) at 76 units wide in a 120-unit box.
+- Not done from the doc: "fix the charts so they look like this" (the paid tool's three-level big diamond
+  page). Number Fun already draws that page; the owner is asked what still looks off.

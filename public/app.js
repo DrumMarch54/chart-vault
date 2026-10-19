@@ -43,7 +43,7 @@
   // filename. Never throws, never waits, so a count can never break a tap.
   // A renamed or removed button changes its name and its label here, same commit.
   const USAGE_LABELS = {
-    'screen.home': 'Home Screen', 'screen.chart': 'Chart Viewer', 'screen.settings': 'Settings', 'settings.search': 'Settings: search', 'screen.quick': 'Quick Chart',
+    'screen.home': 'Home Screen', 'screen.chart': 'Chart Viewer', 'screen.settings': 'Settings', 'settings.search': 'Settings: search', 'settings.look': 'Settings: light or dark look', 'screen.quick': 'Quick Chart',
     'screen.tags': 'All Tags', 'screen.upload': 'Upload Screenshots', 'screen.import': 'Import Tags', 'screen.status': 'Status and backup',
     'viewer.add_tag': 'Add a tag to a chart', 'quick.save': 'Save a quick chart', 'quick.full_screen': 'Quick Chart full screen',
     'quick.year_rows': 'Year Rows and Day Vibrations', 'quick.show_parts': 'Show and Hide Parts', 'quick.augment': 'Augmentation On or Off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
@@ -334,6 +334,19 @@
   const PICK_KEY = 'comparePick', CMPVIEW_KEY = 'compareView';
   const readStore = (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
   const writeStore = (k, v) => { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+  // Light or dark (owner 2026-10-19): the app follows the phone's own setting unless Settings -> Look pins one.
+  // The choice is on this device only (`theme`: 'light' | 'dark' | nothing). index.html applies it before the first
+  // paint; this keeps the browser's bar color in step with the page.
+  const THEME_KEY = 'theme';
+  const LOOKS = [[null, 'Follows the Phone'], ['light', 'Light'], ['dark', 'Dark']];
+  const applyTheme = () => {
+    const pref = readStore(THEME_KEY);
+    if (pref === 'light' || pref === 'dark') document.documentElement.dataset.theme = pref; else delete document.documentElement.dataset.theme;
+    const meta = document.querySelector('meta[name=theme-color]');
+    if (meta) meta.content = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#1b1f2a';
+  };
+  applyTheme();
+  try { matchMedia('(prefers-color-scheme: light)').addEventListener('change', applyTheme); } catch {}
   let comparePick = readStore(PICK_KEY); // { id, name } or null
   if (comparePick && !Number.isInteger(comparePick.id)) comparePick = null;
   const setPick = (p) => { comparePick = p; writeStore(PICK_KEY, p); drawCmpBar(); };
@@ -1229,15 +1242,26 @@
     const $list = h('div', { class: 'stack' });
     const $none = h('p', { class: 'muted hidden' }, 'Nothing in Settings matches that.');
     const row = ([label, href]) => h('a', { class: 'btn btn-block', href, style: 'justify-content:space-between' }, label, h('span', { class: 'muted' }, '›'));
+    // Look: light, dark, or whatever the phone is set to. A card of its own, found by the search too.
+    const LOOK_KEYS = 'look theme light dark appearance night day mode colors follows the phone system';
+    const $look = h('div', { class: 'card stack' });
+    const drawLook = () => {
+      const cur = readStore(THEME_KEY);
+      fill($look, h('div', { class: 'row', style: 'justify-content:space-between' }, h('b', {}, 'Look'), h('span', { class: 'muted small' }, cur ? `Always ${cur}` : 'Light or dark, like the phone')),
+        h('div', { class: 'chips' }, ...LOOKS.map(([v, label]) => h('button', { type: 'button', class: `chip ${(cur || null) === v ? 'active' : 'off'}`, onclick: () => { writeStore(THEME_KEY, v); applyTheme(); count('settings.look'); drawLook(); } }, label))));
+    };
     const draw = () => {
       const words = $q.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
-      const hit = words.length ? SETTINGS.filter(([label, , keys]) => { const hay = `${label} ${keys}`.toLowerCase(); return words.every((w) => hay.includes(w)); }) : SETTINGS;
+      const hay = (label, keys) => { const t = `${label} ${keys}`.toLowerCase(); return words.every((w) => t.includes(w)); };
+      const hit = words.length ? SETTINGS.filter(([label, , keys]) => hay(label, keys)) : SETTINGS;
+      const lookHit = !words.length || hay('Look', LOOK_KEYS);
+      $look.classList.toggle('hidden', !lookHit);
       fill($list, ...hit.map(row));
-      $none.classList.toggle('hidden', hit.length > 0);
+      $none.classList.toggle('hidden', hit.length > 0 || lookHit);
     };
     $q.addEventListener('input', () => { count('settings.search'); draw(); });
-    render(h('div', { class: 'screen stack' }, pageTop('Settings', '#/'), h('div', { class: 'searchbox' }, $q), $list, $none));
-    draw();
+    render(h('div', { class: 'screen stack' }, pageTop('Settings', '#/'), h('div', { class: 'searchbox' }, $q), $look, $list, $none));
+    drawLook(); draw();
   };
 
   // ---------- similar charts ----------
