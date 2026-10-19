@@ -2076,11 +2076,19 @@
   // ---------- number tools (public/tools.js) ----------
   // Today, Coming Days, Number Fun, Price Tool, Relationship, Karmic Connections, My Chart: their screens
   // live in tools.js and get the plumbing here (screens, drawing, counting). A bottom sheet for a number's words.
+  // A sheet of words over the screen (owner 2026-10-19: a number's words pop up from the bottom, never a new
+  // screen): a grip on top, swipe down on it (or anywhere while the words are scrolled to the top) closes it,
+  // so does the phone's Back and a tap outside. Returns close.
   const wordsSheet = (content) => {
     const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
     const close = () => { bg.remove(); untrackOverlay(bg); };
-    bg.append(h('div', { class: 'sheet' }, content, h('button', { type: 'button', onclick: close }, 'Close')));
+    const $sheet = h('div', { class: 'sheet wsheet' }, h('div', { class: 'sheet-grip' }, h('span', {})), content, h('button', { type: 'button', onclick: close }, 'Close'));
+    let startY = null, scroller = null;
+    $sheet.addEventListener('pointerdown', (e) => { scroller = e.target.closest('.numsheet, .sheet'); startY = !scroller || scroller.scrollTop <= 0 ? e.clientY : null; });
+    $sheet.addEventListener('pointerup', (e) => { if (startY !== null && e.clientY - startY > 60 && (!scroller || scroller.scrollTop <= 0)) close(); startY = null; });
+    bg.append($sheet);
     document.body.append(bg); trackOverlay(bg, close);
+    return close;
   };
   const toolsUi = window.Tools ? window.Tools.install({ routes, h, sv, fill, render, count, toast, api, go, numeroscopeSvg, singleNameSvg, sheet: wordsSheet, overlay: trackOverlay, overlayGone: untrackOverlay, setCleanup: (fn) => { viewerCleanup = fn; } }) : null;
   if (toolsUi) Object.assign(USAGE_LABELS, toolsUi.USAGE_LABELS);

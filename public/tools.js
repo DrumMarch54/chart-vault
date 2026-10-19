@@ -68,7 +68,7 @@
     if (group) parts.push(head(`Success code · ${group.name}`), A.h('p', {}, group.text));
     parts.push(...bizParts(B, n, head));
     if (!parts.length) parts.push(A.h('p', { class: 'muted' }, 'The books have no page for this number in this place yet.'));
-    A.sheet(A.h('div', { class: 'numsheet' }, A.h('h3', {}, `${v.text} ${name}`), kind ? A.h('div', { class: 'codes' }, A.h('span', { class: kind === 'avoid' || kind === 'care' ? 'warn' : kind === 'soft' ? 'soft' : '' }, T.CODE_WORDS[kind])) : null, extra || null, ...parts));
+    return A.sheet(A.h('div', { class: 'numsheet' }, A.h('h3', {}, `${v.text} ${name}`), kind ? A.h('div', { class: 'codes' }, A.h('span', { class: kind === 'avoid' || kind === 'care' ? 'warn' : kind === 'soft' ? 'soft' : '' }, T.CODE_WORDS[kind])) : null, extra || null, ...parts));
   }
   // What the business books say about a number 1-99: The Numbers 10-99 in Business (with its color code), the
   // summary of its family for 1-9, and the general meaning from Numbers Overview 1-99.
@@ -339,10 +339,10 @@
   // a thin circle, the auras outside the sides, the life expression under the point. Every number is blue except on
   // the physical main diamond (opts.dark: dark gray, as the tool draws it). An unbalanced diamond's name is red.
   function tri(svg, d, cx, topY, w, opts = {}) {
-    const sv = A.sv, hh = w * 0.72, floor = opts.minFont || 6.5;
+    const sv = A.sv, hh = w * 0.72, floor = opts.minFont || 6.5, fk = opts.fontK || 1;
     const g = sv('g', { class: 'tri' + (opts.dark ? ' dark' : '') + (opts.unbalanced ? ' unb' : ''), role: 'button', 'aria-label': `${d.text} ${d.name}` });
-    g.append(sv('polygon', { points: `${cx - w / 2},${topY} ${cx + w / 2},${topY} ${cx},${topY + hh}`, fill: 'none', stroke: '#2788c7', 'stroke-width': w > 120 ? 2.4 : w > 60 ? 1.6 : 1 }));
-    const f = (k) => Math.max(floor, w * k);
+    g.append(sv('polygon', { points: `${cx - w / 2},${topY} ${cx + w / 2},${topY} ${cx},${topY + hh}`, fill: 'none', stroke: '#2788c7', 'stroke-width': w > 120 ? 2.4 : w > 60 ? 1.6 : w > 30 ? 1 : 0.6 }));
+    const f = (k) => Math.max(floor, w * k * fk);
     const t = (x, y, s, size, cls, anchor) => sv('text', { x, y, 'font-size': size, 'text-anchor': anchor || 'middle', class: cls || '' }, s);
     // A long corner text (Relationship: "John 25/7") shrinks so it stays beside its corner.
     const cornerF = (txt) => f(0.18) * Math.min(1, Math.max(0.45, 4 / String(txt).length));
@@ -350,8 +350,8 @@
     g.append(t(cx - w / 2 - 3, topY - 3, aT, cornerF(aT), 'bold', 'end'), t(cx + w / 2 + 3, topY - 3, bT, cornerF(bT), 'bold', 'start'));
     const nm = opts.name !== undefined ? opts.name : d.name;
     if (nm && w >= 44) g.append(t(cx, topY + f(0.1) + 3, nm, Math.min(f(0.095), (w * 0.86) / (nm.length * 0.58)), opts.unbalanced ? 'name unb' : opts.dark ? 'name dark' : 'name'));
-    const ccy = topY + hh * 0.44, r = w * 0.155;
-    g.append(sv('circle', { cx, cy: ccy, r, fill: 'none', stroke: '#2788c7', 'stroke-width': w > 120 ? 1.6 : 1 }), t(cx, ccy + f(0.12) * 0.36, d.center.text, f(0.12), 'bold'));
+    const ccy = topY + hh * 0.44, r = w * 0.155 * (1 + (fk - 1) * 0.5); // bigger numbers (the grid's main row) get a somewhat bigger circle
+    g.append(sv('circle', { cx, cy: ccy, r, fill: 'none', stroke: '#2788c7', 'stroke-width': w > 120 ? 1.6 : w > 30 ? 1 : 0.5 }), t(cx, ccy + f(0.12) * 0.36, d.center.text, f(fk > 1 ? 0.11 : 0.12), 'bold'));
     // The auras sit outside the sides: the gap is measured where the text is tallest, at its top, where the
     // triangle is wider than at the baseline.
     const sideY = topY + hh * 0.64, auraF = f(0.14), sideX = (w / 2) * (1 - (sideY - auraF * 0.72 - topY) / hh) + 3;
@@ -368,8 +368,8 @@
   // the biggest; the emotional and spiritual ones are smaller and pulled in toward the middle, as on the tool's page.
   const BANDS = {
     main: { main: 110, side: 66, unb: 41, top: 32, sideTop: 62, unbTop: 10, sideX: 0.135, unbX: 0.24, bg: ['#cfdbe7', '#c0d1e1'], title: 'PHYSICAL', label: 'main diamond', side_: ['diamond'], unb_: ['imbalanced', 'diamond'] },
-    essence: { main: 90, side: 54, unb: 33, top: 30, sideTop: 54, unbTop: 6, sideX: 0.21, unbX: 0.28, bg: ['#dee7ee', '#cfdbe7'], title: 'EMOTIONAL', label: 'essence diamond', side_: ['essence', 'diamond'], unb_: ['imbalanced', 'essence diamond'] },
-    integration: { main: 62, side: 40, unb: 26, top: 38, sideTop: 52, unbTop: 6, sideX: 0.28, unbX: 0.33, bg: ['#edf2f6', '#dee7ee'], title: 'SPIRITUAL', label: 'integration diamond', side_: ['integration', 'diamond'], unb_: ['imbalanced', 'integration diamond'] },
+    essence: { main: 90, side: 54, unb: 33, top: 30, sideTop: 54, unbTop: 8, sideX: 0.21, unbX: 0.28, bg: ['#dee7ee', '#cfdbe7'], title: 'EMOTIONAL', label: 'essence diamond', side_: ['essence', 'diamond'], unb_: ['imbalanced', 'essence diamond'] },
+    integration: { main: 62, side: 40, unb: 26, top: 38, sideTop: 52, unbTop: 8, sideX: 0.28, unbX: 0.33, bg: ['#edf2f6', '#dee7ee'], title: 'SPIRITUAL', label: 'integration diamond', side_: ['integration', 'diamond'], unb_: ['imbalanced', 'integration diamond'] },
   };
   function levelSvg(d, lv, labels, onTap) {
     const sv = A.sv, W = 390, K = BANDS[lv], dark = lv === 'main';
@@ -385,9 +385,17 @@
     // A label a word a line; a long custom one ("How John Feels It") in two lines.
     const split = (txt) => { const w = txt.split(' '); if (w.length <= 3) return w; const h = Math.ceil(w.length / 2); return [w.slice(0, h).join(' '), w.slice(h).join(' ')]; };
     const sideWords = split(labels.outerLabel || `outer ${K.side_.join(' ')}`), innerWords = split(labels.innerLabel || `inner ${K.side_.join(' ')}`);
-    const sideLe = K.sideTop + K.side * 0.72 + K.side * 0.17 - 2;
-    lines(sideCx - 12, sideLe - (sideWords.length - 1) * 4.5, sideWords, 'lab', 'end', 8, 9);
-    lines(W - sideCx + 12, sideLe - (innerWords.length - 1) * 4.5, innerWords, 'lab', 'start', 8, 9);
+    // On the physical band the side diamond sits at the edge, so its label goes below-left beside the life
+    // expression; on the upper bands it goes outside the triangle, left of its left corner, never over the auras.
+    if (dark) {
+      const sideLe = K.sideTop + K.side * 0.72 + K.side * 0.17 - 2;
+      lines(sideCx - 18, sideLe - (sideWords.length - 1) * 4.5, sideWords, 'lab', 'end', 8, 9);
+      lines(W - sideCx + 18, sideLe - (innerWords.length - 1) * 4.5, innerWords, 'lab', 'start', 8, 9);
+    } else {
+      const midY = K.sideTop + K.side * 0.3;
+      lines(sideCx - K.side / 2 - 10, midY - (sideWords.length - 1) * 4.5, sideWords, 'lab', 'end', 8, 9);
+      lines(W - sideCx + K.side / 2 + 10, midY - (innerWords.length - 1) * 4.5, innerWords, 'lab', 'start', 8, 9);
+    }
     if (!labels.noUnbalanced) {
       const ux = Math.round(W * K.unbX);
       bottoms.push(tri(svg, d.outerU, ux, K.unbTop, K.unb, { onTap, unbalanced: true, minFont: 4.5 }), tri(svg, d.innerU, W - ux, K.unbTop, K.unb, { onTap, unbalanced: true, minFont: 4.5 }));
@@ -414,12 +422,19 @@
   // One number's whole big diamond, small, for the grid of every number: the paid tool's "10 by 10" page draws
   // seven triangles per cell: the integration diamond on top, the essence diamond with its outer and inner
   // diamonds beside it, the main diamond (bigger, dark) with its outer and inner diamonds beside it.
+  // Measured on the owner's screenshot of that page (a cell is 103 x 105): the integration diamond on top (26
+  // wide), the essence diamond (36) with its outer and inner (24) beside and a little below it, the main diamond
+  // (36) the same way at the bottom, its numbers bold and about twice the size, dark. No label: the two digits are
+  // the number.
   function cellSvg(x) {
-    const svg = A.sv('svg', { viewBox: '0 0 140 152', class: 'dia nfcell', role: 'img', 'aria-label': `${T.val(x).text} ${T.nameOf(x)}` });
-    const B = T.bigDiamond(x), o = { name: '', minFont: 4 };
-    tri(svg, B.integration, 70, 7, 30, o);
-    tri(svg, B.essence, 70, 42, 40, o); tri(svg, B.essence.outerD, 24, 48, 24, o); tri(svg, B.essence.innerD, 116, 48, 24, o);
-    tri(svg, B.main, 70, 88, 60, { ...o, dark: true }); tri(svg, B.main.outerD, 22, 98, 24, o); tri(svg, B.main.innerD, 118, 98, 24, o);
+    // Every number's box was worked out from the font sizes (0.58 em a character) so no two touch: the side
+    // diamonds sit at x 22 / 122, the main row's side diamonds 12 lower than the main, the main's digits clear
+    // of the essence row's life expressions. Change a size here and check a cell at two across again.
+    const svg = A.sv('svg', { viewBox: '0 0 160 120', class: 'dia nfcell', role: 'img', 'aria-label': `${T.val(x).text} ${T.nameOf(x)}` });
+    const B = T.bigDiamond(x), o = { name: '', minFont: 3.6 };
+    tri(svg, B.integration, 80, 8, 26, o);
+    tri(svg, B.essence, 80, 40, 36, o); tri(svg, B.essence.outerD, 22, 46, 24, o); tri(svg, B.essence.innerD, 138, 46, 24, o);
+    tri(svg, B.main, 80, 78, 36, { ...o, dark: true, fontK: 1.4, minFont: 4.5 }); tri(svg, B.main.outerD, 22, 90, 24, o); tri(svg, B.main.innerD, 138, 90, 24, o);
     return svg;
   }
   function numberFunView(arg) {
@@ -428,13 +443,21 @@
     // "All Numbers" (owner 2026-10-19, the paid tool's grid page): every number's main diamond at once, as many
     // across as the − / + choose (remembered per device); tap one to open that number. The chip brings the grid back.
     const wide = window.innerWidth >= 700;
-    const MIN_COLS = 2, MAX_COLS = window.innerWidth >= 1000 ? 10 : wide ? 7 : 5;
+    const MIN_COLS = 2, MAX_COLS = 10; // the paid tool's page is 10 by 10; a phone can go there too, the − / + choose
     const clampCols = (c) => Math.min(MAX_COLS, Math.max(MIN_COLS, Number(c) || 0));
-    const view = { grid: !!recall('numberFunGrid', false), cols: clampCols(recall('numberFunCols', wide ? 5 : 3)) };
+    const view = { grid: !!recall('numberFunGrid', false), cols: clampCols(recall('numberFunCols', wide ? 10 : 5)) };
     const $row = A.h('div', { class: 'numrow' }), $body = A.h('div', {}), $chips = A.h('div', { class: 'togglerow' });
     const $in = A.h('input', { type: 'text', inputmode: 'numeric', class: 'numin', maxlength: 2, 'aria-label': 'Number' });
     $in.addEventListener('change', () => { const v = Number($in.value); if (v >= 1 && v <= 99) { n = v; view.grid = false; A.count('numberfun.type'); draw(); } });
-    const jump = (d) => { if (d.code >= 1 && d.code <= 99) { n = d.code; A.count('numberfun.tap_diamond'); draw(); } };
+    // A tap on a diamond pops its words up from the bottom (owner 2026-10-19: never a new screen, so the page
+    // underneath stays put); "Open" in the sheet goes to that number on purpose.
+    const jump = async (d) => {
+      if (!(d.code >= 1 && d.code <= 99)) return;
+      A.count('numberfun.tap_diamond');
+      let close = null;
+      const $open = A.h('button', { type: 'button', class: 'btn-primary', onclick: () => { if (close) close(); n = d.code; view.grid = false; A.count('numberfun.open_from_sheet'); draw(); window.scrollTo(0, 0); } }, `Open ${T.val(d.code).text} ${d.name}`);
+      close = await numberSheet(T.val(d.code), 'about', $open);
+    };
     const setCols = (c) => { view.cols = clampCols(c); remember('numberFunCols', view.cols); A.count('numberfun.size'); draw(); };
     const draw = async () => {
       remember('numberFun', n); remember('numberFunGrid', view.grid); $in.value = String(n);
@@ -445,11 +468,12 @@
           A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Bigger charts', disabled: view.cols <= MIN_COLS, onclick: () => setCols(view.cols - 1) }, '+')) : null);
       $row.classList.toggle('hidden', view.grid);
       if (view.grid) {
-        const c = view.cols;
-        A.fill($body, A.h('div', { class: 'minis nfgrid', 'data-cols': String(c), style: `grid-template-columns: repeat(${c}, minmax(0, 1fr))` },
-          ...Array.from({ length: 99 }, (_, i) => i + 1).map((x) => A.h('div', { class: 'mini' + (x === n ? ' today' : ''), role: 'button', 'aria-label': `Open ${T.val(x).text}`, onclick: () => { n = x; view.grid = false; A.count('numberfun.tap_cell'); draw(); window.scrollTo(0, 0); } },
-            A.h('div', { class: 'd' }, T.val(x).text), cellSvg(x)))),
-          A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Every number\u2019s big diamond. Tap one to see it large.'));
+        // The paid tool's order: a row per ten, the nineties on top, 0 to 9 across (ten across = its page exactly).
+        const c = view.cols, order = [];
+        for (let tens = 9; tens >= 0; tens--) for (let u = 0; u <= 9; u++) { const x = tens * 10 + u; if (x >= 1) order.push(x); }
+        A.fill($body, A.h('div', { class: 'nftable', 'data-cols': String(c), style: `grid-template-columns: repeat(${c}, minmax(0, 1fr))` },
+          ...order.map((x) => A.h('div', { class: 'nfc' + (x === n ? ' today' : ''), role: 'button', 'aria-label': `Open ${T.val(x).text}`, onclick: () => { n = x; view.grid = false; A.count('numberfun.tap_cell'); draw(); window.scrollTo(0, 0); } }, cellSvg(x)))),
+          A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Every number\u2019s big diamond, the nineties on top. Tap one to see it large.'));
         return;
       }
       A.fill($row, ...Array.from({ length: 99 }, (_, i) => i + 1).map((x) => A.h('button', { type: 'button', class: x === n ? 'active' : '', onclick: () => { n = x; draw(); } }, String(x))));
@@ -764,7 +788,7 @@
   const USAGE_LABELS = {
     'screen.today': 'Today', 'screen.coming': 'Coming Days', 'screen.numberfun': 'Number Fun', 'screen.price': 'Price Tool', 'screen.relation': 'Relationship', 'screen.karmic': 'Karmic Connections', 'screen.mychart': 'My Chart (settings)',
     'home.today': 'Home → Today', 'home.coming': 'Home → Coming Days', 'home.numberfun': 'Home → Number Fun', 'home.price': 'Home → Price Tool', 'home.relation': 'Home → Relationship', 'home.karmic': 'Home → Karmic Connections', 'home.mychart': 'Home → My Chart',
-    'today.psyche': 'Today: psyche charts on or off', 'today.full': 'Today: full screen day', 'today.ruler': 'Today: ruler of the day', 'today.company': 'Today: a company started this day', 'dayfull.move': 'Full screen day: previous or next day', 'coming.open_day': 'Coming Days: open a day', 'coming.size': 'Coming Days: chart size', 'coming.super_only': 'Coming Days: super dates only', 'numberfun.type': 'Number Fun: type a number', 'numberfun.grid': 'Number Fun: All Numbers grid on or off', 'numberfun.size': 'Number Fun: grid chart size', 'numberfun.tap_cell': 'Number Fun: open a number from the grid', 'numberfun.tap_diamond': 'Number Fun: tap a diamond', 'numberfun.tap_other': 'Number Fun: tap a number it appears in',
+    'today.psyche': 'Today: psyche charts on or off', 'today.full': 'Today: full screen day', 'today.ruler': 'Today: ruler of the day', 'today.company': 'Today: a company started this day', 'dayfull.move': 'Full screen day: previous or next day', 'coming.open_day': 'Coming Days: open a day', 'coming.size': 'Coming Days: chart size', 'coming.super_only': 'Coming Days: super dates only', 'numberfun.type': 'Number Fun: type a number', 'numberfun.grid': 'Number Fun: All Numbers grid on or off', 'numberfun.size': 'Number Fun: grid chart size', 'numberfun.tap_cell': 'Number Fun: open a number from the grid', 'numberfun.open_from_sheet': 'Number Fun: open a number from its sheet', 'numberfun.tap_diamond': 'Number Fun: tap a diamond', 'numberfun.tap_other': 'Number Fun: tap a number it appears in',
     'price.find': 'Price Tool: Find a Price', 'price.vibe': 'Price Tool: pick a vibration', 'price.range': 'Price Tool: pick a range', 'price.pick': 'Price Tool: pick a found price', 'price.number': 'Price Tool: a number in the price', 'price.vibe_text': 'Price Tool: the book\'s page for a vibration', 'price.pyramid': 'Price Tool: the number pyramid', 'price.chart': 'Price Tool: the price chart', 'price.chart_day': 'Price Tool: a day on top of the chart', 'relation.use_me': 'Relationship: me as the first person', 'mychart.save': 'My Chart: save',
   };
 
