@@ -422,62 +422,10 @@
   // One number's whole big diamond, small, for the grid of every number: the paid tool's "10 by 10" page draws
   // seven triangles per cell: the integration diamond on top, the essence diamond with its outer and inner
   // diamonds beside it, the main diamond (bigger, dark) with its outer and inner diamonds beside it.
-  // Measured on the owner's screenshot of that page (a cell is 103 x 105): the integration diamond on top (26
-  // wide), the essence diamond (36) with its outer and inner (24) beside and a little below it, the main diamond
-  // (36) the same way at the bottom, its numbers bold and about twice the size, dark. No label: the two digits are
-  // the number.
+  // One cell of All Numbers (owner's pick B, 2026-10-19, out of five mock-ups): the number's own three-level
+  // page in miniature, tinted bands, gold names, imbalanced diamonds and all, so the grid reads like the page.
   function cellSvg(x) {
-    // Every number's box was worked out from the font sizes (0.58 em a character) so no two touch: the side
-    // diamonds sit at x 22 / 122, the main row's side diamonds 12 lower than the main, the main's digits clear
-    // of the essence row's life expressions. Change a size here and check a cell at two across again.
-    const svg = A.sv('svg', { viewBox: '0 0 160 120', class: 'dia nfcell', role: 'img', 'aria-label': `${T.val(x).text} ${T.nameOf(x)}` });
-    const B = T.bigDiamond(x), o = { name: '', minFont: 3.6 };
-    tri(svg, B.integration, 80, 8, 26, o);
-    tri(svg, B.essence, 80, 40, 36, o); tri(svg, B.essence.outerD, 22, 46, 24, o); tri(svg, B.essence.innerD, 138, 46, 24, o);
-    tri(svg, B.main, 80, 78, 36, { ...o, dark: true, fontK: 1.4, minFont: 4.5 }); tri(svg, B.main.outerD, 22, 90, 24, o); tri(svg, B.main.innerD, 138, 90, 24, o);
-    return svg;
-  }
-  // ---- MOCK (temporary): four ways to draw a grid cell, for the owner to pick from ----
-  function cellStack(x) { // C: the three main diamonds only, stacked, airy
-    const svg = A.sv('svg', { viewBox: '0 0 120 150', class: 'dia nfcell', role: 'img' });
-    const B = T.bigDiamond(x), o = { name: '', minFont: 5 };
-    tri(svg, B.integration, 60, 10, 34, o);
-    tri(svg, B.essence, 60, 52, 42, o);
-    tri(svg, B.main, 60, 100, 50, { ...o, dark: true, fontK: 1.15 });
-    return svg;
-  }
-  function cellBands(x) { // B: the big diamond page in miniature: three tinted bands, names, imbalanced ones too
     return A.h('div', { class: 'nfmini' }, bigDiamondEl(T.bigDiamond(x), null, {}));
-  }
-  function cellBandsLite(x) { // D: three tinted bands, one diamond each, outer and inner LE as text beside it
-    const svg = A.sv('svg', { viewBox: '0 0 120 150', class: 'dia nfcell', role: 'img' });
-    const B = T.bigDiamond(x), o = { minFont: 4.5 };
-    const band = (y, h, c1, c2) => { svg.append(A.sv('rect', { x: 0, y, width: 60, height: h, fill: c1 }), A.sv('rect', { x: 60, y, width: 60, height: h, fill: c2 })); };
-    band(0, 42, '#edf2f6', '#dee7ee'); band(42, 46, '#dee7ee', '#cfdbe7'); band(88, 62, '#cfdbe7', '#c0d1e1');
-    const side = (d, x, y) => svg.append(A.sv('text', { x, y, 'font-size': 6, class: 'lab', 'text-anchor': 'middle' }, d.le.text));
-    tri(svg, B.integration, 60, 8, 30, { ...o, name: '' }); side(B.integration.outerD, 18, 26); side(B.integration.innerD, 102, 26);
-    tri(svg, B.essence, 60, 50, 34, { ...o, name: '' }); side(B.essence.outerD, 18, 70); side(B.essence.innerD, 102, 70);
-    tri(svg, B.main, 60, 98, 44, { ...o, dark: true, fontK: 1.2 }); side(B.main.outerD, 16, 124); side(B.main.innerD, 104, 124);
-    return svg;
-  }
-  function cellCard(x) { // E: number and name on top in gold, the main diamond big, the two upper levels small above it
-    const v = T.val(x), B = T.bigDiamond(x);
-    const svg = A.sv('svg', { viewBox: '0 0 120 140', class: 'dia nfcell', role: 'img' });
-    tri(svg, B.integration, 36, 6, 26, { name: '', minFont: 4 }); tri(svg, B.essence, 84, 6, 26, { name: '', minFont: 4 });
-    tri(svg, B.main, 60, 48, 70, { dark: true, minFont: 5 });
-    return A.h('div', { class: 'nfcard' }, A.h('div', { class: 'nfhead' }, A.h('b', {}, v.text), A.h('span', {}, T.nameOf(x))), svg);
-  }
-  function mockView() {
-    light();
-    const nums = [14, 27, 99, 41];
-    const block = (title, note, make, cols) => A.h('div', { class: 'card', style: 'background:#fff;border:1px solid #e3e7ee' }, A.h('b', {}, title), A.h('div', { class: 'muted small', style: 'margin-bottom:8px' }, note),
-      A.h('div', { class: 'nftable', style: `grid-template-columns: repeat(${cols}, minmax(0, 1fr))` }, ...nums.slice(0, cols).map((x) => A.h('div', { class: 'nfc' }, make(x)))));
-    A.render(A.h('div', { class: 'screen qscreen tscreen' }, top('Grid Ideas', '#/numberfun'),
-      block('A · Like now', 'The paid tool’s table: seven triangles, the bottom row bold.', cellSvg, 2),
-      block('B · The three-level page, small', 'Each cell is the big diamond page itself: tinted bands, gold names, imbalanced ones too.', cellBands, 2),
-      block('C · Three diamonds only', 'Main, essence and integration diamonds stacked; the side diamonds left out.', cellStack, 2),
-      block('D · Three bands, one diamond each', 'The page’s tints, one diamond a level, the outer and inner numbers beside it.', cellBandsLite, 2),
-      block('E · Card', 'Number and name on top, the main diamond big, the two upper diamonds small above.', cellCard, 2)));
   }
   function numberFunView(arg) {
     light();
@@ -487,7 +435,7 @@
     const wide = window.innerWidth >= 700;
     const MIN_COLS = 2, MAX_COLS = 10; // the paid tool's page is 10 by 10; a phone can go there too, the − / + choose
     const clampCols = (c) => Math.min(MAX_COLS, Math.max(MIN_COLS, Number(c) || 0));
-    const view = { grid: !!recall('numberFunGrid', false), cols: clampCols(recall('numberFunCols', wide ? 10 : 5)) };
+    const view = { grid: !!recall('numberFunGrid', false), cols: clampCols(recall('numberFunCols', wide ? 4 : 2)) };
     const $row = A.h('div', { class: 'numrow' }), $body = A.h('div', {}), $chips = A.h('div', { class: 'togglerow' });
     const $in = A.h('input', { type: 'text', inputmode: 'numeric', class: 'numin', maxlength: 2, 'aria-label': 'Number' });
     $in.addEventListener('change', () => { const v = Number($in.value); if (v >= 1 && v <= 99) { n = v; view.grid = false; A.count('numberfun.type'); draw(); } });
@@ -515,7 +463,7 @@
         for (let tens = 9; tens >= 0; tens--) for (let u = 0; u <= 9; u++) { const x = tens * 10 + u; if (x >= 1) order.push(x); }
         A.fill($body, A.h('div', { class: 'nftable', 'data-cols': String(c), style: `grid-template-columns: repeat(${c}, minmax(0, 1fr))` },
           ...order.map((x) => A.h('div', { class: 'nfc' + (x === n ? ' today' : ''), role: 'button', 'aria-label': `Open ${T.val(x).text}`, onclick: () => { n = x; view.grid = false; A.count('numberfun.tap_cell'); draw(); window.scrollTo(0, 0); } }, cellSvg(x)))),
-          A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Every number\u2019s big diamond, the nineties on top. Tap one to see it large.'));
+          A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Every number\u2019s three levels, the nineties on top. Tap one to see it large.'));
         return;
       }
       A.fill($row, ...Array.from({ length: 99 }, (_, i) => i + 1).map((x) => A.h('button', { type: 'button', class: x === n ? 'active' : '', onclick: () => { n = x; draw(); } }, String(x))));
@@ -789,7 +737,7 @@
 
   function install(app) {
     A = app;
-    Object.assign(A.routes, { nfmock: mockView, today: todayView, coming: comingView, numberfun: numberFunView, price: priceView, relation: relationView, karmic: karmicView, mychart: myChartView });
+    Object.assign(A.routes, { today: todayView, coming: comingView, numberfun: numberFunView, price: priceView, relation: relationView, karmic: karmicView, mychart: myChartView });
     return { homeButtons, USAGE_LABELS, myChart: () => recall('mychart', null) };
   }
   root.Tools = { install, bigDiamondEl, planetScene };

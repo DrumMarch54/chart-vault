@@ -718,3 +718,6 @@ in the same position; no vault statistics on the page beyond that count.
   `wordsSheet`, which now has a grip and closes on a swipe down, Back, a tap outside or Close) with an "Open N"
   button; it never swaps the page (owner: "that way I don't get lost in screens").
 - Two chats worked the repo at once; `git fetch origin main` + merge before every push, keep both HISTORY entries.
+- Grid cell, owner's pick (2026-10-19, out of five mock-ups A-E shown as pictures): B, the number's own three-level
+  page in miniature (`cellSvg` = `bigDiamondEl`), two across on a phone by default, four on a laptop; the paid
+  tool's seven-triangle table (A) is gone. Showing pictures of options before building was what finally worked.
