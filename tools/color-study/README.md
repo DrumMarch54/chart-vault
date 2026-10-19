@@ -1,5 +1,8 @@
 # Color and position study of the paid Quick Numeroscope tool
 
+**Colors since 2026-10-19 come from `paid/` (the tool's own tables, read off its live page); the
+screenshot study below is kept for POSITIONS and for the method.**
+
 One-off research tools, never run by `npm run verify`. They read the vault's own
 screenshots and work out, for every chart position and number, which color the
 paid tool uses and where exactly it puts each number. Output:

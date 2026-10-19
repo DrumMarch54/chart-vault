@@ -41,13 +41,13 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   from a cloud session with the Drive connector; ids are in that README.
 - Tag codes ("19fn") are decoded in `.brain/numerology/tag-codes.md` and
   spelled out on screen by `public/tag-codes.js`; the stored tag never changes.
-- Number colors and exact positions come from the vault's own screenshots
-  (`.brain/numerology/number-colors.md`, `tools/color-study/`): measure
-  against them, never guess a color or a position. `public/number-colors.js`
-  is generated; regenerate it, do not hand-edit. Owner 2026-10-19: the paid tool's
-  colors changed over time, so the next study runs on the LIVE tool (numpromember.com,
-  WordPress login with `NUMPRO_USER` / `NUMPRO_PASSWORD` from the environment, never in
-  the repo or the chat), reading colors off the page, not off old screenshots.
+- Number colors are the paid tool's OWN tables, read off its live page script
+  (`tools/color-study/paid/`: fetch.mjs signs in with `NUMPRO_USER` / `NUMPRO_PASSWORD`
+  from the environment, never the repo or the chat; the members' form is
+  numpromember.com/login/, not wp-login; gen.mjs writes `public/number-colors.js`).
+  The rules switch tables by the number of words in the name; `lookup(slot, text, words)`.
+  Never hand-edit the table or guess a color: re-run fetch + gen. Exact positions still
+  come from the screenshot study (`.brain/numerology/number-colors.md`, `tools/color-study/`).
 - The course books can be READ AS PICTURES: find the page by text search, render only that page
   (`.brain/numerology/README.md` "Reading PDFs"). The paid tool's real screens are the "TOOL:" boxes
   in the books; the website's images are marketing art. Never print a whole book; never ask the owner

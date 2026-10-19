@@ -1408,8 +1408,8 @@
     };
     const num = (x, y, v, cls, size, anchor, pos) => [hit(x, y, v, cls, size, anchor, pos), txt(x, y, v, cls, size, anchor, pos)];
     // Color of one number: the paid tool's choice for that position and value (number-colors.js).
-    const oneMiddle = data.name.middle.length === 1;
-    const tone = (slot, v, bold) => 'n-' + NumberColors.lookup(slot, typeof v === 'string' ? v : (v ? v.text : ''), oneMiddle) + (bold ? ' n-bold' : '') + ' k-' + kindOfSlot(slot);
+    const words = data.name.words.length; // the paid tool's color rules change with how many words the name has
+    const tone = (slot, v, bold) => 'n-' + NumberColors.lookup(slot, typeof v === 'string' ? v : (v ? v.text : ''), words) + (bold ? ' n-bold' : '') + ' k-' + kindOfSlot(slot);
     // x offsets of n items on one row: one at the center, two at the measured pair, more spread evenly across it.
     const spread = (n, pair, i) => (n <= 1 || !pair ? 0 : pair[0] + (pair[1] - pair[0]) * i / (n - 1));
     // The numbers of one rhombus. pre = the position prefix in number-colors.js ('' main, 'c.' consonants,
@@ -1491,7 +1491,7 @@
       sv('circle', { cx, cy: cy + hh + 28, r: 25, fill: '#f0f0f4' }), sv('polygon', { points: `${cx},${cy + hh + 56} ${cx + 22},${cy + hh + 86} ${cx - 22},${cy + hh + 86}`, fill: '#dde6ef' }),
       sv('circle', { cx: cx + hw * 0.74, cy: cy - hh + 14, r: 17, fill: '#fff', stroke: '#c7c7cf', 'stroke-width': 2 }));
     const txt = (x, y, v, cls, size, anchor) => (v ? sv('text', { x, y, class: cls, 'font-size': size, 'text-anchor': anchor || 'middle' }, typeof v === 'string' ? v : v.text) : null);
-    const tone = (slot, v, bold) => 'n-' + NumberColors.lookup(slot, v ? v.text : '', false) + (bold ? ' n-bold' : '');
+    const tone = (slot, v, bold) => 'n-' + NumberColors.lookup(slot, v ? v.text : '', count) + (bold ? ' n-bold' : '');
     const plain = (vals) => vals.map((v) => String(v.sum)).join('  ');
     const letters = c.words, n = letters.length, span = hw * 0.78;
     const xAt = (i) => (n <= 1 ? cx : cx - span + 2 * span * i / (n - 1));
@@ -1515,7 +1515,7 @@
   function pyramidEl(r) {
     const rows = r.pyramid.slice().reverse();
     const W = r.weight, topCell = W.top;
-    const cls = (v, i) => { const t = Numeroscope.TENSION[v.sum]; return 'n-' + (v.sum < 10 ? 'dark' : NumberColors.lookup('first', v.text, false)) + (t ? (i === 0 ? ' top-tense' : ' tense') : ''); };
+    const cls = (v, i) => { const t = Numeroscope.TENSION[v.sum]; return 'n-' + (v.sum < 10 ? 'dark' : NumberColors.lookup('first', v.text, 1)) + (t ? (i === 0 ? ' top-tense' : ' tense') : ''); };
     const n = rows.length, wide = n > 8;
     return h('div', { class: 'pyr' + (wide ? ' wide' : ''), style: wide ? `--cell:${Math.max(22, Math.floor((Math.min(innerWidth, 760) - 42) / n))}px` : '' },
       ...rows.map((row, i) => h('div', { class: 'pyr-row' }, ...row.map((v) => h('span', { class: cls(v, i) }, i === rows.length - 1 ? String(v.sum) : v.text)))),

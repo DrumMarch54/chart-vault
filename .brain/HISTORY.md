@@ -623,3 +623,18 @@ in the same position; no vault statistics on the page beyond that count.
   time, so the study must run on the LIVE tool, not on old screenshots: sign in to numpromember.com (a plain
   WordPress login, reachable from a cloud session), type names and dates, read every number's color off the
   page. The owner's first login try (pasted in chat; they should change that password) was refused by the site.
+
+## 2026-10-19 The paid tool's colors, read off the tool itself
+- The owner: the tool's colors changed over time, so the 436-screenshot study is not the truth; sign in to
+  the live tool instead. Sign-in: the WordPress form (wp-login.php) refused every password; the members' sign-in
+  is a separate system (DigitalAccessPass) at numpromember.com/login/ with its own email + password form, and
+  that one worked. The quick chart is a fold-out on every member page (fields #df #mf #yf #ni).
+- The chart is plain DIVs with ids (heart, hara, topleftaura, USKpillar, USVstorpersonlighed ...), so colors and
+  boxes read straight off the DOM, no OCR. Better: the page's inline script holds the whole rule: ten color
+  tables of 100 entries and one code block per number of name words saying which table each id uses. Saved as
+  `tools/color-study/paid/tables.json` + `rules.json`; `gen.mjs` writes `public/number-colors.js`. The old
+  "exactly one middle name" switch was this rule seen through a keyhole (3 words = main center table).
+- Checked: all 25 colored numbers of Jon Eugene Minadeo II match the live page; the drawn chart beside the
+  owner's screenshot matches everywhere the old table was wrong (44/8 red, 50/5 and 60/6 green, 27/9 green,
+  the vowel chart's 12/3 gray). The big life expression is the LE table color at opacity .33 (n-big).
+- The owner pasted the password in chat; told them to change it. Still to do from the DOM: exact positions.
