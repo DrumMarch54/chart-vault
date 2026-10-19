@@ -37,6 +37,16 @@ A REPLY THAT CHANGED CODE ENDS WITH, IN THIS ORDER:
 1. HOW TO CHECK IT — the fewest taps that prove it. Nothing extra.
 2. `Build: <commit>` — the last line.
 
+WHICH MODEL (owner's rule 2026-10-19). You cannot switch models; the owner can.
+When the work just asked for needs the stronger one and the chat is not on it,
+the FIRST line of the reply is "This one deserves Fable." plus why in 5-10
+words. When the chat is on Fable for routine work, the first line is
+"Opus is enough for this." Say nothing when the model already fits.
+- Fable: designing a big new feature; judging what the course means across
+  many documents; a bug that survived one failed fix.
+- Opus: bug fixes checkable against the live app, screens, buttons, layout,
+  small features with a clear design, deploys, questions.
+
 RENAME THE CHAT YOURSELF WHEN THE SUBJECT CHANGES. Call
 `set_session_title` (claude-code-remote) with 3-6 plain words naming what
 is being worked on RIGHT NOW. A new bug, feature or screen is a new title,
