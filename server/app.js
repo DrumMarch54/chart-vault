@@ -21,6 +21,7 @@ import { readingFor, writeReading, answerQuestion, deleteReadings, readingEstima
 import { askVault } from './ask.js';
 import { factsFor } from './facts.js';
 import { meaningFor, countWith } from './meaning.js';
+import { wordsFor, wordInfo } from './words.js';
 
 const MAX_IMPORT = 50 * 1024 * 1024;
 
@@ -374,6 +375,13 @@ export function createApp(db, { log = console.log } = {}) {
     res.json({ ok: true, counted });
   });
   app.get('/api/usage', (req, res) => res.json(usageReport(db)));
+  // Business Words: English words worth a number (?value=19), or one word's numbers (?word=coach). server/words.js.
+  app.get('/api/words', (req, res) => {
+    if (req.query.word !== undefined) { const i = wordInfo(req.query.word); return i ? res.json(i) : res.status(400).json({ error: 'Type a word with letters in it.' }); }
+    const n = Number(req.query.value);
+    if (!(n >= 1 && n <= 99)) return res.status(400).json({ error: 'Pick a number from 1 to 99.' });
+    res.json(wordsFor(n, { limit: Math.min(Math.max(Number(req.query.limit) || 60, 1), 200), offset: Math.max(Number(req.query.offset) || 0, 0), start: req.query.start }));
+  });
 
   // My chart: the owner's own name and birth date (server/mychart.js), for the tools that start from a person.
   app.get('/api/mychart', (req, res) => res.json(getMyChart()));

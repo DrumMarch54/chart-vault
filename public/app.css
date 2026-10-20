@@ -772,3 +772,27 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .nfmini .bigd { border-radius: 4px; }
 .nftable .nfc { padding: 3px; }
 .nftable .nfc.today { background: #fff6dc; outline: 2px solid var(--accent); outline-offset: -2px; }
+
+/* House Number, Phone and Domain, Business Words (2026-10-20): the Price Tool's shapes, plus a few of their own. */
+.pt-formula { margin: 6px 4px 0; font-size: 14px; color: #5f7990; font-weight: 600; font-variant-numeric: tabular-nums; }
+.pt-quote { margin: 6px 0 0; font-size: 15px; line-height: 1.45; color: #303030; }
+.pt-quote.muted { color: #8a8f9c; font-size: 14px; }
+.house-in input { width: 100%; min-height: 40px; font-size: 15px; border-radius: 10px; border: 1px solid #e1e3e9; background: #f3f4f7; color: #22252e; padding: 0 10px; }
+.house-in .dmy input { padding: 0 8px; font-size: 14px; }
+.togglerow .linkbtn.right { margin-left: auto; }
+.pt-telbox .cur { font-size: 22px; min-width: 28px; text-align: center; }
+.pricebox.pt-telbox input { font-size: 24px; letter-spacing: .02em; }
+.codes.pairs span { font-size: 15px; padding: 5px 11px; cursor: pointer; }
+.codes.pairs span:not(.warn):not(.soft) { background: #e6f4ea; color: #1f6b3a; }
+.wordrows { display: flex; flex-direction: column; gap: 6px; }
+.wordrow { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 10px; min-height: 44px; padding: 6px 12px; border-radius: 12px; background: #f6f7f9; color: #303030; font-family: inherit; text-align: left; }
+.wordrow .wword { font-size: 17px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wordrow .wkv, .wkv { font-size: 12px; color: #8a8f9c; white-space: nowrap; }
+.wtop { font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 10px; white-space: nowrap; }
+.wtop.g { background: #d9f3e1; color: #1f6b3a; } .wtop.y { background: #fff3d6; color: #7a5200; } .wtop.r { background: #fde8e8; color: #9b2c2c; }
+.wtitle { margin: 4px 0; font-size: 14px; line-height: 1.4; }
+.pt-daylab .numin { width: 64px; }
+.pt-daterow { margin: 10px 0 2px; align-items: end; }
+.pt-daterow .pt-dateright { padding: 0 0 6px; justify-content: flex-end; }
+.pt-daterow .dmy { display: grid; grid-template-columns: 0.85fr 1.15fr 1.2fr; gap: 4px; }
+.pt-daterow input { width: 100%; min-height: 40px; font-size: 14px; border-radius: 10px; border: 1px solid #e1e3e9; background: #f3f4f7; color: #22252e; padding: 0 8px; }
