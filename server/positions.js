@@ -47,11 +47,13 @@ function rhombusPositions(chart) {
     { key: 'upperRight', label: aura[1], get: (r) => r.upperRight },
     { key: 'heart', label: 'Mind center', get: (r) => r.heart },
     line[1] ? { key: 'heartExtra', label: 'Mind center extra vibration', get: (r) => r.heartExtra } : null,
+    line[1] ? { key: 'heartSubDiamond', label: 'Mind center sub diamond (main + middle name)', get: (r) => r.heartSubDiamond } : null,
     { key: 'mindDiamond', label: 'Mental diamond', get: (r) => r.mindDiamond },
     { key: 'lowerLeft', label: aura[2], get: (r) => r.lowerLeft },
     { key: 'lowerRight', label: aura[3], get: (r) => r.lowerRight },
     { key: 'solar', label: 'Emotion center', get: (r) => r.solar },
     line[1] ? { key: 'solarExtra', label: 'Emotion center extra vibration', get: (r) => r.solarExtra } : null,
+    line[1] ? { key: 'solarSubDiamond', label: 'Emotion center sub diamond (main + middle name)', get: (r) => r.solarSubDiamond } : null,
     { key: 'emotionDiamond', label: 'Emotional diamond', get: (r) => r.emotionDiamond },
     { key: 'leDiamond', label: line[1] ? 'Name line diamond (first + last only)' : 'Life expression diamond', get: (r) => r.leDiamond },
     { key: 'publicDiamond', label: chart === 'name' ? 'Public diamond (day + first name)' : `Day + ${line[0].toLowerCase()} diamond`, get: (r, day) => Numeroscope.joined(day, r.first && r.first.value) },
@@ -101,27 +103,33 @@ export const TAG_POSITIONS = {
   lp: [['essence', 'littleLp'], ['essence', 'bigLp']], llp: [['essence', 'littleLp']], hlp: [['essence', 'bigLp']],
   od: [['essence', 'outerDiamond']], dharma: [['essence', 'dharmaDiamond']], dvlp: [['essence', 'nexus']], cd: [['essence', 'challengeDiamond']],
   fn: [['name', 'first']], mn: [['name', 'middle']], ln: [['name', 'last']], name: [['name', 'anyName']],
-  le: [['name', 'le'], ['name', 'big']], mc: [['name', 'heart'], ['name', 'heartExtra'], ['name', 'mindDiamond']], ec: [['name', 'solar'], ['name', 'solarExtra'], ['name', 'emotionDiamond']], sp: [['name', 'solar'], ['name', 'solarExtra'], ['name', 'emotionDiamond']],
+  le: [['name', 'le'], ['name', 'big']], mc: [['name', 'heart'], ['name', 'heartExtra'], ['name', 'mindDiamond'], ['name', 'heartSubDiamond']], ec: [['name', 'solar'], ['name', 'solarExtra'], ['name', 'emotionDiamond'], ['name', 'solarSubDiamond']], sp: [['name', 'solar'], ['name', 'solarExtra'], ['name', 'emotionDiamond'], ['name', 'solarSubDiamond']],
   pa: [['name', 'upperLeft']], aa: [['name', 'lowerLeft']], pd: [['name', 'publicDiamond']], publicdiamond: [['name', 'publicDiamond']],
   md: [['name', 'mindDiamond']], ed: [['name', 'emotionDiamond']], sd: [['name', 'spineDiamond']], plr: [['name', 'pillar']], nldiamond: [['name', 'leDiamond']],
   psn: [['personality', 'le'], ['personality', 'big']], hd: [['vocation', 'le'], ['vocation', 'big']],
   vmd: [['vocation', 'mindDiamond']], ved: [['vocation', 'emotionDiamond']], pmd: [['personality', 'mindDiamond']], ped: [['personality', 'emotionDiamond']],
-  personalitychart: [['personality', 'mindDiamond'], ['personality', 'emotionDiamond'], ['personality', 'leDiamond']],
+  personalitychart: [['personality', 'mindDiamond'], ['personality', 'emotionDiamond'], ['personality', 'leDiamond'], ['personality', 'heartSubDiamond'], ['personality', 'solarSubDiamond']],
+  vocationchart: [['vocation', 'mindDiamond'], ['vocation', 'emotionDiamond'], ['vocation', 'leDiamond'], ['vocation', 'heartSubDiamond'], ['vocation', 'solarSubDiamond']],
   opms: [['outer', 'mindDiamond']], oms: [['outer', 'mindDiamond']], ipms: [['inner', 'mindDiamond']],
   opled: [['outer', 'leDiamond']], ople: [['outer', 'leDiamond']], pled: [['outer', 'leDiamond']], osle: [['outer', 'le'], ['outer', 'leDiamond']], ipled: [['inner', 'leDiamond']],
   mentalflow: [['outer', 'mentalFlow']],
 };
 // The two parts a center or diamond is made of (for combo tags): "4combo9ec" = 4 and 9 in the lower auras.
-const DIAMONDS = new Set(['mindDiamond', 'emotionDiamond', 'leDiamond', 'publicDiamond', 'spineDiamond', 'outerDiamond', 'innerDiamond', 'dharmaDiamond', 'nexus', 'target', 'challengeDiamond', 'mentalFlow']);
+const DIAMONDS = new Set(['mindDiamond', 'emotionDiamond', 'heartSubDiamond', 'solarSubDiamond', 'leDiamond', 'publicDiamond', 'spineDiamond', 'outerDiamond', 'innerDiamond', 'dharmaDiamond', 'nexus', 'target', 'challengeDiamond', 'mentalFlow']);
 // A CENTER's combination is the two numbers in its circle: the main vibration and an extra vibration ("12/3 and 8
 // in the mind center"). The owner's combo tags say so: 37 of 38 name the circle, none only the auras (live vault,
 // 2026-10-19). The auras around a center make its DIAMOND (mindDiamond, emotionDiamond).
 const PARTS = {
-  heart: ['heart', 'heartExtra'], heartExtra: ['heart', 'middle'], mindDiamond: ['upperLeft', 'upperRight'],
-  solar: ['solar', 'solarExtra'], solarExtra: ['solar', 'middle'], emotionDiamond: ['lowerLeft', 'lowerRight'],
+  heart: ['heart', 'heartExtra'], heartExtra: ['heart', 'middle'], mindDiamond: ['upperLeft', 'upperRight'], heartSubDiamond: ['heart', 'middle'],
+  solar: ['solar', 'solarExtra'], solarExtra: ['solar', 'middle'], emotionDiamond: ['lowerLeft', 'lowerRight'], solarSubDiamond: ['solar', 'middle'],
   leDiamond: ['first', 'last'], publicDiamond: ['essence.day', 'first'], spineDiamond: ['essence.day', 'le'],
   outerDiamond: ['day', 'month'], innerDiamond: ['day', 'year'], dharmaDiamond: ['month', 'year'], nexus: ['day', 'littleLp'], target: ['day', 'topAura'], challengeDiamond: ['outerAura', 'month'],
 };
+
+// For the owner's combo TAGS only: a part may also be what sits in the diamond's corner. "8combo15publicdiamond" on
+// Johnny Somali (day 26/8, first name 16/7, public aura 15/6) names the day with the public aura that the day makes
+// (owner 2026-10-20: "there is an 8 combo 15/6 there technically"). The position search keeps the strict pairs.
+const TAG_PARTS = { publicDiamond: ['essence.day', 'first', 'upperLeft'] };
 
 // Every number of every position for one set of inputs: [{ chart, position, n, sum, ds }].
 export function computeValues({ day, month, year, name }) {
@@ -330,7 +338,7 @@ export function tagCheck(db) {
     const have = cache.get(r.id);
     const at = (c, k) => have.filter((v) => { const [cc, kk] = k.includes('.') ? k.split('.') : [c, k]; return v.chart === cc && v.position === kk; });
     const matches = (v, num) => (reduced || num < 10 ? v.ds === num || v.sum === num : v.sum === num) || (DIAMONDS.has(v.position) && num >= 10 && num < 100 && v.sum === (num % 10) * 10 + Math.floor(num / 10));
-    const hit = (num, parts) => where.some(([c, k]) => at(c, k).some((v) => matches(v, num)) || (parts && (PARTS[k] || []).some((pk) => at(c, pk).some((v) => matches(v, num)))));
+    const hit = (num, parts) => where.some(([c, k]) => at(c, k).some((v) => matches(v, num)) || (parts && (TAG_PARTS[k] || PARTS[k] || []).some((pk) => at(c, pk).some((v) => matches(v, num)))));
     const ok = p.numbers.length > 1 ? p.numbers.every((num) => hit(num, true)) : hit(p.numbers[0], false);
     if (ok) agree++; else { disagree++; disagreeing.push({ id: r.id, filename: r.filename, tag: r.tag }); }
   }

@@ -66,7 +66,7 @@
     const live = words.filter((w) => w && w.value);
     const first = live[0] || null, last = live.length > 1 ? live[live.length - 1] : null;
     const letters = live.reduce((a, w) => a + w.letters.length, 0);
-    if (live.length < 2) return { words: live, first, last: null, middle: [], le: null, big: null, upperLeft: null, upperRight: null, heart: null, heartExtra: [], mindDiamond: null, lowerLeft: null, lowerRight: null, solar: null, solarExtra: [], emotionDiamond: null, leDiamond: null, pillar: null, spineDiamond: null, spine: null, letters };
+    if (live.length < 2) return { words: live, first, last: null, middle: [], le: null, big: null, upperLeft: null, upperRight: null, heart: null, heartExtra: [], mindDiamond: null, heartSubDiamond: [], lowerLeft: null, lowerRight: null, solar: null, solarExtra: [], solarSubDiamond: [], emotionDiamond: null, leDiamond: null, pillar: null, spineDiamond: null, spine: null, letters };
     const middle = live.slice(1, -1);
     const le = live.length ? val(live.reduce((a, w) => a + w.value.ds, 0)) : null;
     const big = live.length ? val(live.reduce((a, w) => a + w.value.sum, 0)) : null;
@@ -78,6 +78,11 @@
     const lr = last && le ? add(last.value, le) : null;
     const solar = add(ll, lr);
     const solarExtra = solar ? middle.map((w) => add(solar, w.value)) : [];
+    // Sub diamonds (owner 2026-10-20, Elvis Aaron Presley's personality chart): a center's main vibration digit sum
+    // written beside a middle name's digit sum, one per middle name. Main 8/8 beside Aaron's consonants rn 7/7 is
+    // the sub diamond 87; their sum 15/6 is the extra (sub) vibration in the circle. Both centers, every rhombus.
+    const heartSubDiamond = heart ? middle.map((w) => joined(heart, w.value)) : [];
+    const solarSubDiamond = solar ? middle.map((w) => joined(solar, w.value)) : [];
     const column = [top, heart, ...heartExtra, ...middle.map((w) => w.value), solar, ...solarExtra, le];
     const pillar = top && heart && solar && le ? val(column.reduce((a, v) => a + v.ds, 0)) : null;
     // Spine = day ds + LE ds written as a plain sum (6 + 9 = 15/6, 1 + 5 = 6/6). CONFIRMED on two screenshots.
@@ -85,8 +90,8 @@
     const spineDiamond = joined(top, le);
     return {
       words: live, first, last, middle, le, big,
-      upperLeft: ul, upperRight: ur, heart, heartExtra, mindDiamond: joined(ul, ur),
-      lowerLeft: ll, lowerRight: lr, solar, solarExtra, emotionDiamond: joined(ll, lr),
+      upperLeft: ul, upperRight: ur, heart, heartExtra, heartSubDiamond, mindDiamond: joined(ul, ur),
+      lowerLeft: ll, lowerRight: lr, solar, solarExtra, solarSubDiamond, emotionDiamond: joined(ll, lr),
       // The name line diamond is the first name beside the last name. It only exists when the line is those two
       // words: a middle name sits between them and there is no diamond (owner's rule, 2026-10-16).
       leDiamond: first && last && !middle.length ? joined(first.value, last.value) : null,

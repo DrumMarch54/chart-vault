@@ -9,6 +9,7 @@ before matching course text to a position (server/meaning.js `W`, server/subchar
 | Emotion center | solar plexus, SP, EC, emotional center, the lower circle; vocation "Desire", personality "emotional charisma" |
 | Main vibration (of a center) | MV, the big number in the circle |
 | Extra vibration | sub vibration, SV, secondary vibration, sub-vibration, the small number(s) in the circle (one per middle name) |
+| Sub diamond | sub-vibration diamond, sub vibration diamond: a center's main vibration beside a middle name's value (8 beside 7 = 87); its sum is the extra vibration (owner 2026-10-20). NOT the mental/emotional diamond (the auras). |
 | A center's "combination" | the circle's numbers together: main + extra ("7 and 13 in the mind center", tag 7combo13mc). NOT the auras |
 | Mental diamond | heart diamond, mind diamond (the two upper auras joined: 6 and 1 = 61/7) |
 | Emotional diamond | solar plexus diamond (the two lower auras joined) |

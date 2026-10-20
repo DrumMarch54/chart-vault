@@ -74,6 +74,15 @@ names:
 - Pillar = day ds + heart main ds + heart extra ds(s) + middle ds(s) + solar
   main ds + solar extra ds(s) + LE ds. Katrine: 1+7+7+9+6+6+5 = 41/5.
 - With no middle name there are no extra vibrations and the pillar is rule 8.
+- SUB DIAMOND (owner 2026-10-20, Elvis Aaron Presley 8.1.1935): a center's main
+  vibration digit sum written BESIDE a middle name's digit sum, one per middle
+  name, in both centers of every chart with a middle name (name chart: the middle
+  name's full value; vocation: its vowels; personality: its consonants). Elvis's
+  personality chart: mind center 8/8, Aaron's consonants rn 7/7 -> sub diamond 87,
+  and the extra vibration 15/6 is their sum; solar plexus 8/8 + 7 -> 87 too (the
+  owner's tag 87personalitychart). Katrine: heart 7/7 beside Ditte 18/9 -> 79/7,
+  solar 15/6 beside 18/9 -> 69/6. Engine: `heartSubDiamond` / `solarSubDiamond`
+  (arrays), positions.js, the meaning page's "diamond behind" an extra vibration.
 - Big personality number (powerpoint): all consonants in the full name added
   raw (Albert Einstein 28/1); little personality = sum of the per-name
   consonant ds (11/2 + 17/8 = 10/1). Same for vowels → big/little heart's

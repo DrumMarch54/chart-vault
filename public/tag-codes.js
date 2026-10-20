@@ -13,7 +13,7 @@
     pd: 'Public diamond', md: 'Mental diamond', ed: 'Emotional diamond', sd: 'Spine diamond', plr: 'Pillar',
     nldiamond: 'Name line diamond', publicdiamond: 'Public diamond',
     psn: 'Personality number', hd: "Heart's desire", vmd: 'Vocation mental diamond', ved: 'Vocation emotional diamond',
-    pmd: 'Personality mental diamond', ped: 'Personality emotional diamond', personalitychart: 'Personality chart',
+    pmd: 'Personality mental diamond', ped: 'Personality emotional diamond', personalitychart: 'Personality chart', vocationchart: 'Vocation chart',
     opms: 'Outer psyche mental strategies', ipms: 'Inner psyche mental strategies', oms: 'Outer psyche mental strategies',
     opled: 'Outer psyche life expression diamond', ople: 'Outer psyche life expression diamond', pled: 'Outer psyche life expression diamond',
     osle: 'Outer psyche life expression', ipled: 'Inner psyche life expression diamond', mentalflow: 'Mental flow',

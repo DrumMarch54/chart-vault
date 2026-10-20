@@ -39,7 +39,7 @@ const ESSENCE = {
 const RHOMBUS = {
   first: ['firstName'], middle: ['middleName'], last: ['lastName'], le: ['lifeExpression'], big: ['lifeExpression'], leDiamond: ['lifeExpression'],
   upperLeft: ['auras'], upperRight: ['auras'], lowerLeft: ['auras'], lowerRight: ['auras'],
-  heart: ['mindCenter'], heartExtra: ['mindCenter'], mindDiamond: ['mindCenter'], solar: ['emotionCenter'], solarExtra: ['emotionCenter'], emotionDiamond: ['emotionCenter'],
+  heart: ['mindCenter'], heartExtra: ['mindCenter'], mindDiamond: ['mindCenter'], heartSubDiamond: ['mindCenter'], solar: ['emotionCenter'], solarExtra: ['emotionCenter'], emotionDiamond: ['emotionCenter'], solarSubDiamond: ['emotionCenter'],
   publicDiamond: ['firstName', 'dayVibration'], spine: ['spine'], spineDiamond: ['spine'], pillar: ['pillar'], letters: [], mentalFlow: ['mindCenter', 'psyche'],
 };
 export function topicsFor(chart, position) {
@@ -104,6 +104,7 @@ const W = {
   heart: /\bMV\b|main vibration|heart (?:center|centre)|mind (?:center|centre)|\bHC\b|\bMC\b/i, heartExtra: /\bSV\b|sub ?vibration|extra vibration|secondary/i,
   solar: /\bMV\b|main vibration|solar plexus(?! diamond)|emotion(?:al)? (?:center|centre)|\bSP\b|\bEC\b/i, solarExtra: /\bSV\b|sub ?vibration|extra vibration|secondary/i,
   mindDiamond: /heart diamond|mental diamond|mind diamond/i, emotionDiamond: /solar plexus diamond|emotional? diamond/i,
+  heartSubDiamond: /sub ?diamond|sub ?vibration diamond/i, solarSubDiamond: /sub ?diamond|sub ?vibration diamond/i,
   leDiamond: /name line diamond|life expression diamond/i, publicDiamond: /public diamond/i, spineDiamond: /spine diamond/i,
   first: /first name|challenge|psychic month/i, middle: /middle name/i, last: /last name|surname|family name/i,
   le: /life expression(?! diamond)|heart'?’?s desire|personality number|\bLE\b/i, big: /big (?:life expression|heart|personality)|\bBLE\b/i, pillar: /pillar/i, spine: /spine(?! diamond)/i,

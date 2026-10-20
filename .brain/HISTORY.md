@@ -754,3 +754,31 @@ in the source material somewhere".
   hand-written pages across re-runs in BOTH shapes of the file; the first re-run silently lost them.
 - Scripts live in `tools/bits/` (`make-jobs`, `check-out`, `merge-bits`, work dir git-ignored). No model is
   called by any script; the chat writes the points itself.
+
+## 2026-10-20 Sub diamonds, the owner's tag typos retagged, names and dates read off screenshots
+- The session fixed the 20 position tags that disagreed with the computed charts: twelve were charts with a name
+  but no birth date in the seed (Tyson, Boris Johnson, Prince, Michael Jackson, Candace Owens, Bryan Johnson's year,
+  Hammonds' day and month); read off the screenshots and set on the live app and in `server/chart-inputs.json`.
+  Seven were tags typed wrong; shown to the owner as marked-up pictures (red circle where the tag points, blue circle
+  where the number really sits), which is what got a clear answer within a minute.
+- One of the seven was not a typo but a rule the app did not know, the SUB DIAMOND: in Elvis Aaron Presley's
+  personality chart the mind center is 8/8 with the extra vibration 15/6 and the middle name's consonants are 7/7;
+  the owner reads "87" there, the main vibration beside the middle name's value (the extra vibration is their sum),
+  and the same in the solar plexus. Built into the engine (`heartSubDiamond`, `solarSubDiamond`, one per middle
+  name, both centers, name/vocation/personality charts), the position catalog and search, the tag check
+  (personalitychart / mc / ec codes cover it), Similar Charts (a matched sub diamond stands for the main, the middle
+  name and the extra), the meaning page (the sub diamond is the diamond behind an extra vibration; the main
+  vibration lists its diamond and its sub diamonds). Open question put to the owner: the main name chart and the
+  vocation chart were given sub diamonds too (middle name's full value / vowels); say if only the sub-charts have them.
+- "8combo15publicdiamond" on Johnny Somali (day 26/8, first name 16/7, public aura 15/6) is the owner's intended
+  reading: the day with the aura it makes in the public diamond. The tag CHECK accepts an aura as a part of the
+  public diamond (`TAG_PARTS`); the position search keeps the strict pair (day beside first name).
+- The remaining typos were retagged on the live app at the owner's word ("you can fix everything"): 13lp -> 22lp,
+  13and31lp -> 22and31lp (Paul Chek), 20lp -> 20day (Cobain), 89dvlp -> 89dharma (Lovecraft), 28md -> 28ed (Benny
+  Hinn), 88sp -> 88sd (Jack Doherty). Removing a tag in the app records it in removed_tags, so a re-import never
+  brings the typo back. The first "never rename a tag" rule stands; this was the owner's explicit decision per tag.
+- Quick Chart saves had no title (two charts in "Names to check"): a save now sets "First Last" from what was
+  typed. "McConaughey" read as "Mc Conaughey": the name splitter keeps Mc/Mac/De/Di/La/Le/Van/Von/O' glued.
+- The statistics module (Master Module 7 slides, OCR'd) and the results lecture transcript are in the knowledge
+  store (`knowledge/raw/statistics-module-7.md`, `lecture-statistics-results.md`); the celebrity results book
+  (humanity-archetyping-book.md) was already there.

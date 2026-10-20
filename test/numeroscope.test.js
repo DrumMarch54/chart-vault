@@ -84,6 +84,9 @@ test('Katrine Ditte Pilmark (class manual, middle name)', () => {
   assert.equal(t(n.lowerLeft), '7/7'); assert.equal(t(n.lowerRight), '8/8');
   assert.equal(t(n.heart), '7/7'); assert.equal(t(n.heartExtra[0]), '16/7');
   assert.equal(t(n.solar), '15/6'); assert.equal(t(n.solarExtra[0]), '15/6');
+  // sub diamonds: a center's main digit sum beside the middle name's digit sum (owner 2026-10-20)
+  assert.equal(t(n.heartSubDiamond[0]), '79/7'); assert.equal(t(n.solarSubDiamond[0]), '69/6');
+  assert.equal(N.numeroscope({ day: 19, month: 8, year: 1984, name: 'Katrine Pilmark' }).name.heartSubDiamond.length, 0);
   assert.equal(t(n.spine), '6/6'); assert.equal(t(n.pillar), '41/5');
   assert.equal(n.middle.length, 1); assert.equal(n.middle[0].text, 'Ditte');
   // The name line diamond (first beside last) only exists for a first + last name: a middle name sits between them.

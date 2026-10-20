@@ -178,6 +178,10 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   and its upper auras, outer diamond behind the outer aura, nexus behind day and life path, ...).
 - A center's COMBINATION is the two numbers in its circle, main + extra vibration, in the course, in the owner's
   combo tags (37 of 38) and in the position search (`PARTS` heart/solar). The auras around it make the DIAMOND.
+- SUB DIAMOND (owner 2026-10-20): a center's main vibration digit sum beside a middle name's digit sum, one per
+  middle name, both centers, every chart with a middle name (Elvis's personality chart: 8 beside rn 7 = 87, the
+  extra vibration 15/6 is their sum). `heartSubDiamond` / `solarSubDiamond` in the engine and the position
+  search; the meaning page shows it behind an extra vibration. Rule: `chart-construction.md`.
 - Order on the page: the course's words for THIS spot first. Sub-charts: the sub-chart guide's per-position
   entries ("Vocation Chart Heart Center: 7 → +8 pts Also excellent ..."; scores cut, words kept) and the sub-chart
   book's "Number N > Heart Diamond (Vocation)" etc., parsed by `server/subchart-words.js`; then, for a sub-chart
