@@ -29,11 +29,11 @@ The number 15/6, known as The Feminine Force, is considered the most feminine an
 * **Shadow Manifestation (The Devil):** The Tarot card associated with 15 is The Devil. In imbalance, the challenge manifests as manipulation, gossip, mood swings, jealousy, and a propensity for occult or psychopathic tendencies, especially when paired with 8 or 9. The 15/6 uses its strong power and charisma to manipulate others, often unconsciously.
 * **Path to Liberation:** To overcome this challenge, 15/6 must learn to transcend selfish tendencies, release lower desires, and use its power wisely to genuinely benefit others.
 
------3. The Dynamics and the Compound Number (65/2)
+### 3. The Dynamics and the Compound Number 65/2 (15/6 outer beside 5 inner)
 
 To understand how the inner psychological friction (5) interacts with the external ego strategy (15/6), we look at their Compound Number, formed by concatenating their single digits. The source identifies the composite of the Outer Psyche Challenge (15/6, digit sum 6) and the Inner Psyche Challenge (5, digit sum 5) as 65/2.
 
-**Meaning and Significance of 65/2**
+#### Meaning and Significance of 65/2
 
 The number 65/2 acts as the resultant flow or strategy between the outer and inner challenges.
 

@@ -283,3 +283,9 @@ test('the psyche solar plexus reads "Psyche Chart Solar Plexus Codes" first, who
   assert.match(meaningFor({ chart: 'inner', position: 'solar', sum: 18 }).passages[0].text, /super-ego \(1 and 8\)/, 'a home passage keeps its paragraphs whole');
   assert.match(meaningFor({ chart: 'inner', position: 'solar', sum: 6 }).passages[1].heading, /6 MV/);
 });
+
+test('the outer challenge number 15/6 shows its own section only, never the 65/2 compound of the worked example', () => {
+  const m = meaningFor({ chart: 'outer', position: 'first', sum: 15 });
+  assert.equal(m.passages[0].heading, '15/6 as an Outer Challenge');
+  for (const p of m.passages) assert.doesNotMatch(p.text, /65\/2/, p.heading);
+});
