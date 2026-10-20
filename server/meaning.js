@@ -132,6 +132,7 @@ const HOME = [
   { keys: ['outer.first'], source: /^nlm-psyche-example-15-6-and-5-challenge/, heading: /Outer Challenge/ },
   { keys: ['inner.first'], source: /^nlm-psyche-example-15-6-and-5-challenge/, heading: /Inner Challenge/ },
   { keys: ['inner.first'], source: /^higher-self-month-positions/, heading: /^Month Vibration \d+/ }, // the inner psyche's challenge number is the month vibration
+  { keys: ['outer.solar', 'inner.solar'], source: /^psyche-solar-plexus-codes/, heading: /^Code \d/ },
   { keys: ['essence.month'], source: /^higher-self-month-positions/, heading: /^Month Vibration \d+/ },
   { keys: ['essence.topAura', 'essence.dharmaDiamond'], source: /^higher-self-dharma-fusion/, heading: /^Dharma Number \d+/ },
   { keys: ['essence.day'], source: /^biz-superdates-int/, heading: /^Day Vibration \d+$/ },
@@ -205,7 +206,7 @@ function wholeSection(k, i, allowed) {
   while (same(a - 1)) a--;
   while (same(b + 1)) b++;
   const parts = [];
-  for (let j = a; j <= b; j++) { const t = keepOnly(k.chunks[j].text, allowed); if (t && !/→\s*[-+]?\d+\s*pts/.test(t)) parts.push(t); }
+  for (let j = a; j <= b; j++) { const t = allowed ? keepOnly(k.chunks[j].text, allowed) : k.chunks[j].text.trim(); if (t && !/→\s*[-+]?\d+\s*pts/.test(t)) parts.push(t); }
   return { id: `${c.source}#${a}`, source: c.source, title: c.title, heading: c.heading, text: parts.join('\n\n') };
 }
 
@@ -219,7 +220,9 @@ function forPosition(k, chart, position, n, taken, { limit = 4 } = {}) {
     const home = homeOf(chart, position, c);
     if (!home && (ownDiamond(c) || COMBO_SOURCE.test(c.source) || otherChart(c, chart))) continue;
     if (headNums(c.heading).some((x) => x !== n)) continue; // a pair or a case: not about n alone
-    const text = keepOnly(c.text, alone);
+    // A home passage is about n by its heading: its paragraphs stay whole ("a 9 energy amplified by the super-ego
+    // (1 and 8)" is not a pair paragraph). Elsewhere a paragraph that opens on another pair is cut.
+    const text = home ? c.text.trim() : keepOnly(c.text, alone);
     if (!text || /→\s*[-+]?\d+\s*pts/.test(text)) continue;
     const has = (t) => c.topics.includes(t);
     const topicFit = topics.length ? (has(topics[0]) ? 0 : 2) + (topics.length > 1 && !has(topics[1]) ? 1 : 0) : 2;
@@ -235,7 +238,7 @@ function forPosition(k, chart, position, n, taken, { limit = 4 } = {}) {
   const seen = new Set(), whole = [];
   for (const sc of scored) {
     if (!sc.specific) continue;
-    const w = wholeSection(k, sc.key[sc.key.length - 1], alone);
+    const w = wholeSection(k, sc.key[sc.key.length - 1], sc.key[0] === 0 ? null : alone);
     if (seen.has(w.id) || !w.text) continue;
     seen.add(w.id); whole.push(w);
   }

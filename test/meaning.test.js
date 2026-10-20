@@ -274,3 +274,12 @@ test('psyche spine reads the spine doc for one-digit numbers too; the challenge 
   assert.equal(meaningFor({ chart: 'outer', position: 'first', sum: 18 }).passages[0].heading, '3) Comparing the Challenge Numbers > The Number 18/9 (Outer Psyche)');
   assert.ok(meaningFor({ chart: 'inner', position: 'first', sum: 8 }).passages.some((p) => p.heading.endsWith('The Number 8 (Inner Psyche)')));
 });
+
+test('the psyche solar plexus reads "Psyche Chart Solar Plexus Codes" first, whole, then the name chart\'s emotion center', () => {
+  for (const [n, re] of [[3, /Code 3 /], [12, /Code 12\/3/], [18, /Code 18\/9/]]) {
+    const m = meaningFor({ chart: 'outer', position: 'solar', sum: n });
+    assert.equal(m.passages[0].source, 'psyche-solar-plexus-codes'); assert.match(m.passages[0].heading, re);
+  }
+  assert.match(meaningFor({ chart: 'inner', position: 'solar', sum: 18 }).passages[0].text, /super-ego \(1 and 8\)/, 'a home passage keeps its paragraphs whole');
+  assert.match(meaningFor({ chart: 'inner', position: 'solar', sum: 6 }).passages[1].heading, /6 MV/);
+});

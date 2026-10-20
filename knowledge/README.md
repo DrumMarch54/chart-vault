@@ -269,10 +269,12 @@ color in the book.
 | `powerpoint-undernumeroscopes.md` | Powerpoint: Undernumeroscopes (sub-charts) | drive 1S9UwK0N9lXuEL5_nmUyDLlbbsHF3kHQQ | 43 KB | sub-charts |
 | `psyche-book.md` | The Psyche: Guide to interpreting your birthdate (course book; in "Essence, Psyche Name and Sub-Charts") | drive 1YWBzzhNqcaJ5rmCPOOO2AZrE4nqvk2LK | 50 KB | psyche |
 | `psyche-cases-book.md` | The Psyche: Cases (course book; in "Essence, Psyche Name and Sub-Charts") | drive 1YWBzzhNqcaJ5rmCPOOO2AZrE4nqvk2LK | 15 KB | psyche |
+| `psyche-chart-framework.md` | Psyche Chart Framework (the psyche charts' positions, the challenge number among them; Drive root, outside the Hub folder) | drive 1GEhHruNIQWy4f04VhfOQqgQ8BWjtXalSYpIoZwidMjg | 9 KB | psyche |
 | `psyche-chart-website-positions.md` | Psyche chart-Website (Position Meanings and Examples) | drive 1eYTnaO8-47IYPRfu6hc_tImtiwInAH_qiIYhMqcQ-Dg | 15 KB | positions |
 | `psyche-childhood-aura.md` | Psyche Chart - Childhood Aura's (Bottom Right Aura) | drive 1F5Icf9CedPEeAsHogKHSagXkLYB92tup9N2Q2vLLEvo | 19 KB | psyche |
 | `psyche-disorder.md` | Psyche Disorder | drive 1Md3FQs9urio8NT8i72hLIRsIKuSGAtYVNDrejKCO09E | 2 KB | psyche |
 | `psyche-module-7-slides.md` | Module 7: The Psyche (slides; in "Essence, Psyche Name and Sub-Charts") | drive 1YWBzzhNqcaJ5rmCPOOO2AZrE4nqvk2LK | 25 KB | psyche |
+| `psyche-solar-plexus-codes.md` | Psyche Chart Solar Plexus Codes (3, 6, 9, 12/3, 15/6, 18/9 in the psyche solar plexus; Drive root, outside the Hub folder) | drive 1pRBrPnrdmXHylF9wjElXgeQqUyQEyUPuVY6-uwvhJTQ | 4 KB | psyche |
 | `psyche-twenties-aura.md` | Psyche Chart - Twenties Aura (Bottom Left Aura) | drive 1VCDBHian9nGifAYZImD3Ib2yosS0_LMkWrzlOqT2YVc | 19 KB | psyche |
 | `psychic-disorders-book.md` | Psychic Disorders (course book; in "Essence, Psyche Name and Sub-Charts") | drive 1YWBzzhNqcaJ5rmCPOOO2AZrE4nqvk2LK | 64 KB | psyche |
 | `relations-book.md` | Relations seen through a numerological lens (course book; in "Diamonds, Relations, Stats, Aura Type, Templates and Book") | drive 1QmJD4DmimtvzmvG7dTOEDHQ6TL3w1UiT | 201 KB | combos |
@@ -304,3 +306,12 @@ templates themselves (pages 35+) stay out, as before. NP-Statistics-INT-v1 (1YGa
 the same book as `humanity-archetyping-book.md` (checked 2026-10-20: same title, same "DAY VIBRATIONS AND STATISTICS"
 chapter), so it is not added twice. The Drive copy of "Numbers 1-9 Chart Full Descriptions (Formatted)" was re-read
 the same day: identical to the store's copy; it has no Day/Month/Year/Life Path sub-entries.
+
+## Documents outside the Hub folder (found 2026-10-20)
+The owner's My Drive ROOT holds numerology docs the Hub folder does not: "Psyche Chart Solar Plexus Codes" and
+"Psyche Chart Framework" are in now. Seen but not added (the owner decides): "Psyche Chart Data Profile" (Katrine's
+numbers as a table), "Psyche Chart Interpretation Examples" (two lines on 71/8), "THE NUMBER 8", "12/3's", "Number
+Relations", "Higher self case 1" (two), "1-18 Number Notes", "Number Archetype Synthesis and Breakdown", "Chart Notes
+(Higher Self)", "Higher Self interpretation examples:", "Life stages (1)", "Core Fundementals Numeroscope",
+"Mind/Emotion Center descriptions. TEXT", "Psyche-INT TEXT" (= the psyche book), "1-99 High Level Overview",
+"MANLY P HALL; THEORY OF 5". Search Drive by title before saying a document does not exist.

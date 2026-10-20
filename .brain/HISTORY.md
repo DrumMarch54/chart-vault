@@ -854,3 +854,12 @@ Share Picture (second commit, version 0.8.0).
   embedded and "Kanye West · 8 Jun 1977" under the chart.
 Lessons: grep before building (a second `chartPng` was written before the first was found; the duplicate `fontData`
 declaration caught it); three tabs in a `.pt-switch` need `three` (15 px, nowrap) at 390 or they wrap to two lines.
+- Later still, the owner: "tell me the exact titles ... there's a whole document about challenge numbers." There is:
+  "Outer Psyche Challenge Number" (in the store since the 16th, wired as the position's home) explains what the
+  position is, not what each number does in it. Searching Drive by title also turned up psyche docs in the owner's
+  My Drive ROOT that the Hub-folder export never saw: "Psyche Chart Solar Plexus Codes" (3, 6, 9, 12/3, 15/6, 18/9
+  in the psyche solar plexus: the psyche solar plexus's own words now, where the name chart's used to stand alone)
+  and "Psyche Chart Framework" (every psyche position explained). Both added; the rest of the root docs listed in
+  knowledge/README "Documents outside the Hub folder". A home passage keeps its paragraphs whole ("(1 and 8)" in the
+  18/9 code is not a pair paragraph). Rule for next time: search Drive by TITLE before saying a document does not
+  exist; the Hub folder is not all of the owner's Drive.
