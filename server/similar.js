@@ -14,8 +14,9 @@ const SPECIAL = {
   'essence.nexus': 'DVLP', 'essence.topAura': 'Dharma Line', 'essence.outerAura': 'Outer Aura', 'essence.innerAura': 'Inner Aura', 'essence.challengeDiamond': 'Challenge Diamond',
   'name.leDiamond': 'Name Line Diamond', 'name.publicDiamond': 'Public Diamond', 'name.upperLeft': 'Public Aura', 'name.upperRight': 'Friends Aura', 'name.lowerLeft': 'Associates Aura', 'name.lowerRight': 'Love Aura',
   'vocation.le': "Heart's Desire", 'vocation.big': "Big Heart's Desire", 'personality.le': 'Personality Number', 'personality.big': 'Big Personality Number',
-  'outer.first': 'Outer Psyche Challenge Number', 'outer.publicDiamond': 'Outer Psyche Day + Challenge Number Diamond', 'inner.publicDiamond': 'Inner Psyche Day + Month Diamond',
-  'outer.mentalFlow': 'Mental Flow', 'inner.mentalFlow': 'Mental Flow',
+  'outer.first': 'Outer Psyche Challenge Number', 'outer.publicDiamond': 'Outer Psyche Day + Challenge Number Diamond', 'inner.publicDiamond': 'Inner Psyche Day + Challenge Number Diamond',
+  'outer.mentalFlow': 'Mental Flow', 'outer.emotionalFlow': 'Emotional Flow', 'inner.first': 'Inner Psyche Challenge Number',
+  'vocation.leDiamond': 'Vocation Line Diamond', 'personality.leDiamond': 'Personality Line Diamond',
 };
 const SMALL = new Set(['and', 'of', 'the', 'a', '+']);
 const titleCase = (t) => t.split(' ').map((w, i) => (i && SMALL.has(w) ? w : w.charAt(0).toUpperCase() + w.slice(1))).join(' ');
@@ -39,7 +40,7 @@ const IMPLIES = {
   essence: { outerDiamond: ['day', 'month', 'outerAura'], innerDiamond: ['day', 'year', 'innerAura'], dharmaDiamond: ['month', 'year', 'topAura'], nexus: ['day', 'littleLp'], challengeDiamond: ['outerAura', 'month'] },
   rhombus: { leDiamond: ['first', 'last', 'le', 'big'], mindDiamond: ['upperLeft', 'upperRight', 'heart'], emotionDiamond: ['lowerLeft', 'lowerRight', 'solar'], spineDiamond: ['spine', 'le'], publicDiamond: ['first'] },
 };
-const PRIORITY = ['leDiamond', 'mindDiamond', 'emotionDiamond', 'outerDiamond', 'innerDiamond', 'dharmaDiamond', 'nexus', 'challengeDiamond', 'spineDiamond', 'publicDiamond', 'heart', 'solar', 'le', 'big', 'littleLp', 'bigLp', 'pillar', 'spine', 'day', 'first', 'last', 'middle', 'heartExtra', 'solarExtra', 'upperLeft', 'upperRight', 'lowerLeft', 'lowerRight', 'outerAura', 'innerAura', 'topAura', 'month', 'year', 'target', 'letters', 'mentalFlow'];
+const PRIORITY = ['leDiamond', 'mindDiamond', 'emotionDiamond', 'outerDiamond', 'innerDiamond', 'dharmaDiamond', 'nexus', 'challengeDiamond', 'spineDiamond', 'publicDiamond', 'heart', 'solar', 'le', 'big', 'littleLp', 'bigLp', 'pillar', 'spine', 'day', 'first', 'last', 'middle', 'heartExtra', 'solarExtra', 'upperLeft', 'upperRight', 'lowerLeft', 'lowerRight', 'outerAura', 'innerAura', 'topAura', 'month', 'year', 'target', 'letters', 'mentalFlow', 'emotionalFlow'];
 const rank = (key) => { const i = PRIORITY.indexOf(key); return i < 0 ? PRIORITY.length : i; };
 // Too small to be worth a word on the line (they still count in the score).
 const TRIVIAL = new Set(['letters', 'month', 'year', 'target']);

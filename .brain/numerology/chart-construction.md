@@ -165,6 +165,9 @@ pillar in the small triangle.
   the psyche challenge number / psychic month. Right = YV. Top = day. LE =
   left ds + YV ds; its ds always equals the life path ds. Everything else as
   the rhombus.
+- Mental flow = OPS mind center ds beside IPS mind center ds; emotional flow = OPS emotion center ds beside
+  IPS emotion center ds (owner 2026-10-20). Challenge diamond = OPS challenge number ds beside IPS challenge
+  number (month) ds = essence outer aura ds beside month ds.
 - Ages: lower right aura childhood (0-9), upper right teenage (9-18), lower
   left twenties (19-27), upper left adult (28+); the psychic month is the
   adult transition (Saturn return, ages 27-28); 12, 13, 16, 18 there are the

@@ -33,7 +33,9 @@ export const CHARTS = [
 // `get` reads the value(s) off a rhombus result; `words` is the label on each chart.
 const AURAS = { name: ['Public aura (upper left)', 'Friends aura (upper right)', 'Associates aura (lower left)', 'Love aura (lower right)'], default: ['Upper left aura', 'Upper right aura', 'Lower left aura', 'Lower right aura'] };
 const LE = { name: ['Life expression', 'Big life expression'], vocation: ["Heart's desire", "Big heart's desire"], personality: ['Personality number', 'Big personality number'], outer: ['Life expression', 'Big life expression'], inner: ['Life expression', 'Big life expression'] };
-const LINE = { name: ['First name', 'Middle name', 'Last name'], vocation: ['First name', 'Middle name', 'Last name'], personality: ['First name', 'Middle name', 'Last name'], outer: ['Challenge number (psychic month)', null, 'Year'], inner: ['Month', null, 'Year'] };
+const LINE = { name: ['First name', 'Middle name', 'Last name'], vocation: ['First name', 'Middle name', 'Last name'], personality: ['First name', 'Middle name', 'Last name'], outer: ['Challenge number (psychic month)', null, 'Year'], inner: ['Challenge number (month)', null, 'Year'] };
+// The line diamond (first beside last, only with no middle name) is named per chart (owner 2026-10-20).
+const LINE_DIAMOND = { name: 'Name line diamond (first + last only)', vocation: 'Vocation line diamond (first + last only)', personality: 'Personality line diamond (first + last only)' };
 function rhombusPositions(chart) {
   const aura = AURAS[chart] || AURAS.default, le = LE[chart], line = LINE[chart];
   const list = [
@@ -53,7 +55,7 @@ function rhombusPositions(chart) {
     { key: 'solar', label: 'Emotion center', get: (r) => r.solar },
     line[1] ? { key: 'solarExtra', label: 'Emotion center extra vibration', get: (r) => r.solarExtra } : null,
     { key: 'emotionDiamond', label: 'Emotional diamond', get: (r) => r.emotionDiamond },
-    { key: 'leDiamond', label: line[1] ? 'Name line diamond (first + last only)' : 'Life expression diamond', get: (r) => r.leDiamond },
+    { key: 'leDiamond', label: LINE_DIAMOND[chart] || 'Life expression diamond', get: (r) => r.leDiamond },
     { key: 'publicDiamond', label: chart === 'name' ? 'Public diamond (day + first name)' : `Day + ${line[0].toLowerCase()} diamond`, get: (r, day) => Numeroscope.joined(day, r.first && r.first.value) },
     { key: 'spine', label: 'Spine', get: (r) => r.spine },
     { key: 'spineDiamond', label: 'Spine diamond', get: (r) => r.spineDiamond },
@@ -83,6 +85,8 @@ export const POSITIONS = [
   ...rhombusPositions('personality').map((p) => ({ ...p, get: (d) => p.get(d.consonants, d.essence.day) })),
   ...rhombusPositions('outer').map((p) => ({ ...p, get: (d) => p.get(d.psyche.outer, d.essence.day) })),
   { chart: 'outer', key: 'mentalFlow', label: 'Mental flow (outer + inner mind centers)', get: (d) => Numeroscope.joined(d.psyche.outer.heart, d.psyche.inner.heart) },
+  // Emotional flow (owner 2026-10-20): the two psyche emotion centers' digit sums side by side, outer first.
+  { chart: 'outer', key: 'emotionalFlow', label: 'Emotional flow (outer + inner emotion centers)', get: (d) => Numeroscope.joined(d.psyche.outer.solar, d.psyche.inner.solar) },
   ...rhombusPositions('inner').map((p) => ({ ...p, get: (d) => p.get(d.psyche.inner, d.essence.day) })),
 ];
 const BY_KEY = new Map(POSITIONS.map((p) => [`${p.chart}.${p.key}`, p]));
@@ -109,10 +113,10 @@ export const TAG_POSITIONS = {
   personalitychart: [['personality', 'mindDiamond'], ['personality', 'emotionDiamond'], ['personality', 'leDiamond']],
   opms: [['outer', 'mindDiamond']], oms: [['outer', 'mindDiamond']], ipms: [['inner', 'mindDiamond']],
   opled: [['outer', 'leDiamond']], ople: [['outer', 'leDiamond']], pled: [['outer', 'leDiamond']], osle: [['outer', 'le'], ['outer', 'leDiamond']], ipled: [['inner', 'leDiamond']],
-  mentalflow: [['outer', 'mentalFlow']],
+  mentalflow: [['outer', 'mentalFlow']], emotionalflow: [['outer', 'emotionalFlow']],
 };
 // The two parts a center or diamond is made of (for combo tags): "4combo9ec" = 4 and 9 in the lower auras.
-const DIAMONDS = new Set(['mindDiamond', 'emotionDiamond', 'leDiamond', 'publicDiamond', 'spineDiamond', 'outerDiamond', 'innerDiamond', 'dharmaDiamond', 'nexus', 'target', 'challengeDiamond', 'mentalFlow']);
+const DIAMONDS = new Set(['mindDiamond', 'emotionDiamond', 'leDiamond', 'publicDiamond', 'spineDiamond', 'outerDiamond', 'innerDiamond', 'dharmaDiamond', 'nexus', 'target', 'challengeDiamond', 'mentalFlow', 'emotionalFlow']);
 // A CENTER's combination is the two numbers in its circle: the main vibration and an extra vibration ("12/3 and 8
 // in the mind center"). The owner's combo tags say so: 37 of 38 name the circle, none only the auras (live vault,
 // 2026-10-19). The auras around a center make its DIAMOND (mindDiamond, emotionDiamond).
