@@ -84,7 +84,26 @@ function build() {
   ];
   let n = null;
   const from = body(b).indexOf('\n## Interpretations');
-  for (const s of sections(from >= 0 ? body(b).slice(from) : '')) {
+  const secs = sections(from >= 0 ? body(b).slice(from) : '');
+  // The OCR sometimes put a section's paragraph under the NEXT heading ("Solar Plexus Diamond (Vocation)" empty,
+  // its "In the Solar Plexus Diamond position, the number 29 ..." paragraph under "Heart's Desire Numbers").
+  // An empty section takes back the paragraph of the next section that opens on its own position words.
+  // ("In the Solar Plexus Diamond position, the number 29 ...", "When the number 33 occupies the Solar Plexus Diamond",
+  // "In the Solar Plexus Diamond of the Vocation Chart, the number 22 ...": the position named in the first 70 characters.)
+  const opens = (re, not) => (q) => re.test(q.slice(0, 70)) && !(not && not.test(q.slice(0, 70)));
+  const OPENS = [[/solar plexus diamond \(vocation\)/i, opens(/solar plexus diamond/i, /personality/i)], [/heart diamond \(vocation\)/i, opens(/heart diamond/i, /personality/i)], [/personality solar plexus diamond/i, opens(/personality solar plexus diamond/i)], [/personality heart diamond/i, opens(/personality heart diamond/i)]];
+  for (let i = 0; i + 1 < secs.length; i++) {
+    const s = secs[i], next = secs[i + 1];
+    if (s.lines.join('').trim() || next.level === 2) continue;
+    const open = OPENS.find(([re]) => re.test(s.title));
+    if (!open) continue;
+    const paras = next.lines.join('\n').split(/\n{2,}/);
+    const k = paras.findIndex((q) => open[1](q.trim()));
+    if (k < 0) continue;
+    s.lines = paras[k].split('\n');
+    next.lines = paras.filter((_, j) => j !== k).join('\n\n').split('\n');
+  }
+  for (const s of secs) {
     const num = /^Number (\d{1,2})$/.exec(s.title);
     if (s.level === 2) { n = num ? Number(num[1]) : null; continue; }
     if (!n) continue;

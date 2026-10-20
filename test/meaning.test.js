@@ -24,7 +24,7 @@ test('mind center 12/3 with 8 in its circle: 12 alone, then 12 with 8, then the 
   assert.equal(m.text, '12/3'); assert.equal(m.label, 'Mind center'); assert.equal(m.chartLabel, 'Name chart');
   assert.equal(m.name, 'The Expansive Dynamo'); assert.equal(m.verdict, 'unbalanced'); assert.equal(m.family, 'center');
   assert.ok(m.passages.length >= 3, 'passages');
-  for (const p of m.passages) { assert.equal(p.source, 'name-chart-mind-and-emotion-centers', p.heading); assert.match(p.heading, /(^|\D)12(\D|$)/); }
+  for (const p of m.passages) { assert.match(p.source, /^name-chart-(mind-and-emotion-centers|problem-areas)$/, p.heading); assert.match(p.heading, /(^|\D)12(\D|$)/); }
   assert.match(heads(m.passages)[0], /12 MV/);
   assert.ok(!heads(m.passages).some((x) => /(15|16|8|7) and 12/.test(x)), 'a pairing with another number is not about 12 alone');
   assert.deepEqual(m.pair.with.map((x) => x.sum), [8]);
@@ -89,13 +89,13 @@ test('the outer aura never shows a number\'s own diamond or a name chart aura; t
   assert.match(heads(o.related[0].passages)[0], /Outer Diamond 25/);
 });
 
-test('no general descriptions of a number: only what the course says about it in that spot; never a business book', () => {
+test('no general descriptions of a number: only what the course says about it in that spot; a business book only in its appendix', () => {
   const m = meaningFor({ chart: 'name', position: 'first', sum: 19 });
   assert.equal(m.general, undefined);
   for (const p of m.passages) assert.ok(!/^(book-|guide-|other-guide-|numbers-1-99-website|number-notes|biz-)/.test(p.source), p.source);
   const d = meaningFor({ chart: 'essence', position: 'day', sum: 19 });
   assert.match(d.passages[0].heading, /Day Vibration 19/i);
-  for (const p of d.passages) assert.ok(!/^biz-/.test(p.source), p.source);
+  for (const p of d.passages) assert.ok(!/^biz-/.test(p.source) || /^Day Vibrations > Day Vibration 19/.test(p.heading), `${p.source}: ${p.heading}`);
   assert.deepEqual(topicsFor('essence', 'day'), ['dayVibration']);
   assert.deepEqual(topicsFor('outer', 'heart'), ['mindCenter', 'psyche']);
 });
@@ -181,4 +181,84 @@ test('GET /api/meaning: the meaning plus how many vault charts hold the number t
   assert.equal((await get('/api/meaning?chart=name&position=heart&sum=abc')).status, 400);
   assert.equal((await get('/api/meaning?chart=x&position=heart&sum=7')).status, 400);
   assert.equal((await fetch(base + '/api/meaning?chart=name&position=heart&sum=7')).status, 401);
+});
+
+// The position map (.brain/numerology/position-sources.md, 2026-10-20): every spot the course describes finds its words.
+test('essence: the month doc, the dharma fusion doc and the Superdates appendix (day, life path, DVLP) are the spot\'s own words', () => {
+  const month = meaningFor({ chart: 'essence', position: 'month', sum: 12 });
+  assert.equal(month.passages[0].source, 'higher-self-month-positions'); assert.match(month.passages[0].heading, /Month Vibration 12: Expansion/);
+  for (const position of ['topAura', 'dharmaDiamond']) {
+    const d = meaningFor({ chart: 'essence', position, sum: 10 });
+    assert.equal(d.passages[0].source, 'higher-self-dharma-fusion'); assert.match(d.passages[0].heading, /Dharma Number 10\/1/);
+  }
+  const day = meaningFor({ chart: 'essence', position: 'day', sum: 15 });
+  assert.equal(day.passages[0].source, 'biz-superdates-int'); assert.match(day.passages[0].heading, /Day Vibration 15$/);
+  assert.equal(day.passages[1].source, 'humanity-archetyping-book', 'the statistics book (NP-Statistics) follows');
+  const day1 = meaningFor({ chart: 'essence', position: 'day', sum: 1 });
+  assert.match(day1.passages[0].heading, /Day Vibration 1 > Winner Mentality/, 'a sub-heading under the number still counts');
+  const nexus = meaningFor({ chart: 'essence', position: 'nexus', sum: 22 });
+  assert.equal(nexus.passages[0].source, 'biz-superdates-int'); assert.match(nexus.passages[0].heading, /DVLP 22/);
+  const lp = meaningFor({ chart: 'essence', position: 'littleLp', sum: 22 });
+  assert.deepEqual(lp.passages.map((p) => p.source), ['biz-superdates-int', 'essence-book']);
+  // the Superdates "Target Number" and "Outer Diamond" entries are two digits side by side, not this app's sums
+  for (const position of ['target', 'outerAura']) for (const p of meaningFor({ chart: 'essence', position, sum: 12 }).passages) assert.notEqual(p.source, 'biz-superdates-int', position);
+});
+
+test('psyche: the childhood and twenties docs come first, the psyche pillar list is read', () => {
+  const child = meaningFor({ chart: 'outer', position: 'lowerRight', sum: 7 });
+  assert.equal(child.passages[0].source, 'psyche-childhood-aura'); assert.equal(child.passages[0].heading, 'THE NUMBER 7 IN CHILDHOOD');
+  assert.match(child.passages[0].text, /BIG PSYCHE LIFE EXPRESSION: 51/);
+  const ten = meaningFor({ chart: 'inner', position: 'lowerRight', sum: 10 });
+  assert.equal(ten.passages[0].heading, 'THE NUMBER 10 IN CHILDHOOD');
+  const twenties = meaningFor({ chart: 'outer', position: 'lowerLeft', sum: 14 });
+  assert.equal(twenties.passages[0].source, 'psyche-twenties-aura'); assert.equal(twenties.passages[0].heading, 'THE NUMBER 14 IN THE TWENTIES');
+  const pillar = meaningFor({ chart: 'inner', position: 'pillar', sum: 16 });
+  assert.deepEqual(heads(pillar.passages), ['Psyche Pillar 16/7', 'Psyche Pillar Digit Sum 7 (the digit sum of 16)']);
+  assert.match(pillar.passages[0].text, /existential crises/);
+  const p11 = meaningFor({ chart: 'outer', position: 'pillar', sum: 11 });
+  assert.deepEqual(heads(p11.passages), ['Psyche Pillar Digit Sum 2 (the digit sum of 11)']);
+});
+
+test('the problem-areas docs: name line, life expression, spine, centers, auras, sub-chart pillars and heart\'s desire', () => {
+  const first = meaningFor({ chart: 'name', position: 'first', sum: 11 });
+  assert.deepEqual(first.passages.map((p) => [p.source, p.heading]), [['name-chart-problem-areas', 'Name Line > 11/2 on the name line']]);
+  assert.match(first.passages[0].text, /oversensitive/);
+  assert.equal(meaningFor({ chart: 'name', position: 'last', sum: 22 }).passages[0].heading, 'Name Line > 22/4 on the name line');
+  const le = meaningFor({ chart: 'name', position: 'le', sum: 12 });
+  assert.equal(le.passages[0].heading, 'Life Expression Numbers > Life expression 12/3');
+  assert.equal(meaningFor({ chart: 'name', position: 'spine', sum: 12 }).passages.at(-1).heading, 'Spine > Spine 12/3');
+  const mc = meaningFor({ chart: 'name', position: 'heart', sum: 12 });
+  assert.match(mc.passages[0].heading, /12 MV/, 'the mind center doc stays first');
+  assert.ok(mc.passages.some((p) => p.heading === 'Mind Center Vibrations > Mind center 12/3'), 'the problem-areas note follows');
+  const aura = meaningFor({ chart: 'name', position: 'upperRight', sum: 16 });
+  assert.match(aura.passages[0].heading, /friends aura/i);
+  assert.ok(aura.passages.some((p) => p.heading === 'Unbalanced Auras > 16/7 aura'));
+  const bl = meaningFor({ chart: 'name', position: 'lowerLeft', sum: 11 });
+  assert.ok(bl.passages.some((p) => p.heading === 'Unbalanced Auras > Bottom left aura 11'));
+  assert.ok(!meaningFor({ chart: 'name', position: 'upperLeft', sum: 11 }).passages.some((p) => p.heading === 'Unbalanced Auras > Bottom left aura 11'));
+  const vle = meaningFor({ chart: 'vocation', position: 'le', sum: 12 });
+  assert.ok(vle.passages.some((p) => p.source === 'vocation-chart-problem-areas' && p.heading === "Little Heart's Desire > 12/3"));
+  assert.ok(!meaningFor({ chart: 'vocation', position: 'big', sum: 12 }).passages.some((p) => p.heading === "Little Heart's Desire > 12/3"), 'little is not big');
+  const vp = meaningFor({ chart: 'vocation', position: 'pillar', sum: 61 });
+  assert.deepEqual(vp.passages.map((p) => p.heading), ['Vocation Chart Pillar', 'Pillars > 61/7'], 'the guide first, the owner\'s note after');
+  const pp = meaningFor({ chart: 'personality', position: 'pillar', sum: 29 });
+  assert.ok(pp.passages.some((p) => p.heading === 'Pillar Numbers > 29/2'));
+  const pa = meaningFor({ chart: 'personality', position: 'lowerLeft', sum: 18 });
+  assert.match(pa.passages[0].heading, /^Auras > Bottom Left Aura 18\/9:?$/);
+  const va = meaningFor({ chart: 'vocation', position: 'lowerRight', sum: 11 });
+  assert.deepEqual(heads(va.passages), ['Vocation chart bottom right aura 11/2', 'Aura 11/2 (feeling unprotected)']);
+  assert.doesNotMatch(va.passages[1].text, /pts/, 'the aura scores are cut, the words kept');
+  const ec = meaningFor({ chart: 'personality', position: 'solarExtra', sum: 18 });
+  assert.ok(ec.passages.some((p) => p.heading === 'Sub Vibrations > EC sub vibration 18/9'));
+  // a pair entry ("EC combo 9-11/2", "8 and 15/6") never shows under one number
+  for (const [chart, position, sum] of [['name', 'solar', 9], ['vocation', 'solar', 8], ['vocation', 'solar', 15]]) for (const p of meaningFor({ chart, position, sum }).passages) assert.doesNotMatch(p.heading, /combo|and 15|9-11/i, `${chart}.${position} ${sum}: ${p.heading}`);
+});
+
+test('the sub-chart book: a Solar Plexus Diamond (Vocation) section whose paragraph the OCR put under the next heading', () => {
+  for (const [n, re] of [[29, /^In the Solar Plexus Diamond position, the number 29/], [33, /^When the number 33 occupies the Solar Plexus Diamond/], [22, /^In the Solar Plexus Diamond of the Vocation Chart, the number 22/]]) {
+    const m = meaningFor({ chart: 'vocation', position: 'emotionDiamond', sum: n });
+    assert.equal(m.passages[0].heading, `Number ${n} > Solar Plexus Diamond (Vocation)`); assert.match(m.passages[0].text, re);
+    const hd = meaningFor({ chart: 'vocation', position: 'le', sum: n });
+    assert.doesNotMatch(hd.passages[0].text, /Solar Plexus Diamond/, 'and the heart\'s desire section no longer carries it');
+  }
 });

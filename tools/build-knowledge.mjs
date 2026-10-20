@@ -58,7 +58,7 @@ function headingNumbers(h) {
   for (const c of comp) set.add(c.n);
   for (const s of spelled(h)) set.add(s.n);
   const crossed = /×|\bx\b/.test(h);
-  for (const m of h.matchAll(/(?<![\d/.:])(\d{1,2})(s?)(?![\d/:]|\.\d)/g)) {
+  for (const m of h.matchAll(/(?<![\d/.:])(\d{1,2})(s?)(?![\d/]|[:.]\d)/g)) { // "Month Vibration 12: Expansion" names 12; "15:6" is a compound
     const n = Number(m[1]);
     if (n < 1 || n > 99) continue;
     if (comp.some((c) => m.index >= c.index && m.index < c.end)) continue;

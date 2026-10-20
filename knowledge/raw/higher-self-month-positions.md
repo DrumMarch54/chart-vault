@@ -30,7 +30,7 @@ Please note: The sources provided did not contain examples for individuals with 
 
 - Nuances: The source describes having a number 1 in the month position as a "powerful force" that offers vast possibilities for advancement and success. It encourages you to access your unlimited inner strength and let it shine, regardless of external circumstances, much like the Sun shines regardless of clouds.
 
-Month Vibration 2: The Romantic Creative
+### Month Vibration 2: The Romantic Creative
 
 - Archetype and Energy: Number 2 is the number of the Moon and represents sensuality, receptivity, gentleness, and reflection.
 
@@ -38,7 +38,7 @@ Month Vibration 2: The Romantic Creative
 
 - Nuances: This energy gives innate empathy and telepathic abilities. However, a key life lesson is to balance this sensitivity and learn to distinguish between your own feelings and those of others, while also avoiding self-induced melancholy or taking things too personally.
 
-Month Vibration 3: The Strategist
+### Month Vibration 3: The Strategist
 
 - Archetype and Energy: Number 3 is the number of Jupiter, the largest planet, and it loves grandeur and expansion. This powerful number provides a firm belief in oneself, ambition, goal-consciousness, and dynamism.
 
@@ -46,7 +46,7 @@ Month Vibration 3: The Strategist
 
 - Nuances: The energy of the 3 will be primarily present in your outer life as a "mental and powerful energy that wants to organize the world according to its own ideals". When balanced, it achieves greatness from a sincere place; when unbalanced, it can lead to shutting down emotions and becoming cynical, arrogant, and dominant.
 
-Month Vibration 5: The Communicator
+### Month Vibration 5: The Communicator
 
 - Archetype and Energy: The number 5 is associated with Mercury, a lively planet that moves quickly, allowing it to perceive things from many angles. This energy confers a quick mind and an innate talent for communication, networking, and creating business opportunities.
 
@@ -54,7 +54,7 @@ Month Vibration 5: The Communicator
 
 - Nuances: The source emphasizes that the energy of the 5 will primarily manifest in your outer life as a "vibrant and alive energy that makes you want to meet new people, explore the world, and have fun".
 
-Month Vibration 6: The Lover
+### Month Vibration 6: The Lover
 
 - Archetype and Energy: The number 6 is the number of Venus and confers great charisma, magnetic radiance, and the attributes of beauty, harmony, and love.
 
@@ -62,7 +62,7 @@ Month Vibration 6: The Lover
 
 - Nuances: The 6 energy gives an active desire to nurture the community, and you likely nurture those around you simply through your presence. While you are loyal and helpful, you can also be stubborn, which may lead to family feuds or emotional drama if the energy is unbalanced.
 
-Month Vibration 7: The Seeker
+### Month Vibration 7: The Seeker
 
 - Archetype and Energy: The number 7 resonates with Neptune and represents intuition, spirituality, clairvoyance, and telepathy. It is an energy of depth, psychological profoundness, and universal love.
 
@@ -70,7 +70,7 @@ Month Vibration 7: The Seeker
 
 - Nuances: This vibration gives you a unique "air of mystery - of something supernatural or beyond life itself". It connects you to the deep reservoirs of the subconscious mind and gives you a global perspective that transcends cultural boundaries.
 
-Month Vibration 8: The Advisor
+### Month Vibration 8: The Advisor
 
 - Archetype and Energy: The number 8 resonates with Saturn and stands for balance, karma, and justice. It provides profound strength, emotional balance, and the ability to live according to divine principles.
 
@@ -78,7 +78,7 @@ Month Vibration 8: The Advisor
 
 - Nuances: The 8 is a karmic number, meaning you may attract trials and challenging situations in life which are "tests" from a previous life. This also means you have a deep memory, tracking both the good things and the injustices that have happened. A profound lesson for you is that of self-confidence and strength.
 
-Month Vibration 9: The Humanist
+### Month Vibration 9: The Humanist
 
 - Archetype and Energy: Number 9 resonates with Mars (Ares), the god of war, and embodies strength, determination, and independence. It also reflects the dual nature of Ares as both a strong warrior and a sensitive dancer, meaning you can be surprisingly full of heart.
 
@@ -86,7 +86,7 @@ Month Vibration 9: The Humanist
 
 - Nuances: Your background energy in initial interactions is one of directness. The key to harnessing this energy is to balance the warrior aspect (strength) with the dancer aspect (sensitivity), ensuring you remain in touch with both your inner strength and your emotions.
 
-Month Vibration 11: The Muzzled Lion
+### Month Vibration 11: The Muzzled Lion
 
 - Archetype and Energy: The number 11 is a "master number" that adds up to 2. It resonates with the Moon and is soft, receptive, sensual, and empathetic. It also holds great spiritual potential, including clairvoyant and telepathic gifts.
 
@@ -94,7 +94,7 @@ Month Vibration 11: The Muzzled Lion
 
 - Nuances: The two 1s in 11 create an inner conflict between a desire to be a winner (from the 1) and a need to please others (from the 2). The source calls this archetype "The Muzzled Lion," symbolizing an inner winner mentality that is constrained by a fear of hurting others. The path to liberation is to define a lofty goal that includes helping both yourself and others, channeling the energy upwards.
 
-Month Vibration 12: Expansion
+### Month Vibration 12: Expansion
 
 - Archetype and Energy: Number 12 has a digit sum of 3 and resonates with Jupiter, representing grandeur, expansion, and a strong belief in oneself. It is also associated with the Tarot card "The Hanged Man," symbolizing the need to turn one's view 180 degrees to find freedom from misunderstanding.
 

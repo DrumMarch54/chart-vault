@@ -796,6 +796,32 @@ documents are not in the store at all (NU-Templates, NP-Statistics; the latter's
 humanity-archetyping book). The store's Numbers 1-9 Chart Full Descriptions has no Day/Month/Year/Life Path
 sub-entries though the map says the doc has them: re-read the Drive doc first. Nothing on the screen changed.
 
+## 2026-10-20 The position map: every spot finds its words
+The owner's answer to the morning's check was "fix it". Seven gaps, four causes:
+- Flattened exports. Six Google Docs had come through the Drive connector with no headings (month positions,
+  dharma fusion, the two website position docs, the childhood and twenties auras; the childhood one with
+  "BIG PSYCHE LIFE EXPRESSION: 12" and "THE NUMBER 5 IN CHILDHOOD" glued into one line). Nothing in the ranking
+  could have helped: the index never saw a heading with the number. Headings restored by hand in knowledge/raw
+  (knowledge/README "Repaired exports"). And "Month Vibration 12: Expansion" needed the builder to accept a
+  number followed by a colon.
+- "Business book, never shown" was one rule for a whole file. The Superdates book's appendix (Day Vibration N,
+  Life Path N, DVLP N) is the course's per-number text for the day, the life path and the nexus. `HOME` in
+  meaning.js now names a position's home documents by source AND heading, and they rank first. Its "Outer Diamond"
+  and "Target Number" entries are two digits side by side (day 1 month 2 = "12"), not sums: kept out.
+- The sub-chart book's OCR had put every "Solar Plexus Diamond (Vocation)" paragraph under the next heading;
+  the parser treated the section as empty. An empty section now takes back the paragraph that opens on its
+  own position words.
+- List docs keep the number inside the entry ("Mind center 12/3. ...", "- Psyche Pillar 16/7: ..."): a new
+  reader, server/listed-words.js, one rule per section, entries last on the page.
+Also: the templates book's rules chapter is in the store (name-templates-rules.md); NP-Statistics is the
+humanity-archetyping book already there; the "Numbers 1-9 Chart Full Descriptions" doc was re-read from Drive and
+has no Day/Month/Year/Life Path sub-entries, whatever NotebookLM said. Still without per-number text in the
+store: essence year, target number, psyche life expression, spine and challenge number, name spine 16/7 and name
+pillar 29/2 (the docs do not have them). The short points (bits.json) were not regenerated: new pages show the
+course words open until the bits pipeline runs again.
+Lesson: before blaming the ranking, look at the raw file's headings; and a per-file rule ("biz- is business")
+needs a per-section exception list when a book carries an appendix of course text.
+
 ## 2026-10-20 Seven new tools from the business books, and the chart as a shareable picture
 The owner, using up the subscription, approved seven tool designs with two conditions: the year rows must look exactly like
 the existing Year Rows popup, and the screens must be laid out right the first time ("words scaled too big or spatially the

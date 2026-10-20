@@ -4,8 +4,7 @@ topic: positions
 
 The higher Self is also known as the Essence Chart
 
-The Higher Self Chart
-
+## The Higher Self Chart
 In the numerology higher self chart where we place your birthday numbers, you have a series of numbers that together show your talents, strengths and challenges – and how to make the best use of them. These numbers are your personal codes for success, happiness and inspiration.
 
 You can use these insights to understand how to better use your talents and live your unique mission.
@@ -16,8 +15,7 @@ The innate energies we carry with us from the date of birth are themes that we a
 
 Perhaps you are trying to be something other than what the number influences you to be, because you have learned that it is best to be in a different way (e.g. through parents, teachers or cultural norms). In that case, it can be a great relief to find a way that may in fact be far more natural for you to be in the world, both externally and internally.
 
-CONTEXT: THE FIVE CHART NUMEROSCOPE™
-
+## CONTEXT: THE FIVE CHART NUMEROSCOPE™
 There are 5 numerology charts:
 
 The Higher Self, which shows our talents, strengths, karmic life lessons and unique life mission. It is calculated via our full date of birth.
@@ -28,8 +26,7 @@ In addition, we have the Main Name Chart, the Vocation Chart and the Personality
 
 Your Soul and Essence Numbers
 
-Positions in the Higher Self Chart
-
+## Positions in the Higher Self Chart
 The day of birth is placed at the bottom of the triangle, the month in the left corner and the year in the right corner. By adding these numbers together in the higher self we get the life path numbers which are placed in the circle in the middle of the triangle.
 
 In the example to the right you see the higher self chart of Elvis Aaron Presley born on the 8th of January 1935:
@@ -40,14 +37,12 @@ The numbers in the higher self can never be changed as you cannot change the day
 
 From the different combinations of numbers in the higher self chart the following fascinating numbers can be seen:
 
-The Higher Self Chart
-
+## The Higher Self Chart
 Your Innate Essence
 
 Your personality and what you attract in life
 
-The Day Vibration Potential
-
+## The Day Vibration Potential
 The day vibration is the day of the month you were born. All numbers have a digit sum (the digits added up) that range from 1-9. In this way, we can say that there are 9 different day vibration “base numbers”.
 
 Besides that, your day vibration is also a number from 1-31. This number adds an extra dimension to the base number, so there is for example a difference if you are a 4 born on the 4th, the 13th, the 22nd or the 31st of the month. All of them have base number 4, but they each also have their own unique characteristics.
@@ -66,8 +61,7 @@ When you learn to master the life lessons that need to be mastered according to 
 
 Your spiritual nature and the most mysterious of your numbers
 
-Life Path Numbers
-
+## Life Path Numbers
 Our life path numbers (sometimes called the destiny numbers) are base numbers between 1-9, but can further be divided into the “small life path number” and the “big life path number”.
 
 The small life path number is our daily consciousness, while the big life path number is our greatest potential.
@@ -90,8 +84,7 @@ All combinations of day vibrations and life path numbers can be mastered and you
 
 The key to successfully living your life purpose
 
-Dharma Line
-
+## Dharma Line
 The Dharma Line stands for the “code” that we need to use in order to be most successful in living our life purpose. It tells how your subconscious and conscious minds communicate. It is the nature of your “supra mental” mind and shows how you communicate with the divine.
 
 The Dharma Line is one of our 3 most important key numbers in the higher self, along with our day vibration and life path numbers.
@@ -140,8 +133,7 @@ January or October of a digit sum 8 year: Act with strength and conviction, and 
 
 Your keys to inner harmony
 
-Inner Diamond
-
+## Inner Diamond
 The inner diamond is the relationship between your day vibration and your year vibration. The year vibration is very much about your inner world and represent subconscious tendencies that are common to everyone born in a particular year. It draws out the more sensitive and introverted aspects of your day vibration, forming the number called the ‘inner diamond’.
 
 The inner diamond is very much about the way you process things emotionally. It is your inner world and ways of thinking, imagining, being and feeling.
@@ -152,8 +144,7 @@ For career purposes, the number tells us how we like to work, how we process kno
 
 Your outer action codes
 
-Outer Diamond
-
+## Outer Diamond
 The outer diamond is a code for how best to use our agency. We must use the energies we have available, otherwise they will represent a blockage in our lives. Our way of being empowered is deeply individual, and by finding the most natural way for us to use it, we become most effective. The outer diamond (the power of action in the outer world) also interacts with the numbers you have in your inner diamond (the inner feeling).
 
 You can find your outer diamond by taking the digit sum of your day vibration and putting it in front, followed by the digit sum of your month.
@@ -170,8 +161,7 @@ If you have numbers for great individuality and innovation, you act best in a ve
 
 If you have the numbers for great discipline and diligence, it is also important that you make use of this energy. If you don’t use your daily dose of self-discipline to achieve goals, this energy can easily turn into anger or dissatisfaction with yourself. This can apply to you if you were born on an 8th day in January or October or a 1st day in August.
 
-Harmony with your numbers
-
+## Harmony with your numbers
 A Universe of Vibration
 
 As you can see, it is possible to do a fairly complex analysis of all your innate energies and how they interact. Each of us is like a huge cosmic painting, containing a complex mix of different energies and archetypes represented by our innate numbers. We call this deep analysis a Soul Blueprint because it shows a kind of map of you and your soul’s potential.
