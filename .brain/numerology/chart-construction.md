@@ -77,7 +77,8 @@ names:
 - SUB DIAMOND (owner 2026-10-20, Elvis Aaron Presley 8.1.1935): a center's main
   vibration digit sum written BESIDE a middle name's digit sum, one per middle
   name, in both centers of every chart with a middle name (name chart: the middle
-  name's full value; vocation: its vowels; personality: its consonants). Elvis's
+  name's full value; vocation: its vowels; personality: its consonants; owner
+  confirmed all three on 2026-10-20). Elvis's
   personality chart: mind center 8/8, Aaron's consonants rn 7/7 -> sub diamond 87,
   and the extra vibration 15/6 is their sum; solar plexus 8/8 + 7 -> 87 too (the
   owner's tag 87personalitychart). Katrine: heart 7/7 beside Ditte 18/9 -> 79/7,

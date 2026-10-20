@@ -768,8 +768,8 @@ in the source material somewhere".
   name, both centers, name/vocation/personality charts), the position catalog and search, the tag check
   (personalitychart / mc / ec codes cover it), Similar Charts (a matched sub diamond stands for the main, the middle
   name and the extra), the meaning page (the sub diamond is the diamond behind an extra vibration; the main
-  vibration lists its diamond and its sub diamonds). Open question put to the owner: the main name chart and the
-  vocation chart were given sub diamonds too (middle name's full value / vowels); say if only the sub-charts have them.
+  vibration lists its diamond and its sub diamonds). The owner confirmed (2026-10-20, shown the three circled on Elvis's chart): the main name chart and
+  the vocation chart have them too (middle name's full value / vowels), not only the personality chart.
 - "8combo15publicdiamond" on Johnny Somali (day 26/8, first name 16/7, public aura 15/6) is the owner's intended
   reading: the day with the aura it makes in the public diamond. The tag CHECK accepts an aura as a part of the
   public diamond (`TAG_PARTS`); the position search keeps the strict pair (day beside first name).
