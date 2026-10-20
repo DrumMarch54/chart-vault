@@ -127,6 +127,8 @@ export function displayName(name) {
     // before a capitalized word ("DJacademics") is a false split; that run is read as one lowercase word.
     let tokens = name.match(/\p{Lu}+(?=\p{Lu}\p{Ll})|\p{Lu}?\p{Ll}+|\p{Lu}+|\d+|[^\p{L}\d]+/gu) || [name];
     tokens = tokens.flatMap((t, i, arr) => (/^[A-Z]$/.test(t) && /^[A-Z][a-z]/.test(arr[i + 1] || '') ? [] : /^[A-Z][a-z]/.test(t) && /^[A-Z]$/.test(arr[i - 1] || '') ? [(arr[i - 1] + t).toLowerCase()] : [t]));
+    // "McConaughey", "MacArthur", "DeNiro": a surname prefix stays glued to the capitalized word after it.
+    tokens = tokens.flatMap((t, i, arr) => (/^(Mc|Mac|De|Di|La|Le|Van|Von|O')$/.test(t) && /^[A-Z][a-z]/.test(arr[i + 1] || '') ? [] : /^[A-Z][a-z]/.test(t) && /^(Mc|Mac|De|Di|La|Le|Van|Von|O')$/.test(arr[i - 1] || '') ? [arr[i - 1] + t] : [t]));
     const words = [];
     for (const tok of tokens) {
       if (/^[A-Z]?[a-z]+$/.test(tok)) words.push(...splitRun(tok.toLowerCase()).map((w, i) => (i === 0 && /^[A-Z]/.test(tok) ? cap(w) : w)));

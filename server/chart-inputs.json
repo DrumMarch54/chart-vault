@@ -469,36 +469,36 @@
 },
 {
 "filename": "Screenshot_20250111_234455_Firefox.jpg",
-"day": null,
-"month": null,
-"year": null,
+"day": 30,
+"month": 6,
+"year": 1966,
 "name": "Michael Gerard Tyson",
 "source": "read",
 "note": "White chart card with title banner, no input boxes visible. Name from banner. Bold number under inverted triangle is 30/3 (likely day 30) but month/year not shown."
 },
 {
 "filename": "Screenshot_20250111_234522_Firefox.jpg",
-"day": null,
-"month": null,
-"year": null,
+"day": 19,
+"month": 6,
+"year": 1964,
 "name": "Alexander Boris de Pfeffel Johnson",
 "source": "read",
 "note": "White chart card with title banner, no input boxes visible. Name from banner and line. Bold number under inverted triangle is 19/1 (likely day 19) but month/year not shown."
 },
 {
 "filename": "Screenshot_20250111_234744_Firefox.jpg",
-"day": null,
-"month": null,
-"year": null,
+"day": 7,
+"month": 6,
+"year": 1958,
 "name": "Prince Rogers Nelson",
 "source": "read",
 "note": "White chart card with title banner, no input boxes visible. Name from banner and line. Bold number under inverted triangle is 7/7 (likely day 7) but month/year not shown."
 },
 {
 "filename": "Screenshot_20250111_234754_Firefox.jpg",
-"day": null,
-"month": null,
-"year": null,
+"day": 29,
+"month": 8,
+"year": 1958,
 "name": "Michael Joseph Jackson",
 "source": "read",
 "note": "White chart card with title banner, no input boxes visible; another chart is cut off above. Bold number under inverted triangle is 29/2 (likely day 29) but month/year not shown."
@@ -1275,14 +1275,6 @@
 "source": "ocr"
 },
 {
-"filename": "Screenshot_20250628_084918_Firefox.jpg",
-"day": 15,
-"month": 4,
-"year": 1980,
-"name": "enteryour name here",
-"source": "ocr"
-},
-{
 "filename": "Screenshot_20250629_003522_Firefox.jpg",
 "day": 22,
 "month": 1,
@@ -1575,8 +1567,8 @@
 },
 {
 "filename": "Screenshot_20250804_063636_Firefox.jpg",
-"day": null,
-"month": null,
+"day": 28,
+"month": 10,
 "year": null,
 "name": "Michael Gordon Hammonds",
 "source": "read",
@@ -1898,9 +1890,9 @@
 },
 {
 "filename": "Screenshot_20250919_201923_Chrome.jpg",
-"day": null,
-"month": null,
-"year": null,
+"day": 29,
+"month": 4,
+"year": 1989,
 "name": "Candace Amber Owens Farmer",
 "source": "read",
 "note": "date boxes scrolled off; name read from box and line (29/2 shown under hexagon suggests day 29 but not read from a box)"
@@ -2730,7 +2722,7 @@
 "day": 1,
 "month": 7,
 "year": 1995,
-"name": "DA Russell Pierce Jones Il",
+"name": "Russell Pierce Jones II",
 "source": "ocr"
 },
 {
@@ -4159,7 +4151,7 @@
 "filename": "Screenshot_20260302_205720_Brave.jpg",
 "day": 22,
 "month": 8,
-"year": null,
+"year": 1977,
 "name": "Bryan Johnson",
 "source": "read",
 "note": "Date boxes mostly scrolled off the top; only bottom edges visible. Day 22 read from partial box and the 22/4 center label; month 8 from 8/8 top-left label; year box not readable (top label 24/6)."
@@ -5475,5 +5467,13 @@
 "year": 1920,
 "name": "Timothy Francis Leary",
 "source": "ocr"
+},
+{
+"filename": "Screenshot_20251204_234115_Firefox.jpg",
+"source": "read",
+"day": null,
+"month": null,
+"year": null,
+"name": "Alex Mathew Bleecker"
 }
 ]

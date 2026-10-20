@@ -131,6 +131,17 @@ test('API: set, accept, list to check, suggest; a name is trimmed and capped; sn
   assert.ok(!full.includes('test-password'));
 });
 
+test('shortName: first and last word, a lone word as is, Jr./II kept with the last name', async () => {
+  const { shortName } = await import('../server/titles.js');
+  assert.equal(shortName('Matthew David McConaughey'), 'Matthew McConaughey');
+  assert.equal(shortName('Alexander Boris de Pfeffel Johnson'), 'Alexander Johnson');
+  assert.equal(shortName('Ruhi Çenet'), 'Ruhi Çenet');
+  assert.equal(shortName('Prince'), 'Prince');
+  assert.equal(shortName('Paul William Chek Sr.'), 'Paul Chek Sr.');
+  assert.equal(shortName('Russell Pierce Jones II'), 'Russell Jones II');
+  assert.equal(shortName('  '), '');
+});
+
 test('the seed file in the repo is sound: one entry per filename, every name short and tidy, flagged ones are few', () => {
   const seed = T.loadTitleSeed();
   assert.ok(seed.length > 600, `expected the whole vault, got ${seed.length}`);
