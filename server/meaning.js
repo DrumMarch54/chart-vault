@@ -27,6 +27,7 @@ import { POSITIONS, positionLabel, chartLabel } from './positions.js';
 import { knowledgeIndex } from './knowledge.js';
 import { judge, familyOf, nameOf, fmt } from './facts.js';
 import { wordsFor } from './subchart-words.js';
+import { listedWordsFor } from './listed-words.js';
 
 const BY_KEY = new Map(POSITIONS.map((p) => [`${p.chart}.${p.key}`, p]));
 
@@ -117,8 +118,24 @@ function wordFit(position, heading) {
   if (own && own.test(heading)) return 0;
   return Object.keys(W).some((p) => p !== position && W[p].test(heading)) ? 2 : 1;
 }
-// The owner's own scrape docs that ARE a position: a passage from one counts as specific when it names the number.
-const HOME = { 'outer.lowerRight': /^psyche-childhood-aura/, 'inner.lowerRight': /^psyche-childhood-aura/, 'outer.lowerLeft': /^psyche-twenties-aura/, 'inner.lowerLeft': /^psyche-twenties-aura/, 'outer.first': /^nlm-outer-psyche-challenge/ };
+// A position's HOME: the documents written about that one position (the owner's scrape docs, and the course
+// sections NotebookLM's position map names, .brain/numerology/position-sources.md). A passage from one that names
+// the number in its heading is the spot's own words: shown first, whatever its topic words or book. The Superdates
+// book is a business book everywhere else, but its appendix sections "Day Vibration N", "Life Path N" and "DVLP N"
+// are the course's own per-number texts for the day, the life path and the nexus (owner's map, 2026-10-20); its
+// "Outer Diamond" and "Target Number" entries are two digits side by side (day 1, month 2 = "12"), not a sum, so
+// they are not this app's numbers and stay out.
+const HOME = [
+  { keys: ['outer.lowerRight', 'inner.lowerRight'], source: /^psyche-childhood-aura/ },
+  { keys: ['outer.lowerLeft', 'inner.lowerLeft'], source: /^psyche-twenties-aura/ },
+  { keys: ['outer.first'], source: /^nlm-outer-psyche-challenge/ },
+  { keys: ['essence.month'], source: /^higher-self-month-positions/, heading: /^Month Vibration \d+/ },
+  { keys: ['essence.topAura', 'essence.dharmaDiamond'], source: /^higher-self-dharma-fusion/, heading: /^Dharma Number \d+/ },
+  { keys: ['essence.day'], source: /^biz-superdates-int/, heading: /^Day Vibration \d+$/ },
+  { keys: ['essence.littleLp', 'essence.bigLp'], source: /^biz-superdates-int/, heading: /^Life Path \d+$/ },
+  { keys: ['essence.nexus'], source: /^biz-superdates-int/, heading: /^DVLP \d+$/ },
+];
+const homeOf = (chart, position, c) => HOME.some((h) => h.keys.includes(`${chart}.${position}`) && h.source.test(c.source) && (!h.heading || String(c.heading).split(' > ').some((seg) => h.heading.test(seg)))); // "Day Vibration 1 > Winner Mentality, Luck, Flow, Shine"
 
 const reduce = (n) => { while (n > 9) n = String(n).split('').reduce((a, d) => a + Number(d), 0); return n; };
 const numRe = (n) => new RegExp(`(?<![\\d/.:])${n}(?![\\d])`);
@@ -192,12 +209,12 @@ function wholeSection(k, i, allowed) {
 // The passages ranked for number n in one position (the specific ones only), each heading's text whole.
 function forPosition(k, chart, position, n, taken, { limit = 4 } = {}) {
   const topics = topicsFor(chart, position);
-  const home = HOME[`${chart}.${position}`];
   const alone = new Set([n]);
   const scored = [];
   for (const i of k.about.get(n) || []) {
     const c = k.chunks[i];
-    if (ownDiamond(c) || COMBO_SOURCE.test(c.source) || otherChart(c, chart)) continue;
+    const home = homeOf(chart, position, c);
+    if (!home && (ownDiamond(c) || COMBO_SOURCE.test(c.source) || otherChart(c, chart))) continue;
     if (headNums(c.heading).some((x) => x !== n)) continue; // a pair or a case: not about n alone
     const text = keepOnly(c.text, alone);
     if (!text || /→\s*[-+]?\d+\s*pts/.test(text)) continue;
@@ -208,8 +225,8 @@ function forPosition(k, chart, position, n, taken, { limit = 4 } = {}) {
     const sf = sourceFit(chart, c.source);
     // Specific = about this position: its topic, the number in the heading, and either a source written about this
     // chart or the position's own word in the heading. A business book (dates, brands) is never specific here.
-    const specific = (topics.length && has(topics[0]) && named === 0 && wf < 2 && (wf === 0 || sf === 0) && !BUSINESS.test(c.source)) || (home && home.test(c.source));
-    scored.push({ c: { ...c, text }, specific, key: [sf + topicFit + wf, named, text.length < 200 ? 1 : 0, -sourceWeight(c.source), i] });
+    const specific = home || (topics.length && has(topics[0]) && named === 0 && wf < 2 && (wf === 0 || sf === 0) && !BUSINESS.test(c.source));
+    scored.push({ c: { ...c, text }, specific, key: [home ? 0 : 1, sf + topicFit + wf, named, text.length < 200 ? 1 : 0, -sourceWeight(c.source), i] });
   }
   scored.sort(byKey);
   const seen = new Set(), whole = [];
@@ -269,9 +286,12 @@ const known = (chart, position) => { const p = BY_KEY.get(`${chart}.${position}`
 // The books' own words for a position first (the sub-chart guide and book, server/subchart-words.js), then the
 // passages ranked for it. General descriptions of a number are NOT shown (owner 2026-10-19: only what the course
 // says about the number in that spot; the general layer comes later, on purpose).
+// The list documents' entries (server/listed-words.js: the problem-areas docs, the psyche pillars, the aura scoring)
+// come last: short, and the owner's own notes on a number in that spot.
 function forSpot(k, chart, position, n, taken, limit) {
   const book = take(wordsFor(chart, position, n), limit, taken);
-  return [...book, ...forPosition(k, chart, position, n, taken, { limit: limit - book.length })];
+  const listed = listedWordsFor(chart, position, n);
+  return [...book, ...forPosition(k, chart, position, n, taken, { limit: limit - book.length }), ...take(listed, listed.length, taken)];
 }
 // On the vocation and personality charts the name chart's words for the same CENTER come after their own (owner:
 // "I want that information there, but the specific description takes precedence"). Not for auras: a name chart

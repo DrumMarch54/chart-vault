@@ -194,8 +194,15 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - `server/meaning.js` ranks per position and keeps context: a passage about another chart (vocation heart diamond on
   the name chart, a name chart aura on the essence), about a pair that is not this circle, about a NUMBER'S OWN
   diamond (Diamond Method, "small diamond of the number 7"), or a point-scoring table is never shown. Business
-  books are never shown as the spot's words. `GET /api/meaning?pair=&rel=`; screen `public/meaning.js`; numbers carry
-  `data-pos/num/pair/rel` from `numeroscopeSvg`. The celebrity statistics PDF is NOT in the knowledge store yet.
+  books are never shown as the spot's words, except the Superdates appendix sections "Day Vibration N", "Life Path N"
+  and "DVLP N" (the course's own per-number texts for the day, life path and nexus; `HOME` in meaning.js).
+  `GET /api/meaning?pair=&rel=`; screen `public/meaning.js`; numbers carry `data-pos/num/pair/rel` from `numeroscopeSvg`.
+- WHERE each position's words live (owner's NotebookLM map, 2026-10-20): `.brain/numerology/position-sources.md`, checked
+  per position against the store and the engine. A position's HOME documents (`HOME` in meaning.js) rank first. The
+  list docs (problem areas, psyche pillars, aura scoring: the number inside the entry, not in a heading) are read by
+  `server/listed-words.js` and come last on the page. The celebrity statistics PDF IS in the store (`humanity-archetyping-book`).
+  A Google Doc exported flat (no headings) hides its numbers from the index: restore the headings in `knowledge/raw/`
+  (knowledge/README "Repaired exports") before blaming the ranking.
 
 ## Dev
 - `npm run verify` before saying done: syntax of every file + all tests. Spends nothing.

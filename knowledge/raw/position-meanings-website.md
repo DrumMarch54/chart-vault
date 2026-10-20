@@ -4,9 +4,9 @@ topic: positions
 
 Essence, Psyche and Name Chart Position Meanings-Website
 
-HIGHER SELF CHART POSITION MEANINGS:
+## HIGHER SELF CHART POSITION MEANINGS
 
-BIRTH DAY VIBRATION
+## BIRTH DAY VIBRATION
 
 The date of your birthday (without the month or year) is one of the most important numbers in Chaldean numerology.
 
@@ -16,15 +16,15 @@ This number is the BASE ARCHETYPE of your PERSONALITY.
 
 It is also the number vibration that your higher self has chosen to ASSIMILATE in this life. This makes the day you are born an important KARMIC LESSON. You are here on Earth because your higher self wishes to learn the fundament vibrations life lesson and also express itself through the energy bound in this number.
 
-MONTH VIBRATION
+## MONTH VIBRATION
 
 Your birth month tells about your relationship with the outer world, the workings of your conscious mind and bears a lot of resemblance to your zodiac sign. The birth month especially affects the early years in life which then forms the adult personality.
 
-YEAR VIBRATION
+## YEAR VIBRATION
 
 Your birth year is a common energy shared among the whole generation of people born in that year and affects your inner universe, your emotional life, how you process your emotions and thoughts and your subconscious. The year vibration is the digit sum of your birth year.
 
-HIGHER SELF OUTER AURA
+## HIGHER SELF OUTER AURA
 
 This number tells about the harmony - or disharmony between your date of birth (fundament vibration), which represents your personality archetype, and your birth month which tells about the energies that you are affected by from the outside world. This number is found by adding the digit sum of the fundament vibration and the digit sum of the month.
 
@@ -34,7 +34,7 @@ Since this number is in the higher self it represents a tendency of your soul - 
 
 How this quality expresses itself in your outer world is very much influenced by the “outer” numbers in your human self chart – your top left aura number, your first name number and your bottom left aura.
 
-HIGHER SELF INNER AURA
+## HIGHER SELF INNER AURA
 
 This number tells about the harmony - or disharmony between your date of birth (fundament vibration), which represents your personality archetype, and your birth year, which tells about the energies that affect you in your inner universe.
 
@@ -46,7 +46,7 @@ Since this number is in the higher self it represents a tendency of your soul - 
 
 This number will very much affect how you deal with your closest friends and loved ones. It is the background energy shining out through the “inner” numbers in your human self chart – the top right aura number (close friends), your surname number (your inner life) and your bottom right aura (loved ones).
 
-DHARMA LINE
+## DHARMA LINE
 
 This number represents the interplay between your month vibration and your year vibration - your outer and inner worlds and thereby the communication between your conscious and subconscious mind. When there is a pure communication between conscious and subconscious the supramental mind is created - which is the portal to deeper understanding of your unique path and dharma in life.
 
@@ -56,7 +56,7 @@ Your month vibration is sometimes called your “soul name” while your year vi
 
 The life expression number is the collected vibration of your names. In the same way the higher self top aura is your “soul life expression” number since it is derived by adding your “soul name” (month) and your “soul surname” (year). This means the higher self top aura – or soul expression number has a subtle background effect on your life expression number – it will be in the number silently motivating your life expression number in this way having a subtle influence on what you attract in your life.
 
-LIFE PATH NUMBER
+## LIFE PATH NUMBER
 
 The life path number (sometimes called your ESSENCE or KARMA number) is found by adding the digit sums of the fundament vibration, month vibration and year vibration. The life path number is the CORE of your higher self.
 
@@ -68,7 +68,7 @@ While the fundament vibration (day in the month you are born) is your outer pers
 
 Your life path number will also be felt in your dreams where your deepest longings and aspirations are revealed to you in the language and symbols of the subconscious mind.
 
-HIGHER LIFE PATH NUMBER
+## HIGHER LIFE PATH NUMBER
 
 Together with the life path number, the higher life path number lies at the core of the higher self and is felt on a more general and higher level than the life path number which is more experienced in daily life.
 
@@ -78,9 +78,9 @@ When the human self numeroscope is balanced, and we listen to our intuition and 
 
 The higher life path number is found by adding the individual digits in the full date of birth (date, month, year) without reducing along the way.
 
-PSYCHE CHART POSITIONS MEANINGS
+## PSYCHE CHART POSITIONS MEANINGS
 
-MENTAL STRATEGIES
+## MENTAL STRATEGIES
 
 Your mental universe
 
@@ -98,7 +98,7 @@ What is the outlook on life?
 
 What mental strategies are used to balance the needs in the outer world with the needs of the inner world?
 
-EMOTIONAL STRATEGIES
+## EMOTIONAL STRATEGIES
 
 Here we look at the numbers that lie in the bottom half of the psychic self chart - specifically the diamond that is created by the digit sum of the bottom left aura and the bottom right aura.
 
@@ -118,7 +118,7 @@ What emotional strategies do you use to balance the needs of others with your ow
 
 What are your needs, likes and dislikes in your emotions and love life?
 
-CHILDHOOD
+## CHILDHOOD
 
 Your childhood numbers are some of the first energies that awaken in your chart.
 
@@ -138,9 +138,9 @@ Did you feel guilt or shame?
 
 What made you feel unloved or unwanted?
 
-TEENAGE YEARS
+## TEENAGE YEARS
 
-MENTAL SURVIVAL STRATEGIES
+## MENTAL SURVIVAL STRATEGIES
 
 Your teenage numbers awaken from the age of 9 to 18.
 
@@ -156,9 +156,9 @@ Were you rebellious or complacent?
 
 Did you feel integrated with your social settings, or did you feel alienated?
 
-TWENTIES
+## TWENTIES
 
-DEVELOPMENT OF SOCIAL INTELLIGENCE
+## DEVELOPMENT OF SOCIAL INTELLIGENCE
 
 Your youth numbers awaken from the age of 19 to 27
 
@@ -178,9 +178,9 @@ Were you socially intelligent?
 
 What was the main focus in your twenties?
 
-ADULT POTENTIAL (ADULT DIAMOND/AURA)
+## ADULT POTENTIAL (ADULT DIAMOND/AURA)
 
-OUTLOOK ON LIFE
+## OUTLOOK ON LIFE
 
 Your adult numbers awaken from the age of 28 and onward.
 
@@ -200,13 +200,13 @@ What is essential for you in dealing with the outer world?
 
 What is your outer brand - meaning how the public perceives you?
 
-PSYCHE PILLAR
+## PSYCHE PILLAR
 
-HOW YOUR PSYCHE FINDS STABILITY
+## HOW YOUR PSYCHE FINDS STABILITY
 
 The pillar of the psychic chart is the foundation on which your psyche and psychology rests. If this number is good, it can compensate for imbalances in the psychic self. Still, if the number is a problematic number such as the numbers 11,12,16 or 18, it can create neediness, anxiety, or anger. The number represents that which gives you a sense of stability and inner calmness. It shows what you need from the surroundings and from within your self to create an environment in which you can thrive.
 
-PSYCHE LIFE EXPRESSION
+## PSYCHE LIFE EXPRESSION
 
 Your full emotional experience and sense of self in this life
 
@@ -214,9 +214,9 @@ The psyche life expression is the number at the bottom of the chart (not the pil
 
 In this case, we zoom out a little and also look at the numbers that create your psyche life expression - we look at the psychic month and the psyche year as well. Together these numbers form the big dark blue triangle that you see in the lower half of the chart.
 
-NAME CHART POSITIONS
+## NAME CHART POSITIONS
 
-FIRST NAME
+## FIRST NAME
 
 The first name is on the front and OUTER side of the name chart, which is the RADIANT side facing the outer world.
 
@@ -224,7 +224,7 @@ The numerical value of the first name tells a lot about how you deal with the ou
 
 In this sense it works alongside the charisma and personality chart to create that valuable first impression.
 
-MIDDLE NAME
+## MIDDLE NAME
 
 A middle name has a HUGE influence on the overall vibration of the name chart.
 
@@ -234,7 +234,7 @@ Your heart and solar plexus centers will also be directly affected by the middle
 
 Your middle name also has a huge influence on your inner life - how you think, feel and administrate your energies. Ergo the expression: "My middle name is ... " where the dots are replaced by the characteristic you feel that you have.
 
-SURNAME
+## SURNAME
 
 Your surname represents the deeper aspects of your personality which are more hidden away from public sight than the energies represented by your first name.
 
@@ -242,7 +242,7 @@ Your last name is placed on the right inner side of the name chart, which is the
 
 Therefore, your surnames numerical value tells you a lot about how you deal with your inner life, emotions, closest friends, and family.
 
-LIFE EXPRESSION
+## LIFE EXPRESSION
 
 The life expression is found by adding the numerical values of all your names - your worldly energies usually given to you by your parents at birth.
 
@@ -256,7 +256,7 @@ A change of name can dramatically alter the course of your life. With a new name
 
 When women get married, they often take the surname of their husband and in this way they DRASTICALLY change the energetic matrix of their inner life. Many divorces happen due to the changed inner life of the woman, which might change the compatibility between husband and wife. This is why we always recommend a numerology session before marriage to ensure that the names give the maximum positive vibration.
 
-NAME LENGTH
+## NAME LENGTH
 
 The amount of letters in the name also has a subtle effect.
 
@@ -266,7 +266,7 @@ In this sense, the names letter count is somewhat akin to the life expression nu
 
 We find the names letter count by counting the number of letters in all your names.
 
-TOP OUTER AURA
+## TOP OUTER AURA
 
 The top left aura is our energy with regards to new people and how we meet the world in general.
 
@@ -278,21 +278,21 @@ Before others even meet us, perhaps simply by hearing our name mentioned by a co
 
 The top left aura protects the heart center and has an effect on the energy flow and health of the upper body (from the heart and up).
 
-TOP INNER AURA
+## TOP INNER AURA
 
 This number is the energy that you project towards your close friends - the people that know us really well and that we share personal issues and experiences with. The top right aura protects the heart center and has an effect on the energy flow and health of the upper body (from the heart and up).
 
-BOTTOM OUTER AURA
+## BOTTOM OUTER AURA
 
 This number is how we interact with our acquaintances. This could be our colleagues at work, people we study with or sing with in choir, members of the same football team, the other students at school or university etc. This number tells how these people see us and how we relate to them.
 
 The bottom left aura protects the solar plexus center and has an effect on the energy flow and health of the lower body (from the heart and down).
 
-BOTTOM INNER AURA
+## BOTTOM INNER AURA
 
 This number is how we interact with our closest ones - family, wife, husband, girlfriend, boyfriend, children etc - people who have known us all our life. This aura protects the solar plexus center and has an effect on the energy flow and health of the lower body (from the heart and down).
 
-HEART/THROAT CENTER
+## HEART/THROAT CENTER
 
 The heart center in numerology should not be mistaken with the heart chakra (as defined in new age and yoga), even if there are similarities.
 
@@ -304,15 +304,15 @@ It is our personal charisma to the outer world and tells about our values, thoug
 
 The heart center is also sometimes called the BRAND CENTER as it represents how the outer world sees us.
 
-HEART SUBCENTER
+## HEART SUBCENTER
 
 This number shows the middle names direct influence on the heart center. By adding the middle name under this number with the heart center number this heart sub center number is derived and gives a certain timbre/dimension or vibration to the heart center.
 
-SOLAR PLEXUS CENTER
+## SOLAR PLEXUS CENTER
 
 The solar plexus tells about our health and energy flow in the lower body. It tells about our inner emotional life and how we feel. This number has a large effect on our sex, love and emotional life. The solar plexus is directly affected by our middle names and the two lower auras.
 
-SOLAR PLEXUS SUBCENTER
+## SOLAR PLEXUS SUBCENTER
 
 This number shows the middle names direct influence on the solar plexus center.
 
@@ -320,11 +320,11 @@ To find this number we take the middle name above this number and add it with th
 
 The resulting number is called a "solar plexus sub vibration" and has a direct influence on the solar plexus center.
 
-SPINE
+## SPINE
 
 The spine number is our inner strength. It is our ability to stand up for ourselves and to get the job done. It shows how we deal with the problems in life. The number is derived by adding the digit sum of the fundament vibration with the digit sum of the life expression - in other words how our base archetype meets and deals with the energies we encounter in life.
 
-PILLAR
+## PILLAR
 
 The pillar is the fundament that we stand upon in life. If we see the life expression as our feet then the pillar is the ground that we stand upon. If the pillar is strong we stand strong, but if the number is weak then it is easy to get knocked out. The pillar is like the roots of a tree- if the roots are strong the tree will stand in the worst storm, but if the pillar is weak the least bit of resistance will topple the tree. The pillar affects the entire human self numeroscope and gives grounding and strength.
 

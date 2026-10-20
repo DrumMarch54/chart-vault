@@ -194,6 +194,7 @@ color in the book.
 | `name-chart-pillars.md` | Name Chart - Pillars | drive 1DekWtZ1mB9tcqGzClCId8KQXTW1SnFGN2xJMACM_k6M | 20 KB | name-chart |
 | `name-chart-problem-areas.md` | Name Chart - Problem Areas | drive 1GDT0icNJqGXZbs-yJZEQCFGgb_Qj_rF9Cu-VR634cCQ | 12 KB | name-chart |
 | `name-chart-spines.md` | Name Chart - Spines | drive 1ZgYI1bsD9x_641nJHWuANLVShzcX602EcUTdCK_wfvE | 8 KB | name-chart |
+| `name-templates-rules.md` | Name Templates: STEP 1 Rules for pure name charts (from NU-Templates-INT-v1, pages 15-23) | drive 1WZ346PA2iu2bsBK4Ce1uLvlbPtjZO3e0 | 9 KB | name-chart |
 | `name-chart-website-positions.md` | Name Chart-website (Position Meanings) | drive 17S6bfNmp2HP3CvIBJtMFPxYSV73sVtl-WOdK2ovCbm8 | 11 KB | positions |
 | `name-numeroscope-guide-v2.md` | Name Numeroscope Guide V2 | drive 1yaWaryavxxwOXap8urxvy5aMAo6GgdxYd6xLktHqCvM | 5 KB | name-chart |
 | `name-numeroscope-text.md` | Name-Numeroscope TEXT | .brain/numerology/sources/name-numeroscope-text.md | 163 KB | name-chart |
@@ -288,3 +289,18 @@ color in the book.
 | `what-is-a-name-1.md` | What a Name Actually Is a name (1) | drive 12dGhbtj2iPOfZJPI_MDYcaEoBXpxaOsB9FJOsRfWqdY | 7 KB | name-chart |
 | `what-is-a-name-2.md` | What a name actually is a name (2) | drive 1U9UAwlQT17wueZ0_eq2xoSG50uVzo8BbybOwy9syePU | 9 KB | name-chart |
 | `what-is-a-name-3.md` | What actually is a name? (3) | drive 1A_ihNfrM1Q-2ouU7ODRn1zPdWc-UIC58t3eEYConsjI | 6 KB | name-chart |
+
+## Repaired exports (2026-10-20)
+Six Google Docs came out of the Drive connector as one run of text with their headings flattened to plain lines,
+so the index could not see "Month Vibration 12" or "THE NUMBER 7 IN CHILDHOOD" as headings and the meaning page
+found nothing for those positions. The headings were put back by hand in `knowledge/raw/` (a re-export must do the
+same): `higher-self-month-positions.md` ("### Month Vibration N: ..."), `higher-self-dharma-fusion.md` ("### Dharma
+Number N"), `psyche-twenties-aura.md` ("## THE NUMBER N IN THE TWENTIES", the big psyche life expression as a bold
+line inside), `psyche-childhood-aura.md` (the export had glued "BIG PSYCHE LIFE EXPRESSION: 12" and "THE NUMBER 5
+IN CHILDHOOD" into one mangled heading: now "## THE NUMBER N IN CHILDHOOD" + the bold life expression line),
+`position-meanings-website.md` (its all-caps lines) and `higher-self-website-positions.md` (its section titles).
+`name-templates-rules.md` is pages 15-23 of the templates book (the rules chapter) typed up from `pdftotext`; the
+templates themselves (pages 35+) stay out, as before. NP-Statistics-INT-v1 (1YGaZOz9B8oUpjSlr6Ag2LFqAkMcmAmg4) is
+the same book as `humanity-archetyping-book.md` (checked 2026-10-20: same title, same "DAY VIBRATIONS AND STATISTICS"
+chapter), so it is not added twice. The Drive copy of "Numbers 1-9 Chart Full Descriptions (Formatted)" was re-read
+the same day: identical to the store's copy; it has no Day/Month/Year/Life Path sub-entries.
