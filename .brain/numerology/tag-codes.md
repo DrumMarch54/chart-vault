@@ -36,7 +36,7 @@ chart was recomputed and the tagged number looked up in every position.
 | opms / ipms | outer / inner psyche mental strategies diamond (psyche upper auras) | 7 of 7 / 3 of 3 |
 | oms | outer (psyche) mental strategies | 2 of 2 |
 | opled, ople, pled, osle | outer psyche life expression diamond (month-side beside year) | 9 of 9, 2 of 2, 3 of 3, 2 of 2 |
-| personalitychart | a personality chart diamond | 1 of 2 each |
+| personalitychart | a personality chart diamond, the sub diamonds too (87personalitychart on Elvis = mind center 8 beside Aaron's consonants 7; owner 2026-10-20) | 2 of 2 |
 | NcomboM[pos] | N and M together (in that position when one is named) | owner |
 | plain number (42, 69) | a good example of that number in a person | owner |
 

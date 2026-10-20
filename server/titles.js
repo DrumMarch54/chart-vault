@@ -30,6 +30,16 @@ export function seedTitles(db, seed) {
   return { added, skipped, unknown };
 }
 
+// "First Last" from a typed full name: the first word and the last word; a lone word stays as it is.
+// A trailing "Jr.", "Sr.", "II", "III" belongs to the last name and is kept with it.
+export function shortName(full) {
+  const words = clean(full).split(' ').filter(Boolean);
+  if (words.length <= 2) return words.join(' ');
+  const suffix = /^(jr\.?|sr\.?|ii|iii|iv)$/i.test(words[words.length - 1]) ? words.pop() : null;
+  const last = words.length > 1 ? words[words.length - 1] : '';
+  return [words[0], last, suffix].filter(Boolean).join(' ');
+}
+
 export function clean(title) {
   return String(title || '').replace(/\s+/g, ' ').trim().slice(0, MAX_TITLE);
 }

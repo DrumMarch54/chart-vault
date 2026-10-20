@@ -23,7 +23,7 @@ const titleCase = (t) => t.split(' ').map((w, i) => (i && SMALL.has(w) ? w : w.c
 // Every chart has a mind center, a spine, a pillar ...: on the name chart those get "Name" in front, so a chip
 // never leaves the owner asking "which spine?" (owner 2026-10-19). Positions only the name chart has (Public
 // Aura, Life Expression, First Name, Name Line Diamond) stay bare.
-const AMBIGUOUS = new Set(['heart', 'heartExtra', 'solar', 'solarExtra', 'mindDiamond', 'emotionDiamond', 'spine', 'spineDiamond', 'pillar', 'letters']);
+const AMBIGUOUS = new Set(['heart', 'heartExtra', 'heartSubDiamond', 'solar', 'solarExtra', 'solarSubDiamond', 'mindDiamond', 'emotionDiamond', 'spine', 'spineDiamond', 'pillar', 'letters']);
 export function positionName(chart, key) {
   const k = `${chart}.${key}`;
   if (SPECIAL[k]) return SPECIAL[k];
@@ -38,9 +38,9 @@ export function positionName(chart, key) {
 // A matched structure stands for its parts: name the diamond, not the auras it is made of.
 const IMPLIES = {
   essence: { outerDiamond: ['day', 'month', 'outerAura'], innerDiamond: ['day', 'year', 'innerAura'], dharmaDiamond: ['month', 'year', 'topAura'], nexus: ['day', 'littleLp'], challengeDiamond: ['outerAura', 'month'] },
-  rhombus: { leDiamond: ['first', 'last', 'le', 'big'], mindDiamond: ['upperLeft', 'upperRight', 'heart'], emotionDiamond: ['lowerLeft', 'lowerRight', 'solar'], spineDiamond: ['spine', 'le'], publicDiamond: ['first'] },
+  rhombus: { leDiamond: ['first', 'last', 'le', 'big'], mindDiamond: ['upperLeft', 'upperRight', 'heart'], emotionDiamond: ['lowerLeft', 'lowerRight', 'solar'], heartSubDiamond: ['heart', 'middle', 'heartExtra'], solarSubDiamond: ['solar', 'middle', 'solarExtra'], spineDiamond: ['spine', 'le'], publicDiamond: ['first'] },
 };
-const PRIORITY = ['leDiamond', 'mindDiamond', 'emotionDiamond', 'outerDiamond', 'innerDiamond', 'dharmaDiamond', 'nexus', 'challengeDiamond', 'spineDiamond', 'publicDiamond', 'heart', 'solar', 'le', 'big', 'littleLp', 'bigLp', 'pillar', 'spine', 'day', 'first', 'last', 'middle', 'heartExtra', 'solarExtra', 'upperLeft', 'upperRight', 'lowerLeft', 'lowerRight', 'outerAura', 'innerAura', 'topAura', 'month', 'year', 'target', 'letters', 'mentalFlow', 'emotionalFlow'];
+const PRIORITY = ['leDiamond', 'mindDiamond', 'emotionDiamond', 'heartSubDiamond', 'solarSubDiamond', 'outerDiamond', 'innerDiamond', 'dharmaDiamond', 'nexus', 'challengeDiamond', 'spineDiamond', 'publicDiamond', 'heart', 'solar', 'le', 'big', 'littleLp', 'bigLp', 'pillar', 'spine', 'day', 'first', 'last', 'middle', 'heartExtra', 'solarExtra', 'upperLeft', 'upperRight', 'lowerLeft', 'lowerRight', 'outerAura', 'innerAura', 'topAura', 'month', 'year', 'target', 'letters', 'mentalFlow', 'emotionalFlow'];
 const rank = (key) => { const i = PRIORITY.indexOf(key); return i < 0 ? PRIORITY.length : i; };
 // Too small to be worth a word on the line (they still count in the score).
 const TRIVIAL = new Set(['letters', 'month', 'year', 'target']);

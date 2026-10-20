@@ -79,7 +79,7 @@ const ESSENCE_TOPICS = {
 const RHOMBUS_TOPICS = {
   first: ['firstName'], middle: ['middleName'], last: ['lastName'], le: ['lifeExpression'], big: ['lifeExpression'], leDiamond: ['lifeExpression'],
   upperLeft: ['auras'], upperRight: ['auras'], lowerLeft: ['auras'], lowerRight: ['auras'],
-  heart: ['mindCenter'], heartExtra: ['mindCenter'], mindDiamond: ['mindCenter'], solar: ['emotionCenter'], solarExtra: ['emotionCenter'], emotionDiamond: ['emotionCenter'],
+  heart: ['mindCenter'], heartExtra: ['mindCenter'], mindDiamond: ['mindCenter'], heartSubDiamond: ['mindCenter'], solar: ['emotionCenter'], solarExtra: ['emotionCenter'], emotionDiamond: ['emotionCenter'], solarSubDiamond: ['emotionCenter'],
   publicDiamond: ['firstName', 'dayVibration'], spine: ['spine'], spineDiamond: ['spine'], pillar: ['pillar'], letters: [], mentalFlow: ['mindCenter'],
 };
 const CHART_TOPIC = { vocation: 'vocation', personality: 'personality', outer: 'psyche', inner: 'psyche' };
@@ -110,7 +110,7 @@ POSITIONS.forEach((p, i) => { const k = `${p.chart}.${p.key}`; if (!RANK.has(k))
 const FOCUS = {
   everything: [],
   nexus: ['essence.day', 'essence.littleLp', 'essence.bigLp', 'essence.nexus'],
-  'mind-emotion': ['name.heart', 'name.solar', 'name.mindDiamond', 'name.emotionDiamond', 'name.heartExtra', 'name.solarExtra', 'outer.heart', 'inner.heart', 'outer.solar', 'inner.solar', 'outer.mentalFlow', 'vocation.heart', 'vocation.solar', 'personality.heart', 'personality.solar'],
+  'mind-emotion': ['name.heart', 'name.solar', 'name.mindDiamond', 'name.emotionDiamond', 'name.heartExtra', 'name.solarExtra', 'name.heartSubDiamond', 'name.solarSubDiamond', 'outer.heart', 'inner.heart', 'outer.solar', 'inner.solar', 'outer.mentalFlow', 'vocation.heart', 'vocation.solar', 'personality.heart', 'personality.solar'],
   'pain-points': ['essence.day', 'essence.littleLp', 'essence.nexus', 'name.le', 'name.heart', 'name.solar', 'name.pillar', 'outer.pillar', 'inner.pillar', 'outer.first'],
   strengths: ['essence.day', 'essence.littleLp', 'essence.bigLp', 'essence.nexus', 'name.le', 'name.pillar', 'name.first', 'essence.target', 'essence.dharmaDiamond'],
   name: POSITIONS.filter((p) => p.chart === 'name' && !p.hidden).map((p) => `name.${p.key}`).sort((a, b) => RANK.get(a) - RANK.get(b)),

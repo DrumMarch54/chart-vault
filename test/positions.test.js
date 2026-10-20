@@ -56,6 +56,22 @@ test('every catalog position yields a number for a full input, and the class man
   for (const p of P.catalog().positions) assert.doesNotMatch(p.label, /[A-Z][a-z]+[A-Z]|_|\./, p.label);
 });
 
+// Elvis Aaron Presley, 8.1.1935 (owner's screenshot, 2026-10-20): the personality chart's mind center is 8/8 with
+// the extra vibration 15/6, Aaron's consonants rn are 7/7, so its sub diamond is 87; the solar plexus the same.
+test('sub diamonds: a center\'s main vibration beside each middle name, in every chart with a middle name', () => {
+  const rows = P.computeValues({ day: 8, month: 1, year: 1935, name: 'Elvis Aaron Presley' });
+  assert.equal(at(rows, 'personality', 'heart').sum, 8); assert.equal(at(rows, 'personality', 'middle').sum, 7); assert.equal(at(rows, 'personality', 'heartExtra').sum, 15);
+  assert.equal(at(rows, 'personality', 'heartSubDiamond').sum, 87); assert.equal(at(rows, 'personality', 'solarSubDiamond').sum, 87);
+  assert.equal(at(rows, 'name', 'heart').sum, 16); assert.equal(at(rows, 'name', 'heartSubDiamond').sum, 77); assert.equal(at(rows, 'name', 'heartExtra').sum, 14);
+  assert.equal(at(rows, 'vocation', 'heart').sum, 6); assert.equal(at(rows, 'vocation', 'heartSubDiamond').sum, 69); assert.equal(at(rows, 'vocation', 'heartExtra').sum, 15);
+  // two middle names: two sub diamonds in each center, one per middle name, in order
+  const two = P.computeValues({ day: 19, month: 6, year: 1964, name: 'Alexander Boris de Pfeffel Johnson' });
+  assert.equal(two.filter((r) => r.chart === 'name' && r.position === 'heartSubDiamond').length, 3);
+  // no middle name: none; the psyche charts never have one
+  assert.ok(!at(P.computeValues({ ...KATRINE, name: 'Katrine Pilmark' }), 'name', 'heartSubDiamond'));
+  assert.ok(!P.POSITIONS.some((p) => (p.chart === 'outer' || p.chart === 'inner') && p.key === 'heartSubDiamond'));
+});
+
 test('store, search by position, tag check, fix and clear', () => {
   const db = openDb(':memory:');
   const k = addImage(db, 'k.jpg', ['7mc', '16mc', '8mc', '41plr', '34md', '43md', '9lp', '4combo3mc', '19day', 'katrine']);

@@ -118,6 +118,10 @@ a.chip { text-decoration: none; }
 .sheet { width: 100%; max-width: 600px; margin: 0 auto; background: var(--panel); color: var(--text); border-radius: 20px 20px 0 0; padding: 16px 16px calc(16px + env(safe-area-inset-bottom)); }
 .sheet h3 { margin: 0 0 12px; font-size: 18px; word-break: break-all; }
 .sheet button { width: 100%; justify-content: flex-start; min-height: 54px; margin-top: 8px; }
+.sheet-grip { padding: 0 0 8px; display: flex; justify-content: center; cursor: pointer; touch-action: none; }
+.sheet-grip span { width: 44px; height: 5px; border-radius: 3px; background: var(--muted); display: block; opacity: .6; }
+.wsheet { max-height: 80vh; display: flex; flex-direction: column; }
+.wsheet .numsheet { max-height: none; flex: 1; min-height: 0; overflow: auto; }
 
 /* progress */
 .bar { height: 14px; background: var(--panel2); border-radius: 7px; overflow: hidden; }
@@ -362,12 +366,12 @@ body.noscroll { overflow: hidden; }
 .bigd .unb .lab { color: #b07c7c; }
 .bigd .who { display: flex; justify-content: space-between; font-size: 13px; color: #5f7990; font-weight: 600; padding: 0 10px 4px; }
 .dia { display: block; margin: 0 auto; max-width: 100%; width: 100%; height: auto; }
-/* Number Fun's grid of every number: one small main diamond per card */
-.nfgrid .mini { padding: 4px 2px 2px; }
-.nfgrid .mini .d { font-size: 14px; }
-.nfgrid[data-cols="5"] .mini .d, .nfgrid[data-cols="6"] .mini .d, .nfgrid[data-cols="7"] .mini .d { font-size: 12px; }
-.nfgrid[data-cols="8"] .mini .d, .nfgrid[data-cols="9"] .mini .d, .nfgrid[data-cols="10"] .mini .d { font-size: 11px; }
-.nfgrid .mini.today { outline: 2px solid var(--accent); }
+/* Number Fun's All Numbers: a white table of every number's big diamond, as the paid tool's grid page */
+.nftable { display: grid; gap: 0; background: #fff; border: 1px solid #cfd5de; border-radius: 6px; overflow: hidden; }
+.nftable .nfc { border: 1px solid #e3e7ee; margin: 0 -1px -1px 0; padding: 2px 1px 1px; background: #fff; cursor: pointer; min-width: 0; }
+.nftable .nfc.today { background: #fff6dc; }
+.bigd { border-radius: 12px; overflow: hidden; }
+.bigd .dia.band { border-radius: 0; margin: 0; display: block; }
 .dia text { fill: #303030; font-family: "Open Sans", system-ui, sans-serif; }
 .dia text.bold { font-weight: 700; }
 .dia text.aura { fill: #5f7990; }
@@ -432,13 +436,16 @@ html.light .tscreen .reading .rate { margin-left: auto; }
 .mini.today.super { outline: 2px solid var(--accent); }
 /* the book-style diamond bands */
 .dia.band { border-radius: 10px; margin-bottom: 8px; }
-.dia .lab { fill: #7f8694; }
-.dia .lab.unb { fill: #c08080; }
-.dia .band-title { fill: #5f7990; font-weight: 700; letter-spacing: .06em; }
-.dia .life { fill: #6f7f93; font-weight: 700; letter-spacing: .14em; }
-.dia text.name { fill: #3b78c2; font-weight: 700; }
-.dia text.name.unb { fill: #c45b5b; }
-.dia text.big { font-size: 1.05em; }
+/* The big diamond page, colored as the paid tool colors it (sampled off the owner's screenshot 2026-10-19) */
+.dia .lab { fill: #7a8a9c; }
+.dia .lab.unb { fill: #e39a9a; }
+.dia .band-title { fill: #5a7fa5; font-weight: 700; letter-spacing: .04em; }
+.dia .life { fill: #6f8299; letter-spacing: .14em; }
+.dia .tri text { fill: #1b82c5; }
+.dia .tri.dark text { fill: #303030; }
+.dia .tri text.name { fill: #d4b176; font-weight: 700; }
+.dia .tri.dark text.name { fill: #666; }
+.dia .tri text.name.unb { fill: #c0392b; }
 .dia .tri { cursor: pointer; }
 
 /* ---- the planet banner of Today, Coming Days and the full-screen day ---- */
@@ -640,6 +647,35 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .pt .pt-card p { line-height: 1.45; }
 .pt-clamp { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
 .pt-more { margin-top: 6px; font-size: 14px; font-weight: 600; color: #5f7990; }
+/* One card per number in the price: where it sits, the number and its name, the color, then the passages. */
+.pt-numtop { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.pt .pt-card .pt-numtop .bizcolor { margin: 0; }
+.pt .pt-card .bignum.pt-numname { padding: 4px 0 2px; gap: 8px; flex-wrap: nowrap; }
+.pt .pt-numname b { font-size: 28px; line-height: 1.15; color: #22252e; }
+.pt .pt-numname .nm { font-size: 16px; line-height: 1.25; }
+.pt-sub { margin-top: 10px; padding-top: 8px; border-top: 1px solid #e6e8ee; }
+.pt-sheet .pt-sub, .pt-sheet .pt-subhead { margin-top: 14px; }
+.pt-subhead { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.pt-subhead > span:first-child { color: #8a8f9c; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.pt-subnote { color: #5f7990; font-size: 13px; font-weight: 600; }
+.pt .pt-card .pt-sub p { margin-top: 4px; }
+.pt .pt-card .pt-sub .codes { margin: 6px 0 0; }
+.pt .pt-card .pt-sub .codes span { padding: 4px 10px; }
+.pt-sheet .pt-label { margin-top: 4px; }
+.pt-sheet .bizcolor { margin: 0 0 4px; }
+.pt-sheet .codes { margin: 6px 0 0; }
+/* The pyramid card's switch and the price's chart */
+.pt-seg { display: flex; gap: 4px; padding: 3px; margin: 0 0 4px; background: #e9ebf0; border-radius: 16px; }
+.pt-segbtn { flex: 1; min-height: 32px; padding: 0 8px; border-radius: 13px; background: transparent; color: #5a5f6e; font-size: 13px; font-weight: 600; }
+.pt-segbtn.on { background: #fff; color: #22252e; font-weight: 700; box-shadow: 0 1px 2px rgba(0, 0, 0, .08); }
+.pt-chart { padding: 6px 0 8px; }
+.pt-chartsvg .nscope { max-width: 300px; margin: 0 auto; }
+.pt-dayrow { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; padding: 4px 0 6px; }
+.pt-daylab { display: flex; align-items: center; gap: 8px; color: #5a5f6e; font-size: 14px; }
+.pt-daylab input { width: 78px; min-height: 36px; text-align: center; font: 700 18px system-ui; border: 1px solid #e1e3e9; border-radius: 10px; background: #fff; color: #22252e; }
+.pt-daylab input:focus { border-color: var(--blue); outline: none; }
+.pt-chart .linkbtn { min-height: 32px; font-size: 14px; }
+.pt-chart .pt-ratio { margin: 0 8px 4px; }
 .pt-fits { padding-top: 18px; }
 .pt-fits .pt-label { padding: 0 4px 8px; }
 .pt-fits .codes { margin: 0; }
@@ -732,3 +768,7 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .simpill { display: inline-flex; align-items: center; min-height: 30px; padding: 4px 12px; border-radius: 15px; background: var(--panel2); font-size: 14px; line-height: 1.25; }
 .simpill.whole { background: var(--accent); color: var(--accent-text); font-weight: 600; }
 .simscore { font-size: 12px; margin-top: 2px; }
+
+.nfmini .bigd { border-radius: 4px; }
+.nftable .nfc { padding: 3px; }
+.nftable .nfc.today { background: #fff6dc; outline: 2px solid var(--accent); outline-offset: -2px; }

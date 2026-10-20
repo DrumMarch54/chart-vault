@@ -39,7 +39,7 @@ const ESSENCE = {
 const RHOMBUS = {
   first: ['firstName'], middle: ['middleName'], last: ['lastName'], le: ['lifeExpression'], big: ['lifeExpression'], leDiamond: ['lifeExpression'],
   upperLeft: ['auras'], upperRight: ['auras'], lowerLeft: ['auras'], lowerRight: ['auras'],
-  heart: ['mindCenter'], heartExtra: ['mindCenter'], mindDiamond: ['mindCenter'], solar: ['emotionCenter'], solarExtra: ['emotionCenter'], emotionDiamond: ['emotionCenter'],
+  heart: ['mindCenter'], heartExtra: ['mindCenter'], mindDiamond: ['mindCenter'], heartSubDiamond: ['mindCenter'], solar: ['emotionCenter'], solarExtra: ['emotionCenter'], emotionDiamond: ['emotionCenter'], solarSubDiamond: ['emotionCenter'],
   publicDiamond: ['firstName', 'dayVibration'], spine: ['spine'], spineDiamond: ['spine'], pillar: ['pillar'], letters: [], mentalFlow: ['mindCenter', 'psyche'],
 };
 export function topicsFor(chart, position) {
@@ -104,6 +104,7 @@ const W = {
   heart: /\bMV\b|main vibration|heart (?:center|centre)|mind (?:center|centre)|\bHC\b|\bMC\b/i, heartExtra: /\bSV\b|sub ?vibration|extra vibration|secondary/i,
   solar: /\bMV\b|main vibration|solar plexus(?! diamond)|emotion(?:al)? (?:center|centre)|\bSP\b|\bEC\b/i, solarExtra: /\bSV\b|sub ?vibration|extra vibration|secondary/i,
   mindDiamond: /heart diamond|mental diamond|mind diamond/i, emotionDiamond: /solar plexus diamond|emotional? diamond/i,
+  heartSubDiamond: /sub ?diamond|sub ?vibration diamond/i, solarSubDiamond: /sub ?diamond|sub ?vibration diamond/i,
   leDiamond: /name line diamond|life expression diamond/i, publicDiamond: /public diamond/i, spineDiamond: /spine diamond/i,
   first: /first name|challenge|psychic month/i, middle: /middle name/i, last: /last name|surname|family name/i,
   le: /life expression(?! diamond)|heart'?’?s desire|personality number|\bLE\b/i, big: /big (?:life expression|heart|personality)|\bBLE\b/i, pillar: /pillar/i, spine: /spine(?! diamond)/i,
@@ -156,13 +157,26 @@ function take(list, limit, taken) {
 
 // The short points for a page (knowledge/bits.json): written by a Claude session from the course text, the course's
 // words shortened. Key "chart.position:n" or "chart.position:n+partner". Missing file or key = no points.
+// The file: { sets: { id: { sources, groups } }, pages: { "chart.position:n": id } } (one set per distinct text, many
+// pages share one). The older shape { bits: { key: { sources, groups } } } is read too.
 let BITS = null;
+function loadBits() {
+  if (BITS) return BITS;
+  try {
+    const d = JSON.parse(fs.readFileSync(new URL('../knowledge/bits.json', import.meta.url), 'utf8'));
+    const sets = { ...(d.sets || {}) }, pages = { ...(d.pages || {}) };
+    for (const [key, b] of Object.entries(d.bits || {})) { sets[`bits/${key}`] = b; pages[key] = `bits/${key}`; }
+    BITS = { sets, pages };
+  } catch { BITS = { sets: {}, pages: {} }; }
+  return BITS;
+}
 export function bitsFor(key) {
-  if (!BITS) { try { BITS = JSON.parse(fs.readFileSync(new URL('../knowledge/bits.json', import.meta.url), 'utf8')).bits || {}; } catch { BITS = {}; } }
-  const b = BITS[key];
+  const { sets, pages } = loadBits();
+  const b = sets[pages[key]];
   return b ? { groups: b.groups.map((g) => ({ title: g.title, points: g.points.slice() })), sources: (b.sources || []).slice() } : null;
 }
-const pairBits = (chart, position, n, p) => bitsFor(`${chart}.${position}:${n}+${p}`) || bitsFor(`${chart}.${position}:${p}+${n}`);
+// A circle pair: either order, and an extra vibration's page uses its center's pair ("7 and 13" is one pair).
+const pairBits = (chart, position, n, p) => { const base = position.replace(/Extra$/, ''); return bitsFor(`${chart}.${base}:${n}+${p}`) || bitsFor(`${chart}.${base}:${p}+${n}`); };
 
 // One heading's whole text: the index cuts a long section into several passages; the page shows it as one card.
 function wholeSection(k, i, allowed) {

@@ -684,6 +684,101 @@ in the same position; no vault statistics on the page beyond that count.
   brings the grid back. The cells reuse `tri` (the book's triangle) at 76 units wide in a 120-unit box.
 - Not done from the doc: "fix the charts so they look like this" (the paid tool's three-level big diamond
   page). Number Fun already draws that page; the owner is asked what still looks off.
+
+## 2026-10-19 Number Fun redrawn the paid tool's way (owner: "the charts look like shit, nothing like I showed you")
+- The first pass judged our page "close" to the owner's screenshot by eye and moved on. Wrong. Measured against the
+  screenshot (img-001 of the "Chart app Fixes" doc, 852 px wide): the tool's three bands SHRINK going up (main
+  diamond 0.28 of the width, essence 0.20, integration 0.13; the sides and imbalanced ones in step) and the upper
+  levels are pulled in toward the middle (sides at 0.135 / 0.21 / 0.29 of the width, imbalanced at 0.26 / 0.31 /
+  0.38); the names are GOLD (#d4b176) inside every triangle except the physical main (gray) and the imbalanced
+  (red); every number is BLUE (#1b82c5) except on the physical main diamond (#303030); the outlines are all blue,
+  imbalanced ones too; labels are gray lowercase ("main diamond" above, "outer diamond" beside the LE), the
+  imbalanced ones pink; the backgrounds per band (physical #cfdbe7 / #c0d1e1, emotional #dee7ee / #cfdbe7,
+  spiritual #edf2f6 / #dee7ee). `BANDS` in tools.js holds the measured numbers; on a 390 px phone the upper
+  bands are kept a little larger than the tool's ratio (1 : 0.82 : 0.56) so they can still be read.
+- The grid ("10 by 10" page): a cell is the WHOLE big diamond, seven triangles (integration; essence with its outer
+  and inner; main, dark and bigger, with its outer and inner), not the main diamond alone. `cellSvg`.
+- Lesson: "looks close" is not a check. When the owner hands a screenshot, measure positions and sample colors
+  off it before drawing, and compare our screenshot beside theirs before saying done.
 - Owner: the − / + size control from Coming Days belongs on every grid of charts. Added `sizeControl`
   (app.js) and put it on the browse grid (list, search results, Recently Opened: one setting), Similar Charts
   and Possible Duplicates; Coming Days and All Numbers keep their own. Rule in public/CLAUDE.md.
+
+## 2026-10-19 Price Tool: the books' words one card per number, and the price drawn as a chart
+The owner, on the Price Tool's "What the Books Say": "sloppily thrown together and unnecessary … organize this and make
+it nice", and: the tool is missing the numeroscope of the price, "the numbers go on the central line, they talk about this
+in the source material somewhere".
+- Before: one card per BOOK passage, so 23/5 appeared twice (the Marketing book's price page, then the business book's
+  words), "5 · Charisma, Desire to buy …" stood as if it were a number in the price, and a digit-sum pill was the only
+  thing saying where a number sat. Now: one card per NUMBER in the price, in the order the book reads them (digit sum,
+  clean number, first two digits, a magnetic number in the row), each with its place as the label, the number and its
+  course name, the business color pill, then the passages under small heads: As a Price, Any N Price, In Business,
+  Suits. Three lines each; a tap opens the same passages in full, same order, in one sheet. The business name is the
+  note of "In Business" (dropped when it is the course name).
+- The source: the Six Themes book, "Numeroscopes on number sequences: The Namescope is a mini-numeroscope that follows
+  the same structure as the Numeroscope and can be used on a phone number, a price or a year"; the chart videos: "we
+  could also put a number sequence here" (the central line). Built as `Numeroscope.sequence`: digits as names, exactly
+  the single-name chart's rules (first digit = first name, last = surname, the rest middle names); a 0 stays on the line
+  in gray and carries nothing; the LE is the price's digit sum. The top is an optional day (none by default: a price has
+  no inception date of its own; the owner can type the launch day or the business's day, or tap "Use my day").
+  Drawn by `singleNameSvg`, which learned to draw a zero word. Test: 3695 → 8/8, 10/1, 9/9, 23/5; 995 with day 19 →
+  10/1, 6/6, 7/7, pillar 41/5. Switch on the pyramid card: Number Pyramid / Price Chart, remembered.
+- Decision, not from the book: single digits on the line, like the price pyramid's cells, not two-digit groups.
+
+## 2026-10-19 Number Fun, third pass: the grid is the paid tool's table, the bands blend, a tap pops a sheet
+- Owner on the second pass: the grid "still looks shitty, nothing like the image". Compared cell by cell against
+  the zoomed screenshot this time: the paid cell is white in a thin-lined table, no label, seven triangles of
+  nearly ONE size (26 / 36 / 24 / 36 / 24 in a 103 x 105 cell), only the bottom main row's numbers bold and
+  about 1.4x bigger; rows go by tens, the nineties on top, 0..9 across. `cellSvg` draws exactly that; `.nftable`
+  is the table; a phone may go to 10 across too. The first pass had rounded gray cards with a big label and one
+  oversized main triangle: a different picture.
+- The big diamond page: the owner wants no white gaps between the three bands ("blended together"): one rounded
+  block, bands touching. The upper bands' "outer essence diamond" labels sat over the side diamond's auras; they
+  now sit outside, left and right of the side triangles.
+- A tap on a diamond on that page pops the number's words up from the bottom (`numberSheet` through
+  `wordsSheet`, which now has a grip and closes on a swipe down, Back, a tap outside or Close) with an "Open N"
+  button; it never swaps the page (owner: "that way I don't get lost in screens").
+- Two chats worked the repo at once; `git fetch origin main` + merge before every push, keep both HISTORY entries.
+- Grid cell, owner's pick (2026-10-19, out of five mock-ups A-E shown as pictures): B, the number's own three-level
+  page in miniature (`cellSvg` = `bigDiamondEl`), two across on a phone by default, four on a laptop; the paid
+  tool's seven-triangle table (A) is gone. Showing pictures of options before building was what finally worked.
+
+## 2026-10-19 — Short points for every meaning page
+- The owner approved the example pages ("Looks good do the rest"). Every page the meaning screen can open
+  (1,451 single-number pages and 4,220 pair pages, 5,671 in all) was grouped by the exact passages it shows
+  (1,087 distinct sets) and written in 47 batches by subagents following `tools/bits/BRIEF.md`: fragments,
+  bold on what should stand out, nothing about the position itself, nothing added. Result `knowledge/bits.json`
+  ({ sets, pages }): 1,085 sets, 6,047 points. Four sets came back empty on purpose (name lists, a cut-off example).
+- Lessons: writers paste a filler point when a passage has no trait words ("lists examples only", "No course
+  words here") — the merge drops those by pattern and the brief now says to write `[]`. The merge must keep the
+  hand-written pages across re-runs in BOTH shapes of the file; the first re-run silently lost them.
+- Scripts live in `tools/bits/` (`make-jobs`, `check-out`, `merge-bits`, work dir git-ignored). No model is
+  called by any script; the chat writes the points itself.
+
+## 2026-10-20 Sub diamonds, the owner's tag typos retagged, names and dates read off screenshots
+- The session fixed the 20 position tags that disagreed with the computed charts: twelve were charts with a name
+  but no birth date in the seed (Tyson, Boris Johnson, Prince, Michael Jackson, Candace Owens, Bryan Johnson's year,
+  Hammonds' day and month); read off the screenshots and set on the live app and in `server/chart-inputs.json`.
+  Seven were tags typed wrong; shown to the owner as marked-up pictures (red circle where the tag points, blue circle
+  where the number really sits), which is what got a clear answer within a minute.
+- One of the seven was not a typo but a rule the app did not know, the SUB DIAMOND: in Elvis Aaron Presley's
+  personality chart the mind center is 8/8 with the extra vibration 15/6 and the middle name's consonants are 7/7;
+  the owner reads "87" there, the main vibration beside the middle name's value (the extra vibration is their sum),
+  and the same in the solar plexus. Built into the engine (`heartSubDiamond`, `solarSubDiamond`, one per middle
+  name, both centers, name/vocation/personality charts), the position catalog and search, the tag check
+  (personalitychart / mc / ec codes cover it), Similar Charts (a matched sub diamond stands for the main, the middle
+  name and the extra), the meaning page (the sub diamond is the diamond behind an extra vibration; the main
+  vibration lists its diamond and its sub diamonds). Open question put to the owner: the main name chart and the
+  vocation chart were given sub diamonds too (middle name's full value / vowels); say if only the sub-charts have them.
+- "8combo15publicdiamond" on Johnny Somali (day 26/8, first name 16/7, public aura 15/6) is the owner's intended
+  reading: the day with the aura it makes in the public diamond. The tag CHECK accepts an aura as a part of the
+  public diamond (`TAG_PARTS`); the position search keeps the strict pair (day beside first name).
+- The remaining typos were retagged on the live app at the owner's word ("you can fix everything"): 13lp -> 22lp,
+  13and31lp -> 22and31lp (Paul Chek), 20lp -> 20day (Cobain), 89dvlp -> 89dharma (Lovecraft), 28md -> 28ed (Benny
+  Hinn), 88sp -> 88sd (Jack Doherty). Removing a tag in the app records it in removed_tags, so a re-import never
+  brings the typo back. The first "never rename a tag" rule stands; this was the owner's explicit decision per tag.
+- Quick Chart saves had no title (two charts in "Names to check"): a save now sets "First Last" from what was
+  typed. "McConaughey" read as "Mc Conaughey": the name splitter keeps Mc/Mac/De/Di/La/Le/Van/Von/O' glued.
+- The statistics module (Master Module 7 slides, OCR'd) and the results lecture transcript are in the knowledge
+  store (`knowledge/raw/statistics-module-7.md`, `lecture-statistics-results.md`); the celebrity results book
+  (humanity-archetyping-book.md) was already there.

@@ -26,6 +26,10 @@ test('what the writer already split, stays split; plain words are just capitaliz
   assert.equal(displayName('USA'), 'USA');
   assert.equal(displayName('youtube'), 'YouTube');
   assert.equal(displayName('cardiB'), 'Cardi B');
+  // a surname prefix stays glued to the word after it
+  assert.equal(displayName('Matthew David McConaughey'), 'Matthew David McConaughey');
+  assert.equal(displayName('MacArthur'), 'MacArthur');
+  assert.equal(displayName('Robert DeNiro'), 'Robert DeNiro');
 });
 
 test('no split beats a wrong split; numbers and codes are untouched', () => {

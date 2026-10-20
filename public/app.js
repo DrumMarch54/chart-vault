@@ -1517,21 +1517,24 @@
       const nL = t.nameL ?? cx + t.nameDxL + sd, nR = t.nameR ?? cx + t.nameDxR + sd, lineBold = pre === '';
       const chart = { '': 'name', 'c.': 'personality', 'v.': 'vocation', 'po.': 'outer', 'pi.': 'inner' }[pre];
       const at = (key, pair, n, rel) => ({ chart, key, pair, n, rel });
-      const MD = [['mindDiamond', c.mindDiamond]], ED = [['emotionDiamond', c.emotionDiamond]], LD = ['leDiamond', c.leDiamond];
+      // Behind a center's main vibration: its diamond (the auras) and its sub diamonds (main beside each middle name);
+      // behind an extra vibration: the sub diamond it is the sum of (owner 2026-10-20).
+      const HSD = (c.heartSubDiamond || []).map((d) => ['heartSubDiamond', d]), SSD = (c.solarSubDiamond || []).map((d) => ['solarSubDiamond', d]);
+      const MD = [['mindDiamond', c.mindDiamond], ...HSD], ED = [['emotionDiamond', c.emotionDiamond], ...SSD], LD = ['leDiamond', c.leDiamond];
       const PD = ['publicDiamond', Numeroscope.joined(top, c.first && c.first.value)];
       const mx = (i) => (t.middle2 && c.middle.length <= 2 ? cx + spread(c.middle.length, t.middle2, i) : nL + (nR - nL) * (i + 1) / (c.middle.length + 1));
       return [
         ...num(cx, t.dvY, top, tone(pre + 'day', top, pre === ''), t.day, null, { chart: 'essence', key: 'day', rel: [['nexus', data.essence.nexus]] }),
         ...num(aL, t.upY, c.upperLeft, tone(pre + 'ul', c.upperLeft), t.small, an, at('upperLeft', null, 0, MD)), ...num(aR, t.upY, c.upperRight, tone(pre + 'ur', c.upperRight), t.small, an, at('upperRight', null, 0, MD)),
         ...num(cx, t.heartY, c.heart, tone(pre + 'heart', c.heart, true), t.heart, null, at('heart', c.heartExtra, 0, MD)),
-        ...c.heartExtra.flatMap((v, i) => num(cx + spread(c.heartExtra.length, t.extra2, i), t.heartY + t.extraUp, v, tone(pre + 'heartExtra', v), t.extra, null, at('heartExtra', [c.heart], i, MD))),
+        ...c.heartExtra.flatMap((v, i) => num(cx + spread(c.heartExtra.length, t.extra2, i), t.heartY + t.extraUp, v, tone(pre + 'heartExtra', v), t.extra, null, at('heartExtra', [c.heart], i, [HSD[i] || MD[0]]))),
         ...(t.spineX ? num(t.spineX, t.spineY, c.spine, tone(pre + 'spine', c.spine), t.spine || t.small, null, at('spine', null, 0, [['spineDiamond', c.spineDiamond]])) : []),
         c.first && txt(nL, t.nameY, c.first.text, 'n-dark k-name', t.name), ...(c.first ? num(nL, t.lineY, c.first.value, tone(pre + 'first', c.first.value, lineBold), t.lineFont, null, at('first', null, 0, [PD, LD])) : []),
         ...c.middle.flatMap((w, i) => [txt(mx(i), t.nameY, w.text, 'n-dark k-name', t.name), ...num(mx(i), t.lineY, w.value, tone(pre + 'middle', w.value, lineBold), t.lineFont, null, at('middle', null, i))]),
         c.last && txt(nR, t.nameY, c.last.text, 'n-dark k-name', t.name), ...(c.last ? num(nR, t.lineY, c.last.value, tone(pre + 'last', c.last.value, lineBold), t.lineFont, null, at('last', null, 0, [LD])) : []),
         ...num(aL, t.lowY, c.lowerLeft, tone(pre + 'll', c.lowerLeft), t.small, an, at('lowerLeft', null, 0, ED)), ...num(aR, t.lowY, c.lowerRight, tone(pre + 'lr', c.lowerRight), t.small, an, at('lowerRight', null, 0, ED)),
         ...num(cx, t.solarY, c.solar, tone(pre + 'solar', c.solar, true), t.solar || t.heart, null, at('solar', c.solarExtra, 0, ED)),
-        ...c.solarExtra.flatMap((v, i) => num(cx + spread(c.solarExtra.length, t.solarExtra2, i), t.solarY + t.extraDown, v, tone(pre + 'solarExtra', v), t.extra, null, at('solarExtra', [c.solar], i, ED))),
+        ...c.solarExtra.flatMap((v, i) => num(cx + spread(c.solarExtra.length, t.solarExtra2, i), t.solarY + t.extraDown, v, tone(pre + 'solarExtra', v), t.extra, null, at('solarExtra', [c.solar], i, [SSD[i] || ED[0]]))),
         ...(t.bigX !== undefined ? num(t.bigX, t.leY, c.big, tone(pre + 'big', c.big, true), t.le, null, at('big')) : []), ...num(cx, t.leY, c.le, tone(pre + 'le', c.le, true), t.le, null, at('le', null, 0, [LD])),
         ...num(cx, t.pillarY, c.pillar, tone(pre + 'pillar', c.pillar, t.pillarBold !== false), t.pillar, null, at('pillar')),
         // Main chart only: an invisible tap target over each name opens that word's own charts (its value below opens the meaning).
@@ -1544,7 +1547,7 @@
       txt(M.letter[0], M.text.letterY, data.name.letters ? String(data.name.letters) : null, 'n-blue n-bold k-letters', M.text.letterFont)));
     svg.append(grp('con', null, ...numbers('c.', data.consonants, { ...S.text, ...S.left }, S.left.cx, day)), grp('vow', null, ...numbers('v.', data.vowels, { ...S.text, ...S.right }, S.right.cx, day)));
     // Psyche Charts: outer psyche in the left blue diamond, inner in the right (confirmed on vault screenshots).
-    const bare = (c) => ({ ...c, big: null, middle: [], heartExtra: [], solarExtra: [], first: c.first && { text: '', value: c.first.value }, last: c.last && { text: '', value: c.last.value } });
+    const bare = (c) => ({ ...c, big: null, middle: [], heartExtra: [], solarExtra: [], heartSubDiamond: [], solarSubDiamond: [], first: c.first && { text: '', value: c.first.value }, last: c.last && { text: '', value: c.last.value } });
     svg.append(grp('psy', null, ...numbers('po.', bare(data.psyche.outer), { ...P.text, sideDx: P.sideDxL }, P.cxL, day), ...numbers('pi.', bare(data.psyche.inner), { ...P.text, sideDx: P.sideDxR }, P.cxR, day)));
     // Essence numbers: top aura inside the top of the shape, month and year outside the upper corners,
     // little and big life path in the circle, outer and inner auras beside it. The small circle stays empty.
@@ -1594,13 +1597,16 @@
     const letters = c.words, n = letters.length, span = hw * 0.78;
     const xAt = (i) => (n <= 1 ? cx : cx - span + 2 * span * i / (n - 1));
     const hasX = c.heartExtra.length > 0, hasS = c.solarExtra.length > 0;
+    const live = letters.map((w, i) => (w.zero ? -1 : i)).filter((i) => i >= 0), firstI = live[0], lastI = live[live.length - 1];
     svg.append(...[
       day && txt(cx, cy - hh - 14, day, 'n-gray', 21),
       count ? txt(cx + hw * 0.74, cy - hh + 20, String(count), 'n-gray n-bold', 17) : null,
       c.upperLeft && txt(cx - hw * 0.56, cy - hh * 0.46, c.upperLeft, tone(pre + 'ul', c.upperLeft), 21, 'end'), c.upperRight && txt(cx + hw * 0.56, cy - hh * 0.46, c.upperRight, tone(pre + 'ur', c.upperRight), 21, 'start'),
       c.heart && txt(cx, cy - up + (hasX ? -2 : 9), c.heart, tone(pre + 'heart', c.heart, true), 26),
       hasX && txt(cx, cy - up + 22, plain(c.heartExtra), tone(pre + 'heartExtra', c.heartExtra[0]), 14),
-      ...letters.flatMap((w, i) => [txt(xAt(i), cy - 7, w.text, 'n-dark', 22), txt(xAt(i), cy + 21, String(w.value.sum), 'n-dark' + (i === 0 || i === n - 1 ? ' n-bold' : ''), 20)]),
+      // A price's 0 digit (sequence charts) sits on the line in gray: it is drawn, it adds nothing, it is never the first or last word.
+      ...letters.flatMap((w, i) => (w.zero ? [txt(xAt(i), cy + 21, '0', 'n-gray', 20)]
+        : [txt(xAt(i), cy - 7, w.text, 'n-dark', 22), txt(xAt(i), cy + 21, String(w.value.sum), 'n-dark' + (i === firstI || i === lastI ? ' n-bold' : ''), 20)])),
       c.lowerLeft && txt(cx - hw * 0.56, cy + hh * 0.46 + 8, c.lowerLeft, tone(pre + 'll', c.lowerLeft), 21, 'end'), c.lowerRight && txt(cx + hw * 0.56, cy + hh * 0.46 + 8, c.lowerRight, tone(pre + 'lr', c.lowerRight), 21, 'start'),
       c.solar && txt(cx, cy + up + (hasS ? -1 : 9), c.solar, tone(pre + 'solar', c.solar, true), 26),
       hasS && txt(cx, cy + up + 23, plain(c.solarExtra), tone(pre + 'solarExtra', c.solarExtra[0]), 14),
@@ -2073,13 +2079,21 @@
   // ---------- number tools (public/tools.js) ----------
   // Today, Coming Days, Number Fun, Price Tool, Relationship, Karmic Connections, My Chart: their screens
   // live in tools.js and get the plumbing here (screens, drawing, counting). A bottom sheet for a number's words.
+  // A sheet of words over the screen (owner 2026-10-19: a number's words pop up from the bottom, never a new
+  // screen): a grip on top, swipe down on it (or anywhere while the words are scrolled to the top) closes it,
+  // so does the phone's Back and a tap outside. Returns close.
   const wordsSheet = (content) => {
     const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
     const close = () => { bg.remove(); untrackOverlay(bg); };
-    bg.append(h('div', { class: 'sheet' }, content, h('button', { type: 'button', onclick: close }, 'Close')));
+    const $sheet = h('div', { class: 'sheet wsheet' }, h('div', { class: 'sheet-grip' }, h('span', {})), content, h('button', { type: 'button', onclick: close }, 'Close'));
+    let startY = null, scroller = null;
+    $sheet.addEventListener('pointerdown', (e) => { scroller = e.target.closest('.numsheet, .sheet'); startY = !scroller || scroller.scrollTop <= 0 ? e.clientY : null; });
+    $sheet.addEventListener('pointerup', (e) => { if (startY !== null && e.clientY - startY > 60 && (!scroller || scroller.scrollTop <= 0)) close(); startY = null; });
+    bg.append($sheet);
     document.body.append(bg); trackOverlay(bg, close);
+    return close;
   };
-  const toolsUi = window.Tools ? window.Tools.install({ routes, h, sv, fill, render, count, toast, api, go, numeroscopeSvg, sheet: wordsSheet, overlay: trackOverlay, overlayGone: untrackOverlay, setCleanup: (fn) => { viewerCleanup = fn; } }) : null;
+  const toolsUi = window.Tools ? window.Tools.install({ routes, h, sv, fill, render, count, toast, api, go, numeroscopeSvg, singleNameSvg, sheet: wordsSheet, overlay: trackOverlay, overlayGone: untrackOverlay, setCleanup: (fn) => { viewerCleanup = fn; } }) : null;
   if (toolsUi) Object.assign(USAGE_LABELS, toolsUi.USAGE_LABELS);
   // Reading a chart (facts, AI reading, questions), Ask the Vault and the AI settings live in reading.js.
   const readingUi = window.Reading ? window.Reading.install({ routes, h, fill, api, toast, count, go, render, pageTop }) : null;

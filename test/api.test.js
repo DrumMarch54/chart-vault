@@ -436,6 +436,8 @@ test('quick chart "Save to vault": a PNG becomes a chart tagged with the typed n
   // the typed name and date are its inputs: drawn by the app, searchable by position, year rows
   assert.deepEqual(img.inputs, { day: 19, month: 5, year: 1998, name: 'Peter Joshua Shicora' });
   assert.equal(db.prepare('SELECT source FROM chart_inputs WHERE image_id = ?').get(img.id).source, 'quick');
+  // who it is, under the thumbnail: first and last name, decided (no "check" flag)
+  assert.equal(img.title, 'Peter Shicora'); assert.equal(img.title_source, 'owner'); assert.equal(img.title_check, false);
   assert.ok((await json(await api(`/api/images/${img.id}/numbers`))).body.charts.length > 0);
   // a save from before 2026-10-17 had no inputs: the startup sweep reads them off the tag and the filename
   const { seedQuickInputs } = await import('../server/positions.js');
