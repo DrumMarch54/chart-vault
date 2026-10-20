@@ -821,3 +821,10 @@ pillar 29/2 (the docs do not have them). The short points (bits.json) were not r
 course words open until the bits pipeline runs again.
 Lesson: before blaming the ranking, look at the raw file's headings; and a per-file rule ("biz- is business")
 needs a per-section exception list when a book carries an appendix of course text.
+- Later the same day, the owner: "there's specific information about the spine and the challenge number, I know
+  they're in there." Spine: right. "5/5 AS SPINE NUMBER" named no number in the index (a one-digit "n/n" was neither a
+  compound nor a plain number), so 5, 6, 7 and 8 were empty on both the name and the psyche spine while 10/1 and up
+  worked; one line in build-knowledge.mjs. Challenge number: the Hub has the mechanics doc, one worked example (15/6
+  outer, 5 inner) and Katrine's 8 and 18/9 in the psyche book; those are wired in, and the inner challenge number
+  reads the month doc because it IS the month vibration. No number-by-number list exists in Drive (searched).
+  Lesson: "the store has nothing for X" must be checked with a one-digit AND a two-digit number before it is said.

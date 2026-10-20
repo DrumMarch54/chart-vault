@@ -262,3 +262,15 @@ test('the sub-chart book: a Solar Plexus Diamond (Vocation) section whose paragr
     assert.doesNotMatch(hd.passages[0].text, /Solar Plexus Diamond/, 'and the heart\'s desire section no longer carries it');
   }
 });
+
+test('psyche spine reads the spine doc for one-digit numbers too; the challenge number has its homes', () => {
+  for (const n of [5, 6, 7, 8]) assert.equal(meaningFor({ chart: 'outer', position: 'spine', sum: n }).passages[0].heading, `${n}/${n} AS SPINE NUMBER`);
+  assert.equal(meaningFor({ chart: 'name', position: 'spine', sum: 7 }).passages[0].heading, '7/7 AS SPINE NUMBER');
+  assert.equal(meaningFor({ chart: 'essence', position: 'topAura', sum: 9 }).passages[0].heading, 'Dharma Number 9/9');
+  const o15 = meaningFor({ chart: 'outer', position: 'first', sum: 15 });
+  assert.match(o15.passages[0].heading, /15\/6 as an Outer Challenge/); assert.equal(o15.passages[0].source, 'nlm-psyche-example-15-6-and-5-challenge');
+  const i5 = meaningFor({ chart: 'inner', position: 'first', sum: 5 });
+  assert.deepEqual(heads(i5.passages), ['5 as an Inner Challenge', 'Month Vibration 5: The Communicator'], 'the inner challenge number is the month vibration');
+  assert.equal(meaningFor({ chart: 'outer', position: 'first', sum: 18 }).passages[0].heading, '3) Comparing the Challenge Numbers > The Number 18/9 (Outer Psyche)');
+  assert.ok(meaningFor({ chart: 'inner', position: 'first', sum: 8 }).passages.some((p) => p.heading.endsWith('The Number 8 (Inner Psyche)')));
+});

@@ -26,6 +26,7 @@ function compounds(text) {
   const out = [];
   for (const m of text.matchAll(COMPOUND)) {
     const n = Number(m[1]), a = Number(m[2]), b = m[3] ? Number(m[3]) : null;
+    if (n >= 1 && n < 10 && a === n && b === null) { out.push({ n, index: m.index, end: m.index + m[0].length }); continue; } // "5/5 AS SPINE NUMBER", "Dharma Number 9/9"
     if (n < 10 || n > 99) continue;
     const ok = b === null ? (a === reduce(n) || a === digitSum(n)) : (a === digitSum(n) && b === reduce(n));
     if (ok) out.push({ n, index: m.index, end: m.index + m[0].length });

@@ -10,8 +10,7 @@ The Inner Psyche Chart provides insight into our fundamental psychological frame
 
 The challenge presented by the number 5, also known as The Communicator, revolves around themes of movement, communication, stimulation, and freedom.
 
-**The Context of 5 as an Inner Challenge:**
-
+### 5 as an Inner Challenge
 * **Core Energy and Function:** The number 5 resonates with the planet Mercury and embodies quick perception and the ability to view situations from multiple perspectives. It represents communication and thoughts, driven by deep curiosity and a desire to explore all facets of life.
 * **The Alchemist:** Spiritually, the 5 is the magician or alchemist because it can seamlessly traverse and connect the five realms: the physical, etheric, astral (emotional), mental, and causal planes. The inner self (Inner Psyche) possesses this innate ability to quickly convert a thought into action or process a sensation into thought.
 * **The Struggle with Discipline:** A significant challenge for the 5 is to cultivate discipline to follow through with its "plethora of ideas," rather than becoming scattered or restless. The unrestrained mind (the "monkey mind") jumps from topic to topic, having difficulty finding inner peace.
@@ -23,8 +22,7 @@ The Outer Psyche Chart represents the conscious strategies and the "Ego's Filter
 
 The number 15/6, known as The Feminine Force, is considered the most feminine and mysterious version of the number 6, resonating with the planet Venus (love, beauty, sensuality). It is also called The Enchanter.
 
-**The Context of 15/6 as an Outer Challenge:**
-
+### 15/6 as an Outer Challenge
 * **Charisma and Sensuality:** In balance, 15/6 brings considerable charisma, brilliance, and tremendous erotic power. It grants aesthetic sense, artistic talent, and a charming, captivating presence.
 * **The Occult and Healing:** 15/6 is often called the "occult number" due to its ability to access parallel astral universes and hidden or mystical realms, offering deep intuition. When healthy, its balanced presence is deeply healing and uplifts others by shining light into darkness.
 * **Ego and Drama:** As a challenge, the outer 15/6 means that the ego creates emotional drama out of situations because the desire for love (6) is complicated by the ego's involvement. It is the most dramatic of all numbers when unbalanced.

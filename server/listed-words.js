@@ -56,6 +56,7 @@ const DOCS = [
     [/^Auras$/i, [{ start: new RegExp(`^(?:Top|Bottom|Upper|Lower) (?:Left|Right)(?: Aura)? ${NUM}\\b`, 'i'), keys: (line) => [`personality.${auraKey(line)}`] }]],
   ]],
   ['psyche-book.md', 'psyche', [
+    [/^3\) Comparing the Challenge Numbers$/i, [{ start: new RegExp(`^The Number ${NUM} \\(Inner Psyche\\):`, 'i'), keys: ['inner.first'] }, { start: new RegExp(`^The Number ${NUM} \\(Outer Psyche\\):`, 'i'), keys: ['outer.first'] }]],
     [/^The Pillar Digit Sums$/i, [{ start: new RegExp(`^- Psyche Pillar Digit Sum (\\d):`, 'i'), keys: ['outer.pillar', 'inner.pillar'], digitSum: true }]],
     [/^Beyond the Digit Sums: Nuanced Pillar Numbers$/i, [{ start: new RegExp(`^- Psyche Pillar ${NUM}:`, 'i'), keys: ['outer.pillar', 'inner.pillar'] }]],
   ]],

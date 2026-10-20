@@ -129,6 +129,9 @@ const HOME = [
   { keys: ['outer.lowerRight', 'inner.lowerRight'], source: /^psyche-childhood-aura/ },
   { keys: ['outer.lowerLeft', 'inner.lowerLeft'], source: /^psyche-twenties-aura/ },
   { keys: ['outer.first'], source: /^nlm-outer-psyche-challenge/ },
+  { keys: ['outer.first'], source: /^nlm-psyche-example-15-6-and-5-challenge/, heading: /Outer Challenge/ },
+  { keys: ['inner.first'], source: /^nlm-psyche-example-15-6-and-5-challenge/, heading: /Inner Challenge/ },
+  { keys: ['inner.first'], source: /^higher-self-month-positions/, heading: /^Month Vibration \d+/ }, // the inner psyche's challenge number is the month vibration
   { keys: ['essence.month'], source: /^higher-self-month-positions/, heading: /^Month Vibration \d+/ },
   { keys: ['essence.topAura', 'essence.dharmaDiamond'], source: /^higher-self-dharma-fusion/, heading: /^Dharma Number \d+/ },
   { keys: ['essence.day'], source: /^biz-superdates-int/, heading: /^Day Vibration \d+$/ },
