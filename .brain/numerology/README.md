@@ -12,6 +12,7 @@ This folder is the distilled, app-relevant part. Read these before touching
 | --- | --- |
 | `chart-construction.md` | Every formula for the 5 charts, what is confirmed against the paid tool's screenshots, what is not. |
 | `positions.md` | What each position means (essence, psyche, name, vocation, personality) in a few lines each. |
+| `position-sources.md` | NotebookLM's position-by-position map (2026-10-20): which course document and section describes a number in each spot of the five charts, checked against `knowledge/raw/` and against what the meaning page finds; the seven gaps to fix. |
 | `number-balance.md` | Balanced / semi-balanced / unbalanced numbers per position, and the per-number good/bad notes for heart center, solar plexus and auras. This is the basis for coloring numbers. |
 | `number-colors.md` | The paid tool's number colors and exact positions, read off 436 vault screenshots; how to redo it. |
 | `number-names.md` | The archetype name of every compound number 10 to 99 and the one-line "energy type" of each. |
