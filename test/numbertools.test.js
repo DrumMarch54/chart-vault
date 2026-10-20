@@ -170,3 +170,38 @@ test('karmic connections: shared destiny rhythms = same birth-year digit sum', (
   assert.equal(k.others[2].sameYear, true);
   assert.equal(T.karmic(99, []), null);
 });
+
+// Find a Date: the Cosmic Calendar's "strategic resonance map" (ch. 8) by the day of the month, Super and Good days only.
+test('findDates lists only the purpose\'s days that are Super or Good, and reads the company fit from the book\'s table', () => {
+  const r = T.findDates('launch', 2026, 10, 20, 90, 17);
+  assert.equal(r.purpose.key, 'launch');
+  assert.ok(r.days.length > 0);
+  for (const e of r.days) { assert.ok([1, 3, 17, 21].includes(e.d), `day ${e.d}`); assert.notEqual(e.rating, 'beware'); }
+  assert.equal(r.days.length + r.skipped, T.comingDays(2026, 10, 20, 90).filter((e) => [1, 3, 17, 21].includes(e.d)).length);
+  assert.equal(JSON.stringify({ ds: r.fit.ds, best: r.fit.best, avoid: r.fit.avoid }), JSON.stringify({ ds: 8, best: [8, 26, 9], avoid: [11, 22] }));
+  assert.equal(r.days.find((e) => e.d === 1).fits, false);
+  const fit5 = T.findDates('marketing', 2026, 1, 1, 60, 14);
+  assert.equal(fit5.fit.best.join(), '5,23,27'); assert.equal(fit5.days.find((e) => e.d === 5 || e.d === 23).fits, true);
+  assert.equal(T.findDates('marketing', 2026, 1, 1, 60, 2).fit.unknown, true);
+  assert.equal(T.findDates('launch', 2026, 1, 1, 60).fit, null);
+  assert.equal(T.findDates('nothing', 2026, 1, 1, 60).days.length, 0);
+  assert.equal(T.PURPOSES.map((p) => p.key).join(), 'launch,marketing,partnership,teaching,contract,branding,team,pr');
+});
+
+// Plan With Year Rows: the Forecasting book's good and difficult combinations found in a year's rows.
+test('rowHits finds single numbers in every cell and vertical triads down a column (Nixon 1972, JFK 1963)', () => {
+  const N = ctx.Numeroscope;
+  const nixon = T.rowHits(N.yearRows({ day: 9, month: 1, year: 1913, name: 'Richard Milhous Nixon' }, 1972).rows);
+  const conqueror = nixon.filter((h) => h.combo.key === '5-8-13' && h.self === 'human' && h.col === 'main');
+  assert.equal(conqueror.length, 1);
+  assert.equal(conqueror[0].cells.map((c) => c.row).join(), '4,5,6');
+  assert.equal(conqueror[0].value.sum, 13);
+  const single = nixon.find((h) => h.combo.key === '17');
+  assert.ok(single); assert.equal(single.cells.length, 1); assert.equal(single.value.sum, 17);
+  assert.ok(nixon.every((h) => ['good', 'difficult'].includes(h.combo.kind)));
+  const onlyGood = T.rowHits(N.yearRows({ day: 9, month: 1, year: 1913, name: 'Richard Milhous Nixon' }, 1972).rows, T.ROW_COMBOS.good.map((c) => c.key));
+  assert.ok(onlyGood.length < nixon.length); assert.ok(onlyGood.every((h) => h.combo.kind === 'good'));
+  const jfk = T.rowHits(N.yearRows({ day: 29, month: 5, year: 1917, name: 'John Fitzgerald Kennedy' }, 1963).rows, ['11']);
+  assert.ok(jfk.length >= 2); assert.ok(jfk.every((h) => h.value.sum === 11));
+  assert.equal(T.rowHits([], ['10']).length, 0);
+});

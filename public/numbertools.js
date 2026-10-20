@@ -285,5 +285,85 @@
       others: (otherYears || []).map((y) => Number(y)).filter((y) => y >= 1000 && y <= 9999).map((y) => ({ year: y, ds: ds(y), shared: ds(y) === ds(mine), sameYear: y === mine })) };
   }
 
-  root.NumberTools = { val, littleDiamond, bigDiamond, numbersContaining, dayEnergy, comingDays, rateDate, RATING_WORDS, CODES, CODE_WORDS, POSITION_WORDS, codeKind, PRICE_VIBES, PRICE_RANGES, VERDICT_WORDS, priceCheck, priceFind, pyramidRatio, plutoUndertone, karmic, nameOf };
+  // ---------- Find a Date (Superdates Cosmic Calendar ch. 8, "strategic resonance map") ----------
+  // The book's table of what kind of day fits what kind of event: the day of the month's own number. A date is
+  // listed only when it is also a Super or Good Date (the book: "highlight all dates matching that vibration in
+  // gold or green"); Beware days are counted and left out.
+  const PURPOSES = [
+    { key: 'launch', label: 'Launch', words: 'Product launch, visibility push', days: [1, 3, 17, 21] },
+    { key: 'marketing', label: 'Marketing', words: 'Marketing campaign, social media expansion', days: [5, 14, 23] },
+    { key: 'partnership', label: 'Partnership', words: 'Partnerships, joint ventures', days: [6, 15, 24] },
+    { key: 'teaching', label: 'Teaching', words: 'Webinar, teaching, live event', days: [3, 12, 21] },
+    { key: 'contract', label: 'Contract', words: 'Contract signing, legal and structural work', days: [8, 17, 26] },
+    { key: 'branding', label: 'Branding', words: 'Creative branding, rebranding', days: [6, 15, 24] },
+    { key: 'team', label: 'Team Training', words: 'Internal reviews, team training', days: [7, 16, 25] },
+    { key: 'pr', label: 'Follow-Up and PR', words: 'Launch follow-up, celebration, PR', days: [9, 18, 27] },
+  ];
+  // The company's own energy (ch. 8 step 3, "Superdates and Company Resonance"): by the day vibration of the day it
+  // started ("1 or 10", "3 or 21", ...), the days that suit it best and the ones to avoid. The book has rows for 1, 3,
+  // 5, 6 and 8 only; a 5 company's only "avoid" is Mercury retrograde weeks, which the app does not compute.
+  const COMPANY_FIT = { 1: { best: [1, 3, 19], avoid: [8], why: 'overcontrol' }, 3: { best: [3, 6, 15, 24], avoid: [9, 18], why: 'emotional burnout' }, 5: { best: [5, 23, 27], avoid: [], why: '' }, 6: { best: [6, 24, 21], avoid: [29], why: 'emotional volatility' }, 8: { best: [8, 26, 9], avoid: [11, 22], why: 'instability, opportunism' } };
+  function findDates(purposeKey, y, m, d, n = 90, companyDay = null) {
+    const p = PURPOSES.find((x) => x.key === purposeKey);
+    if (!p) return { purpose: null, days: [], skipped: 0, fit: null };
+    const cd = Number(companyDay) || 0;
+    const fit = cd >= 1 && cd <= 31 ? { day: cd, ds: val(cd).ds, ...(COMPANY_FIT[val(cd).ds] || { best: [], avoid: [], why: '', unknown: true }) } : null;
+    const days = []; let skipped = 0;
+    for (let i = 0; i < n; i++) {
+      const dt = new Date(Number(y), Number(m) - 1, Number(d) + i), day = dt.getDate();
+      if (!p.days.includes(day)) continue;
+      const e = dayEnergy(dt.getFullYear(), dt.getMonth() + 1, day);
+      if (!e) continue;
+      if (e.rating === 'beware') { skipped++; continue; }
+      days.push({ ...e, fits: fit && !fit.unknown ? fit.best.includes(day) : null, clash: fit ? fit.avoid.includes(day) : false });
+    }
+    return { purpose: p, days, skipped, fit };
+  }
+
+  // ---------- Plan With Year Rows (Forecasting Numerology, "TOOL: Plan with your Year Rows") ----------
+  // The book's lists of good and difficult combinations to search a year's rows for. A single number is looked for in
+  // every cell of the table (number, aura and shadow of both selves); a triad like 5-3-8 is two source rows (as digit
+  // sums, either order) and the sum row under them, read down the number or the shadow column, the way the course
+  // reads a vertical triple.
+  const ROW_COMBOS = {
+    good: [
+      { key: '10', num: 10, label: '10/1', words: 'Success and winning mentality' }, { key: '13', num: 13, label: '13/4', words: 'Innovation' },
+      { key: '14', num: 14, label: '14/5', words: 'Career, business, communication' }, { key: '15', num: 15, label: '15/6', words: 'Charisma' },
+      { key: '17', num: 17, label: '17/8', words: 'Spotlight' }, { key: '5-3-8', triad: [5, 3], label: '5-3-8', words: 'The money triad' },
+      { key: '5-5-10', triad: [5, 5], label: '5-5-10/1', words: 'Media, networking, luck' }, { key: '5-8-13', triad: [5, 8], label: '5-8-13/4', words: 'The world conqueror' },
+    ],
+    difficult: [
+      { key: '11', num: 11, label: '11/2', words: 'Stress, sensitivity' }, { key: '12', num: 12, label: '12/3', words: 'Misunderstandings' },
+      { key: '16', num: 16, label: '16/7', words: 'Loss, worries' }, { key: '18', num: 18, label: '18/9', words: 'Unpleasant competition, hard work' },
+      { key: '44', num: 44, label: '44/8', words: 'Obstacles' },
+    ],
+  };
+  const COMBO_BY_KEY = {}; for (const k of ['good', 'difficult']) for (const c of ROW_COMBOS[k]) COMBO_BY_KEY[c.key] = { ...c, kind: k };
+  const SELF_WORDS = { human: 'Human self', psychic: 'Psychic self' }, COL_WORDS = { main: 'number', aura: 'aura', shadow: 'shadow' };
+  // Every place a wanted combination sits in one year's rows (Numeroscope.yearRows(...).rows). Each hit names the
+  // combination, the self and column, and the cells to mark: [{ row, self, col }].
+  function rowHits(rows, keys) {
+    const want = (keys || Object.keys(COMBO_BY_KEY)).map((k) => COMBO_BY_KEY[k]).filter(Boolean);
+    const cellOf = (r, self) => (self === 'human' ? r : r.psyche);
+    const hits = [];
+    rows.forEach((r, i) => {
+      for (const self of ['human', 'psychic']) {
+        const c = cellOf(r, self);
+        for (const combo of want) {
+          if (combo.num) { for (const col of ['main', 'aura', 'shadow']) if (c[col] && c[col].sum === combo.num) hits.push({ combo, row: i, self, col, cells: [{ row: i, self, col }], value: c[col] }); }
+          else if (r.source === 'sum' && i >= 2) {
+            for (const col of ['main', 'shadow']) {
+              const a = cellOf(rows[i - 2], self)[col], b = cellOf(rows[i - 1], self)[col], sum = c[col];
+              if (!a || !b || !sum) continue;
+              const pair = [a.ds, b.ds].sort().join('-'), wantPair = combo.triad.slice().sort().join('-');
+              if (pair === wantPair) hits.push({ combo, row: i, self, col, cells: [i - 2, i - 1, i].map((row) => ({ row, self, col })), value: sum });
+            }
+          }
+        }
+      }
+    });
+    return hits;
+  }
+
+  root.NumberTools = { val, littleDiamond, bigDiamond, numbersContaining, dayEnergy, comingDays, rateDate, RATING_WORDS, CODES, CODE_WORDS, POSITION_WORDS, codeKind, PRICE_VIBES, PRICE_RANGES, VERDICT_WORDS, priceCheck, priceFind, pyramidRatio, plutoUndertone, karmic, nameOf, PURPOSES, COMPANY_FIT, findDates, ROW_COMBOS, COMBO_BY_KEY, rowHits, SELF_WORDS, COL_WORDS };
 })(typeof globalThis !== 'undefined' ? globalThis : this);

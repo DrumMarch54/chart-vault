@@ -1017,6 +1017,210 @@
     });
   }
 
+  // ---------- Find a Date, Plan With Year Rows, Famous People (built 2026-10-20) ----------
+  const ordinal = (n) => n + (n % 100 >= 11 && n % 100 <= 13 ? 'th' : ['th', 'st', 'nd', 'rd'][n % 10] || 'th');
+  const fmtN = (n) => Number(n).toLocaleString('en-US');
+  const dateLine = (inp) => { const d = Number(inp.day), m = Number(inp.month), y = Number(inp.year); return d && m && y ? `${d} ${MON[m - 1]} ${y}` : ''; };
+  const dmyBox = (date, label) => A.h('div', {}, label ? A.h('div', { class: 'muted small', style: 'padding:0 2px 4px' }, label) : null, A.h('div', { class: 'dmy' }, date.$d, date.$m, date.$y));
+
+  // ---------- Find a Date ----------
+  // Superdates Cosmic Calendar ch. 8, "strategic resonance map": pick what the day is for, and the tool lists the
+  // Super and Good Dates ahead whose day of the month carries that purpose's numbers (NumberTools.findDates). A
+  // business's start day adds the book's company fit: the days that suit its energy and the ones to avoid.
+  function findDateView() {
+    light();
+    const now = todayIn();
+    const state = recall('findDateTool', { purpose: 'launch', span: 90, superOnly: false, company: ['', '', ''] });
+    if (!T.PURPOSES.some((p) => p.key === state.purpose)) state.purpose = 'launch';
+    if (![30, 60, 90].includes(state.span)) state.span = 90;
+    let start = now;
+    const company = dateFields(state.company || [], ['day', 'month', 'year']);
+    const $purposes = A.h('div', { class: 'togglerow' }), $words = A.h('p', { class: 'pt-purpose' }), $spans = A.h('div', { class: 'togglerow' }), $fit = A.h('p', { class: 'muted small pt-fitnote' }), $body = A.h('div', {});
+    const $date = A.h('input', { type: 'date', class: 'datebox', 'aria-label': 'First day' });
+    $date.addEventListener('change', () => { const p = parseIso($date.value); if (p) { start = p; draw(); } });
+    const open = (e) => { A.count('finddate.open_day'); dayFull({ y: e.y, m: e.m, d: e.d }); };
+    const draw = () => {
+      state.company = company.values(); remember('findDateTool', state);
+      $date.value = iso(start.y, start.m, start.d);
+      A.fill($purposes, ...T.PURPOSES.map((p) => chip(p.label, state.purpose === p.key, () => { state.purpose = p.key; A.count('finddate.purpose'); draw(); })));
+      A.fill($spans, ...[30, 60, 90].map((n) => chip(`${n} Days`, state.span === n, () => { state.span = n; draw(); })),
+        chip('Super Dates Only', state.superOnly, () => { state.superOnly = !state.superOnly; A.count('finddate.super_only'); draw(); }));
+      const cd = company.day();
+      const r = T.findDates(state.purpose, start.y, start.m, start.d, state.span, cd ? cd.sum : null);
+      const p = r.purpose;
+      A.fill($words, A.h('b', {}, `${p.label} days: ${p.days.join(', ')}`), A.h('span', {}, ` · ${p.words}`));
+      const fit = r.fit;
+      A.fill($fit, !cd ? 'Add the day your business started and the list says which dates suit its energy (the book\'s company table).'
+        : fit.unknown ? `${fit.ds === 8 ? 'An' : 'A'} ${fit.ds} business: the book's company table has rows for 1, 3, 5, 6 and 8 businesses only, so no fit is marked.`
+        : `${fit.ds === 8 ? 'An' : 'A'} ${fit.ds} business (started on the ${ordinal(fit.day)}): best on the ${fit.best.map(ordinal).join(', ')}${fit.avoid.length ? `; avoid the ${fit.avoid.map(ordinal).join(' and ')} (${fit.why})` : '; the only day to avoid is a Mercury retrograde week, which the app does not track'}.`);
+      let days = r.days;
+      if (state.superOnly) days = days.filter((e) => e.rating === 'super');
+      const rows = days.map((e) => A.h('div', { class: 'fdrow' + (e.clash ? ' clash' : ''), role: 'button', onclick: () => open(e) },
+        dateCharts(e.y, e.m, e.d, false),
+        A.h('div', { class: 'fdmid' }, A.h('div', { class: 'fdd' }, `${DOW[e.weekday].slice(0, 3)}, ${MON[e.m - 1]} ${e.d}${e.y !== now.y ? ', ' + e.y : ''}`), A.h('div', { class: 'fdv' }, `Day ${e.dv.text} ${nameOf(e.dv)} · essence ${e.lp.text}`)),
+        A.h('div', { class: 'fdr' }, rate(e.rating), e.fits ? A.h('span', { class: 'fit yes' }, 'Fits Your Business') : e.clash ? A.h('span', { class: 'fit no' }, 'Avoid for Your Business') : null)));
+      A.fill($body,
+        rows.length ? A.h('div', { class: 'fdrows' }, ...rows) : A.h('p', { class: 'pt-hint' }, `No ${state.superOnly ? 'Super Dates' : 'Super or Good Dates'} on a ${p.label.toLowerCase()} day in these ${state.span} days. Try a later start or a longer span.`),
+        A.h('p', { class: 'pt-foot' }, `${rows.length} ${rows.length === 1 ? 'date' : 'dates'} in ${state.span} days from ${MON[start.m - 1]} ${start.d}${r.skipped ? `; ${r.skipped} ${r.skipped === 1 ? 'day' : 'days'} with the right number left out as Beware` : ''}. Tap a date for its charts and the reasons. The purpose's numbers are the book's strategic resonance map; Super, Good and Beware follow the success codes, as in Coming Days.`));
+    };
+    for (const $f of company.all) $f.addEventListener('input', draw);
+    A.render(A.h('div', { class: 'screen qscreen tscreen pt' }, top('Find a Date', '#/', A.h('a', { class: 'btn iconbtn', href: '#/coming', 'aria-label': 'Coming Days', title: 'Coming Days' }, '▦')),
+      A.h('div', { class: 'wlabel tl' }, 'What the Day Is For'), $purposes, $words,
+      A.h('div', { class: 'wlabel tl' }, 'Starting'),
+      A.h('div', { class: 'row ynav tnav' }, A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'A month earlier', onclick: () => { start = shift(start, -31); draw(); } }, '‹'), $date, A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'A month later', onclick: () => { start = shift(start, 31); draw(); } }, '›')),
+      $spans,
+      A.h('div', { class: 'pt-bizrow' }, A.h('div', { class: 'pt-bizhead' }, A.h('span', { class: 'muted small' }, 'Your Business Started (optional)'), A.h('button', { type: 'button', class: 'linkbtn', onclick: useMine(company, draw) }, 'Use My Chart')), A.h('div', { class: 'dmy' }, company.$d, company.$m, company.$y)),
+      $fit, $body));
+    draw();
+  }
+
+  // ---------- Plan With Year Rows ----------
+  // Forecasting Numerology, "TOOL: Plan with your Year Rows": a person's year rows searched for the book's good
+  // combinations (and the difficult ones to steer around), each hit named and the cells ringed in the same table the
+  // Year Rows popup draws (app.js rowsTable). The person: My Chart, a chart in the vault, or a typed name and date.
+  function planRowsView() {
+    light();
+    const now = todayIn();
+    const state = recall('planRowsTool', { who: 'me', year: now.y, keys: T.ROW_COMBOS.good.map((c) => c.key), typed: { name: '', date: ['', '', ''] }, vault: null });
+    if (!['me', 'vault', 'typed'].includes(state.who)) state.who = 'me';
+    if (!Array.isArray(state.keys)) state.keys = T.ROW_COMBOS.good.map((c) => c.key);
+    let year = Number(state.year) || now.y, me = recall('mychart', null), focus = null;
+    const typed = state.typed || { name: '', date: ['', '', ''] };
+    const $name = A.h('input', { type: 'text', placeholder: 'Full name', value: typed.name || '', autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false', 'aria-label': 'Full name' });
+    const date = dateFields(typed.date || []);
+    const $search = A.h('input', { type: 'search', placeholder: 'Search the vault by name', autocomplete: 'off', 'aria-label': 'Search the vault by name' });
+    const $tabs = A.h('div', { class: 'pt-switch three' }), $who = A.h('div', {}), $chips = A.h('div', { class: 'togglerow' }), $hard = A.h('div', { class: 'togglerow' }), $yearNote = A.h('p', { class: 'muted small ynote' }), $yearTitle = A.h('div', { class: 'wlabel' }), $body = A.h('div', {});
+    const $found = A.h('div', { class: 'planfound' });
+    const person = () => {
+      if (state.who === 'me') return me && me.day ? { day: me.day, month: me.month, year: me.year, name: me.name || '', augment: true, label: me.name || 'My Chart' } : null;
+      if (state.who === 'vault') { const v = state.vault; return v && v.inputs && v.inputs.year ? { ...v.inputs, augment: true, label: v.title || v.inputs.name } : null; }
+      const d = Number(date.$d.value), m = Number(date.$m.value), y = Number(date.$y.value);
+      return d && m && y >= 1000 ? { day: d, month: m, year: y, name: $name.value.trim(), augment: true, label: $name.value.trim() || 'Typed' } : null;
+    };
+    const save = () => { state.year = year; state.typed = { name: $name.value, date: date.values() }; remember('planRowsTool', state); };
+    const setWho = (w) => { state.who = w; focus = null; draw(); };
+    const drawWho = () => {
+      A.fill($tabs, ...[['me', 'My Chart'], ['vault', 'From the Vault'], ['typed', 'Type a Name']].map(([k, l]) => A.h('button', { type: 'button', class: 'pt-tab' + (state.who === k ? ' on' : ''), onclick: () => setWho(k) }, l)));
+      if (state.who === 'me') A.fill($who, me && me.day ? A.h('p', { class: 'planwho' }, A.h('b', {}, me.name || 'My Chart'), A.h('span', {}, dateLine(me))) : A.h('p', { class: 'pt-hint', style: 'margin-top:0' }, 'My Chart has no birth date yet. ', A.h('a', { href: '#/mychart' }, 'Set it up in Settings ›')));
+      else if (state.who === 'vault') A.fill($who, $search, state.vault ? A.h('p', { class: 'planwho' }, A.h('b', {}, state.vault.title || state.vault.inputs.name), A.h('span', {}, dateLine(state.vault.inputs)), A.h('a', { href: `#/chart/${state.vault.id}`, class: 'muted small' }, 'Open ›')) : A.h('p', { class: 'muted small', style: 'margin:4px 2px 0' }, 'Type part of a name; charts with a name and a full birth date are listed.'), $hits);
+      else A.fill($who, A.h('div', { class: 'two-people house-in' }, A.h('div', {}, A.h('div', { class: 'muted small', style: 'padding:0 2px 4px' }, 'Name'), $name), dmyBox(date, 'Birth date')));
+    };
+    const $hits = A.h('div', { class: 'famrows' });
+    let seq = 0;
+    $search.addEventListener('input', async () => {
+      const q = $search.value.trim(), mine = ++seq;
+      if (!q) { A.fill($hits); return; }
+      try {
+        const r = await A.api(`/api/images?name=${encodeURIComponent(q)}&limit=12&drawn=1`);
+        if (mine !== seq) return;
+        const items = r.items.filter((i) => i.inputs && i.inputs.name && i.inputs.year);
+        A.fill($hits, ...items.map((i) => A.h('button', { type: 'button', class: 'famrow', onclick: () => { state.vault = { id: i.id, title: i.title || '', inputs: i.inputs }; $search.value = ''; A.fill($hits); A.count('planrows.pick_chart'); focus = null; draw(); } }, A.h('span', { class: 'fg' }, i.title || i.inputs.name), A.h('span', { class: 'fs' }, dateLine(i.inputs)))),
+          items.length ? null : A.h('p', { class: 'muted small', style: 'margin:4px 2px' }, 'No chart with that name and a full birth date.'));
+      } catch (err) { if (mine === seq) A.fill($hits, A.h('p', { class: 'err small' }, err.message)); }
+    });
+    const toggle = (k) => { state.keys = state.keys.includes(k) ? state.keys.filter((x) => x !== k) : state.keys.concat(k); focus = null; A.count('planrows.combo'); draw(); };
+    const drawChips = () => {
+      A.fill($chips, ...T.ROW_COMBOS.good.map((c) => chip(c.label, state.keys.includes(c.key), () => toggle(c.key))));
+      A.fill($hard, ...T.ROW_COMBOS.difficult.map((c) => A.h('button', { type: 'button', class: 'chip ' + (state.keys.includes(c.key) ? 'warn' : 'off'), onclick: () => toggle(c.key) }, c.label)));
+    };
+    const draw = () => {
+      save(); drawWho(); drawChips();
+      const who = person();
+      $yearTitle.textContent = `Year Rows ${year}`;
+      if (!who) { $yearNote.textContent = ''; A.fill($found); A.fill($body, A.h('p', { class: 'pt-hint' }, state.who === 'typed' ? 'Type a name and the whole birth date: day, month and year.' : state.who === 'vault' ? 'Pick a chart from the vault above.' : '')); return; }
+      if (year < Number(who.year)) year = Number(who.year);
+      const r = N.yearRows(who, year);
+      if (!r) { $yearNote.textContent = ''; A.fill($found); A.fill($body, A.h('p', { class: 'pt-hint' }, 'Before the birth year.')); return; }
+      $yearNote.textContent = `${who.label} · age ${r.formula.age} · ${r.formula.words}${r.hasName ? '' : ' · no name: the life expression and pillar rows are empty'}`;
+      const hits = T.rowHits(r.rows, state.keys);
+      const shown = focus === null ? hits : hits.filter((x, i) => i === focus);
+      const rowMark = new Map();
+      for (const x of shown) for (const c of x.cells) { if (!rowMark.has(c.row)) rowMark.set(c.row, new Set()); rowMark.get(c.row).add((c.self === 'psychic' ? 'ps.' : '') + c.col); }
+      const isNow = (x) => year === now.y && (now.m > x.month || (now.m === x.month && now.d >= x.day)) && (now.m < x.until.month || (now.m === x.until.month && now.d <= x.until.day));
+      const mark = (x, i) => { const cells = rowMark.get(i); const n = isNow(x) ? 'now' : ''; return cells ? { row: `hit ${n}`, cells: [...cells] } : n; };
+      const valText = (v) => (v.sum < 10 ? String(v.sum) : v.text);
+      const rowSpan = (x) => (x.cells.length > 1 ? `${A.yearRowLabel(r.rows[x.cells[0].row]).split(' – ')[0]} – ${A.yearRowLabel(r.rows[x.row]).split(' – ')[1]}` : A.yearRowLabel(r.rows[x.row]));
+      A.fill($found, A.h('div', { class: 'pt-label', style: 'padding:0 2px' }, hits.length ? `Found in ${year}: ${hits.length}` : `Nothing from the list in ${year}`),
+        ...hits.map((x, i) => A.h('div', { class: `hitrow ${x.combo.kind}` + (focus === i ? ' on' : ''), role: 'button', onclick: () => { focus = focus === i ? null : i; A.count('planrows.hit'); draw(); } },
+          A.h('span', { class: 'hn' }, x.combo.label),
+          A.h('span', { class: 'hw' }, x.combo.words, A.h('span', {}, `${rowSpan(x)} · ${T.SELF_WORDS[x.self]}, ${x.cells.length > 1 ? 'down the ' + T.COL_WORDS[x.col] + ' column' : 'the ' + T.COL_WORDS[x.col]}${x.cells.length === 1 && x.value.sum !== x.combo.num ? ' ' + valText(x.value) : ''}`)))),
+        hits.length ? A.h('p', { class: 'muted small', style: 'margin:6px 2px 0' }, 'Tap one to see only it in the table; tap again for all.') : null);
+      A.fill($body, A.rowsTable(r.rows, A.yearRowLabel, mark), A.h('p', { class: 'muted small', style: 'margin:8px 0 0' }, 'Tap a number for what it means; a sum also shows the two rows above it read as one number.'));
+    };
+    const moveYear = (by) => { year += by; focus = null; A.count('planrows.year'); draw(); };
+    $name.addEventListener('input', draw); for (const $f of date.all) $f.addEventListener('input', draw);
+    const $years = A.h('div', { class: 'row ynav' }, A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Previous year', onclick: () => moveYear(-1) }, '‹'), $yearNote, A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Next year', onclick: () => moveYear(1) }, '›'));
+    A.render(A.h('div', { class: 'screen qscreen tscreen pt' }, top('Plan With Year Rows', '#/', A.h('span', { class: 'pt-spacer', 'aria-hidden': 'true' })),
+      $tabs, $who,
+      A.h('div', { class: 'wlabel tl' }, 'Good Combinations'), $chips,
+      A.h('div', { class: 'wlabel tl' }, 'Difficult Ones'), $hard,
+      A.h('div', { class: 'wcard plancard' }, $yearTitle, $years, $found, $body),
+      A.h('p', { class: 'pt-foot' }, 'The lists are the Forecasting book\'s: "17/8 attracts the spotlight. 10/1 would create a winning mentality and drive. 14/5 would attract sales and networking. The money triad (3-5-8) would bring new status and earnings. 15/6 would boost your charisma. And the World Conqueror (5-8-13/4) could boost your career." A triad is read down a column: two rows and their sum.')));
+    draw();
+    if (!me) A.api('/api/mychart').then((r) => { me = r; remember('mychart', r); if ($body.isConnected) draw(); }).catch(() => {});
+  }
+
+  // ---------- Famous People ----------
+  // The course's results on 100,000 famous people (the Humanity Archetyping book, public/celebrities.js): by birthday,
+  // the careers that rank that day among their most common; by career, its most common birthdays and the book's
+  // line on why. "In your vault" counts the charts born on that day (the position search).
+  const celebrities = lazy('celebrities.js', 'Celebrities');
+  function famousView() {
+    light();
+    const state = recall('famousTool', { mode: 'day', day: todayIn().d, group: '' });
+    state.mode = state.mode === 'career' ? 'career' : 'day';
+    state.day = Math.min(31, Math.max(1, Number(state.day) || 1));
+    const $tabs = A.h('div', { class: 'pt-switch' }), $body = A.h('div', {});
+    const $search = A.h('input', { type: 'search', placeholder: 'Search careers', autocomplete: 'off', 'aria-label': 'Search careers' });
+    let C = root.Celebrities || null, vault = {}, seq = 0;
+    const setMode = (m) => { state.mode = m; A.count('famous.' + m); draw(); };
+    const pickDay = (d) => { state.day = d; state.mode = 'day'; A.count('famous.pick_day'); draw(); };
+    const pickGroup = (g) => { state.group = g; state.mode = 'career'; A.count('famous.pick_career'); draw(); };
+    const placePill = (p) => A.h('span', { class: 'place' + (p === 1 ? ' top' : '') }, `No. ${p}`);
+    const drawDay = () => {
+      const d = state.day, v = T.val(d), list = (C.byDay[String(d)] || []).slice().sort((a, b) => a.place - b.place || b.size - a.size);
+      const mine = ++seq;
+      if (vault[d] === undefined) A.api(`/api/positions/counts?num=${d}`).then((r) => { vault[d] = (r.counts || {})['essence.day'] || 0; if (mine === seq && $body.isConnected) drawDay(); }).catch(() => { vault[d] = null; });
+      A.fill($body,
+        A.h('div', { class: 'daypick', role: 'group', 'aria-label': 'Day of the month' }, ...Array.from({ length: 31 }, (_, i) => A.h('button', { type: 'button', class: state.day === i + 1 ? 'on' : '', onclick: () => pickDay(i + 1) }, String(i + 1)))),
+        A.h('div', { class: 'pt-box pt-sum' },
+          A.h('div', { class: 'pt-sumrow' }, A.h('div', { class: 'pt-sumnum', onclick: () => numberSheet(v, 'dv') }, A.h('div', { class: 'pt-label' }, `Born on the ${ordinal(d)}`), A.h('div', { class: 'bignum' }, A.h('b', {}, v.text), A.h('span', { class: 'nm' }, nameOf(v)))),
+            A.h('button', { type: 'button', class: 'linkbtn', onclick: async () => { try { const me = await A.api('/api/mychart'); if (!me.day) { A.toast('Set up My Chart first (Settings).', true); return; } pickDay(Number(me.day)); } catch (err) { A.toast(err.message, true); } } }, 'My Day')),
+          A.h('p', { class: 'pt-formula' }, list.length ? `Among the most common birthdays in ${list.length} ${list.length === 1 ? 'career' : 'careers'} of the ${C.groups.length} in the study.` : 'Not among the top birthdays of any career in the study.'),
+          vault[d] ? A.h('a', { class: 'pt-vault', href: `#/?pos=essence.day&num=${d}`, onclick: () => A.count('famous.vault') }, `${fmtN(vault[d])} ${vault[d] === 1 ? 'chart' : 'charts'} in your vault born on the ${ordinal(d)} ›`) : vault[d] === 0 ? A.h('p', { class: 'muted small', style: 'margin:8px 0 0' }, `No chart in your vault is born on the ${ordinal(d)}.`) : null),
+        list.length ? A.h('div', { class: 'famrows' }, ...list.map((x) => A.h('button', { type: 'button', class: 'famrow', onclick: () => pickGroup(x.group) }, placePill(x.place), A.h('span', { class: 'fgcol' }, A.h('span', { class: 'fg' }, x.group), A.h('span', { class: 'fs' }, `${fmtN(x.size)} people in the study`)), A.h('span', { class: 'fdays' }, '›')))) : null,
+        A.h('p', { class: 'pt-foot' }, `The book's own caution: "${C.note}" Tap a career for its other top birthdays and the book's line on why.`));
+    };
+    const drawCareer = () => {
+      const q = $search.value.trim().toLowerCase();
+      const g = state.group ? C.groups.find((x) => x.name === state.group) : null;
+      if (g && !q) {
+        A.fill($body, $search,
+          A.h('div', { class: 'pt-box pt-sum' },
+            A.h('div', { class: 'pt-sumrow' }, A.h('div', {}, A.h('div', { class: 'pt-label' }, `${fmtN(g.size)} people in the study`), A.h('div', { class: 'famname' }, g.name)), A.h('button', { type: 'button', class: 'linkbtn', onclick: () => { state.group = ''; draw(); } }, 'All Careers')),
+            A.h('div', { class: 'pt-label', style: 'margin-top:10px' }, 'Most common birthdays'),
+            A.h('div', { class: 'famdays' }, ...g.ranks.flatMap((rk, i) => rk.days.map((d) => A.h('button', { type: 'button', class: 'famday', onclick: () => pickDay(d) }, A.h('b', {}, ordinal(d)), A.h('span', {}, `No. ${i + 1} · ${fmtN(rk.count)}`))))),
+            g.line ? A.h('p', { class: 'pt-quote' }, `"${g.line}"`) : A.h('p', { class: 'muted small', style: 'margin:8px 0 0' }, 'The book lists the days without a line on why.')),
+          A.h('p', { class: 'pt-foot' }, 'Tap a day for every career that ranks it, and the charts in your vault born on it.'));
+        return;
+      }
+      const groups = C.groups.filter((x) => !q || x.name.toLowerCase().includes(q));
+      A.fill($body, $search,
+        groups.length ? A.h('div', { class: 'famrows' }, ...groups.map((x) => A.h('button', { type: 'button', class: 'famrow', onclick: () => { $search.value = ''; pickGroup(x.name); } }, A.h('span', { class: 'fgcol' }, A.h('span', { class: 'fg' }, x.name), A.h('span', { class: 'fs' }, `${fmtN(x.size)} people`)), A.h('span', { class: 'fdays' }, x.ranks.slice(0, 3).flatMap((rk) => rk.days).slice(0, 4).map(ordinal).join(' · '))))) : A.h('p', { class: 'pt-hint' }, 'No career by that name in the study.'),
+        A.h('p', { class: 'pt-foot' }, `${C.groups.length} careers, largest first, with their most common birthdays. Tap one for the book's line on why those days.`));
+    };
+    const draw = () => {
+      remember('famousTool', state);
+      A.fill($tabs, ...[['day', 'By Birthday'], ['career', 'By Career']].map(([k, l]) => A.h('button', { type: 'button', class: 'pt-tab' + (state.mode === k ? ' on' : ''), onclick: () => setMode(k) }, l)));
+      if (!C) { A.fill($body, A.h('p', { class: 'muted' }, 'Loading…')); return; }
+      if (state.mode === 'day') drawDay(); else drawCareer();
+    };
+    $search.addEventListener('input', () => { if (state.mode === 'career') drawCareer(); });
+    A.render(A.h('div', { class: 'screen qscreen tscreen pt' }, top('Famous People', '#/', A.h('span', { class: 'pt-spacer', 'aria-hidden': 'true' })), $tabs, $body));
+    draw();
+    if (!C) celebrities().then((c) => { C = c && c.groups ? c : null; if (!C) { A.fill($body, A.h('p', { class: 'err' }, 'The study could not be loaded. Reload the app and try again.')); return; } if ($body.isConnected) draw(); });
+  }
+
   // The home screen's Tools list (app.js draws the rest of the home screen).
   function homeButtons() {
     const h = A.h, now = todayIn(), e = T.dayEnergy(now.y, now.m, now.d);
@@ -1028,7 +1232,10 @@
     return h('div', { class: 'tools' }, h('div', { class: 'summary rhead' }, 'Tools'),
       btn('#/today', '☀', 'Today', e ? `${DOW[e.weekday].slice(0, 3)} ${MON[now.m - 1]} ${now.d} · ${e.dv.text}` : '', 'home.today'),
       btn('#/coming', '▦', 'Coming Days', 'next 31 days', 'home.coming'),
+      btn('#/finddate', '◎', 'Find a Date', 'launch, deal, event', 'home.finddate'),
+      btn('#/planrows', '≡', 'Plan With Year Rows', 'good periods', 'home.planrows'),
       btn('#/numberfun', '◇', 'Number Fun', '1 to 99', 'home.numberfun'),
+      btn('#/famous', '★', 'Famous People', 'by birthday', 'home.famous'),
       btn('#/price', '$', 'Price Tool', '', 'home.price'),
       btn('#/house', '⌂', 'House Number', 'home or business', 'home.house'),
       btn('#/phone', '☎', 'Phone and Domain', '', 'home.phone'),
@@ -1043,13 +1250,17 @@
     'home.today': 'Home → Today', 'home.coming': 'Home → Coming Days', 'home.numberfun': 'Home → Number Fun', 'home.price': 'Home → Price Tool', 'home.relation': 'Home → Relationship', 'home.karmic': 'Home → Karmic Connections', 'home.mychart': 'Home → My Chart',
     'today.psyche': 'Today: psyche charts on or off', 'today.full': 'Today: full screen day', 'today.ruler': 'Today: ruler of the day', 'today.company': 'Today: a company started this day', 'dayfull.move': 'Full screen day: previous or next day', 'coming.open_day': 'Coming Days: open a day', 'coming.size': 'Coming Days: chart size', 'coming.super_only': 'Coming Days: super dates only', 'numberfun.type': 'Number Fun: type a number', 'numberfun.grid': 'Number Fun: All Numbers grid on or off', 'numberfun.size': 'Number Fun: grid chart size', 'numberfun.tap_cell': 'Number Fun: open a number from the grid', 'numberfun.open_from_sheet': 'Number Fun: open a number from its sheet', 'numberfun.tap_diamond': 'Number Fun: tap a diamond', 'numberfun.tap_other': 'Number Fun: tap a number it appears in',
     'screen.house': 'House Number', 'screen.phone': 'Phone and Domain', 'screen.words': 'Business Words', 'home.house': 'Home → House Number', 'home.phone': 'Home → Phone and Domain', 'home.words': 'Home → Business Words',
+    'screen.finddate': 'Find a Date', 'screen.planrows': 'Plan With Year Rows', 'screen.famous': 'Famous People', 'home.finddate': 'Home → Find a Date', 'home.planrows': 'Home → Plan With Year Rows', 'home.famous': 'Home → Famous People',
+    'finddate.purpose': 'Find a Date: pick a purpose', 'finddate.super_only': 'Find a Date: super dates only', 'finddate.open_day': 'Find a Date: open a day',
+    'planrows.pick_chart': 'Plan With Year Rows: pick a chart from the vault', 'planrows.combo': 'Plan With Year Rows: a combination on or off', 'planrows.year': 'Plan With Year Rows: previous or next year', 'planrows.hit': 'Plan With Year Rows: tap a found combination',
+    'famous.day': 'Famous People: By Birthday', 'famous.career': 'Famous People: By Career', 'famous.pick_day': 'Famous People: pick a day', 'famous.pick_career': 'Famous People: pick a career', 'famous.vault': 'Famous People: charts in the vault born that day',
     'phone.phone': 'Phone and Domain: the Phone Number tab', 'phone.domain': 'Phone and Domain: the Domain tab', 'words.pick': 'Business Words: pick a number', 'words.check': 'Business Words: Check a Word', 'words.open': 'Business Words: open a word\'s charts',
     'price.find': 'Price Tool: Find a Price', 'price.vibe': 'Price Tool: pick a vibration', 'price.range': 'Price Tool: pick a range', 'price.pick': 'Price Tool: pick a found price', 'price.number': 'Price Tool: a number in the price', 'price.vibe_text': 'Price Tool: the book\'s page for a vibration', 'price.pyramid': 'Price Tool: the number pyramid', 'price.chart': 'Price Tool: the price chart', 'price.chart_day': 'Price Tool: a day on top of the chart', 'relation.use_me': 'Relationship: me as the first person', 'mychart.save': 'My Chart: save',
   };
 
   function install(app) {
     A = app;
-    Object.assign(A.routes, { today: todayView, coming: comingView, numberfun: numberFunView, price: priceView, relation: relationView, karmic: karmicView, mychart: myChartView, house: houseView, phone: phoneView, words: wordsView });
+    Object.assign(A.routes, { today: todayView, coming: comingView, numberfun: numberFunView, price: priceView, relation: relationView, karmic: karmicView, mychart: myChartView, house: houseView, phone: phoneView, words: wordsView, finddate: findDateView, planrows: planRowsView, famous: famousView });
     return { homeButtons, USAGE_LABELS, myChart: () => recall('mychart', null) };
   }
   root.Tools = { install, bigDiamondEl, planetScene };

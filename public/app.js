@@ -49,7 +49,7 @@
     'quick.year_rows': 'Year Rows and Day Vibrations', 'quick.show_parts': 'Show and Hide Parts', 'quick.augment': 'Augmentation On or Off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
     'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'status.recompute': 'Recompute chart numbers',
     'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart', 'viewer.year_rows': 'Year Rows from a chart',
-    'position.search_more': 'Narrow a position search by another number', 'position.add_more': 'Tap + Another number', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
+    'position.search_more': 'Narrow a position search by another number', 'position.add_more': 'Tap + Another number', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'viewer.share': 'Share Picture from a chart', 'quick.share': 'Share Picture from the Quick Chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
     'grid.size': 'Chart size on the grid (− / +)', 'similar.size': 'Chart size on Similar Charts (− / +)', 'duplicates.size': 'Chart size on Possible Duplicates (− / +)',
     'viewer.similar': 'Similar Charts from a chart', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
     'viewer.delete': 'Delete a chart from the chart page', 'duplicates.delete': 'Delete a chart from Possible Duplicates', 'duplicates.keep': 'Keep a duplicate group', 'deleted.restore': 'Put a deleted chart back',
@@ -648,8 +648,9 @@
     const $rows = h('button', { type: 'button', class: 'cmenu-item' }, 'Year Rows and Day Vibrations');
     const $pyrItem = h('button', { type: 'button', class: 'cmenu-item' }, 'Whole Name Pyramid');
     const $simItem = h('button', { type: 'button', class: 'cmenu-item' }, 'Similar Charts');
+    const $shareItem = h('button', { type: 'button', class: 'cmenu-item' }, 'Share Picture');
     const $delItem = h('button', { type: 'button', class: 'cmenu-item danger' }, 'Delete This Chart');
-    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $rows, $simItem, $pyrItem, $orig, $delItem);
+    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $rows, $simItem, $pyrItem, $shareItem, $orig, $delItem);
     const $dots = h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'More', title: 'More', onclick: (e) => { e.stopPropagation(); $menu.classList.toggle('hidden'); } }, '⋮');
     const $more = h('div', { class: 'vmore hidden' }, $dots, $menu);
     const $cmp = h('button', { type: 'button', class: 'vbtn hidden' }, 'Compare');
@@ -778,6 +779,15 @@
       openWord(inp.name, dayOf(inp), { wholeName: true });
     };
     $pyrItem.onclick = wholePyramid;
+    // Share Picture (owner's ask 2026-10-20): the drawn chart as a picture with the name and date under it, through
+    // the phone's share sheet; a chart that is still a screenshot shares the screenshot itself.
+    $shareItem.onclick = () => {
+      $menu.classList.add('hidden'); count('viewer.share');
+      const inp = img.inputs;
+      if (inp && inp.name) sharePicture(inp, captionOf(inp, imgName(img)), fileNameOf(imgName(img) || img.filename));
+      else if (img.has_file) sharePhoto(`/thumb/${img.id}`, imgName(img) || img.filename, fileNameOf(imgName(img) || img.filename, 'jpg'));
+      else toast('This chart has no picture to share yet: no screenshot and no name read.', true);
+    };
     $simItem.onclick = () => { $menu.classList.add('hidden'); if (!img.inputs) { toast('This chart has no name read yet. Swipe up and tap "Type them" to add it.', true); return; } count('viewer.similar'); go(`#/similar/${img.id}`); };
     // Delete (owner's ask 2026-10-19): hold to confirm; the picture and everything about the chart go to
     // Settings -> Deleted Charts, where it can be put back. Then back to the list, redrawn without it.
@@ -1577,6 +1587,30 @@
     svg.dataset.sel = key;
   }
   function drawnChart(inp) { return numeroscopeSvg(Numeroscope.numeroscope({ day: inp.day ?? '', month: inp.month ?? '', year: inp.year ?? '', name: inp.name || '' })); }
+
+  // ---------- share a chart as a picture (owner's ask 2026-10-20) ----------
+  // The drawn chart exactly as the Quick Chart draws it, on white, the name and date under it, as a PNG (chartPng, the
+  // same picture Save to Vault stores): the phone's share sheet when it offers one (navigator.share with a file), else
+  // a download. A chart that is still a screenshot shares the screenshot itself.
+  const captionOf = (inp, name) => { const d = Number(inp.day), m = Number(inp.month), y = Number(inp.year); return [name, d && m && y ? `${d} ${MON[m - 1]} ${y}` : ''].filter(Boolean).join(' · '); };
+  const fileNameOf = (name, ext = 'png') => (String(name || 'chart').replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '') || 'chart') + '.' + ext;
+  async function shareFile(blob, filename, title) {
+    const file = new File([blob], filename, { type: blob.type });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], title }); return; }
+      catch (err) { if (err && err.name === 'AbortError') return; /* the share sheet refused (too late after the tap, or no app for it): save the file instead */ }
+    }
+    const a = h('a', { href: URL.createObjectURL(blob), download: filename }); document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+    toast('Saved as a picture.');
+  }
+  async function sharePicture(inp, caption, filename) {
+    try { await shareFile(await chartPng(drawnChart(inp), 1612, caption), filename, caption); }
+    catch (err) { toast(err.message || 'The picture could not be made.', true); }
+  }
+  async function sharePhoto(src, title, filename) {
+    try { const r = await fetch(src); if (!r.ok) throw new Error('The screenshot could not be read.'); await shareFile(await r.blob(), filename, title); }
+    catch (err) { toast(err.message || 'The screenshot could not be shared.', true); }
+  }
   // Cut the blank above and below the drawing once it is on the page (same width), so zooming centers on the chart.
   const trimDrawn = (svg) => { if (!svg.isConnected) return; const b = svg.getBBox(); if (!b.height) return; const y0 = Math.max(20, Math.floor(b.y - 20)), y1 = Math.min(1290, Math.ceil(b.y + b.height + 20)); svg.setAttribute('viewBox', `${371 - 425} ${y0} 850 ${y1 - y0}`); };
   const inputsById = new Map();
@@ -1674,7 +1708,7 @@
 
   // The chart drawing as a PNG (the app's own styles and font inlined, so the picture is what the screen shows).
   let fontData = null;
-  async function chartPng(svg, width = 1612) {
+  async function chartPng(svg, width = 1612, caption = '') {
     if (!fontData) { const buf = await fetch('/fonts/open-sans.woff2').then((r) => r.arrayBuffer()); fontData = 'data:font/woff2;base64,' + btoa(String.fromCharCode(...new Uint8Array(buf))); }
     const rules = [];
     for (const sheet of document.styleSheets) { try { for (const rule of sheet.cssRules) if (rule.selectorText && rule.selectorText.includes('.nscope')) rules.push(rule.cssText); } catch {} }
@@ -1689,8 +1723,10 @@
     try {
       const img = new Image();
       await new Promise((res, rej) => { img.onload = res; img.onerror = () => rej(new Error('Could not draw the chart.')); img.src = url; });
-      const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
-      const ctx = canvas.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, width, height); ctx.drawImage(img, 0, 0, width, height);
+      const cap = caption ? Math.round(width * 0.075) : 0; // room for the name and date under the chart
+      const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height + cap;
+      const ctx = canvas.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, width, height + cap); ctx.drawImage(img, 0, 0, width, height);
+      if (caption) { ctx.fillStyle = '#303030'; ctx.font = `600 ${Math.round(width * 0.028)}px "Open Sans", system-ui, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(caption, width / 2, height + cap * 0.42); }
       return await new Promise((res, rej) => canvas.toBlob((b) => (b ? res(b) : rej(new Error('Could not make the picture.'))), 'image/png'));
     } finally { URL.revokeObjectURL(url); }
   }
@@ -1726,13 +1762,14 @@
     const $save = h('button', { type: 'button', class: 'cmenu-item' }, 'Save to Vault');
     const $showBtn = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { count('quick.show_parts'); $menu.classList.add('hidden'); showSheet(show, () => applyShow(svg, show)); } }, 'Show and Hide Parts');
     const $rows = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { count('quick.year_rows'); $menu.classList.add('hidden'); openForecast(input()); } }, 'Year Rows and Day Vibrations');
+    const $share = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { count('quick.share'); $menu.classList.add('hidden'); const inp = input(); if (!inp.name.trim()) { toast('Type a name first.', true); $name.focus(); return; } sharePicture(inp, captionOf(inp, inp.name.trim()), fileNameOf(inp.name.trim())); } }, 'Share Picture');
     const $pyrItem = h('button', { type: 'button', class: 'cmenu-item', onclick: () => { $menu.classList.add('hidden'); if (!$name.value.trim()) { toast('Type a name first.', true); $name.focus(); return; } count('quick.whole_pyramid'); openWord($name.value, data && data.essence.day, { wholeName: true }); } }, 'Whole Name Pyramid');
     const augmentLabel = () => (augment ? 'Augmentation On' : 'Augmentation Off');
     const $augment = h('button', { type: 'button', class: 'cmenu-item', role: 'menuitemcheckbox', 'aria-checked': String(augment), onclick: () => {
       count('quick.augment'); augment = !augment; try { localStorage.setItem('quickAugment', augment ? 'on' : 'off'); } catch {}
       $augment.textContent = augmentLabel(); $augment.setAttribute('aria-checked', String(augment)); $menu.classList.add('hidden'); draw();
     } }, augmentLabel());
-    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $full, $showBtn, $rows, $pyrItem, $augment, $save);
+    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $full, $showBtn, $rows, $pyrItem, $share, $augment, $save);
     const $dots = h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'More', title: 'More', onclick: (e) => { e.stopPropagation(); $menu.classList.toggle('hidden'); } }, '⋮');
     document.addEventListener('click', (e) => { if (!$menu.contains(e.target)) $menu.classList.add('hidden'); });
     const $home = h('div', { class: 'nscope-home' }, $chart);
@@ -1954,6 +1991,24 @@
   const clock = (mins) => { const h = Math.floor(mins / 60) % 24, m = mins % 60; return `${h % 12 || 12}:${String(m).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`; };
   // "12:00–2:40 AM", "10:40 AM–1:20 PM"; the last period ends at 11:59 PM.
   const span = (a, b) => { const end = Math.min(b, 1439), ca = clock(a), cb = clock(end); return ca.slice(-2) === cb.slice(-2) ? `${ca.slice(0, -3)}–${cb}` : `${ca}–${cb}`; };
+  // One table like the paid tool's, shared by the Year Rows popup and Plan With Year Rows: period and formula, then
+  // the human self (name chart) and the psychic self, each as value, aura, shadow. Source rows show a plain digit,
+  // sums and auras always "n/ds". mark(row, index) names a row's extra class ('now' = the row we are in) or, as an
+  // object, { row: 'hit', cells: ['main', 'ps.shadow', ...] } to ring the cells a search found.
+  const FORMULA_WORDS = { year: 'Year digit sum', day: 'Birth day digit sum', sum: 'Sum of two prev.', le: 'Life expression', age: 'Age digit sum', last: 'Last period', this: 'This period', leaving: 'Leaving this period', pillar: 'Pillar digit sum', date: 'Date digit sum', month: 'Month digit sum' };
+  const yearRowLabel = (x) => `${MON[x.month - 1]} ${x.day} – ${MON[x.until.month - 1]} ${x.until.day}`;
+  function rowsTable(rows, label, mark) {
+    const text = (v, plain) => (v ? (plain && v.sum < 10 ? String(v.sum) : v.text) : '–');
+    const cell = (v, cls, plain, vertical) => h('div', { class: `yv ${cls || ''}`, onclick: () => meaningSheet(v, vertical) }, text(v, plain));
+    const head = () => [h('div', { class: 'yh yg' }, ''), h('div', { class: 'yh yg' }, 'Human self'), h('div', { class: 'yh yg' }, 'Psychic self'),
+      h('div', { class: 'yh' }, 'Period'), h('div', { class: 'yh' }, 'Num.'), h('div', { class: 'yh' }, 'Aura'), h('div', { class: 'yh' }, 'Shad.'), h('div', { class: 'yh ps' }, 'Num.'), h('div', { class: 'yh ps' }, 'Aura'), h('div', { class: 'yh ps' }, 'Shad.')];
+    const six = (x, now, hit) => { const plain = x.source !== 'sum', p = x.psyche, c = (k) => (hit.includes(k) ? ' hit' : ''); return [
+      cell(x.main, `num ${now}${c('main')}`, plain, x.vertical), cell(x.aura, `aura ${now}${c('aura')}`), cell(x.shadow, `${now}${c('shadow')}`, plain, x.verticalShadow),
+      cell(p.main, `ps num ${now}${c('ps.main')}`, plain, p.vertical), cell(p.aura, `ps aura ${now}${c('ps.aura')}`), cell(p.shadow, `ps ${now}${c('ps.shadow')}`, plain, p.verticalShadow)]; };
+    return h('div', { class: 'yrows' }, ...head(), ...rows.flatMap((x, i) => {
+      const m = mark ? mark(x, i) || '' : '', n = typeof m === 'string' ? m : m.row || '', hit = typeof m === 'string' ? [] : m.cells || [];
+      return [h('div', { class: `ydate ${n}` }, h('b', {}, label(x)), h('span', {}, FORMULA_WORDS[x.source])), ...six(x, n, hit)]; }));
+  }
   function openForecast(input) {
     const e = Numeroscope.essence(input.day, input.month, input.year);
     if (!(e.day && e.month && e.year)) { toast('Type the whole birth date first: day, month and year.', true); return; }
@@ -1966,16 +2021,6 @@
     const $periods = h('div', { class: 'periods' }), $yearTitle = h('div', { class: 'wlabel' }), $yearNote = h('p', { class: 'muted small ynote' }), $year = h('div', {});
     const $dayTitle = h('div', { class: 'wlabel' }), $dayNote = h('p', { class: 'muted small ynote', style: 'padding:0 2px 6px' }), $day = h('div', {});
     const $date = h('input', { type: 'date', class: 'datebox', value: `${date.y}-${String(date.m).padStart(2, '0')}-${String(date.d).padStart(2, '0')}` });
-    // One table like the paid tool's: period and formula, then the human self (name chart) and the psychic
-    // self, each as value, aura, shadow. Source rows show a plain digit, sums and auras always "n/ds".
-    const text = (v, plain) => (v ? (plain && v.sum < 10 ? String(v.sum) : v.text) : '–');
-    const cell = (v, cls, plain, vertical) => h('div', { class: `yv ${cls || ''}`, onclick: () => meaningSheet(v, vertical) }, text(v, plain));
-    const head = () => [h('div', { class: 'yh yg' }, ''), h('div', { class: 'yh yg' }, 'Human self'), h('div', { class: 'yh yg' }, 'Psychic self'),
-      h('div', { class: 'yh' }, 'Period'), h('div', { class: 'yh' }, 'Num.'), h('div', { class: 'yh' }, 'Aura'), h('div', { class: 'yh' }, 'Shad.'), h('div', { class: 'yh ps' }, 'Num.'), h('div', { class: 'yh ps' }, 'Aura'), h('div', { class: 'yh ps' }, 'Shad.')];
-    const six = (x, now) => { const plain = x.source !== 'sum', p = x.psyche; return [
-      cell(x.main, `num ${now}`, plain, x.vertical), cell(x.aura, `aura ${now}`), cell(x.shadow, now, plain, x.verticalShadow),
-      cell(p.main, `ps num ${now}`, plain, p.vertical), cell(p.aura, `ps aura ${now}`), cell(p.shadow, `ps ${now}`, plain, p.verticalShadow)]; };
-    const FORMULA_WORDS = { year: 'Year digit sum', day: 'Birth day digit sum', sum: 'Sum of two prev.', le: 'Life expression', age: 'Age digit sum', last: 'Last period', this: 'This period', leaving: 'Leaving this period', pillar: 'Pillar digit sum', date: 'Date digit sum', month: 'Month digit sum' };
     const drawPeriods = () => {
       const ps = Numeroscope.destinyPeriods(birthYear, 12).filter((p) => p.start <= birthYear + 99);
       fill($periods, ...ps.map((p) => h('button', { type: 'button', class: `period ${year >= p.start && year <= p.end ? 'active' : ''}`, onclick: () => { year = Math.max(p.start, birthYear); drawYear(); drawPeriods(); } },
@@ -1987,16 +2032,14 @@
       if (!r) { fill($year, h('p', { class: 'muted' }, 'Before the birth year.')); $yearNote.textContent = ''; return; }
       $yearNote.textContent = `Age ${r.formula.age} · ${r.formula.words}${r.hasName ? '' : ' · type a name to fill the life expression and pillar rows'}`;
       const isNow = (x) => year === now.y && (now.m > x.month || (now.m === x.month && now.d >= x.day)) && (now.m < x.until.month || (now.m === x.until.month && now.d <= x.until.day));
-      fill($year, h('div', { class: 'yrows' }, ...head(), ...r.rows.flatMap((x) => { const n = isNow(x) ? 'now' : ''; return [
-        h('div', { class: `ydate ${n}` }, h('b', {}, `${MON[x.month - 1]} ${x.day} – ${MON[x.until.month - 1]} ${x.until.day}`), h('span', {}, FORMULA_WORDS[x.source])), ...six(x, n)]; })));
+      fill($year, rowsTable(r.rows, yearRowLabel, (x) => (isNow(x) ? 'now' : '')));
     };
     const drawDay = () => {
       const r = Numeroscope.dayRows(input, date.y, date.m, date.d);
       $dayTitle.textContent = `Day vibrations ${MON[date.m - 1]} ${date.d}, ${date.y}`;
       const today = date.y === now.y && date.m === now.m && date.d === now.d;
       fill($dayNote, today ? `Now ${clock(now.minutes)} in Arizona · ` : '', r.fulfillment ? h('span', { onclick: () => meaningSheet(r.fulfillment), style: 'cursor:pointer' }, `Fulfillment number ${rowText(r.fulfillment)}`) : 'Type a name to fill the life expression row and the fulfillment number');
-      fill($day, h('div', { class: 'yrows' }, ...head(), ...r.rows.flatMap((x) => { const n = today && now.minutes >= x.from && now.minutes < x.until ? 'now' : ''; return [
-        h('div', { class: `ydate ${n}` }, h('b', {}, span(x.from, x.until)), h('span', {}, FORMULA_WORDS[x.source])), ...six(x, n)]; })));
+      fill($day, rowsTable(r.rows, (x) => span(x.from, x.until), (x) => (today && now.minutes >= x.from && now.minutes < x.until ? 'now' : '')));
     };
     const drawAll = () => { drawYear(); drawDay(); };
     const shiftDay = (by) => { const dt = new Date(date.y, date.m - 1, date.d + by); date = { y: dt.getFullYear(), m: dt.getMonth() + 1, d: dt.getDate() }; $date.value = `${date.y}-${String(date.m).padStart(2, '0')}-${String(date.d).padStart(2, '0')}`; drawDay(); };
@@ -2093,7 +2136,7 @@
     document.body.append(bg); trackOverlay(bg, close);
     return close;
   };
-  const toolsUi = window.Tools ? window.Tools.install({ routes, h, sv, fill, render, count, toast, api, go, numeroscopeSvg, singleNameSvg, openWord, sheet: wordsSheet, overlay: trackOverlay, overlayGone: untrackOverlay, setCleanup: (fn) => { viewerCleanup = fn; } }) : null;
+  const toolsUi = window.Tools ? window.Tools.install({ routes, h, sv, fill, render, count, toast, api, go, numeroscopeSvg, singleNameSvg, openWord, rowsTable, yearRowLabel, meaningSheet, sheet: wordsSheet, overlay: trackOverlay, overlayGone: untrackOverlay, setCleanup: (fn) => { viewerCleanup = fn; } }) : null;
   if (toolsUi) Object.assign(USAGE_LABELS, toolsUi.USAGE_LABELS);
   // Reading a chart (facts, AI reading, questions), Ask the Vault and the AI settings live in reading.js.
   const readingUi = window.Reading ? window.Reading.install({ routes, h, fill, api, toast, count, go, render, pageTop }) : null;

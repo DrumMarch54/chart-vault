@@ -795,3 +795,29 @@ sections are missed, and the list docs (problem areas, psyche book steps) keep t
 documents are not in the store at all (NU-Templates, NP-Statistics; the latter's day sections appear to be the
 humanity-archetyping book). The store's Numbers 1-9 Chart Full Descriptions has no Day/Month/Year/Life Path
 sub-entries though the map says the doc has them: re-read the Drive doc first. Nothing on the screen changed.
+
+## 2026-10-20 Seven new tools from the business books, and the chart as a shareable picture
+The owner, using up the subscription, approved seven tool designs with two conditions: the year rows must look exactly like
+the existing Year Rows popup, and the screens must be laid out right the first time ("words scaled too big or spatially the
+whole screen is weird" had happened before). Built, each screenshot-checked at 390 and 1024 before commit:
+House Number, Phone and Domain, Business Words (first commit), then Find a Date, Plan With Year Rows, Famous People and
+Share Picture (second commit, version 0.8.0).
+- Find a Date: the Cosmic Calendar's ch. 8 "strategic resonance map" (purpose → day of the month: Launch 1, 3, 17, 21;
+  Marketing 5, 14, 23; Partnership 6, 15, 24; Teaching 3, 12, 21; Contract 8, 17, 26; Branding 6, 15, 24; Team Training
+  7, 16, 25; Follow-Up and PR 9, 18, 27) and its company table (a 1 business best on 1, 3, 19, avoid 8; 3 → 3, 6, 15, 24,
+  avoid 9, 18; 5 → 5, 23, 27; 6 → 6, 24, 21, avoid 29; 8 → 8, 26, 9, avoid 11, 22). Only Super and Good days are listed,
+  the book's "gold or green"; Beware days are counted and left out. The rows carry the day's essence chart (`dateCharts`).
+- Plan With Year Rows: the Forecasting book's lists, word for word. To keep the table identical, the popup's table builder
+  became `rowsTable(rows, label, mark)` in app.js, handed to tools.js through `Tools.install`; `mark` returns a row class
+  or `{ row, cells }` so the found cells get a gold ring. A triad is matched on the digit sums of the two source rows above
+  a sum row, down the number or the shadow column (Nixon 1972 has the 5-8-13/4 world conqueror in the human self's number
+  column, rows 5-7; the test pins it). Three ways to pick the person: My Chart, a chart from the vault (`/api/images?name=`,
+  only charts with a name and a full date), or a typed name and date.
+- Famous People: `tools/make-celebrities.mjs` parses the results book into groups (career, size, ranked days, the book's
+  line) and a by-day index; the screen is a 7-column day picker, the careers that rank that day with their place, the
+  vault count from `/api/positions/counts?num=` linking to the position search, and the book's own caution at the foot.
+- Share Picture: app.js already had `chartPng` (Save to Vault's picture); it grew a caption line, and `shareFile` tries
+  `navigator.share` with the file first, then a download. The dev check downloaded a 1612-px PNG with the Open Sans font
+  embedded and "Kanye West · 8 Jun 1977" under the chart.
+Lessons: grep before building (a second `chartPng` was written before the first was found; the duplicate `fontData`
+declaration caught it); three tabs in a `.pt-switch` need `three` (15 px, nowrap) at 390 or they wrap to two lines.
