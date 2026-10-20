@@ -863,3 +863,9 @@ declaration caught it); three tabs in a `.pt-switch` need `three` (15 px, nowrap
   knowledge/README "Documents outside the Hub folder". A home passage keeps its paragraphs whole ("(1 and 8)" in the
   18/9 code is not a pair paragraph). Rule for next time: search Drive by TITLE before saying a document does not
   exist; the Hub folder is not all of the owner's Drive.
+- The owner's screenshot of 15/6 in the outer psyche's challenge number: the page ran on into "3. The Dynamics and
+  the Compound Number (65/2)", a part of the worked example that had no heading of its own, so it rode along with
+  the 15/6 section; and no short points, because the bits were generated before these pages had words. Headings
+  split off; `tools/bits/make-jobs-missing.mjs` + `merge-bits.mjs` with BITS_ADD=1 write points only for pages
+  with none or whose sources changed (744 pages, 489 sets, 12 writers). Rule: after a change to the store or the
+  ranking, run the incremental bits pass before saying done; a page without points reads as a wall of text.

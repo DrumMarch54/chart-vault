@@ -16,3 +16,10 @@ store or `server/meaning.js` changes which passages a page shows.
 5. `npm run verify`.
 
 Never call a paid model from these scripts; the writing is done by the chat itself.
+
+## Only the pages that need it (after the store or the ranking changed)
+1. `BITS_DIR=<dir> node tools/bits/make-jobs-missing.mjs` – pages with no points, or whose passages now come from
+   other sources than their points were written from, as `<dir>/bits-jobs/add-NN.json`.
+2. Writers as above into `<dir>/bits-out/add-NN.json`; `check-out.mjs`.
+3. `BITS_DIR=<dir> BITS_ADD=1 node tools/bits/merge-bits.mjs` – keeps every existing set and page, adds the new
+   ones (a rewritten page points at its new set). Batch files must not reuse an id already in bits.json.
