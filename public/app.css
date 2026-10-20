@@ -796,3 +796,58 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .pt-daterow .pt-dateright { padding: 0 0 6px; justify-content: flex-end; }
 .pt-daterow .dmy { display: grid; grid-template-columns: 0.85fr 1.15fr 1.2fr; gap: 4px; }
 .pt-daterow input { width: 100%; min-height: 40px; font-size: 14px; border-radius: 10px; border: 1px solid #e1e3e9; background: #f3f4f7; color: #22252e; padding: 0 8px; }
+
+/* Find a Date, Plan With Year Rows, Famous People (2026-10-20). White-page tools, like the Price Tool. */
+.pt-purpose { margin: 2px 4px 6px; font-size: 14px; line-height: 1.4; color: #303030; }
+.pt-purpose span { color: #8a8f9c; }
+.pt-fitnote { margin: 4px 4px 2px; line-height: 1.4; }
+.fdrows { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.fdrow { display: grid; grid-template-columns: 84px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 10px 8px 6px; border-radius: 12px; background: #f6f7f9; color: #303030; cursor: pointer; }
+.fdrow .nscope { width: 84px; height: auto; display: block; pointer-events: none; background: #fff; border-radius: 8px; }
+.fdrow.clash { background: #faf3f3; }
+.fdrow .fdd { font-size: 16px; font-weight: 700; }
+.fdrow .fdv { font-size: 12px; color: #5f7990; margin-top: 2px; line-height: 1.3; }
+.fdrow .fdr { display: flex; flex-direction: column; gap: 5px; align-items: flex-end; }
+.fit { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 9px; white-space: nowrap; }
+.fit.yes { background: #d9f3e1; color: #1f6b3a; }
+.fit.no { background: #fde8e8; color: #9b2c2c; }
+.tscreen .chip.warn { background: #fde8e8; color: #9b2c2c; font-weight: 700; }
+.planwho { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin: 0 2px 8px; font-size: 15px; color: #303030; }
+.planwho b { font-size: 17px; }
+.planwho span { color: #8a8f9c; }
+.planwho a { color: #5f7990; margin-left: auto; }
+.plancard { margin-top: 10px; }
+.planfound { margin: 6px 0 10px; }
+.hitrow { display: grid; grid-template-columns: minmax(56px, auto) minmax(0, 1fr); gap: 10px; align-items: center; min-height: 46px; padding: 6px 10px; border-radius: 10px; background: #f6f7f9; margin-top: 6px; cursor: pointer; }
+.hitrow .hn { font: 700 17px/1 "Open Sans", system-ui, sans-serif; color: #1f6b3a; }
+.hitrow.difficult .hn { color: #9b2c2c; }
+.hitrow .hw { font-size: 14px; color: #303030; line-height: 1.3; }
+.hitrow .hw span { display: block; color: #8a8f9c; font-size: 12px; margin-top: 1px; }
+.hitrow.on { box-shadow: inset 0 0 0 2px var(--accent); }
+.yrows .hit { box-shadow: inset 0 0 0 100px rgba(240, 182, 74, .16); }
+.yrows .now.hit { box-shadow: inset 0 0 0 100px rgba(240, 182, 74, .3); }
+.yrows .yv.hit { box-shadow: inset 0 0 0 3px #e0a528, inset 0 0 0 100px rgba(240, 182, 74, .3); }
+.daypick { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; margin: 4px 0 2px; }
+.daypick button { min-height: 40px; padding: 0; border-radius: 10px; background: #eef0f4; color: #303030; font-size: 15px; font-weight: 600; }
+.daypick button.on { background: var(--accent); color: var(--accent-text); font-weight: 700; }
+.famrows { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+.famrow { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 50px; padding: 6px 12px; border-radius: 12px; background: #f6f7f9; color: #303030; cursor: pointer; text-align: left; font: inherit; border: 0; width: 100%; }
+.famrow .place { font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 10px; background: #e3ebfb; color: #2e4a8b; white-space: nowrap; }
+.famrow .place.top { background: #d9f3e1; color: #1f6b3a; }
+.famrow .fgcol { display: flex; flex-direction: column; min-width: 0; }
+.famrow .fg { font-size: 16px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.famrow .fs { font-size: 12px; color: #8a8f9c; }
+.famrow .fdays { font-size: 13px; color: #5f7990; font-weight: 600; white-space: nowrap; }
+.famname { font-size: 24px; font-weight: 700; color: #303030; margin-top: 2px; }
+.famdays { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 10px; }
+.famday { display: flex; flex-direction: column; align-items: center; min-width: 66px; padding: 8px 10px; border-radius: 12px; background: #fff; color: #303030; border: 1px solid #e1e3e9; font: inherit; }
+.famday b { font-size: 20px; }
+.famday span { font-size: 11px; color: #8a8f9c; white-space: nowrap; }
+.pt-vault { display: inline-block; margin-top: 10px; font-weight: 600; color: #5f7990; }
+.tscreen input[type=search] { width: 100%; min-height: 40px; font-size: 15px; border-radius: 10px; border: 1px solid #e1e3e9; background: #f3f4f7; color: #22252e; padding: 0 10px; margin-bottom: 6px; -webkit-appearance: none; appearance: none; }
+.pt-switch.three .pt-tab { font-size: 15px; padding: 0 6px; white-space: nowrap; }
+.pt-bizrow { margin: 10px 0 4px; }
+.pt-bizhead { display: flex; align-items: center; justify-content: space-between; padding: 0 2px 2px; }
+.pt-bizhead .linkbtn { min-height: 32px; }
+.pt-bizrow .dmy { display: grid; grid-template-columns: 0.85fr 1.15fr 1.2fr; gap: 6px; }
+.pt-bizrow input { width: 100%; min-height: 40px; font-size: 15px; border-radius: 10px; border: 1px solid #e1e3e9; background: #f3f4f7; color: #22252e; padding: 0 10px; }

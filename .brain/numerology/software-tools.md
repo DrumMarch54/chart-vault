@@ -15,11 +15,12 @@ Chart Vault. The books that describe each one are in the owner's Drive; page num
 | Price tool | **Price tool** | Marketing Numerology pp. 37-55 (clean prices, digit-sum prices, no-go prices, the $100-$900 prices, the example prices, the tool's two steps); The Numbers 10-99 in Business (words + color of every number); Module 12 pp. 4, 10 (which numbers suit which customers / purposes). See "Prices" below. |
 | My chart (the owner's own numbers) | **My chart** (Settings), `server/mychart.js` | app's own |
 | House number tool | not built | Marketing Numerology pp. 27-35 |
-| Business words / name lists by vibration | not built | Marketing Numerology pp. 55-58 |
-| Domain & email tool, phone number tool | not built | Business education theme 3 (transcripts) |
-| Super Date finder (pick an event, get dates) | not built (Coming days + Super only covers part) | Superdates Cosmic Calendar (12 MB, pp. ?) |
-| Plan with your Year Rows (search good combos) | not built | Forecasting book p. 392-393 (dr p. 1068) |
-| Walkthrough, Celebrities, Astrology, Tree of Life, Statistics, Quiz, Templates | not built | not needed for now |
+| Business words / name lists by vibration | **Business Words** (`#/words`, tools.js `wordsView`, server/words.js, public/placewords.js) | Marketing Numerology pp. 55-58 (built 2026-10-20) |
+| Domain & email tool, phone number tool, house number | **Phone and Domain** (`#/phone`), **House Number** (`#/house`) | Business education theme 3 (transcripts), Marketing Numerology house guide (built 2026-10-20) |
+| Super Date finder (pick an event, get dates) | **Find a Date** (`#/finddate`, `NumberTools.findDates`): purpose → the book's day numbers, Super and Good days only, the company fit table | Superdates Cosmic Calendar ch. 8: the "strategic resonance map" table (knowledge/raw/biz-superdates-cosmic-calendar.md line 5649) and step 3 "Superdates and Company Resonance" (built 2026-10-20) |
+| Plan with your Year Rows (search good combos) | **Plan With Year Rows** (`#/planrows`, `NumberTools.rowHits`): the good and difficult lists as chips, hits named and ringed in the same table as the Year Rows popup (app.js `rowsTable`) | Forecasting book "TOOL: Plan with your Year Rows" (knowledge/raw/forecasting-book.md line 1609: GOOD 10/1 13/4 14/5 15/6 17/8 5-3-8 5-5-10/1 5-8-13/4; DIFFICULT 11/2 12/3 16/7 18/9 44/8; built 2026-10-20) |
+| Celebrities / Statistics | **Famous People** (`#/famous`, public/celebrities.js from the Humanity Archetyping results book): by birthday and by career, the vault's charts born that day | knowledge/raw/humanity-archetyping-book.md (built 2026-10-20) |
+| Walkthrough, Astrology, Tree of Life, Quiz, Templates | not built | not needed for now |
 
 ## Where the day positions come from (Today / Coming days)
 Forecasting p. 20-21, 24.12.1999: day vibration 24/6 bottom, month 12/3 top-left, year 28/1 top-right.
