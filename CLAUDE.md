@@ -5,10 +5,6 @@ Give them numbered steps in plain words and say what they will see. Never ask
 them to read code or run a command. The reply style is injected on every
 message from `.claude/response-style.txt` (hook in `.claude/settings.json`).
 Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
-The numerology teaching material (Numerologist PRO course, name change, business
-numerology) is in the owner's Google Drive; `.brain/SOURCES.md` maps every folder
-and file id. Read it there with the Drive tools before designing any numerology
-feature; never say you do not know where the reference material is.
 
 ## Deploy
 - Production follows the `main` branch. Push with `git push origin <branch>:main`,
