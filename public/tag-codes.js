@@ -16,7 +16,7 @@
     pmd: 'Personality mental diamond', ped: 'Personality emotional diamond', personalitychart: 'Personality chart', vocationchart: 'Vocation chart',
     opms: 'Outer psyche mental strategies', ipms: 'Inner psyche mental strategies', oms: 'Outer psyche mental strategies',
     opled: 'Outer psyche life expression diamond', ople: 'Outer psyche life expression diamond', pled: 'Outer psyche life expression diamond',
-    osle: 'Outer psyche life expression', ipled: 'Inner psyche life expression diamond', mentalflow: 'Mental flow',
+    osle: 'Outer psyche life expression', ipled: 'Inner psyche life expression diamond', mentalflow: 'Mental flow', emotionalflow: 'Emotional flow',
   };
   const digitSum = (n) => { n = Math.abs(Math.trunc(n)); while (n > 9) n = String(n).split('').reduce((a, d) => a + Number(d), 0); return n; };
   const num = (n) => (n < 10 ? String(n) : `${n}/${digitSum(n)}`);

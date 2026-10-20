@@ -43,3 +43,18 @@ Name the chart in the name whenever a position exists in several charts: "Name M
 Diamond", "Outer Psyche Spine", never a bare "Spine" or "Mind Center". Positions only one chart has stay bare
 (Public Aura, Life Expression, Name Line Diamond, DVLP, Outer Diamond). Abbreviate the owner's way to save
 room (DVLP), Title Case. `positionName` in server/similar.js is the one place that spells these.
+
+## Owner's corrections 2026-10-20 (read before naming anything)
+- A NUMEROSCOPE chart is any rhombus (diamond-shaped) chart: the name chart, the vocation (vowel) chart, the
+  personality (consonant) chart, the outer psyche and the inner psyche. The essence / Higher Self chart is the
+  hexagon from the date alone and is NOT a numeroscope. Every numeroscope has a spine, a spine diamond, a mind
+  center, an emotion center, a mental diamond, an emotional diamond, a pillar.
+- Challenge numbers: the outer psyche's line-left (outer aura ds, lifted into 10-18) and the inner psyche's
+  line-left (the month). The CHALLENGE DIAMOND is those two challenge numbers' digit sums side by side, outer
+  first. Seen from the essence chart that is the Higher Self outer aura beside the month: the same number from a
+  different angle. The app's formula was already that; the words were wrong.
+- Line diamonds: first beside last when there is no middle name, in EVERY name-based chart: Name Line
+  Diamond, Vocation Line Diamond, Personality Line Diamond. The psyche charts' version is the Life Expression
+  Diamond (month-side beside year).
+- Mental Flow = outer psyche mind center ds beside inner psyche mind center ds. EMOTIONAL FLOW = outer psyche
+  emotion center ds beside inner psyche emotion center ds (added to the engine 2026-10-20, tag code emotionalflow).
