@@ -1,6 +1,6 @@
 {
   "name": "chart-vault",
-  "version": "0.1.0",
+  "version": "0.8.0",
   "private": true,
   "description": "Safe copy of numerology chart screenshots and their tags",
   "type": "module",
@@ -14,6 +14,7 @@
     "dev": "node tools/dev-app.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.135.0",
     "archiver": "^8.0.0",
     "better-sqlite3": "^13.0.3",
     "express": "^4.22.3",

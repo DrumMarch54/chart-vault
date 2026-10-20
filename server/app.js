@@ -4,19 +4,37 @@ import fs from 'node:fs';
 import { config } from './config.js';
 import { requireAuth, isAuthed, NO_TOKEN_MSG, passwordMatches, setSessionCookie, clearSessionCookie, isValidSession, loginAllowed, recordFailure, clearFailures } from './auth.js';
 import { parseUserTagBackup, importTags, addTagToImage, removeTagFromImage, markAlbumMember, ImportError } from './import.js';
-import { receiveUpload, UploadError, fullPathFor, thumbPathFor, makeThumb, findLostFiles } from './storage.js';
-import { listImages, getImage, imageContext, suggestTags, allTags, statusReport, exportTags } from './queries.js';
+import { receiveUpload, createQuickChart, UploadError, fullPathFor, thumbPathFor, makeThumb, findLostFiles } from './storage.js';
+import { deleteImage, restoreImage, listDeleted, trashFilePath, findDuplicates, keepDuplicates, TrashError } from './trash.js';
+import { similarCharts } from './similar.js';
+import { listImages, getImage, imageContext, suggestTags, allTags, tagNames, statusReport, exportTags, bumpUsage, usageReport } from './queries.js';
 import { runBackup, streamZip, isBackupRunning } from './backup.js';
+import { setTitle, acceptTitle, titlesToCheck, titleStats, suggestNames, MAX_TITLE } from './titles.js';
 import { snapshot } from './snapshot.js';
+import { getMyChart, setMyChart } from './mychart.js';
 import { deployGuard } from './deployguard.js';
+import { catalog, positionCounts, parseNumber, parseCondition, parseFixed, getInputs, setInputs, clearInputs, valuesFor, recomputeAll, inputStats, tagCheck, InputError } from './positions.js';
 import { COMMIT } from './build.js';
 import { paths } from './config.js';
+import { aiSettings, setAiSettings, spendState, pendingWarning, markWarningSeen, AiError } from './ai.js';
+import { readingFor, writeReading, answerQuestion, deleteReadings, readingEstimate, readingChoices } from './reading.js';
+import { askVault } from './ask.js';
+import { factsFor } from './facts.js';
+import { meaningFor, countWith } from './meaning.js';
+import { wordsFor, wordInfo } from './words.js';
 
 const MAX_IMPORT = 50 * 1024 * 1024;
 
 function asList(v) {
   if (v === undefined || v === null || v === '') return [];
   return (Array.isArray(v) ? v : [v]).map(String).filter((s) => s.length);
+}
+// ?pos=name.heart&num=12 (or num=/3 for a digit sum): the position search. pos and num may repeat, pairwise
+// (?pos=essence.day&num=8&pos=name.first&num=15): a chart must meet every pair. A pair that cannot be read
+// is dropped, not an error.
+function positionsOf(q) {
+  const pos = asList(q.pos), num = asList(q.num);
+  return pos.map((p, i) => parseCondition(p, num[i])).filter(Boolean);
 }
 
 export function createApp(db, { log = console.log } = {}) {
@@ -99,27 +117,131 @@ export function createApp(db, { log = console.log } = {}) {
   app.use('/api', requireAuth);
   app.use(['/img', '/thumb'], requireAuth);
 
-  // Browse
+  // Browse. ?drawn=1 = only charts the app draws itself (name and date known), ?drawn=0 = only the ones
+  // still shown as the screenshot; nothing = every chart.
+  const drawnOf = (q) => (q.drawn === '1' ? true : q.drawn === '0' ? false : null);
   app.get('/api/images', (req, res) => {
     const limit = Math.min(Math.max(Number(req.query.limit) || 60, 1), 200);
     const offset = Math.max(Number(req.query.offset) || 0, 0);
-    res.json(listImages(db, { tags: asList(req.query.tag), onlyUploaded: req.query.uploaded === '1', kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', limit, offset }));
+    const ids = req.query.ids ? String(req.query.ids).split(',').map(Number) : null;
+    res.json(listImages(db, { tags: asList(req.query.tag), positions: positionsOf(req.query), name: String(req.query.name || ''), onlyUploaded: req.query.uploaded === '1', kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', limit, offset, ids, drawn: drawnOf(req.query) }));
   });
   app.get('/api/images/:id', (req, res) => {
     const img = getImage(db, Number(req.params.id));
     if (!img) return res.status(404).json({ error: 'No such chart.' });
     res.json(img);
   });
+  // Delete a chart (owner's ask 2026-10-19): the picture goes to the trash folder and the whole record is
+  // kept, so Settings -> Deleted Charts can put it back. Nothing is ever lost; imports skip the filename.
+  app.delete('/api/images/:id', express.json({ limit: '2kb' }), (req, res, next) => {
+    try {
+      const img = getImage(db, Number(req.params.id));
+      if (!img) return res.status(404).json({ error: 'No such chart.' });
+      const r = deleteImage(db, img.id, { reason: String((req.body && req.body.reason) || '') });
+      log(`chart deleted by owner #${img.id} ${img.filename} "${img.title || ''}" (${r.tags} tags, picture ${r.file_kept ? 'moved to trash' : 'none'})${r.deleted_id ? ` -> deleted #${r.deleted_id}` : ''}`);
+      res.json(r);
+    } catch (err) { if (err instanceof TrashError) return res.status(err.status).json({ error: err.message }); next(err); }
+  });
+  app.get('/api/deleted', (req, res) => res.json({ items: listDeleted(db) }));
+  app.get('/api/deleted/:id/thumb', (req, res) => {
+    const p = trashFilePath(db, Number(req.params.id));
+    if (!p) return res.status(404).json({ error: 'No picture kept for this chart.' });
+    res.sendFile(p);
+  });
+  app.post('/api/deleted/:id/restore', (req, res, next) => {
+    try {
+      const r = restoreImage(db, Number(req.params.id));
+      log(`chart restored by owner #${r.id} ${r.filename} "${r.title || ''}"`);
+      res.json({ ...r, image: getImage(db, r.id) });
+    } catch (err) { if (err instanceof TrashError) return res.status(err.status).json({ error: err.message }); next(err); }
+  });
+  // Possible duplicates: same picture, or same typed name and birth date. Listed only; the owner decides.
+  app.get('/api/duplicates', (req, res) => res.json(findDuplicates(db)));
+  app.post('/api/duplicates/keep', express.json({ limit: '10kb' }), (req, res, next) => {
+    try { res.json(keepDuplicates(db, req.body && req.body.ids)); } catch (err) { if (err instanceof TrashError) return res.status(err.status).json({ error: err.message }); next(err); }
+  });
   app.get('/api/images/:id/context', (req, res) => {
     const id = Number(req.params.id);
     if (!getImage(db, id)) return res.status(404).json({ error: 'No such chart.' });
-    res.json(imageContext(db, id, { tags: asList(req.query.tag), kind: req.query.kind === 'archetype' ? 'archetype' : 'chart' }));
+    res.json(imageContext(db, id, { tags: asList(req.query.tag), positions: positionsOf(req.query), name: String(req.query.name || ''), kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', drawn: drawnOf(req.query) }));
+  });
+
+  // Who a chart is: the name under the thumbnail. The owner types or fixes it ("Who is this?"), or
+  // confirms a seeded one; "Names to check" lists the ones still waiting on them.
+  app.put('/api/images/:id/title', express.json({ limit: '10kb' }), (req, res) => {
+    const img = getImage(db, Number(req.params.id));
+    if (!img) return res.status(404).json({ error: 'No such chart.' });
+    if (typeof req.body?.title !== 'string') return res.status(400).json({ error: 'Type a name first.' });
+    if (req.body.title.trim().length > MAX_TITLE) return res.status(400).json({ error: `That name is too long (${MAX_TITLE} letters at most).` });
+    const title = setTitle(db, img.id, req.body.title);
+    log(`name set by owner for #${img.id} ${img.filename}: "${title}" (was "${img.title || ''}")`);
+    res.json({ title, image: getImage(db, img.id) });
+  });
+  app.post('/api/images/:id/title/ok', (req, res) => {
+    const img = getImage(db, Number(req.params.id));
+    if (!img) return res.status(404).json({ error: 'No such chart.' });
+    acceptTitle(db, img.id);
+    res.json({ ok: true, image: getImage(db, img.id) });
+  });
+  app.get('/api/titles/check', (req, res) => res.json({ items: titlesToCheck(db), ...titleStats(db) }));
+  app.get('/api/names', (req, res) => res.json(suggestNames(db, String(req.query.q || ''), { kind: req.query.kind === 'archetype' ? 'archetype' : 'chart' })));
+
+  // Search by chart position: the catalog of positions, how many charts hold a number in each,
+  // and one chart's typed inputs with everything computed from them.
+  app.get('/api/positions', (req, res) => res.json(catalog()));
+  app.get('/api/positions/counts', (req, res) => {
+    const num = parseNumber(req.query.num);
+    if (!num) return res.status(400).json({ error: 'Type a number first, like 12 or 12/3.' });
+    res.json(positionCounts(db, num, parseFixed(req.query.fixed)));
+  });
+  // Charts like this one: every other chart scored by positions holding the same number (server/similar.js).
+  app.get('/api/images/:id/similar', (req, res) => {
+    const img = getImage(db, Number(req.params.id));
+    if (!img) return res.status(404).json({ error: 'No such chart.' });
+    if (!getInputs(db, img.id)) return res.status(400).json({ error: 'This chart has no name and date read yet, so nothing can be compared. Swipe up and tap "Type them".' });
+    res.json(similarCharts(db, img.id, { by: String(req.query.by || 'all'), limit: Math.min(Math.max(Number(req.query.limit) || 60, 1), 200) }));
+  });
+  app.get('/api/images/:id/numbers', (req, res) => {
+    const img = getImage(db, Number(req.params.id));
+    if (!img) return res.status(404).json({ error: 'No such chart.' });
+    res.json({ inputs: getInputs(db, img.id), charts: valuesFor(db, img.id) });
+  });
+  // The owner fixes a misread name or date (or types one for a chart nobody could read): recomputes at once.
+  app.put('/api/images/:id/inputs', express.json({ limit: '10kb' }), (req, res, next) => {
+    try {
+      const img = getImage(db, Number(req.params.id));
+      if (!img) return res.status(404).json({ error: 'No such chart.' });
+      const b = req.body || {};
+      if (b.clear) { clearInputs(db, img.id); log(`inputs cleared for #${img.id} ${img.filename}`); return res.json({ inputs: null, charts: [] }); }
+      const inputs = setInputs(db, img.id, { day: b.day, month: b.month, year: b.year, name: b.name }, { source: 'owner' });
+      log(`inputs set by owner for #${img.id} ${img.filename}: ${inputs.day || '?'}.${inputs.month || '?'}.${inputs.year || '?'} "${inputs.name}"`);
+      res.json({ inputs, charts: valuesFor(db, img.id) });
+    } catch (err) {
+      if (err instanceof InputError) return res.status(400).json({ error: err.message });
+      next(err);
+    }
+  });
+  app.post('/api/positions/recompute', (req, res) => {
+    const n = recomputeAll(db);
+    log(`recomputed the chart numbers of ${n} charts`);
+    res.json({ recomputed: n, ...inputStats(db), check: tagCheck(db) });
+  });
+  // What a number means in a position (a number tapped twice on a drawn chart): the course's words, the balance
+  // verdict and how many vault charts hold it there. ?pair=13 = the numbers sharing its circle (a center's main and
+  // extra vibrations); ?rel=mindDiamond:61,... = the diamonds behind it on the same chart, each with its own count.
+  app.get('/api/meaning', (req, res) => {
+    const pair = String(req.query.pair || '').split(',').map(Number).filter((x) => Number.isInteger(x) && x > 0).slice(0, 4);
+    const rel = String(req.query.rel || '').split(',').map((x) => x.split(':')).filter((x) => x.length === 2).map(([position, sum]) => ({ position, sum: Number(sum) })).slice(0, 4);
+    const m = meaningFor({ chart: String(req.query.chart || ''), position: String(req.query.position || ''), sum: Number(req.query.sum), pair, rel });
+    if (!m) return res.status(400).json({ error: 'That position or number is not one the app knows.' });
+    res.json({ ...m, count: countWith(db, m.chart, m.position, m.sum), related: m.related.map((r) => ({ ...r, count: countWith(db, r.chart, r.position, r.sum) })) });
   });
   app.get('/api/tags', (req, res) => {
     const limit = Math.min(Math.max(Number(req.query.limit) || 30, 1), 200);
     res.json(suggestTags(db, { q: String(req.query.q || ''), within: asList(req.query.within), kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', limit }));
   });
   app.get('/api/tags/all', (req, res) => res.json(allTags(db)));
+  app.get('/api/tags/names', (req, res) => res.json(tagNames(db)));
 
   // Edit tags on one chart
   app.post('/api/images/:id/tags', express.json({ limit: '10kb' }), (req, res) => {
@@ -228,14 +350,110 @@ export function createApp(db, { log = console.log } = {}) {
     }
   });
 
+  // Quick chart "Save to vault": the page sends the drawn chart as a PNG; it becomes a chart record
+  // tagged with the typed name, like any uploaded screenshot.
+  app.put('/api/quick/save', async (req, res, next) => {
+    lastUpload = Date.now();
+    let made = null;
+    try {
+      made = createQuickChart(db, { name: req.query.name, date: req.query.date });
+      const result = await receiveUpload(db, req, { filename: made.filename, sha256Header: req.get('x-sha256') });
+      log(`quick chart saved #${result.id} ${made.filename} (${result.size} bytes)`);
+      res.json(result);
+    } catch (err) {
+      if (made) db.prepare('DELETE FROM images WHERE id = ? AND stored_path IS NULL').run(made.id);
+      if (err instanceof UploadError) { log(`quick chart save refused: ${err.message}`); return res.status(err.status).json({ error: err.message }); }
+      next(err);
+    }
+  });
+
+  // Which buttons and screens get used: a name and a count, nothing else.
+  // Always 200: a count may never fail a tap, and a bad name is just dropped.
+  app.post('/api/usage', express.json({ limit: '2kb' }), (req, res) => {
+    let counted = false;
+    try { counted = bumpUsage(db, req.body && req.body.name); } catch (err) { log(`usage: ${err && err.message}`); }
+    res.json({ ok: true, counted });
+  });
+  app.get('/api/usage', (req, res) => res.json(usageReport(db)));
+  // Business Words: English words worth a number (?value=19), or one word's numbers (?word=coach). server/words.js.
+  app.get('/api/words', (req, res) => {
+    if (req.query.word !== undefined) { const i = wordInfo(req.query.word); return i ? res.json(i) : res.status(400).json({ error: 'Type a word with letters in it.' }); }
+    const n = Number(req.query.value);
+    if (!(n >= 1 && n <= 99)) return res.status(400).json({ error: 'Pick a number from 1 to 99.' });
+    res.json(wordsFor(n, { limit: Math.min(Math.max(Number(req.query.limit) || 60, 1), 200), offset: Math.max(Number(req.query.offset) || 0, 0), start: req.query.start }));
+  });
+
+  // My chart: the owner's own name and birth date (server/mychart.js), for the tools that start from a person.
+  app.get('/api/mychart', (req, res) => res.json(getMyChart()));
+  app.put('/api/mychart', express.json({ limit: '4kb' }), (req, res) => {
+    const b = req.body || {};
+    const day = Number(b.day) || 0, month = Number(b.month) || 0, year = Number(b.year) || 0;
+    const any = day || month || year;
+    if (any && !(day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 1000 && year <= 9999)) return res.status(400).json({ error: 'The birth date needs a day (1-31), a month (1-12) and a four-digit year.' });
+    const saved = setMyChart(b);
+    log(`my chart saved: ${saved.name ? 'name set' : 'no name'}, date ${saved.day ? 'set' : 'not set'}`);
+    res.json(saved);
+  });
+
+  // --- AI: readings, questions, the vault search; the key, the cap and the spend (server/ai.js) ---
+  // The key never comes back out: the settings answer says set / not set and the last 4 characters.
+  app.get('/api/ai/settings', (req, res) => res.json({ ...aiSettings(), warning: pendingWarning() }));
+  app.put('/api/ai/settings', express.json({ limit: '4kb' }), (req, res, next) => {
+    try {
+      const b = req.body || {};
+      const out = setAiSettings({ key: typeof b.key === 'string' ? b.key : undefined, cap: b.cap });
+      log(`ai settings saved: key ${out.key_set ? 'set' : 'cleared'}, cap $${out.cap}`);
+      res.json(out);
+    } catch (err) { if (err instanceof AiError) return res.status(400).json({ error: err.message }); next(err); }
+  });
+  app.get('/api/ai/spend', (req, res) => res.json({ ...spendState(), warning: pendingWarning() }));
+  app.post('/api/ai/warning-seen', express.json({ limit: '1kb' }), (req, res) => { markWarningSeen(req.body && req.body.level); res.json({ ok: true }); });
+  // Rule-based facts about one chart: free, instant, no AI.
+  app.get('/api/images/:id/facts', (req, res) => {
+    const img = getImage(db, Number(req.params.id));
+    if (!img) return res.status(404).json({ error: 'No such chart.' });
+    res.json(factsFor(db, img.id));
+  });
+  app.get('/api/images/:id/reading', (req, res) => {
+    const img = getImage(db, Number(req.params.id));
+    if (!img) return res.status(404).json({ error: 'No such chart.' });
+    res.json({ ...readingFor(db, img.id), estimate: readingEstimate(db, img.id), choices: readingChoices(), spend: spendState(), warning: pendingWarning() });
+  });
+  const aiRoute = (fn) => async (req, res, next) => {
+    const img = getImage(db, Number(req.params.id));
+    if (!img) return res.status(404).json({ error: 'No such chart.' });
+    try { res.json(await fn(img, req.body || {})); } catch (err) { if (err instanceof AiError) return res.status(400).json({ error: err.message }); next(err); }
+  };
+  app.post('/api/images/:id/reading', express.json({ limit: '2kb' }), aiRoute(async (img, body) => {
+    const r = await writeReading(db, img.id, { length: body.length, focus: body.focus, note: body.note }, { force: !!body.force });
+    if (!r.cached) log(`reading written for #${img.id} (${r.reading.label}): $${r.usd} in ${r.seconds}s`);
+    return { ...r, spend: spendState(), warning: pendingWarning() };
+  }));
+  app.delete('/api/images/:id/reading', aiRoute(async (img) => ({ deleted: deleteReadings(db, img.id), ...readingFor(db, img.id) })));
+  app.post('/api/images/:id/ask', express.json({ limit: '4kb' }), aiRoute(async (img, body) => {
+    const r = await answerQuestion(db, img.id, body.question, { length: body.length });
+    return { ...r, spend: spendState(), warning: pendingWarning() };
+  }));
+  app.post('/api/ask', express.json({ limit: '4kb' }), async (req, res, next) => {
+    try {
+      const r = await askVault(db, req.body && req.body.question);
+      log(`ask: ${r.ids.length} charts, ${r.turns} turns, $${r.usd}`);
+      res.json({ ...r, spend: spendState(), warning: pendingWarning() });
+    } catch (err) { if (err instanceof AiError) return res.status(400).json({ error: err.message }); next(err); }
+  });
+
   // Status, export, backup
   app.get('/api/status', (req, res) => {
     const report = statusReport(db);
+    report.usage = usageReport(db, 40);
     report.lost_files = findLostFiles(db);
     report.disk = diskInfo();
     report.version = appVersion();
     report.commit = COMMIT;
     report.updates = deployGuard();
+    report.positions = inputStats(db);
+    report.positions.check = (({ tags, agree, disagree, unknown }) => ({ tags, agree, disagree, unknown }))(tagCheck(db));
+    report.ai = aiSettings();
     res.json(report);
   });
   app.get('/api/export/tags.json', (req, res) => {

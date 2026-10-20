@@ -68,10 +68,11 @@ async function screens(dir) {
   if (await page.locator('input[type=password]').count()) {
     await page.fill('input[type=password]', TOKEN);
     await page.click('button[type=submit]');
-    try { await page.waitForSelector('#nav:not(.hidden)', { timeout: 15000 }); }
+    try { await page.waitForSelector('.searchbar', { timeout: 15000 }); }
     catch { console.error('Login was refused.'); await browser.close(); process.exit(3); }
   }
-  const shots = [['browse', '#/'], ['upload', '#/upload'], ['tags', '#/import'], ['status', '#/status']];
+  const shots = [['browse', '#/'], ['position', '#/position'], ['alltags', '#/tags'], ['quick', '#/quick'], ['upload', '#/upload'], ['tags', '#/import'], ['status', '#/status'],
+    ['today', '#/today'], ['coming', '#/coming'], ['numberfun', '#/numberfun'], ['price', '#/price'], ['relation', '#/relation'], ['karmic', '#/karmic'], ['mychart', '#/mychart'], ['ask', '#/ask'], ['ai', '#/ai']];
   for (const [name, hash] of shots) {
     await page.goto(URL_BASE + '/' + hash, { waitUntil: 'networkidle' }).catch(() => {});
     await page.waitForTimeout(1200);

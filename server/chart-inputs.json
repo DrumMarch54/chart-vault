@@ -1,0 +1,5479 @@
+[
+{
+"filename": "IMG-20241110-WA0000.jpg",
+"day": 16,
+"month": 12,
+"year": 1974,
+"name": "Paul Allen Stover",
+"source": "read"
+},
+{
+"filename": "Screenshot_20240908_093458_Firefox.jpg",
+"day": 25,
+"month": 5,
+"year": 1993,
+"name": "Janice Yu",
+"source": "read"
+},
+{
+"filename": "Screenshot_20240910_115242_Firefox.jpg",
+"day": 8,
+"month": 9,
+"year": 2001,
+"name": "Eduardo Juanez Castañeda",
+"source": "read"
+},
+{
+"filename": "Screenshot_20240910_130628_Firefox.jpg",
+"day": 5,
+"month": 12,
+"year": 1979,
+"name": "BALDEMAR BALDERRAMA",
+"source": "read"
+},
+{
+"filename": "Screenshot_20240910_134454_Firefox.jpg",
+"day": 5,
+"month": 1,
+"year": 1979,
+"name": "Kevin Scott Ingham",
+"source": "read"
+},
+{
+"filename": "Screenshot_20240910_134637_Firefox.jpg",
+"day": 13,
+"month": 3,
+"year": 1975,
+"name": "Erica Karen Ingham",
+"source": "read"
+},
+{
+"filename": "Screenshot_20240916_090111_Firefox.jpg",
+"day": 25,
+"month": 5,
+"year": 1958,
+"name": "Marci Ann Mccullough",
+"source": "read"
+},
+{
+"filename": "Screenshot_20240916_092448_Firefox.jpg",
+"day": 20,
+"month": 6,
+"year": 1970,
+"name": "Tina Genene Lowry",
+"source": "read"
+},
+{
+"filename": "Screenshot_20240916_093116_Firefox.jpg",
+"day": 19,
+"month": 2,
+"year": 1964,
+"name": "Enrique Silva",
+"source": "read"
+},
+{
+"filename": "Screenshot_20240916_093353_Firefox.jpg",
+"day": 1,
+"month": 5,
+"year": 1989,
+"name": "Elias George richdan",
+"source": "read"
+},
+{
+"filename": "Screenshot_20240925_135448_Firefox.jpg",
+"day": 29,
+"month": 12,
+"year": 2003,
+"name": "Armando Gomez Beltran",
+"source": "read"
+},
+{
+"filename": "Screenshot_20240927_045528_Firefox.jpg",
+"day": 2,
+"month": 6,
+"year": 1975,
+"name": "Jason J McCullough",
+"source": "read"
+},
+{
+"filename": "Screenshot_20240929_203506_Firefox.jpg",
+"day": 13,
+"month": 3,
+"year": 1975,
+"name": "Erica Karen Ingham",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241008_065849_Discord.jpg",
+"day": 30,
+"month": 12,
+"year": 1977,
+"name": "Frank Seferlis",
+"source": "read",
+"note": "Header says FRANK SEFERLIS birthday 30.12.1977; name line is below the crop so capitalization as typed is unconfirmed (header is all caps). Day matches big center circle 30/3."
+},
+{
+"filename": "Screenshot_20241008_210841_Firefox.jpg",
+"day": 19,
+"month": 2,
+"year": null,
+"name": "Enrique Silva",
+"source": "read",
+"note": "Compact triangle view, no circles or year. Month from top-left corner 2/2, day from apex 19/1. Year not shown (same person as id 11, which shows 1964). Middle of name line not visible."
+},
+{
+"filename": "Screenshot_20241008_210919_Firefox.jpg",
+"day": 13,
+"month": 3,
+"year": null,
+"name": "Erica Karen Ingham",
+"source": "read",
+"note": "Compact triangle view, no year shown (only 22/4). Month from corner 3/3, day from apex 13/4. Same person as ids 6 and 19 (1975)."
+},
+{
+"filename": "Screenshot_20241012_094019_Firefox.jpg",
+"day": 12,
+"month": 7,
+"year": 2001,
+"name": "Jewell Valentine Airhart",
+"source": "read",
+"note": "Header says JEWELL VALENTINE AIRHART birthday 12.7.2001; name line is below the crop so capitalization as typed is unconfirmed. Day matches big center circle 12/3."
+},
+{
+"filename": "Screenshot_20241101_114453_Firefox.jpg",
+"day": 9,
+"month": 7,
+"year": 1973,
+"name": "Jason Matthew Breshears",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241103_142124_Firefox.jpg",
+"day": 23,
+"month": 7,
+"year": 1996,
+"name": "Jacob Grant Parsons",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241103_142257_Firefox.jpg",
+"day": 4,
+"month": 12,
+"year": 1984,
+"name": "Jason Bradley DeFord",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241103_142327_Firefox.jpg",
+"day": 9,
+"month": 6,
+"year": 1996,
+"name": "Jianfeng Zhao",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241103_142546_Firefox.jpg",
+"day": 29,
+"month": 3,
+"year": 1987,
+"name": "Joshua John Provencio",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241103_144036_Firefox.jpg",
+"day": 10,
+"month": 10,
+"year": 1997,
+"name": "Christopher Ellis Collier",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241103_153332_Firefox.jpg",
+"day": 29,
+"month": 5,
+"year": 1997,
+"name": "Trevor Dean Copeland",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241103_153357_Firefox.jpg",
+"day": 1,
+"month": 11,
+"year": 1866,
+"name": "William John Warner",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241103_170534_Gallery.jpg",
+"day": 23,
+"month": 1,
+"year": 1993,
+"name": "Said Alvarez",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241103_172256_Firefox.jpg",
+"day": 30,
+"month": 12,
+"year": 1977,
+"name": "Frank Seferlis",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241105_223731_Firefox.jpg",
+"day": 28,
+"month": 7,
+"year": 1995,
+"name": "Brandon Buckingham",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241105_231943_Firefox.jpg",
+"day": 24,
+"month": 12,
+"year": 1987,
+"name": "Janek Rubeš",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241106_005940_Firefox.jpg",
+"day": 28,
+"month": 7,
+"year": 1969,
+"name": "Dana Frederick White Jr",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241106_022406_Firefox.jpg",
+"day": 4,
+"month": 4,
+"year": 2005,
+"name": "Matthew Peter DeLuca",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241111_160418_Firefox.jpg",
+"day": 7,
+"month": 6,
+"year": 2000,
+"name": "Benjamin Michael Spande",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241114_221639_Firefox.jpg",
+"day": 12,
+"month": 12,
+"year": 2000,
+"name": "Jideon Armani Adams",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241119_043628_Firefox.jpg",
+"day": 29,
+"month": 11,
+"year": 1955,
+"name": "Howard Michael Mandel",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241122_014945_Firefox.jpg",
+"day": 4,
+"month": 10,
+"year": 2000,
+"name": "Kendrick Curry",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241125_200812_Firefox.jpg",
+"day": 9,
+"month": 7,
+"year": 1993,
+"name": "Thomas Brag",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241126_012045_Firefox.jpg",
+"day": 17,
+"month": 9,
+"year": 1975,
+"name": "Keven Hodge",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241126_012117_Firefox.jpg",
+"day": 17,
+"month": 9,
+"year": 1975,
+"name": "Keith Hodge",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241126_233545_Gallery.jpg",
+"day": 2,
+"month": 9,
+"year": 1957,
+"name": "Charles Francis Olds",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241127_132914_Firefox.jpg",
+"day": 7,
+"month": 4,
+"year": 2005,
+"name": "Allie Sherlock",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241127_232642_Firefox.jpg",
+"day": 17,
+"month": 1,
+"year": 1962,
+"name": "James Eugene Carrey",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241127_233721_Desktop Web Browser.jpg",
+"day": 19,
+"month": 12,
+"year": 1967,
+"name": "Christopher Nicholas Sarantakos",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241127_235050_Desktop Web Browser.jpg",
+"day": 20,
+"month": 7,
+"year": 1997,
+"name": "Emerson Lee Hager",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241127_235651_Desktop Web Browser.jpg",
+"day": 28,
+"month": 6,
+"year": 1974,
+"name": "Robert Stanley Dyrdek",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241128_000012_Desktop Web Browser.jpg",
+"day": 6,
+"month": 1,
+"year": 1990,
+"name": "Robert Nesta Marley",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241128_000603_Desktop Web Browser.jpg",
+"day": 29,
+"month": 5,
+"year": 1975,
+"name": "Daniel Dwight Tosh",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241128_001708_Desktop Web Browser.jpg",
+"day": 28,
+"month": 1,
+"year": 1998,
+"name": "Eli Thomas Kentner",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241128_003727_Desktop Web Browser.jpg",
+"day": 27,
+"month": 7,
+"year": 1997,
+"name": "Collin Keith Armstrong",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241128_010246_Desktop Web Browser.jpg",
+"day": 18,
+"month": 2,
+"year": 1995,
+"name": "Travis Wayne Compton",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241128_012420_Desktop Web Browser.jpg",
+"day": 4,
+"month": 8,
+"year": 1961,
+"name": "Barack Hussein Obama II",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241128_012922_Desktop Web Browser.jpg",
+"day": 15,
+"month": 7,
+"year": 1967,
+"name": "Adam Whitney Savage",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241128_014831_Desktop Web Browser.jpg",
+"day": 12,
+"month": 6,
+"year": 1962,
+"name": "Jordan Bernt Peterson",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241128_015920_Desktop Web Browser.jpg",
+"day": 19,
+"month": 2,
+"year": 1963,
+"name": "José Antonio Díaz",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241128_020145_Desktop Web Browser.jpg",
+"day": 11,
+"month": 8,
+"year": 1967,
+"name": "Joseph James Rogan",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241128_023025_Desktop Web Browser.jpg",
+"day": 24,
+"month": 1,
+"year": 1992,
+"name": "David Khari Webber Chappelle",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241201_013648_Firefox.jpg",
+"day": 19,
+"month": 3,
+"year": 1980,
+"name": "Theodor Capitani von Kurnatowski III",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241202_060042_Desktop Web Browser.jpg",
+"day": 30,
+"month": 3,
+"year": 1965,
+"name": "Piers Stefan Pughe-Morgan",
+"source": "read"
+},
+{
+"filename": "Screenshot_20241224_200254_Firefox.jpg",
+"day": 21,
+"month": 8,
+"year": 1987,
+"name": "Anthony Lees",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250111_234455_Firefox.jpg",
+"day": 30,
+"month": 6,
+"year": 1966,
+"name": "Michael Gerard Tyson",
+"source": "read",
+"note": "White chart card with title banner, no input boxes visible. Name from banner. Bold number under inverted triangle is 30/3 (likely day 30) but month/year not shown."
+},
+{
+"filename": "Screenshot_20250111_234522_Firefox.jpg",
+"day": 19,
+"month": 6,
+"year": 1964,
+"name": "Alexander Boris de Pfeffel Johnson",
+"source": "read",
+"note": "White chart card with title banner, no input boxes visible. Name from banner and line. Bold number under inverted triangle is 19/1 (likely day 19) but month/year not shown."
+},
+{
+"filename": "Screenshot_20250111_234744_Firefox.jpg",
+"day": 7,
+"month": 6,
+"year": 1958,
+"name": "Prince Rogers Nelson",
+"source": "read",
+"note": "White chart card with title banner, no input boxes visible. Name from banner and line. Bold number under inverted triangle is 7/7 (likely day 7) but month/year not shown."
+},
+{
+"filename": "Screenshot_20250111_234754_Firefox.jpg",
+"day": 29,
+"month": 8,
+"year": 1958,
+"name": "Michael Joseph Jackson",
+"source": "read",
+"note": "White chart card with title banner, no input boxes visible; another chart is cut off above. Bold number under inverted triangle is 29/2 (likely day 29) but month/year not shown."
+},
+{
+"filename": "Screenshot_20250202_001435_Desktop Web Browser.jpg",
+"day": 22,
+"month": 4,
+"year": 1990,
+"name": "Colson Baker",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250202_002759_Firefox.jpg",
+"day": 19,
+"month": 5,
+"year": 1998,
+"name": "Peter Joshua Shicora",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250205_180103_Firefox.jpg",
+"day": 26,
+"month": 11,
+"year": 1995,
+"name": "Muhammad Zain Hafeez",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250205_231914_Firefox.jpg",
+"day": 16,
+"month": 9,
+"year": 1987,
+"name": "Robert Deshaun Swonger",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250208_181203_Firefox.jpg",
+"day": 22,
+"month": 2,
+"year": 1969,
+"name": "Richard Benjamin kaler",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250210_152550_Firefox.jpg",
+"day": 26,
+"month": 2,
+"year": 1978,
+"name": "Victor cipriano dominguez",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250212_211653_Firefox.jpg",
+"day": 8,
+"month": 10,
+"year": 2003,
+"name": "Jack Colin Doherty",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250213_125500_Firefox.jpg",
+"day": 10,
+"month": 6,
+"year": 1970,
+"name": "Nicole Gabriella Smith",
+"source": "read",
+"note": "Name from page header 'NICOLE GABRIELLA SMITH birthday: 10.6.1...' (shown uppercase, actual capitalization unknown); center line of triangle not visible. Day 10 (10/1), month 6 (6/6), year 1970 small near top right; header birthday 10.6.1 agrees."
+},
+{
+"filename": "Screenshot_20250223_210746_Firefox.jpg",
+"day": 1,
+"month": 11,
+"year": 1996,
+"name": "Gustav Ahr",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250301_172220_Firefox.jpg",
+"day": 6,
+"month": 11,
+"year": 1973,
+"name": "Maki Hanawa",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250302_232652_WhatsApp.jpg",
+"day": 11,
+"month": 1,
+"year": 1985,
+"name": "Amunra Robert Irving",
+"source": "read",
+"note": "Image is small and blurry with black band at top. Year 1985 tiny; month from top-left 1/1; day from bold 11/2 under hexagon. Center 8/8 and 26/8 consistent."
+},
+{
+"filename": "Screenshot_20250302_232658_WhatsApp.jpg",
+"day": 3,
+"month": 11,
+"year": 1972,
+"name": "Albert Charles Kreischer Jr",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250304_175531_Firefox.jpg",
+"day": 12,
+"month": 7,
+"year": 1994,
+"name": "Kyle Forgeard",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250304_191405_Firefox.jpg",
+"day": 11,
+"month": 1,
+"year": 1985,
+"name": "Amunra Robert Irving",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250307_140957_Firefox.jpg",
+"day": 24,
+"month": 8,
+"year": 1980,
+"name": "Joseph cylde Kennedy",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250308_010432_Firefox.jpg",
+"day": 12,
+"month": 7,
+"year": 1994,
+"name": "Kyle Forgeard",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250311_210301_Firefox.jpg",
+"day": 22,
+"month": 5,
+"year": 1989,
+"name": "Bradley Martyn",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250314_180234_Firefox.jpg",
+"day": 13,
+"month": 11,
+"year": 1955,
+"name": "Caryn Elaine Johnson",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250314_222042_Firefox.jpg",
+"day": 26,
+"month": 12,
+"year": 1971,
+"name": "Jared Joseph Leto",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250314_233648_Firefox.jpg",
+"day": 12,
+"month": 8,
+"year": 1978,
+"name": "Pazuzu Ilah Algarad",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250314_233814_Firefox.jpg",
+"day": 12,
+"month": 8,
+"year": 1978,
+"name": "John Alexander Lawson",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250322_010345_Firefox.jpg",
+"day": 23,
+"month": 4,
+"year": 1997,
+"name": "Andrew Thomas Callaghan",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250323_203654_Firefox.jpg",
+"day": 19,
+"month": 11,
+"year": 1998,
+"name": "Kylie Cox",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250324_203941_Firefox.jpg",
+"day": 15,
+"month": 7,
+"year": 1988,
+"name": "Tristan Tate",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250329_030446_Firefox.jpg",
+"day": 17,
+"month": 9,
+"year": 1971,
+"name": "Robert Young Lee Jr",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250330_220450_Firefox.jpg",
+"day": 3,
+"month": 12,
+"year": 1955,
+"name": "Warren Steed Jeffs",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250331_002436_Firefox.jpg",
+"day": 6,
+"month": 12,
+"year": 1909,
+"name": "Rulon Timpson Jeffs",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250403_165626_Firefox.jpg",
+"day": 10,
+"month": 11,
+"year": 1983,
+"name": "Mikko Tapio Saari",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250403_201439_Firefox.jpg",
+"day": 18,
+"month": 12,
+"year": 1975,
+"name": "Johannes Franklin Leontino Ehvass",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250404_172912_Firefox.jpg",
+"day": 1,
+"month": 1,
+"year": 2004,
+"name": "Tyler james Phouthavong",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250407_194559_Firefox.jpg",
+"day": 1,
+"month": 3,
+"year": 1994,
+"name": "Justin Drew Bieber",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250408_154624_Firefox.jpg",
+"day": 22,
+"month": 1,
+"year": 1985,
+"name": "Tim J. Dillon",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250412_210715_Firefox.jpg",
+"day": 17,
+"month": 9,
+"year": 1967,
+"name": "Conald Eugene Petersen",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250413_203529_Firefox.jpg",
+"day": 7,
+"month": 8,
+"year": 2001,
+"name": "Joshua Block",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250415_232623_Firefox.jpg",
+"day": 13,
+"month": 2,
+"year": 1992,
+"name": "Garrett Garcia",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250416_180024_Firefox.jpg",
+"day": 27,
+"month": 10,
+"year": 1991,
+"name": "Michael David Meiterman",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250418_162703_Firefox.jpg",
+"day": 1,
+"month": 1,
+"year": 1995,
+"name": "Aaron Steinberg",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250420_121322_Firefox.jpg",
+"day": 12,
+"month": 1,
+"year": 1997,
+"name": "Eric Decker",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250420_234042_Firefox.jpg",
+"day": 4,
+"month": 8,
+"year": 1999,
+"name": "ISMAIL SEOUDI",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250423_194528_Firefox.jpg",
+"day": 12,
+"month": 10,
+"year": 1993,
+"name": "Thomas G",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250425_210851_Firefox.jpg",
+"day": 23,
+"month": 7,
+"year": 1996,
+"name": "Dávid Julián Dobrík",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250430_163104_Firefox.jpg",
+"day": 19,
+"month": 2,
+"year": 1964,
+"name": "Enrique Silva",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250512_044503_Firefox.jpg",
+"day": 20,
+"month": 11,
+"year": 1942,
+"name": "Joseph Robinette Biden Jr",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250514_151726_Firefox.jpg",
+"day": 26,
+"month": 9,
+"year": 2000,
+"name": "Ramsey Khalid Ismael",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250514_192855_Firefox.jpg",
+"day": 16,
+"month": 7,
+"year": 2001,
+"name": "Franky Venegas",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250515_210019_Firefox.jpg",
+"day": 27,
+"month": 2,
+"year": 1982,
+"name": "Stephen Christopher Yaxley-Lennon",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250517_002936_Firefox.jpg",
+"day": 9,
+"month": 9,
+"year": 1981,
+"name": "Jennelle Raynette Gordon",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250524_072857_Firefox.jpg",
+"day": 8,
+"month": 6,
+"year": 1977,
+"name": "Kanye Omari West",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250525_191311_Firefox.jpg",
+"day": 7,
+"month": 5,
+"year": 1998,
+"name": "James Stephen Donaldson",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250526_180628_Firefox.jpg",
+"day": 2,
+"month": 8,
+"year": 1994,
+"name": "Charles Christopher White Jr",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250527_194314_Firefox.jpg",
+"day": 25,
+"month": 2,
+"year": 2002,
+"name": "Frederick Beyer",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250527_201803_Firefox.jpg",
+"day": 6,
+"month": 12,
+"year": 1936,
+"name": "Kenneth Max Copeland",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250528_074633_Firefox.jpg",
+"day": 3,
+"month": 12,
+"year": 1981,
+"name": "Seth Lamaur Davis",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250529_162927_Firefox.jpg",
+"day": 12,
+"month": 11,
+"year": 1934,
+"name": "Charles Milles Manson",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250529_172015_Firefox.jpg",
+"day": 6,
+"month": 7,
+"year": 1995,
+"name": "Tyler Oliveira",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250529_205900_Firefox.jpg",
+"day": 8,
+"month": 5,
+"year": 1988,
+"name": "Trisha Paytas",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250531_162658_Firefox.jpg",
+"day": 21,
+"month": 10,
+"year": 1979,
+"name": "Andy Elliott",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250602_045047_Firefox.jpg",
+"day": 6,
+"month": 1,
+"year": 1915,
+"name": "Alan Wilson Watts",
+"source": "read",
+"note": "date boxes scrolled off; day 6 and month 1 read off the chart, year 1915 from the year 16/7 and big life path 23/5"
+},
+{
+"filename": "Screenshot_20250602_084719_Firefox.jpg",
+"day": 19,
+"month": 10,
+"year": 2000,
+"name": "Zakariah charles miller",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250603_181636_Firefox.jpg",
+"day": 14,
+"month": 8,
+"year": 1986,
+"name": "Leandro Fabian Dottavio",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250604_172655_Firefox.jpg",
+"day": 1,
+"month": 5,
+"year": 1999,
+"name": "Jamell Maurice Demons",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250606_201925_Firefox.jpg",
+"day": 20,
+"month": 1,
+"year": 1953,
+"name": "Jeffrey Edward Epstein",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250607_220722_Firefox.jpg",
+"day": 16,
+"month": 11,
+"year": 1946,
+"name": "Terence Kemp McKenna",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250609_012530_WhatsApp.jpg",
+"day": 6,
+"month": 2,
+"year": 1945,
+"name": "Robert Nesta Marley",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250609_180943_Firefox.jpg",
+"day": 10,
+"month": 10,
+"year": 1967,
+"name": "Gavin Christopher Newsom",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250609_182236_Firefox.jpg",
+"day": 2,
+"month": 10,
+"year": 1869,
+"name": "Mohandas Karamchand Gandh",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250609_192444_Firefox.jpg",
+"day": 19,
+"month": 5,
+"year": 1998,
+"name": "24 23 33 20",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250609_193253_Firefox.jpg",
+"day": 19,
+"month": 5,
+"year": 1998,
+"name": "20 33 23 24",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250609_213701_Firefox.jpg",
+"day": 30,
+"month": 4,
+"year": 1997,
+"name": "Addison Pierre Maalouf",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250610_063043_Firefox.jpg",
+"day": 5,
+"month": 12,
+"year": 1979,
+"name": "BALDEMAR BALDERRAMAIuna",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250610_204933_Firefox.jpg",
+"day": 11,
+"month": 8,
+"year": 1946,
+"name": "Marilyn vos Savant",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250610_205146_Firefox.jpg",
+"day": 11,
+"month": 8,
+"year": 1946,
+"name": "Marilyn mach",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250611_185112_Firefox.jpg",
+"day": 28,
+"month": 10,
+"year": 1955,
+"name": "William Henry Gates IlI",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250611_195210_Firefox.jpg",
+"day": 18,
+"month": 10,
+"year": 1978,
+"name": "Patrick Bet David",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250612_040342_Firefox.jpg",
+"day": 19,
+"month": 1,
+"year": 1992,
+"name": "Malcolm James McCormick",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250612_210320_Firefox.jpg",
+"day": 7,
+"month": 6,
+"year": 2000,
+"name": "Benjamin Michael spande",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250615_190706_Firefox.jpg",
+"day": 18,
+"month": 7,
+"year": 1998,
+"name": "cody detwiler",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250616_210211_Firefox.jpg",
+"day": 15,
+"month": 1,
+"year": 1993,
+"name": "Garrett faust",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250617_194628_Firefox.jpg",
+"day": 4,
+"month": 7,
+"year": 1776,
+"name": "United States Of America",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250620_214829_Firefox.jpg",
+"day": 25,
+"month": 6,
+"year": 1985,
+"name": "Ethan Edward Klein",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250621_091629_Firefox.jpg",
+"day": 16,
+"month": 4,
+"year": 1985,
+"name": "Samuel Whitcomb Hyde",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250621_220100_Firefox.jpg",
+"day": 19,
+"month": 9,
+"year": 1974,
+"name": "James Thomas Fallon",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250622_162039_Firefox.jpg",
+"day": 28,
+"month": 6,
+"year": 1971,
+"name": "Elon Reeve Musk",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250622_185758_Firefox.jpg",
+"day": 25,
+"month": 9,
+"year": 1994,
+"name": "Ken Chambers",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250623_033541_Firefox.jpg",
+"day": 18,
+"month": 6,
+"year": 1983,
+"name": "Tiffany Aiesha Henyard",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250623_140620_Firefox.jpg",
+"day": 2,
+"month": 4,
+"year": 1976,
+"name": "Rafael Marsiano Madrigal",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250624_044335_Firefox.jpg",
+"day": 14,
+"month": 6,
+"year": 1946,
+"name": "Donald John Trump",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250624_054538_Firefox.jpg",
+"day": 9,
+"month": 2,
+"year": 1993,
+"name": "Rachel Lee Mascena",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250624_142545_Firefox.jpg",
+"day": 12,
+"month": 11,
+"year": 1988,
+"name": "Albert Appouh",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250624_222854_Firefox.jpg",
+"day": 11,
+"month": 10,
+"year": 2000,
+"name": "Adin David Ross",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250626_150827_Firefox.jpg",
+"day": 24,
+"month": 11,
+"year": 1946,
+"name": "Theodore Robert Bundy",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250626_151018_Firefox.jpg",
+"day": 17,
+"month": 3,
+"year": 1942,
+"name": "John Wayne Gacy",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250626_152356_Gallery.jpg",
+"day": 12,
+"month": 11,
+"year": 1934,
+"name": "Charles Milles Manson",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250626_155701_Gallery.jpg",
+"day": 8,
+"month": 6,
+"year": 1977,
+"name": "Kanye Omari West",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250626_205936_Firefox.jpg",
+"day": 29,
+"month": 3,
+"year": 1987,
+"name": "Joshua John Provencio",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250627_181200_Firefox.jpg",
+"day": 2,
+"month": 3,
+"year": 1978,
+"name": "Brian Michael Johnson",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250629_003522_Firefox.jpg",
+"day": 22,
+"month": 1,
+"year": 1988,
+"name": "Daniel Adams",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250629_195554_Firefox.jpg",
+"day": 25,
+"month": 10,
+"year": 1984,
+"name": "Katheryn Elizabeth Hudson",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250630_174552_Firefox.jpg",
+"day": 24,
+"month": 11,
+"year": 1983,
+"name": "Adam John Grandmaison",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250701_071451_WhatsApp.jpg",
+"day": 2,
+"month": 4,
+"year": 1977,
+"name": "Manish Panchal",
+"source": "read",
+"note": "Blue style. Top-center small text reads circled-dot 21/3 (instruction rule would give day 21), but the big number under the hexagon is 2/2 (star), left hexagon corner 4/4, year 1977 gray top right. Arithmetic check: 2+4+24=30 matches the 30/3 center, so day=2, month=4 (day 21 would not add up). Month/day inferred from numbers, not typed boxes."
+},
+{
+"filename": "Screenshot_20250701_071507_WhatsApp.jpg",
+"day": 2,
+"month": 4,
+"year": 1977,
+"name": "Manish Panchal",
+"source": "read",
+"note": "Same chart as 171 (Android share overlay at top). Day 2 / month 4 inferred from numbers; top-center circled-dot text reads 21/3. See note for 171."
+},
+{
+"filename": "Screenshot_20250701_184643_Firefox.jpg",
+"day": 15,
+"month": 1,
+"year": 1985,
+"name": "Lionel Mcgloin",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250701_201617_Firefox.jpg",
+"day": 11,
+"month": 6,
+"year": 1997,
+"name": "Dieuson Octave",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250702_202938_Firefox.jpg",
+"day": 17,
+"month": 10,
+"year": 1972,
+"name": "Marshall Bruce Mathers III",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250703_125648_Firefox.jpg",
+"day": 14,
+"month": 5,
+"year": 1999,
+"name": "Tia Billinger",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250704_194813_Firefox.jpg",
+"day": 14,
+"month": 10,
+"year": 1981,
+"name": "Joseph Paul Borelli Jr.",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250706_123305_Gallery.jpg",
+"day": 10,
+"month": 6,
+"year": 1970,
+"name": "Nicole Gabriella Smith",
+"source": "read",
+"note": "Blue style. Header reads NICOLE GABRIELLA SMITH birthday: 10.6.1(970); chart year 1970 gray top right; big number under hexagon 10/1 = day 10; left corner 6/6 = month 6. Circled-dot text reads 15/6 (not the day). Name on the line is not visible; name taken from the uppercase header so original capitalization unknown."
+},
+{
+"filename": "Screenshot_20250709_064316_Firefox.jpg",
+"day": 7,
+"month": 6,
+"year": 1958,
+"name": "Prince Rogers Nelson",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250711_102906_Firefox.jpg",
+"day": 18,
+"month": 6,
+"year": 1994,
+"name": "Jose murillo",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250711_201243_Firefox.jpg",
+"day": 3,
+"month": 4,
+"year": 1997,
+"name": "Christopher M LaFon",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250712_134049_Firefox.jpg",
+"day": 26,
+"month": 4,
+"year": 2002,
+"name": "Marko Terzo",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250713_183235_Firefox.jpg",
+"day": 20,
+"month": 4,
+"year": 1889,
+"name": "Adolf Hitler",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250715_181529_Firefox.jpg",
+"day": 14,
+"month": 11,
+"year": 1962,
+"name": "Harland Reesor Williams",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250716_142745_Firefox.jpg",
+"day": 24,
+"month": 8,
+"year": 1961,
+"name": "Paul William Chek Sr.",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250716_201946_Firefox.jpg",
+"day": 30,
+"month": 8,
+"year": 2001,
+"name": "SAVANNAH CRAVEN ANTAO",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250717_062120_Firefox.jpg",
+"day": 2,
+"month": 9,
+"year": 1957,
+"name": "Charlie Francis Olds",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250718_222441_Firefox.jpg",
+"day": 15,
+"month": 8,
+"year": 1983,
+"name": "Alexeil Fridman",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250719_211602_WhatsApp.jpg",
+"day": 19,
+"month": 2,
+"year": 2002,
+"name": "Lily Kate Cole",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250728_091021_Firefox.jpg",
+"day": 13,
+"month": 7,
+"year": 1992,
+"name": "Walter James Pulliam",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250729_045745_Firefox.jpg",
+"day": 2,
+"month": 10,
+"year": 1914,
+"name": "Marvel Whiteside Parsons",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250729_050512_Firefox.jpg",
+"day": 2,
+"month": 10,
+"year": 1914,
+"name": "John Whiteside Parsons",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250729_053649_Firefox.jpg",
+"day": 12,
+"month": 10,
+"year": 1875,
+"name": "Edward Alexander Crowley",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250729_054400_Firefox.jpg",
+"day": 18,
+"month": 3,
+"year": 1901,
+"name": "Manly Palmer Hall",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250729_054714_Firefox.jpg",
+"day": 23,
+"month": 5,
+"year": 1924,
+"name": "Kenneth Grant",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250729_153435_Firefox.jpg",
+"day": 9,
+"month": 2,
+"year": 1987,
+"name": "George Fragoso Jr",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250729_192235_Firefox.jpg",
+"day": 13,
+"month": 3,
+"year": 1911,
+"name": "Lafayette Ronald Hubbard",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250730_171058_Firefox.jpg",
+"day": 1,
+"month": 11,
+"year": 1999,
+"name": "Jimmy Rowe",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250802_175149_Firefox.jpg",
+"day": 21,
+"month": 8,
+"year": 1987,
+"name": "Anthony Lees",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250802_210311_Firefox.jpg",
+"day": 10,
+"month": 10,
+"year": 1997,
+"name": "Bryce Olivia Brackney",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250802_220853_Firefox.jpg",
+"day": 12,
+"month": 4,
+"year": 1997,
+"name": "Levi Martin",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250803_165313_Firefox.jpg",
+"day": 3,
+"month": 12,
+"year": 1948,
+"name": "John Michael Osbourne",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250803_183039_Firefox.jpg",
+"day": 11,
+"month": 11,
+"year": 1950,
+"name": "Joan Ann Morris",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250804_063636_Firefox.jpg",
+"day": 28,
+"month": 10,
+"year": null,
+"name": "Michael Gordon Hammonds",
+"source": "read",
+"note": "Date boxes scrolled off. Name clear in box and on line. From numbers: big number under hexagon 28/1 suggests day 28, left corner 10/1 suggests month 10, right corner 26/8 is year digit-sum 26 (year not determinable); left as null."
+},
+{
+"filename": "Screenshot_20250805_175631_Firefox.jpg",
+"day": 18,
+"month": 10,
+"year": 1971,
+"name": "Dale Robert Agnew",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250807_173420_Firefox.jpg",
+"day": 8,
+"month": 1,
+"year": 1947,
+"name": "David Robert Jones",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250808_120918_Firefox.jpg",
+"day": 20,
+"month": 10,
+"year": 1964,
+"name": "Kamala Devi Harris",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250809_153930_Firefox.jpg",
+"day": 7,
+"month": 6,
+"year": 2002,
+"name": "Bo Alford",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250810_163340_Firefox.jpg",
+"day": 8,
+"month": 9,
+"year": 1999,
+"name": "Craig Michael Linnon",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250810_180440_Firefox.jpg",
+"day": 26,
+"month": 7,
+"year": 1894,
+"name": "Aldous Leonard Huxley",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250811_100408_Firefox.jpg",
+"day": 17,
+"month": 9,
+"year": 1966,
+"name": "Michelle Adrienna Smith",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250811_160250_Firefox.jpg",
+"day": 20,
+"month": 2,
+"year": 1993,
+"name": "Trevor Hurd",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250814_070435_Firefox.jpg",
+"day": 18,
+"month": 6,
+"year": 1994,
+"name": "Jose Ramirez Murillo",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250815_082344_Firefox.jpg",
+"day": 4,
+"month": 9,
+"year": 1971,
+"name": "Billy Camrick Carson II",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250816_222519_Firefox.jpg",
+"day": 30,
+"month": 6,
+"year": 1966,
+"name": "Michael Gerard Tyson",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250816_231953_Firefox.jpg",
+"day": null,
+"month": null,
+"year": null,
+"name": "Heinrich Luitpold Himmler",
+"source": "read",
+"note": "date boxes scrolled off; name read from box and line"
+},
+{
+"filename": "Screenshot_20250817_165436_Firefox.jpg",
+"day": 15,
+"month": 4,
+"year": 2003,
+"name": "Samuel Robert Barber",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250821_125146_Firefox.jpg",
+"day": 23,
+"month": 4,
+"year": 2007,
+"name": "Matan Evans",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250821_150308_Firefox.jpg",
+"day": 11,
+"month": 8,
+"year": 1967,
+"name": "Joseph James Rogan",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250821_213534_Firefox.jpg",
+"day": 8,
+"month": 9,
+"year": 2001,
+"name": "Eduardo Juanez Castaneda",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250821_220948_Firefox.jpg",
+"day": 29,
+"month": 5,
+"year": 1948,
+"name": "Stephen Eugene Mccullough",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250821_223840_Firefox.jpg",
+"day": 25,
+"month": 5,
+"year": 1958,
+"name": "Marci Ann Mccullough",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250823_224645_Firefox.jpg",
+"day": 20,
+"month": 1,
+"year": 1994,
+"name": "Charles Ross",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250828_203537_Firefox.jpg",
+"day": 21,
+"month": 9,
+"year": 2001,
+"name": "Kanel Dominique Joseph",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250828_212948_Firefox.jpg",
+"day": 27,
+"month": 10,
+"year": 1991,
+"name": "Michael David Meiterman",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250901_160616_Opera.jpg",
+"day": 23,
+"month": 8,
+"year": 1990,
+"name": "Ashton Bingham",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250901_162032_Opera.jpg",
+"day": 10,
+"month": 1,
+"year": 1984,
+"name": "Artsiom Vladimirovich Kulik",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250901_233030_Opera.jpg",
+"day": 14,
+"month": 5,
+"year": 1984,
+"name": "Mark Elliot Zuckerberg",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250904_031539_Opera.jpg",
+"day": 16,
+"month": 1,
+"year": 2004,
+"name": "Zander Sebastian Moricz",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250904_160447_WhatsApp.jpg",
+"day": 31,
+"month": 3,
+"year": 1956,
+"name": "John Bryan Morgan",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250904_160523_WhatsApp.jpg",
+"day": 12,
+"month": 2,
+"year": 1971,
+"name": "Ralph J Spina",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250904_160600_WhatsApp.jpg",
+"day": 18,
+"month": 3,
+"year": 1990,
+"name": "Michael John Knowles",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250904_160906_Opera.jpg",
+"day": 22,
+"month": 4,
+"year": 1985,
+"name": "Samuel Harris Gibstine Altman",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250910_063507_Opera.jpg",
+"day": null,
+"month": null,
+"year": null,
+"name": "Gary Shamry Grinberg",
+"source": "read",
+"note": "date boxes and name box scrolled off; name read from the diamond line"
+},
+{
+"filename": "Screenshot_20250910_190852_Opera.jpg",
+"day": 14,
+"month": 10,
+"year": 1993,
+"name": "Charles James Kirk",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250911_163446_Opera.jpg",
+"day": 20,
+"month": 9,
+"year": 2003,
+"name": "Thomas Matthew Crooks",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250912_165136_Opera.jpg",
+"day": 27,
+"month": 3,
+"year": 1999,
+"name": "Alex J O'Connor",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250913_143241_Opera.jpg",
+"day": 27,
+"month": 11,
+"year": 1982,
+"name": "Stephen Christopher Yaxley-Lennon",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250914_095731_Firefox.jpg",
+"day": 11,
+"month": 2,
+"year": 1974,
+"name": "Alexander Emerick Jones",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250914_204044_Chrome.jpg",
+"day": 9,
+"month": 6,
+"year": 1971,
+"name": "Peter Vincent Shicora",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250916_222109_Chrome.jpg",
+"day": 18,
+"month": 8,
+"year": 1998,
+"name": "Nicholas Joseph Fuentes",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250916_234035_Chrome.jpg",
+"day": 20,
+"month": 5,
+"year": 1994,
+"name": "Wade Steven Wilson",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250919_165639_Chrome.jpg",
+"day": 13,
+"month": 3,
+"year": 1975,
+"name": "Erica Karen Ingham",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250919_201923_Chrome.jpg",
+"day": 29,
+"month": 4,
+"year": 1989,
+"name": "Candace Amber Owens Farmer",
+"source": "read",
+"note": "date boxes scrolled off; name read from box and line (29/2 shown under hexagon suggests day 29 but not read from a box)"
+},
+{
+"filename": "Screenshot_20250919_201946_Chrome.jpg",
+"day": 29,
+"month": 4,
+"year": 1989,
+"name": "Candace Amber Owens",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250921_163653_Chrome.jpg",
+"day": 3,
+"month": 2,
+"year": 1999,
+"name": "Metta Beshay",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250923_003435_Chrome.jpg",
+"day": 28,
+"month": 5,
+"year": 1944,
+"name": "Bob Larson",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250923_003926_Chrome.jpg",
+"day": null,
+"month": null,
+"year": null,
+"name": "David charles ammon hillman",
+"source": "read",
+"note": "date boxes empty (placeholders date/month/year); name typed in lowercase as shown"
+},
+{
+"filename": "Screenshot_20250924_011757_Chrome.jpg",
+"day": 12,
+"month": 12,
+"year": 1988,
+"name": "Steven Kenneth Bonnell II",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250924_013801_Chrome.jpg",
+"day": 4,
+"month": 11,
+"year": 1996,
+"name": "Hannah Pearl Davis",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250924_155425_Chrome.jpg",
+"day": 21,
+"month": 1,
+"year": 2005,
+"name": "Darren Jason Watkins Jr",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250924_192339_Chrome.jpg",
+"day": 19,
+"month": 3,
+"year": 1980,
+"name": "Theodor Capitani von Kurnatowski Ill",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250924_192655_Chrome.jpg",
+"day": 18,
+"month": 3,
+"year": 1962,
+"name": "Michael Gregory Rowe",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250924_233802_Chrome.jpg",
+"day": 14,
+"month": 4,
+"year": 1987,
+"name": "Hamilton Morris",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250925_183824_Chrome.jpg",
+"day": 2,
+"month": 4,
+"year": 1996,
+"name": "Zachary Lane Bryan",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250925_215117_Gallery.jpg",
+"day": 16,
+"month": 4,
+"year": 2003,
+"name": "Tyler James Robinson",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250926_225050_Chrome.jpg",
+"day": 4,
+"month": 4,
+"year": 1983,
+"name": "David Blaine White",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250929_012310_Chrome.jpg",
+"day": 13,
+"month": 7,
+"year": 1527,
+"name": "John Dee",
+"source": "read"
+},
+{
+"filename": "Screenshot_20250929_171605_Chrome.jpg",
+"day": 13,
+"month": 5,
+"year": 1999,
+"name": "William Thomas",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20250929_171816_Chrome.jpg",
+"day": 13,
+"month": 5,
+"year": 1999,
+"name": "Lia Catherine Thomas",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251001_034548_Chrome.jpg",
+"day": 28,
+"month": 10,
+"year": 1949,
+"name": "William Bruce Jenner",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251001_182759_Chrome.jpg",
+"day": 9,
+"month": 7,
+"year": 1973,
+"name": "Jason Matthew Breshears",
+"source": "read"
+},
+{
+"filename": "Screenshot_20251003_030753_Chrome.jpg",
+"day": 11,
+"month": 10,
+"year": 1967,
+"name": "Peter Andreas Thiel",
+"source": "read"
+},
+{
+"filename": "Screenshot_20251003_031628_Chrome.jpg",
+"day": 2,
+"month": 10,
+"year": 1967,
+"name": "Alexander Caedmon Karp",
+"source": "read"
+},
+{
+"filename": "Screenshot_20251004_003236_Chrome.jpg",
+"day": 11,
+"month": 7,
+"year": 1948,
+"name": "Lon Milo DuQuette",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251004_040052_Chrome.jpg",
+"day": 4,
+"month": 4,
+"year": 2002,
+"name": "Nicholas Shirley",
+"source": "read"
+},
+{
+"filename": "Screenshot_20251005_042808_Chrome.jpg",
+"day": 7,
+"month": 7,
+"year": 1987,
+"name": "Steven Blake Crowder",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251006_190649_Chrome.jpg",
+"day": 25,
+"month": 12,
+"year": 1971,
+"name": "Justin Pierre James Trudeau",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251007_233836_Chrome.jpg",
+"day": 16,
+"month": 5,
+"year": 1969,
+"name": "Tucker Swanson McNear Carlson",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251008_215842_Chrome.jpg",
+"day": 1,
+"month": 8,
+"year": 1555,
+"name": "Edward Kelly",
+"source": "read"
+},
+{
+"filename": "Screenshot_20251008_215923_Chrome.jpg",
+"day": 1,
+"month": 8,
+"year": 1555,
+"name": "Edward Kelley",
+"source": "read"
+},
+{
+"filename": "Screenshot_20251009_005459_Chrome.jpg",
+"day": 15,
+"month": 5,
+"year": 1970,
+"name": "Edgar Cano",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251009_005754_Chrome.jpg",
+"day": 15,
+"month": 5,
+"year": 1970,
+"name": "Edgar A Bravo",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251009_034419_Chrome.jpg",
+"day": 13,
+"month": 5,
+"year": 1993,
+"name": "Morgan Cole Wallen",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251011_125546_Signal.jpg",
+"day": 3,
+"month": 1,
+"year": 2003,
+"name": "Greta Tintin Eleonora Ernman Thunberg",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251018_030854_Brave.jpg",
+"day": 18,
+"month": 6,
+"year": 1999,
+"name": "Michael LamarWhiteIV",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251020_033457_Brave.jpg",
+"day": 8,
+"month": 9,
+"year": 1998,
+"name": "Nicolas Kenn De Balinthazy",
+"source": "read"
+},
+{
+"filename": "Screenshot_20251021_234758_Brave.jpg",
+"day": 12,
+"month": 2,
+"year": 1980,
+"name": "Radric Delantic Davis",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251022_140530_Brave.jpg",
+"day": 27,
+"month": 1,
+"year": 2000,
+"name": "Cameron Higby",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251022_183639_Brave.jpg",
+"day": 29,
+"month": 7,
+"year": 1959,
+"name": "Joeseph Albert Tellez",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251022_225749_Brave.jpg",
+"day": 14,
+"month": 2,
+"year": null,
+"name": "Caleb Hammer",
+"source": "read",
+"note": "Year box shows 19956 (five digits, likely typo for 1995 or 1996); not a valid four-digit year so reported null."
+},
+{
+"filename": "Screenshot_20251022_225914_Brave.jpg",
+"day": 16,
+"month": 8,
+"year": 1991,
+"name": "Jeffery Lamar Williams II",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251103_114403_WhatsApp.jpg",
+"day": 22,
+"month": 8,
+"year": 1976,
+"name": "Barbora Kalinova",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251106_233324_Brave.jpg",
+"day": 18,
+"month": 10,
+"year": 1991,
+"name": "Zohran Kwame Mamdani",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251107_192657_Brave.jpg",
+"day": 4,
+"month": 2,
+"year": 1973,
+"name": "Jason Arthur Piette",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251107_234940_Brave.jpg",
+"day": 3,
+"month": 6,
+"year": 2001,
+"name": "Nina Lin",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251108_024631_Brave.jpg",
+"day": 16,
+"month": 12,
+"year": 2001,
+"name": "Kai Carlo Cenat Ill",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251108_210540_Brave.jpg",
+"day": 8,
+"month": 5,
+"year": 1996,
+"name": "Daniel Hernandez",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251109_165237_Brave.jpg",
+"day": 12,
+"month": 1,
+"year": 2000,
+"name": "Vincent Rocco Conovelli",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251111_081843_Brave.jpg",
+"day": 29,
+"month": 4,
+"year": 1952,
+"name": "David VaughanIcke",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251111_084442_Brave.jpg",
+"day": 24,
+"month": 4,
+"year": 1944,
+"name": "Mantak Chia",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251111_222102_Brave.jpg",
+"day": 7,
+"month": 2,
+"year": 1998,
+"name": "Riley Xavier Werling",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251113_030024_Brave.jpg",
+"day": 6,
+"month": 5,
+"year": 1856,
+"name": "Sigismund Schlomo Freud",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251113_030221_Brave.jpg",
+"day": 26,
+"month": 7,
+"year": 1875,
+"name": "Carl Gustav Jung",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251126_151352_Firefox.jpg",
+"day": 8,
+"month": 1,
+"year": 1983,
+"name": "Kim Jong Un",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251127_002849_Firefox.jpg",
+"day": 24,
+"month": 5,
+"year": 1991,
+"name": "Ryan Edward Upchurch",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251127_122414_Firefox.jpg",
+"day": 21,
+"month": 10,
+"year": 1949,
+"name": "Benjamin Netanyahu",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251127_173537_Firefox.jpg",
+"day": 13,
+"month": 3,
+"year": 1998,
+"name": "Jackman Thomas Harlow",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251128_190041_Firefox.jpg",
+"day": 17,
+"month": 8,
+"year": 2000,
+"name": "Gazzy Fabio Garcia",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251129_105916_WhatsApp.jpg",
+"day": 21,
+"month": 4,
+"year": 1997,
+"name": "Erling Mengshoel Jr",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251129_105932_WhatsApp.jpg",
+"day": 6,
+"month": 1,
+"year": 1999,
+"name": "Taurus Tremani Bartlett",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251129_135201_Firefox.jpg",
+"day": 5,
+"month": 4,
+"year": 1985,
+"name": "James Simons",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251129_215741_Firefox.jpg",
+"day": null,
+"month": null,
+"year": null,
+"name": "Andy Cuong Ngo",
+"source": "read"
+},
+{
+"filename": "Screenshot_20251130_000545_Firefox.jpg",
+"day": 28,
+"month": 8,
+"year": 2002,
+"name": "Ash Alk",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251130_002231_Firefox.jpg",
+"day": 28,
+"month": 8,
+"year": 2002,
+"name": "Ashton Alk",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251130_173009_Firefox.jpg",
+"day": 11,
+"month": 5,
+"year": 1979,
+"name": "Sabrina Wallace",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251130_213335_Firefox.jpg",
+"day": 11,
+"month": 5,
+"year": 1979,
+"name": "Sabrina Dawn Davis",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251130_214107_Firefox.jpg",
+"day": 11,
+"month": 5,
+"year": 1979,
+"name": "Sabrina Dawn Davis Mandt",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251201_064933_Firefox.jpg",
+"day": 19,
+"month": 2,
+"year": 1998,
+"name": "Alex James Stienbaugh",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251201_230217_Firefox.jpg",
+"day": 17,
+"month": 5,
+"year": 1971,
+"name": "Brian Rose",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251203_224244_Firefox.jpg",
+"day": 1,
+"month": 4,
+"year": 1995,
+"name": "Logan Alexander Paul",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251204_020139_Firefox.jpg",
+"day": 20,
+"month": 9,
+"year": 1994,
+"name": "Ryan",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251204_234029_Firefox.jpg",
+"day": null,
+"month": 2,
+"year": 1988,
+"name": "AlexMathewBleecker",
+"source": "read"
+},
+{
+"filename": "Screenshot_20251204_234103_Firefox.jpg",
+"day": null,
+"month": null,
+"year": null,
+"name": "AlexMathewBleecker",
+"source": "read",
+"note": "Profile page view with no input boxes visible; name read from diamond line, letters spaced out, no gaps between words."
+},
+{
+"filename": "Screenshot_20251205_174639_Firefox.jpg",
+"day": 13,
+"month": 10,
+"year": 1971,
+"name": "Sacha Noam Baron Cohen",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251206_000524_Firefox.jpg",
+"day": 3,
+"month": 9,
+"year": 1987,
+"name": "Cody Garrett",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251206_003426_Firefox.jpg",
+"day": 22,
+"month": 5,
+"year": 1949,
+"name": "Jesse Lee Peterson",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251206_213751_Firefox.jpg",
+"day": 1,
+"month": 2,
+"year": 1990,
+"name": "Amrou Fudl",
+"source": "read"
+},
+{
+"filename": "Screenshot_20251206_214447_Firefox.jpg",
+"day": 1,
+"month": 2,
+"year": 1990,
+"name": "Myron Gaines",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251206_224148_Firefox.jpg",
+"day": null,
+"month": 12,
+"year": 2005,
+"name": "Andrew Wilson",
+"source": "read"
+},
+{
+"filename": "Screenshot_20251206_234140_Firefox.jpg",
+"day": 18,
+"month": 6,
+"year": 1986,
+"name": "Matthew Walsh",
+"source": "read"
+},
+{
+"filename": "Screenshot_20251207_011426_Firefox.jpg",
+"day": 8,
+"month": 9,
+"year": 1956,
+"name": "Robin Jeanne DiAngelo",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251207_015153_Firefox.jpg",
+"day": 20,
+"month": 8,
+"year": 1984,
+"name": "Nick Rochefort",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251207_033949_Firefox.jpg",
+"day": 26,
+"month": 6,
+"year": 1993,
+"name": "Ariana Grande Butera",
+"source": "read"
+},
+{
+"filename": "Screenshot_20251207_040052_Firefox.jpg",
+"day": 8,
+"month": 1,
+"year": 1987,
+"name": "okwu Onyedinmanasu Amarachukwu Erivo",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251207_164936_Firefox.jpg",
+"day": 11,
+"month": 10,
+"year": 1992,
+"name": "Belcalis Marlenis Almanzar",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251207_233623_WhatsApp.jpg",
+"day": 7,
+"month": 7,
+"year": 1990,
+"name": "Brian Atlas",
+"source": "read"
+},
+{
+"filename": "Screenshot_20251208_005638_Firefox.jpg",
+"day": 17,
+"month": 12,
+"year": 2005,
+"name": "Braden Eric Peters",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251208_013145_Firefox.jpg",
+"day": 18,
+"month": 2,
+"year": 1919,
+"name": "David Brandt Berg",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251208_102516_Firefox.jpg",
+"day": 12,
+"month": 11,
+"year": 1970,
+"name": "James Pickett",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251208_155622_Firefox.jpg",
+"day": 30,
+"month": 3,
+"year": 1965,
+"name": "Piers Stefan Pughe Morgan",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251208_194031_Firefox.jpg",
+"day": 18,
+"month": 12,
+"year": 1878,
+"name": "Joseph Vissarionovich Stalin",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251208_224337_Firefox.jpg",
+"day": 6,
+"month": 8,
+"year": 1996,
+"name": "Kirill Tereshin",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251209_171049_Firefox.jpg",
+"day": 17,
+"month": 9,
+"year": 1975,
+"name": "Keith Hodge",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251209_171204_Firefox.jpg",
+"day": 17,
+"month": 9,
+"year": 1975,
+"name": "Kevin Hodge",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251209_202002_Firefox.jpg",
+"day": 25,
+"month": 9,
+"year": 1968,
+"name": "Willard Carroll Smith Il",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251210_002139_Firefox.jpg",
+"day": 3,
+"month": 9,
+"year": 1965,
+"name": "Carlos Irwin Est vez",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251210_002353_Firefox.jpg",
+"day": 3,
+"month": 9,
+"year": 1965,
+"name": "Charlie Sheen",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251210_004915_Firefox.jpg",
+"day": 4,
+"month": 11,
+"year": 1969,
+"name": "Sean John Combs",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251210_175836_Firefox.jpg",
+"day": 26,
+"month": 3,
+"year": 1948,
+"name": "Steven Victor Tallarico",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251210_194556_Firefox.jpg",
+"day": 26,
+"month": 2,
+"year": 1988,
+"name": "Alex Mathew Bleecker",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251211_120630_Firefox.jpg",
+"day": 28,
+"month": 6,
+"year": 1984,
+"name": "James Edward O'Keefe Ill",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251211_181456_Firefox.jpg",
+"day": 11,
+"month": 8,
+"year": 1988,
+"name": "Paul Nicholas Miller",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251212_002356_Firefox.jpg",
+"day": 14,
+"month": 3,
+"year": 1984,
+"name": "Daniel Reed Crenshaw",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251213_203557_Gallery.jpg",
+"day": 19,
+"month": 5,
+"year": 1998,
+"name": "Peter Joshua Shicora",
+"source": "read"
+},
+{
+"filename": "Screenshot_20251213_212857_Firefox.jpg",
+"day": null,
+"month": null,
+"year": null,
+"name": "ChrisElston",
+"source": "read",
+"note": "Profile page, no input boxes. Name read from spaced-letter diamond line 'C h r i s E l s t o n'; likely typed without a space."
+},
+{
+"filename": "Screenshot_20251213_232210_Firefox.jpg",
+"day": 1,
+"month": 7,
+"year": 1995,
+"name": "Russell Pierce Jones II",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251214_023136_Firefox.jpg",
+"day": 20,
+"month": 11,
+"year": 1988,
+"name": "Erika Lane Kirk",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251214_152422_Firefox.jpg",
+"day": 24,
+"month": 5,
+"year": 1991,
+"name": "Drew Goldberg",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251214_154032_Firefox.jpg",
+"day": 18,
+"month": 2,
+"year": 1955,
+"name": "Gwen Shamblin Lara",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251214_220630_Firefox.jpg",
+"day": 1,
+"month": 9,
+"year": 1950,
+"name": "Phillip Calvin McGraw",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251215_000252_Firefox.jpg",
+"day": 8,
+"month": 8,
+"year": 1976,
+"name": "Shawn Michael Grate",
+"source": "read"
+},
+{
+"filename": "Screenshot_20251215_141310_Firefox.jpg",
+"day": 27,
+"month": 11,
+"year": 1982,
+"name": "Stephen Christopher Yaxley Lennon",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251215_155340_Firefox.jpg",
+"day": 2,
+"month": 9,
+"year": 1962,
+"name": "Keir Rodney Starmer",
+"source": "read"
+},
+{
+"filename": "Screenshot_20251216_023544_Firefox.jpg",
+"day": 1,
+"month": 11,
+"year": 1999,
+"name": "James Lewis Rowe",
+"source": "read"
+},
+{
+"filename": "Screenshot_20251217_002135_Firefox.jpg",
+"day": 18,
+"month": 12,
+"year": 1878,
+"name": "Joseph Vissarionovich Stalin",
+"source": "read"
+},
+{
+"filename": "Screenshot_20251217_200156_Firefox.jpg",
+"day": 29,
+"month": 8,
+"year": 1958,
+"name": "Michael Joseph Jackson",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251220_014004_Firefox.jpg",
+"day": 28,
+"month": 5,
+"year": 1993,
+"name": "Alicia Leoner Leon",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251220_022640_Firefox.jpg",
+"day": 23,
+"month": 1,
+"year": 1998,
+"name": "Jahseh Dwayne Ricardo Onfroy",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251220_024453_Firefox.jpg",
+"day": 24,
+"month": 2,
+"year": 1982,
+"name": "Christopher Weston Chandler",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251221_014106_Firefox.jpg",
+"day": 30,
+"month": 4,
+"year": 2002,
+"name": "Cameron Jordan",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251222_042544_Firefox.jpg",
+"day": 20,
+"month": 10,
+"year": 1999,
+"name": "Kentrell DeSean Gaulden",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251223_092902_Firefox.jpg",
+"day": 4,
+"month": 2,
+"year": 1986,
+"name": "Joel Miguel Nahkohe ese Parayno",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251223_093001_Firefox.jpg",
+"day": 4,
+"month": 2,
+"year": 1986,
+"name": "David Joel Nahkohe ese Bell",
+"source": "read"
+},
+{
+"filename": "Screenshot_20251223_233522_Firefox.jpg",
+"day": 31,
+"month": 1,
+"year": 1988,
+"name": "Kyle Edward Kulinski",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251224_221801_Firefox.jpg",
+"day": 19,
+"month": 11,
+"year": 1983,
+"name": "Wesley Thomas Watson",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251225_025513_Firefox.jpg",
+"day": 29,
+"month": 12,
+"year": 1996,
+"name": "Dylan Mulvaney",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251225_052348_Firefox.jpg",
+"day": 27,
+"month": 7,
+"year": 1998,
+"name": "Patrick Wood Crusius",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251226_103122_Firefox.jpg",
+"day": 2,
+"month": 1,
+"year": 1999,
+"name": "Nicholas Campana",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251228_194343_Firefox.jpg",
+"day": 27,
+"month": 7,
+"year": 1992,
+"name": "Daniel Lee Duncan",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251229_200810_Firefox.jpg",
+"day": 30,
+"month": 4,
+"year": 1998,
+"name": "sm Kurt Caz",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251230_045249_Firefox.jpg",
+"day": 17,
+"month": 6,
+"year": 1975,
+"name": "Greg Austin Doucette",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260101_045733_WhatsApp.jpg",
+"day": 31,
+"month": 1,
+"year": 1993,
+"name": "Nicholas Sylvan Contino",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260102_032722_WhatsApp.jpg",
+"day": 28,
+"month": 2,
+"year": 1981,
+"name": "Michael Aubrey Christopher Marcus",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260102_195728_Firefox.jpg",
+"day": 3,
+"month": 9,
+"year": 1960,
+"name": "David Lawrence Ramsey Ill",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260104_050057_Firefox.jpg",
+"day": 3,
+"month": 10,
+"year": 1911,
+"name": "Vangeliya Pandeva Surcheva",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260105_010211_Firefox.jpg",
+"day": 24,
+"month": 1,
+"year": 1971,
+"name": "World Economilc Forum",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260105_011547_WhatsApp.jpg",
+"day": 4,
+"month": 6,
+"year": 1998,
+"name": "Google LLd",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260105_011601_WhatsApp.jpg",
+"day": 5,
+"month": 4,
+"year": 1993,
+"name": "NVIDIA Corporation",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260105_011612_WhatsApp.jpg",
+"day": 4,
+"month": 4,
+"year": 1975,
+"name": "Microsoft Corporation",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260105_021309_Firefox.jpg",
+"day": 6,
+"month": 3,
+"year": 1999,
+"name": "Free Speech Systems LLC",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260105_220700_Firefox.jpg",
+"day": 24,
+"month": 1,
+"year": 1941,
+"name": "Russ Alan McKamey",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260105_221859_Firefox.jpg",
+"day": 8,
+"month": 11,
+"year": 2005,
+"name": "TMZ",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260106_022511_Firefox.jpg",
+"day": 8,
+"month": 2,
+"year": 1851,
+"name": "Portland Oregon",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260106_052822_Firefox.jpg",
+"day": 4,
+"month": 8,
+"year": 1961,
+"name": "Barack Hussein Obama II",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260107_165726_Firefox.jpg",
+"day": 29,
+"month": 8,
+"year": 1996,
+"name": "Caleb Hunter Phelps",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260108_001442_WhatsApp.jpg",
+"day": 23,
+"month": 7,
+"year": 1981,
+"name": "Jacob Lawrence Frey",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260109_203716_Firefox.jpg",
+"day": 11,
+"month": 2,
+"year": 1974,
+"name": "Alex Jones",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260110_044503_Firefox.jpg",
+"day": 14,
+"month": 2,
+"year": 2005,
+"name": "Youtube",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260110_051342_Firefox.jpg",
+"day": 21,
+"month": 3,
+"year": 2006,
+"name": "x 0",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260110_051927_Firefox.jpg",
+"day": 9,
+"month": 3,
+"year": 2023,
+"name": "x 0",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260110_052555_Firefox.jpg",
+"day": 15,
+"month": 7,
+"year": 2006,
+"name": "Twitter Inc",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260110_052634_Firefox.jpg",
+"day": 15,
+"month": 7,
+"year": 2006,
+"name": "Twitter",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260110_143247_Firefox.jpg",
+"day": 23,
+"month": 6,
+"year": 2005,
+"name": "reddit",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260111_141831_Firefox.jpg",
+"day": 15,
+"month": 4,
+"year": 2012,
+"name": "Kailey W McCullough",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260112_031244_Firefox.jpg",
+"day": 15,
+"month": 3,
+"year": 2000,
+"name": "Alexander Rosen",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260112_034508_Firefox.jpg",
+"day": 19,
+"month": 7,
+"year": 1988,
+"name": "Shane Lee Yaw",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260112_203358_Firefox.jpg",
+"day": 19,
+"month": 4,
+"year": 1971,
+"name": "David Charles Ammon Hillman",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260113_005452_Firefox.jpg",
+"day": 15,
+"month": 7,
+"year": 1951,
+"name": "James George Janos",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260113_022210_Firefox.jpg",
+"day": 14,
+"month": 10,
+"year": 1973,
+"name": "George Perry Floyd Jr",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260114_032028_Firefox.jpg",
+"day": 19,
+"month": 2,
+"year": 1803,
+"name": "Ohio",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260114_032636_Firefox.jpg",
+"day": 19,
+"month": 2,
+"year": 1803,
+"name": "State of Ohio",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260114_035647_Firefox.jpg",
+"day": 28,
+"month": 10,
+"year": 1963,
+"name": "Gregory Allan Paul",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260114_035929_Firefox.jpg",
+"day": 27,
+"month": 7,
+"year": 1963,
+"name": "Pamela Ann Stepnick",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260114_045033_Firefox.jpg",
+"day": 5,
+"month": 2,
+"year": 1995,
+"name": "Nicholas Crompton",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260114_061801_Firefox.jpg",
+"day": 17,
+"month": 1,
+"year": 1997,
+"name": "Jake Joseph Paul",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260114_072054_Firefox.jpg",
+"day": 12,
+"month": 6,
+"year": 1996,
+"name": "Alissa Violet Butler",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260114_080028_Firefox.jpg",
+"day": 10,
+"month": 5,
+"year": 1999,
+"name": "Emilio Martinez",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260115_120315_WhatsApp.jpg",
+"day": 4,
+"month": 10,
+"year": 1982,
+"name": "Ilhan Abdullahi Omar",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260115_184419_Firefox.jpg",
+"day": 6,
+"month": 3,
+"year": 1999,
+"name": "Info wars",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260116_190326_Brave.jpg",
+"day": 28,
+"month": 2,
+"year": 1981,
+"name": "Aubrey Michael Marcus",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260116_233725_Brave.jpg",
+"day": 5,
+"month": 4,
+"year": 2021,
+"name": "channel youtube",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260117_005015_Firefox.jpg",
+"day": 28,
+"month": 6,
+"year": 1961,
+"name": "Michael James Lindell",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260117_101449_Brave.jpg",
+"day": 26,
+"month": 3,
+"year": 2003,
+"name": "Danielle Peskowitz Bregoli",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260117_103812_Brave.jpg",
+"day": 4,
+"month": 7,
+"year": 1995,
+"name": "Austin Richard Post",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260117_104458_Brave.jpg",
+"day": 2,
+"month": 12,
+"year": 1998,
+"name": "Jarad Anthony Higgins",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260117_204825_Brave.jpg",
+"day": 12,
+"month": 9,
+"year": 1994,
+"name": "Drew Desbordes",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260118_202003_Brave.jpg",
+"day": 2,
+"month": 9,
+"year": 1957,
+"name": "Charles Francis Olds",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260118_204525_Brave.jpg",
+"day": 1,
+"month": 10,
+"year": 1949,
+"name": "People's Republic of China",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260120_183341_Brave.jpg",
+"day": 4,
+"month": 5,
+"year": 1997,
+"name": "Chase Briscoe",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260120_202616_Brave.jpg",
+"day": 7,
+"month": 7,
+"year": 2002,
+"name": "Haschbulla Magomedovich Magomedov",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260121_014629_Brave.jpg",
+"day": 1,
+"month": 12,
+"year": 1986,
+"name": "Emory Andrew Tate III",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260122_021427_Brave.jpg",
+"day": 22,
+"month": 10,
+"year": 2003,
+"name": "Bryce Crawford",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260122_033828_Brave.jpg",
+"day": 7,
+"month": 12,
+"year": 1980,
+"name": "Daniel Brandon Bilzerian",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260122_034054_Brave.jpg",
+"day": 13,
+"month": 8,
+"year": 2004,
+"name": "Rangesh Mutama",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260122_121910_Brave.jpg",
+"day": 6,
+"month": 11,
+"year": 1973,
+"name": "Maki Hanawa",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260122_142130_Brave.jpg",
+"day": 29,
+"month": 2,
+"year": 1960,
+"name": "Anthony Jay Robbins",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260122_175241_Brave.jpg",
+"day": 22,
+"month": 1,
+"year": 1990,
+"name": "Sir Robert Bryson Hall Il",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260122_203210_Brave.jpg",
+"day": 8,
+"month": 1,
+"year": 1828,
+"name": "Democrat O",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260122_203304_Brave.jpg",
+"day": 20,
+"month": 3,
+"year": 1854,
+"name": "Republican O",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260122_225738_Brave.jpg",
+"day": 1,
+"month": 10,
+"year": 1999,
+"name": "Blackrock",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260123_050917_Brave.jpg",
+"day": 2,
+"month": 8,
+"year": 1984,
+"name": "James Donald Bowman",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260123_051213_Brave.jpg",
+"day": 2,
+"month": 8,
+"year": 1984,
+"name": "James David Vance",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260123_052528_Signal.jpg",
+"day": null,
+"month": null,
+"year": null,
+"name": "Minneapolis Minnesota",
+"source": "read",
+"note": "a name pyramid screenshot with no date boxes; the chart's name line reads Minneapolis Minnesota"
+},
+{
+"filename": "Screenshot_20260123_182705_Brave.jpg",
+"day": 6,
+"month": 5,
+"year": 1991,
+"name": "Staffan Taylor",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260124_001932_Brave.jpg",
+"day": 22,
+"month": 1,
+"year": 1990,
+"name": "Yousef Saleh Erakat",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260124_210319_Brave.jpg",
+"day": null,
+"month": null,
+"year": null,
+"name": "reddit",
+"source": "read",
+"note": "the domain-name tool, name reddit with .com, no birth date"
+},
+{
+"filename": "Screenshot_20260124_234302_Brave.jpg",
+"day": 20,
+"month": 4,
+"year": null,
+"name": "Asmondgold 0",
+"source": "read",
+"note": "date boxes scrolled off; day 20 and month 4 read off the chart, year not visible"
+},
+{
+"filename": "Screenshot_20260124_234348_Brave.jpg",
+"day": null,
+"month": null,
+"year": null,
+"name": "Asmondgold 11",
+"source": "read",
+"note": "Date boxes scrolled off; only name box visible."
+},
+{
+"filename": "Screenshot_20260125_000941_Brave.jpg",
+"day": 11,
+"month": 5,
+"year": 1858,
+"name": "Minnesota",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260125_002016_Brave.jpg",
+"day": 6,
+"month": 4,
+"year": 1964,
+"name": "Timothy James walz",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260125_003008_Brave.jpg",
+"day": 6,
+"month": 4,
+"year": 1964,
+"name": "Tim walz",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260125_003313_Brave.jpg",
+"day": 11,
+"month": 5,
+"year": 1858,
+"name": "Minnesota",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260125_010639_Brave.jpg",
+"day": 12,
+"month": 2,
+"year": 1988,
+"name": "Kyle Wagner",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260125_013824_Brave.jpg",
+"day": 4,
+"month": 7,
+"year": 1776,
+"name": "America 13",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260125_013848_Brave.jpg",
+"day": 4,
+"month": 7,
+"year": 1776,
+"name": "America 0",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260125_015214_Brave.jpg",
+"day": 1,
+"month": 12,
+"year": 1986,
+"name": "Andrew tate",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260125_020432_Brave.jpg",
+"day": 6,
+"month": 2,
+"year": 1867,
+"name": "Minneapolis",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260125_020500_Brave.jpg",
+"day": 6,
+"month": 2,
+"year": 1867,
+"name": "Minneapolis O",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260125_172115_Brave.jpg",
+"day": 18,
+"month": 1,
+"year": 1950,
+"name": "Kevin dewight sell",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260125_214433_Brave.jpg",
+"day": 20,
+"month": null,
+"year": null,
+"name": "Republican 11",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260125_232510_Brave.jpg",
+"day": 23,
+"month": 7,
+"year": 1994,
+"name": "juggalo",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260125_234412_Brave.jpg",
+"day": 7,
+"month": 3,
+"year": 2000,
+"name": "Victoria Rose Waldrip",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260125_234930_Brave.jpg",
+"day": 7,
+"month": 3,
+"year": 2000,
+"name": "Woah Vicky",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260126_000729_Brave.jpg",
+"day": 21,
+"month": 1,
+"year": 2005,
+"name": "Ishowspeed",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260126_000752_Brave.jpg",
+"day": 21,
+"month": 1,
+"year": 2005,
+"name": "Ishowspeed",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260126_001608_Brave.jpg",
+"day": 13,
+"month": 11,
+"year": 1992,
+"name": "Caleb Pressley",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260126_004339_Brave.jpg",
+"day": 11,
+"month": 10,
+"year": 1992,
+"name": "Cardi B",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260126_004659_Brave.jpg",
+"day": 21,
+"month": 10,
+"year": 1995,
+"name": "Amala Ratna Zandile Dlamini",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260126_141919_Brave.jpg",
+"day": 21,
+"month": 8,
+"year": 1959,
+"name": "Hawaii",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260126_224356_Brave.jpg",
+"day": 6,
+"month": 7,
+"year": 1987,
+"name": "Patrick Thomas Tarmey",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260127_000431_Brave.jpg",
+"day": 27,
+"month": 7,
+"year": 1992,
+"name": "Danny Duncan",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260127_030811_Brave.jpg",
+"day": 8,
+"month": 5,
+"year": 1996,
+"name": "ix ine",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260127_030825_Brave.jpg",
+"day": 8,
+"month": 5,
+"year": 1996,
+"name": "ix ine",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260128_004424_Brave.jpg",
+"day": 12,
+"month": 5,
+"year": 1968,
+"name": "Anthony Frank Hawk",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260128_150249_Brave.jpg",
+"day": 5,
+"month": 2,
+"year": 1986,
+"name": "Kevin Jerome Gilyard",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260128_150926_Brave.jpg",
+"day": 5,
+"month": 2,
+"year": 1986,
+"name": "Kevin Gates",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260128_172613_Brave.jpg",
+"day": 13,
+"month": 8,
+"year": 2004,
+"name": "N on",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260128_172624_Brave.jpg",
+"day": 13,
+"month": 8,
+"year": 2004,
+"name": "N on",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260129_004647_WhatsApp.jpg",
+"day": null,
+"month": null,
+"year": null,
+"name": "Sandrine Elizabeth Litchfield",
+"source": "read",
+"note": "Date boxes and name box not visible (black bar over top); name read from the line of the diamond."
+},
+{
+"filename": "Screenshot_20260129_014634_Brave.jpg",
+"day": 8,
+"month": 11,
+"year": 2005,
+"name": "TMZ",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260129_014708_Brave.jpg",
+"day": 8,
+"month": 11,
+"year": 2005,
+"name": "TMZ",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260129_160359_Brave.jpg",
+"day": 24,
+"month": 8,
+"year": 1961,
+"name": "Paul William chek",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260201_014019_Brave.jpg",
+"day": 19,
+"month": 1,
+"year": 1992,
+"name": "Mac Miller",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260201_104817_WhatsApp.jpg",
+"day": 23,
+"month": 8,
+"year": 2017,
+"name": "Numerator Kandaria Systematically Evolve",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260201_104823_WhatsApp.jpg",
+"day": 27,
+"month": 5,
+"year": 2016,
+"name": "Numerologist Pro com",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260202_055047_WhatsApp.jpg",
+"day": 5,
+"month": 6,
+"year": 1985,
+"name": "Alena Hellerova",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260202_190743_Brave.jpg",
+"day": 8,
+"month": 12,
+"year": 1982,
+"name": "Onika Tanya Maraj Petty",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260203_181758_Brave.jpg",
+"day": 29,
+"month": 3,
+"year": 1987,
+"name": "Josh provencio",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260203_181905_Brave.jpg",
+"day": 8,
+"month": 12,
+"year": 1982,
+"name": "Nicki Minaj",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260203_202703_Brave.jpg",
+"day": 20,
+"month": 7,
+"year": 2002,
+"name": "Shane stoffer",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260204_081450_Brave.jpg",
+"day": 18,
+"month": 12,
+"year": 2001,
+"name": "Billie Eilish Pirate Baird O'Connell",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260204_081855_Brave.jpg",
+"day": 18,
+"month": 12,
+"year": 2001,
+"name": "Billie Eilishl",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260205_110050_Brave.jpg",
+"day": 25,
+"month": 8,
+"year": 1993,
+"name": "Lourdes janeth Garcia armendariz",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260205_194642_Brave.jpg",
+"day": 8,
+"month": 6,
+"year": 1977,
+"name": "Kanye West",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260206_043618_Brave.jpg",
+"day": 8,
+"month": 6,
+"year": 1977,
+"name": "Ye",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260206_050046_Brave.jpg",
+"day": 2,
+"month": 9,
+"year": 1957,
+"name": "Francis Charles Olds",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260206_192225_Brave.jpg",
+"day": 20,
+"month": 11,
+"year": 1989,
+"name": "Daniel James Bryan Mullen",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260206_192710_Brave.jpg",
+"day": 20,
+"month": 11,
+"year": 1989,
+"name": "Danny Mullen",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260206_203417_Brave.jpg",
+"day": 17,
+"month": 1,
+"year": 1971,
+"name": "Robert James Ritchie",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260207_170843_Brave.jpg",
+"day": 28,
+"month": 10,
+"year": 1981,
+"name": "Metallica O",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260207_170859_Brave.jpg",
+"day": 28,
+"month": 10,
+"year": 1981,
+"name": "Metallica",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260207_170949_Brave.jpg",
+"day": 3,
+"month": 8,
+"year": 1963,
+"name": "James Alan Hetfield",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260207_184522_Brave.jpg",
+"day": 6,
+"month": 3,
+"year": 1999,
+"name": "Free speech systems",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260207_193712_Brave.jpg",
+"day": 9,
+"month": 8,
+"year": 1973,
+"name": "Whitney Elizabeth Houston",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260209_081703_Brave.jpg",
+"day": 31,
+"month": 12,
+"year": 1979,
+"name": "Joshua David Hawley",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260209_154013_Brave.jpg",
+"day": 3,
+"month": 12,
+"year": 1968,
+"name": "HAROLD LEE BLATZHEIM",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260209_172246_Brave.jpg",
+"day": 7,
+"month": 4,
+"year": 1995,
+"name": "Edward Jacob Lang",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260211_113510_Brave.jpg",
+"day": 28,
+"month": 3,
+"year": 1986,
+"name": "Stefani Joanne Angelina Germanotta",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260213_073420_Brave.jpg",
+"day": 4,
+"month": 8,
+"year": 1991,
+"name": "Kristina Marie patrick",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260213_192857_Brave.jpg",
+"day": 3,
+"month": 6,
+"year": 1999,
+"name": "Jemille Marrail Edwards",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260213_195926_Brave.jpg",
+"day": 8,
+"month": 10,
+"year": 2003,
+"name": "Jack Colin Doherty",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260213_222422_Brave.jpg",
+"day": 26,
+"month": 8,
+"year": 1980,
+"name": "Macaulay Carson Culkin",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260215_200902_Brave.jpg",
+"day": null,
+"month": null,
+"year": null,
+"name": "Jesse Van Rootselaar",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260216_043920_Brave.jpg",
+"day": 2,
+"month": 12,
+"year": 1998,
+"name": "Juice WRLD",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260218_192737_Brave.jpg",
+"day": 15,
+"month": 7,
+"year": 1969,
+"name": "Robert Dorgan",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260219_115257_Telegram.jpg",
+"day": 11,
+"month": 8,
+"year": 1994,
+"name": "Murat Abdulrahman Serbetci",
+"source": "read",
+"note": "Video-player overlay partly covers the date boxes; month 8 and year 1994 are partly obscured."
+},
+{
+"filename": "Screenshot_20260219_164535_Brave.jpg",
+"day": 9,
+"month": 2,
+"year": 1987,
+"name": "George Fragoso",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260219_193024_Brave.jpg",
+"day": 8,
+"month": 12,
+"year": 1987,
+"name": "Lauren Phillips",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260220_193556_Brave.jpg",
+"day": 20,
+"month": 2,
+"year": 1967,
+"name": "Kurt Donald Cobain",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260222_000730_Brave.jpg",
+"day": 17,
+"month": 1,
+"year": 1962,
+"name": "James Eugene Carrey",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260222_002925_Brave.jpg",
+"day": 21,
+"month": 7,
+"year": 1951,
+"name": "Robin McLaurin Williams",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260222_004720_Brave.jpg",
+"day": 20,
+"month": 4,
+"year": 1990,
+"name": "Zachariah Hoyt",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260224_101409_Brave.jpg",
+"day": 13,
+"month": 4,
+"year": 1980,
+"name": "Brian Shapiro",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260224_170707_Brave.jpg",
+"day": 8,
+"month": 9,
+"year": 1987,
+"name": "Cameron Jibril Thomaz",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260224_205252_Brave.jpg",
+"day": 20,
+"month": 2,
+"year": 1993,
+"name": "Crip mac",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260225_214247_Brave.jpg",
+"day": 26,
+"month": 5,
+"year": 1993,
+"name": "Jason Szkup",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260226_073621_Brave.jpg",
+"day": 8,
+"month": 5,
+"year": 2002,
+"name": "Sena unsal",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260226_114443_Brave.jpg",
+"day": 20,
+"month": 11,
+"year": 1983,
+"name": "Nayvadius DeMun Cash",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260301_125732_Brave.jpg",
+"day": 26,
+"month": 6,
+"year": 1992,
+"name": "Jennette McCurdy",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260301_163655_Brave.jpg",
+"day": 16,
+"month": 2,
+"year": 1948,
+"name": "Eckhart Tolle",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260301_182334_Brave.jpg",
+"day": 2,
+"month": 4,
+"year": 1977,
+"name": "Manish Chandrakant Panchal",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260301_202809_Brave.jpg",
+"day": 13,
+"month": 6,
+"year": 1992,
+"name": "Dakota Wint",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260302_201712_Brave.jpg",
+"day": 1,
+"month": 6,
+"year": 2006,
+"name": "Roblox",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260302_205720_Brave.jpg",
+"day": 22,
+"month": 8,
+"year": 1977,
+"name": "Bryan Johnson",
+"source": "read",
+"note": "Date boxes mostly scrolled off the top; only bottom edges visible. Day 22 read from partial box and the 22/4 center label; month 8 from 8/8 top-left label; year box not readable (top label 24/6)."
+},
+{
+"filename": "Screenshot_20260303_202132_Brave.jpg",
+"day": 28,
+"month": 10,
+"year": 1973,
+"name": "Sam Tripoli",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260304_090236_Brave.jpg",
+"day": 24,
+"month": 10,
+"year": 1986,
+"name": "Aubrey Drake Graham",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260305_115955_Brave.jpg",
+"day": 23,
+"month": 12,
+"year": 1985,
+"name": "Paul Izak",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260305_194519_Brave.jpg",
+"day": 20,
+"month": 4,
+"year": 1974,
+"name": "Charles Duncan Trussell",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260306_191312_Brave.jpg",
+"day": 21,
+"month": 4,
+"year": 1996,
+"name": "CLENNEY TAYLOR COURTNEY",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260307_063738_Brave.jpg",
+"day": 16,
+"month": 6,
+"year": 1971,
+"name": "Tupac Amaru Shakur",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260307_104309_Brave.jpg",
+"day": 26,
+"month": 11,
+"year": 2002,
+"name": "Tanisha Ganwal",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260307_202637_Brave.jpg",
+"day": 22,
+"month": 1,
+"year": 1985,
+"name": "te Tim J Dillon",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260308_170457_Brave.jpg",
+"day": 12,
+"month": 12,
+"year": 1988,
+"name": "Steven Kenneth Bonnell",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260309_110535_Brave.jpg",
+"day": 14,
+"month": 5,
+"year": 1991,
+"name": "Telma Johana Eduwiges Guerrero Escobedc",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260309_184224_Brave.jpg",
+"day": 13,
+"month": 6,
+"year": 1974,
+"name": "Stephen Gilchrist Glover",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260311_171237_Brave.jpg",
+"day": 9,
+"month": 8,
+"year": 1972,
+"name": "Michele Lee McCullough",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260311_171419_Brave.jpg",
+"day": 9,
+"month": 8,
+"year": 1972,
+"name": "Michele Lee Shicora",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260312_140855_Brave.jpg",
+"day": 11,
+"month": 10,
+"year": 1999,
+"name": "Jesus Antonio",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260312_194846_Brave.jpg",
+"day": 8,
+"month": 8,
+"year": 2003,
+"name": "Miles Spiel",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260312_202138_Brave.jpg",
+"day": 28,
+"month": 2,
+"year": 1977,
+"name": "Jason Aldine Williams",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260312_212651_Brave.jpg",
+"day": 27,
+"month": 8,
+"year": 1998,
+"name": "Rodarius Marcell Green",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260312_220149_Brave.jpg",
+"day": 19,
+"month": 5,
+"year": 1998,
+"name": "PJ shicora",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260313_183034_Brave.jpg",
+"day": 14,
+"month": 5,
+"year": 1993,
+"name": "Miranda Taylor Cosgrove",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260314_213935_Brave.jpg",
+"day": 9,
+"month": 6,
+"year": 1963,
+"name": "John Christopher Depp il",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260314_214007_Brave.jpg",
+"day": 9,
+"month": 6,
+"year": 1963,
+"name": "John Christopher Depp",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260315_010837_Brave.jpg",
+"day": 29,
+"month": 8,
+"year": 1958,
+"name": "Michael Jackson",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260316_091446_Brave.jpg",
+"day": 3,
+"month": 3,
+"year": 1991,
+"name": "DeShawn Raw",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260318_080218_Brave.jpg",
+"day": 11,
+"month": 10,
+"year": 1999,
+"name": "Jesus munoz",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260319_064100_Brave.jpg",
+"day": 11,
+"month": 10,
+"year": 1999,
+"name": "Jesus Antonio Romero munoz",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260321_183702_Brave.jpg",
+"day": 16,
+"month": 3,
+"year": 1946,
+"name": "Judith Darlene Hampton",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260322_165811_Brave.jpg",
+"day": 19,
+"month": 11,
+"year": 1997,
+"name": "Anthony Panza",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260326_201433_Brave.jpg",
+"day": 8,
+"month": 7,
+"year": 1992,
+"name": "Elizabeth April",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260328_064046_Brave.jpg",
+"day": 2,
+"month": 4,
+"year": 1996,
+"name": "Zach Bryan",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260401_201845_Brave.jpg",
+"day": 29,
+"month": 5,
+"year": 1997,
+"name": "Trevor Dean Copeland",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260406_232643_Brave.jpg",
+"day": 11,
+"month": 1,
+"year": 1985,
+"name": "Ryan Robert Irving",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260406_232809_Brave.jpg",
+"day": 11,
+"month": 1,
+"year": 1985,
+"name": "Amunra Robert Irving",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260407_210912_Brave.jpg",
+"day": 12,
+"month": 8,
+"year": 1910,
+"name": "George Soros",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260407_211141_Brave.jpg",
+"day": 12,
+"month": 8,
+"year": null,
+"name": "György Schwartz",
+"source": "read",
+"note": "Input boxes not visible. Day 12 and month 8 inferred from diamond labels (12/3 center, 8/8 top-left); year not determinable (11/2 label only). Name from the line of the triangle: György (accent) Schwartz; no name box visible."
+},
+{
+"filename": "Screenshot_20260408_062453_Brave.jpg",
+"day": 1,
+"month": 6,
+"year": 1998,
+"name": "John Pulliam",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260408_165946_Brave.jpg",
+"day": 1,
+"month": 6,
+"year": 1998,
+"name": "John adam Maurice Pulliam",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260408_203835_Brave.jpg",
+"day": 15,
+"month": 8,
+"year": 1995,
+"name": "Kaitlin Marie Bennett",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260413_190549_Brave.jpg",
+"day": 24,
+"month": 8,
+"year": 1985,
+"name": "Mike corey",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260415_123913_Brave.jpg",
+"day": 31,
+"month": 10,
+"year": 1994,
+"name": "Shannon B Lowrey",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260415_133102_Brave.jpg",
+"day": 31,
+"month": 10,
+"year": 1994,
+"name": "Shanin blake",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260418_012354_Brave.jpg",
+"day": 30,
+"month": 5,
+"year": 1969,
+"name": "Christopher Thomas Schewe",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260419_121950_Brave.jpg",
+"day": 27,
+"month": 9,
+"year": 1977,
+"name": "Peter Santenello",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260420_140546_Brave.jpg",
+"day": 14,
+"month": 7,
+"year": 1988,
+"name": "Praveen Mohan",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260420_230514_Brave.jpg",
+"day": 20,
+"month": 8,
+"year": 1890,
+"name": "Howard Phillips Lovecraft",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260422_181310_Brave.jpg",
+"day": 10,
+"month": 7,
+"year": 1856,
+"name": "Nikola Tesla",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260422_193026_Gallery.jpg",
+"day": 8,
+"month": 1,
+"year": 1935,
+"name": "Elvis Aaron Presley",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260422_193128_Brave.jpg",
+"day": 8,
+"month": 4,
+"year": 2026,
+"name": "Elvis Presley",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260422_194132_Brave.jpg",
+"day": 6,
+"month": 2,
+"year": 1999,
+"name": "Hayden Haney",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260423_223410_Brave.jpg",
+"day": 18,
+"month": 11,
+"year": 1961,
+"name": "Robert J Gilbert",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260425_234445_WhatsApp.jpg",
+"day": 29,
+"month": 11,
+"year": 1975,
+"name": "Chris Elston",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260426_002619_Brave.jpg",
+"day": 7,
+"month": 7,
+"year": 1977,
+"name": "Jeffrey Earl Marsh",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260426_013549_Brave.jpg",
+"day": 23,
+"month": 2,
+"year": 1994,
+"name": "Jon Zherka",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260427_162956_Brave.jpg",
+"day": null,
+"month": null,
+"year": null,
+"name": "Russell Hunter",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260427_163035_Brave.jpg",
+"day": null,
+"month": null,
+"year": null,
+"name": "T. Russell Hunter",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260427_174727_Brave.jpg",
+"day": 24,
+"month": 5,
+"year": 1991,
+"name": "Ryan Upchurch",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260427_195131_Brave.jpg",
+"day": 30,
+"month": 11,
+"year": 1835,
+"name": "Samuel Langhorne Clemens",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260428_130844_Brave.jpg",
+"day": 2,
+"month": 9,
+"year": 1974,
+"name": "Victor Robledo",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260428_140123_Brave.jpg",
+"day": 28,
+"month": 1,
+"year": 1985,
+"name": "Jermaine Lamarr Cole",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260430_104001_Brave.jpg",
+"day": 25,
+"month": 7,
+"year": 1991,
+"name": "Hasan Doğan Piker",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260501_144948_Brave.jpg",
+"day": 15,
+"month": 1,
+"year": 2000,
+"name": "Lilly Gaddis",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260501_213649_Brave.jpg",
+"day": 8,
+"month": 1,
+"year": 2001,
+"name": "NATHANIEL RAYJOUETT",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260507_165616_Brave.jpg",
+"day": 13,
+"month": 10,
+"year": 1989,
+"name": "Alexandria Ocasio Cortez",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260507_205321_Brave.jpg",
+"day": 1,
+"month": 3,
+"year": 1987,
+"name": "Kesha Rose Sebert",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260507_230911_Brave.jpg",
+"day": 1,
+"month": 6,
+"year": 1991,
+"name": "Lena Nersesian",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260507_235350_Brave.jpg",
+"day": 27,
+"month": 6,
+"year": 1997,
+"name": "Dalton Levi Eatherly",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260508_214549_Brave.jpg",
+"day": 5,
+"month": 7,
+"year": 1934,
+"name": "Robert Corlett Proctor",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260508_232253_Brave.jpg",
+"day": 5,
+"month": 7,
+"year": 1934,
+"name": "Robert Proctor",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260509_222926_Brave.jpg",
+"day": null,
+"month": null,
+"year": null,
+"name": "keshawn ogarro",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260511_012458_Brave.jpg",
+"day": 20,
+"month": 11,
+"year": 1988,
+"name": "Erika Lane Frantzve",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260512_001511_Brave.jpg",
+"day": 4,
+"month": 10,
+"year": 1982,
+"name": "Shawn Ryan Palmisano",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260512_212743_Brave.jpg",
+"day": 22,
+"month": 6,
+"year": 1991,
+"name": "June Nicole Lapine",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260514_202152_Brave.jpg",
+"day": 31,
+"month": 5,
+"year": 1986,
+"name": "Juaquin James Malphurs",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260515_203118_Opera.jpg",
+"day": null,
+"month": null,
+"year": null,
+"name": "Johnathan Knowles",
+"source": "read",
+"note": "Date and name boxes scrolled off; name read from the triangle line. A faint different name (Joshua Shicora) is in a background profile box, not part of this chart. Diamonds blank, no dates visible."
+},
+{
+"filename": "Screenshot_20260515_230124_Opera.jpg",
+"day": 28,
+"month": 1,
+"year": 1976,
+"name": "William Leonard Roberts Il",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260516_001645_Opera.jpg",
+"day": 16,
+"month": 7,
+"year": 1997,
+"name": "Nate Friedman",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260516_222315_Opera.jpg",
+"day": 17,
+"month": 3,
+"year": 1948,
+"name": "Hells angels",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260517_005426_Opera.jpg",
+"day": 24,
+"month": 5,
+"year": 1982,
+"name": "Paul Joseph Watson",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260517_012722_Opera.jpg",
+"day": 24,
+"month": 9,
+"year": 1998,
+"name": "Nikolas Jacob Cruz",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260517_210145_Opera.jpg",
+"day": 24,
+"month": 3,
+"year": 1963,
+"name": "Santos Bonacci",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260517_222246_Opera.jpg",
+"day": 5,
+"month": 11,
+"year": 1997,
+"name": "Devon Tyler Nance",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260518_001601_Opera.jpg",
+"day": 17,
+"month": 5,
+"year": 1977,
+"name": "Charleston White",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260518_003401_Opera.jpg",
+"day": 20,
+"month": 1,
+"year": 1997,
+"name": "Johnathan Michael Porter",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260518_172824_Opera.jpg",
+"day": 11,
+"month": 5,
+"year": 1991,
+"name": "Jake Munro",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260518_175621_Opera.jpg",
+"day": 11,
+"month": 5,
+"year": 1991,
+"name": "Jacob Munro",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260519_214130_Opera.jpg",
+"day": 3,
+"month": 12,
+"year": 1952,
+"name": "Toufik Benedictus Hinn",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260520_031815_Opera.jpg",
+"day": 17,
+"month": 5,
+"year": 1991,
+"name": "Livingston George Allen",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260520_033300_Opera.jpg",
+"day": null,
+"month": null,
+"year": null,
+"name": "Chudthebuilder",
+"source": "read",
+"note": "scrolled down; only the name line is visible, no date"
+},
+{
+"filename": "Screenshot_20260520_033745_Opera.jpg",
+"day": 27,
+"month": 6,
+"year": 1997,
+"name": "Chudthebuilder",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260520_033811_Opera.jpg",
+"day": 27,
+"month": 6,
+"year": 1997,
+"name": "Chudthebuilder",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260520_033928_Opera.jpg",
+"day": null,
+"month": null,
+"year": null,
+"name": "Chudthebuilder",
+"source": "read",
+"note": "the single-name chart of the word, no date"
+},
+{
+"filename": "Screenshot_20260521_001332_Opera.jpg",
+"day": 12,
+"month": 1,
+"year": 1964,
+"name": "Jeffrey Preston Bezos",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260521_163431_Opera.jpg",
+"day": 30,
+"month": 12,
+"year": 1995,
+"name": "Ben Schneider",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260522_020224_Opera.jpg",
+"day": 1,
+"month": 12,
+"year": 1986,
+"name": "Emory Andrew Tate",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260522_023711_Opera.jpg",
+"day": 17,
+"month": 5,
+"year": 1991,
+"name": "Dj academics",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260522_144347_Opera.jpg",
+"day": 15,
+"month": 12,
+"year": 1982,
+"name": "Jon Eugene Minadeo II",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260522_161140_Opera.jpg",
+"day": 30,
+"month": 3,
+"year": 1938,
+"name": "Klaus Martin Schwab",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260523_005205_Opera.jpg",
+"day": 10,
+"month": 10,
+"year": 1986,
+"name": "Alexander Stein",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260523_005256_Opera.jpg",
+"day": 10,
+"month": 10,
+"year": 1986,
+"name": "ang Alex Stein",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260524_041204_Opera.jpg",
+"day": 15,
+"month": 12,
+"year": 1982,
+"name": "Handsome truth",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260524_041918_Opera.jpg",
+"day": 7,
+"month": 4,
+"year": null,
+"name": "Jake lang",
+"source": "read",
+"note": "date boxes scrolled off; day 7 and month 4 read off the chart, year not visible"
+},
+{
+"filename": "Screenshot_20260526_171953_Opera.jpg",
+"day": 8,
+"month": 6,
+"year": 1984,
+"name": "Tony Hinchcliffe",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260526_215832_Opera.jpg",
+"day": 29,
+"month": 12,
+"year": 1993,
+"name": "John Robert Robertson",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260526_231129_Opera.jpg",
+"day": 6,
+"month": 7,
+"year": 1979,
+"name": "Kevin Darnell Hart",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260528_233044_Opera.jpg",
+"day": 21,
+"month": 3,
+"year": 1989,
+"name": "Andrew David Gold",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260529_001010_Opera.jpg",
+"day": 15,
+"month": 4,
+"year": 1999,
+"name": "Emily Satlow",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260530_095824_Opera.jpg",
+"day": null,
+"month": null,
+"year": null,
+"name": "Joshua Johnson",
+"source": "read",
+"note": "chart drawn with no date: only the name line has numbers"
+},
+{
+"filename": "Screenshot_20260530_100717_Opera.jpg",
+"day": 28,
+"month": 5,
+"year": 1998,
+"name": "Allison Nicole Frank",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260531_232029_Opera.jpg",
+"day": 4,
+"month": 1,
+"year": 1979,
+"name": "TANIA FERNANDES ANDERSON",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260601_093815_Opera.jpg",
+"day": 30,
+"month": 12,
+"year": 1995,
+"name": "Benjamin Schneider",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260601_131956_WhatsApp.jpg",
+"day": 19,
+"month": 6,
+"year": 1982,
+"name": "Andrea Loiscrowder",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260601_151924_Opera.jpg",
+"day": 19,
+"month": 9,
+"year": 1982,
+"name": "Andrea Crowder",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260605_132227_Opera.jpg",
+"day": 8,
+"month": 1,
+"year": 1828,
+"name": "Democrat",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260605_132322_Opera.jpg",
+"day": 20,
+"month": 3,
+"year": 1854,
+"name": "Republican",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260605_132508_Gallery.jpg",
+"day": 8,
+"month": 1,
+"year": 1828,
+"name": "Democrat",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260605_132519_Gallery.jpg",
+"day": 20,
+"month": 3,
+"year": 1854,
+"name": "Republican",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260605_132646_Gallery.jpg",
+"day": 8,
+"month": 1,
+"year": 1828,
+"name": "Democrat",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260611_054203_Opera.jpg",
+"day": 6,
+"month": 6,
+"year": 2003,
+"name": "Justin Alvo",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260611_071746_Opera.jpg",
+"day": null,
+"month": null,
+"year": null,
+"name": "Tyler Blood",
+"source": "read",
+"note": "scrolled down past the date boxes; name line only"
+},
+{
+"filename": "Screenshot_20260612_171403_Opera.jpg",
+"day": 5,
+"month": 3,
+"year": 1963,
+"name": "Joseph Allen Schreibvogel",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260612_171504_Opera.jpg",
+"day": 5,
+"month": 3,
+"year": 1963,
+"name": "Joseph Allen Maldonado Passage",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260612_195116_Opera.jpg",
+"day": 20,
+"month": 6,
+"year": 1970,
+"name": "Tina Genene Lowry",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260612_221417_Opera.jpg",
+"day": 20,
+"month": 5,
+"year": 1970,
+"name": "Louis Sebastian Theroux",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260616_023123_Opera.jpg",
+"day": 20,
+"month": 2,
+"year": 1988,
+"name": "Robyn Rihanna Fenty",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260619_144242_Opera.jpg",
+"day": 26,
+"month": 8,
+"year": 1998,
+"name": "Stephen Deleonardis",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260619_211118_Opera.jpg",
+"day": 10,
+"month": 5,
+"year": 2007,
+"name": "Karmelo Sincere Anthony",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260619_211421_Opera.jpg",
+"day": 31,
+"month": 7,
+"year": 2007,
+"name": "Austin Matthew Metcalf",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260621_141743_Opera.jpg",
+"day": 1,
+"month": 11,
+"year": 1999,
+"name": "James Lewis Rowe III",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260624_151426_Opera.jpg",
+"day": 12,
+"month": 10,
+"year": 1993,
+"name": "Tommy McGee",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260625_155901_Opera.jpg",
+"day": 28,
+"month": 7,
+"year": 1995,
+"name": "Brandon Kent Buckingham",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260625_161624_Opera.jpg",
+"day": 30,
+"month": 12,
+"year": 1995,
+"name": "Benjamin Paul Schneider",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260630_150412_Opera.jpg",
+"day": 4,
+"month": 9,
+"year": 1998,
+"name": "Google",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260630_150515_Opera.jpg",
+"day": 4,
+"month": 9,
+"year": null,
+"name": "Google 13",
+"source": "read",
+"note": "date boxes scrolled off; day 4 and month 9 read off the chart, year not visible"
+},
+{
+"filename": "Screenshot_20260630_151022_Opera.jpg",
+"day": 4,
+"month": 4,
+"year": 1975,
+"name": "Microsoft",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260713_194223_Opera.jpg",
+"day": 28,
+"month": 9,
+"year": 1979,
+"name": "Brandon Cole Margera",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260715_211500_Opera.jpg",
+"day": 28,
+"month": 8,
+"year": 1978,
+"name": "Tracy Renee Twyman",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260717_091803_Opera.jpg",
+"day": 31,
+"month": 10,
+"year": 1957,
+"name": "Shirley Lynn Phelps Roper",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260724_193452_Opera.jpg",
+"day": 28,
+"month": 6,
+"year": 1956,
+"name": "Robin Lorraine McCullough",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260727_140325_Opera.jpg",
+"day": 1,
+"month": 9,
+"year": 1988,
+"name": "Chelsea Chanel Dudley",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260806_222833_Opera.jpg",
+"day": 18,
+"month": 5,
+"year": 1941,
+"name": "Wayne Bent",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260809_112606_Opera.jpg",
+"day": 30,
+"month": 4,
+"year": 1960,
+"name": "David Miscavige",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260810_214942_Opera.jpg",
+"day": 15,
+"month": 12,
+"year": 1990,
+"name": "Bryant Turhan Emmerson Moreland",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260811_124116_Opera.jpg",
+"day": 17,
+"month": 9,
+"year": 2004,
+"name": "Maceo puumala",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260812_080226_Opera.jpg",
+"day": 17,
+"month": 9,
+"year": 2004,
+"name": "Maceo Patrick puumala",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260817_062532_Opera.jpg",
+"day": 18,
+"month": 6,
+"year": 1987,
+"name": "Andres Grijalva",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260820_172431_Opera.jpg",
+"day": 1,
+"month": 9,
+"year": 2004,
+"name": "Dean Withers",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260820_172454_Opera.jpg",
+"day": 1,
+"month": 9,
+"year": 2004,
+"name": "Dean Patrick Withers",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260821_121357_Opera.jpg",
+"day": 5,
+"month": 3,
+"year": 1963,
+"name": "Joel Scott Osteen",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260822_000402_Opera.jpg",
+"day": 30,
+"month": 3,
+"year": 2004,
+"name": "Josiah Kane De La Fuente",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260824_050216_Opera.jpg",
+"day": 4,
+"month": 6,
+"year": 1987,
+"name": "Alejandro Rose-Garcia",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260824_050312_Opera.jpg",
+"day": 4,
+"month": 6,
+"year": 1987,
+"name": "Alejandro Rose Garcia",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260826_184427_Opera.jpg",
+"day": 16,
+"month": 7,
+"year": 2001,
+"name": "Alex Venegas",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260901_195132_Opera.jpg",
+"day": 3,
+"month": 12,
+"year": 1994,
+"name": "Dominique Armani Jones",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260903_183504_Opera.jpg",
+"day": 11,
+"month": 8,
+"year": 1990,
+"name": "Lindsay Marie Clancy",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260912_205639_Opera.jpg",
+"day": 26,
+"month": 1,
+"year": 1958,
+"name": "Ellen Lee DeGeneres",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260914_142703_Opera.jpg",
+"day": 12,
+"month": 11,
+"year": 2003,
+"name": "Nicholas Casey Guerrero",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260914_144134_Opera.jpg",
+"day": 8,
+"month": 3,
+"year": 2007,
+"name": "Anthony Joseph heathman",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260916_064023_Opera.jpg",
+"day": 5,
+"month": 10,
+"year": 2007,
+"name": "Hector Marty morales",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260916_204647_Opera.jpg",
+"day": 1,
+"month": 3,
+"year": 1966,
+"name": "Don Lemon",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20260925_122302_Opera.jpg",
+"day": 19,
+"month": 2,
+"year": 1963,
+"name": "José Antonio Díaz",
+"source": "read"
+},
+{
+"filename": "Screenshot_20260927_102128_Opera.jpg",
+"day": 10,
+"month": 11,
+"year": 2006,
+"name": "Christian Angel Montano",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20261002_022309_Opera.jpg",
+"day": 18,
+"month": 9,
+"year": 1945,
+"name": "John David McAfee",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20261008_223530_Opera.jpg",
+"day": 21,
+"month": 5,
+"year": 1960,
+"name": "Jeffrey Lionel Dahmer",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20261012_141853_Opera.jpg",
+"day": 22,
+"month": 10,
+"year": 1920,
+"name": "Timothy Francis Leary",
+"source": "ocr"
+},
+{
+"filename": "Screenshot_20251204_234115_Firefox.jpg",
+"source": "read",
+"day": null,
+"month": null,
+"year": null,
+"name": "Alex Mathew Bleecker"
+}
+]

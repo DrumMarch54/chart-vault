@@ -73,6 +73,82 @@ export const MIGRATIONS = [
     db.exec("ALTER TABLE images ADD COLUMN kind TEXT NOT NULL DEFAULT 'chart'");
     db.exec('CREATE INDEX IF NOT EXISTS idx_images_kind ON images(kind)');
   },
+  // 4: which buttons and screens get used, by NAME and count only (never
+  //    what was typed, never a chart or a tag), for "What you use most"
+  (db) => db.exec('CREATE TABLE IF NOT EXISTS usage (name TEXT PRIMARY KEY, count INTEGER NOT NULL DEFAULT 0, last_at TEXT)'),
+  // 5: search by chart position. chart_inputs = the name and birth date typed into the paid tool
+  //    for a chart (read off the picture, or fixed by the owner); chart_values = every number of
+  //    every position the engine computes from them (server/positions.js).
+  (db) => db.exec(`
+    CREATE TABLE IF NOT EXISTS chart_inputs (
+      image_id INTEGER PRIMARY KEY REFERENCES images(id) ON DELETE CASCADE,
+      day INTEGER, month INTEGER, year INTEGER,
+      name TEXT NOT NULL DEFAULT '',
+      source TEXT NOT NULL,                   -- ocr | read | owner | seed
+      build TEXT,
+      updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+    );
+    CREATE TABLE IF NOT EXISTS chart_values (
+      image_id INTEGER NOT NULL REFERENCES images(id) ON DELETE CASCADE,
+      chart TEXT NOT NULL,                    -- essence | name | vocation | personality | outer | inner
+      position TEXT NOT NULL,
+      n INTEGER NOT NULL DEFAULT 0,           -- which one, when a position repeats (two middle names)
+      sum INTEGER NOT NULL,
+      ds INTEGER NOT NULL,
+      PRIMARY KEY (image_id, chart, position, n)
+    );
+    CREATE INDEX IF NOT EXISTS idx_chart_values_sum ON chart_values(sum, chart, position);
+    CREATE INDEX IF NOT EXISTS idx_chart_values_ds ON chart_values(ds, chart, position);
+  `),
+  // 6: who a chart is, in the owner's words ("Charlie Sheen", "Kyle Forgeard · NELK"): the label under
+  //    the thumbnail and the viewer's title. Separate from the tags, which never change. title_source =
+  //    known | typed | tag | owner (how it was decided); title_check = 1 while the owner still has to confirm it.
+  (db) => {
+    db.exec('ALTER TABLE images ADD COLUMN title TEXT');
+    db.exec('ALTER TABLE images ADD COLUMN title_source TEXT');
+    db.exec('ALTER TABLE images ADD COLUMN title_check INTEGER NOT NULL DEFAULT 0');
+  },
+  // 7: AI readings and answers about a chart (server/reading.js). kind = reading (the whole chart) |
+  //    answer (one question, kept in `question`). `options` = how the owner asked for it (JSON: length,
+  //    focus, note). Each row remembers the model, what it cost and the build that made it, so the same
+  //    reading is paid for once and "which build wrote this" is never a guess.
+  (db) => db.exec(`
+    CREATE TABLE IF NOT EXISTS readings (
+      id INTEGER PRIMARY KEY,
+      image_id INTEGER NOT NULL REFERENCES images(id) ON DELETE CASCADE,
+      kind TEXT NOT NULL,
+      question TEXT,
+      options TEXT,
+      text TEXT NOT NULL,
+      model TEXT NOT NULL,
+      usd REAL NOT NULL DEFAULT 0,
+      build TEXT,
+      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+    );
+    CREATE INDEX IF NOT EXISTS idx_readings_image ON readings(image_id, kind, id);
+  `),
+  // 8: deleted charts (server/trash.js). A deleted chart's whole record (tags, paths, name, typed inputs,
+  //    readings) is kept as JSON so it can be put back exactly; the picture waits in data/trash. The
+  //    filename is skipped by imports until the chart is restored. duplicates_kept = groups of look-alike
+  //    charts the owner looked at and chose to keep (ids sorted, comma-joined), so they stop being listed.
+  (db) => db.exec(`
+    CREATE TABLE IF NOT EXISTS deleted_images (
+      id INTEGER PRIMARY KEY,
+      filename TEXT NOT NULL UNIQUE,
+      kind TEXT NOT NULL,
+      title TEXT,
+      record TEXT NOT NULL,
+      trash_path TEXT,
+      thumb_trash_path TEXT,
+      reason TEXT,
+      build TEXT,
+      deleted_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+    );
+    CREATE TABLE IF NOT EXISTS duplicates_kept (
+      ids TEXT PRIMARY KEY,
+      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+    );
+  `),
 ];
 
 export function migrate(db) {

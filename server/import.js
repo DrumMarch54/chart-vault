@@ -85,7 +85,11 @@ export function importTags(db, parsed, { filename = null } = {}) {
     };
     const allTags = new Set();
     const tagIds = new Map();
+    const isDeleted = db.prepare('SELECT 1 FROM deleted_images WHERE filename = ?');
     for (const [file, { paths, tags }] of parsed.images) {
+      // A chart the owner deleted in the app stays deleted: the tag file never brings it back (restore it
+      // from Settings -> Deleted Charts instead).
+      if (isDeleted.get(file)) { summary.skipped_deleted = (summary.skipped_deleted || 0) + 1; continue; }
       summary.new_images += insImage.run(file, dateFromFilename(file)).changes;
       const imageId = getImage.get(file).id;
       for (const p of paths) insPath.run(imageId, p);
@@ -147,6 +151,7 @@ export function markAlbumMember(db, { filename, album, tags, kind = 'chart' }) {
   if (!names.length || names.some((t) => typeof t !== 'string' || !t.trim() || t.length > 120)) throw new ImportError('Bad tag list.');
   if (album.length > 120 || filename.length > 255) throw new ImportError('Name is too long.');
   return db.transaction(() => {
+    if (db.prepare('SELECT 1 FROM deleted_images WHERE filename = ?').get(filename)) return { id: null, has_file: false, created: false, tagged: false, kind, deleted: true };
     const created = db.prepare('INSERT OR IGNORE INTO images (filename, taken_at, kind) VALUES (?, ?, ?)').run(filename, dateFromFilename(filename), kind).changes === 1;
     const img = db.prepare('SELECT id, stored_path, kind FROM images WHERE filename = ?').get(filename);
     db.prepare('INSERT OR IGNORE INTO image_paths (image_id, path) VALUES (?, ?)').run(img.id, `/DCIM/${album}/${filename}`);

@@ -93,3 +93,6 @@ export function requireAuth(req, res, next) {
   if (isAuthed(req)) return next();
   res.status(401).json({ error: 'Please log in.' });
 }
+
+// Secrets the snapshot and the AI log must blank from any text on its way out.
+export function redactionWords() { return [config.webToken].filter(Boolean); }
