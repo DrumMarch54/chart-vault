@@ -782,3 +782,16 @@ in the source material somewhere".
 - The statistics module (Master Module 7 slides, OCR'd) and the results lecture transcript are in the knowledge
   store (`knowledge/raw/statistics-module-7.md`, `lecture-statistics-results.md`); the celebrity results book
   (humanity-archetyping-book.md) was already there.
+
+## 2026-10-20 The position-by-position source map, checked
+The owner handed over NotebookLM's answer to "which document and section describes a number in each chart
+position" (it had never been in the repo). Saved as `.brain/numerology/position-sources.md` after checking every
+named document against `knowledge/raw/` and probing the meaning engine with one number per position. Nearly every
+document is in the store; the words do not reach the screen for about half the positions, and the map says why:
+six Google Docs came in with their headings flattened (month positions, dharma fusion, the website position
+meanings, the childhood and twenties auras), the Superdates appendix (Day Vibration, Life Path, DVLP, Target,
+Dharma) is held back as "business" by the `biz-` prefix, the sub-chart book's Solar Plexus Diamond (Vocation)
+sections are missed, and the list docs (problem areas, psyche book steps) keep their numbers in the body. Two
+documents are not in the store at all (NU-Templates, NP-Statistics; the latter's day sections appear to be the
+humanity-archetyping book). The store's Numbers 1-9 Chart Full Descriptions has no Day/Month/Year/Life Path
+sub-entries though the map says the doc has them: re-read the Drive doc first. Nothing on the screen changed.
