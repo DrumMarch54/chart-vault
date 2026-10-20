@@ -1,0 +1,120 @@
+#!/usr/bin/env node
+// Builds public/celebrities.js from the course's statistics book (knowledge/raw/humanity-archetyping-book.md,
+// chapter "CAREER AND DAY VIBRATION"): for every career group, the day vibrations the book ranks first, second,
+// third... with how many people in the sample were born on that day, and the book's one-line explanation.
+// Also the same facts turned round: for every day 1-31, which groups rank it and in what place.
+// Run: node tools/make-celebrities.mjs   (prints how many groups and bullets it read, and any bullet it could
+// not read, word for word, so it can be checked). The output is generated: never hand-edit public/celebrities.js.
+import fs from 'node:fs';
+
+const SRC = new URL('../knowledge/raw/humanity-archetyping-book.md', import.meta.url);
+const OUT = new URL('../public/celebrities.js', import.meta.url);
+const raw = fs.readFileSync(SRC, 'utf8');
+
+// Names the book spells oddly, after the counts are stripped off the heading.
+const FIXED_NAMES = {
+  'NBAplayers': 'NBA players',
+  "DJ's": 'DJs',
+  'Members of Parliament - UK UK': 'UK Members of Parliament',
+  'Forbes2018': 'Forbes Billionaires', // the book's own name for this list in its statistics chapter
+};
+
+// The chapter: from its heading to the next top-level heading that is not the "under 1000" split inside it.
+const lines = raw.split('\n');
+const start = lines.findIndex((l) => l.trim() === '## CAREER AND DAY VIBRATION');
+if (start < 0) throw new Error('chapter heading not found');
+let end = lines.length;
+for (let i = start + 1; i < lines.length; i++) {
+  if (/^## /.test(lines[i]) && !/^## Populations under/i.test(lines[i])) { end = i; break; }
+}
+
+const groups = [];
+const unmatched = [];
+let bullets = 0;
+let current = null; // the group whose bullets and prose we are inside
+
+function headingGroup(text) {
+  // "Athletes (21744)", "Biologists 113", "Members of Parliament - UK (115) UK (115)": the size is the number in
+  // parentheses, or the bare number at the end when the book forgot them ("Forbes2018 (2207)" is 2207, not 2018).
+  const m = text.match(/\((\d+)\)/) || text.match(/\s(\d+)\s*$/);
+  const size = m ? Number(m[1]) : 0;
+  let name = text.replace(/\(\d+\)/g, '').replace(/\s+\d+\s*$/, '').replace(/\s+/g, ' ').trim();
+  name = FIXED_NAMES[name] || name;
+  return { name, size, ranks: [], line: '' };
+}
+
+function parseBullet(text) {
+  // "DV 8 DV 17 (142)", "DV 7, 14, 18", "DV 26 (8) - The 26s are..." → days and count (null when the book gives none).
+  const countAt = text.search(/\(\d+\)/);
+  const head = countAt >= 0 ? text.slice(0, countAt) : text;
+  const countMatch = text.match(/\((\d+)\)/);
+  const tokens = head.split(/[\s,]+/).filter((t) => t && t.toUpperCase() !== 'DV');
+  const days = [];
+  for (const t of tokens) {
+    if (!/^\d+$/.test(t)) return null;
+    const n = Number(t);
+    if (n < 1 || n > 31) return null;
+    if (!days.includes(n)) days.push(n); // "25 25 26 26" is a typo in the book; one day is one day
+  }
+  if (!days.length) return null;
+  return { days, count: countMatch ? Number(countMatch[1]) : null };
+}
+
+for (let i = start + 1; i < end; i++) {
+  const line = lines[i].trim();
+  if (!line) continue;
+  if (/^## /.test(line)) { current = null; continue; } // the "under 1000" note belongs to no group
+  if (/^### /.test(line)) { current = headingGroup(line.slice(4)); groups.push(current); continue; }
+  if (!current) continue; // the chapter's own introduction and worked example
+  if (/^- /.test(line)) {
+    bullets++;
+    const rank = parseBullet(line.slice(2).trim());
+    if (rank) current.ranks.push(rank); else unmatched.push(`${current.name}: ${line}`);
+    continue;
+  }
+  current.line = current.line ? `${current.line} ${line}` : line;
+}
+
+// Turn the groups round: for each day, who ranks it and in what place. Ties share a place.
+const byDay = {};
+for (let d = 1; d <= 31; d++) byDay[String(d)] = [];
+for (const g of groups) {
+  g.ranks.forEach((r, idx) => {
+    for (const d of r.days) byDay[String(d)].push({ group: g.name, size: g.size, place: idx + 1 });
+  });
+}
+for (const d of Object.keys(byDay)) {
+  byDay[d].sort((a, b) => b.size - a.size || a.group.localeCompare(b.group) || a.place - b.place);
+}
+
+// The book's own caveat, in its words: a "most common" day is only slightly more common, and 29-31 are rarer days.
+function sentenceWith(words) {
+  const para = lines.find((l) => l.includes(words));
+  if (!para) throw new Error(`caveat not found: ${words}`);
+  const at = para.indexOf(words);
+  const prevEnd = para.lastIndexOf('. ', at); // the sentence before ends here, or -1 when ours starts the paragraph
+  return para.slice(prevEnd < 0 ? 0 : prevEnd + 2, para.indexOf('.', at) + 1).replace(/\s+/g, ' ').trim();
+}
+const note = `${sentenceWith('slightly more people born on the 1st')} ${sentenceWith('fewer people born on the 29th, 30th and 31st')}`;
+
+const js = (v) => JSON.stringify(v);
+const out = [
+  '// GENERATED by tools/make-celebrities.mjs from knowledge/raw/humanity-archetyping-book.md (the course\'s results on 100,000 famous people). Never hand-edit.',
+  '(function (root) { root.Celebrities = {',
+  '  groups: [',
+  ...groups.map((g) => `    ${js(g)},`),
+  '  ],',
+  '  byDay: {',
+  ...Object.keys(byDay).map((d) => `    ${js(d)}: ${js(byDay[d])},`),
+  '  },',
+  `  note: ${js(note)},`,
+  '}; })(typeof globalThis !== \'undefined\' ? globalThis : this);',
+  '',
+].join('\n');
+fs.writeFileSync(OUT, out);
+
+console.log(`groups: ${groups.length}`);
+console.log(`bullets: ${bullets} (${bullets - unmatched.length} parsed)`);
+console.log(`unmatched: ${unmatched.length}`);
+for (const u of unmatched) console.log(`  ${u}`);
+console.log(`wrote ${OUT.pathname}`);
