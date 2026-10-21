@@ -86,7 +86,7 @@ test('factsFor: nexus first, the 16 chart has a pain fact on the mind center, te
   assert.ok(f.facts.some((x) => x.kind === 'centers' && /Centers: \d+ balanced/.test(x.title)));
   const rarity = f.facts.filter((x) => x.kind === 'rarity');
   assert.ok(rarity.length >= 8);
-  assert.match(rarity.find((x) => x.positions[0].position === 'heart').text, /^1 of 4 charts in the vault have 16\/7 as mind center: only this one\./);
+  assert.match(rarity.find((x) => x.positions[0].position === 'heart').text, /^1 of 4 charts in the vault have 16\/7 as mind center main vibration: only this one\./);
   assert.ok(f.facts.some((x) => x.kind === 'weaving' && x.title === 'Day and month' && /make outer diamond 15\/6 \(The Enchanter\)/.test(x.text)));
   assert.ok(f.facts.some((x) => x.kind === 'weaving' && x.title === 'Life expression and pillar' && /are read together/.test(x.text)));
   for (const x of f.facts) {

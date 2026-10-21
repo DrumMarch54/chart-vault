@@ -21,7 +21,7 @@ const heads = (list) => list.map((p) => p.heading.split(' > ').pop());
 
 test('mind center 12/3 with 8 in its circle: 12 alone, then 12 with 8, then the mental diamond behind it', () => {
   const m = meaningFor({ chart: 'name', position: 'heart', sum: 12, pair: [8], rel: [{ position: 'mindDiamond', sum: 75 }] });
-  assert.equal(m.text, '12/3'); assert.equal(m.label, 'Mind center'); assert.equal(m.chartLabel, 'Name chart');
+  assert.equal(m.text, '12/3'); assert.equal(m.label, 'Mind center main vibration'); assert.equal(m.chartLabel, 'Name chart');
   assert.equal(m.name, 'The Expansive Dynamo'); assert.equal(m.verdict, 'unbalanced'); assert.equal(m.family, 'center');
   assert.ok(m.passages.length >= 3, 'passages');
   for (const p of m.passages) { assert.match(p.source, /^name-chart-(mind-and-emotion-centers|problem-areas)$/, p.heading); assert.match(p.heading, /(^|\D)12(\D|$)/); }

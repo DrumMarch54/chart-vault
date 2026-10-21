@@ -47,14 +47,14 @@ function rhombusPositions(chart) {
     { key: 'big', label: le[1], get: (r) => r.big },
     { key: 'upperLeft', label: aura[0], get: (r) => r.upperLeft },
     { key: 'upperRight', label: aura[1], get: (r) => r.upperRight },
-    { key: 'heart', label: 'Mind center', get: (r) => r.heart },
-    line[1] ? { key: 'heartExtra', label: 'Mind center extra vibration', get: (r) => r.heartExtra } : null,
+    { key: 'heart', label: 'Mind center main vibration', get: (r) => r.heart },
+    line[1] ? { key: 'heartExtra', label: 'Mind center sub vibration', get: (r) => r.heartExtra } : null,
     line[1] ? { key: 'heartSubDiamond', label: 'Mind center sub diamond (main + middle name)', get: (r) => r.heartSubDiamond } : null,
     { key: 'mindDiamond', label: 'Mental diamond', get: (r) => r.mindDiamond },
     { key: 'lowerLeft', label: aura[2], get: (r) => r.lowerLeft },
     { key: 'lowerRight', label: aura[3], get: (r) => r.lowerRight },
-    { key: 'solar', label: 'Emotion center', get: (r) => r.solar },
-    line[1] ? { key: 'solarExtra', label: 'Emotion center extra vibration', get: (r) => r.solarExtra } : null,
+    { key: 'solar', label: 'Emotion center main vibration', get: (r) => r.solar },
+    line[1] ? { key: 'solarExtra', label: 'Emotion center sub vibration', get: (r) => r.solarExtra } : null,
     line[1] ? { key: 'solarSubDiamond', label: 'Emotion center sub diamond (main + middle name)', get: (r) => r.solarSubDiamond } : null,
     { key: 'emotionDiamond', label: 'Emotional diamond', get: (r) => r.emotionDiamond },
     { key: 'leDiamond', label: LINE_DIAMOND[chart] || 'Life expression diamond', get: (r) => r.leDiamond },
@@ -268,6 +268,21 @@ export function positionSql({ chart, position, number, ds = false, combo = null 
   if (chart && chart !== '*') { where += ' AND chart = ?'; params.push(chart); }
   if (position && position !== '*') { where += ' AND position = ?'; params.push(position); }
   return `AND i.id IN (SELECT image_id FROM chart_values WHERE ${where})`;
+}
+// How many times a chart holds a number (owner's ask 2026-10-21: "type a number and get the charts that have it
+// the most"). Counted the way the chart's own Reading counts a repeat (server/facts.js): the helper positions
+// (anyName, the letter count) and the positions that are a copy of another by construction (the inner psyche
+// line is the month and year, its life expression the dharma line, the outer psyche year) never count.
+export const NOT_A_REPEAT = { positions: ['anyName', 'letters'], spots: ['inner.first', 'inner.last', 'inner.le', 'outer.last'] };
+const notRepeatSql = (t) => ` AND ${t}.position NOT IN (${NOT_A_REPEAT.positions.map((p) => `'${p}'`).join(',')}) AND (${t}.chart || '.' || ${t}.position) NOT IN (${NOT_A_REPEAT.spots.map((p) => `'${p}'`).join(',')})`;
+// A sub-select for one chart's count (i = the images row), or null for a condition that has no single number
+// (a combination) or names one position (then every chart holds it once).
+export function hitsSql({ chart, position, number, ds = false, combo = null }, params) {
+  if (combo || (position && position !== '*')) return null;
+  params.push(number);
+  let where = `v.image_id = i.id AND v.${ds ? 'ds' : 'sum'} = ?`;
+  if (chart && chart !== '*') { where += ' AND v.chart = ?'; params.push(chart); }
+  return `(SELECT count(*) FROM chart_values v WHERE ${where}${notRepeatSql('v')})`;
 }
 // Several conditions at once (owner's ask 2026-10-17: "the day is one number AND the first name is another"):
 // a chart must meet every one of them. Each is a position search of its own, so a combination in a center

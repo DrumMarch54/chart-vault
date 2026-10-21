@@ -27,7 +27,7 @@
 //                  whose compound number is a "teenage" number 10-18 (17/8 counts more for 8 than 26/8).
 //   rankCharts by influence with a compound number N (10-99): influence of N's digit sum, plus 1 for each
 //                  position holding exactly N.
-import { POSITIONS, positionLabel, chartLabel, getInputs } from './positions.js';
+import { POSITIONS, positionLabel, chartLabel, getInputs, NOT_A_REPEAT } from './positions.js';
 
 // ---------------------------------------------------------------------------------------------------
 // The lists. Source: .brain/numerology/number-balance.md (Undernumeroscopes powerpoint, Module 10;
@@ -87,7 +87,7 @@ const PENALTY = { unbalanced: 3, semi: 1 };
 // Weights of the hierarchy (interpretation.md "Hierarchy").
 const WEIGHT3 = new Set(['essence.day', 'essence.month', 'essence.year', 'name.first', 'name.middle', 'name.last', 'name.le']);
 const WEIGHT2 = new Set(['essence.littleLp', 'essence.bigLp', 'name.big', ...BALANCE.sixCenters, 'name.pillar']);
-const UNSCORED = new Set(['anyName', 'letters']);
+const UNSCORED = new Set(NOT_A_REPEAT.positions);
 export const weightOf = (chart, position) => (UNSCORED.has(position) ? 0 : WEIGHT3.has(`${chart}.${position}`) ? 3 : WEIGHT2.has(`${chart}.${position}`) ? 2 : 1);
 const teenage = (sum) => sum >= 10 && sum <= 18;
 
@@ -175,7 +175,7 @@ const list = (items) => (items.length <= 1 ? items.join('') : `${items.slice(0, 
 
 // Positions that are a copy of another position by construction (chart-construction.md), so they do not
 // count as a repeat: the inner psyche line is the month and year, its LE is the essence dharma line.
-const STRUCTURAL_COPY = new Set(['inner.first', 'inner.last', 'inner.le', 'outer.last']);
+const STRUCTURAL_COPY = new Set(NOT_A_REPEAT.spots); // one list with the search's "most of a number" count (positions.js)
 const VALUES_SQL = 'SELECT chart, position, n, sum, ds FROM chart_values WHERE image_id = ? ORDER BY rowid';
 
 // ---------------------------------------------------------------------------------------------------

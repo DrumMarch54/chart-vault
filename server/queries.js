@@ -1,6 +1,6 @@
 // Read-only queries used by the browse screens.
 import { TagCodes, displayName } from './tagnames.js';
-import { conditionsSql } from './positions.js';
+import { conditionsSql, hitsSql } from './positions.js';
 import { nameSql } from './titles.js';
 export { TagCodes };
 // Every tag row that leaves the server carries how it reads on screen ("alexjones" -> "Alex Jones").
@@ -8,6 +8,9 @@ const withDisplay = (t) => ({ ...t, display: displayName(t.name) });
 
 // Newest first by the date in the filename; charts without a date go last.
 const ORDER = '(i.taken_at IS NULL), i.taken_at DESC, i.id DESC';
+// A search for one number anywhere (in any chart or in one chart) lists the charts that hold it the most first
+// (owner 2026-10-21), each with its count (`hits`); every other list is newest first. null = newest first.
+const hitsOf = (positions, params) => (positions.length === 1 ? hitsSql(positions[0], params) : null);
 
 // drawn: true = only charts whose name and date are known (the app draws them itself), false = only the
 // ones still shown as the screenshot (no name and date yet), null = both.
@@ -30,14 +33,15 @@ const INPUT_COLS = 'ci.day, ci.month, ci.year, ci.name AS input_name';
 const INPUT_JOIN = 'LEFT JOIN chart_inputs ci ON ci.image_id = i.id';
 
 export function listImages(db, { tags = [], positions = [], name = '', onlyUploaded = false, kind = 'chart', limit = 60, offset = 0, ids = null, drawn = null } = {}) {
-  const params = [kind];
+  const hp = [], hits = hitsOf(positions, hp);
+  const params = [...hp, kind];
   let idSql = '';
   if (ids) { const list = ids.filter((n) => Number.isInteger(n)).slice(0, 50); idSql = list.length ? `AND i.id IN (${list.map(() => '?').join(',')})` : 'AND 0'; params.push(...list); }
   const where = `WHERE i.kind = ? ${filterSql(tags, params, positions, name, drawn)} ${idSql} ${onlyUploaded ? 'AND i.stored_path IS NOT NULL' : ''}`;
-  const total = db.prepare(`SELECT count(*) c FROM images i ${where}`).get(...params).c;
-  const rows = db.prepare(`SELECT i.id, i.filename, i.title, i.taken_at, i.width, i.height, i.kind, (i.stored_path IS NOT NULL) AS has_file, ${INPUT_COLS}
-    FROM images i ${INPUT_JOIN} ${where} ORDER BY ${ORDER} LIMIT ? OFFSET ?`).all(...params, limit, offset);
-  for (const r of rows) { r.inputs = inputsOf(r); delete r.day; delete r.month; delete r.year; delete r.input_name; }
+  const total = db.prepare(`SELECT count(*) c FROM images i ${where}`).get(...params.slice(hp.length)).c;
+  const rows = db.prepare(`SELECT i.id, i.filename, i.title, i.taken_at, i.width, i.height, i.kind, (i.stored_path IS NOT NULL) AS has_file, ${INPUT_COLS}${hits ? `, ${hits} AS hits` : ''}
+    FROM images i ${INPUT_JOIN} ${where} ORDER BY ${hits ? 'hits DESC, ' : ''}${ORDER} LIMIT ? OFFSET ?`).all(...params, limit, offset);
+  for (const r of rows) { r.inputs = inputsOf(r); delete r.day; delete r.month; delete r.year; delete r.input_name; if (!hits) delete r.hits; }
   if (rows.length) {
     const ids = rows.map((r) => r.id);
     const tagRows = db.prepare(`SELECT it.image_id, t.name, t.kind FROM image_tags it JOIN tags t ON t.id = it.tag_id
@@ -52,8 +56,9 @@ export function listImages(db, { tags = [], positions = [], name = '', onlyUploa
 // Where one picture sits in the current browse list (same filter, same order),
 // so the viewer can swipe to the previous / next one.
 export function imageContext(db, id, { tags = [], positions = [], name = '', kind = 'chart', drawn = null } = {}) {
+  const hp = [], hits = hitsOf(positions, hp); // the count sits in ORDER BY, after the filter, so its values come last
   const params = [kind];
-  const ids = db.prepare(`SELECT i.id FROM images i WHERE i.kind = ? ${filterSql(tags, params, positions, name, drawn)} ORDER BY ${ORDER}`).all(...params).map((r) => r.id);
+  const ids = db.prepare(`SELECT i.id FROM images i WHERE i.kind = ? ${filterSql(tags, params, positions, name, drawn)} ORDER BY ${hits ? `${hits} DESC, ` : ''}${ORDER}`).all(...params, ...hp).map((r) => r.id);
   const at = ids.indexOf(id);
   if (at < 0) return { index: null, total: ids.length, prev: null, next: null };
   return { index: at + 1, total: ids.length, prev: at > 0 ? ids[at - 1] : null, next: at < ids.length - 1 ? ids[at + 1] : null };

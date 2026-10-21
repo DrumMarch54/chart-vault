@@ -869,3 +869,32 @@ declaration caught it); three tabs in a `.pt-switch` need `three` (15 px, nowrap
   split off; `tools/bits/make-jobs-missing.mjs` + `merge-bits.mjs` with BITS_ADD=1 write points only for pages
   with none or whose sources changed (744 pages, 489 sets, 12 writers). Rule: after a change to the store or the
   ranking, run the incremental bits pass before saying done; a page without points reads as a wall of text.
+
+## 2026-10-21 The owner's list: combination search, most-of-a-number, one-stop Back, Most Often pills, no caption
+Eight items from the owner in one message (asked and approved before building). Built in one commit:
+- Combination screen (`#/combo`): a number in each of several positions at once. The old way (type a number, tap a
+  position, then "+ Another number", then again) worked but felt like one search stacked on another; the owner wanted
+  to "set each number". One row per position, a sheet to pick the position (the picker's rows, counts narrowed to the
+  other rows), the foot says how many charts have everything. Bug found in the dev app: the row picked in the sheet
+  vanished. The sheet's Close steps back through the history (every overlay is a history step); writing the address
+  with replaceState BEFORE that step landed changed the entry the step returned to, so the hash "changed" and the
+  screen redrew from the old address. Anything that writes the address right after an overlay closes goes through
+  `afterOverlayClosed`.
+- Mind center "main vibration" and "sub vibration" named on the picker rows (were "Mind center" and "Mind center
+  extra vibration"; the owner could not tell which was which). The position's label is used in facts, Similar Charts
+  and the meaning page too; four test strings followed.
+- "Type a number, get the charts with it the most": a search for one number anywhere (any chart or one chart) orders
+  by the count and shows it on the thumbnail. The count follows the Reading's repeat rule (helper positions and
+  structural copies never count), now one list, `NOT_A_REPEAT`. Caught by the test: the hits sub-select sits in the
+  SELECT list in listImages (its parameters first) but in ORDER BY in imageContext (its parameters last).
+- Back button: the owner made several searches and Back walked through every one. The whole position search is now
+  one history stop; moves inside it replace the address. Back from the results goes to where the search started.
+- "Most often" was a line of text; now pills, and a tap rings every spot on the drawn chart with a bar at the foot.
+  The pill's count (the Reading's) can be higher than the rings: diamonds are counted but not drawn; the bar says
+  how many spots were ringed.
+- Share Picture: no name and date under the picture any more (Quick Chart and vault charts both; the owner: the name
+  line already says it).
+- The owner's "when I click into a chart from a position search I lose the normal options": could not reproduce in
+  the dev app (the full ⋮ menu was there); the owner then said it works.
+Lesson: the chip label `${num} in ${posLabel}` read "15/6 in anywhere in the name chart" for months; nobody looked at
+the words on the chip until a screenshot of the new screen. Read the screenshot's words, not only its layout.

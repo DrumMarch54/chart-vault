@@ -196,13 +196,17 @@ test('API: catalog, counts, search, context, numbers, fix, recompute, status, sn
   P.setInputs(db, o, { day: 1, name: 'Test test' }, { source: 'read' });
   assert.equal((await fetch(base + '/api/positions')).status, 401);
   const cat = (await json(await api('/api/positions'))).body;
-  assert.equal(cat.charts.length, 6); assert.ok(cat.positions.some((p) => p.chart === 'name' && p.key === 'heart' && p.label === 'Mind center'));
+  assert.equal(cat.charts.length, 6); assert.ok(cat.positions.some((p) => p.chart === 'name' && p.key === 'heart' && p.label === 'Mind center main vibration'));
   const counts = (await json(await api('/api/positions/counts?num=16'))).body;
   assert.equal(counts.total, 2); assert.equal(counts.counts['name.heart'], 1);
   assert.equal((await api('/api/positions/counts?num=abc')).status, 400);
   let r = (await json(await api('/api/images?pos=name.heart&num=7'))).body;
   assert.equal(r.total, 1); assert.equal(r.items[0].id, k);
+  // A number anywhere lists the charts holding it the most first, each with its count (owner 2026-10-21): Test test
+  // has 16/7 three times in the name chart, Katrine once. A number in one position carries no count.
   r = (await json(await api('/api/images?pos=name.*&num=16'))).body; assert.equal(r.total, 2);
+  assert.deepEqual(r.items.map((i) => [i.id, i.hits]), [[o, 3], [k, 1]]);
+  assert.equal((await json(await api('/api/images?pos=name.heart&num=7'))).body.items[0].hits, undefined);
   r = (await json(await api('/api/images?pos=*.*&num=%2F7'))).body; assert.equal(r.total, 2); // digit sum 7
   r = (await json(await api('/api/images?pos=name.heart&num=7&tag=7mc'))).body; assert.equal(r.total, 1);
   r = (await json(await api('/api/images?pos=bogus.heart&num=7'))).body; assert.equal(r.total, 2); // an unknown chart is ignored, not an error
@@ -213,7 +217,7 @@ test('API: catalog, counts, search, context, numbers, fix, recompute, status, sn
   const narrowed = (await json(await api('/api/positions/counts?num=16&fixed=' + encodeURIComponent('essence.day:19')))).body;
   assert.equal(narrowed.fixedTotal, 1); assert.equal(narrowed.total, 1);
   const ctx = (await json(await api(`/api/images/${o}/context?pos=name.*&num=16`))).body;
-  assert.equal(ctx.total, 2); assert.equal(ctx.index, 1); assert.equal(ctx.next, k);
+  assert.equal(ctx.total, 2); assert.equal(ctx.index, 1); assert.equal(ctx.next, k); // the same most-first order as the list
   let n = (await json(await api(`/api/images/${k}/numbers`))).body;
   assert.equal(n.inputs.name, 'Katrine Ditte Pilmark'); assert.ok(n.charts.find((c) => c.chart === 'name').values.some((v) => v.label === 'Pillar' && v.text === '41/5'));
   // the owner fixes the date: the name chart changes, the source is owner
@@ -241,7 +245,7 @@ test('similar charts name what is alike in the course words: the biggest matchin
   assert.deepEqual(namedMatches('outer', ['leDiamond', 'first', 'last', 'le', 'big', 'spine', 'spineDiamond']), ['Outer Psyche Life Expression Diamond', 'Outer Psyche Spine Diamond']);
   assert.deepEqual(namedMatches('essence', ['day', 'month', 'outerAura', 'outerDiamond', 'littleLp', 'nexus']), ['Outer Diamond', 'DVLP']);
   assert.deepEqual(namedMatches('name', ['upperLeft', 'upperRight', 'heart', 'mindDiamond', 'lowerLeft', 'pillar']), ['Name Mental Diamond', 'Name Pillar', 'Associates Aura']);
-  assert.equal(positionName('name', 'spine'), 'Name Spine'); assert.equal(positionName('name', 'heart'), 'Name Mind Center'); assert.equal(positionName('name', 'le'), 'Life Expression'); assert.equal(positionName('inner', 'spine'), 'Inner Psyche Spine');
+  assert.equal(positionName('name', 'spine'), 'Name Spine'); assert.equal(positionName('name', 'heart'), 'Name Mind Center Main Vibration'); assert.equal(positionName('name', 'le'), 'Life Expression'); assert.equal(positionName('inner', 'spine'), 'Inner Psyche Spine');
   assert.equal(positionName('vocation', 'le'), "Heart's Desire"); assert.equal(positionName('personality', 'big'), 'Big Personality Number');
   assert.equal(positionName('name', 'leDiamond'), 'Name Line Diamond'); assert.equal(positionName('vocation', 'leDiamond'), 'Vocation Line Diamond'); assert.equal(positionName('inner', 'first'), 'Inner Psyche Challenge Number'); assert.equal(positionName('outer', 'emotionalFlow'), 'Emotional Flow'); assert.equal(positionName('outer', 'first'), 'Outer Psyche Challenge Number'); assert.equal(positionName('essence', 'topAura'), 'Dharma Line');
   const of = { essence: 14, name: 20, vocation: 19, personality: 19, outer: 18, inner: 17 };

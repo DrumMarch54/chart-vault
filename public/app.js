@@ -49,7 +49,7 @@
     'quick.year_rows': 'Year Rows and Day Vibrations', 'quick.show_parts': 'Show and Hide Parts', 'quick.augment': 'Augmentation On or Off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
     'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'status.recompute': 'Recompute chart numbers',
     'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart', 'viewer.year_rows': 'Year Rows from a chart',
-    'position.search_more': 'Narrow a position search by another number', 'position.add_more': 'Tap + Another number', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'viewer.share': 'Share Picture from a chart', 'quick.share': 'Share Picture from the Quick Chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
+    'position.search_more': 'Narrow a position search by another number', 'position.add_more': 'Tap + Another number', 'position.combo': 'Open the combination screen from Search by Position', 'combo.search': 'Show Charts on the combination screen', 'reading.show_number': 'Most Often → ring a number on the chart', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'viewer.share': 'Share Picture from a chart', 'quick.share': 'Share Picture from the Quick Chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
     'grid.size': 'Chart size on the grid (− / +)', 'similar.size': 'Chart size on Similar Charts (− / +)', 'duplicates.size': 'Chart size on Possible Duplicates (− / +)',
     'viewer.similar': 'Similar Charts from a chart', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
     'viewer.delete': 'Delete a chart from the chart page', 'duplicates.delete': 'Delete a chart from Possible Duplicates', 'duplicates.keep': 'Keep a duplicate group', 'deleted.restore': 'Put a deleted chart back',
@@ -87,7 +87,7 @@
   const numLabel = (num) => { if (/\+/.test(String(num))) return String(num).split('+').map(numLabel).join(' and '); const m = /^(\d+)?(?:\/(\d))?$/.exec(String(num)); if (!m) return String(num); if (!m[1]) return `digit sum ${m[2]}`; const n = Number(m[1]); return n < 10 ? String(n) : `${n}/${TagCodes.digitSum(n)}`; };
   // A position search is a list of conditions [{ pos, num }], all of which a chart must meet (day 8 AND first
   // name 15). The address carries them pairwise (?pos=essence.day&num=8&pos=name.first&num=15).
-  const condLabel = (c) => `${numLabel(c.num)} in ${posLabel(c.pos)}`;
+  const condLabel = (c) => { const p = posLabel(c.pos); return p.startsWith('anywhere') ? `${numLabel(c.num)} ${p}` : `${numLabel(c.num)} in ${p}`; };
   const searchLabel = (conds) => conds.map(condLabel).join(' and ');
   const condsOf = (query) => { const pos = query.getAll('pos'), num = query.getAll('num'); return pos.map((p, i) => ({ pos: p, num: num[i] || '' })).filter((c) => c.pos && c.num); };
   const condsQuery = (conds, more = {}) => { const p = new URLSearchParams(more); for (const c of conds) { p.append('pos', c.pos); p.append('num', c.num); } return p; };
@@ -99,6 +99,14 @@
   let lastRoute = null, lastHash = null; // the screen shown before this one (null = this is the first screen since the page loaded)
   let viewerFromApp = false; // the viewer was opened from another screen here, so Back can use the browser's own history
   let underHash = null; // the screen still drawn under the viewer: closing the viewer onto it needs no redraw, so the list keeps its place
+  // The position search (the picker, the combination screen, the results) is ONE stop in the phone's Back history
+  // (owner 2026-10-21: Back walked through every search made). Every move inside it replaces the address (swap), so
+  // Back from any of them leaves the search in one step: to the screen it was opened from (flowFromApp), else home.
+  const parseHash = (hash) => { const [, name = ''] = /^#\/([^/?]*)/.exec(hash || '#/') || []; return { name, query: new URLSearchParams((hash || '').split('?')[1] || '') }; };
+  const inFlow = (hash) => { const { name, query } = parseHash(hash); return name === 'position' || name === 'combo' || (name === '' && condsOf(query).length > 0); };
+  const OVER_FLOW = new Set(['chart', 'compare', 'similar']); // screens that lie over the search and come back to it
+  let flowFromApp = false;
+  const leaveFlow = () => (flowFromApp ? history.back() : swap('#/'));
   function route() {
     const hash = location.hash || '#/';
     const [, name = '', arg = ''] = /^#\/([^/?]*)\/?([^?]*)/.exec(hash) || [];
@@ -106,6 +114,7 @@
     const view = routes[name] || routes[''];
     closeOverlays();
     if (viewerCleanup) { viewerCleanup(); viewerCleanup = null; }
+    if (inFlow(hash) && !inFlow(lastHash) && !OVER_FLOW.has(lastRoute)) flowFromApp = lastRoute !== null;
     // The compare screen lies over the same list as the viewer it was opened from, so going between them
     // keeps what the viewer knows about the screen underneath.
     if (name === 'chart' && lastRoute !== 'chart' && lastRoute !== 'compare') { viewerFromApp = lastRoute !== null; underHash = viewerFromApp ? lastHash : null; }
@@ -491,17 +500,17 @@
     $input.addEventListener('input', showClear);
     const $sugg = suggestBox($input, { kind, alsoArchetype: kind === 'chart', names: kind === 'chart', empty: home ? () => recentNodes(setTag, setName) : null, onPick: (picked, pickKind) => setTag(picked, pickKind || kind), onPickName: setName });
     $input.addEventListener('focus', () => { if ((tag && $input.value === pretty(tag)) || position || (name && $input.value === name)) $input.select(); });
-    const $clear = h('button', { type: 'button', class: 'clear', 'aria-label': 'Clear the search', onclick: () => { if (tag || position || name) { setTag('', 'chart'); return; } $input.value = ''; showClear(); $input.focus(); $sugg.classList.add('hidden'); } }, '×');
+    const $clear = h('button', { type: 'button', class: 'clear', 'aria-label': 'Clear the search', onclick: () => { if (position) { leaveFlow(); return; } if (tag || name) { setTag('', 'chart'); return; } $input.value = ''; showClear(); $input.focus(); $sugg.classList.add('hidden'); } }, '×');
     showClear();
     const $filters = kind === 'archetype' ? h('div', { class: 'filters' }, chip({ name: 'Archetype Pics', kind: 'name' }, { active: true, removable: true, onclick: () => setTag(tag, 'chart') }))
       : drawn === false ? h('div', { class: 'filters' }, chip({ name: 'Still the screenshot', kind: 'name' }, { active: true, removable: true, onclick: () => setTag('', 'chart') }))
-      // One chip per condition: tap it to change that one (the picker opens with the others kept), tap × to drop it.
-      // "+ Another number" opens the picker with every condition kept, so the next number narrows these charts.
+      // One chip per condition: tap it to change it on the combination screen (every condition kept), tap × to drop it.
+      // "+ Another number" opens the combination screen with every condition kept and a new row to fill.
       : position ? h('div', { class: 'filters' },
         ...conds.map((c, i) => { const rest = conds.filter((_, j) => j !== i); return h('span', { class: 'chip position', title: 'Tap to change, × to remove' },
-          h('button', { type: 'button', class: 't', onclick: () => go('#/position?' + condsQuery(rest, { edit: c.num })) }, condLabel(c)),
-          h('button', { type: 'button', class: 'x', 'aria-label': `Remove ${condLabel(c)}`, onclick: () => go(rest.length ? positionHash(rest) : '#/') }, '×')); }),
-        h('a', { class: 'chip position add', href: '#/position?' + condsQuery(conds), onclick: () => count('position.add_more') }, h('span', { class: 't' }, '+ Another number'))) : null;
+          h('button', { type: 'button', class: 't', onclick: () => swap('#/combo?' + condsQuery(conds)) }, condLabel(c)),
+          h('button', { type: 'button', class: 'x', 'aria-label': `Remove ${condLabel(c)}`, onclick: () => (rest.length ? swap(positionHash(rest)) : leaveFlow()) }, '×')); }),
+        h('button', { type: 'button', class: 'chip position add', onclick: () => { count('position.add_more'); swap('#/combo?' + condsQuery(conds, { add: 1 })); } }, h('span', { class: 't' }, '+ Another number'))) : null;
     const $summary = h('div', { class: 'summary' }, 'Loading…');
     const $grid = h('div', { class: 'grid' });
     // One size for every grid of charts (the list, the search results, Recently Opened): − / + beside the count.
@@ -550,7 +559,7 @@
         for (const img of r.items) $grid.append(cell(img));
         done = offset >= total || r.items.length === 0;
         const noun = kind === 'archetype' ? 'archetype pic' : 'chart';
-        $summary.textContent = drawn === false ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} still showing the screenshot` : position ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with ${searchLabel(conds)}` : name ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} named ${name}` : `${fmtN(total)} ${noun}${total === 1 ? '' : 's'}${tag ? '' : ', newest first'}`;
+        $summary.textContent = drawn === false ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} still showing the screenshot` : position ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with ${searchLabel(conds)}${mostFirst ? ', most first' : ''}` : name ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} named ${name}` : `${fmtN(total)} ${noun}${total === 1 ? '' : 's'}${tag ? '' : ', newest first'}`;
         $sentinel.textContent = done ? (total === 0 ? (drawn === false ? 'Every chart is drawn by the app now.' : kind === 'archetype' && !tag ? 'No archetype pics yet. Add them on the Upload page.' : position ? (conds.length > 1 ? 'No chart has all of these. Remove one with its × to widen the search.' : 'No chart has that number there. Only charts whose name and date have been read can be found this way.') : `No ${noun}s match.`) : '') : '';
       } catch (err) { $sentinel.textContent = err.message; }
       loading = false;
@@ -562,11 +571,16 @@
         : img.title || pretty((img.tags.find((t) => t.kind === 'name') || img.tags[0] || {}).name || '');
       // A chart whose name and date are known is drawn by the app (every chart looks the same); the rest show the screenshot.
       if (img.inputs) inputsById.set(img.id, img.inputs); else inputsById.delete(img.id);
+      // A number searched anywhere: the server lists the charts holding it the most first and says how many
+      // times each has it (hits); the count sits on the thumbnail.
       return h('a', { class: 'cell', href: `#/chart/${img.id}${location.hash.includes('?') ? '?' + location.hash.split('?')[1] : ''}` },
-        img.inputs ? h('div', { class: 'thumb drawn', role: 'img', 'aria-label': label }, drawnChart(img.inputs))
-          : img.has_file ? h('img', { class: 'thumb', src: `/thumb/${img.id}`, loading: 'lazy', alt: label }) : h('div', { class: 'nofile' }, 'no file yet'),
+        h('div', { class: 'thumbwrap' },
+          img.inputs ? h('div', { class: 'thumb drawn', role: 'img', 'aria-label': label }, drawnChart(img.inputs))
+            : img.has_file ? h('img', { class: 'thumb', src: `/thumb/${img.id}`, loading: 'lazy', alt: label }) : h('div', { class: 'nofile' }, 'no file yet'),
+          img.hits !== undefined ? h('span', { class: 'hits', title: `${img.hits} time${img.hits === 1 ? '' : 's'} in the chart` }, `×${img.hits}`) : null),
         h('div', { class: `label ${label ? '' : 'muted'}` }, label || img.filename));
     }
+    const mostFirst = position && conds.length === 1 && /\.\*$/.test(conds[0].pos) && !/\+/.test(conds[0].num);
     const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) more(); }, { rootMargin: '600px' });
     io.observe($sentinel);
     more();
@@ -657,12 +671,25 @@
     const $prev = h('button', { type: 'button', class: 'iconbtn varrow left hidden', 'aria-label': 'Previous' }, '‹');
     const $next = h('button', { type: 'button', class: 'iconbtn varrow right hidden', 'aria-label': 'Next' }, '›');
     const $sheetBody = h('div', { class: 'vsheet-body stack' });
+    // "Most Often" in the sheet (public/reading.js): tap a number and every spot holding it is ringed on the drawn
+    // chart, with a bar naming it; a tap anywhere on the chart, or Clear, takes the rings away (owner 2026-10-21).
+    const $hlText = h('span', {});
+    const $hl = h('div', { class: 'vhl hidden' }, $hlText, h('button', { type: 'button', onclick: () => clearHighlight() }, 'Clear'));
+    const clearHighlight = () => { $hl.classList.add('hidden'); if ($img && $img.tagName === 'svg') clearPick($img); };
+    const showNumber = (sum, label) => {
+      if (!img || !img.inputs) return;
+      closeSheet();
+      if (mode !== 'drawn') { showDrawn(); drawOrig(); }
+      const n = highlightNumber($img, String(sum));
+      $hlText.textContent = n ? `${label} ringed in ${n} spot${n === 1 ? '' : 's'}` : `${label} is not drawn on the chart`;
+      $hl.classList.remove('hidden'); $root.classList.remove('bare');
+    };
     const $sheet = h('div', { class: 'vsheet' }, h('div', { class: 'vsheet-grip', onclick: () => closeSheet() }, h('span', {})), $sheetBody);
     // Nothing over the picture until it is tapped: no back button, no name. The phone's own Back closes it.
     const $root = h('div', { class: 'viewer bare' },
       $stage,
       h('div', { class: 'vtop' }, h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'Back to the list', onclick: back }, '‹'), $name, $count, $cmp, $more),
-      $prev, $next, $sheet);
+      $prev, $next, $hl, $sheet);
     document.body.append($root);
 
     let img, ctx = { prev: null, next: null, index: null, total: 0 }, sheetOpen = false;
@@ -718,8 +745,8 @@
       tap: (target) => {
         $menu.classList.add('hidden');
         const p = mode === 'drawn' && target && target.closest ? target.closest('[data-pos]') : null;
-        if (p && meaningUi) { pickNumber(p, () => { count('viewer.meaning'); meaningUi.open(meaningUi.fromEl(p)); }); return; }
-        if (mode === 'drawn' && clearPick($img)) return;
+        if (p && meaningUi) { $hl.classList.add('hidden'); pickNumber(p, () => { count('viewer.meaning'); meaningUi.open(meaningUi.fromEl(p)); }); return; }
+        if (mode === 'drawn' && clearPick($img)) { $hl.classList.add('hidden'); return; }
         const w = mode === 'drawn' && target && target.closest ? target.closest('[data-word]') : null;
         if (w && img && img.inputs) { count('viewer.name_tap'); openWord(w.getAttribute('data-word'), dayOf(img.inputs)); return; }
         if (sheetOpen) closeSheet(); else toggleBare();
@@ -927,7 +954,7 @@
         h('div', { class: 'addtag row', style: 'flex-wrap:nowrap' }, $tagInput, h('button', { type: 'button', class: 'btn-primary', onclick: () => { const v = $tagInput.value.trim(); if (v) { count('viewer.add_tag'); addTag(v); $tagInput.value = ''; } } }, 'Add'), $sugg),
         ...(codeTags.length ? folded(`${codeTags.length} position and number tag${codeTags.length === 1 ? '' : 's'}`, h('div', { class: 'chips' }, ...codeTags.map(tagBtn))) : []),
         $numbers,
-        img.kind === 'chart' && readingUi ? readingUi.section(img) : null,
+        img.kind === 'chart' && readingUi ? readingUi.section(img, { showNumber }) : null,
         ...folded('File details', h('div', { class: 'small muted' },
           h('div', {}, img.kind === 'archetype' ? 'Type: archetype pic (a picture that represents a number)' : 'Type: chart'),
           h('div', {}, `Taken: ${img.taken_at ? img.taken_at.replace('T', ' ') : 'unknown'}`),
@@ -1043,7 +1070,7 @@
   };
   const stat = (label, value) => h('div', { class: 'stat' }, h('span', {}, label), h('b', {}, fmtN(value)));
   // Header for pages that hang off Settings: back arrow + title.
-  const pageTop = (title, backTo = '#/settings') => h('div', { class: 'pagetop' }, h('a', { class: 'btn iconbtn', href: backTo, 'aria-label': 'Back' }, '‹'), h('h1', {}, title));
+  const pageTop = (title, backTo = '#/settings') => h('div', { class: 'pagetop' }, typeof backTo === 'function' ? h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Back', onclick: backTo }, '‹') : h('a', { class: 'btn iconbtn', href: backTo, 'aria-label': 'Back' }, '‹'), h('h1', {}, title));
 
   // ---------- upload images ----------
   let activeUpload = null; // the progress card of an upload that is still running
@@ -1575,7 +1602,15 @@
   // Tap a number once: an outline goes round it. Tap it again: its meaning opens (owner 2026-10-19). A tap on
   // another number moves the outline; a tap anywhere else takes it away.
   const pickKey = (el) => ['data-pos', 'data-n', 'data-num'].map((a) => el.getAttribute(a) || '').join('|');
-  function clearPick(svg) { if (!svg) return false; const had = !!svg.querySelector('.n-sel'); svg.querySelectorAll('.n-sel').forEach((r) => r.remove()); delete svg.dataset.sel; return had; }
+  function clearPick(svg) { if (!svg) return false; const had = !!svg.querySelector('.n-sel, .n-hl'); svg.querySelectorAll('.n-sel, .n-hl').forEach((r) => r.remove()); delete svg.dataset.sel; return had; }
+  // A ring round every number on the chart that reads `num` (the sum, "15" for 15/6); how many were ringed.
+  function highlightNumber(svg, num) {
+    clearPick(svg);
+    if (!svg || svg.tagName !== 'svg') return 0;
+    const texts = [...svg.querySelectorAll('text[data-pos]')].filter((t) => t.getAttribute('data-num') === num);
+    for (const t of texts) { const b = t.getBBox(), pad = Math.max(6, b.height * 0.28); svg.append(sv('rect', { x: b.x - pad, y: b.y - pad * 0.6, width: b.width + pad * 2, height: b.height + pad * 1.2, rx: (b.height + pad * 1.2) / 2, class: 'n-hl' })); }
+    return texts.length;
+  }
   function pickNumber(el, open) {
     const svg = el.ownerSVGElement || el.closest('svg');
     const key = pickKey(el);
@@ -1589,9 +1624,10 @@
   function drawnChart(inp) { return numeroscopeSvg(Numeroscope.numeroscope({ day: inp.day ?? '', month: inp.month ?? '', year: inp.year ?? '', name: inp.name || '' })); }
 
   // ---------- share a chart as a picture (owner's ask 2026-10-20) ----------
-  // The drawn chart exactly as the Quick Chart draws it, on white, the name and date under it, as a PNG (chartPng, the
-  // same picture Save to Vault stores): the phone's share sheet when it offers one (navigator.share with a file), else
-  // a download. A chart that is still a screenshot shares the screenshot itself.
+  // The drawn chart exactly as the Quick Chart draws it, on white, as a PNG (chartPng, the same picture Save to Vault
+  // stores): the phone's share sheet when it offers one (navigator.share with a file), else a download. No name or
+  // date is written under the chart (owner 2026-10-21: the name line already says who it is); the name is only the
+  // share sheet's title and the file name. A chart that is still a screenshot shares the screenshot itself.
   const captionOf = (inp, name) => { const d = Number(inp.day), m = Number(inp.month), y = Number(inp.year); return [name, d && m && y ? `${d} ${MON[m - 1]} ${y}` : ''].filter(Boolean).join(' · '); };
   const fileNameOf = (name, ext = 'png') => (String(name || 'chart').replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '') || 'chart') + '.' + ext;
   async function shareFile(blob, filename, title) {
@@ -1604,7 +1640,7 @@
     toast('Saved as a picture.');
   }
   async function sharePicture(inp, caption, filename) {
-    try { await shareFile(await chartPng(drawnChart(inp), 1612, caption), filename, caption); }
+    try { await shareFile(await chartPng(drawnChart(inp), 1612), filename, caption); }
     catch (err) { toast(err.message || 'The picture could not be made.', true); }
   }
   async function sharePhoto(src, title, filename) {
@@ -1836,8 +1872,11 @@
     const $charts = h('div', { class: 'chips tabs' });
     const $list = h('div', { class: 'stack poslist' });
     const $hint = h('p', { class: 'muted small' });
-    render(h('div', { class: 'screen' }, pageTop('Search by Position', fixed.length ? positionHash(fixed) : '#/'), $fixed,
-      h('div', { class: 'row posnum', style: 'flex-wrap:nowrap' }, $num, h('span', { class: 'muted small andword' }, 'meets'), $num2, $ds), $hint, $charts, $list));
+    render(h('div', { class: 'screen' }, pageTop('Search by Position', () => (fixed.length ? swap(positionHash(fixed)) : leaveFlow())), $fixed,
+      h('div', { class: 'row posnum', style: 'flex-wrap:nowrap' }, $num, h('span', { class: 'muted small andword' }, 'meets'), $num2, $ds),
+      // A number in each of several positions at once (owner 2026-10-21): the combination screen.
+      h('button', { type: 'button', class: 'rsearch alltags', onclick: () => { count('position.combo'); swap('#/combo?' + condsQuery(fixed, { add: 1 })); } }, h('span', {}, 'Combination: a number in each position'), h('span', { class: 'muted' }, '›')),
+      $hint, $charts, $list));
     try { await loadCatalog(true); } catch (err) { if (!catalog) { fill($list, h('p', { class: 'err' }, err.message)); return; } }
     let counts = null, seq = 0;
     const numText = () => { const n = $num.value.trim(); if (!n) return ''; if (combo()) return `${n}+${$num2.value.trim()}`; return ds ? `/${n.slice(-1)}` : n; };
@@ -1859,7 +1898,7 @@
         h('a', { class: 'linkbtn', href: positionHash(fixed) }, total === null ? 'See these charts ›' : `See these ${fmtN(total)} chart${total === 1 ? '' : 's'} ›`));
     };
     const drawCharts = () => fill($charts, ...[{ key: '*', label: 'Any chart' }, ...catalog.charts].map((c) => h('button', { type: 'button', class: `chip ${chart === c.key ? 'active' : 'off'}`, onclick: () => { chart = c.key; try { localStorage.setItem('posChart', chart); } catch {} drawCharts(); drawList(); } }, c.label)));
-    const pick = (pos) => { const n = numText(); if (!n) { $num.focus(); toast('Type a number first', true); return; } count(fixed.length ? 'position.search_more' : 'position.search'); go(positionHash([...fixed, { pos, num: n }])); };
+    const pick = (pos) => { const n = numText(); if (!n) { $num.focus(); toast('Type a number first', true); return; } count(fixed.length ? 'position.search_more' : 'position.search'); swap(positionHash([...fixed, { pos, num: n }])); };
     const drawList = () => {
       drawFixed();
       const n = numText();
@@ -1868,16 +1907,7 @@
         : fixed.length ? 'Type the next number, then tap the position it must be in. Only charts with everything above are counted.'
         : 'Type a number, then tap the position it must be in. Two numbers side by side, like 4 and 9, find them meeting in a center or diamond. Once the charts show, tap “+ Another number” above them to ask for a second position too, like day 8 with first name 15. Charts are found by their name and date, tags or not.';
       if (counts && counts.error) { fill($list, h('p', { class: 'err' }, counts.error)); return; }
-      const cnt = (pos) => (counts ? (pos.endsWith('.*') ? (pos === '*.*' ? counts.total : counts.perChart[pos.split('.')[0]] || 0) : counts.counts[pos] || 0) : null);
-      const row = (pos, label, note) => { const c = cnt(pos); return h('button', { type: 'button', class: `posrow ${c === 0 ? 'none' : ''}`, onclick: () => pick(pos) }, h('span', { class: 'pl' }, h('span', {}, label), note ? h('span', { class: 'muted small' }, note) : null), h('b', {}, c === null ? '' : fmtN(c))); };
-      const out = [];
-      if (chart === '*') out.push(row('*.*', 'Anywhere', 'Any position of any chart'), ...catalog.charts.map((c) => row(`${c.key}.*`, `Anywhere in the ${c.label.toLowerCase()}`, c.note)));
-      else {
-        const c = catalog.charts.find((x) => x.key === chart);
-        const list = catalog.positions.filter((p) => p.chart === chart && (!combo() || p.combo));
-        out.push(row(`${chart}.*`, `Anywhere in the ${c.label.toLowerCase()}`, combo() ? 'Any center or diamond of it' : c.note), ...list.map((p) => row(`${chart}.${p.key}`, p.label)));
-      }
-      fill($list, ...out);
+      fill($list, ...posRows(chart, counts, combo(), pick));
     };
     for (const el of [$num, $num2]) {
       el.addEventListener('input', () => { clearTimeout($num.t); $num.t = setTimeout(refresh, 150); });
@@ -1887,6 +1917,90 @@
     $ds.classList.toggle('active', ds); $ds.classList.toggle('off', !ds);
     drawCharts(); refresh();
     if (!$num.value) setTimeout(() => $num.focus(), 50);
+  };
+
+  // The rows of positions to tap, one chart at a time ("Any chart" lists the charts themselves): the picker's list
+  // and the combination screen's position sheet draw the same rows. counts = the counts endpoint's answer (null =
+  // no number typed yet, so no counts); isCombo = two numbers meeting, so only centers and diamonds are listed.
+  // An "Anywhere" row notes that its charts come most-first.
+  function posRows(chart, counts, isCombo, pick) {
+    const cnt = (pos) => (counts ? (pos.endsWith('.*') ? (pos === '*.*' ? counts.total : counts.perChart[pos.split('.')[0]] || 0) : counts.counts[pos] || 0) : null);
+    const row = (pos, label, note) => { const c = cnt(pos); return h('button', { type: 'button', class: `posrow ${c === 0 ? 'none' : ''}`, onclick: () => pick(pos) }, h('span', { class: 'pl' }, h('span', {}, label), note ? h('span', { class: 'muted small' }, note) : null), h('b', {}, c === null ? '' : fmtN(c))); };
+    const most = isCombo ? '' : ' · the charts with it the most first';
+    if (chart === '*') return [row('*.*', 'Anywhere', 'Any position of any chart' + most), ...catalog.charts.map((c) => row(`${c.key}.*`, `Anywhere in the ${c.label.toLowerCase()}`, c.note + most))];
+    const c = catalog.charts.find((x) => x.key === chart);
+    const list = catalog.positions.filter((p) => p.chart === chart && (!isCombo || p.combo));
+    return [row(`${chart}.*`, `Anywhere in the ${c.label.toLowerCase()}`, isCombo ? 'Any center or diamond of it' : c.note + most), ...list.map((p) => row(`${chart}.${p.key}`, p.label))];
+  }
+
+  // ---------- combination search: a number in each of several positions (owner 2026-10-21) ----------
+  // One row per position: tap the position to pick it (a sheet of the same rows as the picker, counts narrowed to
+  // the other rows), type its number beside it. "Add Another Position" adds a row; the foot says how many charts
+  // have everything and "Show Charts" lists them. The address carries the rows (?pos=&num=, like the results), so
+  // the screen survives a reload; ?add=1 starts with an empty row. One stop in the phone's Back history (see route).
+  routes.combo = async function comboView(_, query) {
+    const rows = condsOf(query).map((c) => ({ pos: c.pos, num: c.num }));
+    if (query.get('add') || !rows.length) rows.push({ pos: '', num: '' });
+    let chart = 'name'; try { chart = localStorage.getItem('posChart') || 'name'; } catch {}
+    const $rows = h('div', { class: 'stack crows' });
+    const $foot = h('div', { class: 'stack cfoot' });
+    render(h('div', { class: 'screen' }, pageTop('Combination', () => (complete().length ? swap(positionHash(complete())) : leaveFlow())),
+      h('p', { class: 'muted small' }, 'A number in each position, all at once: 12 as the mind center main vibration and 8 as its sub vibration, for example. Every chart found has all of them.'),
+      $rows, $foot));
+    try { await loadCatalog(true); } catch (err) { fill($rows, h('p', { class: 'err' }, err.message)); return; }
+    const complete = () => rows.filter((r) => r.pos && r.num);
+    const numOf = (r) => r.num.trim();
+    // The address follows the rows without a new history step or a redraw (replaceState fires no hashchange).
+    const remember = () => { try { history.replaceState(history.state, '', '#/combo?' + condsQuery(complete())); } catch {} };
+    let seq = 0;
+    const drawFoot = async () => {
+      const done = complete();
+      if (!done.length) { fill($foot, h('p', { class: 'muted small' }, 'Pick a position and type its number to start.')); return; }
+      const my = ++seq;
+      fill($foot, h('p', { class: 'muted small' }, 'Counting…'));
+      try {
+        const r = await api('/api/images?limit=1&' + condsQuery(done));
+        if (my !== seq) return;
+        const n = r.total;
+        fill($foot, h('p', { class: n ? '' : 'muted' }, n ? `${fmtN(n)} chart${n === 1 ? '' : 's'} ${n === 1 ? 'has' : 'have'} all of these.` : 'No chart has all of these yet. Change a number or remove a row.'),
+          h('button', { type: 'button', class: 'btn-primary btn-block', disabled: !n, onclick: () => { count('combo.search'); swap(positionHash(done)); } }, n ? `Show ${fmtN(n)} Chart${n === 1 ? '' : 's'}` : 'Show Charts'));
+      } catch (err) { if (my === seq) fill($foot, h('p', { class: 'err' }, err.message)); }
+    };
+    // After a pick in the sheet, the sheet's own Close is still stepping back through the history: writing the
+    // address before that step lands would change the entry the step returns to and redraw the screen from it.
+    const changed = () => afterOverlayClosed(() => { remember(); drawFoot(); });
+    // The position sheet for one row: chart chips and the rows of positions, counts for this row's number among
+    // the charts that already meet the other rows.
+    const pickPosition = async (row) => {
+      const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
+      const close = () => { bg.remove(); untrackOverlay(bg); };
+      const $charts = h('div', { class: 'chips tabs' });
+      const $list = h('div', { class: 'stack poslist' });
+      const $hint = h('p', { class: 'muted small' });
+      bg.append(h('div', { class: 'sheet possheet' }, h('div', { class: 'sheet-grip', onclick: close }, h('span', {})), h('h3', {}, numOf(row) ? `Where must ${numLabel(numOf(row))} be?` : 'Pick the position'), $hint, $charts, $list));
+      document.body.append(bg); trackOverlay(bg, close);
+      const others = complete().filter((r) => r !== row);
+      let counts = null;
+      const n = numOf(row);
+      const isCombo = /\+/.test(n);
+      const drawList = () => fill($list, ...posRows(chart, counts, isCombo, (pos) => { row.pos = pos; close(); drawRows(); changed(); }));
+      const drawCharts = () => fill($charts, ...[{ key: '*', label: 'Any chart' }, ...catalog.charts].map((c) => h('button', { type: 'button', class: `chip ${chart === c.key ? 'active' : 'off'}`, onclick: () => { chart = c.key; try { localStorage.setItem('posChart', chart); } catch {} drawCharts(); drawList(); } }, c.label)));
+      $hint.textContent = n ? (others.length ? 'Counts: among the charts that already meet the other rows.' : 'Counts: how many charts have it there.') : 'Type the number first and the counts show here.';
+      drawCharts(); drawList();
+      if (n) { try { counts = await api('/api/positions/counts?num=' + encodeURIComponent(n) + (others.length ? '&fixed=' + encodeURIComponent(others.map((c) => `${c.pos}:${c.num}`).join(',')) : '')); } catch { counts = null; } if (bg.isConnected) drawList(); }
+    };
+    const drawRows = () => {
+      fill($rows, ...rows.map((row, i) => {
+        const $num = h('input', { type: 'text', inputmode: 'numeric', placeholder: 'Number', autocomplete: 'off', maxlength: 5, value: row.num, 'aria-label': 'The number for this position' });
+        $num.addEventListener('input', () => { row.num = $num.value; clearTimeout($num.t); $num.t = setTimeout(changed, 200); });
+        $num.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $num.blur(); } });
+        const $pos = h('button', { type: 'button', class: `cpos ${row.pos ? '' : 'empty'}`, onclick: () => pickPosition(row) }, h('span', { class: 't' }, row.pos ? posLabel(row.pos) : 'Pick the position'), h('span', { class: 'muted' }, '›'));
+        const $x = h('button', { type: 'button', class: 'x', 'aria-label': 'Remove this row', onclick: () => { rows.splice(i, 1); if (!rows.length) rows.push({ pos: '', num: '' }); drawRows(); changed(); } }, '×');
+        return h('div', { class: 'crow' }, $num, $pos, rows.length > 1 || row.pos || row.num ? $x : null);
+      }), h('button', { type: 'button', class: 'btn-block', onclick: () => { rows.push({ pos: '', num: '' }); drawRows(); const inputs = $rows.querySelectorAll('input'); inputs[inputs.length - 1].focus(); } }, '+ Add Another Position'));
+    };
+    drawRows(); drawFoot();
+    if (!rows[rows.length - 1].num) setTimeout(() => { const inputs = $rows.querySelectorAll('input'); if (inputs.length) inputs[inputs.length - 1].focus(); }, 50);
   };
 
   routes.tags = async function tagsView() {

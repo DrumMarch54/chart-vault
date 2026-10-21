@@ -50,7 +50,7 @@
     const sameOpts = (a, b) => a && b && a.length === b.length && a.focus === b.focus && String(a.note || '').trim().toLowerCase() === String(b.note || '').trim().toLowerCase();
     const DEFAULT_CHOICES = { lengths: [{ key: 'short', label: 'Short' }, { key: 'normal', label: 'Normal' }, { key: 'deep', label: 'In Depth' }], focuses: [{ key: 'everything', label: 'Everything' }] };
 
-    function section(img) {
+    function section(img, hooks = {}) {
       const $facts = h('div', { class: 'stack' }, h('p', { class: 'muted small' }, 'Looking at the numbers…'));
       const $ai = h('div', { class: 'stack' });
       const $root = h('div', { class: 'chartread stack' }, h('div', { class: 'row', style: 'justify-content:space-between' }, h('b', {}, 'Reading'), h('span', { class: 'muted small' }, 'From the course rules, free')), $facts, $ai);
@@ -58,12 +58,15 @@
       const opts = recallOpts();
       const drawFacts = (f) => {
         if (!f || f.missing) { fill($facts, h('p', { class: 'muted small' }, 'No numbers read for this chart yet, so nothing to read. Tap "Type them" above.')); return; }
-        // Repeated numbers as one short line (owner 2026-10-19): the five most repeated with their counts,
-        // never where they sit. The other facts (nexus, unbalanced, karmic, ...) stay as they are.
+        // Repeated numbers (owner 2026-10-19: the five most repeated with their counts, never where they sit;
+        // owner 2026-10-21: as pills, and a tap rings every spot holding that number on the chart through
+        // hooks.showNumber). The other facts (nexus, unbalanced, karmic, ...) stay as they are.
         const facts = f.facts || [];
         const reps = facts.filter((x) => x.kind === 'repeated' && /^\S+ appears \d+ times/.test(x.title)).slice(0, 5)
-          .map((x) => { const m = /^(\S+) appears (\d+) times/.exec(x.title); return `${m[1]} ×${m[2]}`; });
-        const $reps = reps.length ? h('div', { class: 'fact info' }, h('b', {}, 'Most often'), h('span', {}, ' ' + reps.join(' · '))) : null;
+          .map((x) => { const m = /^(\S+) appears (\d+) times/.exec(x.title); return { label: m[1], sum: m[1].split('/')[0], times: Number(m[2]) }; });
+        const $reps = reps.length ? h('div', { class: 'reps' },
+          h('div', { class: 'row', style: 'justify-content:space-between;align-items:baseline' }, h('b', {}, 'Most Often'), hooks.showNumber ? h('span', { class: 'muted small' }, 'Tap one to see it on the chart') : null),
+          h('div', { class: 'reppills' }, ...reps.map((r) => h('button', { type: 'button', class: 'reppill', disabled: !hooks.showNumber, 'aria-label': `${r.label}, ${r.times} times; show on the chart`, onclick: () => { count('reading.show_number'); hooks.showNumber(r.sum, r.label); } }, h('b', {}, r.label), h('span', { class: 'times' }, `×${r.times}`))))) : null;
         const all = facts.filter((x) => x.kind !== 'repeated').map((x) => h('div', { class: `fact ${x.severity || 'info'}` }, h('b', {}, x.title), h('span', {}, ' ' + x.text)));
         if (!all.length && !$reps) { fill($facts, h('p', { class: 'muted small' }, 'Nothing stands out by the rules.')); return; }
         const first = all.slice(0, 5), rest = all.slice(5);
