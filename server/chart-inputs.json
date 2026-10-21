@@ -296,8 +296,8 @@
 "day": 17,
 "month": 9,
 "year": 1975,
-"name": "Keven Hodge",
-"source": "read"
+"name": "Kevin Hodge",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20241126_012117_Firefox.jpg",
@@ -358,10 +358,10 @@
 {
 "filename": "Screenshot_20241128_000012_Desktop Web Browser.jpg",
 "day": 6,
-"month": 1,
-"year": 1990,
+"month": 2,
+"year": 1945,
 "name": "Robert Nesta Marley",
-"source": "read"
+"source": "owner"
 },
 {
 "filename": "Screenshot_20241128_000603_Desktop Web Browser.jpg",
@@ -868,10 +868,10 @@
 {
 "filename": "Screenshot_20250515_210019_Firefox.jpg",
 "day": 27,
-"month": 2,
+"month": 11,
 "year": 1982,
 "name": "Stephen Christopher Yaxley-Lennon",
-"source": "read"
+"source": "owner"
 },
 {
 "filename": "Screenshot_20250517_002936_Firefox.jpg",
@@ -1569,9 +1569,9 @@
 "filename": "Screenshot_20250804_063636_Firefox.jpg",
 "day": 28,
 "month": 10,
-"year": null,
+"year": 1988,
 "name": "Michael Gordon Hammonds",
-"source": "read",
+"source": "owner",
 "note": "Date boxes scrolled off. Name clear in box and on line. From numbers: big number under hexagon 28/1 suggests day 28, left corner 10/1 suggests month 10, right corner 26/8 is year digit-sum 26 (year not determinable); left as null."
 },
 {
@@ -1809,11 +1809,11 @@
 },
 {
 "filename": "Screenshot_20250910_063507_Opera.jpg",
-"day": null,
-"month": null,
-"year": null,
+"day": 7,
+"month": 1,
+"year": 1978,
 "name": "Gary Shamry Grinberg",
-"source": "read",
+"source": "owner",
 "note": "date boxes and name box scrolled off; name read from the diamond line"
 },
 {
@@ -2190,9 +2190,9 @@
 "filename": "Screenshot_20251022_225749_Brave.jpg",
 "day": 14,
 "month": 2,
-"year": null,
+"year": 1995,
 "name": "Caleb Hammer",
-"source": "read",
+"source": "owner",
 "note": "Year box shows 19956 (five digits, likely typo for 1995 or 1996); not a valid four-digit year so reported null."
 },
 {
@@ -4528,10 +4528,10 @@
 {
 "filename": "Screenshot_20260422_193128_Brave.jpg",
 "day": 8,
-"month": 4,
-"year": 2026,
+"month": 1,
+"year": 1935,
 "name": "Elvis Presley",
-"source": "ocr"
+"source": "owner"
 },
 {
 "filename": "Screenshot_20260422_194132_Brave.jpg",
