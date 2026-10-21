@@ -1240,6 +1240,7 @@
       btn('#/house', '⌂', 'House Number', 'home or business', 'home.house'),
       btn('#/phone', '☎', 'Phone and Domain', '', 'home.phone'),
       btn('#/words', 'Aa', 'Business Words', 'by number', 'home.words'),
+      btn('#/archetype', '✦', 'Archetype Words', 'numbers to words', 'home.archetype'),
       btn('#/relation', '⧫', 'Relationship', 'two people', 'home.relation'),
       btn('#/karmic', '∞', 'Karmic Connections', 'shared rhythms', 'home.karmic'),
       $me);

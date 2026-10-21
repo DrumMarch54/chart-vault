@@ -954,6 +954,7 @@
         h('div', { class: 'addtag row', style: 'flex-wrap:nowrap' }, $tagInput, h('button', { type: 'button', class: 'btn-primary', onclick: () => { const v = $tagInput.value.trim(); if (v) { count('viewer.add_tag'); addTag(v); $tagInput.value = ''; } } }, 'Add'), $sugg),
         ...(codeTags.length ? folded(`${codeTags.length} position and number tag${codeTags.length === 1 ? '' : 's'}`, h('div', { class: 'chips' }, ...codeTags.map(tagBtn))) : []),
         $numbers,
+        img.kind === 'chart' && archUi ? archUi.section(img) : null,
         img.kind === 'chart' && readingUi ? readingUi.section(img, { showNumber }) : null,
         ...folded('File details', h('div', { class: 'small muted' },
           h('div', {}, img.kind === 'archetype' ? 'Type: archetype pic (a picture that represents a number)' : 'Type: chart'),
@@ -2255,6 +2256,9 @@
   // Reading a chart (facts, AI reading, questions), Ask the Vault and the AI settings live in reading.js.
   const readingUi = window.Reading ? window.Reading.install({ routes, h, fill, api, toast, count, go, render, pageTop }) : null;
   if (readingUi) Object.assign(USAGE_LABELS, readingUi.USAGE_LABELS);
+  // Archetype lines and the Archetype Words tool (public/archetypes.js); the position sheet is the picker's rows.
+  const archUi = window.Archetypes ? window.Archetypes.install({ routes, h, fill, api, toast, count, go, render, pageTop, posRows, loadCatalog, catalog: () => catalog, posLabel, numLabel, overlay: trackOverlay, overlayGone: untrackOverlay }) : null;
+  if (archUi) Object.assign(USAGE_LABELS, archUi.USAGE_LABELS);
   // What a number means where it sits (public/meaning.js): a tap on a number of a drawn chart.
   meaningUi = window.Meaning ? window.Meaning.install({ h, fill, api, count, go, positionHash, overlay: trackOverlay, overlayGone: untrackOverlay }) : null;
 

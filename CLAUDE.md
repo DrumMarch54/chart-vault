@@ -192,6 +192,18 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   proves the key never leaks and the cap blocks. Measured 2026-10-16: a reading about 25-40 cents (about 50k tokens in,
   mostly course passages); a question about a chart about 3 cents while cached; a vault question about a cent. Never call the model from a test or a tool.
 
+## Archetype lines (built 2026-10-21): words on a combination of numbers
+- The owner's ask: "wholesome (24/6) expander (12/3)". `server/archetype-words.js` is the word bank: every number 1-99
+  with its course title and alt title, bright adjectives and nouns, shadow adjectives and nouns, drafted by a Claude
+  session from the guides' Balanced/Unbalanced headings; THE OWNER CORRECTS WORDS THERE (one line per number, `|`-separated).
+  `server/archetypes.js`: the first number gives the adjective, the second the noun, a third is the crown (the dharma
+  diamond over the higher self); `LINES` names the pairs drawn on every chart (Higher Self, Core and Reality, Name
+  Chart, Mind and Emotion, Life Expression and Pillar, Outer Psyche, Inner Psyche); bright and shadow wordings rotate
+  through the word lists. `GET /api/images/:id/archetypes`, `GET /api/archetypes/phrase?num=&pos=`.
+- Screens (`public/archetypes.js`): "Archetypes" cards at the top of the chart sheet (tap = the tool with those
+  numbers); the Archetype Words tool (`#/archetype`, home Tools) with two or three number rows, an optional position
+  per row for its label, Swap the Order, and each number's words. No AI; the course's titles only.
+
 ## What a number means where it sits (built 2026-10-19)
 - Tap a number on a drawn chart (viewer, Quick Chart; not Today): an outline goes round it; tap it again and its
   page opens (owner's ask: never straight to the page). The page: the course's passages for that number IN THAT

@@ -898,3 +898,19 @@ Eight items from the owner in one message (asked and approved before building). 
   the dev app (the full ⋮ menu was there); the owner then said it works.
 Lesson: the chip label `${num} in ${posLabel}` read "15/6 in anywhere in the name chart" for months; nobody looked at
 the words on the chip until a screenshot of the new screen. Read the screenshot's words, not only its layout.
+
+## 2026-10-21 Archetype lines: the owner's "wholesome expander"
+The owner wants interpretation that puts words on COMBINATIONS, the way a numerologist weaves them: first name
+24/6 with mind center 12/3 = "wholesome expander", and the same pair in the shadow = the victim (12/3) of the family
+(24/6); the higher self read from day, life path and dharma diamond together; and a tool to type numbers into
+positions and get several wordings. Approved shape: a word bank per number (adjective, noun, shadow forms) drafted
+from the course and corrected by the owner; lines on every chart; a Combination tool.
+Built: `server/archetype-words.js` (99 numbers; titles from the Number Title/Alt Title doc and the three guides;
+adjectives from the energy types and the guides' Balanced headings; shadows from the Unbalanced headings, the
+Emotional Issue to Liberation doc, the balance notes), `server/archetypes.js` (first = adjective, second = noun,
+third = crown; seven LINES), `public/archetypes.js` (sheet cards + the Archetype Words tool). Rotating through the
+word lists gives four bright and three shadow wordings per pair, so "there are many other ways to say it" is on
+the screen rather than one fixed phrase. Katrine's higher self came out "radiant transformer with an institutional
+crown": "institutional" (84/3's energy type word) is the kind of word the owner will replace; that is the point of
+the draft. The lines are deliberately NOT AI: the course's titles, nothing invented at run time.
+Next: the owner marks wrong words and missing pairs; more LINES as they name them.

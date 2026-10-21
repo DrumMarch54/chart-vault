@@ -13,6 +13,7 @@ import { setTitle, acceptTitle, titlesToCheck, titleStats, suggestNames, MAX_TIT
 import { snapshot } from './snapshot.js';
 import { getMyChart, setMyChart } from './mychart.js';
 import { deployGuard } from './deployguard.js';
+import { linesFor, phrasesFor } from './archetypes.js';
 import { catalog, positionCounts, parseNumber, parseCondition, parseFixed, getInputs, setInputs, clearInputs, valuesFor, recomputeAll, inputStats, tagCheck, InputError } from './positions.js';
 import { COMMIT } from './build.js';
 import { paths } from './config.js';
@@ -188,6 +189,19 @@ export function createApp(db, { log = console.log } = {}) {
 
   // Search by chart position: the catalog of positions, how many charts hold a number in each,
   // and one chart's typed inputs with everything computed from them.
+  // Archetype lines (server/archetypes.js): words on a chart's number pairs, and on numbers typed into the tool
+  // (?num=24&num=12&num=…, each with an optional ?pos= for its label, pairwise like the position search).
+  app.get('/api/images/:id/archetypes', (req, res) => {
+    const id = Number(req.params.id);
+    if (!getImage(db, id)) return res.status(404).json({ error: 'No such chart.' });
+    res.json(linesFor(db, id));
+  });
+  app.get('/api/archetypes/phrase', (req, res) => {
+    const nums = asList(req.query.num), pos = asList(req.query.pos);
+    const numbers = nums.map((t, i) => { const n = parseNumber(t); return n && !n.combo && !n.ds ? { sum: n.number, pos: pos[i] || '' } : null; }).filter(Boolean);
+    if (!numbers.length) return res.status(400).json({ error: 'Type a number first, like 24 or 12/3.' });
+    res.json(phrasesFor(numbers));
+  });
   app.get('/api/positions', (req, res) => res.json(catalog()));
   app.get('/api/positions/counts', (req, res) => {
     const num = parseNumber(req.query.num);
