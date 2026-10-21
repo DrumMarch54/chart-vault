@@ -1,21 +1,90 @@
 {
   "about": "The course PDFs behind the raw files that carry '<!-- page N -->' marks (knowledge/README 'Page numbers'). book = the short name shown on screen; pdf = the file in the Hub (Class PDF > Essence (OCR) / Name Change (OCR)); drive = its id. Page numbers are the PDF's own page numbers (the number printed on the page), so 'Essence book p. 47' is page 47 of EssenceInterpretation-ver1_ocred.pdf.",
   "books": {
-    "essence-book": { "book": "Essence book", "pdf": "EssenceInterpretation-ver1_ocred.pdf", "drive": "1n3zBVvc4nFuUo1W1qFW0w3cLlW4PNinI" },
-    "essence-codes-part-1": { "book": "Essence appendix", "pdf": "Essence-APPENDIX-ver1_ocred.pdf", "drive": "1-t6PHUuiXWEuz4KigAFsnrKjVUMGHcU5" },
-    "essence-codes-part-2": { "book": "Essence appendix", "pdf": "Essence-APPENDIX-ver1_ocred.pdf", "drive": "1-t6PHUuiXWEuz4KigAFsnrKjVUMGHcU5" },
-    "name-numeroscopes-book": { "book": "Name Numeroscopes book", "pdf": "NameNumeroscopes-ver1_ocred.pdf", "drive": "1JFeUNAvnZEnbGfxXD57UKpkDTI8DhR-V" },
-    "diamond-method": { "book": "Diamond Method book", "pdf": "DiamondMethod-ver2_ocred.pdf", "drive": "1a1eWDBqDuKypo8PskSwTWkNzhdm5fJ8J" },
-    "forecasting-book": { "book": "Forecasting book", "pdf": "ForecastingNumerology-INT-ver1_ocred.pdf", "drive": "1FBZDrmkXyTIPemXx7u_E5YMCGKksDU0c" },
-    "psyche-book": { "book": "Psyche book", "pdf": "Psyche-INT-v1_ocred.pdf", "drive": "18nSHwG5WP0w73XD_O5aYugmku0XNXfEM" },
-    "psyche-cases-book": { "book": "Psyche Cases book", "pdf": "PsycheCasesv1_ocred.pdf", "drive": "1tPqOa38lcEYvB7Y4owhkUmG1R419iuS0" },
-    "psychic-disorders-book": { "book": "Psychic Disorders book", "pdf": "Psyche-Disorders-v1_ocred.pdf", "drive": "1lNgcVPT61fCOmLrLBLJF76bqZi3hSjSP" },
-    "interpretation-guide": { "book": "Interpretation Guide", "pdf": "InterpretationGuide-ver1_ocred.pdf", "drive": "1ML44LaRAPdlaSJLzPO1piRM6nHJ2kSAH" },
-    "subnumeroscope-interpretation-book": { "book": "Sub-chart Interpretation book", "pdf": "NPE-SubNumeroscopeInterpretation-ver1_ocred.pdf", "drive": "1gswBh71qSECHymhX_TQz7ER_EDhbKFHt" },
-    "subvibrations-book": { "book": "Sub-chart Guide", "pdf": "Subnumeroscopes-guide-INT-ver1a_ocred.pdf", "drive": "1aB7oUwcLW80WY318P2aEUS9U4-T9ouoK" },
-    "humanity-archetyping-book": { "book": "Statistics book", "pdf": "NP-Statistics-INT-v1_ocred.pdf", "drive": "1YGaZOz9B8oUpjSlr6Ag2LFqAkMcmAmg4" },
-    "name-templates-rules": { "book": "Name Templates book", "pdf": "NU-Templates-INT-v1_ocred.pdf", "drive": "1WZ346PA2iu2bsBK4Ce1uLvlbPtjZO3e0" },
-    "single-name-charts-book": { "book": "Single Name Charts book", "pdf": "SingleNameChartsNumberPyramids-ver2_ocred.pdf", "drive": "1-wuC7QUQZ6aosKACnHHfZSGpCi_Gx9Kb" },
-    "relations-book": { "book": "Relations book", "pdf": "NP-Relations-INT-v1_ocred.pdf", "drive": "1WNPa09AXW8bRScmT3Ajb_bl_AHtyTw9a" }
+    "essence-book": {
+      "book": "Essence book",
+      "pdf": "EssenceInterpretation-ver1_ocred.pdf",
+      "drive": "1n3zBVvc4nFuUo1W1qFW0w3cLlW4PNinI"
+    },
+    "essence-codes-part-1": {
+      "book": "Essence appendix",
+      "pdf": "Essence-APPENDIX-ver1_ocred.pdf",
+      "drive": "1-t6PHUuiXWEuz4KigAFsnrKjVUMGHcU5"
+    },
+    "essence-codes-part-2": {
+      "book": "Essence appendix",
+      "pdf": "Essence-APPENDIX-ver1_ocred.pdf",
+      "drive": "1-t6PHUuiXWEuz4KigAFsnrKjVUMGHcU5"
+    },
+    "name-numeroscopes-book": {
+      "book": "Name Numeroscopes book",
+      "pdf": "NameNumeroscopes-ver1_ocred.pdf",
+      "drive": "1JFeUNAvnZEnbGfxXD57UKpkDTI8DhR-V"
+    },
+    "diamond-method": {
+      "book": "Diamond Method book",
+      "pdf": "DiamondMethod-ver2_ocred.pdf",
+      "drive": "1a1eWDBqDuKypo8PskSwTWkNzhdm5fJ8J"
+    },
+    "forecasting-book": {
+      "book": "Forecasting book",
+      "pdf": "ForecastingNumerology-INT-ver1_ocred.pdf",
+      "drive": "1FBZDrmkXyTIPemXx7u_E5YMCGKksDU0c"
+    },
+    "psyche-book": {
+      "book": "Psyche book",
+      "pdf": "Psyche-INT-v1_ocred.pdf",
+      "drive": "18nSHwG5WP0w73XD_O5aYugmku0XNXfEM"
+    },
+    "psyche-cases-book": {
+      "book": "Psyche Cases book",
+      "pdf": "PsycheCasesv1_ocred.pdf",
+      "drive": "1tPqOa38lcEYvB7Y4owhkUmG1R419iuS0"
+    },
+    "psychic-disorders-book": {
+      "book": "Psychic Disorders book",
+      "pdf": "Psyche-Disorders-v1_ocred.pdf",
+      "drive": "1lNgcVPT61fCOmLrLBLJF76bqZi3hSjSP"
+    },
+    "interpretation-guide": {
+      "book": "Interpretation Guide",
+      "pdf": "InterpretationGuide-ver1_ocred.pdf",
+      "drive": "1ML44LaRAPdlaSJLzPO1piRM6nHJ2kSAH"
+    },
+    "subnumeroscope-interpretation-book": {
+      "book": "Sub-chart Interpretation book",
+      "pdf": "NPE-SubNumeroscopeInterpretation-ver1_ocred.pdf",
+      "drive": "1gswBh71qSECHymhX_TQz7ER_EDhbKFHt"
+    },
+    "subvibrations-book": {
+      "book": "Sub-chart Guide",
+      "pdf": "Subnumeroscopes-guide-INT-ver1a_ocred.pdf",
+      "drive": "1aB7oUwcLW80WY318P2aEUS9U4-T9ouoK"
+    },
+    "humanity-archetyping-book": {
+      "book": "Statistics book",
+      "pdf": "NP-Statistics-INT-v1_ocred.pdf",
+      "drive": "1YGaZOz9B8oUpjSlr6Ag2LFqAkMcmAmg4"
+    },
+    "name-templates-rules": {
+      "book": "Name Templates book",
+      "pdf": "NU-Templates-INT-v1_ocred.pdf",
+      "drive": "1WZ346PA2iu2bsBK4Ce1uLvlbPtjZO3e0"
+    },
+    "single-name-charts-book": {
+      "book": "Single Name Charts book",
+      "pdf": "SingleNameChartsNumberPyramids-ver2_ocred.pdf",
+      "drive": "1-wuC7QUQZ6aosKACnHHfZSGpCi_Gx9Kb"
+    },
+    "relations-book": {
+      "book": "Relations book",
+      "pdf": "NP-Relations-INT-v1_ocred.pdf",
+      "drive": "1WNPa09AXW8bRScmT3Ajb_bl_AHtyTw9a"
+    },
+    "name-change-5-steps": {
+      "book": "Name Change 5 Steps booklet",
+      "pdf": "NameChangeMethod5Steps-v1_ocred.pdf",
+      "drive": "1m2GGrMDs_hF0QdH1MQDJCERwntu3ZyqD"
+    }
   }
 }

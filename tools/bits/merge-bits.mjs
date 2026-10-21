@@ -9,7 +9,9 @@ for (const [key, id] of Object.entries(old.pages || {})) if (id.startsWith('hand
 // BITS_ADD=1: keep every set and page already in bits.json and ADD the new batches (make-jobs-missing.mjs);
 // a page written again points at its new set. Without it the file is rebuilt from the batches alone.
 const add = process.env.BITS_ADD === '1';
-const out = { about: old.about, sets: add ? { ...(old.sets || {}) } : {}, pages: add ? { ...(old.pages || {}) } : {} };
+const out = { about: old.about, sets: add ? { ...(old.sets || {}) } : {}, pages: add ? { ...(old.pages || {}) } : {}, more: { ...(old.more || {}) } };
+// the hand-written second sets ("more": the path to integration, the name-change rules) are kept as written
+for (const id of new Set(Object.values(old.more || {}))) if (old.sets?.[id]) out.sets[id] = old.sets[id];
 let n = 0, missing = 0, skipped = 0;
 for (const f of fs.readdirSync(`${S}/bits-jobs`).sort()) {
   const jobs = JSON.parse(fs.readFileSync(`${S}/bits-jobs/${f}`, 'utf8'));

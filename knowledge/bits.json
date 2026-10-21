@@ -1,5 +1,5 @@
 {
- "about": "The short points on a number's meaning page, written by a Claude session from the course text: the course's own words, shortened, nothing added. Key = chart.position:number, or chart.position:number+partner for a center's circle. Each group is a heading and its points; sources = the knowledge/raw files the points were taken from. **Double stars** mark the words that should stand out (shown bold). The full course words stay one tap away on the page. Owner's ask 2026-10-19 (test page: Allison Frank's mind center 7 with 13/4). Rules (owner 2026-10-19): short fragments, not sentences; bold the words that matter; leave out sentences about the POSITION itself (\"part of your brand\" is the mind center, not the 7), referrals to a numerologist, tarot descriptions, and pairs with other numbers (those go under the pair's own key). A hand-written set may carry \"cites\" beside \"points\" (one per point, { book, page } or null): the page of the course PDF (knowledge/books.json) the point was shortened from; shown on the point (2026-10-21, the nine dharma lines of the Essence book p. 47).",
+ "about": "The short points on a number's meaning page, written by a Claude session from the course text: the course's own words, shortened, nothing added. Key = chart.position:number, or chart.position:number+partner for a center's circle. Each group is a heading and its points; sources = the knowledge/raw files the points were taken from. **Double stars** mark the words that should stand out (shown bold). The full course words stay one tap away on the page. Owner's ask 2026-10-19 (test page: Allison Frank's mind center 7 with 13/4). Rules (owner 2026-10-19): short fragments, not sentences; bold the words that matter; leave out sentences about the POSITION itself (\"part of your brand\" is the mind center, not the 7), referrals to a numerologist, tarot descriptions, and pairs with other numbers (those go under the pair's own key). A hand-written set may carry \"cites\" beside \"points\" (one per point, { book, page } or null): the page of the course PDF (knowledge/books.json) the point was shortened from; shown on the point (2026-10-21, the nine dharma lines of the Essence book p. 47). \"more\" maps a page key to a second set shown after the page's own points (the Diamond Method's path to integration on the day pages, the Name Change 5 Steps booklet's rules on the sub-chart pages; owner 2026-10-21).",
  "sets": {
   "batch-01/set1": {
    "sources": [
@@ -30453,6 +30453,1117 @@
      ]
     }
    ]
+  },
+  "hand/path/essence.day:1": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence diamond **12/3**, integration diamond **45/9**: the path to the most happiness and integration.",
+      "Emotional code 3, the Creative Expression code: **express to process**: speak it, write it, sing it; joy as regulator; pitfall: skipping to humor masks pain.",
+      "Integration 45/9, The Innovative Leader: transcend ego through **truth-sharing, innovation and service to future generations**.",
+      "Pitfalls to transcend: needing to be right, dismissing others' perspectives, speaking from ego, using intellect to dominate."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 45
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 55
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 56
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:2": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence diamond **24/6**, integration diamond **81/9**: the path to the most happiness and integration.",
+      "Emotional code 6, the Harmonizer code: **balance through care**: emotions shared in safe, trusting spaces; emotional routines; boundaries; pitfall: over-responsibility.",
+      "Integration 81/9, The Disciplined Master: transcend ego through **focused mastery, sacred discipline and surrendered power**.",
+      "Pitfalls to transcend: aggression toward self and others, raging against the mundane or slow, lack of empathy, conflict addiction."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 46
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 63
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 64
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:3": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence and integration diamond **36/9**: the path to the most happiness and integration.",
+      "Emotional code 9, the Transcendent Emotion code: **feel to transcend**: go to the karmic root; forgiveness as flow; solitude and perspective; pitfall: emotional martyrdom.",
+      "Integration 36/9, The Triad Manifestor: transcend ego through **unifying creation and inclusive leadership**.",
+      "Pitfalls to transcend: status obsession and comparison, emotional manipulation for power, needing control or admiration."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 47
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 53
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 54
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:4": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence diamond **48/3**, integration diamond **72/9**: the path to the most happiness and integration.",
+      "Emotional code 3, the Creative Expression code: **express to process**: speak it, write it, sing it; joy as regulator; pitfall: skipping to humor masks pain.",
+      "Integration 72/9, The Sage of Service: transcend ego through **humble wisdom, compassionate leadership and service** to humanity.",
+      "Pitfalls to transcend: withdrawing into intellect, rigid dogma, judging others out of fear of losing status, losing joy and spontaneity."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 45
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 61
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 62
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:5": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence diamond **51/6**, integration diamond **27/9**: the path to the most happiness and integration.",
+      "Emotional code 6, the Harmonizer code: **balance through care**: emotions shared in safe, trusting spaces; emotional routines; boundaries; pitfall: over-responsibility.",
+      "Integration 27/9, The Heart-Centered Leader: transcend ego through **heart-based leadership and divine listening**.",
+      "Pitfalls to transcend: overthinking and mental detachment, people-pleasing or self-silencing, leading from the mind, emotional avoidance."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 46
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 51
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 52
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:6": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence and integration diamond **63/9**: the path to the most happiness and integration.",
+      "Emotional code 9, the Transcendent Emotion code: **feel to transcend**: go to the karmic root; forgiveness as flow; solitude and perspective; pitfall: emotional martyrdom.",
+      "Integration 63/9, The Master of Inner Alchemy: transcend ego by **removing masks, returning to truth**, manifesting through soul alignment.",
+      "Pitfalls to transcend: hiding behind charisma or emotional control, replacing love with ambition or approval, living through personas."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 47
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 59
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 60
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:7": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence diamond **75/3**, integration diamond **18/9**: the path to the most happiness and integration.",
+      "Emotional code 3, the Creative Expression code: **express to process**: speak it, write it, sing it; joy as regulator; pitfall: skipping to humor masks pain.",
+      "Integration 18/9, The Warrior Alchemist: transcend ego through **conscious discipline and service**.",
+      "Pitfalls to transcend: rigid control, emotional suppression, fanaticism or moral superiority, anger disguised as leadership."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 45
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 49
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 50
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:8": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence diamond **87/6**, integration diamond **54/9**: the path to the most happiness and integration.",
+      "Emotional code 6, the Harmonizer code: **balance through care**: emotions shared in safe, trusting spaces; emotional routines; boundaries; pitfall: over-responsibility.",
+      "Integration 54/9, The Communication Leader: transcend ego through **conscious communication, innovation and visionary branding** that uplifts humanity.",
+      "Pitfalls to transcend: impatient or aggressive speech, over-selling, hasty decisions, feeling misunderstood or dissatisfied."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 46
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 57
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 58
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:9": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence and integration diamond **99/9** (made of 0 and 9): the path to the most happiness and integration.",
+      "Emotional code 9, the Transcendent Emotion code: **feel to transcend**: go to the karmic root; forgiveness as flow; solitude and perspective; pitfall: emotional martyrdom.",
+      "Integration 99/9, The Finalizer: transcend ego by **completing your sacred mission** with integrity, devotion and unshakable faith.",
+      "Pitfalls to transcend: burnout masked by automation, any means to an end, emotional numbness, giving up right before the breakthrough."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 47
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 65
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 66
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:10": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence diamond **21/3**, integration diamond **54/9**: the path to the most happiness and integration.",
+      "Emotional code 3, the Creative Expression code: **express to process**: speak it, write it, sing it; joy as regulator; pitfall: skipping to humor masks pain.",
+      "Integration 54/9, The Communication Leader: transcend ego through **conscious communication, innovation and visionary branding** that uplifts humanity.",
+      "Pitfalls to transcend: impatient or aggressive speech, over-selling, hasty decisions, feeling misunderstood or dissatisfied."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 45
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 57
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 58
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:11": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence diamond **33/6**, integration diamond **99/9**: the path to the most happiness and integration.",
+      "Emotional code 6, the Harmonizer code: **balance through care**: emotions shared in safe, trusting spaces; emotional routines; boundaries; pitfall: over-responsibility.",
+      "Integration 99/9, The Finalizer: transcend ego by **completing your sacred mission** with integrity, devotion and unshakable faith.",
+      "Pitfalls to transcend: burnout masked by automation, any means to an end, emotional numbness, giving up right before the breakthrough."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 46
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 65
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 66
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:12": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence and integration diamond **45/9**: the path to the most happiness and integration.",
+      "Emotional code 9, the Transcendent Emotion code: **feel to transcend**: go to the karmic root; forgiveness as flow; solitude and perspective; pitfall: emotional martyrdom.",
+      "Integration 45/9, The Innovative Leader: transcend ego through **truth-sharing, innovation and service to future generations**.",
+      "Pitfalls to transcend: needing to be right, dismissing others' perspectives, speaking from ego, using intellect to dominate."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 47
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 55
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 56
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:13": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence diamond **57/3**, integration diamond **81/9**: the path to the most happiness and integration.",
+      "Emotional code 3, the Creative Expression code: **express to process**: speak it, write it, sing it; joy as regulator; pitfall: skipping to humor masks pain.",
+      "Integration 81/9, The Disciplined Master: transcend ego through **focused mastery, sacred discipline and surrendered power**.",
+      "Pitfalls to transcend: aggression toward self and others, raging against the mundane or slow, lack of empathy, conflict addiction."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 45
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 63
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 64
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:14": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence diamond **69/6**, integration diamond **36/9**: the path to the most happiness and integration.",
+      "Emotional code 6, the Harmonizer code: **balance through care**: emotions shared in safe, trusting spaces; emotional routines; boundaries; pitfall: over-responsibility.",
+      "Integration 36/9, The Triad Manifestor: transcend ego through **unifying creation and inclusive leadership**.",
+      "Pitfalls to transcend: status obsession and comparison, emotional manipulation for power, needing control or admiration."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 46
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 53
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 54
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:15": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence and integration diamond **72/9**: the path to the most happiness and integration.",
+      "Emotional code 9, the Transcendent Emotion code: **feel to transcend**: go to the karmic root; forgiveness as flow; solitude and perspective; pitfall: emotional martyrdom.",
+      "Integration 72/9, The Sage of Service: transcend ego through **humble wisdom, compassionate leadership and service** to humanity.",
+      "Pitfalls to transcend: withdrawing into intellect, rigid dogma, judging others out of fear of losing status, losing joy and spontaneity."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 47
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 61
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 62
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:16": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence diamond **84/3**, integration diamond **27/9**: the path to the most happiness and integration.",
+      "Emotional code 3, the Creative Expression code: **express to process**: speak it, write it, sing it; joy as regulator; pitfall: skipping to humor masks pain.",
+      "Integration 27/9, The Heart-Centered Leader: transcend ego through **heart-based leadership and divine listening**.",
+      "Pitfalls to transcend: overthinking and mental detachment, people-pleasing or self-silencing, leading from the mind, emotional avoidance."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 45
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 51
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 52
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:17": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence diamond **96/6**, integration diamond **63/9**: the path to the most happiness and integration.",
+      "Emotional code 6, the Harmonizer code: **balance through care**: emotions shared in safe, trusting spaces; emotional routines; boundaries; pitfall: over-responsibility.",
+      "Integration 63/9, The Master of Inner Alchemy: transcend ego by **removing masks, returning to truth**, manifesting through soul alignment.",
+      "Pitfalls to transcend: hiding behind charisma or emotional control, replacing love with ambition or approval, living through personas."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 46
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 59
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 60
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:18": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence and integration diamond **18/9** (made of 10/1 and 17/8): the path to the most happiness and integration.",
+      "Emotional code 9, the Transcendent Emotion code: **feel to transcend**: go to the karmic root; forgiveness as flow; solitude and perspective; pitfall: emotional martyrdom.",
+      "Integration 18/9, The Warrior Alchemist: transcend ego through **conscious discipline and service**.",
+      "Pitfalls to transcend: rigid control, emotional suppression, fanaticism or moral superiority, anger disguised as leadership."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 47
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 49
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 50
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:19": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence diamond **21/3**, integration diamond **54/9**: the path to the most happiness and integration.",
+      "Emotional code 3, the Creative Expression code: **express to process**: speak it, write it, sing it; joy as regulator; pitfall: skipping to humor masks pain.",
+      "Integration 54/9, The Communication Leader: transcend ego through **conscious communication, innovation and visionary branding** that uplifts humanity.",
+      "Pitfalls to transcend: impatient or aggressive speech, over-selling, hasty decisions, feeling misunderstood or dissatisfied."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 45
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 57
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 58
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:20": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence diamond **42/6**, integration diamond **18/9**: the path to the most happiness and integration.",
+      "Emotional code 6, the Harmonizer code: **balance through care**: emotions shared in safe, trusting spaces; emotional routines; boundaries; pitfall: over-responsibility.",
+      "Integration 18/9, The Warrior Alchemist: transcend ego through **conscious discipline and service**.",
+      "Pitfalls to transcend: rigid control, emotional suppression, fanaticism or moral superiority, anger disguised as leadership."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 46
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 49
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 50
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:21": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence and integration diamond **54/9**: the path to the most happiness and integration.",
+      "Emotional code 9, the Transcendent Emotion code: **feel to transcend**: go to the karmic root; forgiveness as flow; solitude and perspective; pitfall: emotional martyrdom.",
+      "Integration 54/9, The Communication Leader: transcend ego through **conscious communication, innovation and visionary branding** that uplifts humanity.",
+      "Pitfalls to transcend: impatient or aggressive speech, over-selling, hasty decisions, feeling misunderstood or dissatisfied."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 47
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 57
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 58
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:22": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence diamond **66/3**, integration diamond **99/9**: the path to the most happiness and integration.",
+      "Emotional code 3, the Creative Expression code: **express to process**: speak it, write it, sing it; joy as regulator; pitfall: skipping to humor masks pain.",
+      "Integration 99/9, The Finalizer: transcend ego by **completing your sacred mission** with integrity, devotion and unshakable faith.",
+      "Pitfalls to transcend: burnout masked by automation, any means to an end, emotional numbness, giving up right before the breakthrough."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 45
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 65
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 66
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:23": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence diamond **78/6**, integration diamond **45/9**: the path to the most happiness and integration.",
+      "Emotional code 6, the Harmonizer code: **balance through care**: emotions shared in safe, trusting spaces; emotional routines; boundaries; pitfall: over-responsibility.",
+      "Integration 45/9, The Innovative Leader: transcend ego through **truth-sharing, innovation and service to future generations**.",
+      "Pitfalls to transcend: needing to be right, dismissing others' perspectives, speaking from ego, using intellect to dominate."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 46
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 55
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 56
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:24": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence and integration diamond **81/9**: the path to the most happiness and integration.",
+      "Emotional code 9, the Transcendent Emotion code: **feel to transcend**: go to the karmic root; forgiveness as flow; solitude and perspective; pitfall: emotional martyrdom.",
+      "Integration 81/9, The Disciplined Master: transcend ego through **focused mastery, sacred discipline and surrendered power**.",
+      "Pitfalls to transcend: aggression toward self and others, raging against the mundane or slow, lack of empathy, conflict addiction."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 47
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 63
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 64
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:25": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence diamond **93/3**, integration diamond **36/9**: the path to the most happiness and integration.",
+      "Emotional code 3, the Creative Expression code: **express to process**: speak it, write it, sing it; joy as regulator; pitfall: skipping to humor masks pain.",
+      "Integration 36/9, The Triad Manifestor: transcend ego through **unifying creation and inclusive leadership**.",
+      "Pitfalls to transcend: status obsession and comparison, emotional manipulation for power, needing control or admiration."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 45
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 53
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 54
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:26": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence diamond **15/6**, integration diamond **72/9**: the path to the most happiness and integration.",
+      "Emotional code 6, the Harmonizer code: **balance through care**: emotions shared in safe, trusting spaces; emotional routines; boundaries; pitfall: over-responsibility.",
+      "Integration 72/9, The Sage of Service: transcend ego through **humble wisdom, compassionate leadership and service** to humanity.",
+      "Pitfalls to transcend: withdrawing into intellect, rigid dogma, judging others out of fear of losing status, losing joy and spontaneity."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 46
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 61
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 62
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:27": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence and integration diamond **27/9** (made of 11/2 and 16/7): the path to the most happiness and integration.",
+      "Emotional code 9, the Transcendent Emotion code: **feel to transcend**: go to the karmic root; forgiveness as flow; solitude and perspective; pitfall: emotional martyrdom.",
+      "Integration 27/9, The Heart-Centered Leader: transcend ego through **heart-based leadership and divine listening**.",
+      "Pitfalls to transcend: overthinking and mental detachment, people-pleasing or self-silencing, leading from the mind, emotional avoidance."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 47
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 51
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 52
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:28": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence diamond **39/3**, integration diamond **63/9**: the path to the most happiness and integration.",
+      "Emotional code 3, the Creative Expression code: **express to process**: speak it, write it, sing it; joy as regulator; pitfall: skipping to humor masks pain.",
+      "Integration 63/9, The Master of Inner Alchemy: transcend ego by **removing masks, returning to truth**, manifesting through soul alignment.",
+      "Pitfalls to transcend: hiding behind charisma or emotional control, replacing love with ambition or approval, living through personas."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 45
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 59
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 60
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:29": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence diamond **42/6**, integration diamond **18/9**: the path to the most happiness and integration.",
+      "Emotional code 6, the Harmonizer code: **balance through care**: emotions shared in safe, trusting spaces; emotional routines; boundaries; pitfall: over-responsibility.",
+      "Integration 18/9, The Warrior Alchemist: transcend ego through **conscious discipline and service**.",
+      "Pitfalls to transcend: rigid control, emotional suppression, fanaticism or moral superiority, anger disguised as leadership."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 46
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 49
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 50
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:30": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence and integration diamond **63/9**: the path to the most happiness and integration.",
+      "Emotional code 9, the Transcendent Emotion code: **feel to transcend**: go to the karmic root; forgiveness as flow; solitude and perspective; pitfall: emotional martyrdom.",
+      "Integration 63/9, The Master of Inner Alchemy: transcend ego by **removing masks, returning to truth**, manifesting through soul alignment.",
+      "Pitfalls to transcend: hiding behind charisma or emotional control, replacing love with ambition or approval, living through personas."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 47
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 59
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 60
+      }
+     ]
+    }
+   ]
+  },
+  "hand/path/essence.day:31": {
+   "sources": [
+    "diamond-method"
+   ],
+   "groups": [
+    {
+     "title": "Path to Integration",
+     "points": [
+      "Essence diamond **75/3**, integration diamond **18/9**: the path to the most happiness and integration.",
+      "Emotional code 3, the Creative Expression code: **express to process**: speak it, write it, sing it; joy as regulator; pitfall: skipping to humor masks pain.",
+      "Integration 18/9, The Warrior Alchemist: transcend ego through **conscious discipline and service**.",
+      "Pitfalls to transcend: rigid control, emotional suppression, fanaticism or moral superiority, anger disguised as leadership."
+     ],
+     "cites": [
+      {
+       "book": "Diamond Method book",
+       "page": 43
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 45
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 49
+      },
+      {
+       "book": "Diamond Method book",
+       "page": 50
+      }
+     ]
+    }
+   ]
+  },
+  "hand/rules/sub-extra-semi": {
+   "sources": [
+    "name-change-5-steps"
+   ],
+   "groups": [
+    {
+     "title": "When Choosing a Name",
+     "points": [
+      "**Acceptable as a secondary vibration**: semi-balanced, may appear in secondary center positions."
+     ],
+     "cites": [
+      {
+       "book": "Name Change 5 Steps booklet",
+       "page": 4
+      }
+     ]
+    }
+   ]
+  },
+  "hand/rules/sub-12": {
+   "sources": [
+    "name-change-5-steps"
+   ],
+   "groups": [
+    {
+     "title": "When Choosing a Name",
+     "points": [
+      "**Sometimes accepted** in auras or as a center main vibration, especially in charts with Day Vibration 4."
+     ],
+     "cites": [
+      {
+       "book": "Name Change 5 Steps booklet",
+       "page": 4
+      }
+     ]
+    }
+   ]
+  },
+  "hand/rules/sub-avoid": {
+   "sources": [
+    "name-change-5-steps"
+   ],
+   "groups": [
+    {
+     "title": "When Choosing a Name",
+     "points": [
+      "**Avoid if possible**: excluded whenever possible."
+     ],
+     "cites": [
+      {
+       "book": "Name Change 5 Steps booklet",
+       "page": 4
+      }
+     ]
+    }
+   ]
   }
  },
  "pages": {
@@ -36650,5 +37761,126 @@
   "essence.dharmaDiamond:15": "hand/essence.dharmaDiamond:15",
   "essence.dharmaDiamond:17": "hand/essence.dharmaDiamond:17",
   "essence.dharmaDiamond:18": "hand/essence.dharmaDiamond:18"
+ },
+ "more": {
+  "essence.day:1": "hand/path/essence.day:1",
+  "essence.day:2": "hand/path/essence.day:2",
+  "essence.day:3": "hand/path/essence.day:3",
+  "essence.day:4": "hand/path/essence.day:4",
+  "essence.day:5": "hand/path/essence.day:5",
+  "essence.day:6": "hand/path/essence.day:6",
+  "essence.day:7": "hand/path/essence.day:7",
+  "essence.day:8": "hand/path/essence.day:8",
+  "essence.day:9": "hand/path/essence.day:9",
+  "essence.day:10": "hand/path/essence.day:10",
+  "essence.day:11": "hand/path/essence.day:11",
+  "essence.day:12": "hand/path/essence.day:12",
+  "essence.day:13": "hand/path/essence.day:13",
+  "essence.day:14": "hand/path/essence.day:14",
+  "essence.day:15": "hand/path/essence.day:15",
+  "essence.day:16": "hand/path/essence.day:16",
+  "essence.day:17": "hand/path/essence.day:17",
+  "essence.day:18": "hand/path/essence.day:18",
+  "essence.day:19": "hand/path/essence.day:19",
+  "essence.day:20": "hand/path/essence.day:20",
+  "essence.day:21": "hand/path/essence.day:21",
+  "essence.day:22": "hand/path/essence.day:22",
+  "essence.day:23": "hand/path/essence.day:23",
+  "essence.day:24": "hand/path/essence.day:24",
+  "essence.day:25": "hand/path/essence.day:25",
+  "essence.day:26": "hand/path/essence.day:26",
+  "essence.day:27": "hand/path/essence.day:27",
+  "essence.day:28": "hand/path/essence.day:28",
+  "essence.day:29": "hand/path/essence.day:29",
+  "essence.day:30": "hand/path/essence.day:30",
+  "essence.day:31": "hand/path/essence.day:31",
+  "vocation.heartExtra:4": "hand/rules/sub-extra-semi",
+  "vocation.heartExtra:8": "hand/rules/sub-extra-semi",
+  "vocation.heartExtra:9": "hand/rules/sub-extra-semi",
+  "vocation.heartExtra:11": "hand/rules/sub-extra-semi",
+  "vocation.heartExtra:13": "hand/rules/sub-extra-semi",
+  "vocation.heartExtra:15": "hand/rules/sub-extra-semi",
+  "vocation.heartExtra:17": "hand/rules/sub-extra-semi",
+  "vocation.solarExtra:4": "hand/rules/sub-extra-semi",
+  "vocation.solarExtra:8": "hand/rules/sub-extra-semi",
+  "vocation.solarExtra:9": "hand/rules/sub-extra-semi",
+  "vocation.solarExtra:11": "hand/rules/sub-extra-semi",
+  "vocation.solarExtra:13": "hand/rules/sub-extra-semi",
+  "vocation.solarExtra:15": "hand/rules/sub-extra-semi",
+  "vocation.solarExtra:17": "hand/rules/sub-extra-semi",
+  "personality.heartExtra:4": "hand/rules/sub-extra-semi",
+  "personality.heartExtra:8": "hand/rules/sub-extra-semi",
+  "personality.heartExtra:9": "hand/rules/sub-extra-semi",
+  "personality.heartExtra:11": "hand/rules/sub-extra-semi",
+  "personality.heartExtra:13": "hand/rules/sub-extra-semi",
+  "personality.heartExtra:15": "hand/rules/sub-extra-semi",
+  "personality.heartExtra:17": "hand/rules/sub-extra-semi",
+  "personality.solarExtra:4": "hand/rules/sub-extra-semi",
+  "personality.solarExtra:8": "hand/rules/sub-extra-semi",
+  "personality.solarExtra:9": "hand/rules/sub-extra-semi",
+  "personality.solarExtra:11": "hand/rules/sub-extra-semi",
+  "personality.solarExtra:13": "hand/rules/sub-extra-semi",
+  "personality.solarExtra:15": "hand/rules/sub-extra-semi",
+  "personality.solarExtra:17": "hand/rules/sub-extra-semi",
+  "vocation.heart:12": "hand/rules/sub-12",
+  "vocation.solar:12": "hand/rules/sub-12",
+  "vocation.upperLeft:12": "hand/rules/sub-12",
+  "vocation.upperRight:12": "hand/rules/sub-12",
+  "vocation.lowerLeft:12": "hand/rules/sub-12",
+  "vocation.lowerRight:12": "hand/rules/sub-12",
+  "personality.heart:12": "hand/rules/sub-12",
+  "personality.solar:12": "hand/rules/sub-12",
+  "personality.upperLeft:12": "hand/rules/sub-12",
+  "personality.upperRight:12": "hand/rules/sub-12",
+  "personality.lowerLeft:12": "hand/rules/sub-12",
+  "personality.lowerRight:12": "hand/rules/sub-12",
+  "vocation.heart:16": "hand/rules/sub-avoid",
+  "vocation.heart:18": "hand/rules/sub-avoid",
+  "vocation.heartExtra:16": "hand/rules/sub-avoid",
+  "vocation.heartExtra:18": "hand/rules/sub-avoid",
+  "vocation.solar:16": "hand/rules/sub-avoid",
+  "vocation.solar:18": "hand/rules/sub-avoid",
+  "vocation.solarExtra:16": "hand/rules/sub-avoid",
+  "vocation.solarExtra:18": "hand/rules/sub-avoid",
+  "vocation.upperLeft:16": "hand/rules/sub-avoid",
+  "vocation.upperLeft:18": "hand/rules/sub-avoid",
+  "vocation.upperRight:16": "hand/rules/sub-avoid",
+  "vocation.upperRight:18": "hand/rules/sub-avoid",
+  "vocation.lowerLeft:16": "hand/rules/sub-avoid",
+  "vocation.lowerLeft:18": "hand/rules/sub-avoid",
+  "vocation.lowerRight:16": "hand/rules/sub-avoid",
+  "vocation.lowerRight:18": "hand/rules/sub-avoid",
+  "vocation.first:16": "hand/rules/sub-avoid",
+  "vocation.first:18": "hand/rules/sub-avoid",
+  "vocation.middle:16": "hand/rules/sub-avoid",
+  "vocation.middle:18": "hand/rules/sub-avoid",
+  "vocation.last:16": "hand/rules/sub-avoid",
+  "vocation.last:18": "hand/rules/sub-avoid",
+  "vocation.pillar:16": "hand/rules/sub-avoid",
+  "vocation.pillar:18": "hand/rules/sub-avoid",
+  "personality.heart:16": "hand/rules/sub-avoid",
+  "personality.heart:18": "hand/rules/sub-avoid",
+  "personality.heartExtra:16": "hand/rules/sub-avoid",
+  "personality.heartExtra:18": "hand/rules/sub-avoid",
+  "personality.solar:16": "hand/rules/sub-avoid",
+  "personality.solar:18": "hand/rules/sub-avoid",
+  "personality.solarExtra:16": "hand/rules/sub-avoid",
+  "personality.solarExtra:18": "hand/rules/sub-avoid",
+  "personality.upperLeft:16": "hand/rules/sub-avoid",
+  "personality.upperLeft:18": "hand/rules/sub-avoid",
+  "personality.upperRight:16": "hand/rules/sub-avoid",
+  "personality.upperRight:18": "hand/rules/sub-avoid",
+  "personality.lowerLeft:16": "hand/rules/sub-avoid",
+  "personality.lowerLeft:18": "hand/rules/sub-avoid",
+  "personality.lowerRight:16": "hand/rules/sub-avoid",
+  "personality.lowerRight:18": "hand/rules/sub-avoid",
+  "personality.first:16": "hand/rules/sub-avoid",
+  "personality.first:18": "hand/rules/sub-avoid",
+  "personality.middle:16": "hand/rules/sub-avoid",
+  "personality.middle:18": "hand/rules/sub-avoid",
+  "personality.last:16": "hand/rules/sub-avoid",
+  "personality.last:18": "hand/rules/sub-avoid",
+  "personality.pillar:16": "hand/rules/sub-avoid",
+  "personality.pillar:18": "hand/rules/sub-avoid"
  }
 }

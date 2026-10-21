@@ -338,4 +338,4 @@ carries the book page` fails). Books: essence-book (EssenceInterpretation-ver1, 
 (DiamondMethod-ver2, 108 pp.), forecasting-book (ForecastingNumerology-INT-ver1, 168 pp.), psyche-book,
 psyche-cases-book, psychic-disorders-book, interpretation-guide, subnumeroscope-interpretation-book,
 subvibrations-book, humanity-archetyping-book (= NP-Statistics), name-templates-rules, single-name-charts-book,
-relations-book. Not paged: the files made from Google Docs and transcripts (no pages exist), and the number guides.
+relations-book, name-change-5-steps (the booklet, added 2026-10-21). Not paged: the files made from Google Docs and transcripts (no pages exist), and the number guides.

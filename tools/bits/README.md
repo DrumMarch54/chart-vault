@@ -23,3 +23,10 @@ Never call a paid model from these scripts; the writing is done by the chat itse
 2. Writers as above into `<dir>/bits-out/add-NN.json`; `check-out.mjs`.
 3. `BITS_DIR=<dir> BITS_ADD=1 node tools/bits/merge-bits.mjs` – keeps every existing set and page, adds the new
    ones (a rewritten page points at its new set). Batch files must not reuse an id already in bits.json.
+
+## Hand-written second sets (`more`, 2026-10-21)
+`bits.json` also has `more`: page key → a set shown AFTER the page's own points (the Diamond Method's "Path to
+Integration" on the 31 day pages, the Name Change 5 Steps booklet's "When Choosing a Name" rules on the sub-chart
+pages). Their points carry `cites` (one { book, page } per point, the book from knowledge/books.json). merge-bits
+keeps them; make-jobs never rewrites them. Allowed group titles: "In balance", "Out of balance", "", "Path to
+Integration", "When Choosing a Name" (test/meaning.test.js).

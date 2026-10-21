@@ -944,3 +944,12 @@ yet read" in a README can mean "in the store but never distilled": check the sto
 Screenshots came from the dev app through Playwright at 390×844 (the scratchpad `shoot.mjs`: sign in with `?t=dev`,
 Quick Chart, tap a drawn number twice; a diamond is not drawn, so its page is reached through the number it sits
 behind; after closing a page the number stays picked, so the next tap opens it at once).
+- Later the same day, the owner's "yes to both": (2) every day vibration page (1-31) now ends with the Diamond Method's
+  "Path to Integration": essence and integration diamond (p. 43, cross-checked against the integration codes' own lists
+  pp. 49-65: the 8th is 54/9 by p. 57 though p. 43 prints only 87/6), the emotional code 3/6/9 (pp. 45-47), the
+  integration code's spiritual code and pitfalls (pp. 49-66), each point with its page. (3) The Name Change 5 Steps
+  booklet is in the store (`name-change-5-steps.md`, paged) and its p. 4 rules sit on the sub-chart pages as "When
+  Choosing a Name": 4 8 9 11 13 15 17 acceptable as a secondary vibration, 12/3 sometimes in auras or as a center
+  main vibration, 16/7 and 18/9 avoided. Both ride on a second map in bits.json, `more` (page key → set shown after the
+  page's own points; `bitsFor` joins them; merge-bits keeps them). The booklet's position-level line ("personality and
+  heart's desire numbers weigh most") was left out: it is about the position, not a number (the bits rule).

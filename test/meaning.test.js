@@ -140,13 +140,13 @@ test('a long course section is one card, and the short points ride with it (Alli
   const file = JSON.parse(fs.readFileSync(new URL('../knowledge/bits.json', import.meta.url), 'utf8'));
   const sets = { ...(file.sets || {}) }, pages = { ...(file.pages || {}) };
   for (const [key, b] of Object.entries(file.bits || {})) { sets[key] = b; pages[key] = key; }
-  for (const [key, id] of Object.entries(pages)) {
+  for (const [key, id] of Object.entries({ ...pages, ...(file.more || {}) })) {
     assert.match(key, /^[a-z]+\.[A-Za-z]+:\d{1,2}(\+\d{1,2})?$/, key);
     assert.ok(sets[id], `${key} -> ${id}`);
     assert.ok(bitsFor(key));
   }
   for (const [id, b] of Object.entries(sets)) {
-    assert.ok(b.groups.length && b.groups.every((g) => ['In balance', 'Out of balance', ''].includes(g.title) && g.points.length), id);
+    assert.ok(b.groups.length && b.groups.every((g) => ['In balance', 'Out of balance', '', 'Path to Integration', 'When Choosing a Name'].includes(g.title) && g.points.length), id);
     for (const g of b.groups) for (const pt of g.points) assert.equal((pt.match(/\*\*/g) || []).length % 2, 0, `${id}: unpaired ** in "${pt}"`);
     for (const src of b.sources) assert.ok(fs.existsSync(new URL(`../knowledge/raw/${src}.md`, import.meta.url)), `${id}: ${src}`);
   }
@@ -167,6 +167,14 @@ test('every card from a course PDF says its book and page; a hand-written point 
   assert.equal(pillar.passages[0].book, 'Psyche book'); assert.equal(pillar.passages[0].page, 51);
   const od = meaningFor({ chart: 'essence', position: 'outerDiamond', sum: 14 });
   assert.equal(od.passages[0].book, 'Essence appendix'); assert.equal(od.passages[0].page, 18); assert.ok(od.passages[0].pageEnd >= 18);
+  const day = meaningFor({ chart: 'essence', position: 'day', sum: 14 });
+  const path = day.bits.groups.find((g) => g.title === 'Path to Integration');
+  assert.ok(path && path.points[0].includes('69/6') && path.points[0].includes('36/9'), 'the Diamond Method path for the 14th');
+  assert.deepEqual(path.cites[0], { book: 'Diamond Method book', page: 43 });
+  assert.equal(day.bits.groups.indexOf(path), day.bits.groups.length - 1, 'the path comes after the page\'s own points');
+  const rule = meaningFor({ chart: 'vocation', position: 'heartExtra', sum: 13 }).bits.groups.find((g) => g.title === 'When Choosing a Name');
+  assert.ok(rule && /secondary vibration/.test(rule.points[0])); assert.equal(rule.cites[0].page, 4);
+  assert.ok(!meaningFor({ chart: 'name', position: 'heartExtra', sum: 13 }).bits?.groups.some((g) => g.title === 'When Choosing a Name'), 'the booklet rules are for the sub-charts only');
   const dharma = meaningFor({ chart: 'essence', position: 'dharmaDiamond', sum: 15 });
   assert.deepEqual(dharma.bits.groups[0].cites, [{ book: 'Essence book', page: 47 }]);
   assert.match(dharma.bits.groups[0].points[0], /charisma code/);

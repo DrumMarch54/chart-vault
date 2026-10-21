@@ -194,16 +194,20 @@ function loadBits() {
   if (BITS) return BITS;
   try {
     const d = JSON.parse(fs.readFileSync(new URL('../knowledge/bits.json', import.meta.url), 'utf8'));
-    const sets = { ...(d.sets || {}) }, pages = { ...(d.pages || {}) };
+    const sets = { ...(d.sets || {}) }, pages = { ...(d.pages || {}) }, more = { ...(d.more || {}) };
     for (const [key, b] of Object.entries(d.bits || {})) { sets[`bits/${key}`] = b; pages[key] = `bits/${key}`; }
-    BITS = { sets, pages };
-  } catch { BITS = { sets: {}, pages: {} }; }
+    BITS = { sets, pages, more };
+  } catch { BITS = { sets: {}, pages: {}, more: {} }; }
   return BITS;
 }
+// A page's points, then the second set "more" names for it (the Diamond Method's path to integration on a day
+// page, the name-change booklet's rules on a sub-chart page): its groups come after the page's own.
 export function bitsFor(key) {
-  const { sets, pages } = loadBits();
-  const b = sets[pages[key]];
-  return b ? { groups: b.groups.map((g) => ({ title: g.title, points: g.points.slice(), ...(g.cites ? { cites: g.cites.map((c) => (c ? { ...c } : null)) } : {}) })), sources: (b.sources || []).slice() } : null;
+  const { sets, pages, more } = loadBits();
+  const list = [sets[pages[key]], sets[more[key]]].filter(Boolean);
+  if (!list.length) return null;
+  const copy = (g) => ({ title: g.title, points: g.points.slice(), ...(g.cites ? { cites: g.cites.map((c) => (c ? { ...c } : null)) } : {}) });
+  return { groups: list.flatMap((b) => b.groups.map(copy)), sources: [...new Set(list.flatMap((b) => b.sources || []))] };
 }
 // A circle pair: either order, and an extra vibration's page uses its center's pair ("7 and 13" is one pair).
 const pairBits = (chart, position, n, p) => { const base = position.replace(/Extra$/, ''); return bitsFor(`${chart}.${base}:${n}+${p}`) || bitsFor(`${chart}.${base}:${p}+${n}`); };
