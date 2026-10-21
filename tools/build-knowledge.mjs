@@ -7,6 +7,10 @@
 //   node tools/build-knowledge.mjs            build and print a summary
 //   node tools/build-knowledge.mjs --check    build in memory, print the summary, write nothing
 //
+// A raw file made from a course PDF carries '<!-- page N -->' lines (knowledge/README "Page numbers"): the page
+// of the PDF where the next paragraph starts. They are never part of a passage's text; each passage records the
+// page it starts on (`page`) and the page it ends on (`pageEnd`), and knowledge/books.json names the book.
+//
 // Deterministic: same raw files -> byte-identical index.json (files sorted by name, no dates).
 import fs from 'node:fs';
 import path from 'node:path';
@@ -14,6 +18,8 @@ import path from 'node:path';
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const RAW = path.join(root, 'knowledge', 'raw');
 const OUT = path.join(root, 'knowledge', 'index.json');
+const BOOKS = path.join(root, 'knowledge', 'books.json');
+const PAGE_MARK = /^<!--\s*page\s+(\d+)\s*-->\s*$/;
 const MIN = 300, MAX = 2500, SOFT = 1400, NUMBER_LED_MIN = 120;
 const MAX_BYTES = 25 * 1024 * 1024;
 
@@ -159,9 +165,11 @@ function parseFile(file) {
   const slug = file.replace(/\.md$/, '');
   // sections: { stack: [{level, text, numbers}], paras: [] }
   const sections = [];
-  let stack = [], cur = { stack: [], paras: [] }, para = [];
-  const endPara = () => { const t = para.join('\n').trim(); if (t) cur.paras.push(t); para = []; };
+  let stack = [], cur = { stack: [], paras: [] }, para = [], page = 0, paraPage = 0;
+  const endPara = () => { const t = para.join('\n').trim(); if (t) cur.paras.push({ text: t, page: paraPage }); para = []; };
   for (const line of lines.slice(3)) {
+    const pm = PAGE_MARK.exec(line);
+    if (pm) { endPara(); page = Number(pm[1]); continue; }
     const h = /^(#{1,6})\s+(.+?)\s*#*\s*$/.exec(line);
     if (h) {
       endPara();
@@ -170,11 +178,11 @@ function parseFile(file) {
       stack = stack.filter((x) => x.level < level).concat([{ level, text, numbers: headingNumbers(text) }]);
       cur = { stack, paras: [] };
     } else if (!line.trim()) endPara();
-    else para.push(line);
+    else { if (!para.length) paraPage = page; para.push(line); }
   }
   endPara();
   if (cur.paras.length) sections.push(cur);
-  return { slug, title, source, topic, sections, chars: raw.length };
+  return { slug, title, source, topic, sections, chars: raw.length, paged: page > 0 };
 }
 
 // A title that names numbers ("THE NUMBER 1 (lecture transcript)", "15/6 vs 13/4", "4 In the solar plexus
@@ -195,24 +203,25 @@ function chunksOf(doc) {
     const fromHeading = [...sec.stack].reverse().find((h) => h.numbers.length);
     const headNums = fromHeading ? fromHeading.numbers : titleNums;
     const heading = sec.stack.map((h) => h.text).join(' > ');
-    const paras = sec.paras.flatMap(splitLong);
+    const paras = sec.paras.flatMap((q) => splitLong(q.text).map((text) => ({ text, page: q.page })));
     // the numbers a paragraph is about when its heading names none: its own leading number, else (in a
     // non-transcript) the last leading number above it in the same section ("NUMBER 1: ..." then its text)
     let cur = [], curCtx = null, carried = [];
     const flush = () => {
       if (!cur.length) return;
-      out.push({ heading, headNums, ctx: curCtx || [], text: cur.join('\n\n') });
+      out.push({ heading, headNums, ctx: curCtx || [], text: cur.map((q) => q.text).join('\n\n'), page: cur[0].page, pageEnd: cur[cur.length - 1].page });
       cur = []; curCtx = null;
     };
-    for (const p of paras) {
+    for (const q of paras) {
+      const p = q.text;
       const lead = leadingNumbers(p);
       if (lead.length) carried = lead;
       const ctx = lead.length ? lead : (sticky ? carried : []);
-      const size = cur.reduce((a, x) => a + x.length + 2, 0);
+      const size = cur.reduce((a, x) => a + x.text.length + 2, 0);
       const numberBreak = curCtx !== null && ctx.join() !== curCtx.join() && (ctx.length || curCtx.length) && size >= NUMBER_LED_MIN;
       if (cur.length && (size + p.length + 2 > MAX || size >= SOFT || numberBreak)) flush();
       if (!cur.length) curCtx = ctx;
-      cur.push(p);
+      cur.push(q);
     }
     flush();
   }
@@ -223,6 +232,7 @@ function chunksOf(doc) {
     const same = prev && prev.headNums.join() === c.headNums.join() && prev.ctx.join() === c.ctx.join();
     if (prev && same && (c.text.length < MIN || prev.text.length < MIN) && prev.text.length + c.text.length + 2 <= MAX) {
       prev.text += '\n\n' + (c.heading !== prev.heading && c.heading ? `${c.heading.split(' > ').pop()}\n` : '') + c.text;
+      prev.pageEnd = c.pageEnd;
     } else merged.push({ ...c });
   }
   return merged.filter((c) => (c.text.match(/[A-Za-z]/g) || []).length >= 40).map((c, k) => {
@@ -233,12 +243,14 @@ function chunksOf(doc) {
       id: `${doc.slug}#${k + 1}`, source: doc.slug, title: doc.title, heading: c.heading,
       numbers: [...about].filter((n) => n >= 1 && n <= 99).sort((a, b) => a - b), mentions,
       topics: topicsOf(c.heading, c.text, doc.topic), htopics: TOPICS.filter(([, re]) => re.test(c.heading)).map(([t]) => t).sort(), text: c.text,
+      ...(c.page ? { page: c.page, pageEnd: c.pageEnd || c.page } : {}),
     };
   });
 }
 
 export function build() {
   const files = fs.readdirSync(RAW).filter((f) => f.endsWith('.md')).sort();
+  const books = JSON.parse(fs.readFileSync(BOOKS, 'utf8')).books;
   const sources = [], chunks = [];
   const seen = new Set();
   let duplicates = 0;
@@ -250,7 +262,10 @@ export function build() {
       if (seen.has(key)) { duplicates++; continue; }
       seen.add(key); chunks.push(c); n++;
     }
-    sources.push({ slug: doc.slug, title: doc.title, source: doc.source, topic: doc.topic, chars: doc.chars, chunks: n });
+    const book = books[doc.slug];
+    if (doc.paged && !book) throw new Error(`${f} has page marks but no entry in knowledge/books.json`);
+    if (book && !doc.paged) throw new Error(`${f} is in knowledge/books.json but has no page marks`);
+    sources.push({ slug: doc.slug, title: doc.title, source: doc.source, topic: doc.topic, chars: doc.chars, chunks: n, ...(book ? { book: book.book, pdf: book.pdf } : {}) });
   }
   let index = { version: 1, sources, chunks };
   let json = JSON.stringify(index);
@@ -274,6 +289,8 @@ function summary({ index, json, duplicates, droppedMentionsOnly }) {
   const thin = [];
   for (let n = 1; n <= 99; n++) if ((per.get(n) || 0) < 3) thin.push(`${n} (${per.get(n) || 0})`);
   lines.push(`Numbers 1-99 with fewer than 3 chunks: ${thin.length ? thin.join(', ') : 'none'}`);
+  const paged = index.chunks.filter((c) => c.page).length;
+  lines.push(`Passages with a book page: ${paged} of ${index.chunks.length} (${index.sources.filter((s) => s.book).length} books)`);
   const counts = [...per.entries()].filter(([n]) => n <= 99).map(([, c]) => c).sort((a, b) => a - b);
   if (counts.length) lines.push(`Chunks per number: min ${counts[0]}, median ${counts[counts.length >> 1]}, max ${counts[counts.length - 1]}`);
   const topics = new Map();

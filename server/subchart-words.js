@@ -8,6 +8,7 @@
 // The guide's point scores are a tool for picking names, not a reading: the "→ +8 pts" part is cut, the words kept.
 // wordsFor(chart, position, number) -> [{ source, title, heading, text, id }] in the books' order. Built once.
 import fs from 'node:fs';
+import { PAGE_MARK } from './books.js';
 
 const RAW = new URL('../knowledge/raw/', import.meta.url);
 const read = (f) => { try { return fs.readFileSync(new URL(f, RAW), 'utf8').replace(/\r\n/g, '\n'); } catch { return ''; } };
@@ -18,17 +19,29 @@ const reduce = (n) => { while (n > 9) n = String(n).split('').reduce((a, d) => a
 let table = null;
 function add(key, n, entry) { if (!table.has(key)) table.set(key, new Map()); const m = table.get(key); if (!m.has(n)) m.set(n, []); m.get(n).push(entry); }
 
-// One "### Heading" section of a book: the lines up to the next heading of the same or a higher level.
+// One "### Heading" section of a book: the lines up to the next heading of the same or a higher level. A page
+// mark ("<!-- page 12 -->") becomes a "\u0001page 12" line inside the section, so an entry can find the page it
+// starts on (pageAt); the section's own page is the one in force at its heading. tidy() removes the marks.
+const PAGE_LINE = /^\u0001page (\d+)$/;
 function sections(text) {
-  const out = []; let cur = null;
+  const out = []; let cur = null, page = 0;
   for (const line of text.split('\n')) {
+    const pm = PAGE_MARK.exec(line);
+    if (pm) { page = Number(pm[1]); if (cur) cur.lines.push(`\u0001page ${page}`); continue; }
     const m = /^(#{2,4})\s+(.*)$/.exec(line);
-    if (m && m[1].length <= 4) { if (cur) out.push(cur); cur = { level: m[1].length, title: m[2].replace(/\*\*/g, '').trim(), lines: [] }; continue; }
+    if (m && m[1].length <= 4) { if (cur) out.push(cur); cur = { level: m[1].length, title: m[2].replace(/\*\*/g, '').trim(), lines: [], page }; continue; }
     if (cur) cur.lines.push(line);
   }
   if (cur) out.push(cur);
   return out;
 }
+// The page in force at offset `at` of a section's text (the last page line before it, else the section's page).
+function pageAt(sec, text, at) {
+  let page = sec.page || 0;
+  for (const m of text.slice(0, at).matchAll(/^\u0001page (\d+)$/gm)) page = Number(m[1]);
+  return page;
+}
+const withPage = (e, page) => (page ? { ...e, page, pageEnd: page } : e);
 
 // "7 → +8 pts Also excellent. ..." entries inside one center section, each to the next entry.
 // An entry starts a line or a sentence ("... setup. 7 → +8 pts"); "Auras 2 and 9 → -10 pts" inside an entry is
@@ -42,14 +55,14 @@ function entries(text) {
     let t = text.slice(m.after, i + 1 < marks.length ? marks[i + 1].start : text.length).replace(/^[:–-]\s*/, '').trim();
     const cut = /(?:Special )?Aura combinations affecting 11\/2[^:]*:/i.exec(t);
     if (cut && m.n !== 11) { out.push({ n: 11, text: t.slice(cut.index).trim() }); t = t.slice(0, cut.index).trim(); }
-    out.push({ n: m.n, text: t });
+    out.push({ n: m.n, text: t, at: m.start });
   });
   // one entry per number: two pieces for the same number (11/2 described, then its aura lines) are joined
-  const by = new Map();
-  for (const e of out) by.set(e.n, by.has(e.n) ? `${by.get(e.n)}\n\n${e.text}` : e.text);
-  return [...by].map(([n, t]) => ({ n, text: t }));
+  const by = new Map(), at = new Map();
+  for (const e of out) { by.set(e.n, by.has(e.n) ? `${by.get(e.n)}\n\n${e.text}` : e.text); if (!at.has(e.n)) at.set(e.n, e.at); }
+  return [...by].map(([n, t]) => ({ n, text: t, at: at.get(n) }));
 }
-const tidy = (t) => t.replace(/\n{3,}/g, '\n\n').replace(/([a-z])- ([a-z])/g, '$1$2').trim();
+const tidy = (t) => t.replace(/^\u0001page \d+\n?/gm, '').replace(/\n{3,}/g, '\n\n').replace(/([a-z])- ([a-z])/g, '$1$2').trim();
 
 function build() {
   table = new Map();
@@ -64,14 +77,14 @@ function build() {
   for (const s of sections(body(g))) {
     const text = s.lines.join('\n');
     const c = CENTERS.find(([re]) => re.test(s.title));
-    if (c) for (const e of entries(text)) if (e.text.length > 30) add(c[1], e.n, { source: 'subvibrations-book', title: gTitle, heading: s.title, text: tidy(e.text) });
+    if (c) for (const e of entries(text)) if (tidy(e.text).length > 30) add(c[1], e.n, withPage({ source: 'subvibrations-book', title: gTitle, heading: s.title, text: tidy(e.text) }, pageAt(s, text, e.at)));
     const p = PILLARS.find(([re]) => re.test(s.title));
-    if (p) for (const m of text.matchAll(/^-\s*(\d{1,2})(?:\/\d)?\s*→\s*[–\-+]?\s*\d+\s*pts?:?\s*(.+)$/gm)) add(p[1], Number(m[1]), { source: 'subvibrations-book', title: gTitle, heading: s.title, text: tidy(m[2]) });
+    if (p) for (const m of text.matchAll(/^-\s*(\d{1,2})(?:\/\d)?\s*→\s*[–\-+]?\s*\d+\s*pts?:?\s*(.+)$/gm)) add(p[1], Number(m[1]), withPage({ source: 'subvibrations-book', title: gTitle, heading: s.title, text: tidy(m[2]) }, pageAt(s, text, m.index)));
     const hd = /^Personality or Hearts desire numbers? (\d)$/i.exec(s.title);
     if (hd) {
       const n = Number(hd[1]);
       const words = tidy(s.lines.filter((l) => !/^\s*\d\s*$/.test(l)).join('\n'));
-      for (const key of ['vocation.le', 'vocation.big', 'personality.le', 'personality.big']) add(key, n, { source: 'subvibrations-book', title: gTitle, heading: s.title, text: words, digitSum: true });
+      for (const key of ['vocation.le', 'vocation.big', 'personality.le', 'personality.big']) add(key, n, withPage({ source: 'subvibrations-book', title: gTitle, heading: s.title, text: words, digitSum: true }, pageAt(s, text, text.length)));
     }
   }
   // --- the Subnumeroscope Interpretation book: "## Number N" then its position sections ---
@@ -98,9 +111,10 @@ function build() {
     const open = OPENS.find(([re]) => re.test(s.title));
     if (!open) continue;
     const paras = next.lines.join('\n').split(/\n{2,}/);
-    const k = paras.findIndex((q) => open[1](q.trim()));
+    const k = paras.findIndex((q) => open[1](q.replace(/^\u0001page \d+\n?/, '').trim()));
     if (k < 0) continue;
     s.lines = paras[k].split('\n');
+    if (!/^\u0001page/.test(s.lines[0])) s.page = pageAt(next, next.lines.join('\n'), next.lines.join('\n').indexOf(paras[k]));
     next.lines = paras.filter((_, j) => j !== k).join('\n\n').split('\n');
   }
   for (const s of secs) {
@@ -108,8 +122,8 @@ function build() {
     if (s.level === 2) { n = num ? Number(num[1]) : null; continue; }
     if (!n) continue;
     const m = MAP.find(([re]) => re.test(s.title));
-    const text = tidy(s.lines.join('\n'));
-    if (m && text.length > 30) for (const key of m[1]) add(key, n, { source: 'subnumeroscope-interpretation-book', title: bTitle, heading: `Number ${n} > ${s.title}`, text });
+    const raw = s.lines.join('\n'), text = tidy(raw);
+    if (m && text.length > 30) for (const key of m[1]) add(key, n, withPage({ source: 'subnumeroscope-interpretation-book', title: bTitle, heading: `Number ${n} > ${s.title}`, text }, pageAt(s, raw, raw.search(/\S/))));
   }
   // stable ids for the screen's de-duplication
   for (const [key, m] of table) for (const [num, list] of m) list.forEach((e, i) => { e.id = `${key}#${num}#${i}`; });

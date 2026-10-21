@@ -14,15 +14,35 @@
     const clean = (t) => String(t).replace(/^\s*(?:#+\s*)?\*\*[^*\n]{1,80}\*\*\s*\n/, '').replace(/\*\*/g, '').replace(/(^|\n)#+\s*/g, '$1').replace(/[ \t]+\n/g, '\n').replace(/(^|\n)\s*-{3,}\s*(?=\n|$)/g, '$1');
     const paras = (text) => clean(text).split(/\n{2,}/).map((p) => p.replace(/\s*\n\s*/g, ' ').trim()).filter(Boolean);
     const tail = (heading) => String(heading || '').split(' > ').pop().replace(/\*\*/g, '').replace(/[^\w\s/'’:().,+&-]/g, '').replace(/\s+/g, ' ').trim();
-    const card = (p) => h('div', { class: 'mcard' }, h('div', { class: 'mfrom' }, [p.title, tail(p.heading)].filter(Boolean).join(' · ')), ...paras(p.text).map((t) => h('p', {}, t)));
+    // Where the words come from: the book's short name and its page(s) when the passage is from a course PDF with
+    // page marks (knowledge/books.json), else the document's title. "Name Numeroscopes book · 7 in the Heart Center · p. 140".
+    const pages = (p) => (!p.page ? '' : p.pageEnd && p.pageEnd !== p.page ? `pp. ${p.page}–${p.pageEnd}` : `p. ${p.page}`);
+    const card = (p) => h('div', { class: 'mcard' }, h('div', { class: 'mfrom' }, [p.book || p.title, tail(p.heading), pages(p)].filter(Boolean).join(' · ')), ...paras(p.text).map((t) => h('p', {}, t)));
     const label = (text) => h('div', { class: 'wlabel tl' }, text);
     // A section: the short points first (knowledge/bits.json, the course's words shortened), the full course words
     // folded under "Course Words" (owner 2026-10-19). With no points yet, the course words show open.
     // "**words**" in a point = words that should stand out: shown bold (text nodes only, never HTML).
     const boldParts = (t) => String(t).split('**').map((part, i) => (i % 2 ? h('b', {}, part) : part)).filter((x) => x !== '');
-    const pointsCard = (bits) => h('div', { class: 'mbits' }, ...bits.groups.map((g) => h('div', { class: 'mbits-g' },
-      g.title ? h('div', { class: `mbits-t ${/out of balance|imbalance|unbalanced/i.test(g.title) ? 'err' : /in balance|balanced/i.test(g.title) ? 'ok' : ''}` }, g.title) : null,
-      h('ul', {}, ...g.points.map((t) => h('li', {}, ...boldParts(t)))))));
+    // A point written by hand from a book page carries its own citation (bits "cites": one per point): a small
+    // "Essence book p. 47" tag at its end. The other points were written from the course words shown under
+    // "Course Words": the card's foot names those books and pages, so every point can be checked in the book.
+    const cite = (c) => (c && c.book ? h('span', { class: 'mcite' }, `${c.book}${c.page ? ` p. ${c.page}` : ''}`) : null);
+    const bookPages = (passages) => {
+      const by = new Map(), docs = [];
+      for (const p of passages) {
+        if (p.book && p.page) { const r = by.get(p.book) || { a: p.page, b: p.pageEnd || p.page }; r.a = Math.min(r.a, p.page); r.b = Math.max(r.b, p.pageEnd || p.page); by.set(p.book, r); }
+        else if (p.title && !docs.includes(p.title)) docs.push(p.title);
+      }
+      return [...[...by].map(([book, r]) => `${book} ${r.a === r.b ? `p. ${r.a}` : `pp. ${r.a}–${r.b}`}`), ...docs];
+    };
+    const pointsCard = (bits, passages = []) => {
+      const own = bits.groups.some((g) => g.cites && g.cites.some(Boolean));
+      const from = own ? [] : bookPages(passages);
+      return h('div', { class: 'mbits' }, ...bits.groups.map((g) => h('div', { class: 'mbits-g' },
+        g.title ? h('div', { class: `mbits-t ${/out of balance|imbalance|unbalanced/i.test(g.title) ? 'err' : /in balance|balanced/i.test(g.title) ? 'ok' : ''}` }, g.title) : null,
+        h('ul', {}, ...g.points.map((t, i) => h('li', {}, ...boldParts(t), cite(g.cites && g.cites[i])))))),
+      from.length ? h('div', { class: 'mbits-from' }, `From ${from.join(' · ')}`) : null);
+    };
     const section = (bits, passages) => {
       if (!bits) return passages.map(card);
       if (!passages.length) return [pointsCard(bits)];
@@ -32,7 +52,7 @@
         $btn.textContent = `${$words.hidden ? '▸' : '▾'} Course Words (${passages.length})`;
         if (!$words.hidden) count('meaning.course_words');
       } }, `▸ Course Words (${passages.length})`);
-      return [pointsCard(bits), $btn, $words];
+      return [pointsCard(bits, passages), $btn, $words];
     };
     const where = (m) => titleCase(m.label);
 

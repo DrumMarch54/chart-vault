@@ -28,6 +28,7 @@ import { knowledgeIndex } from './knowledge.js';
 import { judge, familyOf, nameOf, fmt } from './facts.js';
 import { wordsFor } from './subchart-words.js';
 import { listedWordsFor } from './listed-words.js';
+import { bookOf } from './books.js';
 
 const BY_KEY = new Map(POSITIONS.map((p) => [`${p.chart}.${p.key}`, p]));
 
@@ -162,6 +163,12 @@ const words6 = (text) => { const w = text.toLowerCase().match(/[a-z']+/g) || [];
 const overlaps = (a, b) => { if (!a.size || !b.size) return false; let n = 0; for (const s of a) if (b.has(s)) n++; return n / Math.min(a.size, b.size) > 0.5; };
 const byKey = (a, b) => { for (let j = 0; j < a.key.length; j++) if (a.key[j] !== b.key[j]) return a.key[j] - b.key[j]; return 0; };
 
+// A passage as the screen shows it: the course file, its heading, the text, and (for a course book with page
+// marks) the book's short name and the page(s) the words are on, so every card can be checked in the book.
+function card(c) {
+  const b = bookOf(c.source);
+  return { source: c.source, title: c.title, heading: c.heading, text: c.text, ...(b ? { book: b.book } : {}), ...(c.page ? { page: c.page, pageEnd: c.pageEnd || c.page } : {}) };
+}
 // Take passages in rank order (text already trimmed), skipping near-duplicates and the ones already shown.
 function take(list, limit, taken) {
   const out = [];
@@ -171,13 +178,15 @@ function take(list, limit, taken) {
     const sh = words6(c.text);
     if (sh.size < 3 && c.text.length < 60) continue;
     if (taken.shingles.some((s) => overlaps(s, sh))) continue;
-    taken.ids.add(c.id); taken.shingles.push(sh); out.push({ source: c.source, title: c.title, heading: c.heading, text: c.text });
+    taken.ids.add(c.id); taken.shingles.push(sh); out.push(card(c));
   }
   return out;
 }
 
 // The short points for a page (knowledge/bits.json): written by a Claude session from the course text, the course's
 // words shortened. Key "chart.position:n" or "chart.position:n+partner". Missing file or key = no points.
+// A hand-written set may carry "cites" beside "points" (one per point, { book, page } or null): the book page the
+// point was shortened from, shown on the point (2026-10-21).
 // The file: { sets: { id: { sources, groups } }, pages: { "chart.position:n": id } } (one set per distinct text, many
 // pages share one). The older shape { bits: { key: { sources, groups } } } is read too.
 let BITS = null;
@@ -194,7 +203,7 @@ function loadBits() {
 export function bitsFor(key) {
   const { sets, pages } = loadBits();
   const b = sets[pages[key]];
-  return b ? { groups: b.groups.map((g) => ({ title: g.title, points: g.points.slice() })), sources: (b.sources || []).slice() } : null;
+  return b ? { groups: b.groups.map((g) => ({ title: g.title, points: g.points.slice(), ...(g.cites ? { cites: g.cites.map((c) => (c ? { ...c } : null)) } : {}) })), sources: (b.sources || []).slice() } : null;
 }
 // A circle pair: either order, and an extra vibration's page uses its center's pair ("7 and 13" is one pair).
 const pairBits = (chart, position, n, p) => { const base = position.replace(/Extra$/, ''); return bitsFor(`${chart}.${base}:${n}+${p}`) || bitsFor(`${chart}.${base}:${p}+${n}`); };
@@ -207,7 +216,7 @@ function wholeSection(k, i, allowed) {
   while (same(b + 1)) b++;
   const parts = [];
   for (let j = a; j <= b; j++) { const t = allowed ? keepOnly(k.chunks[j].text, allowed) : k.chunks[j].text.trim(); if (t && !/→\s*[-+]?\d+\s*pts/.test(t)) parts.push(t); }
-  return { id: `${c.source}#${a}`, source: c.source, title: c.title, heading: c.heading, text: parts.join('\n\n') };
+  return { id: `${c.source}#${a}`, source: c.source, title: c.title, heading: c.heading, text: parts.join('\n\n'), page: c.page, pageEnd: k.chunks[b].pageEnd || c.page };
 }
 
 // The passages ranked for number n in one position (the specific ones only), each heading's text whole.
@@ -311,7 +320,7 @@ export function meaningFor({ chart, position, sum, pair = null, rel = null } = {
   const base = head(chart, position, n);
   const partners = (Array.isArray(pair) ? pair : []).map(Number).filter(okNum);
   const rels = (Array.isArray(rel) ? rel : []).map((r) => ({ position: String(r.position), sum: Number(r.sum) })).filter((r) => known(chart, r.position) && r.position !== position && okNum(r.sum));
-  if (k.missing) return { ...base, passages: wordsFor(chart, position, n), nameChart: null, pair: null, related: [], missing: true };
+  if (k.missing) return { ...base, passages: wordsFor(chart, position, n).map(card), nameChart: null, pair: null, related: [], missing: true };
   const taken = { ids: new Set(), shingles: [] };
   const passages = forSpot(k, chart, position, n, taken, 4);
   const bits = bitsFor(`${chart}.${position}:${n}`);

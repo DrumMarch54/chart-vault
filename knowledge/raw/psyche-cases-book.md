@@ -2,18 +2,22 @@
 source: drive 1YWBzzhNqcaJ5rmCPOOO2AZrE4nqvk2LK
 topic: psyche
 
+<!-- page 1 -->
 #### THE PSYCHE
 
 Guide to interpreting your birthdate Johannes and Estel Ehvass Cases
 
+<!-- page 3 -->
 #### THE PSYCHE
 
 #### CASES
 
 By Johannes and Estel Ehvass
 
+<!-- page 5 -->
 Note: Currently, there are only a few cases in this manual. However, we plan to add more cases in the future. The included cases should be sufficient to give you a good starting point to begin interpreting.
 
+<!-- page 7 -->
 ## CASES
 
 ### Why Are Cases Important?
@@ -32,6 +36,7 @@ In this section, we’ll explore the charts of three well-known individuals:
 
 - Elon Musk These cases reflect some of the most popular Google searches of 2024. As this resource evolves, more cases will be added to provide additional opportunities for practice and learning.
 
+<!-- page 8 -->
 ### CASE: Donald Trump
 
 #### Donald Trump, born on June
@@ -46,6 +51,7 @@ He was impeached twice but acquitted both times. After losing the 2020 election 
 
 Trump’s legacy is polarizing— praised for economic policies by supporters but criticized for divisive rhetoric and controversies. He remains a significant figure in American politics and culture.
 
+<!-- page 9 -->
 Life Expression Diamond 22/4: ”Master Builder”
 
 The 22/4 Life Path is the Master Builder: a visionary who transforms grand ideas into reality through methodical, persistent effort. When combined with life path numbers like 13/4 and 31/4, this energy excels in political and leadership domains, enabling individuals to create significant, lasting impact through strategic, step-by-step progress.
@@ -62,6 +68,7 @@ Seeker”
 
 In Balance 77/5 is a number of deep spiritual faith, connected to divine guidance and feeling protected by higher powers. In Imbalance we have a maverick tendency that creates chaos, stirs up conflicts, and generates confusion without constructive purpose. The essence of 77/5 is balancing spiritual trust with harmonious action.
 
+<!-- page 10 -->
 Life Expression Diamond 62/8: ”The Family Protector”
 
 This number represents the archetype of the family patriarch, characterized by a deep, instinctive drive to protect and preserve family unity. The bearer feels a strong ”tribal” resonance, seeking to safeguard family members with intense dedication. While rooted in genuine care, this protective impulse can sometimes manifest as controlling behavior, potentially limiting the independence of family members.
@@ -80,6 +87,7 @@ Number 27/9 signifies leadership ordained by the higher powers.
 
 Trump genuinely wants to ”lead his flock” to greener pastures.
 
+<!-- page 11 -->
 #### The Composite Chart
 
 Finally, let’s examine what happens when we superimpose Donald Trumps Outer Psyche Chart and Inner Psyche Chart to reveal how energies interact and flow between them.
@@ -98,6 +106,7 @@ Triad Manifester”
 
 The interplay between the 12/3 and 6 energies produces the composite number 36/9 known as ”The Triad Manifestor” or ”The CEO”. It is a number with huge leadership skills and is able to lead large companies and groups. In imbalance it can become overly competitive and constanly compare itself with others. In strong imbalance it becomes a very hard leader akin to a mafia boss.
 
+<!-- page 12 -->
 ### CASE: Taylor Swift
 
 Taylor Swift is a globally renowned American singersongwriter who has revolutionized pop music since her debut in 2006.
@@ -108,6 +117,7 @@ Her albums like ”1989”, ”Folklore”, and ”Midnights” have topped char
 
 Beyond her music, Swift is known for her cultural impact, business acumen, and advocacy for artists’ rights. She has successfully re-recorded her earlier albums to regain control of her music, becoming a billionaire and a powerful figure in the music industry. Her storytelling, musical versatility, and connection with fans have made her a defining artist of the 21st century.
 
+<!-- page 13 -->
 #### Mental Diamond 24/6: ”The Queen”
 
 This number imbues her with a regal presence, radiating a loving and sensual charisma. The interplay of 24/6 with 79/7 creates a unique blend – a loving and anxious individual who may sometimes appear hesitant in their energy expression.
@@ -124,6 +134,7 @@ The key numbers to analyze here are her Life Expression Diamond (79/7) and her M
 
 This ”Analytical Sage” lends her an introspective nature and keen observational skills. However, in imbalance, it can manifest as anxiety and a tendency towards a ”fanatical” and self righteous mindset, where her opinions, mindsets and world views are the only right ones.
 
+<!-- page 14 -->
 Life Expression Diamond 39/3: ”The Tenacious Boss”
 
 This woman exudes POWER. The sensitive Mental Diamond 74/2 rests on an emotional foundation of strength. The lower part of her psychology is governed by the 39/3 diamond, aptly named “The Boss.” If wronged, she will deploy every method and strategy to reclaim her position as the boss—done in the 74/2 style: “I was treated unfairly.” But don’t be fooled—never underestimate this woman.
@@ -140,6 +151,7 @@ Selfless Saviour”
 
 This number amplifies the “self righteous” energy already present in the outer psyche. Swift often portrays herself as the selfless advocate for justice, yet this energy can also take an ironic turn. The narrative of “I have suffered so much, I have given so much…” is a recurring theme that she skillfully monetizes.
 
+<!-- page 15 -->
 criticism, potentially leading to a martyr complex. In response, she might employ public shaming as a defense mechanism, a tendency inherent in the 74/2 energy.
 
 #### The Composite Chart
@@ -158,6 +170,7 @@ Tenacious Boss”
 
 In the solar plexus, the combination of 12/3 and 9 creates the composite number 39/3, called “The Tenacious Boss.” This number embodies strong leadership, persistence, and an unwavering drive to achieve.
 
+<!-- page 16 -->
 ### CASE: Elon Musk
 
 Elon Musk is a globally recognized entrepreneur, inventor, and visionary known for revolutionizing multiple industries. He is the CEO and founder of companies like Tesla, which has transformed the electric vehicle market, and SpaceX, which is pioneering reusable rockets and the colonization of Mars.
@@ -166,6 +179,7 @@ Musk also co-founded PayPal, a leader in online payments, and is driving innovat
 
 His fame stems from his bold vision to tackle humanity’s biggest challenges, including climate change, space exploration, and sustainable energy. Known for his relentless work ethic and ambitious goals, Musk has become one of the most influential figures in modern technology and business.
 
+<!-- page 17 -->
 The 16/7 energy prominent in the 79/7 diamond contributes both to his analytical prowess and his tendency toward nervousness or anxiety, which might even explain his stutter. This combination suggests a deeply reflective mind that is both sharp and sensitive.
 
 #### Mental Diamond 81/9: ”Master of the Bow”
@@ -184,6 +198,7 @@ The key numbers to analyze here are his Life Expression Diamond (79/7) and his M
 
 Also referred to as “The Scientist,” this number highlights Musk’s natural inclination toward observation, analysis, and the pursuit of knowledge. He excels at extracting insights and understanding the world through a scientific lens.
 
+<!-- page 18 -->
 #### Mental Diamond 71/8: ”The Radiant Magician”
 
 An extension of the 17/8 energy known as “The Star,” this number thrives on being in the spotlight. Musk’s inner psyche gravitates toward recognition, fame, and being seen, much like a magician captivating an audience with charisma and showmanship.
@@ -204,6 +219,7 @@ and his Mental Diamond (71/8):
 
 This number embodies flair, sensuality, and a penchant for drama. Musk’s love for drama is evident in both his tumultuous relationships and his ability to stir controversy, whether intentionally or not. The energy of 69/6 also reflects a deep understanding of aesthetic appeal and desire, contributing to his knack for designing products, like Tesla cars, that people find irresistibly attractive.
 
+<!-- page 19 -->
 For example, his behavior at high-energy moments, like cheering wildly at a rally, reflects this inner desire to let loose, have fun, and be in the spotlight. Though his logical and innovative mind may define his public image, his inner psyche reveals a playful, dramatic, and often childish and attention-seeking side.
 
 Now you know! behind the brilliance of the scientist lies a colorful inner world full of flair, drama, and a love of being seen.

@@ -161,3 +161,24 @@ map: every spot finds its words"):
   dharma, DVLP and target diamonds.
 - The letter-by-letter positions of the name line ("3rd letter of the surname"): compound
   values of a whole name are mapped, single letters are not.
+
+## The five course books, read page by page (2026-10-21)
+
+The owner asked for the books no chat had read (Essence, Diamond Method, Name Numeroscopes, Forecasting, Name
+Change; see README "Read 2026-10-21"). What they add to the map:
+
+| Position | Book, pages | What it is | On the page now |
+| --- | --- | --- | --- |
+| Essence: outer diamond 11-99 | Essence appendix pp. 12-172 | one spread per number, balanced / unbalanced / tips | yes, with "Essence appendix · Outer Diamond 14 · pp. 18–19" |
+| Essence: inner diamond 11-99 | Essence appendix pp. 176-336 | the same | yes, paged |
+| Essence: little life path 3-27/9 | Essence book pp. 27-32 | one paragraph each ("11/2: The Master Harmonizer") | yes, paged |
+| Essence: dharma diamond 11-19 | Essence book p. 47 | the nine January/October dharma lines, one line each | NEW: hand-written points with "Essence book p. 47" on each |
+| Essence: day, month, year, auras, nexus, target | Essence book pp. 19-56 | what the position is, no per-number text (the appendix has none for these) | unchanged |
+| Name chart: auras, mind center, emotion center 1-18/9 | Name Numeroscopes book pp. 105-155 | as aura / in the heart center / in the solar plexus, balanced and unbalanced | yes, paged ("· p. 140") |
+| Name chart: name line, life expression, spine, pillar | Name Numeroscopes book pp. 45-58 | what the position is; the balanced/unbalanced lists pp. 102-103 | unchanged (the lists are facts.js already) |
+| Vocation and personality: centers, diamonds, heart's desire, personality numbers | Sub-chart Guide and Sub-chart Interpretation book | already in the store | paged now |
+| Day vibration (any chart) | Diamond Method pp. 42-43, 45-66 | the day's essence diamond and integration diamond, the emotional and integration codes | NOT shown (owner's rule 2026-10-19 on a number's own diamond); asked 2026-10-21 |
+| Any position | Forecasting, Name Law, Name Cleanse, Name Design, 5 Steps | no per-number per-position text | nothing to add |
+
+Every passage from these books (and the ten other separate PDFs) now says its book and page (knowledge/README
+"Page numbers"), so a card on the meaning page can be checked in the Hub.

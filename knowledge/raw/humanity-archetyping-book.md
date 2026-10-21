@@ -4,14 +4,17 @@ topic: numbers
 
 by Estel & Johannes Ehvass The Humanity Archetyping System NUMEROLOGY & STATISTICS DAY VIBRATIONS TM
 
+<!-- page 1 -->
 #### NUMEROLOGY & STATISTICS
 
 #### DAY VIBRATIONS
 
 By Estel & Johannes Ehvass
 
+<!-- page 4 -->
 ## INTRODUCTION
 
+<!-- page 11 -->
 ### The Humanity Archetyping System
 
 The results you see in this book are part of a larger research project called the Humanity Archetyping System.
@@ -32,6 +35,7 @@ The system is continuously being developed, updated, and refined. The Humanity A
 
 - Numerologist PRO Statistics™ Of particular importance for understanding the 99 archetypes is point 5) “Numerologist PRO Statistics.” It is some of the results of this project that we will present in this manual.
 
+<!-- page 12 -->
 ### Numerologist PRO Statistics
 
 The Numerologist PRO Statistics™ project examines the numeroscopes of over 100,000 celebrities and well-known individuals. This groundbreaking new research project investigates whether there is a statistical correlation between specific human traits and birth name numerology.
@@ -40,10 +44,12 @@ With the help of statistical software, it is now possible to analyze large group
 
 This manual is the first in a series covering the results we have found after studying the numerology of over 100,000 individuals who have achieved significant results across a wide range of professions. In this manual, we focus on the correlation between career and the Day Vibration. The Day Vibration is the day of the month on which you were born, and all people have a Day Vibration from 1 to 31. According to Chaldean numerology theory, the Day Vibration is one of the most important numbers in numerology, as it greatly shapes our personality structure. Other important numbers include, for example, the Life Path Number (the sum of all digits in the birth date) and the Big Personality Number (the sum of all consonants in the names). However, in this manual, we will specifically focus on the Day Vibration, as this is the number with the greatest significance. On the following page, you can see the population groups we have studied. The number in parentheses after each group indicates the number of individuals in that group. For example, we have studied the numerology of 21,744 athletes, 16,202 entertainers, 12,257 actors, and so on.
 
+<!-- page 88 -->
 #### Sports (21,744)
 
 Entertainment (16,202)
 
+<!-- page 89 -->
 #### Actors (12,257)
 
 #### Musicians (11,655)
@@ -66,6 +72,7 @@ Football (Soccer)
 
 (3,062)
 
+<!-- page 92 -->
 #### Baseball (2,692)
 
 #### Military (2,610)
@@ -74,8 +81,10 @@ Forbes 2018 (2,207)
 
 Classical Music (2,041)
 
+<!-- page 93 -->
 #### Cricket (2,040)
 
+<!-- page 95 -->
 #### Business (1,586)
 
 #### General (1,579)
@@ -92,8 +101,10 @@ Film Directors (1,457)
 
 Religious Figures (1,409)
 
+<!-- page 97 -->
 #### Media (1,342)
 
+<!-- page 98 -->
 #### Models (1,052)
 
 #### Golf (1,017)
@@ -106,8 +117,10 @@ Religious Figures (1,409)
 
 Risk-takers (964)
 
+<!-- page 99 -->
 #### Journalists (961)
 
+<!-- page 100 -->
 #### Guitarists (935)
 
 #### Activists (859)
@@ -136,12 +149,14 @@ Law (676)
 
 Winners (655)
 
+<!-- page 102 -->
 #### Founders (647)
 
 #### Singers (623)
 
 Prime Ministers (621)
 
+<!-- page 103 -->
 #### Astronauts (620)
 
 #### Educators (619)
@@ -156,6 +171,7 @@ Prime Ministers (621)
 
 Representatives (514)
 
+<!-- page 104 -->
 #### Physicists (509)
 
 #### Playwrights (503)
@@ -164,10 +180,13 @@ Representatives (514)
 
 Mathematicians (481)
 
+<!-- page 106 -->
 #### Drummers (481)
 
+<!-- page 107 -->
 #### Colonels (428)
 
+<!-- page 108 -->
 #### Philosophers (416)
 
 #### Coaches (404)
@@ -220,18 +239,23 @@ Sports Leaders (271)
 
 Figure Skaters (264)
 
+<!-- page 109 -->
 #### Theologians (264)
 
+<!-- page 110 -->
 #### Bishops (258)
 
 #### Critics (255)
 
 Playboy Bunnies (255)
 
+<!-- page 111 -->
 #### Senators (254)
 
+<!-- page 112 -->
 #### Rappers (250)
 
+<!-- page 113 -->
 #### Criminals (248)
 
 #### Publishers (248)
@@ -264,8 +288,10 @@ Playboy Bunnies (255)
 
 Violent Offenders (188)
 
+<!-- page 114 -->
 Commentators (187)
 
+<!-- page 115 -->
 #### Gymnasts (186)
 
 #### Princes (185)
@@ -288,12 +314,15 @@ Photographers (171)
 
 Literary Figures (154)
 
+<!-- page 116 -->
 #### Mayors (151)
 
 Keyboard Players (151)
 
+<!-- page 117 -->
 #### Admirals (148)
 
+<!-- page 118 -->
 #### Killers (147)
 
 #### Saxophonists (146)
@@ -306,6 +335,7 @@ Keyboard Players (151)
 
 Right-Wing Politicians (131)
 
+<!-- page 119 -->
 #### Catholics (128)
 
 #### Skiing (128)
@@ -328,18 +358,24 @@ DJs (116)
 
 Trainers (116)
 
+<!-- page 120 -->
 #### Members of Parliament –
 
 UK (115)
 
+<!-- page 121 -->
 #### Choreographers (113)
 
+<!-- page 122 -->
 #### Biologists (113)
 
+<!-- page 123 -->
 #### Professors (110)
 
+<!-- page 124 -->
 #### Resistance Fighters (108)
 
+<!-- page 125 -->
 #### Owners (106)
 
 #### Industry Leaders (101)
@@ -450,6 +486,7 @@ In Chapter 1, you can look up your own day vibration and see which areas people 
 
 In Chapter 2, you can find your profession and see which day vibrations have been most successful within that field. This can serve as inspiration, giving you insight into which talents and skills to develop further in order to achieve even greater success. If you are a professional numerologist, you can use this manual as a reference and source of inspiration — for example, when interpreting a client’s chart.
 
+<!-- page 127 -->
 ## DAY VIBRATIONS AND STATISTICS
 
 ### Day Vibration 1

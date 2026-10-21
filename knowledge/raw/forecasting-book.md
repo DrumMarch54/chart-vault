@@ -10,6 +10,7 @@ Johannes and Estel Ehvass PART 1: Destiny Rhythms, Year Rows, Day Vibrations
 
 By Estel & Johannes Ehvass PART 1: Destiny Rhythms, Year Rows, Day Vibrations
 
+<!-- page 10 -->
 At the heart of Forecasting Numerology lies a fascinating world where the rhythms of time and the energies of the universe meet. By diving into destiny rhythms and year rows, a doorway opens to read and understand the subtle forces that influence individuals, nations, and businesses in deep and meaningful ways.
 
 These tools offer a unique insight into the energies of the coming months, outlining the dominant themes throughout the year, and giving us the keys to understanding the cyclical patterns through which life unfolds. Each month brings its own special energy that can guide us in our daily decisions and life choices, while the year rows reveal the overarching themes that will be present throughout the year.
@@ -18,6 +19,7 @@ Our intuition and understanding of the language of numbers allow us to apply the
 
 The year rows are particularly valuable as they provide a framework for strategic planning and informed decision-making in key areas of life such as finances, love, family life, career choices, relocations, and other significant life events. By understanding the nature of the
 
+<!-- page 11 -->
 ### INTRODUCTION
 
 upcoming energies, we can better time our actions and decisions to achieve the most favorable outcomes.
@@ -28,6 +30,7 @@ Let us take you on a journey through time, where past, present, and future are w
 
 Warm regards, Johannes and Estel Ehvass
 
+<!-- page 13 -->
 ## VORTEX MATHEMATICS
 
 #### Forecasting
@@ -56,12 +59,14 @@ Understanding your personal Year Rows is key to tapping into your numerological 
 
 Optimizing daily life with personal daily vibrations: Finally, we dive into your personal Day Rows. By following your daily energies, you can customize your activities to make the most of each day, increas-
 
+<!-- page 14 -->
 ### THE 3 RYTHMS
 
 ing productivity, harmony and overall wellbeing.
 
 Through this comprehensive exploration of numerology forecasting, you will gain the tools and knowledge to navigate life’s journey with greater foresight and understanding, harmonizing your actions with the ”energy dance” of the universe that affects our world and personal lives.
 
+<!-- page 15 -->
 #### ENERGY OF THE DAY
 
 Why does today’s date matter?
@@ -74,6 +79,7 @@ But it’s not just people who carry their ”start” vibration with them. A co
 
 The biggest companies and most popular brands in the world carry with them UNIQUE vibrations that help shape their SUCCESS.
 
+<!-- page 16 -->
 How do day energies affect us?
 
 The energy of the day is global, meaning it affects everyone on the planet, no matter where we live.
@@ -104,6 +110,7 @@ But there are plenty of other important EVENTS in a business that are also good 
 
 - Plan your work during the week or month - when is there good energy for different kinds of actions
 
+<!-- page 17 -->
 ### RYTHMES 1 1 2 4 8 7 5 The rhythm
 
 What is a day energy?
@@ -140,6 +147,7 @@ The Life Path number is the deeper energy of the day, which is the underlying em
 
 - The Little Life Path Number is the more basic energy of the day, which will persist throughout the day.
 
+<!-- page 18 -->
 #### THE DHARMA LINE OF THE DAY
 
 The interplay between the month and year provides the DHARMA of the day, which speaks volumes about what the purpose of the day is and what we need to learn from the day on a deeper, karmic level.
@@ -152,6 +160,7 @@ On each side we have the auras, which are the interaction between the days Day V
 
 The number in the inner (right) aura is the interaction between the days Day Vibration and the Year Vibration. It tells us how the day is experienced from the inside.
 
+<!-- page 19 -->
 #### HOW TO CALCULATE THE ENERGY OF THE DAY BY HAND
 
 To understand what a DAY ENERGY is, it’s great to be able to calculate it by hand. The three base numbers: DV, MV and YV
@@ -178,6 +187,7 @@ To understand what a DAY ENERGY is, it’s great to be able to calculate it by h
 
 Outer aura Inner aura DV Dharma line Little Life Path Big Life Path
 
+<!-- page 20 -->
 ### THE DOUBLING RYTHM IN THE VORTEX CIRCLE
 
 #### Example 24.12.1999
@@ -192,6 +202,7 @@ We use the example of 24.12.1999 - the date of the last Christmas Eve of the las
 
 The Life Path numbers (LP) in the center of the circle are calculated as follows: LITTLE LIFE PATH NUMBER OF THE DAY: Digit sum of Day Vibration, Month Vibration and Year Vibration are first found separately and then added together: We have (cf. Numerological addition): 24/6 + 12/3 + 28/1 = 10/1 THE BIG LIFE PATH NUMBER OF THE DAY: Here you add all the numbers in the date without reducing (digit summing) along the way: (2 + 4) + (1 + 2) + (1 + 9 + 9 + 9) = 37/1
 
+<!-- page 21 -->
 AURAS OF THE DAY: Outer Aura = DV (Day Vibration) + MV (Month Vibration) 24/6 + 12/3 = 9/9 Outer Diamond: 63/9 Inner Aura = DV (Day Vibration) + YV (Year Vibration)
 
 24/6 + 28/1 = 7/7 Inner Diamond: 61/7 Dharma Line Aura = MV (Month Vibration) + YV (Year Vibration) 12/3 + 28/1 = 4/4 Dharma Line Diamond: 31/4
@@ -210,6 +221,7 @@ AURAS OF THE DAY: Outer Aura = DV (Day Vibration) + MV (Month Vibration) 24/6 + 
 
 MV Month vibration outer world action and activity YV Year Vibration Inner world and emotions DV Day Vibration The days main vibration and where you should focus your attention
 
+<!-- page 22 -->
 #### TOOL: Energy of the day tool
 
 In Numerologist PRO you have access to a smart tool ”Coming Days” that shows you the Day Charts, from 1-31 days at a time, and as far into the future or back in the past as you want. You can use this tool as inspiration in your interpretation of the day’s energies.
@@ -228,6 +240,7 @@ Also think about whether you can see any global or national events that have had
 
 In this way, you will gradually become better at interpreting the energies of the day and you will begin to recognize interesting patterns, so that eventually you will be able to predict different events.
 
+<!-- page 25 -->
 ### RYTHM 2: The 3-6 Rhythm
 
 #### Vortex Mathematics And
@@ -238,6 +251,7 @@ These energy waves are called the Destiny Rhythms Year Rows - and it is these my
 
 Scientist Nikola Tesla also used this math in his inventions and in his understanding of the energies of the universe.
 
+<!-- page 26 -->
 ### FATE RYTHM 3: 9 number rhythm of destiny
 
 #### THE 3 DESTINY RHYTHMS
@@ -254,12 +268,14 @@ It is also the Destiny Rhythms that determine whether we are karmically connecte
 
 The first numerological Destiny Rhythm is based on the universal mathematical number code called 1,2,4,8,7,5,1 This code is based on the doubling of the digit sums and you can see it in the circle that is presented on the next page.
 
+<!-- page 27 -->
 #### THE VORTEX CIRCLE
 
 #### THE UNIVERSE AND ALL ITS CYCLES
 
 The circle represents the entire universe In the image below you see the vortex circle with the numbers 1-9. Symbolically, the circle symbolizes the universe, which is divided into 9 numbers, each representing a different step in a process. Each number is a specific archetype The numbers 1-9 build on each other and are connected. All numbers are equally important and represent an invaluable part of all cycles and the process of creation.
 
+<!-- page 41 -->
 ## DESTINY PERIODS
 
 Nature, human development, animals, the body, flowers, psychological processes can be described through the process of numbers This mathematics was ”discovered” a long time ago and continues to inspire many today, both scientists and philosophical schools of thought, as it underlies many universal processes.
@@ -378,10 +394,12 @@ Things like falling in love, getting married, divorced, pregnant or having a chi
 
 There’s a good chance that your biggest life changes will follow your particular Destiny Years.
 
+<!-- page 42 -->
 Destiny periods A Destiny period is a period of time that is under the influence of a particular number and its planet. It is the START YEAR of the Destiny period that determines which number (and corresponding planet) it is under the influence of and how long the period lasts. The number is always the same as the DIGIT SUM of the start year and the length of the period is the digit sum times years. For example, if you have a Destiny period that starts in 1937, the digit sum is 2 (1+9+3+7=20/2) and the Destiny period is therefore 2 years long. This Destiny period is under the influence of the MOON, because 2 is the number of the moon. The Destiny period therefore ends on New Year’s Eve between 1938 and 1939, when a 4-year Destiny period begins, ruled by Uranus (the planet of the number 4). A Destiny period that starts in 2006 (which has a digit sum of 8) therefore lasts for 8 years and is under the influence of 8 and SAT- URN. That Destiny period will therefore end in 2014, because 8 years added to 2006 is 2014.
 
 We are all subject to a specific Destiny Rhythm determined by our BIRTH YEAR. This means that it is the year we are born that determines our first Destiny period and thus how the overall Destiny Rhythm unfolds. There are 3 basic Destiny Rhythms, each with their own distribution of Destiny periods.
 
+<!-- page 43 -->
 #### EXERCISE Find your Destiny Rhythm
 
 - Destiny Rhythm 1A, 1B and 1C: 1 year to 2 years to 4 years to 8 years to 7 years to 5 years
@@ -396,10 +414,12 @@ If your birth year has a digit sum of 9, you are in Destiny Rhythm 3. Destiny rh
 
 This will become more clear with the illustration on the following page.
 
+<!-- page 44 -->
 The horizontal table Below is a chart that makes it easy to see how the 5 rhythms progress. We see, for example, that a person born in 1963 with digit-sum 1 is born into rhythm 1A. If you were born in 1964 and have digit sum 2, you are also born into rhythm 1A but with a start in Destiny Period 2. If you were born in 1965 with digit sum 3, you are born into rhythm 2 (the second row from the bottom of the chart).
 
 The black vertical lines with a ball on top show which Rhythm you are born into based on your year of birth.
 
+<!-- page 45 -->
 #### Sharing Destiny Rhythms
 
 You share Destiny Rhythms with all people born in the start of the different Destiny Periods in your Destiny Rhythm, regardless of whether you were born years apart.
@@ -416,6 +436,7 @@ You share Destiny Rhythms with all people born in the start of the different Des
 
 In part 5 on relationships, we’ll get more into what it means to be karmically connected.
 
+<!-- page 56 -->
 ### SUMMARY & OVERVIEW
 
 EXERCISE for understanding The easiest way to understand a particular person’s, or your own, Destiny Rhythms is to do the calculations STEP BY STEP - feeling it in your own body.
@@ -446,6 +467,7 @@ MERCURY 5 year destiny period Balanced: Spontaneous, skilled speaker, vivid imag
 
 Mental and nimble Mercury teaches us to communicate clearly and accurately. Lessons are also learned about self-control, discipline and patience.
 
+<!-- page 62 -->
 ## KARMIC CONNECTIONS
 
 #### DESTINY RHYTHM 2 - 3,6 PERIODS
@@ -456,12 +478,14 @@ VENUS 6 year destiny period Balanced: Love, romance, magnetic charisma, generous
 
 tion, home and family, grounding, art, aesthetics, emotional life and maintaining personal boundaries in close relationships. Beautiful Venus teaches us to love, ourselves and others, and that the love within ourselves is the most important power we have at our disposal.
 
+<!-- page 64 -->
 ### IS IT GOOD TO BE KARMICALLY CONNECTED?
 
 #### 9 DESTINY RHYTHM
 
 MARS 9 year Destiny Period Balanced: Hardworking, straightforward, honest, great sense of justice, leader, strong-willed, persevering, determined, composed, conscious, self-confident, independent, motivates others, structured, resourceful, disciplined, great wisdom, psychological insight, focused, overview, higher consciousness Unbalanced: Dictatorial, domineering, temperamental, impulsive, headstrong, controlling, divisive and quarrelsome, family problems, criticizes self and others, judgmental, messy, shuts down emotions, self-righteous, vindictive, explosive outbursts of anger, negative inner dialogue, speaks harshly to others, unnecessarily loud The Lessons: Life lessons are taught here about accomplishing goals, industriousness, determination, standing up for yourself, resting in your own strength, sublimating your selfishness into common human purpose, lessons about justice and doing the right thing. The strong, warrior planet Mars teaches us to stand firm in our inner principles and match them with our outer actions.
 
+<!-- page 65 -->
 ### WHAT ARE KARMIC CONTRACTS?
 
 #### EXAMPLE Morgan Freeman born 1937
@@ -490,6 +514,7 @@ Now we repeat the process and skip forward the number of years indicated by the 
 
 We now land on 1964. The first Destiny Rhythm of 27 years has been completed.
 
+<!-- page 66 -->
 ### HOW LONG DOES A KARMIC RELATIONSHIP LAST?
 
 ### HOW IS A KARMIC RELATIONSHIP EXPERIENCED?
@@ -498,6 +523,7 @@ We now land on 1964. The first Destiny Rhythm of 27 years has been completed.
 
 If you were born in a year with digit sum 1, you start Rhythm 1 from the 1 year period, i.e. 1,2,4,8,7,5 If you were born in a year with digit sum 2, you start Rhythm 1 from the 2 year period, i.e. 2,4,8,7,5,1 If you were born in a year with digit sum 3, you start Rhythm 2 from the 3 year period, i.e. 3,6,3,6,3,6 If you were born in a year with digit sum 4, you start Rhythm 1 from the 4 year period, i.e. 4,8,7,5,1,2 If you were born in a year with digit sum 5, you start Rhythm 1 from the 5 year period, i.e. 5,1,2,4,8,7 If you were born in a year with digit sum 6, you start Rhythm 2 from the 6 year period, i.e. 6,3,6,3,6,3 If you were born in a year with digit sum 7, you start Rhythm 1 from the 7 year period, i.e. 7,5,1,2,4,8 If you were born in a year with digit sum 8, you start Rhythm 1 from the 8 year period, i.e. 8,7,5,1,2,4 If you were born in a year with digit sum 9, you start Rhythm 3, i.e. 9,9,9
 
+<!-- page 67 -->
 ### HOW DOES A KARMIC CONNECTION END?
 
 ### WHAT LESSONS DOES THE RELATIONSHIP CONTAIN?
@@ -508,6 +534,7 @@ In Numerologist PRO Software, you can easily explore the Destiny Rhythms directl
 
 When you click on this icon, you will be taken to a page where you see the Destiny Rhythms. Here you are presented with a detailed overview showing each year from the person’s birth in a table. Each row in the table is color-coded to indicate which Destiny period the year is in. In addition, in each row you can see the Year Rows for that year (we’ll elaborate on this in the next section) and click on them to access a year number row view. You also have the option to add images and text to each row, making the overview an interactive and personalized journey through the rhythms of life.
 
+<!-- page 68 -->
 ### SHORT KARMIC CONNECTIONS
 
 #### MINI CASE
@@ -526,6 +553,7 @@ Child births: She has 4 children, 3 of which are born in a fate year. Death/illn
 
 - 1957 SECOND CHILD - FIRST YEAR OF A 4 YEAR DESTINY PERIOD: At the age of 14, she gives birth to her son Edward Franklin on January 22, 1957
 
+<!-- page 69 -->
 ### LONG-TERM KARMIC CONNECTIONS
 
 ### HOW TO RELEASE A KARMIC RELATIONSHIP
@@ -548,6 +576,7 @@ Child births: She has 4 children, 3 of which are born in a fate year. Death/illn
 
 - AND DIVORCE FROM HIM IN 1984 - FIRST YEAR OF 4-YEAR DESTINY PERIOD
 
+<!-- page 70 -->
 ### A POSITIVE AND SUPPORTIVE KARMIC RELATIONSHIP
 
 #### DEATHS AMONG CLOSE RELATIONS
@@ -560,6 +589,7 @@ Child births: She has 4 children, 3 of which are born in a fate year. Death/illn
 
 - FATHER DIES 1984 - FIRST YEAR OF A 4-YEAR DESTINY PERIOD
 
+<!-- page 73 -->
 ### PARTICULARLY STRONG KARMIC RELATIONSHIPS
 
 ### SOUL COAL - when we share destiny rhythms
@@ -694,6 +724,7 @@ Just as we now know from science (Epigenetics) that the food your grandmother at
 
 This is very true in relation to numerology. In each moment, we can choose to tune into a high vibration or a low vibration, and this affects the present, the future and the past.
 
+<!-- page 74 -->
 ### HOW DO DECADE SERIES PREDICT THE FUTURE?
 
 Recap: What karmic connections can you have?
@@ -706,14 +737,17 @@ Short-term karmic connections - romances, colleagues etc. You may also experienc
 
 A short-term relationship will typically die out as soon as the karma is dissolved, as the relationship will no longer be energized. Deceased and future family members When you share the same Destiny Rhythm as deceased members of your family tree, as well as future members of your family tree far
 
+<!-- page 75 -->
 into the future, there is also a kind of karmic DNA where you are connected across time. Those born in the same year People born in the same year always share a kind of ”psycho-genetic” imprint that puts them on the same vibe. In addition, there can be a lot of tension, drama, conflicts, bullying, etc. which is especially unpleasant if the relationships also contain a lot of karmic lessons. You may have actual karmic contracts with many of them if you have a close relationship with a lot of energy involved. But not necessarily. We don’t have a karmic contract with everyone born in the same year, but we are part of the same soul litter and share common traits. People from the present or past you feel drawn to When you have the same Destiny Rhythm with people you feel particularly drawn to, it’s also a kind of karmic connection, where you connect to the person’s mission or ”imprint”.
 
 An example is a scholar who diligently studies Søren Kierkegaard throughout his life, making the analysis of his work his own life’s work. The pianist who interprets Bach as his great calling in life. Or writers who base their own writing on previous writers and incorporate that person’s energetic imprints into themselves. If you are drawn to a particular writer, musician, actor or star with whom you share a Destiny Rhythm, it’s because you are particularly connected to their vibration, and perhaps even to the same overall mission.
 
+<!-- page 76 -->
 Non-karmically connected relationships are more free Often it’s an easier relationship if you’re not karmically connected. Here, the relationship is more free of agreements and can therefore feel lighter.
 
 Keep in mind that there can be massive resistance to a karmic relationship. When you have a close relationship but are not karmically connected, it simply means that the relationship is free and there is no precise soul contract. Do you have no karmic connections in your family or other relationships? It’s perfectly normal for there to be no karmic connections in your family at all. However, if the others in your family are karmically connected, it may be accompanied by a feeling that the others are some kind of ”kindred spirits”. However, not being karmically connected can often be associated with a greater ease in relationships. You can also easily be connected to a soul group that you are not related to. Some people find that they are particularly attracted to a certain professional field, organization or spiritual direction where they feel they belong. These people will often be karmically connected and there can be both great intensity and great friction.
 
+<!-- page 77 -->
 ### ANATOMY OF THE YEAR ROWS
 
 #### TOOL: Karmic relationships in Numerologist
@@ -724,6 +758,7 @@ You can use the tool to see your Destiny Rhythms and who you are karmically conn
 
 You can enter up to 4 of your closest relations’ birth years in the fields and then click the blue button to see if you are karmically connected. We are karmically connected to those with whom we share Destiny Rhythms. Our Destiny Rhythms also show which planets we are under the influence of, year by year, throughout our lives.
 
+<!-- page 79 -->
 ### CASE: Frederik X's year rows 2024
 
 #### YEAR
@@ -746,6 +781,7 @@ The Year Rows are a kind of weather forecast of what the energies are supporting
 
 Knowing your Year Rows is like having a voice from the universe whispering in your ear when things need to be done and accomplished. You can use them as a super effective tool for planning your life when you know what you are supported in and when.
 
+<!-- page 88 -->
 ## FORMULAS FOR YEAR ROWS
 
 #### YEAR
@@ -780,8 +816,10 @@ So whether we go up or down in a period of, for example, 9 - 11/2 - 11/2, is a f
 
 We can follow the universal flow or we can work against it.
 
+<!-- page 90 -->
 ### EXAMPLE 1: Born with year digit sum 1
 
+<!-- page 91 -->
 #### YEAR
 
 #### ROWS
@@ -800,6 +838,7 @@ The columns Year Rows have 6 columns: The first three columns use numbers from t
 
 The last three columns use numbers from The Psychic Self Chart. These columns tell us how things play out on the inner, emotional/mental level for us. What we experience internally.
 
+<!-- page 92 -->
 ### EXAMPLE 3: Born with year digit sum 3
 
 #### YEAR
@@ -814,6 +853,7 @@ The blue box on the left shows the first three columns, which tell you how thing
 
 The golden box on the right shows the next three columns, which tell how things play out on the psychic level - in this case, what’s happening in his psyche. For some people, the physical rows are like the psychic rows for most - but not all - years. When this happens, the person experiences a high degree of overlap between what’s happening on the outside and what’s happening on the inside.
 
+<!-- page 93 -->
 #### OUTER ROWS
 
 #### PHYSICAL
@@ -852,6 +892,7 @@ At the beginning of the year, he has the following numbers:
 
 At the end of the year, we see vertical 82/1 ”The Religious Leader” - a number that stands for a winning mentality, spiritual strength and exuding clear values and principles. It is often seen when you take on a new status and appears as a number in the rows. For example, Mary also had 28/1 (the inversion of 82/1) in her Year Rows when she married Frederik.
 
+<!-- page 94 -->
 ### EXAMPLE 5: Born with year digit sum 5
 
 #### YEAR
@@ -874,6 +915,7 @@ F4: The 1-year Destiny Period (not present in rhythms 2 and 3 as they do not hav
 
 ATTENTION! In a name change year, there are MANY MORE FOR- MULAS. Here it plays a crucial role WHEN in the year the name is changed. An overview of these formulas is taught in the Numerologist PRO Certificate Education.
 
+<!-- page 95 -->
 ### EXAMPLE 6: Born with year digit sum 6
 
 #### TOOL: Year Rows in
@@ -884,6 +926,7 @@ In our software, you can see a person’s Destiny Rows, Year Rows and Day Rows w
 
 In addition, you can also see long descriptions with INTERPRETA- TIONS embedded in the Year Rows, making it easy to understand your energies throughout the year.
 
+<!-- page 96 -->
 ### EXAMPLE 7: Born with year digit sum 7
 
 #### EXAMPLE 1: Born With Year Digit Sum 1
@@ -942,6 +985,7 @@ CASE: Robert Redford - born August 18. August 1936 Is born on a 1 year so it is 
 
 1962/9 - End of 5-year period destiny period (F3)
 
+<!-- page 97 -->
 ### EXAMPLE 8: Born with year digit sum 8
 
 #### EXAMPLE 2: Born With Year Digit Sum 2
@@ -1000,6 +1044,7 @@ They were born in a 2-year, so Rhythm 1 is used, starting from 2: 2, 4, 8, 7, 5,
 
 1963 / 1 – The 1-year destiny period (F4)
 
+<!-- page 98 -->
 ### EXAMPLE 9: Born with year digit sum 9
 
 #### EXAMPLE 3: Born With Year Digit Sum 3
@@ -1354,6 +1399,7 @@ For people born in an 8-year, e.g., 1943 – Rhythm 1 is used, starting from 8: 
 
 1969/7 – End of a 4 year destiny period (F3)
 
+<!-- page 104 -->
 ### F4: The 1 year destiny period
 
 #### EXAMPLE 9: Born With Year Digit Sum 9
@@ -1426,6 +1472,7 @@ THIS PER. = Current period (refers to the current destiny period – here, you w
 
 N.AGE = Numerological age, i.e., the age a person turns in that year. For example, if your birthday is in December, the age you turn applies to the entire year. Always think: ”In this year, I turned X years old” – and that is your numerological age for the whole year.
 
+<!-- page 107 -->
 ## YEAR ROW INTERPRETATION
 
 F0: Birth year NB! In the N.AGE row you input 0.
@@ -1438,8 +1485,10 @@ F3: Last Year in a Destiny Period
 
 F4: The 1 Year Destiny Period
 
+<!-- page 112 -->
 ### EXAMPLES OF THE KNOWN NUMBER COMBINATIONS
 
+<!-- page 113 -->
 ### The Money Triad 3-8-5/5-8-3
 
 ### The World Conqueror 5-13/4-8
@@ -1488,6 +1537,7 @@ Here’s an overview of what the numbers 1-18 can typically be about in the Year
 
 - 18: Competition, warrior vibe, hard work, power, anger
 
+<!-- page 114 -->
 ### Career combinations
 
 Horizontal interpretation The horizontal interpretation is seen as periods in time, and you can basically feel them when the period change from one day to the next. These periods tell you about something concrete that is happening in the here and now - while the vertical interpretation is more about what the final outcome of the period will be.
@@ -1500,6 +1550,7 @@ In a harmonic Name Chart, they are interpreted in a balanced way. In the name cl
 
 It comes with experience to see when the negative combinations in the Year Rows pull out positively due to a clean Name Chart.
 
+<!-- page 115 -->
 ### Stress and fatigue
 
 Note! How to read the number combinations Example: The number combination 3-5-8 is called ”The money triad” and is about financial prosperity.
@@ -1562,6 +1613,7 @@ This creates a period of stress and fatigue. We all felt this energy globally in
 
 You can make the most of this period by planning (the 9) your breaks (the 2) - so that you consciously make room for relaxation. Otherwise, the 2’s need for pleasure will always give way to the stronger 18/9 at the expense of your well-being and inner harmony. Plan your breaks, work from home, add air to your calendar, schedule a daily walk, etc. - whatever it is you need, prioritize it and take it SERIOUS- LY. 18/9 must understand that the 2 must also have space, while the 2 must respect that the 9 is the boss and that planning is necessary. COMBINATIONS THAT CAN CAUSE STRESS: All combinations that end in 11/2: 11/2, 29/2, 38/2, 47/2, 56/2, 65/2, 74/2, 83/2, 92/2 The combinations give slightly different nuances, for example: 38/2 (written horizontally as 3 - 11/2 - 8): Here it’s all about expansion and change, hence possibly some fatigue. 56/2 (written horizontally as 5 - 11/2 - 6): This is about communica-
 
+<!-- page 118 -->
 ### CHESS MASTERPIECES CASE
 
 #### THE COMBINATIONS: 44/8, 48/3, 84/3
@@ -1580,12 +1632,14 @@ If you focus on learning new material, using your intellect, e.g. reading books,
 
 and stuck.
 
+<!-- page 119 -->
 The energy of the 4 should rather be used to follow a systematic process - versus the 4 tendency to want freedom to do exactly what it wants.
 
 8 is the karma you can burn yourself by being deeply focused and conscious - versus - being ”forced” by life to burn your karma through unfortunate/unpleasant situations that you would have preferred to avoid.
 
 Situations that only exist to teach you the lessons you don’t get to learn on a voluntary basis.
 
+<!-- page 120 -->
 #### THE 88/7 COMBINATION
 
 (Written horizontally as 8 - 16/7 - 8)
@@ -1594,6 +1648,7 @@ Situations that only exist to teach you the lessons you don’t get to learn on 
 
 8 - 16/7 - 8 is a period that with an unbalanced Name Chart can trigger old anxiety. It is the unbalanced aspects of the 8 that are a challenge here. The period can indicate great pain and loss, and a fear of miss-stepping and falling deep into the depths (16/7). There can also be a loss of relationships, e.g. friendships etc. With a balanced Name Chart, the period brings ”constructive learning, insight and spirituality”. You can use this period positively by knowing that Saturn is visiting to test whether you are resting in your own integrity or whether there are still things you are afraid of - things that no longer serve you to be afraid of. If you’ve had a fear about something in the past, it can typically come back during this period to be looked at and resolved. Feel free to get help to resolve your fear issues or other things that come up during this period. You need to confront the fear gently, but not in a harsh and pushy way. So don’t go racing on mountain trails, although some people may actually feel called by lower energies to challenge themselves in a dangerous way. Therefore, things can also end up going wrong during such a period. So be careful not to put yourself in danger. This is a time to take on new and great responsibility, and if you do so, there will be a karmic reward of moving to the next level of your development in terms of inner and outer authority, strength and responsibility.
 
+<!-- page 121 -->
 #### THE COMBINATIONS: 79/7, 97/7
 
 (written horizontally as 7-16/7 - 9 or 9 - 16/7 - 7)
@@ -1606,10 +1661,12 @@ If you’re not in the right relationship, it will be shown to you and come to t
 
 However, this period is far from always as bad as its reputation. Many people experience a great inner strength and drive to ”clean out” both body and mind. It can also be in closets and drawers, inside and out. The number 9 ”handles” the 16/7 tendency towards anxiety, so you can experience being downright fearless if you experience the period with a pure Name Chart. If the period is a karmic release period, it will represent all the last existential fears coming forward to be dealt with and cleansed from your previous Name Chart. And of course, this can be tough. No one thinks it’s fun to do major cleaning - but it can feel amazing afterwards. Focus on the fact that you’re in ”cleaning mode” and do whatever it takes to get all aspects of your life in order. When the period is over, you’ll land in a more beautiful and clean ”home”.
 
+<!-- page 122 -->
 #### TOOL: Plan with your Year Rows in
 
 In Numerologist PRO Software you can set up your own Name Chart, then search for particularly successful number combinations in your Year Rows and consciously place your important events there. To do this, we have divided the numbers into good, neutral and difficult combinations for you to search for. For example, if you want to publish a book or apply for a promotion, you can check when there is a positive period.
 
+<!-- page 123 -->
 17/8 attracts the spotlight. 10/1 would create a winning mentality and drive. 55/1 would attract media attention. 14/5 would attract sales and networking. The money triad (3-5-8) would bring new status and earnings. 15/6 would boost your charisma. And the World Conqueror (5-8-13/4) could boost your career or help your book become a bestseller. At the same time, you can try to avoid the difficult combinations that could cause problems with publishing or career advancement. It’s often not possible to avoid these combinations completely, but you can make sure there are as few of them as possible when planning something important.
 
 GOOD COMBINATIONS:
@@ -1640,12 +1697,14 @@ GOOD COMBINATIONS:
 
 - 44/8 obstacles
 
+<!-- page 124 -->
 #### CHESS CHAMPIONSHIPS CASE
 
 The Year Rows can also be used to predict winners of everything from presidential elections to sports competitions and much more. Let’s take a look at Viswanathan Anand’s defeat to Magnus Carlsen in the 2013 World Chess Championship, which was a significant moment in chess history. The only 23-year-old Magnus Carlsen from Norway wins the world chess championship over one of the world’s top 3 long-time chess players, the reigning world champion, Indian Viswanathan Anand, and Magnus Carlsen becomes world famous overnight.
 
 The championship was held between November 6-26, 2013, so it is this period that you should primarily look at to determine who has the best numbers and is best equipped to win. This means looking at the last rows (horizontally). However, all the last 3 rows that are interpreted vertically also have an impact on the overall result. All of this is highlighted in gold down below.
 
+<!-- page 125 -->
 #### SPILLER 1: MAGNUS CARLSEN SPILLER 2: ANAND
 
 #### THE ESSENTIAL TWO NUMBERS THAT DECIDE THE MATCH
@@ -1668,6 +1727,7 @@ The most important if you were to choose only one number combination to assess a
 
 But let’s see what else the numbers can tell us about his concrete outer life, as well as his inner life, thoughts and feelings during the chess championship.
 
+<!-- page 126 -->
 #### Magnus Carlsen YEAR ROWS
 
 #### THE MAIN VERTICAL ROWS
@@ -1698,6 +1758,7 @@ He has the number combination 8-5-6 which as a number is called ”Event Organiz
 
 He has the number combination 5-10/1-5 with the number ”The Me-
 
+<!-- page 127 -->
 dia King” (number 55/1), which stands for easily attracting media attention, which of course he does and is featured in media outlets all over the world.
 
 #### Horizontal 3: ”Heal the world”
@@ -1718,6 +1779,7 @@ Here he has the number combination 12/3-5-8 which is called the ”money triad�
 
 Vertical 2: ”Innovative Businessman”
 
+<!-- page 128 -->
 ## DAY ROWS
 
 He has the number combination 4-1-5 which is called the ”Innovative Businessman” (41/5) and stands for clear communication based on the right facts and healthy boundaries.
@@ -1738,6 +1800,7 @@ He has the number combination 5-10/1-5 (the number 55/1 ”The Media King”). I
 
 He has the number combination 8-14/5-6 (the number 86/5 ”Event Manager”) which is about being good at organizing, branding yourself and creating networks and social interaction. When it is in the inner, it means that he has been concerned with how he would be perceived as a person, both professionally and personally - and interested in understanding the social field during the championships.
 
+<!-- page 129 -->
 ### TIME BY TIME IMPACT
 
 #### Viswanathan Anand YEAR ROWS
@@ -1758,6 +1821,7 @@ Horizontal 1: ”The Event Manager”
 
 He has the number combination 17/8 - 14/5 - 15/6 (The number 86/5 ”The Eventmaker”) which stands for being focused on the social context, networking and how to act outwardly as a ”brand” (a number that Magnus Carlsen also had).
 
+<!-- page 130 -->
 ### CALCULATION
 
 Horizontal 2: ”The karma burner”
@@ -1774,6 +1838,7 @@ Vertical 2: ”A Question of Faith” (created by unbalanced numbers 2 x 16/7)
 
 He has the number combination 16/7 - 16/7 - 14/5 (The number 77/5 ”A question of faith”) but with 16/7 instead of the pure 7, it is easy to
 
+<!-- page 139 -->
 ## KARMIC RELEASE
 
 ”The Event Organizer”) which shows that he is thinking about how he stands in the social field. It shows that he still feels surrounded by a network that appreciates him despite the loss of the title. It is also a period/event he will remember because 17/8 is part of the number combination.
@@ -1794,6 +1859,7 @@ Perhaps he is the subject of positive attention and focus from the media (55/1)?
 
 Player #2 loses the championship in a very karmic and fateful way (88//7). It’s as if there’s more at stake than just the specific defeat in the tournament, perhaps he loses a bigger title? He is also remembered for the defeat (17/8). It all ends in a “majestic” defeat, where he loses bravely in a combination of 16/7 combined with ”The Majesty” 75/3.
 
+<!-- page 140 -->
 ### THE TRADITIONAL KARMIC RELEASE
 
 #### DAGSVIBRATIONER
@@ -1850,6 +1916,7 @@ In Numerologist PRO Software you can see in-depth interpretations of all times o
 
 This way you can plan your day to follow your numerological ener_ r
 
+<!-- page 146 -->
 ### Ok name change periods (strong)
 
 ### Not so good name change periods
@@ -1898,6 +1965,7 @@ This method is a lot easier, as there will almost always be one of these numbers
 
 This will almost always be the case, as there are many possibilities for number combinations that indicate karmic release according to this method.
 
+<!-- page 149 -->
 ### F1mar First year of a destiny period
 
 #### KARMISK
@@ -1918,8 +1986,10 @@ But it can be a really good suggestion for yourself and your customers to set a 
 
 Our attitude to this is based on our experience that all karmic periods throughout a life represent entering a new and more free period after letting go and freeing yourself from some karmic patterns. Therefore, letting go of the old name chart is also a gradual process.
 
+<!-- page 150 -->
 ### F1apr-May First year of a destiny period
 
+<!-- page 151 -->
 ### F1Jun-Jul First year of a destiny period
 
 #### HVORNÅR
@@ -1938,6 +2008,7 @@ While there are general patterns — for instance, March, April–July, July–A
 
 Lastly, if the client’s current name chart is particularly problematic, it may still be wise to proceed with the name change — even if the number ranges during that period are not ideal.
 
+<!-- page 152 -->
 ### F1Aug-Sep First year of a destiny period
 
 #### HVORNÅR
@@ -1956,6 +2027,7 @@ There are many excellent periods for changing names. If one of the particularly 
 
 - Networking combinations: (1 - 5 - 4)
 
+<!-- page 153 -->
 ### F1Oct First year of a destiny period
 
 #### HVORNÅR
@@ -2026,30 +2098,37 @@ Change Year Rows Formulas
 
 F1mar First Year of a Destiny Period
 
+<!-- page 158 -->
 ### F3Apr-May Last year in a destiny period
 
 F1apr-may First Year of a Destiny Period
 
+<!-- page 159 -->
 ### F3Jun-Aug Last year in a destiny period
 
 F1jun-jul First Year of a Destiny Period
 
+<!-- page 160 -->
 ### F3Sep-Oct Last year in a destiny period
 
 F1aug-sep First Year of a Destiny Period
 
+<!-- page 161 -->
 ### F4Mar 1 year destiny period
 
 F1oct First Year of a Destiny Period
 
+<!-- page 162 -->
 ### F4Apr-May 1 year destiny period
 
 F2mar-may In the Middle of a Destiny Period
 
+<!-- page 163 -->
 ### F4Jun-Aug 1 year destiny period
 
 F2jun-aug In the Middle of a Destiny Period
 
+<!-- page 164 -->
 ### F4Sep-Oct 1 year destiny period
 
 F2sep-oct In the Middle of a Destiny Period
@@ -2084,12 +2163,14 @@ F4jun-aug 1 Year Destiny Period
 
 F4sep-oct 1 Year Destiny Period
 
+<!-- page 166 -->
 ### 4 - 6 with 10/1 - 18/9
 
 ### 13/4 - 15/6 with 1 - 9
 
 APPENDIX 2: Interpretation Tables
 
+<!-- page 167 -->
 ### 13/4 - 15/6 with 10/1 - 18/9
 
 II In the interpretation tables, you’ll find all possible combinations of numbers. They are shown horizontally, but the interpretation is the same when they appear vertically in the year rows.

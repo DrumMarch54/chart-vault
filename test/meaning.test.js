@@ -153,6 +153,32 @@ test('a long course section is one card, and the short points ride with it (Alli
   assert.ok(Object.keys(pages).length >= 2);
 });
 
+test('every card from a course PDF says its book and page; a hand-written point carries its own citation', () => {
+  const m = meaningFor({ chart: 'name', position: 'heart', sum: 7 });
+  const book = m.passages.find((p) => p.source === 'name-numeroscopes-book');
+  assert.ok(book, 'the Name Numeroscopes book is on the page');
+  assert.equal(book.book, 'Name Numeroscopes book'); assert.equal(book.page, 140); assert.equal(book.pageEnd, 140);
+  const doc = m.passages.find((p) => p.source === 'name-chart-mind-and-emotion-centers');
+  assert.equal(doc.book, undefined); assert.equal(doc.page, undefined);
+  const v = meaningFor({ chart: 'vocation', position: 'heart', sum: 7, rel: [{ position: 'mindDiamond', sum: 39 }] });
+  assert.equal(v.passages[0].book, 'Sub-chart Guide'); assert.equal(v.passages[0].page, 61);
+  assert.equal(v.related[0].passages[0].book, 'Sub-chart Interpretation book'); assert.equal(v.related[0].passages[0].page, 162);
+  const pillar = meaningFor({ chart: 'outer', position: 'pillar', sum: 16 });
+  assert.equal(pillar.passages[0].book, 'Psyche book'); assert.equal(pillar.passages[0].page, 51);
+  const od = meaningFor({ chart: 'essence', position: 'outerDiamond', sum: 14 });
+  assert.equal(od.passages[0].book, 'Essence appendix'); assert.equal(od.passages[0].page, 18); assert.ok(od.passages[0].pageEnd >= 18);
+  const dharma = meaningFor({ chart: 'essence', position: 'dharmaDiamond', sum: 15 });
+  assert.deepEqual(dharma.bits.groups[0].cites, [{ book: 'Essence book', page: 47 }]);
+  assert.match(dharma.bits.groups[0].points[0], /charisma code/);
+  // every citation in the points file names a book from knowledge/books.json and sits beside its point
+  const file = JSON.parse(fs.readFileSync(new URL('../knowledge/bits.json', import.meta.url), 'utf8'));
+  const books = new Set(Object.values(JSON.parse(fs.readFileSync(new URL('../knowledge/books.json', import.meta.url), 'utf8')).books).map((b) => b.book));
+  for (const [id, b] of Object.entries(file.sets)) for (const g of b.groups) if (g.cites) {
+    assert.equal(g.cites.length, g.points.length, `${id}: one citation per point`);
+    for (const c of g.cites) if (c) { assert.ok(books.has(c.book), `${id}: ${c.book}`); assert.ok(Number.isInteger(c.page) && c.page > 0, id); }
+  }
+});
+
 let db, server, base;
 before(async () => {
   ensureDirs();

@@ -727,6 +727,8 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .mbits-t.ok { color: #1f7a38; } .mbits-t.err { color: #a52a2a; }
 .mbits ul { margin: 0; padding-left: 20px; }
 .mbits li { font-size: 16px; line-height: 1.4; margin: 0 0 7px; }
+.mcite { font-size: 12px; color: #8a8f9c; white-space: nowrap; margin-left: 6px; }
+.mbits-from { font-size: 12px; color: #8a8f9c; letter-spacing: .02em; padding: 4px 0 6px; border-top: 1px solid #eceef2; margin-top: 6px; }
 .mmore { background: none; color: var(--muted); min-height: 40px; padding: 0 4px; font-size: 15px; margin: 0 0 8px; }
 .mwords[hidden] { display: none; }
 

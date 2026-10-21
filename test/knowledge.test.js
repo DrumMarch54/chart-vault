@@ -20,6 +20,23 @@ test('the index exists, parses and has passages for every number 1-99', () => {
   assert.equal(knowledgeInfo().missing, false);
 });
 
+test('a passage from a course PDF carries the book page it starts on; the page marks never reach the text', () => {
+  const idx = JSON.parse(fs.readFileSync(INDEX, 'utf8'));
+  const books = JSON.parse(fs.readFileSync(new URL('../knowledge/books.json', import.meta.url), 'utf8')).books;
+  for (const slug of Object.keys(books)) {
+    const s = idx.sources.find((x) => x.slug === slug);
+    assert.ok(s && s.book === books[slug].book, `${slug} is a book in the index`);
+    const own = idx.chunks.filter((c) => c.source === slug);
+    assert.ok(own.length && own.filter((c) => c.page).length / own.length > 0.85, `${slug}: nearly every passage has a page`);
+    for (const c of own) { assert.doesNotMatch(c.text, /<!--\s*page/, c.id); if (c.page) assert.ok(c.pageEnd >= c.page, c.id); }
+  }
+  const seven = idx.chunks.find((c) => c.source === 'name-numeroscopes-book' && /7 IN THE HEART CENTER$/.test(c.heading));
+  assert.equal(seven.page, 140, 'the Name Numeroscopes book has "7 in the heart center" on page 140');
+  const od = idx.chunks.find((c) => c.source === 'essence-codes-part-1' && /Outer Diamond 14$/.test(c.heading));
+  assert.equal(od.page, 18);
+  assert.equal(idx.chunks.find((c) => c.source === 'biz-superdates-int').page, undefined, 'a file without page marks has no pages');
+});
+
 test('contextFor: Peter, 19 May 1998 stays under the budget and has the day vibration and a life expression', () => {
   const budget = 40000;
   const r = contextFor(peter, { budgetChars: budget });

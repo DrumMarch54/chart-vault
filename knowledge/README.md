@@ -315,3 +315,27 @@ Relations", "Higher self case 1" (two), "1-18 Number Notes", "Number Archetype S
 (Higher Self)", "Higher Self interpretation examples:", "Life stages (1)", "Core Fundementals Numeroscope",
 "Mind/Emotion Center descriptions. TEXT", "Psyche-INT TEXT" (= the psyche book), "1-99 High Level Overview",
 "MANLY P HALL; THEORY OF 5". Search Drive by title before saying a document does not exist.
+
+## Page numbers (2026-10-21)
+Sixteen raw files are course PDFs that exist as separate books in the Hub (Class PDF > Essence (OCR) and
+Name Change (OCR)). Each now carries `<!-- page N -->` lines: the page of that PDF on which the next paragraph
+starts (the number printed on the page, so "p. 47" is page 47 of the book). `knowledge/books.json` names the
+book behind each file (the short name shown on screen, the PDF's file name, its Drive id); `tools/build-knowledge.mjs`
+reads the marks (`page` / `pageEnd` on every passage, `book` on the source), strips them from the text, and refuses
+a file that is in books.json without marks or marked without an entry. `server/subchart-words.js` and
+`server/listed-words.js` read the same marks for their entries. The meaning page shows the book and page on every
+card ("Name Numeroscopes book · 7 in the Heart Center · p. 140") and under the short points ("From Name Numeroscopes
+book p. 140 · ..."). A hand-written point in `bits.json` may carry its own `cites` entry ({ book, page }).
+
+How the marks were placed: the PDF was fetched by its Drive link, `pdftotext -layout` split on form feeds, both
+texts normalized to letters and digits, and every paragraph of the raw file (32 characters of it) looked up in the
+PDF from the last match on; a heading too short to look up takes the page of the paragraph under it. Nothing but
+the marks changed: the rebuilt index is byte-identical in every passage's text, heading, numbers and topics
+(checked 2026-10-21). Script: the chat's scratchpad `align_pages.py`; the recipe is in `.brain/HISTORY.md`.
+When a raw file is re-exported, the marks must be put back the same way (or the test `a passage from a course PDF
+carries the book page` fails). Books: essence-book (EssenceInterpretation-ver1, 66 pp.), essence-codes-part-1/2
+(Essence-APPENDIX-ver1, 338 pp.), name-numeroscopes-book (NameNumeroscopes-ver1, 178 pp.), diamond-method
+(DiamondMethod-ver2, 108 pp.), forecasting-book (ForecastingNumerology-INT-ver1, 168 pp.), psyche-book,
+psyche-cases-book, psychic-disorders-book, interpretation-guide, subnumeroscope-interpretation-book,
+subvibrations-book, humanity-archetyping-book (= NP-Statistics), name-templates-rules, single-name-charts-book,
+relations-book. Not paged: the files made from Google Docs and transcripts (no pages exist), and the number guides.

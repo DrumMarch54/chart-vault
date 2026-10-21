@@ -2,8 +2,10 @@
 source: drive 1WZ346PA2iu2bsBK4Ce1uLvlbPtjZO3e0
 topic: name-chart
 
+<!-- page 4 -->
 ## STEP 1 RULES FOR PURE NAME CHARTS
 
+<!-- page 15 -->
 A pure name chart creates a harmonious whole when:
 
 - The name line has balanced numbers
@@ -33,6 +35,7 @@ The names are the 'first link' before some numbers are added together, and they 
 
 - NUMBERS IN THE 50s: 50/5, 52/5, 54/9, 55/1,59/5
 
+<!-- page 16 -->
 - Here you see name values listed by digit sum 1-9:
 
 Digit sum 1: 10,19,28,37,46, 55 (only 28/1 should be avoided)
@@ -67,6 +70,7 @@ Digit sum 9:18,27,36,45,54 (only 18/9 is avoided)
 
 - Numbers with digit sums 4 and 8 respectively cannot be together on the name line
 
+<!-- page 17 -->
 ### Center values
 
 Center values cannot mathematically be above 18/9.
@@ -95,6 +99,7 @@ Spine is how the day vibration meets the life expression, i.e. the challenges of
 
 - LIFE EXPRESSION: All balanced numbers (usually not above 36/9 as we almost exclusively use max 4 name templates)
 
+<!-- page 18 -->
 ### All numbers in the full name chart
 
 Other numbers in the full chart are, for example. sub-vibrations, subnumeroscopes, personality and hearts desire numbers.
@@ -104,6 +109,7 @@ All numbers have positive and negative sides, depending on whether the person ca
 Whether you can carry a number also depends on what harmonizes with the numbers in your essence and what you are used to from your natal charts.
 The numbers marked in bold are usually avoided in sub-vibrations, but there may be exceptions.
 
+<!-- page 19 -->
 ### Pillar numbers
 
 Pillar numbers can be from a minimum of 6 up to high numbers, such as 70.
@@ -111,6 +117,7 @@ In the templates, the highest Pillar number is 55/1 (for 4 name charts).
 Pillar numbers should be as balanced as possible. Many pillar numbers look positive in a pure name chart because they are the result of a long series of harmonious numbers added together. Therefore, far more numbers are allowed than are allowed on the name line.
 It is primarily numbers that land on 12, 16 or 18 in the digit sum that should be avoided. As well as numbers that contain both 4-8 or 2-9.
 
+<!-- page 20 -->
 ### Pillar numbers you find in the pure name charts
 
 The 'semi-balanced Pillar numbers' is a word we can use for the numbers that are normally considered unbalanced - but are considered to be ok as Pillar numbers.
@@ -151,6 +158,7 @@ Cons: Angry, rebellious, hard time fitting in
 
 Cons: Tough, upheaval and resistance
 
+<!-- page 21 -->
 ### Pillar numbers you find in animal pure name charts
 
 The semi-balanced Pillar numbers you can find in animal numeroscopes are marked in bold.
@@ -188,6 +196,7 @@ Cons: Lawsuits, flighty, losing numbers
 
 Cons: Naive, gullible
 
+<!-- page 22 -->
 ### The Pillar numbers you find in product numeroscopes
 
 For each DV it is:
@@ -219,6 +228,7 @@ When in a positive numeroscope, they draw out positive qualities.
 
 Cons: Tough, upheaval and resistance
 
+<!-- page 23 -->
 ### The special numbers in the numeroscope
 
 13/4, 15/6 and 17/8 Besides having a good variety of numbers, there are some numbers in the name chart that you should not use too much as they have a strong effect.

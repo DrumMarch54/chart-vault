@@ -11,6 +11,7 @@
 // after it up to the next entry or heading. Entries about a pair ("EC combo 9-11/2", "8 and 15/6") are skipped:
 // they belong under the pair, not under one number.
 import fs from 'node:fs';
+import { PAGE_MARK } from './books.js';
 
 const RAW = new URL('../knowledge/raw/', import.meta.url);
 const read = (f) => { try { return fs.readFileSync(new URL(f, RAW), 'utf8').replace(/\r\n/g, '\n'); } catch { return ''; } };
@@ -82,14 +83,16 @@ function build() {
     if (!text) continue;
     const title = titleOf(text);
     const lines = text.split('\n').slice(3);
-    let section = null, rule = null, entry = null;
+    let section = null, rule = null, entry = null, page = 0;
     const flush = () => {
       if (!entry) return;
       const body = tidy(entry.lines.join('\n'));
-      if (body.length > 20 && !PAIR.test(entry.label.replace(/\d{1,2}(?:\/\d)?/, ''))) for (const key of entry.keys) if (key && !/\.null$/.test(key)) add(key, entry.n, { source: file.replace(/\.md$/, ''), title, heading: `${section} > ${entry.label}`, text: body, digitSum: !!entry.digitSum });
+      if (body.length > 20 && !PAIR.test(entry.label.replace(/\d{1,2}(?:\/\d)?/, ''))) for (const key of entry.keys) if (key && !/\.null$/.test(key)) add(key, entry.n, { source: file.replace(/\.md$/, ''), title, heading: `${section} > ${entry.label}`, text: body, digitSum: !!entry.digitSum, ...(entry.page ? { page: entry.page, pageEnd: entry.page } : {}) });
       entry = null;
     };
     for (const line of lines) {
+      const pm = PAGE_MARK.exec(line);
+      if (pm) { page = Number(pm[1]); continue; }
       const h = /^(#{1,6})\s+(.+)$/.exec(line);
       if (h) {
         const t = strip(h[2]);
@@ -109,7 +112,7 @@ function build() {
         const keys = typeof r.keys === 'function' ? r.keys(first) : r.keys;
         const label = m[0].replace(/^-\s*/, '').replace(/[\s.:–-]+$/, '');
         const rest = first.slice(m[0].length).replace(/^\s*[.:–-]\s*/, '').trim();
-        entry = { n, label, keys, digitSum: r.digitSum, bullet: /^-\s/.test(first), lines: rest ? [rest] : [] };
+        entry = { n, label, keys, digitSum: r.digitSum, bullet: /^-\s/.test(first), lines: rest ? [rest] : [], page };
         continue;
       }
       if (h) { flush(); continue; }

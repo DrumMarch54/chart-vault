@@ -2,20 +2,24 @@
 source: drive 1YWBzzhNqcaJ5rmCPOOO2AZrE4nqvk2LK
 topic: sub-charts
 
+<!-- page 1 -->
 #### SUBVIBRATIONS &
 
 #### SUBNUMEROSCOPES
 
 Johannes and Estel Ehvass Vocation and Personality
 
+<!-- page 3 -->
 #### SUBVIBRATIONS &
 
 #### SUBNUMEROSCOPES
 
 By Estel & Johannes Ehvass
 
+<!-- page 4 -->
 ## Vowels
 
+<!-- page 9 -->
 ### Breath, vowels and your soul
 
 When we breathe, we come into deep contact with our soul. Therefore, breath meditation is also one of the most fundamental forms of meditation in many spiritual traditions that can lead us back to our true self.
@@ -26,6 +30,7 @@ This is why singing is such a powerful and heart-opening form of communication, 
 
 In yoga, pranayama, a kind of breathing technique, is considered one of the eight main steps in yoga. Pranayama directs the flow of life, prana, towards the soul, making us aware of our true self in the process. Pranayama is therefore even more powerful from a spiritual perspective than the yoga postures (asanas) themselves, but of course all techniques have their unique merits, and following a yoga program that has an inner harmony that benefits all parts of the body, mind and soul creates a unique balance.
 
+<!-- page 10 -->
 ### Pranayama on vowels - the meaning of vowels in
 
 vowels in Vedic philosophy Each individual vowel has a unique power within it. This is according to both numerology and Vedic philosophy, where yoga originated. For example, the vowel A is the awakening of the heart, O is the awakening of the fire chakra, I of the throat chakra and U of the earth chakra.
@@ -42,6 +47,7 @@ That's why many people simply feel that everything clicks when this number (and 
 
 Maybe you already had a clean name chart, but it was as if something wasn't quite right. Many people experience this when their sub-vibrations fall into place.
 
+<!-- page 11 -->
 ### Do your Hearts Desire numbers match your innate
 
 match your innate essence?
@@ -62,6 +68,7 @@ deepest essence.
 
 What matches the individual is about what they want.
 
+<!-- page 13 -->
 ## Consonants
 
 ### Consonants and the Semitic languages
@@ -74,12 +81,14 @@ While the vowels map your inner desires, intentions and will, your consonants de
 
 The consonants tell what kind of people you like, your tastes, what facts you will accept and what things you will allow into your being. The consonants also reveal the aspects of yourself that you share with others.
 
+<!-- page 15 -->
 ## What do your numbers mean?
 
 Here you can read a short and general description of the numbers 1-9 as a general description of Personality Numbers and Hearts Desire numbers.
 
 The exact picture is obtained by understanding the higher number, and there is for example a big difference between whether you have Hearts Desire 17, 71, 62 or 89, although they all add up to 8. But the digit sum tells us about the basic motivations, needs and currents. As Hearts Desire, the number represents your deepest inner needs, desires, inner motivations and what you love. As a personality number, it is what you radiate, create and the way you manifest.
 
+<!-- page 16 -->
 ### Personality or Hearts desire number 1
 
 Your deepest need is to be independent, free and able to do exactly what you believe in and are passionate about.
@@ -88,6 +97,7 @@ You want to be the best, a leader in what you do, showing others the way through
 
 1
 
+<!-- page 17 -->
 ### Personality or Hearts desire number 2
 
 Your deepest need is peace, harmony and love in all life situations and this is what motivates you subconsciously. You want to give yourself to a greater cause, a higher purpose or a common humanity. Your sensitivity and emotional well-being are your deepest motivations and you want to be part of a social environment and community. You need to always be in inner balance and become overemotional, dependent and depressed when out of balance.
@@ -96,6 +106,7 @@ You love comfort, softness, inner peace, pleasure and harmony. Your taste is aes
 
 2
 
+<!-- page 18 -->
 ### Personality or Hearts desire number 3
 
 Your deepest need is to express your own inner greatness. You need to expand, fill and take your place in the landscape, and inspire and lead others. You love to have fun and be the center of attention. You are very warm, welcoming and friendly, have a good sense of humor, and a strong inner balance that allows you to face life's challenges on an inner level.
@@ -106,6 +117,7 @@ You love to enjoy life and to be in good company. Your taste is often grandiose 
 
 3
 
+<!-- page 19 -->
 ### Personality or Hearts desire number 4
 
 Your deepest need is to be yourself, your own person, and have space to think your individual unique thoughts. You love stability, but only to be able to challenge it with new ideas.
@@ -118,6 +130,7 @@ You are drawn to people who are not flashy and superficial, who understand and a
 
 You are a trendsetter and have your own unique taste and style that you do not change at will or with the whims of fashion. 4
 
+<!-- page 20 -->
 ### Personality or Hearts desire number 5
 
 Your deepest need is the freedom and joy of change. You are flexible and adaptable, with an open mind and heart that can move between all the many planes of existence. As you are ruled by Mercury, you are like Mercury that can permeate everything.
@@ -130,6 +143,7 @@ You love new experiences, new people, new information, experiences and adventure
 
 5
 
+<!-- page 21 -->
 ### Personality or Hearts desire number 6
 
 Your deepest need is to be in tune with the omnipresent power of love. You often express this in your close relationships and in caring for others. You are driven to make the world a better place, starting with what is right in front of you.
@@ -138,6 +152,7 @@ You need family and friends, which are the most important areas of your life. Yo
 
 6
 
+<!-- page 22 -->
 ### Personality or Hearts desire number 7
 
 Your deepest need is to enrich your soul with new insights that can reconnect you to your soul and to something universal. You probably love studying, reading, researching, and have a great need to use your mind, which you use to see behind reality.
@@ -146,6 +161,7 @@ The mysteries of life are close to your heart, and understanding them is a deep 
 
 7
 
+<!-- page 23 -->
 ### Personality or Hearts desire numbers 8
 
 Your deepest need is to live out the full potential of the abilities you carry in your essence. You have big ambitions, think big thoughts and have a deep desire for success. You see life realistically and understand what it takes. You have tremendous inner strength, drive and ambition.
@@ -158,6 +174,7 @@ You are attracted to people who can understand your eccentric nature and are abl
 
 8
 
+<!-- page 24 -->
 ### Personality or Hearts desire number 9
 
 Your deepest need is to feel that you are contributing to uplifting and elevating the common consciousness of humanity.
@@ -168,6 +185,7 @@ You have a deep inner wisdom and sense of justice. You love things that are well
 
 9
 
+<!-- page 25 -->
 ### Design your personality
 
 Personality and Hearts Desire numbers are one of the most powerful tools available to you if you have a very clear idea of the direction you want your life to take.
@@ -190,12 +208,14 @@ The purple numbers are often fine, but are a bit more specialized and not suitab
 
 The numbers 58/4 and 85/4 give enormous power and success, but if you want a quiet and calm life, they are not the right numbers.
 
+<!-- page 26 -->
 In general, the numbers 4 and 8 do not suit everyone either. Just as with the numbers that add up to 12/3 or 15/6, you have to think about whether these numbers will be an issue for the person or can be used positively.
 
 So be careful to use your intuition if you choose some of the purple numbers.
 
 The black numbers are generally good for most people, and although all numbers have positive and negative potentials, it is easy to draw out the positive aspects of these numbers. However, they still need to be given with consideration for the individual and the number needs to be in harmony with their day vibration and life path numbers and what they want to be supported in life.
 
+<!-- page 27 -->
 ### The numbers 10-99
 
 ### as personality and hearts desire numbers
@@ -204,14 +224,17 @@ The black numbers are generally good for most people, and although all numbers h
 
 19/1 The Heavenly Prince 28/1 The Ambitious Lion 37/1 The Royal Star of Taurus 46/1 The Perfect Prodigy 55/1 Master Communicator 64/1 The Idealistic Perfectionist 73/1 The Secret Millionaire 82/1 The Religious Leader 91/1 The Golden Titam 11/2 Master Harmonizer 20/2 The Cosmic Torchbearer 29/2 The Empowerment Coach 38/2 The Powerful Peacemaker 47/2 The Intuitive Innovator 56/2 The Charismatic Orator 65/2 The Beloved Caretaker 74/2 The Selfless Saviour 83/2 The Empathetic Enforcer 92/2 The Community Sentinel 12/3 The Expansive Dynamo 21/3 The Ambitious Alchemist 30/3 The Cosmic Thinker 39/3 The Tenacious Boss 48/3 The Revolutionary Politician 57/3 The Adventurer 66/3 Master Matriarch 75/3 The Majestic Philosopher 84/3 The Pioneer 93/3 The Polymath 13/4 The Reformer 22/4 Master Builder
 
+<!-- page 28 -->
 #### 31/4 The Unorthodox Genius
 
 40/4 The Cosmic Hermit 49/4 The Chaos Organizer 58/4 The World Conqueror 67/4 The Mysterious Beauty 76/4 The Dreamweaver 85/4 The Strategic World Conqueror 94/4 The Systems Architect 14/5 The Mediator 23/5 The Royal Star of the Lion 32/5 The Influencer/Emperor 41/5 The Merchant 50/5 The Cosmic Communicator 59/5 The Truth Herald 68/5 The Heartfelt Organizer 77/5 Master Seeker 86/5 The Social Architect 95/5 The Assertive Orator 15/6 The Enchanter 24/6 The Queen 33/6 Master Teacher 42/6 The World Healer 51/6 The Socialite 60/6 The Cosmic Nurturer 69/6 The Alchemical Lover 78/6 The Occultist 87/6 The Wizard 96/6 The Magnetic Maestro 16/7 The Awakening Soul 25/7 The Spiritual Voyager 34/7 The Spiritual King 43/7 The Revolutionary 52/7 The Philosophical Adventuror 61/7 The Ethical Purist 70/7 The Cosmic Seeker
 
+<!-- page 29 -->
 #### 79/7 The Analytical Sage
 
 88/7 Master of Karma 97/7 The Transcendentalist 17/8 The Star 26/8 The Conductor 35/8 The Chieftain 44/8 The Master of Structure 53/8 The Empowerment Advocate 62/8 The Family Protector 71/8 The Radiant Magician 80/8 The Cosmic Powerhouse 89/8 The Archetypal Visionary 98/8 The Legacy Builder 18/9 The warrior 27/9 The Good Shepherd 36/9 The Triad Manifestor 45/9 The Innovative Leader 54/9 The Communication Leader 63/9 The Veiled Strategist 72/9 The Unifying Leader 81/9 The Master of the Bow 90/9 The Cosmic Warrior 99/9 Master Finalizer
 
+<!-- page 31 -->
 ## How do you find good sub- numeroscopes?
 
 The vocation chart and personality chart are a LINK between the person's soul and their physical/concrete life (the name chart).
@@ -222,12 +245,14 @@ One of the most important things is to first look at the Essence chart. What is 
 
 Next, you can look at the psyche charts. How does the psychic self
 
+<!-- page 32 -->
 function, what feelings, thoughts and inner longings does the person have?
 
 Next, you can look at the person's current sub-numeroscopes to get an idea of how they are used to transporting their soul energy into the physical world. For example, if the person has a 9 as a little heart's desire and 18/9 as a big heart's desire, then we have a person who is used to fighting to get their ideas and wishes through and probably works hard to achieve their goals and has strong principles. As a numerologist, you can assess whether the person is doing well with this strong energy or if they are really unwell and struggling with the unbalanced aspects. You can also look at the centers of the vocation chart to see how the Essence and the psychic self's thought and feeling forms are transported into the physical world. Once you have tuned into the person and perhaps taken notes, you can look through the different vocation chart and personality chart options that Numerologist PRO gives you.
 
 To narrow down your search, you can also choose to go by certain personality and hearts desire numbers if the person has strong wishes about what they want to achieve. Or you can look at whether the person's deepest desires and longings in life are expressed in the sub-numeroscope centers.
 
+<!-- page 33 -->
 ### Sub-numeroscope rules
 
 As you will see below, the guidelines for sub-numeroscopes are really the same as when assessing whether a regular numeroscope (name chart) is more or less balanced.
@@ -240,6 +265,7 @@ The numerologist will always make some compromises in the form of unbalanced num
 
 1) Harmonious name line The name line in the sub-numeroscopes corresponds to the subvibrations in the names, where unbalanced numbers should be avoided as much as possible. For example 11,12,16,18,26,29 and so on. However, there may well be a few exceptions, so it's important to avoid the worst of the unbalanced numbers and have as few of them as possible. Preferably completely clean and balanced sub-vibrations throughout. It's also important that the consonant values in a name go well with the vowel value. The relationship between the vowel values and the consonant values is a kind of BRIDGE that either harmoniously or disharmoniously carries the number out of the Vocation chart and into the Personality chart.
 
+<!-- page 34 -->
 2) Harmonic hearts desire and personality numbers These numbers are actually the same as the life expression of the vocation chart and the life expression of the personality chart, and are therefore quite important numbers. If you land on one of the unbalanced numbers, e.g. 12/3, it will generally not be so good. So it's better to make your compromises elsewhere, such as in the auras. 3) Harmonic centers in the vocation chart.
 
 The vowels are what you want/desire and thus attract in your life. It is what is felt most by ourselves, whereas the personality chart is our radiance on others. Therefore, it is ever so slightly more important to have harmonic centers in the vocation chart than it is to have harmonic centers in the personality chart. In the vocation chart it is good to prioritize soft numbers in the centers, especially in the Vocation chart solar plexus, as it is our innermost emotional life.
@@ -248,6 +274,7 @@ The vowels are what you want/desire and thus attract in your life. It is what is
 
 Here 4 and 8 should preferably not be together in the center, and a dv 8 person will thrive better with 8 in the center, just as a dv 4 person will thrive better with 4. However, an exception is if there is a world conqueror in a center, then 4 and 8 will thrive better together. However, it will often be preferable for the world conqueror energy to be found outside the centers,
 
+<!-- page 35 -->
 e.g. in an aura, or as a secondary heart or solar plexus vibration, and not as the heart or solar plexus main vibration - although you can do this if you want a huge drive.
 
 The more of the "half-balanced" numbers that are together, the less good it is because the half-balanced numbers can influence each other.
@@ -260,10 +287,12 @@ The unbalanced numbers in the centers are: 12/3, 16/7 and 18/9. You should try t
 
 In these cases the aura will be slightly weakened, but if the surrounding numbers are good, it will harmonize the aura. Always remember to look at the big picture so you don't over focus on a small detail.
 
+<!-- page 36 -->
 6) Harmonious pillar numbers If the pillar number is not the best, but everything else in the numeroscope and sub-numeroscopes are harmonious, the Pillar number will pull out positively. If both life expression and pillar number are not harmonious, it is not so good, as the two ”talk” a lot together. A strong Pillar number is of course preferable, but a suboptimal Pillar number will not be enough to compromise the centers or personality and hearts desire numbers.
 
 The Pillar is the result of the entire central pillar of numbers in the chart and must be seen in this light. A good pillar number can pull through really well and a bad one can be ok if the rest of the chart is good.
 
+<!-- page 59 -->
 ## The Point System
 
 We created the point and categorization system because there were so many name set options that it became difficult to evaluate which name sets to use. It's hard for the brain to make an overall assessment when there are so many numbers to look at in the sub-numeroscopes. We have strived as much as possible to let the scoring system mimic the comparison processes that occur in the brain. Although it may seem complicated at first glance when you see all the many rules, it's really just many small rules that have been consistently applied to all the different possible combinations found in sub-numeroscope setups.
@@ -278,6 +307,7 @@ If a setup has 70 or 75 points, or even 70 or 90 points, it doesn't mean you hav
 
 Maybe the setup with 65 or 70 points is better for the individual than the setup with 95 points - because they get the Personality or Hearts desire numbers they want, and the whole thing just matches them
 
+<!-- page 60 -->
 and their wishes super well.
 
 In the beginning, it can be fine to stick to the point system, and make sure to always select those that are above 70 points (not always possible though). Over time, you can become more experimental when you have more experience.
@@ -290,6 +320,7 @@ By categorizing name sets by points, we began to see that the highest-scoring se
 
 Over time, with each adjustment, we get closer and closer to a point system that fully reflects the intuitive art of name evaluation.
 
+<!-- page 61 -->
 ### The heart centers
 
 ### Vocation Chart Heart Center
@@ -302,6 +333,7 @@ Over time, with each adjustment, we get closer and closer to a point system that
 
 6 → +8 pts Excellent. The 6 in the heart center attracts love, emotional harmony, and meaningful relationships. It radiates warmth and trustworthiness, making it beneficial in almost any vocational setup. 7 → +8 pts Also excellent. The 7 brings a deep sense of spirituality, intuition, and inner guidance. It supports heart-centered insight and alignment with higher values.
 
+<!-- page 62 -->
 8 → -8 pts The 8 seeks to unite reason and emotion and can create powerful harmony between material and spiritual life. However, even slight imbalances (e.g., disharmonious surrounding numbers) may lead to internal resistance, self-doubt, emotional coldness, overwork, and a controlling attitude.
 
 Special rule: If the 8 is formed by two 4s in the upper left and right aura positions, subtract -20 pts instead of -8 pts.
@@ -324,6 +356,7 @@ Special notes:
 
 11/2 → context-dependent
 
+<!-- page 63 -->
 Highly sensitive and receptive.
 
 - In balance, 11/2 offers healing, intuition, empathy, and even telepathic awareness.
@@ -344,8 +377,10 @@ Highly sensitive and receptive.
 
 16/7 → -20 pts Generally not recommended. This vibration can trigger nervousness, anxiety, and stress. It often leads to withdrawal, overthinking, or psychological strain.
 
+<!-- page 64 -->
 17/8 → -5 pts Can bring artistic flair, visibility, and creative inspiration. In unbalanced charts, it may lead to unwanted attention or negative spotlight. 18/9 → -20 pts This vibration has a powerful, warrior-like energy that can drive success. However, it often leans toward fanaticism, inner pressure, or overly aggressive ambition. It is better used as a secondary heart vibration rather than the main one, ideally alongside a more harmonious setup.
 
+<!-- page 65 -->
 ### VocationChartHcandSpDoubleCombinations
 
 In general, it is beneficial to have variation between the Heart Center (HC) and Solar Plexus (SP) main vibrations. When both centers share the same number, it can result in an overconcentration of a single energy, which may create imbalance or amplification of that number’s more challenging traits.
@@ -368,6 +403,7 @@ The following combinations are considered too heavy or energetically intense and
 
 - HC 18 and SP 18 → -20 pts
 
+<!-- page 66 -->
 ### Vocation Chart Hc Secondary Vibrations
 
 The secondary heart vibration in the vocation chart adds a subtle influence or “color” to the main heart center vibration. While not as strong as the primary number, it can significantly shape how the main energy is expressed—either by enhancing, distorting, or softening it. The following point deductions apply when these secondary vibrations are present:
@@ -386,6 +422,7 @@ The secondary heart vibration in the vocation chart adds a subtle influence or �
 
 - Secondary 18 → -10 pts These deductions reflect how certain secondary vibrations may introduce imbalance, internal conflict, or emotional heaviness—especially when unsupported by other harmonious chart elements.
 
+<!-- page 67 -->
 ### Vocation Chart Solar Plexus Values
 
 2 → +5 pts The number 2 in the solar plexus center is generally positive, bringing sensitivity and emotional awareness. However, if overrepresented in a setup, it can lead to laziness or overindulgence.
@@ -400,6 +437,7 @@ The secondary heart vibration in the vocation chart adds a subtle influence or �
 
 8 → -8 pts An 8 here may help with emotional control and self-discipline, giving an appearance of composure. However, it can also create emotio-
 
+<!-- page 68 -->
 nal isolation and restrict energy flow, potentially causing physical discomfort in the lower body. In a balanced setup, it supports groundedness, strength, and inner power. 9 → -20 pts A 9 in the solar plexus is generally very challenging. It often causes emotional suppression, pent-up anger, and internalized criticism. You may struggle with self-love and be overly judgmental—both toward yourself and others. This can create tension in close relationships and issues around self-worth. There may also be a tendency to compare yourself to others based on material or social status, resulting in frustration and harsh self-talk. Emotional outbursts may occur—short-lived but intense—causing alienation.
 
 Additional note: People with this vibration may also experience attraction from the same sex, regardless of their own sexual orientation. 10 → +10 pts A highly positive vibration. The 10 brings a deep sense of inner happiness, optimism, and success. It aligns emotional energy with clarity and progress. 11/2 → context-dependent This vibration often brings emotional fragility. You may feel energetically drained and seek comfort through sugar, alcohol, or other self-soothing habits. There can be a sense of being unable to assert yourself or maintain boundaries. Emotional dependency and need for external validation may arise. It’s important to have harmonious surrounding numbers to support the energy of the 11/2 and allow the heart’s intentions to manifest emotionally.
@@ -410,6 +448,7 @@ Aura combinations affecting 11/2 in the solar plexus:
 
 - 3 and 8 → -6 pts: Creates heightened emotional sensitivity
 
+<!-- page 69 -->
 and a tendency to help others excessively without setting clear boundaries.
 
 - 4 and 7 → -6 pts: Can result in intense emotional sensitivity and melancholy.
@@ -424,6 +463,7 @@ and a tendency to help others excessively without setting clear boundaries.
 
 18/9 → -20 pts Very imbalanced here. It may lead to emotional suppression, explosive anger, and disconnection from inner nurturing energy. Like the 16/7, it can also contribute to infertility or issues in creative and emotional expression.
 
+<!-- page 70 -->
 ### Vocation Chart Solar Plexus Secondary Vibrations
 
 The secondary solar plexus vibration subtly influences the emotional and personal expression of the main solar plexus number. It acts like an undertone, either enhancing or complicating how emotional energy is processed and expressed.
@@ -446,6 +486,7 @@ The following point adjustments apply when these secondary vibrations are presen
 
 - Secondary 18 → -10 pts These deductions reflect how certain secondary numbers can introduce emotional tension, heaviness, or stress, while others (like the 6) bring harmony and support.
 
+<!-- page 71 -->
 ### Personality Chart Heart Main Vibrations
 
 2 → +4 pts The number 2 in the heart center is generally positive, bringing empathy and emotional awareness. However, be mindful of tendencies toward laziness or an overindulgent lifestyle if this energy is overrepresented. 3 → +4 pts A 3 in the heart center gives you an expansive, expressive quality. You radiate creativity and joy, but be aware of the potential to use charm as a defense or emotional shield.
@@ -458,6 +499,7 @@ The following point adjustments apply when these secondary vibrations are presen
 
 8 → -4 pts Formed by two 4s: -20 pts
 
+<!-- page 72 -->
 The 8 gives a strong and commanding presence. In a balanced chart, it conveys spiritual strength, groundedness, and high ideals. However, if surrounded by disharmonious numbers, it may come across as dominant, cold, or emotionally distant. Others might view you as powerful but unapproachable, with a tendency toward cynicism or control. 9 → -4 pts The effect of the 9 depends heavily on the overall balance of the chart.
 
 - In imbalance, it can result in harsh communication, emotional shutdown, and a controlling or critical demeanor. You may appear judgmental or overly assertive.
@@ -474,6 +516,7 @@ In balance, however, you show deep empathy, kindness, and the ability to sense h
 
 - 3 and 8 → -4 pts: You attract people who seek your help, but
 
+<!-- page 73 -->
 struggle to set boundaries, leading to burnout.
 
 - 4 and 7 → -4 pts: Heightens sensitivity, making you emotionally hypersensitive to your environment.
@@ -484,6 +527,7 @@ struggle to set boundaries, leading to burnout.
 
 18/9 → +16 pts The 18 gives you a reputation for being emotionally shut down or prone to strong, sometimes explosive anger. It’s a difficult energy to carry in the heart center and can create tension in emotional expression and personal relationships.
 
+<!-- page 74 -->
 ### Personality Chart – Heart & Solar Plexus Double
 
 #### Double Combinations
@@ -506,6 +550,7 @@ It is generally beneficial to have variation between the Heart Center (HC) and S
 
 - HC 18 and SP 18 → -20 pts
 
+<!-- page 75 -->
 ### Personality Chart – Heart Center Secondary
 
 #### Vibrations
@@ -528,6 +573,7 @@ The following point adjustments apply:
 
 - Secondary 18 → -10 pts These values reflect how certain vibrations, especially karmic or heavy numbers, may challenge emotional openness or balance when acting as secondary influences.
 
+<!-- page 76 -->
 ### Personality chart solar plexus main vibration
 
 2 → +4 pts The number 2 in the solar plexus center is generally positive. It brings emotional sensitivity and a cooperative attitude. However, be cautious of tendencies toward laziness or indulgence in comfort and luxury.
@@ -536,6 +582,7 @@ The following point adjustments apply:
 
 6 → +8 pts This is an excellent placement. The 6 in the solar plexus radiates love, warmth, and emotional stability. You are seen as caring, trustworthy, and loving, which supports both personal and romantic relationships. 7 → +6 pts The 7 brings spiritual depth, intuition, and emotional sensitivity. It allows for a subtle and insightful presence that others find comforting and wise.
 
+<!-- page 77 -->
 8 → -8 pts An 8 in this position can make you appear emotionally reserved, stern, or conservative. You may show strong self-control and hold back your feelings, projecting an image of discipline and stability. In a balanced chart, this placement provides excellent grounding, confidence, and inner strength. In imbalance, it may come off as emotionally rigid or overly conformist.
 
 9 → -8 pts This placement is highly dependent on the surrounding numbers.
@@ -552,12 +599,14 @@ The following point adjustments apply:
 
 12/3 → -8 pts This placement often leads to overthinking and emotional entang-
 
+<!-- page 78 -->
 lement. You may become overly influenced by others’ expectations and feel like a “hostage” to their agendas. There’s also a tendency to overdramatize or take things too personally.
 
 14/5 → +8 pts A very favorable vibration. The 14 gives you a radiant energy of abundance, success, and charisma. It enhances communication skills and helps attract opportunities for growth and prosperity. 16/7 → -16 pts This is a highly challenging placement. The 16 radiates anxiety and emotional instability. Subconsciously, it may make others feel uneasy or even fearful around you. It often signals inner turmoil and mental distress.
 
 18/9 → -16 pts Another difficult placement. The 18 can result in choleric tendencies—intense, short-tempered reactions—or a complete shutdown of emotional warmth and charisma. It may project emotional coldness or even intimidation.
 
+<!-- page 79 -->
 ### Personality Chart – Solar Plexus Center Secondary
 
 #### Secondary Vibrations
@@ -592,6 +641,7 @@ Point deductions for this combination:
 
 - Personality chart (Heart + Solar Plexus): -2 pts
 
+<!-- page 80 -->
 ### Difficult Secondary Combination: 11 and 9
 
 When 11 and 9 appear together as secondary vibrations across the Heart and Solar Plexus centers, it can create emotional overload, spiritual conflict, or self-sacrificing tendencies that lead to burnout or emotional instability.
@@ -610,6 +660,7 @@ The following secondary numbers are considered energetically heavy or karmically
 
 - Personality chart: -2 pts
 
+<!-- page 81 -->
 ### Auras
 
 ### Aura Scoring – Vocation Chart
@@ -634,6 +685,7 @@ Other challenging aura numbers:
 
 - Aura 18 → -8 pts
 
+<!-- page 82 -->
 ### Aura Scoring – Personality Chart
 
 In the personality chart, aura numbers reflect how well a person is protected from external energies and other people. These auras influence social boundaries, energetic resilience, and how safely a person navigates interpersonal situations.
@@ -654,6 +706,7 @@ Aura 11/2 (feeling unprotected)
 
 - Aura 18 → -7 pts
 
+<!-- page 83 -->
 ### 4-8 TENSION
 
 ### Vocation Chart – Name Line 4-8 Combination Penal
@@ -676,6 +729,7 @@ Vocation Chart Name Line Penalties (with 4-8 combination):
 
 - 4-name chart → -10 pts Cross-Chart 4-8 Combination Penalty If a 4 appears in one chart (e.g. vocation chart) and an 8 appears in the corresponding name line of the other chart (e.g. personality chart), the energy clash still applies and should be penalized. Across-name-lines 4-8 conflict (between vocation and personality charts) → -10 pts Example: Vocation chart first name = 4, Personality chart first name = 8
 
+<!-- page 84 -->
 ### 4–8 Tension Between Main and Secondary
 
 #### Vibrations
@@ -704,6 +758,7 @@ Vocation Chart – Heart Center
 
 - Both secondary vibrations are 8 → -8 pts Adds even more emotional confusion and energetic stagnation.
 
+<!-- page 85 -->
 ### 8–4 / 8–13/4 Tension Between Main and Secondary
 
 #### Secondary Vibrations
@@ -732,6 +787,7 @@ Vocation Chart – Heart Center
 
 - Both secondary vibrations are 13/4 → -2 pts Heightens emotional inconsistency and confusion in self-expression.
 
+<!-- page 86 -->
 ### 4–8 Tension Across Centers
 
 #### Vocation Chart – Heart Center & Solar Plexus
@@ -748,6 +804,7 @@ Vocation Chart – Heart Center
 
 - Vocation center 8 + Personality center 4 → -12 pts This combination can create a confused or rebellious dynamic, where powerful inner ambition (8) clashes with a rigid or unconventional outward expression (4), making your intentions difficult to read.
 
+<!-- page 87 -->
 ### 4-8 Vocation chart secondary vibrations
 
 4-8 between vocation chart secondary vibrations: -12 pt
@@ -790,6 +847,7 @@ Vocation Chart – Heart Center
 
 - 8-4 pers. upper left aura and secondary vibration: -3 pt
 
+<!-- page 88 -->
 ### Vocation chart 4 dv and 8 center
 
 4-8 between dv and vocation chart heart center: -10pt An unfortunate combination that can create a lot of inner conflict. 4-8 between dv and vocation chart solar plexus: -10pt An unfortunate combination that can create a lot of inner conflict.
@@ -806,6 +864,7 @@ Vocation Chart – Heart Center
 
 8-4 between dv and personality chart heart center: -6pt An unfortunate combination that can create a lot of inner conflict. 8-4 between dv and personality chart solar plexus: -6pt An unfortunate combination that can create a lot of inner conflict.
 
+<!-- page 89 -->
 ### Vocation chart 4 dv and 8 life expression (hearts
 
 (hearts desire)
@@ -828,6 +887,7 @@ Vocation Chart – Heart Center
 
 Vocation chart: 4 dv and 8 upper right aura: -4pt Vocation chart: 4 dv and 8 upper left aura: -4pt Personality chart: 4 dv and 8 upper right aura: -3pt Personality chart: 4 dv and 8 upper left aura: -3pt Dv 8 and aura 4 can only exist if the aura is 13/4 This is a world conquering combination which is actually good.
 
+<!-- page 90 -->
 ### 4-8 name chart life expression and pers/voc life
 
 life expression Name chart life expression 4 - vocation chart little heart 8: -15pt There is a 4-8 conflict between the name chart life expression and the little hearts desire number.
@@ -848,8 +908,10 @@ Name chart life expression 8 - personality chart little personality 4: -15pt The
 
 8s next to each other on the vocation chart name line: -8pt 8s next to each other on the vocation chart name line can create a
 
+<!-- page 91 -->
 kind of inner anxiety where it is difficult to make choices. There is a feeling that whatever you choose will lead to a lot of unpleasantness. 8s next to each other on the name line of the personality chart: -6pt 8s next to each other on the name line of the personality chart means that you can be perceived as fickle or that you have difficulty making choices out of fear of the consequences.
 
+<!-- page 92 -->
 ### Special Cases
 
 ### 17/8 and 11/2 in the Vocation Chart
@@ -888,6 +950,7 @@ The same 17/8–11/2 interaction also applies in the personality chart, leading 
 
 - DV 17/8 + main heart vibration = 11/2 → -3 pts
 
+<!-- page 93 -->
 ### Too Much 17/8 in Vocation Chart
 
 - Having 17/8 in both major centers of the vocation chart creates energetic overload related to visibility, pressure, and expectations.
@@ -914,6 +977,7 @@ This combination intensifies emotional control patterns and may bring out tenden
 
 - 15/6 + 9 in vocation chart solar plexus → -10 pts
 
+<!-- page 94 -->
 #### 15/6 + 9 in Three-Name Charts
 
 Even in 3-name charts, this combo still amplifies emotional manipulation tendencies.
@@ -922,10 +986,12 @@ Even in 3-name charts, this combo still amplifies emotional manipulation tendenc
 
 - 15/6 + 9 in vocation chart solar plexus → -10 pts
 
+<!-- page 95 -->
 Special Case: Too Many 4s in the Centers When the number 4 appears in multiple major centers across the vocation and personality charts, it can create an overload of rebellious, contrarian, or outsider energy. This often leads to the feeling of being a black sheep—someone who struggles to fit into societal or relational norms.
 
 Each of the following combinations receives –20 pts: Vocation chart heart + Personality chart solar plexus → –20 pts Creates strong contrarian tendencies and a sense of not belonging. Vocation chart solar plexus + Personality chart heart → –20 pts Enhances the feeling of being different, misunderstood, or emotionally at odds with others. Vocation chart heart + Personality chart heart → –20 pts Leads to inner rebellion and difficulty aligning one’s values with outward emotional expression. Vocation chart solar plexus + Personality chart solar plexus → –20 pts Reinforces emotional resistance and a tendency to push back against external expectations.
 
+<!-- page 96 -->
 ### Special Case: Too Many 11/2s in the Centers
 
 When 11/2 appears in multiple major centers across the vocation and personality charts, it can lead to hypersensitivity, insecurity, and a strong pleaser tendency. The person may struggle with boundaries, emotional overstimulation, and a desire to conform to others’ expectations at the expense of their own needs.
@@ -934,6 +1000,7 @@ Each of the following combinations receives –20 pts: 11/2 in vocation chart he
 
 11/2 in vocation chart solar plexus + 11/2 in personality chart heart → –20 pts Results in heightened emotional reactivity and a tendency to internalize others’ feelings. 11/2 in vocation chart heart + 11/2 in personality chart heart → –20 pts Amplifies self-doubt and emotional dependence on how one is perceived by others. 11/2 in vocation chart solar plexus + 11/2 in personality chart solar plexus → –20 pts Deepens emotional overstimulation and difficulty maintaining inner emotional balance.
 
+<!-- page 97 -->
 ### Hearts desire and Personality
 
 ### Little hearts desire
@@ -974,6 +1041,7 @@ Number 1s
 
 - 29/2 big heart: -10pt
 
+<!-- page 98 -->
 - 38/2 big heart: -5pt
 
 - 74/2 big heart: -5pt
@@ -1020,6 +1088,7 @@ Number 1s
 
 - 63/9 big heart: -5 pt
 
+<!-- page 99 -->
 ### Big personality
 
 Number 1s
@@ -1068,6 +1137,7 @@ Number 1s
 
 - 88/7 big pers:-10 pt
 
+<!-- page 100 -->
 - 97/7 big pers:-10 pt Number 8s
 
 - 26/8 big pers:-10 pt
@@ -1080,6 +1150,7 @@ Number 1s
 
 - 63/9 big pers:-5 pt
 
+<!-- page 101 -->
 ### Pillars
 
 ### Vocation Chart Pillar
@@ -1114,6 +1185,7 @@ Challenging Pillar Numbers and Deductions:
 
 lity.
 
+<!-- page 102 -->
 - 48/3 → –10 pts: Associated with inner confusion and unresolved karmic themes. Can cloud emotional clarity.
 
 - 49/4 → –5 pts: Tends to draw chaos and karmic loops. Struggles to create lasting inner order.
@@ -1144,6 +1216,7 @@ Challenging Pillar Numbers and Deductions:
 
 - 40/4 → –10 pts: Brings social isolation and health challenges. Lacks flexibility and warmth.
 
+<!-- page 103 -->
 - 43/7 → –5 pts: Makes you contrarian or emotionally distant. Hard for others to connect with.
 
 - 44/8 → –10 pts: Attracts heavy karmic tests and intense inner pressure. May feel overly controlling.

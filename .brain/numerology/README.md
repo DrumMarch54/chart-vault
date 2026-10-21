@@ -34,14 +34,49 @@ Drive map (Hub), with ids, for reading more:
 
 Owner's own numbers are in `Peoples Numbers` and in test/numeroscope.test.js (Peter, 19 May 1998).
 
+Read 2026-10-21 (the owner's ask "read the course books no chat has read yet"), page by page from the OCR
+PDFs, with what each holds for a NUMBER IN A POSITION:
+- **The Essence** (EssenceInterpretation-ver1, 66 pp.): what every essence position IS (pp. 19-56: day,
+  month, year, life path, outer and inner diamond, dharma line, DV-LP, target), the little life path numbers
+  3-27/9 one paragraph each (pp. 27-32), nine dharma lines for January/October births (p. 47). The Essence
+  APPENDIX (338 pp.) is the outer diamonds 11-99 (pp. 12-172) and inner diamonds 11-99 (pp. 176-336). Both
+  were already in the store (essence-book, essence-codes); they now carry page numbers.
+- **The Diamond Method** (108 pp.): a number's OWN diamond (little diamond, big diamond, essence diamond,
+  integration diamond), the three emotional codes 3/6/9 (pp. 45-47), the nine integration codes 18/9-99/9
+  (pp. 49-66), the numbers 1-9 unpacked (pp. 70-105). The book says the paths are "the different day
+  vibrations' paths to integration" (pp. 42-43: 1 → 12/3 → 45/9, ..., 31/4 → 75/3 → 18/9) and may be used for
+  life path, month and year too. Nothing about a number in a CHART position; the owner's rule of 2026-10-19
+  (a number's own diamond is not a chart's diamond) keeps it off the meaning pages. Open question for the
+  owner: show the day vibration's path (p. 43) and its integration code on the day page?
+- **The Name Numeroscopes** (178 pp.): the name chart built step by step (pp. 45-61), the sub-charts and what
+  their parts mean (pp. 73-90), the interpretation recipe (pp. 93-103, with the balanced/unbalanced lists for
+  the name line, centers and auras pp. 102-103), APPENDIX 1 "The numbers in aura and centers" 1-18/9: each
+  number as aura, in the heart center and in the solar plexus, balanced and unbalanced (pp. 105-155), APPENDIX 2
+  special combinations, money, celebrity, sexuality, dependency, psychic disorders and disease numbers
+  (pp. 157-176). Already in the store; now paged. This is THE per-position book for the name chart.
+- **Forecasting Numerology** (168 pp.): vortex rhythms, destiny periods per number (pp. 38-46), karmic
+  connections, year rows and their formulas F0-F4, the known combinations (pp. 105-115), day rows (pp. 135-137),
+  karmic release (pp. 139-141), "when should the customer change name" (pp. 143-147), the name-change year-row
+  formulas. No chart-position text; the Plan With Year Rows tool already uses its lists.
+- **Name Change**: there is no single book. Name Change (OCR) holds NameChangeMethod5Steps (12 pp.: the five
+  steps; p. 4 the sub-chart rules: personality and heart's desire numbers weigh most, 4 8 9 11 13 15 17 are
+  acceptable as secondary center vibrations, 12/3 sometimes in auras or as a center main vibration especially
+  with day 4, 16/7 and 18/9 avoided), NPE-NameDesign (22 pp.: how to invent a surname or double name, no
+  number meanings), NP-NameDesignNameLaw (module 15 slides: name design, pendulums and egregores, the hermetic
+  back), NPE-NameLaw (138 pp.: legal name change by country), NPE-NameCleanse (128 pp.: meditation and
+  manifestation techniques after a name change; p. 18 "themes you can experience with the different
+  vibrations"). None of them describes a number in a chart position. The Class Transcripts folder "Name Change
+  2025" holds the Jyotish, year-row cases, name law and rules-for-pure-name-charts lecture notes.
+Also paged the same day (separate PDFs exist): the psyche book, psyche cases, psychic disorders, the
+interpretation guide, the two sub-chart books, statistics, the templates rules, single name charts, relations.
+
 Read so far (2026-10-14): everything in `Website, FaceBook and Course
 transcripts` except the 1-99 descriptions, Facebook Questions and All Chart
 Videos; all of Chart Dynamics and Standard Frameworks; Name Chart scrape docs;
 the psyche, chakras and undernumeroscope powerpoints; Name-Numeroscope TEXT
 (construction steps only); 1-99 Energy Type; All Occult Numbers. Copied into sources/ but not read in full: the number guides, combos, the
-website 1-99 descriptions. Not yet read: the big course PDFs (Essence,
-Diamond Method, Name numeroscopes, forecasting), Jung date correspondence,
-Class Transcripts.
+website 1-99 descriptions. Not yet read: Jung date correspondence, Class Transcripts (the five course books
+above were read 2026-10-21).
 
 ## Business PDF's (second Drive folder, owner's rule 2026-10-16)
 Folder id 1icGqT828pD6Rxkk5j8jbSiBBDjr6vQaW. The owner: "other good info about business numerology and

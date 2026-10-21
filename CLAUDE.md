@@ -87,6 +87,9 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   No WEB_TOKEN = nobody gets in (503), never everyone. Sign-in link: `/?t=<password>`.
 - Runtime files (data/, backups/, .env, the real UserTag.backup) stay out of git.
   `test/repo.test.js` fails if a file is both ignored and tracked.
+- A course book's passage says its book and page (`<!-- page N -->` marks in knowledge/raw,
+  `knowledge/books.json`). Keep the marks when editing a raw file; a re-export is re-aligned,
+  never retyped (knowledge/README "Page numbers").
 - Schema changes: add a numbered entry at the end of `MIGRATIONS` in server/db.js.
   Never edit a shipped one. Imports and uploads record the build that made them.
 - Error answers (status ≥ 400) are never cached; the app shell is versioned by commit.

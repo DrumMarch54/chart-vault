@@ -914,3 +914,33 @@ the screen rather than one fixed phrase. Katrine's higher self came out "radiant
 crown": "institutional" (84/3's energy type word) is the kind of word the owner will replace; that is the point of
 the draft. The lines are deliberately NOT AI: the course's titles, nothing invented at run time.
 Next: the owner marks wrong words and missing pairs; more LINES as they name them.
+
+## 2026-10-21 The five course books read; every card says its book and page
+The owner: read the books no chat had read (Essence, Diamond Method, Name Numeroscopes, Forecasting, Name Change), short
+points, "every line traceable to its book and page, nothing invented", design and phone screenshots before anything on a
+screen. Reading them page by page (`.brain/numerology/README.md` "Read 2026-10-21") showed that the per-position words
+were already in the store as text (the Essence appendix's outer and inner diamonds, the Name Numeroscopes appendix's
+"numbers in aura and centers"), but with no page anywhere, and that the Diamond Method, Forecasting and the five Name
+Change PDFs hold no number-in-a-position text at all. So the work was page numbers, not more text:
+- The sixteen raw files that are separate PDFs in the Hub got `<!-- page N -->` marks by aligning each paragraph's
+  first 32 letters with the PDF's page-split text (`pdftotext -layout`, form feeds; both normalized to letters and
+  digits; monotonic; a heading too short to look up takes the page of the paragraph under it). Spot checks against
+  the books' own tables of contents all matched (15/6 → p. 135, 7 in the heart center → p. 140, Outer Diamond 14 →
+  p. 18, Integration 54/9 → p. 57). The rebuilt index was byte-identical in every passage's text, heading, numbers
+  and topics: only `page`/`pageEnd` and the source's `book` were added.
+- `knowledge/books.json` names the book behind each paged file; the builder refuses a mismatch either way.
+  `server/books.js` is the one reader; `subchart-words.js` and `listed-words.js` read the marks for their entries
+  (an entry's page is the page in force where it starts). `meaning.js` sends book/page/pageEnd on every passage.
+- The screen: "Name Numeroscopes book · 7 in the Heart Center · p. 140" on every course-word card; under the points
+  "From Name Numeroscopes book p. 140 · Name Chart - Mind and Emotion centers" (the books with their pages, then the
+  page-less documents the points were also written from); a hand-written point carries its own "Essence book p. 47"
+  tag (bits.json `cites`, one per point). First hand points with citations: the nine dharma lines of the Essence
+  book p. 47 (dharma diamond 11-19).
+- Left open for the owner (asked with the screenshots): the Diamond Method's "paths to integration" per day
+  vibration (pp. 42-43, 45-66) on the day page, the 5 Steps sub-chart rules (p. 4), a cited "what this position is"
+  card where a position has no number words.
+Lessons: the page number is the one thing a scrape loses and the owner most wants back; align, never retype. "Not
+yet read" in a README can mean "in the store but never distilled": check the store before fetching a book again.
+Screenshots came from the dev app through Playwright at 390×844 (the scratchpad `shoot.mjs`: sign in with `?t=dev`,
+Quick Chart, tap a drawn number twice; a diamond is not drawn, so its page is reached through the number it sits
+behind; after closing a page the number stays picked, so the next tap opens it at once).

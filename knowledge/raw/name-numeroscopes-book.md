@@ -2,6 +2,7 @@
 source: drive 1YWBzzhNqcaJ5rmCPOOO2AZrE4nqvk2LK
 topic: name-chart
 
+<!-- page 1 -->
 #### THE NAME NUMEROSCOPES
 
 Johannes and Estel Ehvass The Name, Vocation and Personality Charts
@@ -10,8 +11,10 @@ Johannes and Estel Ehvass The Name, Vocation and Personality Charts
 
 By Johannes and Estel Ehvass The Name, Vocation and Personality Charts
 
+<!-- page 2 -->
 #### INTRODUCTION
 
+<!-- page 8 -->
 Dear student We will guide you into the world of the 5 Body Numeroscope which forms the foundation of the numerology we teach.
 
 The 5 Body Numeroscope is a unique model we have developed through years of studying different numerological traditions. Our goal is to ensure that this model is congruent with the foundations of Chaldean numerology, but also integrates the spiritual principles and universal laws, guaranteeing a deep and coherent understanding of the numerological charts.
@@ -22,6 +25,7 @@ Our teaching and this book are based on nearly a decade of research, teaching an
 
 This book shares the core of our teaching and research, enriched with personal experiences, in-depth analysis and practical exercises. These will guide you to a more nuanced understanding of your-
 
+<!-- page 9 -->
 #### INTRODUCTION
 
 self and the world around you.
@@ -32,6 +36,7 @@ Estel brings her background in musicology and religious history to our work, wit
 
 With warmest regards and wishes for a fruitful learning process, Estel and Johannes
 
+<!-- page 11 -->
 #### INTRODUCTION
 
 ## The 5 Body Numeroscope
@@ -54,6 +59,7 @@ The next charts, collectively referred to as the Psychic Self, illuminate the fu
 
 The Essence and the Psychic Self are created by the numbers in our birth date and therefore cannot be changed. It is the baggage/karma we come with, but also shows the way to fulfill our highest potential and understand our dharma.
 
+<!-- page 12 -->
 #### INTRODUCTION
 
 #### THE NAME DIAGRAMS
@@ -74,10 +80,12 @@ The fifth layer consists of a chart, known as The Name Chart, which shows our na
 
 It shows how we are doing in our love life, mental well-being, friendships, social interactions, career progress and financial aspects. Among all the charts, the Name Chart keeps a more tangible connection to our physical reality. The Name Chart is the large golden diagram in the center of the 5 Body Numeroscope.
 
+<!-- page 13 -->
 #### INTRODUCTION
 
 Here you see Elvis Aaron Presley's 5 Body Numeroscope. At the top is a purple hexagon showing the Essence, which is about Elvis' spiritual side. To either side, in blue, we have the Psychic Self, showing his thoughts and feelings. To the right, in green, is the Vocation Chart, which tells us about his dreams and inner motivation. On the other side, in red, is the Personality Chart, which shows how others saw Elvis. In the middle is the Name Chart, describing Elvis' life in the physical world.
 
+<!-- page 14 -->
 #### INTRODUCTION
 
 ### THE VARIOUS LAYERS OF THE 5 BODY NUMERO
@@ -88,8 +96,10 @@ In the diagram's right column, we examine the inner life, the hidden and persona
 
 Together, this picture offers an in-depth guide to self-understanding and reflection, demonstrating how numerology can provide insight into the different layers of human existence.
 
+<!-- page 16 -->
 #### INTRODUCTION
 
+<!-- page 17 -->
 #### Microcosm Macrocosm
 
 ### THE HOLOGRAPHIC UNIVERSE AND THE 5 BODY
@@ -102,12 +112,14 @@ Therefore, it becomes clear that to understand the numerological diagrams accura
 
 Where can we turn to obtain this accurate macrocosmic perspective of humans? Ideally, such a model should encompass all dimensions of human existence. One suitable model is Maslow’s hierarchy of needs, while another is the chakra system, which maps energy centers along the spine. However, the most comprehensive and expansive model we know of is the ”Pancha Kosha” from the ancient yoga system in India. India’s rich heritage in producing enlightened masters, gurus, and sages is attributed to this incredibly accurate model of humans and their connectedness with the universe. Considering that the modern form of Chaldean numerology, which is widespread in the UK and Scandinavia, has its roots in India (where Cheiro learned numerology), it is appropriate to use Pancha Kosha to deepen our understanding of numerology in this context.
 
+<!-- page 18 -->
 The 5 Bodies ”Pancha Kosha” or ”The Five Bodies” represents one of the oldest conceptualizations of human consciousness experience and offers us a profound perspective.
 
 As human beings, our existence encompasses five interconnected layers: the spiritual, mental, emotional, etheric (energetic), and the physical. These layers are not only present throughout the universe but are also mirrored within us, signifying a holographic reflection of the cosmos.
 
 The Spiritual Body/Bliss Body (Anandamaya Kosha): This represents our ”consciousness body” and is the most subtle layer of our being. We touch upon it in fleeting moments of pure bliss, where we experience a profound sense of oneness with universal consciousness.
 
+<!-- page 19 -->
 The Mental Body/Wisdom Body (Vijnanamaya Kosha): Composed of wisdom, this body encapsulates our knowledge, values, beliefs, and inner sense of discernment. Awakening this body enables us to perceive beyond the surface of reality, enhancing our intuition and deepening our understanding. This body contributes to creating our sense of identity or ”ego.”
 
 The Emotional Body (Manomaya Kosha): This body is shaped by our mind and heart and houses our perceptions of the world, ourselves, and others. Within this layer reside our emotions and behavioral patterns, influencing our interactions and responses.
@@ -116,18 +128,22 @@ The Etheric Body (Pranamaya Kosha): This body is made of energy and represents o
 
 Together, these five bodies provide a comprehensive framework for understanding the different dimensions of our human experience, shedding light on the intricate interplay between our physicality, energy, emotions, thoughts, and consciousness.
 
+<!-- page 20 -->
 #### Holographic Insights
 
 The 5 Body Numeroscope™ in the Light of Pancha Kosha As we delved into these diagrams, a remarkable harmony emerged between their profound meanings and Pancha Kosha.
 
 The Essence Chart connects Anandamayakosha, the bliss body, and Vijnanamayakosha, the mental body. It bridges the essence of our soul and its greatest potential (Anandamayakosha) with the con-
 
+<!-- page 21 -->
 cept of individuality and personality (Vijnanamayakosha). Our Essence serves as a conduit to our soul and the divine, revealing the highest potential we can awaken in our lives. It enlightens the path to our deepest and most heartfelt bliss (Ananda).
 
 The Psychic Self forms the connection between Vijnanamayakosha, the mental body, and Manomayakosha, the emotional body. It translates our values, beliefs, and inner wisdom (Vijnanamayakosha) into tangible feelings and emotions (Manomayakosha), shaping our interactions with the world. The Vocation Chart corresponds to the relationship between Manomayakosha, the emotional body, and Pranamayakosha, the etheric body. It represents the transformation of feelings and desires into concrete inner images of what we long for. Our emotions manifest as “energetic” objects of desire and guide our focus. When we direct our attention towards something, prana/energy flows in that direction. The Personality Chart stands for the connection between Pranamayakosha, the etheric body, and Annamayakosha, the physical body. It channels our life aspirations and inner images formed in the etheric body into the physical world. When others meet us for the first time, they perceive our intentions manifested in the physical world. They witness our communication, energy, and the direction our intentions lead us. The clearer and more effectively we can communicate our intentions and attitudes to others, the more charismatic and influential we become. The Name Chart corresponds to Annamayakosha, the physical body, and subtly incorporates references to all other bodies and numerological charts. It encapsulates the culmination and integration of all energies from the aforementioned charts, finding their ultimate expression in the physical world.
 
+<!-- page 22 -->
 ## Understanding the Numeroscope on a Deeper Level
 
+<!-- page 23 -->
 ### WHAT IS A NUMEROSCOPE?
 
 A "Numeroscope" can have different meanings depending on the context, which can cause confusion. By understanding the different uses of the word, the confusion is reduced as you become familiar with its contextual usage.
@@ -142,6 +158,7 @@ MEANING 3: The term "Numeroscope" is also used for the grid-shaped chart that yo
 
 Numeroscope", it actually consists of the Essence in the form of a hexagon and five Numeroscope diagrams.
 
+<!-- page 24 -->
 ### PARTS OF THE NUMEROSCOPE
 
 ### The name line
@@ -170,6 +187,7 @@ On the center line of the numeroscope we insert the energies we are studying. Th
 
 - Lower Left Aura - our energy and protective field towards those closest to us (partner, children, family, very close friends)
 
+<!-- page 25 -->
 ### The Life Expression
 
 The Life Expression is our feet. It is what our life path is moving towards and what our future will be shaped by. It is therefore important to have good, strong numbers as your life expression.
@@ -180,6 +198,7 @@ This is our life foundation. If the life expression is the feet, then the pillar
 
 upper body name line lower body life expression pillar
 
+<!-- page 26 -->
 ### MICROCOSMOS, MACROCOSMOS AND THE NU
 
 #### THE NUMEROSCOPE
@@ -194,10 +213,12 @@ All beings are thus microcosms of the macrocosm and therefore encompass multiple
 
 While the doctrine of the "5 bodies" is an essential overarching model of the universe and the human being, there are also other models that have the same underlying structure that show a process from something physical to something spiritual. These include the Chakra model and Maslov's Hierarchy of Needs.
 
+<!-- page 27 -->
 The Chakra model is a model of human psychology and energy structure that helps us understand and analyze the numeroscope on a deeper level.
 
 In addition, we can also use Maslov's Hierarchy of Needs to see which areas of life the numeroscope covers.
 
+<!-- page 28 -->
 ### CHAKRA model
 
 According to the chakra model, we have energy centers located up the spine. These energy centers help shape our personality, aura (energy body) and consciousness.
@@ -206,10 +227,12 @@ There are 7 chakras in the body that represent the following: EARTH CHAKRA: Is l
 
 THE THIRD EYE: Is located in the middle of the forehead and stands for the mental and the world of ideas. (corresponds to the day vibration in the numeroscope). THE CROWN CENTER: Is located just above the top of the head and stands for the divine that exists in every human (corresponds to the Essence Chart).
 
+<!-- page 29 -->
 #### Earth (Root) chakra
 
 Water chakra Fire chakra Heart chakra Ether chakra Third eye Crown center
 
+<!-- page 30 -->
 ### MASLOV pyramid of needs
 
 In addition to the chakra model, Maslov's pyramid of needs also helps us understand the life areas of the numeroscope. According to Maslov, all people have the following needs:
@@ -228,12 +251,14 @@ NEED 4: Esteem, self-esteem, self-worth and respect This represents a deep human
 
 This need is to fulfill your full potential. For one person, this could be
 
+<!-- page 31 -->
 being the perfect parent. For another person, this could be being the perfect athlete or artist.
 
 #### NEED 6: Self-transcendence
 
 Giving yourself to something greater than yourself through altruism and spirituality. For example, giving yourself to a greater mission, something universal, or following a spiritual path. - Letting go of the ego and following a universal will, giving yourself to a mission or a higher purpose where you are not the most important thing.
 
+<!-- page 32 -->
 ### THE NUMEROSCOPE, CHAKRAS AND MASLOV
 
 In this runthrough, when we refer to the numeroscope, we are primarily referring to the Name Chart. Among all the charts, the Name Chart is the most embodied, serving as a structural reflection that resonates most deeply with the human body itself. The numeroscope chart looks like a human. Both physically and anatomically - and the chakra and Maslov model can be used to understand the individual parts on a deeper level.
@@ -248,6 +273,7 @@ In Maslov's model, the lower part of the numeroscope corresponds to the first 3 
 
 4) The middle part of the numeroscope consists of the name line.
 
+<!-- page 33 -->
 The name line has a great influence on our inner life and our social interactions. This level corresponds to the center of the heart chakra, which is the core of our personality and identity.
 
 5) The upper part of the Numeroscope, which includes the upper right and left auras and the heart center, tells about the finer aspects of our love life, our mental life and also our outward appearance and reputation - how others see and experience us.
@@ -258,12 +284,15 @@ In Maslov's model, the upper part of the Human Self corresponds to the fourth ne
 
 7) Our essence/soul/contact to the divine Our soul "chooses" the day we are born and thus provides our Day Vibration/archetype for the rest of this life. That day is chosen based on what life lessons our soul wants us to assimilate in this incarnation. We can say that our soul CHOOSES our Day Vibration (archetype) and our names, based on what we need to learn to move on to the next level of the soul's evolutionary journey.
 
+<!-- page 34 -->
 #### NEED 2: Security needs
 
 NEED 3: Love and belonging NEED 4: Esteem and self-esteem NEED 5: Self-actualization NEED 6: Self-transcendence NEED 1: physiological needs
 
+<!-- page 35 -->
 BEHOV 1: fysiologiske behov Earth (Root) chakra Water chakra Fire chakra Heart chakra Ether chakra Third eye Crown center
 
+<!-- page 36 -->
 ### YIN YANG
 
 In addition to dividing the numeroscope into levels similar to the chakra model and Maslov's pyramid of needs, the numeroscope can also be divided into a right and left side.
@@ -278,6 +307,7 @@ The left side and heart center of the numeroscope is called the YANG side and te
 
 The right side and the Solar Plexus of the numeroscope is called the YIN side and tells a lot about our inner emotional life and how our loved ones feel about us.
 
+<!-- page 37 -->
 ### THE NUMEROSCOPE: From Day Vibration Idea/Con
 
 #### Idea/Concept to Manifestation
@@ -288,6 +318,7 @@ In essence, the numeroscope reveals an "energetic path" from the level of ideas,
 
 But the use of the numeroscope is not limited to names; it can be applied to any number series in relation to a "Day Vibration" or fundamental archetype.
 
+<!-- page 38 -->
 ### EXAMPLE: The Numeroscope on the Psyche
 
 In the same way that the microcosm reflects the macrocosm, the numeroscope can be used on different levels.
@@ -298,14 +329,17 @@ In Greek mythology, Psyche is personified as a mortal woman whose love story wit
 
 In philosophical terms, Greek thinkers such as Plato and Aristotle further developed the concept of the psyche. For Plato, the psyche was immortal and constituted the true essence of a person, which differed from the physical body, which was perishable. The psyche was the seat of reason, courage and desire, which together formed the basis of morality and ethics. Aristotle also saw the psyche as the
 
+<!-- page 39 -->
 life principle or that which gives life to a body, but he focused more on the functions of the psyche and its relationship to the body, rather than its immortality.
 
 In the ancient Greek understanding, the psyche was both that which gave life (the soul) and that which contained human mental functions and emotions. This foundation has had a profound influence on later philosophical, psychological and spiritual traditions, where the psyche is often used to describe the inner life or state of consciousness that includes thoughts, emotions and will.
 
 Therefore, it is logical and meaningful that when we consider the psyche and soul as two aspects of the same entity, we can use the "soul numbers", that is, the date of birth, in a numeroscope to materialize or "mundanize" these numbers. By doing this, we bring the essence of the soul into a concrete format, allowing us to explore and understand the psyche - the manifestation of the soul in the physical world - through the language and vibrations of numbers.
 
+<!-- page 40 -->
 ## The Name Chart
 
+<!-- page 41 -->
 #### NAVNENUMEROSKOPET
 
 ### INTRO TO THE NAME CHART
@@ -314,6 +348,7 @@ In previous manuals, we have explored the numerology of the soul, focusing on th
 
 Doing so promotes a deeper, more intimate connection with your personal numerology.
 
+<!-- page 43 -->
 #### NAVNENUMEROSKOPET
 
 #### NAVNENUMEROSKOPET
@@ -326,6 +361,7 @@ The Name Chart is created by our names in interaction with the date of birth. Th
 
 The Name Chart is the gold-colored diagram that you can see below The Essence Chart (purple hexagonal shaped chart).
 
+<!-- page 44 -->
 #### NAVNENUMEROSKOPET
 
 Where our Essence Chart gives a picture of our destiny, essence and life mission, the Name Chart gives us a more earthly, ”here and now” picture of the personality and the daily challenges we face in life.
@@ -334,6 +370,7 @@ The Name Chart tells about the relationship with money, sexuality, how to deal w
 
 We can have names that either support The Essences resonances or we can have names that directly create a DISHARMONY in relation to the numbers in The Essence Chart. A numerologist’s foremost task is to empathize with his/her client on a deep and intuitive level, and find numerical values for the names in the Name Chart that best match up around The Essence Chart, so that the most positive aspects of The Essence Chart can be channeled out through the personality.
 
+<!-- page 45 -->
 #### Step by Step Guide to making the
 
 Name Chart Step 1 The Names Together with the Day Vibration, your names create all the other numbers in the Name Chart: the Life Expression, the Auras, the Centers, the Spine and the Pillar.
@@ -344,6 +381,7 @@ A middle name can have a HUGE impact on the overall vibration of the chart. It c
 
 There is a great truth in the English proverb: ”My middle name is...”, where the dots are filled in with a personal characteristic. Your surname is on the RIGHT side of the chart, the RECEIVING, introverted and emotional side of the chart, and therefore has a direct impact on your inner life and your relationship with those closest to you.
 
+<!-- page 46 -->
 HERE’S HOW YOU DO IT: Now it is time to calculate the numerical values of the names. They are calculated by using the Chaldean letter-number conversion table (cf. Cornerstone 5).
 
 Each letter of our alphabet is associated with a number from 1-8:
@@ -370,6 +408,7 @@ Pilmark
 
 19/1
 
+<!-- page 48 -->
 #### STEP 2 The Life Expression
 
 The Life Expression is the direction we follow/gravitate towards in life. It is a kind of synthesis of our focus, dreams and goals. This number has a great influence on all the other numbers in the Name Chart. If the Life Expression is good, it gives a positive influence to the whole Name Chart. If it is bad, it can create a lot of tension. Our Life Expression also tells us what opportunities and obstacles we will encounter on our way.
@@ -394,6 +433,7 @@ Pilmark
 
 14/5
 
+<!-- page 50 -->
 #### STEP 3 The Auras
 
 The auras in the upper part of the Name Chart are created by first name and last name, added together with the Day Vibration. The auras in the lower part of the Name Chart are created respectively first name and last name digit sums, added together with the Life Expression digit sum.
@@ -412,6 +452,7 @@ Upper Right Aura is found by adding the digit sum of the last name with the Day 
 
 In Katrine Pilmark’s case, we have (cf. Numerological addition): Surname 21/3 + Day vibration 19/1 = 4/4
 
+<!-- page 51 -->
 Lower Left Aura is found by adding the digit sum of the name with the digit sum of the Life Expression.
 
 In Katrine Pilmark’s case, we have (cf. Numerological addition):
@@ -444,6 +485,7 @@ Pilmark
 
 7/7 8/8
 
+<!-- page 52 -->
 #### STEP 4 Heart Center
 
 #### HEART CENTER MAIN AND EXTRA VIBRATIONS
@@ -460,6 +502,7 @@ With Katrine Pilmark we have (cf. Numerological addition): Main Vibration: Upper
 
 If Katrine Pilmark had two middle names and we assumed that the second middle name had the numerical value 14/5, then Extra Vibration 2 would be calculated by adding the Heart Main Vibration digit sum with the digit sum of the second middle name.
 
+<!-- page 53 -->
 HYPOTHETICAL VOLUME 2: Main tone: 7/7 + middle name 2 : 14/5 = 12/3 Katrine
 
 20/2
@@ -484,6 +527,7 @@ Pilmark
 
 16/7
 
+<!-- page 54 -->
 #### STEP 5 Solar Plexus
 
 #### SOLAR PLEXUS MAIN AND EXTRA VIBRATIONS
@@ -528,6 +572,7 @@ Pilmark
 
 15/6
 
+<!-- page 56 -->
 #### STEP 6 Spine
 
 The Spine number represents our inner strength. It is the ability to stand up for ourselves and get things done. It also shows the way in which we solve the problems we face in life, because it is how our Day Vibration or personality (DV) meets our Life Expression (LE) and what we encounter in life.
@@ -564,6 +609,7 @@ Pilmark
 
 6/6
 
+<!-- page 58 -->
 #### STEP 7 Pillar
 
 Our Pillar is the foundation we stand on in life. If the Life Expression were our feet, then the Pillar would be the floor we stand on. If the number is strong, we stand firm, regardless of whether there are upheavals and challenges in life.
@@ -604,6 +650,7 @@ Pilmark
 
 41/5
 
+<!-- page 60 -->
 To Sum Up STEP 1: The names Find the numerical values of the names using the conversion table: 1: A,I,J,Q,Y 2: B,K,R 3: C,G,L,S 4: D,M,T 5: E,H,N,X 6: U,V,W 7: O,Z 8: F,P Write the names and their associated numerical values and digit sums on the name line.
 
 #### STEP 2: The Life Expression
@@ -620,6 +667,7 @@ There is one Heart Center Extra Vibration per middle name. If there are no middl
 
 Solar Plexus Center Main Vibration: Lower Left Aura digit sum + Lower Right Aura digit sum Solar Plexus Center Extra Vibration 1:
 
+<!-- page 61 -->
 Solar Plexus Center Main Vibration digit sum + middle name 1 digit sum Solar Plexus Extra Vibration 2: Solar Plexus Main Vibration digit sum + middle name 2 digit sum Solar Plexus Extra Vibration 3: Solar Plexus Center Main Vibration digit sum + middle name 3 digit sum etc...
 
 There is one Solar Plexus Extra Vibration per middle name. If there are no middle names, there is therefore no Solar Plexus Extra Vibrations in the Solar Plexus Center either.
@@ -634,8 +682,10 @@ Now we have gone through the entire Name Chart and learned to make all the numbe
 
 Once you have done that, you can visit Numerologist PRO Software and enter your names and date of birth to check if you have made your Name Chart correctly!
 
+<!-- page 62 -->
 ## Subvibrations
 
+<!-- page 63 -->
 #### SUB-VIBRATIONS
 
 ### Consonants and Vowels
@@ -650,6 +700,7 @@ The vowels a,i,e add up to 7 The consonants k,t,r,n together give 13/4 In total,
 
 This means that there are differences in the experience of the individual names, even though they have the same numerical value. So when for example looking at name lists, it is important to know the more subtle difference between each individual name that comes from the subvibrations. Personality numbers and Hearts Desire numbers are when you add all the vowels and consonants for all the names together into one number. These two numbers mean a lot and are stronger than the individual subvibrations in the names and can be felt very quickly after changing them.
 
+<!-- page 64 -->
 #### SUB-VIBRATIONS
 
 Hearts Desire and Personality Numbers The Personality numbers (the consonants added together) are how we are perceived and seen by others, while the Hearts Desire numbers (the vowels added together) are our own inner space.
@@ -660,6 +711,7 @@ Both the Hearts Desire and the Personality numbers are important. The Personalit
 
 Hearts Desire Big Hearts Desire Big Personality number Little Personality number
 
+<!-- page 65 -->
 #### SUB-VIBRATIONS
 
 Calculation of the Hearts Desire numbers THE Little Hearts Desire NUMBER The Little Hearts Desire number is found by adding the vowels in each name separately and then finding the digit sums of the total vowel values of each name. Finally, you add all the digit sums to get the Little Hearts Desire number.
@@ -676,6 +728,7 @@ The Big Hearts Desire number is found by adding all the vowels in the name strai
 
 Have the vowels aie ie ia where: a = 1, i = 1, e = 5, i = 1, e = 5, i = 1, a = 1 Here the calculation looks like this: 1 + 1 + 5 + 1 + 5 + 1 + 1 = 15/6 Together, this gives a Big Hearts Desire 15/6 In this case we see that Little and Big Hearts Desire are both 15/6. It is quite normal for the Little and Big Hearts Desire numbers to be the same because there are generally fewer vowel values in names than consonant values and because many vowel values only give 1.
 
+<!-- page 66 -->
 #### SUB-VIBRATIONS
 
 Calculation of the Personality numbers THE LITTLE PERSONALITY NUMBER The Little Personality number is found by adding the consonants in each name separately and then finding the digit sums of the total consonant values of each name. Finally, you add all the digit-sums to get the Little Personality number. The Little Personality number in the Personality Chart corresponds to what we call the ”Life Expression” in the Name Chart. Here are the consonants of Katrine Ditte Pilmark:
@@ -702,6 +755,7 @@ The Personality numbers are a bit like an outer cloak you put on that has a cert
 
 They can either help you or work against you, and if it is the latter, then you will experience more resistance in integrating the Name Chart into practice and getting the external results you are after.
 
+<!-- page 67 -->
 The Big Personality number tells about where your personality is headed in the long term. The Little Personality number tells about what your personality is like on a daily basis.
 
 #### The Hearts Desire
@@ -712,6 +766,7 @@ underneath all the masks and false notions. If your Hearts Desire does not speak
 
 The Little Hearts Desire number tells about how you feel on a daily basis.
 
+<!-- page 68 -->
 #### SUB-VIBRATIONS
 
 The interaction of the Essence Numbers with Hearts Desire and Personality numbers The Hearts Desire is a reflection of your inner nature, your craving for different things and experiences, your deepest and truest motivation and the often unconscious intention behind all your actions. The Hearts Desire reveals what you love, what you like, what you long for - be it which people you are attracted to, which animals, things, surroundings, experiences and even your preferences in relation to food, art, music or entertainment. It has a big impact on the choices you make in life. That’s why it’s really good to become aware of your Hearts Desire numbers.
@@ -720,6 +775,7 @@ On the right is Katrine’s Essence Chart, Name Chart, Vocation Chart and Person
 
 With Katrine, her Day Vibration 19/1 manifests itself through 44/8. 19/1 is light, playful and has ease succeeding, while 44/8 is more serious, responsible and anxious. Together, these energies can give a slightly closed-off or warlike vibe. Katrine’s Life Path numbers (13/4 and 40/4) express themselves through her Hearts Desire numbers, which are both 15/6. 13/4 and 40/4 may be a little withdrawn from life. 40/4 is called the ”Hermit” while 15/6 wants to engage with others and feel all the emotions that come with being human and incar-
 
+<!-- page 70 -->
 #### SUB-VIBRATIONS
 
 #### SUB-VIBRATIONS
@@ -728,6 +784,7 @@ nated here on this physical plane. When they are balanced they can give the comb
 
 In imbalance, these number combinations can lead to unpleasant drama where you unconsciously tend to judge other people. In our session with Katrine, it became clear to us how the numbers worked out for her. Outwardly she was positive, communicative and ambitious (DV 19/1) and also had a charisma of cleverness/intelligence (Big Personality number (44/8). But as the session progressed it also became more clear to us how the inner numbers 40/4 and 15/6 manifested. Her 40/4 Big Life Path number made her often feel drained after work and most of all wanted to retire. 15/6 as Hearts Desire made her experience a lot of drama in her love life and that she was often jealous of her boyfriend, but due to the number 8 as the Personality number, she did not show it and kept her guard up.
 
+<!-- page 71 -->
 #### SUB-VIBRATIONS
 
 Examples On our Name Change Expert education, we get more into specific Personality and Hearts Desire numbers for different types of careers, which we have studied statistically. Here are some examples from our statistics conducted on over 100,000 famous people:
@@ -756,20 +813,24 @@ Examples On our Name Change Expert education, we get more into specific Personal
 
 This does not mean that you absolutely have to have these numbers in order to accelerate a certain career, but you can be inspired by what the statistics show. In this way, you can ”design” your personality when you get new names. For example, if you want to ”shine” like a royal, you can consider getting a new name with great personality 37/1. Or if you want to attract a strong international career, you can get great Personality numbers 34/7.
 
+<!-- page 72 -->
 ## The Sub Numeroscopes
 
+<!-- page 73 -->
 ### THE VOCATION AND PERSONALITY CHARTS
 
 Once you have looked at the subvibrations in the individual names and at the Personality numbers and Hearts Desire numbers, it is tempting to put the consonants and vowels of the names into additional numeroscope charts, since they each form their own Life Expressions.
 
 The ”Sub-numeroscope” of the consonant values is called the ”Personality Chart” (the red diagram in the image below) and the ”Subnumeroscope” of the vowel values is called the ”Vocation Chart” (the Konskopet Vokaskopet
 
+<!-- page 74 -->
 green diagram in the image).
 
 We see in people’s lives how it makes a huge difference in the quality of the name change if you have had calculated ”pure” Sub-numeroscopes. Numerologists have for many years been at a loss as to why some people experienced large, positive effects from their name change - while others think it did not have a large effect and a small percentage on top of that felt that their lives actually got worse.
 
 It is interesting to see that those of our customers who come and have already changed their name before their meeting with us, for example 5 or 10 years ago, and do not think that the name change has been completely optimal, have in virtually all cases had very unbalanced Sub-numeroscopes . Despite having a good main Name Chart, it has not worked optimally if the Sub-numeroscopes have been unbalanced. While the customers who have experienced big, positive improvements seem to have really good Sub-numeroscopes.
 
+<!-- page 75 -->
 ### Calculation of the Vocation Chart
 
 #### Little Hearts Desire
@@ -784,10 +845,12 @@ The Little Hearts Desire is a synthesis of what your heart and soul want and rad
 
 Big Hearts Desire is a more nuanced description of what you want and what you attract in the long run. This number is extremely important because it tells about the Life Expression of your soul or deepest desires, how your desires and longings will unfold in life.
 
+<!-- page 76 -->
 #### THE REST OF THE NUMBERS
 
 Just as in an ordinary Name Chart, auras, centers, spines and pillars are also formed, which all have an influence on the total energy in the vowels of the names.
 
+<!-- page 77 -->
 #### THE DIFFERENT PARTS OF THE VOCATION CHART AND THEIR
 
 #### MEANING
@@ -812,6 +875,7 @@ A desire means that you really want what you have chosen. The soul’s wish/desi
 
 And finally, we have the WILL that can take the necessary steps and go all the way. The will of the soul is carried out through the legs of the Vocation Chart, i.e. the Life Expression position, which in the case of the Vocation Chart is the Little and Big Hearts Desire numbers.
 
+<!-- page 79 -->
 #### CHOICE
 
 #### DESIRE
@@ -824,6 +888,7 @@ We can do the same with the consonants. If we put the consonants of the names to
 
 If we add the consonants in the name together without finding digit sums along the way, then we have what we call Big Personality, the ”Big Life Expression” of the consonants. It is written right next to the Little Personality number in the circle.
 
+<!-- page 80 -->
 #### BIG PERSONALITY NUMBER
 
 #### LITTLE PERSONALITY NUMBER
@@ -842,6 +907,7 @@ A person who, for example, gets 78/6 as a Big Personality, a number called ”Th
 
 A person who gets 81/9 as ”Big Personality” number will start to be extremely persistent and perfectionist in his/her work.
 
+<!-- page 81 -->
 #### THE DIFFERENT PARTS OF The Personality Chart
 
 #### AND THEIR SIGNIFICANCE
@@ -866,6 +932,7 @@ The emotional charisma is seen in the Personality Charts Solar Plexus and the ot
 
 The overall charisma is the Little and Big Personality numbers and the Pillar. These numbers give an overall story of where your personality is headed. They are the strongest numbers in the Personality Chart and go out to the outermost part of your aura. They influence how you are perceived by other people, whether they are close to you or whether they may have just heard about you for the first time without ever having met you.
 
+<!-- page 83 -->
 #### THE MENTAL CHARISMA
 
 #### THE OVERALL
@@ -894,6 +961,7 @@ The upper half of the Personality Chart is about the energies that are projected
 
 The Big and Little Personality number is a conclusion of your energies and tells about the direction in which your personality, charisma and image are developing.
 
+<!-- page 84 -->
 #### Vocation and Personality Chart
 
 Where the Vocation Chart is a kind of map of your heart and its desires and wishes, the Personality Chart is the outer form of the personality. It both helps to create your personality (your interests and wishes for life), but also helps to create your charisma – i.e. how other people see and perceive you.
@@ -902,6 +970,7 @@ The Vocation Chart is you when you sit still and tune into what you want in life
 
 The Personality Chart is you when you are in full motion and engaging with life and other people.
 
+<!-- page 85 -->
 ### How to read the Sub-numeroscopes
 
 There are many numbers in the Sub-numeroscopes, and it can be difficult to form an overview. Here, it is easiest to first get an overview of the main features. In this connection, it is a great help to be able to ”group” the numbers, i.e. that you look at several numbers at a time.
@@ -914,6 +983,7 @@ that creates the Heart Center creates a larger and faster overview. This diamond
 
 In Katrine Ditte Pilmark’s Vocation Chart we see that the Upper Left Aura digit sum is 8 and the Upper Right Aura digit sum is 3. This gives us an 83 diamond. 8 + 3 = 11/2, which is the number we see in the Heart Center. Instead of looking at 8, 3 and 11/2 separately, it is easier to look at the number 83/2, which contains all three numbers and tells us about how the three numbers interact. 83/2 is, for example, a number that is about managing your surroundings in order to gain an inner sense of security. Instead of looking at the individual ”letters” (ie 8,3 and 11/2), we look at the whole ”word” at a time.
 
+<!-- page 86 -->
 #### 2) The Vocation Chart Solar Plexus diamond
 
 The next thing you do is look at the ”Solar Plexus diamond”.
@@ -928,14 +998,17 @@ When the number 48/3 is located here in the Solar Plexus, it causes a lot of ten
 
 We also see that she has Pillar number 35/8. 15/6 gives a great feminine charm and charisma. 35/8 gives a slightly ”territorial” vibe. The combination of 15/6 and 35/8 can lead to a lot of jealousy drama - you are ”territorial” about your love life.
 
+<!-- page 87 -->
 Being able to group several numbers at a time in diamonds gives a quick overview: The upper part of Katrine’s Vocation Chart is marked by the 83/2 diamond, which gives her a desire to manage the environment. Katrine’s feelings are characterized by the 48/3 diamond, which can give an inner victim feeling. Her desire/desire for life moves between something rebellious (4) and sticking to the beaten path (8) Katrine’s Hearts Desire number is 15/6, and the Pillar is 35/8, which gives charm and charisma, but can also give a lot of jealousy drama. Now that we have seen what the main features are, we can start to look a little closer at the other numbers - for example the numbers on the central line. These numbers represent how the energies in Katrine’s interior are ”transported” from one plane to another. In Katrine’s case, the numbers are good, which means that there is good communication between the mind (the upper part of the Vocation Chart) and the emotions (the lower part of the Vocation Chart). If instead we saw a lot of 11/2 and 16/7 this could be a sign that the mind and emotions are not communicating so well. 16/7 on the central line in the Vocation Chart is, for example, a sign that the thoughts and ideas help to create anxiety in the emotions, and that the emotions can create anxiety in the mind, which may not understand them. Finally, you can look at the ”Extra Vibration” diamonds. These diamonds are created by the Heart Main Vibration or Solar Plexus Main- Vibration together with any middle names digit sums. For example, Katrine has Heart Extra Vibration diamond 26/8, because we have a Heart Center Main Vibration digit sum 2, and a middle name vowel value digit sum 6. Together, this gives 26/8, which is called ”The Family Leader”. This diamond colors the Heart Diamond 83/2 in a very specific way and makes it more loving, but potentially also possessive. We also see that she has the Solar Plexus Extra Vibration 36/9, which is a number that is about leadership, but also ”masks” and that you don’t show how you feel. This affects her Solar Plexus diamond 48/3 in such a way that it appears less confused (although there may well be some inner turmoil that others don’t see).
 
+<!-- page 88 -->
 Now that we have looked at the Vocation Chart, we can continue over to the Personality Chart.
 
 1) The mental charisma In the Personality Chart we see that Katrine has a 52/7 Heart Diamond. Other people feel a wise and curious energy. 52/7 is philosophically popular and curious about experiences and other people. When this vibration is balanced, it adds a great sense of adventure, humor, warmth and a sense of universality.
 
 2) The emotional charisma In the Personality Chart we see that Katrine has a 39/3 Solar Plexus Diamond. 39 is a very masculine number that gives enormous strength, willpower and the ability to turn knowledge into power. On the outside you may seem ”bossy”, but on the inside you may feel like a victim with lots of thoughts and doubts about yourself and your abilities.
 
+<!-- page 89 -->
 #### 3) Personality number and Pillar
 
 Katrine has a Little Personality number 8 and a Large Personality number 44/8. The Pillar is 29/2.
@@ -948,10 +1021,13 @@ In imbalance, 44/8 as a Big Personality number can attract a lot of challenges i
 
 Now we can take a look at the other numbers to see what influence
 
+<!-- page 90 -->
 they have on the whole. We see that the consonants of the middle name give 12/3, which amplifies the 12/3 in the Solar Plexus Center. 12/3 in imbalance is about feeling like a victim. We also see 12/3 in the Lower Left Aura, which further reinforces the 12/3 theme in the Personality Chart. We can see in the Personality Chart how the 12/3 energy is almost led all the way into the middle of the body (the consonants of the middle name). This shows that Katrine is very susceptible to energies that come from outside, and can easily feel like a victim of other people’s energies.
 
+<!-- page 92 -->
 ## Hvordan læser du tallene
 
+<!-- page 93 -->
 ### INTERPRETATION
 
 #### INTERPRETATION
@@ -970,6 +1046,7 @@ STEP 3 Learn to see number combinations Certain number combinations give differe
 
 - The combination of 3.5 and 8 is called the ”Money Triad”. These were just a few examples. There is an infinite amount of com-
 
+<!-- page 94 -->
 #### INTERPRETATION
 
 binations. Some combinations are well-known and have names, while others you have to feel your way to intuitively.
@@ -984,6 +1061,7 @@ STEP 5 The Sub-numeroscopes Look at the Sub-numeroscopes. Look at the Vocation C
 
 Finally, you must learn to see the entire 5 Body Numeroscope ”from above” so that you get a comprehensive and intuitive picture of it. When you look at all the charts from above, you can also see if there are general trends. Are there repeating patterns? Are there many of the same numbers that show a specific theme?
 
+<!-- page 95 -->
 #### INTERPRETATION
 
 Learn to look for Diamonds The diamond is created by connecting the digit sums of two numbers. For example, the numbers 17/8 and 11/2 will give the diamond 82/1. 17/8 has 8 as digit sum and 11/2 has 2 as digit sum.
@@ -1004,6 +1082,7 @@ For The Psychic Self, the Vocation Chart, the Personality Chart and the Name Cha
 
 The meaning of these different diamonds is explained more in the interpretation recipe on the following pages.
 
+<!-- page 96 -->
 #### INTERPRETATION
 
 #### INTERPRETATION OVERVIEW
@@ -1032,6 +1111,7 @@ Here you go through all the numbers one by one. Think about how you think the pe
 
 - Target number - what should the person aim for in life to achieve the fastest and most fundamental success? The Target number diamond is formed by the digit sum of the Day Vibration and the Upper Aura digit sum.
 
+<!-- page 97 -->
 #### INTERPRETATION
 
 The Psychic Self Look at The Psychic Self to gain a deeper understanding of how the person’s psyche works. What is the person interested in and where, if any, is there psychological tensions, e.g. different ways of seeing the world which may not align well.
@@ -1058,6 +1138,7 @@ How do the Heart Diamond, Life Expression diamond and the 4 aura diamonds combin
 
 - Look at the Psychic Pillar - where does the person’s psyche rest? What kinds of activities help the person relax?
 
+<!-- page 98 -->
 #### INTERPRETATION
 
 The Name Chart Here you look at the following positions and read about the numbers there.
@@ -1084,6 +1165,7 @@ Life Expression and pillar:
 
 The centers:
 
+<!-- page 99 -->
 - Heart center and the Heart Diamond - how are communication, thoughts and how is the person perceived?
 
 - Solar Plexus and the Solar Plexus Diamond - how is the emotional life, the inner drive and the relationship with oneself?
@@ -1100,6 +1182,7 @@ The Auras:
 
 - Public diamond (Upper Right Diamond) – how is the relationship with new people and the public affected? How do you act on the outside?
 
+<!-- page 100 -->
 #### INTERPRETATION
 
 The Sub-numeroscopes Personality numbers and Hearts Desire Look at Small and Big Personality numbers and feel what these tell about the person’s outer personality - what the rest of us see and notice.
@@ -1110,6 +1193,7 @@ Look at the Vocation and Personality Charts Life Expressions and pillars Are the
 
 The main energies in the Vocation Chart What is the Vocation Chart Heart Diamond, Solar Plexus Diamond, Small and Big Hearts Desire number. Write them down. For example, for Katrine Ditte Pilmark, they look like this: 83/2 to 48/3 to 15/6 and 15/6 This gives a sense of the energy flow in the Vocation Chart. The main energies in the Personality Chart What is the Personality Chart Heart Diamond, Solar Plexus Diamond, Little Personality number. Write them down. For example, for Katrine Ditte Pilmark, they look like this: 52/7 to 39/3 to 8 and 44/8 This gives a sense of the energy flow in the Personality Chart.
 
+<!-- page 101 -->
 #### INTERPRETATION
 
 Look at the Centers Main Vibrations:
@@ -1136,6 +1220,7 @@ Are there any common patterns between the different parts? Are there, for exampl
 
 Just take a look at what you think about it all, and extract the things that you think best describe the person as you know/ perceive him or her.
 
+<!-- page 102 -->
 #### INTERPRETATION
 
 #### BRIEF OVERVIEW OF
@@ -1150,6 +1235,7 @@ Feel free to look at the amount of balanced or unbalanced numbers in the Name Ch
 
 Balanced and unbalanced numbers on the name line Predominantly balanced numbers: 10,13,14,15,17,19,20,21,23,24,25,27,(30), 32,33,34,36,37,41,42,45 Predominantly unbalanced numbers: 11,12,16,18,22,26,28,29,31,38,39,40,43,44 Balanced and unbalanced numbers in centers Predominantly balanced center numbers: 2,3,5,6,7,10,14,15 Predominantly unbalanced center numbers: 4,8,9,11,12,13,16,17,18
 
+<!-- page 103 -->
 #### INTERPRETATION
 
 Balanced and unbalanced numbers in auras Predominantly Balanced Auras: 2,3,4,5,6,7,8,9,10,13,14,15 Predominantly Unbalanced Auras: 11,12,16,17,18 Special numbers and number combinations Are there any special numbers that stand out and indicate certain themes? Money, fame and success?
@@ -1166,6 +1252,7 @@ Balanced and unbalanced numbers in auras Predominantly Balanced Auras: 2,3,4,5,6
 
 - Hard work/overwork vibrations: 16, 18
 
+<!-- page 105 -->
 ## APPENDIX 1
 
 ### INTERPRETATION OF AURA NUMBERS
@@ -1174,6 +1261,7 @@ An aura number will always affect the number or numbers it stands with, adding i
 
 For example, if your name is 24/6, which in itself is balanced, and it is next to 12/3, then 12/3 will draw out the drama in 24/6. It will typically be about failed love relationships and drama in relationships/ family life - which is already an aspect of 24/6 unbalanced. It will also make you feel like a victim (12/3) of these relationships. It can also mean that you feel that you need help from others (an unbalanced aspect of 24/6) and feel victimized (12/3) on that account. The aura number adds its own tone to what the main number is about, drawing out either positive or negative aspects of it. A balanced aura number If a balanced aura number, such as 14/5, is next to the main number 24/6, which is itself balanced - then 14/5 will boost good communication (14/5) in relationships and family life (24/6), and provide even more networking and help from others, which 24/6 is about in balanced form.
 
+<!-- page 106 -->
 ### INTERPRETATION OF CENTER NUMBERS
 
 Center numbers are more ”encapsulated” than names and life expressions. Therefore, a center can be balanced even if there are some unbalanced numbers in the auras - or there are some unbalanced name values.
@@ -1192,6 +1280,7 @@ Unbalanced Solar Plexus center An unbalanced Solar Plexus center means that you 
 
 Balanced heart center
 
+<!-- page 107 -->
 A balanced heart center means that the person's communication, career and "brand" are positive and that they generally function in relation to their surroundings and have a positive aura. Unbalanced heart center An unbalanced heart center means that you can have problems in your career, in your communication, in your relationships with others and how you are perceived externally.
 
 The different numbers in the centers The centers represent the body's energy flow, and the numbers listed here must therefore not be too hard. Soft numbers provide comfort and connection to the emotions. The softest numbers are: 2, 6 and 7.
@@ -1208,10 +1297,12 @@ But they should both be balanced by one or more of the soft (feminine) numbers.
 
 The balanced center values The balanced center numbers in pure name numeroscopes are: 2,3,5,6,7,10,14, (15)
 
+<!-- page 108 -->
 (in some cases also 15, but not too much).
 
 The unbalanced center values The unbalanced center numbers in name numeroscopes are: 4,8,9,11,12,13,16,17,18 Combinations If there is a combination of balanced and unbalanced center values, the entire center is unbalanced as a general rule.
 
+<!-- page 109 -->
 ### THE NUMBERS IN AURA AND CENTERS
 
 ### NUMBER 1
@@ -1224,6 +1315,7 @@ The 1 will never appear in auras or centers.
 
 Balanced as aura number: Turns up positive qualities, flow, adds a "cosmic dimension", luck, is loved The 10 in an aura turns up what a balanced main number stands for. It simultaneously brings luck, a winning mentality and "cosmic" flow to the area of life that the number is about. Next to a communication number it will provide a "divine communication", next to a money number it will boost the flow of money. In an aura, 10/1 balanced will mean that you are highly loved in the relationships that the aura stands for, e.g. in the public sphere, among social circles and colleagues, among close friends or in family and close relationships. Unbalanced as an aura number: Flighty, turns up negative qualities, over-intense If the numbers around the 10 are unbalanced, it will turn up the negative aspects that the main numbers stand for. In a numeroscope with many 9s and/or many other 1s, 10/1 can turn up the solar energy extremely high, so you will experience being "burned" from within. This can manifest as extreme stress, being over-intense, unable to find peace and rest, and not being able to
 
+<!-- page 110 -->
 take things in or process impressions because the mind is spinning "like a wheel". It can therefore cause hyperactivity and learning difficulties, especially in children. Another important aspect is that you get the quality "loved or hated" in the aura of the number, which can be expressed in an unpleasant way. Others alternately dislike one or hug-love one. And you can "split the water" strongly, so you get a lot of negative attention from the relationships that belong to the aura the number is in.
 
 #### 10/1 IN THE HEART CENTER
@@ -1234,6 +1326,7 @@ You can be loved or hated, just like if the number is in an aura. For example, y
 
 For example, a 10 with a 6 will add a "cosmic" dimension to love (6), which can make it easy to feel unconditional love for all that exists. Together with a 7, it boosts intuition, which becomes more "cosmic", and together with a 5 it will add a "cosmic communication". In HC, the 10 will also make you radiate this to your surroundings in
 
+<!-- page 111 -->
 a very positive and visible way, as 10/1 is a powerful solar energy that radiates outwards. You become more "yang"/radiant in your surroundings with 10. 10/1 also makes you more energetic and can boost the soft numbers in a center, such as 2, 6 and 7 - in a positive way when they are together in a balanced numeroscope. You will be loved by others, and especially in your public appearance you will have a strong radiance that others perceive very positively.
 
 #### 10/1 IN THE SOLAR PLEXUS CENTER
@@ -1242,6 +1335,7 @@ Unbalanced in Solar Plexus: Amplifies other numbers (negative), flighty, confuse
 
 Balanced in Solar Plexus: Amplifies other numbers (positive), loved When a 10 stands in Solar Plexus with balanced numbers (2,6 and 7) it turns up the positive qualities in these numbers. In addition to this, the 10 adds an extra aspect of flow and winning mentality, and a good and healthy self-confidence. You will experience a more cosmic dimension of the other numbers, and it will be easy to love yourself. The number 10 also brings more balance and flow to your emotional life and close relationships. You have a lot of drive and creativity and do everything in an easy and enjoyable way. You will be much loved in your close relationships.
 
+<!-- page 112 -->
 ### NUMBER 2
 
 #### AURA 2
@@ -1260,6 +1354,7 @@ Balanced in the heart center: Seems creative, fun, festive
 
 When a 2 stands together with other numbers in the heart center, they will influence each other. The 2 will then add an extra energy of enjoyment, creativity, fun, entertainment and festivity to what the main number stands for. With the 2, the focus is on enjoyment, flow and creativity.
 
+<!-- page 113 -->
 Briefly about the balanced 2 number combinations:
 
 - 2 and 3 in the centers: Success, humor, enjoyment of life, creativity, drive to achieve goals
@@ -1276,12 +1371,14 @@ You can also be flighty and unfocused, so you don't get the things you want done
 
 It's also easy to be oversensitive and take other people's emotions and moods too much to heart and turn things inward on yourself. You will often be lazy and find it difficult to get things done.
 
+<!-- page 114 -->
 Balanced in Solar Plexus: Feeling happy, enjoying life, inner balance When a 2 is in Solar Plexus, you focus on enjoyment, creativity, fun, entertainment and festivity in your own emotional life and in your close relationships.
 
 You have lots of flow and creativity and do everything in a pleasurable way. The 2 gives the potential for a good sex life and good body awareness, especially with a 6. You are empathetic, harmonious and in balance with yourself and are good at nurturing yourself and your relationships.
 
 There is something "life with champagne bubbles" about having 2 in the Solar Plexus.
 
+<!-- page 115 -->
 ### NUMBER 11/2
 
 #### AURA 11/2
@@ -1294,12 +1391,14 @@ Unbalanced as aura number: Lacking protection, withdrawn, oversensitive, turning
 
 - If it is with 15/6, it can increase the inner sense of drama in 15/6 so much that you tend to "freak out" over the smallest little thing in relation to the life area the aura represents. 11 is always unbalanced as an aura number in a non-pure numeroscope. But in a numeroscope where everything else is in play, 11/2 can in some cases be experienced positively. 11/2 can therefore be used (as a compromise) as an aura in special numeroscopes if the person needs to keep a surname, for example. However, one must be extra careful if there is also strong 13,15 or 17 energy, for example as names, life expressions or in the innate essence.
 
+<!-- page 116 -->
 #### 11/2 IN THE HEART CENTER
 
 Unbalanced in the heart center: Seems weak, oversensitive, dependent, melancholic 11/2 in HC is very similar to the 2 number unbalanced. But the 11 will kick the negative emotions hidden in the unbalanced numbers it is placed with - which the 2 does not do in the same way. For example, 11/2 with 13/4 will make you appear even more odd, cross and bitter. With 15/6 you will appear even more dramatic, and since the 11 turns up the emotion in 15/6 you can appear downright hysterical. Together with the 7, you will appear extremely sensitive, but can typically swing into being mentally unstable as part of your "brand" and appearance.
 
 With 11/2, you become oversensitive in the social field and take other people's emotions and moods too much to heart. You can also easily be seen as a weak person who can't stand up for yourself, can't speak up and is too dependent on the opinions of others. 11/2 in the heart can also cause a lot of melancholy and inner sadness. In some cases, people are also able to draw something positive out of an 11 in HC, where it adds extra sensitivity and a deep psychological empathy and insight. However, they will often experience the negative aspects, such as having difficulty setting boundaries, which they will experience as something that sets off some negative ripples, so all in all, having 11 in HC is not a positive thing for them. The 11 in HC is about the immune system. It can boost other disease numbers (see more under health and diseases) and can in itself trigger immune system problems, autoimmune diseases and allergies.
 
+<!-- page 117 -->
 #### 11/2 IN THE SOLAR PLEXUS CENTER
 
 Unbalanced in the Solar Plexus: Difficulty pulling yourself together, sadness, dependency in relationships, people pleaser The 11 in the Solar Plexus is very similar to the unbalanced 2 and contains a powerful psychic energy that is very difficult to manage. The 11 can make you sad, and you can experience a lot of dependency in your relationships, which can be mentally painful. It can be a victim mentality, a martyr role, being exploited and manipulated psychologically by others.
@@ -1312,6 +1411,7 @@ Health-wise, you will tend to numb the inner emotional ocean with food, shopping
 
 With 11/2 in SP or the lower right aura (close relationships) you can also experience infidelity from your partner, especially if you have the numbers 12/3 or 15/6 in the same area. You don't speak up to your partner and are easily taken advantage of by the opposite sex and can be a pleaser in your sex life.
 
+<!-- page 118 -->
 ### NUMBER 3
 
 #### AURA 3
@@ -1320,6 +1420,7 @@ Balanced aura number: Winning mentality - perfectionism - humor - drive A 3 in t
 
 Unbalanced aura number: Arrogance - know-it-all - comparing yourself to others A 3 in the aura that is close to an unbalanced number can affect the main number with a tendency to feel a little better and smarter than others in the areas that the main number represents. This could be arrogance, smarts, wordiness, selfishness or ways of asserting themselves over others.
 
+<!-- page 119 -->
 #### 3 IN THE HEART
 
 Balanced in the heart center: Successful, humorous, strong charisma The 3 in the heart center makes you seem successful, charismatic, intelligent and humorous, and it is this energy that you radiate to the world. The 3 can be balanced by the numbers 2, 6, 7 or 10/1, otherwise you can be too hard with a 3 in the center. Examples:
@@ -1334,6 +1435,7 @@ Balanced in the heart center: Successful, humorous, strong charisma The 3 in the
 
 - 3 and 10/1:Exudes success, strength and luck Unbalanced in the heart center: Stubborn, uncompromising, unbalanced If the 3 is with unbalanced numbers, you will easily be seen as stubborn, uncompromising, know-it-all and unbalanced in your opinions.
 
+<!-- page 120 -->
 #### 3 IN THE SOLAR PLEXUS CENTER
 
 Balanced in the Solar Plexus: Successful love life/family life, self-confidence, grounded, getting things the way you want them The 3 is a number for success, love and family when it is balanced in the Solar Plexus center. You are very lucky and get things the way you want them. You have good self-confidence, self-respect and a good grounding. However, a 3 must always be balanced by either 2, 6 or 10/1, otherwise it becomes too hard a number to have standing in a center alone.
@@ -1342,6 +1444,7 @@ Unbalanced in the Solar Plexus: Hard, materialistic, selfish, willful If the 3 i
 
 If the 3 is with 11/2, you may have low self-esteem, constantly comparing your own success with the success of others and feeling inferior.
 
+<!-- page 121 -->
 ### NUMBER 12/3
 
 #### SPECIAL ABOUT 12/3
@@ -1352,6 +1455,7 @@ If you have 12/3 just once, it will typically be a recurring theme throughout yo
 
 Unbalanced in the aura: Misunderstandings and problems, victim of others' agenda If 12/3 is with masculine main numbers, it will typically add misunderstood superiority and arrogance in the area of life where the number stands and in relation to what the main number is about. If it's a feminine number, it will typically bring total confusion and chaos, which can lead to having a very hard time knowing oneself and not being able to find one's feet in either career or personal life, depending on where the number is placed.
 
+<!-- page 122 -->
 #### 12/3 IN THE HEART
 
 Unbalanced in the heart center: Misunderstanding others, being misunderstood yourself, drama around your person, victim of others' agenda If the number 12 is with masculine numbers, the person may feel the need to assert themselves in an excessive way that pisses others off and creates drama and negativity about their person.
@@ -1364,6 +1468,7 @@ You will often find yourself the victim of someone else's agenda, especially whe
 
 An example is Michael Jackson, who has 12/3 and 5 in his HC, and experienced being a "victim" of the music industry's agenda - where they used him in their communication to spread a message that he himself could not vouch for. For example, he took legal action against Sony several times in connection with the video Thriller, which he could not vouch for and did not want as part of his own brand.
 
+<!-- page 123 -->
 #### 12/3 IN THE SOLAR PLEXUS CENTER
 
 Unbalanced in the Solar Plexus: Problems in your inner life, not seeing yourself clearly, drama in relationships With 12/3 in SP you will have many problems in your close relationships and in your relationship with yourself. You may find that your love life is constantly affected in a negative direction through problems, drama or complications that occur. There may also be a tendency towards sexual problems and dysfunctions. With 12/3 in SP, you experience being "blind" and being taken hostage in your love life and sex life - and can also take other people "hostage" for your own dramas and misunderstood projections that you cannot see yourself.
@@ -1374,6 +1479,7 @@ In SP, the focus is on FEELING like a victim, and in what way depends a lot on t
 
 Together with a 7 it can turn up the psychological instability in the 7 and can create an almost "psychotic" and mental drama in your love relationship based on delusions and fantasies (7).
 
+<!-- page 124 -->
 ### NUMBER 4
 
 #### AURA 4
@@ -1384,6 +1490,7 @@ The 4 number together with a balanced capital number adds the ability to be inno
 
 Unbalanced aura number: Opposite and cross, upheaval, unfulfilled desires 4 number with an unbalanced number turns up the worst aspects of the main number and adds negativity, "cross" and misunderstanding to the area the main number represents. It can also add wordiness, argumentativeness and rebellious anger.
 
+<!-- page 125 -->
 #### 4 IN THE HEART CENTER
 
 Unbalanced in the heart center: Unhappy, complaining, weird, out of place career-wise, lonely and misunderstoodrstået The 4 is a destiny number and is therefore too hard to be in the centers. Since the centers represent the inner life and the body, you want to have soft numbers here so that you can feel yourself and have a good flow in your body.
@@ -1396,12 +1503,14 @@ With a 4, there is a tendency to have blockages and tension in the upper body, w
 
 With 4's, your appearance will often divide people, with some thinking you're unique and special, maybe even brilliant - while others think you're weird or strange. This can make you feel lonely and like the "black sheep" of the herd, never quite fitting in. 4 and 6: If the 4 is with a 6, the hardness of the 4 will be softened slightly. You will be seen as a very original person who does everything in your own way - but you may also be seen as a bit weird or strange.
 
+<!-- page 126 -->
 #### 4 IN THE SOLAR PLEXUS CENTER
 
 Unbalanced in the Solar Plexus: Unhappy with life, unfulfilled longings, infidelity The 4 is a fate number and therefore brings many upheavals and changes in life. It should therefore not be in the centers. The 4 in the Solar Plexus can lead to infidelity and many changing partners, because you are always waiting for the right one to show up and always find fault with the one you have.
 
 On an emotional level, you may experience an inner dissatisfaction and a constant longing for something else. You may feel that "the grass is always greener" and you're never completely satisfied with the way things are. This means you can't fully enjoy being present in the moment, and you're constantly scolding life inside yourself. With a 10/1 or a 2, for example, you lack strength and don't act on your goals, and a 4 will make you always long for something other than what you have. You are confused and don't know what you want - you just know you want something else.
 
+<!-- page 127 -->
 ### NUMBER 13/4
 
 #### SPECIAL ABOUT 13/4
@@ -1418,6 +1527,7 @@ Balanced as aura: Genius and innovation, immortality numbers 13/4 adds even more
 
 Unbalanced as an aura number: Weird, black sheep, strange 13/4 appears even more strange and often stuffy than the pure 4.
 
+<!-- page 128 -->
 #### 13/4 IN THE HEART
 
 Unbalanced in the heart center: Extremism, cultic tendencies, has a completely "reverse" paradigm than everyone else In the heart center, 13/4 is even more unbalanced than the pure 4 number.
@@ -1432,6 +1542,7 @@ Unbalanced in Solar Plexus: Infidelity, very critical, misunderstood and bitter 
 
 With 13/4 you will often be even more bitter and feel more misunderstood and lonely than with the pure 4. In the same way as with 12/3 in HC you can develop extreme tendencies. It can be some very strange rules and "paradigms" that you push down on your loved ones, so that you thwart your relationships with others.
 
+<!-- page 129 -->
 ### NUMBERS 5 and 14/5
 
 #### AURA 5 AND 14/5
@@ -1440,6 +1551,7 @@ Balanced as aura: Good communication, business, networking, charisma Balanced gi
 
 Unbalanced as aura: Money problems, communication problems, social problems If the 5 is close to hard numbers, such as 12/3, 16/7, 18/9, it will give the person problems with money, debt, misunderstood communication, and problems in relationships.
 
+<!-- page 130 -->
 #### 5 AND 14/5 IN THE HEART CENTER
 
 Balanced in the heart center: Clear communication, well-liked, business skills With a 5 in the heart center you are good at speaking your mind, have clear communication, make things happen and appear successful and are very well-liked. You are energetic and active, and valued for your social skills. You have lots of energy and are up for many new adventures and interests. You are good at business and can quickly attract money through trading, as you easily make good deals with others that yield a good return. You easily network your way to success.
@@ -1450,12 +1562,14 @@ You often appear superficial, unstructured and either overselling or lacking com
 
 For example, the number combination 11/2 and 5 in the heart center can turn you into a people pleaser who goes beyond your own limits to please others socially. You find it difficult to stand up to people and experience a lot of stress when it comes to making money. The number combination 12/3 and 5 in the heart center makes you easily misunderstood, and you misunderstand other people and social situations as you overinterpret and turn things upside down. You can also achieve success/money (5), only to constantly lose it again (12/3).
 
+<!-- page 131 -->
 #### 5 AND 14/5 IN THE SOLAR PLEXUS CENTER
 
 Balanced in Solar Plexus: Active love life and family life, expresses your own needs, close friendships, understands yourself and others The 5 in Solar Plexus gives an active love life and sex life, where you have clear communication with your partner and are generally good at telling others how you feel, can easily express your needs and understand others. It's easy to make close friends who are really good for you and with whom you feel comfortable. It also stimulates good lower body health and a good flow of life energy. You have a very active life and enjoy doing new and exciting things with your partner, friends and family.
 
 Unbalanced in Solar Plexus: racing thoughts, taking unhealthy risks, shallow/out of touch with your emotions If the 5 is unbalanced, it can cause racing thoughts, stress, hyperactivity and taking unhealthy risks. You will also have problems with communication in your love life and friendships, for example by talking too much about yourself, which can irritate your loved ones. You may be hyperactive and have difficulty finding inner peace, which can cause sleepproblems, racing thoughts and stress.
 
+<!-- page 132 -->
 ### NUMBER 6
 
 #### THE NUMBER 6
@@ -1464,6 +1578,7 @@ Unbalanced in Solar Plexus: racing thoughts, taking unhealthy risks, shallow/out
 
 Balanced aura: Charismatic charisma, charm, harmony-creating Adds a loving aura to the main number and brings out the best psychological qualities in the number. If it is in the "public" aura, you are well-liked and attract the right people who can help you get ahead in life. If it is in the "close relationships" aura, you are loved in your close relationships and have a loving radiance on your loved ones. Unbalanced aura numbers: Softens unbalanced numbers a little If the 6 is next to main numbers that are hard and unbalanced numbers, such as 12/3 16/7 18/9, it will soften these numbers a little.
 
+<!-- page 133 -->
 #### 6 IN THE HEART CENTER
 
 Balanced in the heart center: Loved by all, magnetic charisma, good upper body health With a 6 in the heart center you have enormous charisma and are loved by all. You have great popularity and are much loved by many people. You appear very loving, attractive, charismatic and popular, spreading harmony, comfort and unity. You can therefore be a good leader because people want to follow you.
@@ -1474,6 +1589,7 @@ Unbalanced in the heart center: Drama around your person in the social field The
 
 If it is in conjunction with 11/2, which is a soft unbalanced number, it will be difficult to speak up in social relationships and you will easily feel exploited in your social life, in your career or in public. Together with 8, 9 and 12, you can typically have a dramatic personality, where there will be a tendency for drama in your public relationships and around your person and appearance in the social field.
 
+<!-- page 134 -->
 #### 6 IN THE SOLAR PLEXUS CENTER
 
 Balanced in Solar Plexus: Good love and sex life, healthy self-esteem, lower body health and good fertility. The 6 is balanced with the numbers 2, 3, 5, 6, 7, 10/1, 15/6. It gives you a really good self-esteem where you can feel yourself and your feelings in a healthy way. You are good at feeling other people without compromising yourself. It makes for a good sex life and love life, and you are good at creating loving bonds in your relationships. You are a family person and spread harmony and good vibes wherever you go and have a good and loving influence on others. A sense of community and unity is also something you spread around you. You also have particularly good fertility and get pregnant easily/have good sperm quality. Sex drive is high in a balanced way and you easily attract the right partner who is a match both emotionally and sexually.
@@ -1482,6 +1598,7 @@ Unbalanced in the Solar Plexus: Tendency towards victim mentality/pleaser/drama 
 
 If the 6 is opposite 11/2, it will be difficult for the person to speak up in close relationships and love affairs, and you can easily feel exploited in your personal relationships. They will also tend to be a pleaser and find it hard to say no, only to feel a bit used and martyred. Even with an unbalanced number together with the 6 in the Solar Plexus, you will find that you have a relatively good sex life. However, you may find yourself cheating or being a player (with 15/6 or 13/4) or your partner cheating on you (with 11/2). Or that you have other kinds of problems and dysfunctions (with 12/3) where you experience many problems, drama or complications.
 
+<!-- page 135 -->
 ### NUMBER 15/6
 
 INTERPRETATION OF THE PURE 6 NUMBER: A less stable number 15/6 is a less stable number than the pure 6 number.
@@ -1492,12 +1609,14 @@ It should therefore almost always be interpreted to the unbalanced side, unless 
 
 It is a number that in an unbalanced numeroscope can cause mysterious diseases, no matter where it stands - but especially when it stands together with 11/2, 12/3, 16/7, 9 numbers and 18/9.
 
+<!-- page 136 -->
 #### AURA 15/6
 
 Balanced aura number: Charismatic/erotic charisma, good performer, fascinating power Adds a mysterious and fascinating energy to the main number... If it is in the "public" aura, it is easy to attract attention and has a strong fascinating and alluring effect on others, especially the opposite sex. If it is in the "close relationships" aura, you have an alluring and fascinating effect on your close relationships. Unbalanced aura numbers: Drama queen, manipulation and problems If 15/6 is next to main numbers that are hard and unbalanced numbers, such as 12/3 16/7 18/9, it will turn up the drama in these numbers - unlike the pure 6 number, which will soften these numbers slightly.
 
 You can be seen as a manipulative person, a player, or too "fake", in the area that the main number stands for. For example, together with the 5 in an unbalanced numeroscope, people will perceive you as a manipulative salesman.
 
+<!-- page 137 -->
 #### 15/6 IN THE HEART CENTER
 
 Balanced in the heart center: With a 15/6 balanced in the heart center, you have enormous charisma and fascination. You can typically use your personality to create a brand and draw attention to yourself, and many reality stars - and other stars - have the 15/6 energy as part of their personal brand. Unbalanced in the heart center: Drama around your person in the social field When 15/6 is unbalanced in a center, you will typically have a dramatic personality, where there will be a tendency for drama in your public relationships and around your person and appearance in the social field.
@@ -1508,6 +1627,7 @@ This can happen in your love and sex life (SP) or in your public life (HC).
 
 You may experience mysterious illnesses around the upper body and head area.
 
+<!-- page 138 -->
 #### 15/6 IN THE SOLAR PLEXUS CENTER
 
 Balanced in Solar Plexus: Good sex life, attractiveness, good fertility You are less of a family person than with a pure 6, and are more interested in relationships with the opposite sex than starting a family - although that can be part of it too.
@@ -1518,6 +1638,7 @@ Unbalanced in Solar Plexus: Mysterious diseases, dramatic, manipulative, drama i
 
 With 15/6 in SP, you can also be a player who has sex without feeling, and thus often experiences hurting others.
 
+<!-- page 139 -->
 ### NUMBER 7
 
 #### AURA 7
@@ -1526,6 +1647,7 @@ Balanced aura number: Intuition, international vibes, healing, popularity The nu
 
 Unbalanced aura number: Pain and suffering, mental instability, confusion When the 7 is in conjunction with an unbalanced number, the main number is negatively affected and an element of mental suffering, confusion and instability is added to the main number. Therefore, you will be more affected by the pain of losing numbers such as 12/3 or 16/7, and if it is 11/2, you will feel the pain of not being able to speak up more clearly.
 
+<!-- page 140 -->
 #### 7 IN THE HEART CENTER
 
 Balanced in the heart center: Popular, inspiring, unconditionally loving, healing radiance, considered a wise person. With the 7 in HC you are popular because you speak from your own inner wisdom, and it attracts people in your presence who want to raise their own vibration.
@@ -1534,6 +1656,7 @@ The combination of 6 and 7 in HC is called the "Hollywood combination" as you ar
 
 Unbalanced in the heart center: Fantasy world, lacking grounding, lying, seems mentally unstable With the 7 unbalanced in the heart, you lack grounding and tend to live in a fantasy world that has no root in reality. You can come across as mentally unstable and as someone who suffers from depression and mental illness, which will be very obvious to others. You can come across as very manipulative and tend to be a liar, telling others about what you want - as if you already have it. Above all, however, you lack grounding and have a tendency to escape reality. You can appear as a person who does not act on your plans and appear very untrustworthy.
 
+<!-- page 141 -->
 #### 7 IN THE SOLAR PLEXUS CENTER
 
 Balanced in the Solar Plexus: Know yourself, inner guidance, intuitive You have a strong intuition about who you are and can see your own issues with very sharp eyes.
@@ -1546,8 +1669,10 @@ The subconscious mind is like a vast ocean that is in constant turmoil, and it f
 
 You have an unrealistic view of yourself, and your ego can create a lot of ideas that you are either bigger and better than you are, or the
 
+<!-- page 142 -->
 opposite - that you are worth nothing. At its most unbalanced, it can lead to split personality, psychosis or other mental illnesses. 7 is medium balanced/unbalanced with: 3 and 10 7 is very unbalanced with: 4, 8, 9, 11, 12, 13 or 16 in the Solar Plexus.
 
+<!-- page 143 -->
 ### NUMBER 16/7
 
 INTERPRETATION IN RELATION TO THE PURE 7 NUMBER: A less stable number 16/7 is an unbalanced number in itself, where the pure 7 number itself is balanced.
@@ -1560,18 +1685,21 @@ Unbalanced aura number: Anxiety, experiences of loss, bone vibration When 16/7 i
 
 16/7 next to a money number makes you work hard in your career, and perhaps achieve success - but only to lose it all again. It also means that you can lose people, jobs, material things or status in the area of life that the aura represents. And that you have a closed down energy in that area of life, and do not easily let other people in.
 
+<!-- page 144 -->
 #### 16/7 IN THE HEART CENTER
 
 Unbalanced in the heart center: Appearing bony, suffering and shut down With 16/7 in the heart, you radiate this energy in your surroundings and appear as a person with a lot of mental pain. At best, you appear profound and a little reserved and closed off, and at worst, you appear as a person in deep crisis with major existential challenges. If 16/7 is in a 9's numeroscope, it will typically swing over to overbalance, and you will radiate that you are hardworking and working hard.
 
 With 16/7, there is a potential for many dark thoughts, with suicidal thoughts and deep depression at the very end of the tangent.
 
+<!-- page 145 -->
 #### 16/7 IN THE SOLAR PLEXUS CENTER
 
 Unbalanced: Psychic pain, depression With 16/7 in SP, you will have very dark thoughts about yourself and find it very difficult to deal with them. It's hard to let other people in because you have an unconscious fear of losing them again, you typically prefer to keep potential close relationships at a distance. There is a big difference between 16/7 in underbalance and overbalance. Underbalance is about psychological pain, while overbalance is about being extremely emotionally shut down and working very hard.
 
 If 16/7 is with masculine numbers, the tendency will be overbalance, and with feminine numbers, underbalance.
 
+<!-- page 146 -->
 ### NUMBER 8
 
 #### AURA 8
@@ -1580,6 +1708,7 @@ Balanced as aura: Progressiveness, propulsion, power, performing The 8 adds prog
 
 Together with the 7, it provides strong intuition and deep knowledge, and with the power of the 8, this combination can bring great success as the 8 grounds the spirituality and insight of the 7. Unbalanced: Adversity, karma, breaks in self-confidence In an unbalanced numeroscope and close to unbalanced numbers, the 8 in the aura can bring many negative upheavals around what the main number stands for. This can cause many things to go wrong, and you generally experience a lot of adversity and conflict in life, with other people and with your surroundings. Over time, you may find that your energy is drained and your self-confidence suffers because you have so many conflicts and adversity.
 
+<!-- page 147 -->
 #### 8 IN THE HEART CENTER
 
 Unbalanced in the heart center: Appears cynical, bitter and distrustful, experiences adversity in life The 8 in the heart center is always unbalanced. As it is a destiny number, it brings too many changes. It's too hard a number to have in the centers, which can cause problems with arthritis, bones, joints and not least heart problems.
@@ -1588,12 +1717,14 @@ It leads to much hardship, many problems, suffering and bad experiences, so self
 
 Other people will perceive you as a person who complains a lot and you can easily come across as a bully who is dominant and uncharming. You appear strong, but often not very pleasant, and tend to be cynical, cold and distrustful of others.
 
+<!-- page 148 -->
 #### 8 IN THE SOLAR PLEXUS CENTER
 
 Unbalanced in the Solar Plexus center: Feeling unloved, hard and closed in your feelingsemotional life, loneliness, self-esteem issues The 8 is always unbalanced in the Solar Plexus center. This can lead to lower body health issues such as arthritis, joint and bone diseases. It can also cause fertility problems. With the 8 in SP, you tend to turn your problems inward and often have low self-esteem because you repeatedly face a lot of adversity in life.
 
 You often have many problems in your close relationships and in your relationship with yourself, which is full of mistrust and lack of confidence. You find it difficult to love yourself and feel unloved by others and cover it up with a cynical and life-denying attitude. You can feel quite lonely and as your emotional life is shut down, it's difficult to communicate with others. Despite an inner weariness with life, you never give up and keep fighting, but typically without learning from your mistakes.
 
+<!-- page 149 -->
 ### NUMBER 17/8
 
 #### SPECIAL ABOUT 17/8
@@ -1608,6 +1739,7 @@ Unbalanced as aura: Negative spotlight, many problems, paranoia Unbalanced, the 
 
 In a balanced numeroscope, 17/8 can stand as aura, but it will still turn up the spotlight. It can be more comfortable with other numbers
 
+<!-- page 150 -->
 in the aura, but this also occurs very rarely, and mainly as a small compromise in specialty numeroscopes. If there are already 17/8 issues, it is best to avoid it.
 
 #### 17/8 IN THE HEART CENTER
@@ -1616,12 +1748,14 @@ Unbalanced in the heart center: Negative spotlight, shyness, stage fright Like t
 
 In the heart center you will appear very clear to the outside world, and you may have a feeling that others can see right into you. This can create a form of paranoia, extreme privacy and fear of being followed, or it can cause "visibility allergy". If you have many masculine numbers around 17/8 in a center or aura, it can also cause a desire to be in the spotlight. It will often cause problems being in public and can cause stage fright.
 
+<!-- page 151 -->
 #### 17/8 IN THE SOLAR PLEXUS CENTER
 
 Unbalanced in the Solar Plexus: Private details revealed, psychopathic traits Like the 8, 17/8 is always unbalanced in the Solar Plexus Center. This can lead to lower body health issues such as arthritis, joint and bone diseases. It can also cause fertility problems.
 
 The difference is that 17/8 has a more magnetically attractive effect on other people, especially close relationships.
 
+<!-- page 152 -->
 ### NUMBER 9
 
 #### AURA 9
@@ -1632,12 +1766,14 @@ Unbalanced: Closed, blocked, speaking harshly and judgmental In an unbalanced nu
 
 It also causes you to perform the properties of the main number in an unnecessarily hard or knuckle-dragging way, and to say very hard things or speak harshly to the people represented by the area of life where the 9 stands as the aura number. For example, in close relationships, surroundings and colleagues, friends or in your public life.
 
+<!-- page 153 -->
 #### 9 IN THE HEART CENTER
 
 Unbalanced in the heart center: Hard, self-righteous, critical, feared by others The 9 is always unbalanced in the centers, as it is too hard a number to be placed here.
 
 With the 9 in the heart center, you radiate authority, but in a tough way, where you can also easily be feared and appear very closed off. This can result in speaking harshly, being unfair, assertive and leading others in a tyrannical manner. Your outward appearance is very harsh, judgmental, critical and you won't be as loved. You can also have unpleasant personality tendencies if the 9 is very unbalanced. With the 9 in a center, you shut down the body's energy flow and cannot feel yourself in the upper body. This can cause many disorders and diseases, such as cancer, blood clots, arthritis and tension etc.
 
+<!-- page 154 -->
 #### 9 IN THE SOLAR PLEXUS CENTER
 
 Unbalanced in the Solar Plexus: Explosive anger outbursts, negative self-talk, fertility problems, overly materialistic With 9 in SP you tend to shut down your emotional life and energy flow in the lower body, which can lead to pent-up anger and lead to diseases such as blood clots, cancer etc. usually in a lower body area.
@@ -1646,6 +1782,7 @@ You tend to be very critical and judgmental. Both towards yourself and in your c
 
 You can't give yourself love from within, and it's difficult to love yourself - and therefore other people. This causes problems in love life, family life and close relationships. It can also cause fertility problems. Your self-esteem becomes very focused on results and materialism. You can easily judge yourself very harshly and compare yourself to others on a material or status level and constantly talk down to yourself. This can create a lot of suffering and self-hatred. You have many expectations of yourself and never think you are doing well enough as you constantly strive to achieve more in life. You tend to have explosive but short-lived outbursts of anger, which can be a bit frightening to others, so you alienate others. With the 9 in SP, you may experience being homosexual, bisexual or that you are often approached by the same sex, despite being heterosexual.
 
+<!-- page 155 -->
 ### NUMBER 18/9
 
 #### SPECIAL ABOUT 18/9
@@ -1656,6 +1793,7 @@ The description of the 9 number will also be adequate here. However, there are s
 
 Unbalanced as aura: Hard, explosive anger / pent-up anger Here you can read the description of the 9 number unbalanced as aura, and turn up the hardness of the number. With 18/8 there is even more of a tendency for anger to be shut down and instead be encapsulated in the body and psyche, after which it can be released suddenly like a volcanic explosion.
 
+<!-- page 157 -->
 ## APPENDIX 2
 
 ### SPECIAL NUMBER COMBINATIONS
@@ -1674,6 +1812,7 @@ We can think of the numbers as bubbles of potential that span a scale that moves
 
 All of these states are expressions of the same "potential bubble", but are expressions of different degrees of balance/imbalance. When numbers are highly imbalanced, they also tend to manifest as imbalances physically and emotionally - and this is what the sections on physical illnesses and mental disorders related to the different number vibrations are primarily intended to provide insight into. When we read the section here, it should not be understood that everyone who has these numbers or number combinations with them has the mentioned physical or mental disorders etc. These conditions are only expressions of how the numbers can be expressed in some of the strongest forms of imbalance. However, many people with these numbers will recognize some of the tendencies in these imbalances, though often in much milder forms, or as tendencies
 
+<!-- page 158 -->
 they may have experienced during particularly demanding periods in their lives.
 
 The numerological effects of numbers cannot be used to diagnose or advise on health, nor can they replace medical advice.
@@ -1690,6 +1829,7 @@ This number combination is called the World Conqueror because it can lead to big
 
 The combination is about concrete/physical or emotional perception of value. Placed externally, e.g. in an outer aura, it provides the opportunity to make good money. Placed inwardly, e.g. in the right aura, it is often about the perception
 
+<!-- page 159 -->
 of one's own value. This can either be a strong self-confidence or lack of it, depending on the surrounding numbers and what the person has been through in their personal development process. If the triad has 12/3 as the 3 in it, there may be challenges with money - or challenges in the perception of one's own value, in other words, challenges with self-esteem.
 
 ### THE ”HUSTLE” VIBRATIONS
@@ -1698,12 +1838,14 @@ The ”hustle” vibrations (16/7 and 18/9 together or just 18/9 alone) are ofte
 
 16/7 and 18/9 add a strong element of industriousness (ranging from hard work to workaholism on the bnalance/unbalance scale), which, from a certain point of view, can lead to achieving your goals - however, the road is often filled with resistance and discomfort.
 
+<!-- page 160 -->
 ### CELEBRITY NUMBERS
 
 Numbers that give a strong celebrity vibe and charisma are: 15/6, 17/8, 37/1 Numbers that make you memorable and have a unique vibe or look are: 13/4 and 17/8 Statistically we can see that many models and pop stars have a combination of these numbers, and when it comes to models they also often have 23/5 with them.
 
 Influencers often have a combination of the celebrity numbers, and in addition, we often see 32/5, which is both a money number and a number for charismatic communication.
 
+<!-- page 161 -->
 ### THE MONEY NUMBERS
 
 The classic money numbers are 14, 19, 23, 32 and 37 In a balanced numeroscope, there are often several of the money numbers present, as numerologically you often want to add these numbers.
@@ -1724,6 +1866,7 @@ In an unbalanced numeroscope, some of the money numbers cause problems with mone
 
 32/5
 
+<!-- page 162 -->
 - Balanced: Good career, good communication and brand, good at making money, can also inherit money/"old money".
 
 - Unbalanced: If it is not fully balanced, you will typically experience progress in your career, only to be set back by problems. You can inherit money, but also experience resistance to this.
@@ -1744,6 +1887,7 @@ In an unbalanced numeroscope, some of the money numbers cause problems with mone
 
 28/1 is often called the "millionaire number" and is often seen in billionaires. But it can also attract lawsuits and conflicts, and is therefore not used in the numeroscope, and is therefore not traditionally considered one of the success numbers in numerology.
 
+<!-- page 163 -->
 ### SEXUALITY
 
 To gain deeper insight into the vibrations that influence sexuality, we can look at the solar plexus center in the Name Chart. - You can also look at the numbers in the solar plexus of the Vocation Chart, which we talk more about in connection with the sub-numeroscopes in another manual.
@@ -1760,6 +1904,7 @@ For women, it can also indicate difficulty getting pregnant as the energy in the
 
 May indicate a sex life that experiments with dominance (9) and submission (15/6). It can also be played out by using sex to manipulate the emotions of others (when 15/6 is imbalanced) to gain a sense of
 
+<!-- page 164 -->
 strength or power.
 
 Like all combinations, it can be played out at all levels of the balance/ unbalance scale. In its most balanced aspect, these numbers can create a strong polarity between masculine and feminine, and thus great attraction and sexual tension.
@@ -1774,6 +1919,7 @@ Indicates a spiritual sex life, where the inherent energy and strong emotions of
 
 Indicates lower body health and fertility. It indicates a good and stable sex life based on intimacy and love. There will typically be fewer emotional fluctuations and a little less of the purely erotic attraction than if it is 15/6.
 
+<!-- page 165 -->
 #### 12/3 in Solar Plexus
 
 Tends to cause physical sexual problems, such as potency problems or lack of sexual control. It usually also causes problems with self-confidence, which can typically follow into the bedroom.
@@ -1782,12 +1928,14 @@ Tends to cause physical sexual problems, such as potency problems or lack of sex
 
 Often indicates the lack of a sex life and relationships, and a tendency to keep others at a distance.
 
+<!-- page 166 -->
 ### DEPENDENCY NUMBERS
 
 In people suffering from various addictions, we often see the numbers 11/2 12/3 15/6 and 16/7, which can appear in all possible combinations. Here are the classic combinations for different types of addictions.
 
 Eating disorders and emotional eating: 11/2 and 15/6 Substance abuse and escapism: 12/3 and 16/7 Alcoholism to shut down emotions: 12/3 and 18/9 The nuances of what the numbers contribute are as follows: 11/2 is typically about numbing emotions in an attempt to find inner peace 12/3 is about racing thoughts, low self-esteem, and wanting to shut down emotions 15/6 is typically about trying to control emotions. Manipulating others is often an attempt to get the love and emotional stability that you cannot give yourself 16/7 is typically about fear, existential crisis and escape from reality 18/9 is typically about trying to control emotions by shutting them down completely
 
+<!-- page 167 -->
 ### NUMBERS FOR PSYCHIC DISORDERS
 
 These numbers by no means necessarily translate into mental disorders. But when we see this in people, there are often some of these number combinations involved.
@@ -1800,6 +1948,7 @@ These numbers by no means necessarily translate into mental disorders. But when 
 
 The numbers 1 and 9 - megalomania Many 1 and 9s together in an unbalanced numeroscope can give a form of megalomania and extreme flightiness (meaning a certain lack of grounding). You are so "radiating" that it is difficult to take things in, such as how life affects your emotions, and even learning new material can be difficult as you can only "radiate outwards" and not receive.
 
+<!-- page 168 -->
 8 and 15/6 - psychopathic tendencies (manipulative combined with power motivated)
 
 This combination can boost power desires and turn up a psychopathic tendency to insist on getting things the way you want them without restraint. At the more balanced end of the scale, it could be someone who is good at seeing through others (15/6), but may use this to their own advantage and gain power through manipulation.
@@ -1810,16 +1959,19 @@ The inherent tendency for emotional drama in 15/6 can become particularly bellig
 
 15/6 with unbalanced numbers 15/6 can lead to mental and emotional instability when placed with unbalanced numbers: (11, 12, 13, 16, 18) or with the unbalanced center numbers: (4, 8 or 9)
 
+<!-- page 169 -->
 The unbalanced numbers can bring out the worst in the number 15/6, so that emotions take over and you end up living out the negative emotional tendencies of your other numbers. This can be expressed, for example, by becoming more susceptible to emotions such as hatred, anger and jealousy, and getting stuck in these emotions and states so that you cannot get out of them again. In practice, this means that the person easily gets in touch with their lower, emotional tendencies from 15/6, and in the worst case it can lead to psychopathic, psychotic or strongly selfish traits. You can have a very explosive and violent temper and become very controlled by external events, such as becoming very angry and irritated by the things that happen in your life. It can be small things, such as dropping something on the floor, that cause the person to freak out in a way that doesn't match the severity of what is happening. People tend to have a very hard time managing their emotions if things don't go their way, and often there are many trigger points in their relationships and relationships.
 
 15/6 can also lead to depressive and manic-depressive traits. However, this depends on how the entire numeroscope looks in its entirety, and having 15/6 together with other unbalanced numbers does not necessarily lead to mental disorders. But there can be a tendency to it that is latent and can erupt in different situations where you are under pressure.
 
 Another image of 15/6 is that it can trigger what in yoga is called the "descending kundalini". This is a person's life energy or "chi" and can
 
+<!-- page 170 -->
 either be used to lift oneself to higher vibrational levels, or can be used in the opposite way, so that you fall into a darkness. 8 ,15/6 ,16/7 in combinations - anxiety and fear These number combinations can lead to experiencing a lot of fear and anxiety for seemingly no reason. With both 15/6 and 16/7 you can attract lower energies, and with 16/7 your fear is boosted. You may find yourself afraid of the dark and have unprocessed anxiety and stress in your nervous system, so you are constantly afraid that something will go wrong.
 
 Severe and paralyzing anxiety is a mental disorder at the extreme and most unbalanced end of the scale, and it can be triggered in the various combinations between 8 and 16/7 or 15/6 and 16/7. In the number 8, there is a built-in 16/7 in the diamond of the number, which is further triggered when the number is placed with 16/7 in the numeroscope.
 
+<!-- page 171 -->
 ### DISEASE NUMBERS
 
 People with these numbers do not always suffer from these diseases. But we often see them in people who have these tendencies. The classic disease numbers are: 11, 12, 15, 16, 18 Here are some of the most well-known combinations of these numbers.
@@ -1844,6 +1996,7 @@ Number combinations for diseases 11/2 and 9 - stress and burnout
 
 - Serious bacterial and viral diseases: Malaria, syphilis, hepatitis, Lyme disease, etc.
 
+<!-- page 172 -->
 15/6 together with 18/9 or 9 - Cancer combination
 
 - 18/9 is the strongest Cancer number, as you can shut down emotions that are transformed into tension, which stops energy flow in the body - the effect is amplified by 15/6
@@ -1876,6 +2029,7 @@ Disease trends in the numbers individually 10/1 - high blood pressure and stress
 
 - Dementia and memory impairment 15/6 - mysterious diseases, eating disorder, depression
 
+<!-- page 173 -->
 - Unexplained malaise (often psychological)
 
 - Mysterious diseases that cannot be diagnosed
@@ -1912,6 +2066,7 @@ Disease trends in the numbers individually 10/1 - high blood pressure and stress
 
 - Pain and tension in the area of the body where the number stands
 
+<!-- page 174 -->
 ### POTENTIAL HEALTH PROBLEMS FOR EACH NUMBER
 
 Health problems for the 1 number
@@ -1944,6 +2099,7 @@ Health problems for the 1 number
 
 - Headaches and migraines
 
+<!-- page 175 -->
 - Memory problems
 
 - Anemia Health problems for the 5th digit
@@ -1974,6 +2130,7 @@ Health problems for the 1 number
 
 - Delicate skin and a generally sensitive body
 
+<!-- page 176 -->
 Health problems for the 8s
 
 - Tension and stiffness in the neck

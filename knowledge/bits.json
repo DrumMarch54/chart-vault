@@ -1,5 +1,5 @@
 {
- "about": "The short points on a number's meaning page, written by a Claude session from the course text: the course's own words, shortened, nothing added. Key = chart.position:number, or chart.position:number+partner for a center's circle. Each group is a heading and its points; sources = the knowledge/raw files the points were taken from. **Double stars** mark the words that should stand out (shown bold). The full course words stay one tap away on the page. Owner's ask 2026-10-19 (test page: Allison Frank's mind center 7 with 13/4). Rules (owner 2026-10-19): short fragments, not sentences; bold the words that matter; leave out sentences about the POSITION itself (\"part of your brand\" is the mind center, not the 7), referrals to a numerologist, tarot descriptions, and pairs with other numbers (those go under the pair's own key).",
+ "about": "The short points on a number's meaning page, written by a Claude session from the course text: the course's own words, shortened, nothing added. Key = chart.position:number, or chart.position:number+partner for a center's circle. Each group is a heading and its points; sources = the knowledge/raw files the points were taken from. **Double stars** mark the words that should stand out (shown bold). The full course words stay one tap away on the page. Owner's ask 2026-10-19 (test page: Allison Frank's mind center 7 with 13/4). Rules (owner 2026-10-19): short fragments, not sentences; bold the words that matter; leave out sentences about the POSITION itself (\"part of your brand\" is the mind center, not the 7), referrals to a numerologist, tarot descriptions, and pairs with other numbers (those go under the pair's own key). A hand-written set may carry \"cites\" beside \"points\" (one per point, { book, page } or null): the page of the course PDF (knowledge/books.json) the point was shortened from; shown on the point (2026-10-21, the nine dharma lines of the Essence book p. 47).",
  "sets": {
   "batch-01/set1": {
    "sources": [
@@ -30282,6 +30282,177 @@
      ]
     }
    ]
+  },
+  "hand/essence.dharmaDiamond:19": {
+   "sources": [
+    "essence-book"
+   ],
+   "groups": [
+    {
+     "title": "",
+     "points": [
+      "**Follow cosmic guidance**; use an \"optimism code\"."
+     ],
+     "cites": [
+      {
+       "book": "Essence book",
+       "page": 47
+      }
+     ]
+    }
+   ]
+  },
+  "hand/essence.dharmaDiamond:11": {
+   "sources": [
+    "essence-book"
+   ],
+   "groups": [
+    {
+     "title": "",
+     "points": [
+      "**Think community-minded**; use a \"feel your way forward code\"."
+     ],
+     "cites": [
+      {
+       "book": "Essence book",
+       "page": 47
+      }
+     ]
+    }
+   ]
+  },
+  "hand/essence.dharmaDiamond:12": {
+   "sources": [
+    "essence-book"
+   ],
+   "groups": [
+    {
+     "title": "",
+     "points": [
+      "Act on what gives you the **most growth and expansion**; use a \"knowledge code\"."
+     ],
+     "cites": [
+      {
+       "book": "Essence book",
+       "page": 47
+      }
+     ]
+    }
+   ]
+  },
+  "hand/essence.dharmaDiamond:13": {
+   "sources": [
+    "essence-book"
+   ],
+   "groups": [
+    {
+     "title": "",
+     "points": [
+      "**Think innovatively, out of the box**; use a \"transformation code\"."
+     ],
+     "cites": [
+      {
+       "book": "Essence book",
+       "page": 47
+      }
+     ]
+    }
+   ]
+  },
+  "hand/essence.dharmaDiamond:14": {
+   "sources": [
+    "essence-book"
+   ],
+   "groups": [
+    {
+     "title": "",
+     "points": [
+      "**Communicate and intuit** your way forward; use a \"spontaneity code\"."
+     ],
+     "cites": [
+      {
+       "book": "Essence book",
+       "page": 47
+      }
+     ]
+    }
+   ]
+  },
+  "hand/essence.dharmaDiamond:15": {
+   "sources": [
+    "essence-book"
+   ],
+   "groups": [
+    {
+     "title": "",
+     "points": [
+      "**Awaken your personal magnetism**; use a \"charisma code\"."
+     ],
+     "cites": [
+      {
+       "book": "Essence book",
+       "page": 47
+      }
+     ]
+    }
+   ]
+  },
+  "hand/essence.dharmaDiamond:16": {
+   "sources": [
+    "essence-book"
+   ],
+   "groups": [
+    {
+     "title": "",
+     "points": [
+      "**Observe deeply, intuitively and sharply**; use an \"intuition and wisdom code\"."
+     ],
+     "cites": [
+      {
+       "book": "Essence book",
+       "page": 47
+      }
+     ]
+    }
+   ]
+  },
+  "hand/essence.dharmaDiamond:17": {
+   "sources": [
+    "essence-book"
+   ],
+   "groups": [
+    {
+     "title": "",
+     "points": [
+      "Think about what is **most universal, timeless and archetypal**; use a \"balance code\"."
+     ],
+     "cites": [
+      {
+       "book": "Essence book",
+       "page": 47
+      }
+     ]
+    }
+   ]
+  },
+  "hand/essence.dharmaDiamond:18": {
+   "sources": [
+    "essence-book"
+   ],
+   "groups": [
+    {
+     "title": "",
+     "points": [
+      "**Act with strength and conviction**; use a \"personal principles code\"."
+     ],
+     "cites": [
+      {
+       "book": "Essence book",
+       "page": 47
+      }
+     ]
+    }
+   ]
   }
  },
  "pages": {
@@ -36057,11 +36228,11 @@
   "essence.topAura:10": "add-04/set106",
   "essence.dharmaDiamond:10": "add-04/set106",
   "essence.topAura:12": "add-04/set107",
-  "essence.dharmaDiamond:12": "add-04/set107",
+  "essence.dharmaDiamond:12": "hand/essence.dharmaDiamond:12",
   "essence.topAura:13": "add-04/set108",
-  "essence.dharmaDiamond:13": "add-04/set108",
+  "essence.dharmaDiamond:13": "hand/essence.dharmaDiamond:13",
   "essence.topAura:16": "add-04/set109",
-  "essence.dharmaDiamond:16": "add-04/set109",
+  "essence.dharmaDiamond:16": "hand/essence.dharmaDiamond:16",
   "essence.nexus:11": "add-04/set110",
   "essence.nexus:12": "add-04/set111",
   "essence.nexus:13": "add-04/set112",
@@ -36472,6 +36643,12 @@
   "outer.emotionalFlow:69": "add-12/set487",
   "outer.emotionalFlow:70": "add-12/set488",
   "inner.first:5": "add-12/set489",
-  "inner.first:8": "add-12/set490"
+  "inner.first:8": "add-12/set490",
+  "essence.dharmaDiamond:19": "hand/essence.dharmaDiamond:19",
+  "essence.dharmaDiamond:11": "hand/essence.dharmaDiamond:11",
+  "essence.dharmaDiamond:14": "hand/essence.dharmaDiamond:14",
+  "essence.dharmaDiamond:15": "hand/essence.dharmaDiamond:15",
+  "essence.dharmaDiamond:17": "hand/essence.dharmaDiamond:17",
+  "essence.dharmaDiamond:18": "hand/essence.dharmaDiamond:18"
  }
 }

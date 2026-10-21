@@ -4,16 +4,19 @@ topic: method
 
 by Estel & Johannes Ehvass INTERPRETATION GUIDE
 
+<!-- page 1 -->
 #### INTERPRETATION GUIDE
 
 #### INTERPRETATION GUIDE
 
 By Estel & Johannes Ehvass Interpretatation Guide
 
+<!-- page 4 -->
 #### INTERPRETATION OVERVIEW
 
 This interpretation ”recipe” gives a quick overview of the most important numbers and combinations. You can use this recipe when interpreting your own or another person’s 5 Body Numeroscope.
 
+<!-- page 5 -->
 #### The Higher Self
 
 Here you go through all the numbers one by one. Think about how you think the person uses their innate numbers, and is influenced by them in different ways in their life. Feel free to highlight what you think is most important, but go through the whole thing.
@@ -36,6 +39,7 @@ Here you go through all the numbers one by one. Think about how you think the pe
 
 - Target number - what should the person aim for in life to achieve the fastest and most fundamental success? The Target number diamond is formed by the digit sum of the Day Vibration and the Upper Aura digit sum. What does this target number tell about the persons fastest way to achieve liberation or “quantum jumps” in his/her spiritual development?
 
+<!-- page 6 -->
 #### The Psychic Self
 
 1) Comparing Psyche Life Expression Diamonds A good starting point is to compare the Outer Psyche Chart Life Expression Diamond with the Inner Psyche Chart Life Expression Diamond. This involves examining how the psychologies of each diamond:
@@ -56,8 +60,10 @@ Now compare the Outer Psyche Challenge Number with the Inner Psyche Challenge Nu
 
 If one overlays the Outer Psyche Chart on the Inner Psyche Chart one can see the exchange of energies between the brain hemispheres. Do this by for example concatenating the Outer Psyche Heart number to the Inner Psyche Heart number, and the same with the Solar Plexus numbers. What do you notice.
 
+<!-- page 7 -->
 6) Zoom out and look at the over all energies Try zooming out and viewing both charts simultaneously. Observe how energy flows throughout the chart. Pay special attention to energies entering from the left side—how do they move inward? For example, if the psyche chart challenge number is 11/2 (positioned on the left of the central line), imagine how easily external energies penetrate this person’s psyche, influencing the surrounding numbers. How do these energies continue to propagate through the chart? Consider how an emotion generated in the Life Expression Diamond of the Inner Psyche chart would express outwardly through the filtering lens of the Outer Psyche Life Expression Diamond. These were just some examples – relax your gaze and allow the numbers to inspire you.
 
+<!-- page 8 -->
 #### INTERPRETATION
 
 The Name Chart Here you look at the following positions and read about the numbers there.
@@ -78,6 +84,7 @@ The Pillar (PL) – how is the foundation in life? Does the Pillar provide a sol
 
 The centers:
 
+<!-- page 9 -->
 - Heart center and the Heart Diamond - how are communication, thoughts and how is the person perceived?
 
 - Solar Plexus and the Solar Plexus Diamond - how is the emotional life, the inner drive and the relationship with oneself?
@@ -94,6 +101,7 @@ The Auras:
 
 - Public diamond (Upper Right Diamond) – how is the relationship with new people and the public affected? How do you act on the outside?
 
+<!-- page 10 -->
 #### INTERPRETATION
 
 The Sub-numeroscopes Personality numbers and Hearts Desire
@@ -114,6 +122,7 @@ The main energies in the Personality Chart
 
 - For example, for Katrine Ditte Pilmark, they look like this: 52/7 to 39/3 to 8 and 44/8 This gives a sense of the energy flow in the Personality Chart
 
+<!-- page 11 -->
 Look at the Centers Main Vibrations:
 
 - Are they clean and open (eg 2,3,5,6,7,10,14,15)?
