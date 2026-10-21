@@ -389,3 +389,23 @@ test('sequence: digits on the central line, the digit sum at the bottom, a 0 add
   assert.equal(N.sequence('5', null).chart.le, null); // one digit: only the line
   assert.equal(N.sequence('', null).digits.length, 0);
 });
+
+test('digits in a typed name (vault screenshots of the paid tool, 2026-10-21)', () => {
+  const line = (inp, chart = 'name') => N.numeroscope(inp)[chart].words.map((w) => w.value.text).join(' ');
+  // a word that is only digits is that number in every chart, never augmented
+  assert.equal(line({ day: 4, month: 7, year: 1776, name: 'America 13' }), '17/8 13/4');
+  assert.equal(line({ day: 4, month: 7, year: 1776, name: 'America 13' }, 'consonants'), '9/9 13/4');
+  assert.equal(line({ day: 4, month: 7, year: 1776, name: 'America 13' }, 'vowels'), '8/8 13/4');
+  const us = N.numeroscope({ day: 4, month: 7, year: 1776, name: 'America 13' });
+  assert.equal(t(us.name.le), '12/3'); assert.equal(t(us.name.big), '30/3'); assert.equal(t(us.name.solar), '9/9');
+  assert.equal(line({ day: 20, month: 4, year: 1990, name: 'Asmondgold 11' }), '41/5 11/2');
+  assert.equal(line({ day: 8, month: 5, year: 1996, name: '6ix9ine 17' }), '32/5 17/8');
+  assert.equal(line({ day: 21, month: 3, year: 2006, name: 'x 0' }), '17/8 0/0'); // x (5) augmented 5 + 3 = 8 -> 17; 0 stays 0/0
+  assert.equal(line({ day: 20, month: 3, year: 1854, name: 'Republican 0' }), '36/9 0/0');
+  // a digit inside a word counts on the main line only; the sub-charts skip it
+  const n3 = N.numeroscope({ day: 13, month: 8, year: 2004, name: 'N3on 0' });
+  assert.equal(line({ day: 13, month: 8, year: 2004, name: 'N3on 0' }), '20/2 0/0');
+  assert.equal(t(n3.name.le), '2/2'); assert.equal(t(n3.name.big), '20/2'); assert.equal(t(n3.name.heart), '10/1'); assert.equal(t(n3.name.solar), '6/6');
+  assert.equal(line({ day: 13, month: 8, year: 2004, name: 'N3on 0' }, 'consonants'), '10/1 0/0');
+  assert.equal(line({ day: 13, month: 8, year: 2004, name: 'N3on 0' }, 'vowels'), '7/7 0/0');
+});

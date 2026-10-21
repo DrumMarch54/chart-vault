@@ -17,6 +17,10 @@ course text and still waits for a screenshot with a full date and a middle name.
   20/2 + 18/9 + 21/3 = 2+9+3 = 14/5.
 - "Diamond" = two digit sums written side by side, strongest first:
   day 1 and month 8 → 18/9. A diamond is the structure, the aura is its sum.
+- Digits in a name (CONFIRMED on 9 vault screenshots, 2026-10-21): a word that is only digits is that
+  number in every chart (13 -> 13/4, 11 -> 11/2, 0 -> 0/0) and is never augmented; a digit inside a word
+  adds its face value on the main name line only (N3on = 20/2), the vowel and consonant charts skip it
+  (3o = 7/7, N3n = 10/1). LE and big LE add them like any name (America 13: LE 12/3, big 30/3).
 - Augmentation (CONFIRMED on 13 vault charts with Jr, Sr, Sir, II, III): on
   the MAIN name chart a one-digit name value gets the day's digit sum added,
   and 9 more if that is still under 10. Jr = 3 with day 2 -> 3+2 = 5 -> 14/5;

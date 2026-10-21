@@ -44,12 +44,20 @@
   // line as 0/0, still counts as first or last name, and adds nothing (paid tool, vault screenshot).
   // Punctuation typed in the name stays in the labels ("Jr." on the main chart, "." on the vowel chart).
   const ZERO = { sum: 0, ds: 0, text: '0/0' };
+  // Digits in a typed name (CONFIRMED on 9 vault screenshots of the paid tool, 2026-10-21: "America 13",
+  // "Google 13", "Asmondgold 11", "N3on 0", "6ix9ine 17", "x 0", "Republican 0"): a word that is only digits is
+  // that number itself in every chart (13 -> 13/4, 11 -> 11/2, 0 -> 0/0; never augmented); a digit inside a
+  // word adds its face value on the main name line only (N3on = 5+3+7+5 = 20/2) and is skipped by the vowel
+  // and consonant charts (3o = 7/7, N3n = 10/1).
+  const isDigit = (c) => c >= '0' && c <= '9';
   function nameWord(text, filter) {
     const chars = [...String(text)];
+    if (chars.length && chars.every(isDigit)) { const n = Number(text); return { text: chars.join(''), letters: [], value: n > 0 ? val(n) : ZERO, numeric: true }; }
     const keep = (c) => isLetter(c) && (!filter || filter(fold(c)));
     const letters = chars.filter(keep).map(fold);
     const shown = filter ? chars.filter((c) => !isLetter(c) || keep(c)).join('') : chars.join('');
-    const value = letters.length ? val(wordSum(letters)) : (chars.some(isLetter) ? ZERO : null);
+    const digits = filter ? 0 : chars.filter(isDigit).reduce((a, c) => a + Number(c), 0);
+    const value = letters.length || digits ? val(wordSum(letters) + digits) : (chars.some(isLetter) ? ZERO : null);
     return { text: shown, letters, value };
   }
 
@@ -154,7 +162,7 @@
     // -> 10/1. With no day there is nothing to add in step 1, so step 2 alone lifts it: Sj (4) -> 13/4
     // (owner, 2026-10-15). The augmented value feeds LE, big LE and the auras. The consonant and vowel
     // charts never augment (they show 3/3, 0/0, 5/5 as they are).
-    if (augment) for (const w of all) if (w.value && w.value.sum < 10) { let n = w.value.sum + (e.day ? e.day.ds : 0); if (n < 10) n += 9; w.value = val(n); }
+    if (augment) for (const w of all) if (w.value && !w.numeric && w.value.sum < 10) { let n = w.value.sum + (e.day ? e.day.ds : 0); if (n < 10) n += 9; w.value = val(n); }
     const cons = parts.map((p) => nameWord(p, (c) => !VOWELS.has(c)));
     const vow = parts.map((p) => nameWord(p, (c) => VOWELS.has(c)));
     return { essence: e, birth: e, psyche: psyche(e), name: rhombus(all, e.day), consonants: rhombus(cons, e.day), vowels: rhombus(vow, e.day) };

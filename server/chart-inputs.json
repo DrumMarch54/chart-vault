@@ -116,18 +116,18 @@
 "filename": "Screenshot_20241008_210841_Firefox.jpg",
 "day": 19,
 "month": 2,
-"year": null,
+"year": 1964,
 "name": "Enrique Silva",
-"source": "read",
+"source": "owner",
 "note": "Compact triangle view, no circles or year. Month from top-left corner 2/2, day from apex 19/1. Year not shown (same person as id 11, which shows 1964). Middle of name line not visible."
 },
 {
 "filename": "Screenshot_20241008_210919_Firefox.jpg",
 "day": 13,
 "month": 3,
-"year": null,
+"year": 1975,
 "name": "Erica Karen Ingham",
-"source": "read",
+"source": "owner",
 "note": "Compact triangle view, no year shown (only 22/4). Month from corner 3/3, day from apex 13/4. Same person as ids 6 and 19 (1975)."
 },
 {
@@ -1063,8 +1063,8 @@
 "day": 5,
 "month": 12,
 "year": 1979,
-"name": "BALDEMAR BALDERRAMAIuna",
-"source": "ocr"
+"name": "BALDEMAR BALDERRAMA luna",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20250610_204933_Firefox.jpg",
@@ -1087,8 +1087,8 @@
 "day": 28,
 "month": 10,
 "year": 1955,
-"name": "William Henry Gates IlI",
-"source": "ocr"
+"name": "William Henry Gates III",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20250611_195210_Firefox.jpg",
@@ -1664,11 +1664,11 @@
 },
 {
 "filename": "Screenshot_20250816_231953_Firefox.jpg",
-"day": null,
-"month": null,
-"year": null,
+"day": 7,
+"month": 10,
+"year": 1900,
 "name": "Heinrich Luitpold Himmler",
-"source": "read",
+"source": "owner",
 "note": "date boxes scrolled off; name read from box and line"
 },
 {
@@ -1959,8 +1959,8 @@
 "day": 19,
 "month": 3,
 "year": 1980,
-"name": "Theodor Capitani von Kurnatowski Ill",
-"source": "ocr"
+"name": "Theodor Capitani von Kurnatowski III",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20250924_192655_Chrome.jpg",
@@ -2151,8 +2151,8 @@
 "day": 18,
 "month": 6,
 "year": 1999,
-"name": "Michael LamarWhiteIV",
-"source": "ocr"
+"name": "Michael Lamar White IV",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20251020_033457_Brave.jpg",
@@ -2240,8 +2240,8 @@
 "day": 16,
 "month": 12,
 "year": 2001,
-"name": "Kai Carlo Cenat Ill",
-"source": "ocr"
+"name": "Kai Carlo Cenat III",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20251108_210540_Brave.jpg",
@@ -2264,8 +2264,8 @@
 "day": 29,
 "month": 4,
 "year": 1952,
-"name": "David VaughanIcke",
-"source": "ocr"
+"name": "David Vaughan Icke",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20251111_084442_Brave.jpg",
@@ -2633,16 +2633,16 @@
 "day": 25,
 "month": 9,
 "year": 1968,
-"name": "Willard Carroll Smith Il",
-"source": "ocr"
+"name": "Willard Carroll Smith II",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20251210_002139_Firefox.jpg",
 "day": 3,
 "month": 9,
 "year": 1965,
-"name": "Carlos Irwin Est vez",
-"source": "ocr"
+"name": "Carlos Irwin Estévez",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20251210_002353_Firefox.jpg",
@@ -2681,8 +2681,8 @@
 "day": 28,
 "month": 6,
 "year": 1984,
-"name": "James Edward O'Keefe Ill",
-"source": "ocr"
+"name": "James Edward O'Keefe III",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20251211_181456_Firefox.jpg",
@@ -2946,8 +2946,8 @@
 "day": 3,
 "month": 9,
 "year": 1960,
-"name": "David Lawrence Ramsey Ill",
-"source": "ocr"
+"name": "David Lawrence Ramsey III",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20260104_050057_Firefox.jpg",
@@ -2968,10 +2968,10 @@
 {
 "filename": "Screenshot_20260105_011547_WhatsApp.jpg",
 "day": 4,
-"month": 6,
+"month": 9,
 "year": 1998,
-"name": "Google LLd",
-"source": "ocr"
+"name": "Google LLC",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20260105_011601_WhatsApp.jpg",
@@ -3370,24 +3370,24 @@
 "day": 22,
 "month": 1,
 "year": 1990,
-"name": "Sir Robert Bryson Hall Il",
-"source": "ocr"
+"name": "Sir Robert Bryson Hall II",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20260122_203210_Brave.jpg",
 "day": 8,
 "month": 1,
 "year": 1828,
-"name": "Democrat O",
-"source": "ocr"
+"name": "Democrat 0",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20260122_203304_Brave.jpg",
 "day": 20,
 "month": 3,
 "year": 1854,
-"name": "Republican O",
-"source": "ocr"
+"name": "Republican 0",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20260122_225738_Brave.jpg",
@@ -3451,18 +3451,18 @@
 "filename": "Screenshot_20260124_234302_Brave.jpg",
 "day": 20,
 "month": 4,
-"year": null,
+"year": 1990,
 "name": "Asmondgold 0",
-"source": "read",
+"source": "owner",
 "note": "date boxes scrolled off; day 20 and month 4 read off the chart, year not visible"
 },
 {
 "filename": "Screenshot_20260124_234348_Brave.jpg",
-"day": null,
-"month": null,
-"year": null,
+"day": 20,
+"month": 4,
+"year": 1990,
 "name": "Asmondgold 11",
-"source": "read",
+"source": "owner",
 "note": "Date boxes scrolled off; only name box visible."
 },
 {
@@ -3542,8 +3542,8 @@
 "day": 6,
 "month": 2,
 "year": 1867,
-"name": "Minneapolis O",
-"source": "ocr"
+"name": "Minneapolis 0",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20260125_172115_Brave.jpg",
@@ -3879,8 +3879,8 @@
 "day": 28,
 "month": 10,
 "year": 1981,
-"name": "Metallica O",
-"source": "ocr"
+"name": "Metallica 0",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20260207_170859_Brave.jpg",
@@ -4217,8 +4217,8 @@
 "day": 22,
 "month": 1,
 "year": 1985,
-"name": "te Tim J Dillon",
-"source": "ocr"
+"name": "Tim J Dillon",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20260308_170457_Brave.jpg",
@@ -4313,8 +4313,8 @@
 "day": 9,
 "month": 6,
 "year": 1963,
-"name": "John Christopher Depp il",
-"source": "ocr"
+"name": "John Christopher Depp ii",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20260314_214007_Brave.jpg",
@@ -4424,9 +4424,9 @@
 "filename": "Screenshot_20260407_211141_Brave.jpg",
 "day": 12,
 "month": 8,
-"year": null,
+"year": 1910,
 "name": "György Schwartz",
-"source": "read",
+"source": "owner",
 "note": "Input boxes not visible. Day 12 and month 8 inferred from diamond labels (12/3 center, 8/8 top-left); year not determinable (11/2 label only). Name from the line of the triangle: György (accent) Schwartz; no name box visible."
 },
 {
@@ -4747,8 +4747,8 @@
 "day": 28,
 "month": 1,
 "year": 1976,
-"name": "William Leonard Roberts Il",
-"source": "ocr"
+"name": "William Leonard Roberts II",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20260516_001645_Opera.jpg",
@@ -4941,8 +4941,8 @@
 "day": 10,
 "month": 10,
 "year": 1986,
-"name": "ang Alex Stein",
-"source": "ocr"
+"name": "Alex Stein",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20260524_041204_Opera.jpg",
@@ -4956,9 +4956,9 @@
 "filename": "Screenshot_20260524_041918_Opera.jpg",
 "day": 7,
 "month": 4,
-"year": null,
+"year": 1995,
 "name": "Jake lang",
-"source": "read",
+"source": "owner",
 "note": "date boxes scrolled off; day 7 and month 4 read off the chart, year not visible"
 },
 {
@@ -5037,10 +5037,10 @@
 {
 "filename": "Screenshot_20260601_131956_WhatsApp.jpg",
 "day": 19,
-"month": 6,
+"month": 9,
 "year": 1982,
-"name": "Andrea Loiscrowder",
-"source": "ocr"
+"name": "Andrea Lois crowder",
+"source": "owner"
 },
 {
 "filename": "Screenshot_20260601_151924_Opera.jpg",
@@ -5215,9 +5215,9 @@
 "filename": "Screenshot_20260630_150515_Opera.jpg",
 "day": 4,
 "month": 9,
-"year": null,
+"year": 1998,
 "name": "Google 13",
-"source": "read",
+"source": "owner",
 "note": "date boxes scrolled off; day 4 and month 9 read off the chart, year not visible"
 },
 {
