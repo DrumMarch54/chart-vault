@@ -67,6 +67,21 @@ PDFs, with what each holds for a NUMBER IN A POSITION:
   manifestation techniques after a name change; p. 18 "themes you can experience with the different
   vibrations"). None of them describes a number in a chart position. The Class Transcripts folder "Name Change
   2025" holds the Jyotish, year-row cases, name law and rules-for-pure-name-charts lecture notes.
+- **Sub-chart Rules lecture** (SUBNUMEROSCOPE RULES - NUMBERS & POSITIONS, read 2026-10-22, `lecture-subnumeroscope-rules`):
+  the WHY behind the booklet's rules, position by position: personality number and heart's desire first (balanced
+  only), name line second (1-10 and 14 balanced; 13, 15, 17 semi; 11, 12, 16, 18 not, unless it makes a clean center),
+  the vocation solar plexus is the first center (10, 2, 3, 5, 14, 6, 7 very good; a 7 wants balanced secondaries),
+  the vocation heart second (semi-balanced allowed, 15/6 avoided: "a player"), the personality centers third (4 8 9 13
+  15 17 allowed, 11/12 sometimes, 16 never, 18 depending on the person), what makes an 11/2 or 12/3 matters (65 vs
+  29/38/47; 66/57 vs 39/48), secondaries lenient (12/3 fine under a balanced main, 16 and 18 not), auras last (all
+  but 16; 14, 15, 18 compromises), the pillar any number when the two top positions are balanced, 89 vs 98, sister
+  numbers (12 wants 21, 16 → 61, 36/63), and the counterbalance table for an essence heavy in 1s to 5s. Now on the
+  sub-chart meaning pages as "When Choosing a Name" points cited by the minute.
+- **Name Cleanse lecture** (Name Cleanse Purification 11/2 12/3 13/4 16/7 18/9, read 2026-10-22,
+  `lecture-name-cleanse-purification`): the five hardest numbers to cleanse, what each feels like while it cleanses
+  and what it becomes (11 boundaries → master teacher; 12 victimization → Jupiter expansion; 13 dissatisfaction →
+  innovation; 16 fear of loss → bliss of the 7; 18 control → the spiritual warrior burning karma); all five battle
+  the ego. On every meaning page where one of them sits, as the "Name Cleanse" group.
 Also paged the same day (separate PDFs exist): the psyche book, psyche cases, psychic disorders, the
 interpretation guide, the two sub-chart books, statistics, the templates rules, single name charts, relations.
 

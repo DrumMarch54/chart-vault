@@ -1,5 +1,5 @@
 {
-  "about": "The course PDFs behind the raw files that carry '<!-- page N -->' marks (knowledge/README 'Page numbers'). book = the short name shown on screen; pdf = the file in the Hub (Class PDF > Essence (OCR) / Name Change (OCR)); drive = its id. Page numbers are the PDF's own page numbers (the number printed on the page), so 'Essence book p. 47' is page 47 of EssenceInterpretation-ver1_ocred.pdf.",
+  "about": "The course PDFs behind the raw files that carry '<!-- page N -->' marks (knowledge/README 'Page numbers'). book = the short name shown on screen; pdf = the file in the Hub (Class PDF > Essence (OCR) / Name Change (OCR)); drive = its id. Page numbers are the PDF's own page numbers (the number printed on the page), so 'Essence book p. 47' is page 47 of EssenceInterpretation-ver1_ocred.pdf. 'lectures' names the transcripts a hand-written point may cite by the minute it was said (cites { book, at: 'mm:ss' }, the Otter speaker line the words sit under).",
   "books": {
     "essence-book": {
       "book": "Essence book",
@@ -85,6 +85,16 @@
       "book": "Name Change 5 Steps booklet",
       "pdf": "NameChangeMethod5Steps-v1_ocred.pdf",
       "drive": "1m2GGrMDs_hF0QdH1MQDJCERwntu3ZyqD"
+    }
+  },
+  "lectures": {
+    "lecture-subnumeroscope-rules": {
+      "book": "Sub-chart Rules lecture",
+      "drive": "1dpPbMVg4kDBQHuCNvQIRCYPYciAxCCYy_T7gQtx9io4"
+    },
+    "lecture-name-cleanse-purification": {
+      "book": "Name Cleanse lecture",
+      "drive": "1V2RYGmdBGjp4bguib0QB_w_z5VuF4qDrAaq8ylktZYU"
     }
   }
 }

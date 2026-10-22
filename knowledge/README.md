@@ -171,8 +171,10 @@ color in the book.
 | `lecture-journey-of-the-soul.md` | JOURNEY OF THE SOUL (lecture transcript) | drive 1UD0l50sBBpaLN9AjIqtYl6X0ARdBYPU2w1EI3S22PZ0 | 39 KB | essence |
 | `lecture-life-path-diamonds.md` | PART 2 - YOUR LIFE PATH DIAMONDS (lecture transcript) | drive 1qMw4emJ9v-tSBOu_qAG2uCX_RIG4f94SIL_a0uy_4d0 | 129 KB | essence |
 | `lecture-name-chart-interpretations-pt1.md` | NAME CHART INTERPRETATIONS CONTINUED (PT 1) (lecture transcript) | drive 1_GRlNU_BO2u1u67oIFIphXKPlD-BTK0NLS3vIp98Ph8 | 88 KB | name-chart |
+| `lecture-name-cleanse-purification.md` | Name Cleanse Purification 11/2 12/3 13/4 16/7 18/9 (lecture transcript) | drive 1V2RYGmdBGjp4bguib0QB_w_z5VuF4qDrAaq8ylktZYU | 12 KB | method |
 | `lecture-name-chart-interpretations-pt2.md` | NAME CHART INTERPRETATIONS CONTINUED (PT 2) (lecture transcript) | drive 1ErX8NaHbMyyUqhIm8OptgFyKib0bfg_9znkArLt0WzA | 103 KB | name-chart |
 | `lecture-numbers-1-9-diamonds.md` | THE NUMBERS 1-9 DIAMONDS AND VIBRATIONS (lecture transcript) | drive 1O_ET5T1f8K2uy03z1EhclG2iZW64zhTnNPNxJgwOVcA | 72 KB | essence |
+| `lecture-subnumeroscope-rules.md` | SUBNUMEROSCOPE RULES - NUMBERS & POSITIONS (lecture transcript) | drive 1dpPbMVg4kDBQHuCNvQIRCYPYciAxCCYy_T7gQtx9io4 | 38 KB | sub-charts |
 | `lecture-positions-in-the-essence-chart.md` | POSITIONS IN THE ESSENCE CHART (lecture transcript) | drive 1SjDkr7ZoiRXTJLtxXoUso-pO8z-31u3tUAKosWYP-bs | 37 KB | essence |
 | `lecture-psyche-interpretation.md` | PSYCHE INTERPRETATION (lecture transcript) | drive 1Rg8OBPNgUXJKlztcva5i19L79bEDFXfr0jJYZWtXfIU | 33 KB | psyche |
 | `lecture-psyche-intro.md` | PSYCHE INTRO (lecture transcript) | drive 1hBcCgtGazppQhn9TtzAIzJ5ZiFtzI4SMEun24hU09ok | 55 KB | psyche |
@@ -339,3 +341,10 @@ carries the book page` fails). Books: essence-book (EssenceInterpretation-ver1, 
 psyche-cases-book, psychic-disorders-book, interpretation-guide, subnumeroscope-interpretation-book,
 subvibrations-book, humanity-archetyping-book (= NP-Statistics), name-templates-rules, single-name-charts-book,
 relations-book, name-change-5-steps (the booklet, added 2026-10-21). Not paged: the files made from Google Docs and transcripts (no pages exist), and the number guides.
+
+Lectures cited by the minute (2026-10-22): a transcript has no pages, but its Otter lines ("Johannes 08:07") say
+when each passage was said. `knowledge/books.json` "lectures" names the transcripts a hand-written point may cite
+(`lecture-subnumeroscope-rules` = "Sub-chart Rules lecture", `lecture-name-cleanse-purification` = "Name Cleanse
+lecture"); such a point's citation is `{ book, at: "mm:ss" }`, the speaker line its words sit under, shown as
+"Sub-chart Rules lecture at 8:07". test/meaning.test.js checks every citation: a page from "books" or a minute from
+"lectures", never both.

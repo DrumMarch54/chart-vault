@@ -27,6 +27,11 @@ Never call a paid model from these scripts; the writing is done by the chat itse
 ## Hand-written second sets (`more`, 2026-10-21)
 `bits.json` also has `more`: page key → a set shown AFTER the page's own points (the Diamond Method's "Path to
 Integration" on the 31 day pages, the Name Change 5 Steps booklet's "When Choosing a Name" rules on the sub-chart
-pages). Their points carry `cites` (one { book, page } per point, the book from knowledge/books.json). merge-bits
-keeps them; make-jobs never rewrites them. Allowed group titles: "In balance", "Out of balance", "", "Path to
-Integration", "When Choosing a Name" (test/meaning.test.js).
+pages). Their points carry `cites` (one { book, page } per point, the book from knowledge/books.json, or
+{ book, at: "mm:ss" } for a lecture named in its "lectures"). merge-bits keeps them; make-jobs never rewrites them.
+Allowed group titles: "In balance", "Out of balance", "", "Path to Integration", "When Choosing a Name", "Name
+Cleanse" (test/meaning.test.js). `more[key]` may be a LIST of set ids (2026-10-22): the sub-chart pages hold the
+booklet's rule, the Sub-chart Rules lecture's general rules for the position (`hand/lect/...`), its number-specific
+reasons, and last the Name Cleanse lecture's group (`hand/cleanse/11..18`, on every page where 11, 12, 13, 16 or 18
+sits). `bitsFor` folds sets with the same heading into one card. The sets are edited in bits.json itself (they were
+written by hand from the transcripts, one point per minute line); no tool regenerates them.

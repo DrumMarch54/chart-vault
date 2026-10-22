@@ -140,13 +140,13 @@ test('a long course section is one card, and the short points ride with it (Alli
   const file = JSON.parse(fs.readFileSync(new URL('../knowledge/bits.json', import.meta.url), 'utf8'));
   const sets = { ...(file.sets || {}) }, pages = { ...(file.pages || {}) };
   for (const [key, b] of Object.entries(file.bits || {})) { sets[key] = b; pages[key] = key; }
-  for (const [key, id] of Object.entries({ ...pages, ...(file.more || {}) })) {
+  for (const [key, ids] of Object.entries({ ...pages, ...(file.more || {}) })) {
     assert.match(key, /^[a-z]+\.[A-Za-z]+:\d{1,2}(\+\d{1,2})?$/, key);
-    assert.ok(sets[id], `${key} -> ${id}`);
+    for (const id of [].concat(ids)) assert.ok(sets[id], `${key} -> ${id}`);
     assert.ok(bitsFor(key));
   }
   for (const [id, b] of Object.entries(sets)) {
-    assert.ok(b.groups.length && b.groups.every((g) => ['In balance', 'Out of balance', '', 'Path to Integration', 'When Choosing a Name'].includes(g.title) && g.points.length), id);
+    assert.ok(b.groups.length && b.groups.every((g) => ['In balance', 'Out of balance', '', 'Path to Integration', 'When Choosing a Name', 'Name Cleanse'].includes(g.title) && g.points.length), id);
     for (const g of b.groups) for (const pt of g.points) assert.equal((pt.match(/\*\*/g) || []).length % 2, 0, `${id}: unpaired ** in "${pt}"`);
     for (const src of b.sources) assert.ok(fs.existsSync(new URL(`../knowledge/raw/${src}.md`, import.meta.url)), `${id}: ${src}`);
   }
@@ -175,15 +175,30 @@ test('every card from a course PDF says its book and page; a hand-written point 
   const rule = meaningFor({ chart: 'vocation', position: 'heartExtra', sum: 13 }).bits.groups.find((g) => g.title === 'When Choosing a Name');
   assert.ok(rule && /secondary vibration/.test(rule.points[0])); assert.equal(rule.cites[0].page, 4);
   assert.ok(!meaningFor({ chart: 'name', position: 'heartExtra', sum: 13 }).bits?.groups.some((g) => g.title === 'When Choosing a Name'), 'the booklet rules are for the sub-charts only');
+  // the two lectures (2026-10-22): sub-chart rules by the minute, the Name Cleanse group on the five hard numbers, once
+  const seven = meaningFor({ chart: 'vocation', position: 'solar', sum: 7 }).bits.groups.find((g) => g.title === 'When Choosing a Name');
+  const i7 = seven.points.findIndex((p) => /7 is susceptible/.test(p));
+  assert.deepEqual(seven.cites[i7], { book: 'Sub-chart Rules lecture', at: '36:54' });
+  assert.ok(seven.points.findIndex((p) => /First priority/.test(p)) < i7, 'the position\'s general rule comes before the number\'s own');
+  const eleven = meaningFor({ chart: 'vocation', position: 'heart', sum: 11 });
+  assert.ok(eleven.bits.groups.some((g) => g.title === 'Name Cleanse'), 'the Name Cleanse group on an 11');
+  assert.ok(!eleven.nameChart.bits.groups.some((g) => g.title === 'Name Cleanse'), 'not again in the name chart twin');
+  assert.ok(!meaningFor({ chart: 'name', position: 'heart', sum: 7 }).bits.groups.some((g) => g.title === 'Name Cleanse'), 'a 7 has no Name Cleanse group');
   const dharma = meaningFor({ chart: 'essence', position: 'dharmaDiamond', sum: 15 });
   assert.deepEqual(dharma.bits.groups[0].cites, [{ book: 'Essence book', page: 47 }]);
   assert.match(dharma.bits.groups[0].points[0], /charisma code/);
   // every citation in the points file names a book from knowledge/books.json and sits beside its point
   const file = JSON.parse(fs.readFileSync(new URL('../knowledge/bits.json', import.meta.url), 'utf8'));
-  const books = new Set(Object.values(JSON.parse(fs.readFileSync(new URL('../knowledge/books.json', import.meta.url), 'utf8')).books).map((b) => b.book));
+  // (a book page, or the minute of a lecture named in books.json "lectures": { book, at: "mm:ss" })
+  const bj = JSON.parse(fs.readFileSync(new URL('../knowledge/books.json', import.meta.url), 'utf8'));
+  const books = new Set(Object.values(bj.books).map((b) => b.book)), lectures = new Set(Object.values(bj.lectures || {}).map((b) => b.book));
+  for (const slug of Object.keys(bj.lectures || {})) assert.ok(fs.existsSync(new URL(`../knowledge/raw/${slug}.md`, import.meta.url)), slug);
   for (const [id, b] of Object.entries(file.sets)) for (const g of b.groups) if (g.cites) {
     assert.equal(g.cites.length, g.points.length, `${id}: one citation per point`);
-    for (const c of g.cites) if (c) { assert.ok(books.has(c.book), `${id}: ${c.book}`); assert.ok(Number.isInteger(c.page) && c.page > 0, id); }
+    for (const c of g.cites) if (c) {
+      if (c.at) { assert.ok(lectures.has(c.book), `${id}: ${c.book}`); assert.match(c.at, /^\d{2}:\d{2}$/, id); assert.equal(c.page, undefined, id); }
+      else { assert.ok(books.has(c.book), `${id}: ${c.book}`); assert.ok(Number.isInteger(c.page) && c.page > 0, id); }
+    }
   }
 });
 

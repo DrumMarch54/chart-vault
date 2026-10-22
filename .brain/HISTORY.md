@@ -953,3 +953,18 @@ behind; after closing a page the number stays picked, so the next tap opens it a
   main vibration, 16/7 and 18/9 avoided. Both ride on a second map in bits.json, `more` (page key → set shown after the
   page's own points; `bitsFor` joins them; merge-bits keeps them). The booklet's position-level line ("personality and
   heart's desire numbers weigh most") was left out: it is about the position, not a number (the bits rule).
+
+## 2026-10-22 Two lectures on the meaning pages, cited by the minute
+The owner picked four sources from the Hub scan (`.brain/numerology/hub-scan-2026-10-21.md`): the Sub-chart Rules
+lecture, the Name Cleanse lecture, the Year Row Cases book and the Karmic Connections book, "do these". The two
+lectures went first because they land on a card type the owner had already approved (the cited points under a
+position's words). Both transcripts are in the store as raw files with their Otter minute lines kept; a transcript
+has no pages, so `knowledge/books.json` grew a "lectures" list and a hand-written point may cite `{ book, at: "mm:ss" }`
+(the speaker line the words sit under; the screen says "Sub-chart Rules lecture at 8:07"). `more` in bits.json may
+now name a list of sets for one page, and `bitsFor` folds sets with the same heading into one card, ordered: the
+booklet's rule, the position's general rules, the number's own reasons, the Name Cleanse group last. The Name
+Cleanse group is dropped from a page's twin (the name chart's words for a sub-chart center) and related spots so it
+shows once. Every point was written from the transcript by hand; where the transcript is ambiguous (which of 16 and
+18 "gives anger" at 01:51) the point keeps the ambiguity ("one of 16 and 18 ... the other ...") rather than guess.
+Checked on the dev app at 390×844: vocation solar plexus 12/3, vocation heart 11/2, name chart mind center 16/7.
+

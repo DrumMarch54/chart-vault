@@ -26,7 +26,8 @@
     // A point written by hand from a book page carries its own citation (bits "cites": one per point): a small
     // "Essence book p. 47" tag at its end. The other points were written from the course words shown under
     // "Course Words": the card's foot names those books and pages, so every point can be checked in the book.
-    const cite = (c) => (c && c.book ? h('span', { class: 'mcite' }, `${c.book}${c.page ? ` p. ${c.page}` : ''}`) : null);
+    // a book page ("Essence book p. 47") or the minute of a lecture ("Sub-chart Rules lecture at 8:07")
+    const cite = (c) => (c && c.book ? h('span', { class: 'mcite' }, `${c.book}${c.page ? ` p. ${c.page}` : c.at ? ` at ${c.at.replace(/^0/, '')}` : ''}`) : null);
     const bookPages = (passages) => {
       const by = new Map(), docs = [];
       for (const p of passages) {

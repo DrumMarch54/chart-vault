@@ -89,7 +89,8 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   `test/repo.test.js` fails if a file is both ignored and tracked.
 - A course book's passage says its book and page (`<!-- page N -->` marks in knowledge/raw,
   `knowledge/books.json`). Keep the marks when editing a raw file; a re-export is re-aligned,
-  never retyped (knowledge/README "Page numbers").
+  never retyped (knowledge/README "Page numbers"). A hand-written point from a lecture is cited
+  by the minute it was said (`cites: { book, at }`, the lecture named in books.json `lectures`).
 - Schema changes: add a numbered entry at the end of `MIGRATIONS` in server/db.js.
   Never edit a shipped one. Imports and uploads record the build that made them.
 - Error answers (status ≥ 400) are never cached; the app shell is versioned by commit.

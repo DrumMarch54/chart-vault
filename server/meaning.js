@@ -200,14 +200,22 @@ function loadBits() {
   } catch { BITS = { sets: {}, pages: {}, more: {} }; }
   return BITS;
 }
-// A page's points, then the second set "more" names for it (the Diamond Method's path to integration on a day
+// A page's points, then the set (or list of sets) "more" names for it (the Diamond Method's path to integration on a day
 // page, the name-change booklet's rules on a sub-chart page): its groups come after the page's own.
 export function bitsFor(key) {
   const { sets, pages, more } = loadBits();
-  const list = [sets[pages[key]], sets[more[key]]].filter(Boolean);
+  const list = [pages[key], ...[].concat(more[key] || [])].map((id) => sets[id]).filter(Boolean);
   if (!list.length) return null;
   const copy = (g) => ({ title: g.title, points: g.points.slice(), ...(g.cites ? { cites: g.cites.map((c) => (c ? { ...c } : null)) } : {}) });
-  return { groups: list.flatMap((b) => b.groups.map(copy)), sources: [...new Set(list.flatMap((b) => b.sources || []))] };
+  // several sets with the same heading ("When Choosing a Name" from the booklet and from the lecture) are one card
+  const groups = [];
+  for (const g of list.flatMap((b) => b.groups.map(copy))) {
+    const same = groups.find((x) => x.title === g.title);
+    if (!same) { groups.push(g); continue; }
+    if (same.cites || g.cites) same.cites = [...(same.cites || same.points.map(() => null)), ...(g.cites || g.points.map(() => null))];
+    same.points.push(...g.points);
+  }
+  return { groups, sources: [...new Set(list.flatMap((b) => b.sources || []))] };
 }
 // A circle pair: either order, and an extra vibration's page uses its center's pair ("7 and 13" is one pair).
 const pairBits = (chart, position, n, p) => { const base = position.replace(/Extra$/, ''); return bitsFor(`${chart}.${base}:${n}+${p}`) || bitsFor(`${chart}.${base}:${p}+${n}`); };
@@ -329,12 +337,14 @@ export function meaningFor({ chart, position, sum, pair = null, rel = null } = {
   const passages = forSpot(k, chart, position, n, taken, 4);
   const bits = bitsFor(`${chart}.${position}:${n}`);
   const twin = (chart === 'vocation' || chart === 'personality') && NAME_TWIN.has(position) && known('name', position);
-  const nameChart = twin ? { ...head('name', position, n), bits: bitsFor(`name.${position}:${n}`), passages: forPosition(k, 'name', position, n, taken, { limit: 2 }) } : null;
+  // the twin and the related spots keep their own short points, minus the Name Cleanse group the main number already carries
+  const noCleanse = (b) => (b && b.groups.some((g) => g.title === 'Name Cleanse') ? { ...b, groups: b.groups.filter((g) => g.title !== 'Name Cleanse') } : b);
+  const nameChart = twin ? { ...head('name', position, n), bits: noCleanse(bitsFor(`name.${position}:${n}`)), passages: forPosition(k, 'name', position, n, taken, { limit: 2 }) } : null;
   // A sub-chart's circle: its own course words first, then the name chart's words on the same pair in the same center.
   const pairWords = partners.length ? [...forPair(k, chart, position, n, partners, taken), ...(twin ? forPair(k, 'name', position, n, partners, taken) : [])].slice(0, 3) : [];
   const pbits = partners.map((p) => pairBits(chart, position, n, p) || (twin ? pairBits('name', position, n, p) : null)).filter(Boolean);
   const pairOut = partners.length ? { with: partners.map((p) => ({ sum: p, text: fmt(p, reduce(p)) })), bits: pbits.length ? { groups: pbits.flatMap((b) => b.groups), sources: pbits.flatMap((b) => b.sources) } : null, passages: pairWords } : null;
-  const related = rels.map((r) => ({ ...head(chart, r.position, r.sum), bits: bitsFor(`${chart}.${r.position}:${r.sum}`), passages: forSpot(k, chart, r.position, r.sum, taken, 2) }));
+  const related = rels.map((r) => ({ ...head(chart, r.position, r.sum), bits: noCleanse(bitsFor(`${chart}.${r.position}:${r.sum}`)), passages: forSpot(k, chart, r.position, r.sum, taken, 2) }));
   return { ...base, bits, passages, nameChart: nameChart && nameChart.passages.length ? nameChart : null, pair: pairOut, related };
 }
 
