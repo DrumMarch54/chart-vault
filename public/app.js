@@ -54,7 +54,7 @@
     'viewer.similar': 'Similar Charts from a chart', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
     'viewer.delete': 'Delete a chart from the chart page', 'duplicates.delete': 'Delete a chart from Possible Duplicates', 'duplicates.keep': 'Keep a duplicate group', 'deleted.restore': 'Put a deleted chart back',
     'screen.duplicates': 'Possible Duplicates', 'screen.deleted': 'Deleted Charts', 'search.position': 'Search box → a position',
-    'viewer.meaning': 'Tap a number on a chart for its meaning', 'quick.meaning': 'Tap a number on the Quick Chart for its meaning', 'meaning.show_charts': 'Meaning → show the charts with that number there', 'meaning.course_words': 'Meaning → open the full course words',
+    'viewer.meaning': 'Tap a number on a chart for its meaning', 'quick.meaning': 'Tap a number on the Quick Chart for its meaning', 'meaning.show_charts': 'Meaning → show the charts with that number there', 'meaning.course_words': 'Meaning → open the full course words', 'rows.cases': 'Year Rows → a number\'s words from the Year Row Cases book',
   };
   const count = (name) => { try { fetch('/api/usage', { method: 'POST', credentials: 'same-origin', keepalive: true, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name }) }).catch(() => {}); } catch { /* counting never breaks a tap */ } };
 
@@ -2087,14 +2087,28 @@
   const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const rowText = (v) => (v ? (v.sum < 10 ? String(v.sum) : v.text) : '–');
   // What a number in the rows means: the course's one line, the archetype name, a known combination.
+  // The number sheet of the Year Rows popup: the number's words, then what the Year Row Cases book saw this number
+  // do in real rows (hand-written points cited by page, the book's passages folded under "Course Words";
+  // GET /api/book, server/book.js). A sum's vertical reading gets its own section.
   function meaningSheet(v, vertical) {
     if (!v) return;
     const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
     const close = () => { bg.remove(); untrackOverlay(bg); };
     const line = (x) => (x ? h('p', { style: 'margin:0 0 10px' }, h('b', {}, rowText(x)), TagCodes.NAMES[x.sum] ? ` ${TagCodes.NAMES[x.sum]}` : '', h('br'), Numeroscope.MEANINGS[x.sum] || Numeroscope.MEANINGS[x.ds] || '', Numeroscope.combos(x) ? h('span', { class: 'muted' }, h('br'), Numeroscope.combos(x)) : null) : null);
-    bg.append(h('div', { class: 'sheet' }, h('h3', {}, 'What it means'), line(v), vertical ? h('p', { class: 'muted small', style: 'margin:0 0 6px' }, 'Read with the two rows above it (vertical):') : null, vertical ? line(vertical) : null,
+    const cases = (x, $into, what) => {
+      if (!x || !meaningUi) return;
+      api(`/api/book?slug=year-row-cases-book&num=${x.sum}`).then((b) => {
+        if (!b.bits && !b.passages.length) return;
+        fill($into, h('div', { class: 'wlabel tl' }, `${x.text} ${what}`), ...meaningUi.section(b.bits, b.passages));
+        count('rows.cases');
+      }).catch(() => {});
+    };
+    const $cases = h('div', {}), $casesV = h('div', {});
+    bg.append(h('div', { class: 'sheet rowsheet' }, h('h3', {}, 'What it means'), line(v), vertical ? h('p', { class: 'muted small', style: 'margin:0 0 6px' }, 'Read with the two rows above it (vertical):') : null, vertical ? line(vertical) : null,
+      $cases, $casesV,
       h('button', { type: 'button', onclick: close }, 'Close')));
     document.body.append(bg); trackOverlay(bg, close);
+    cases(v, $cases, 'in Real Year Rows'); cases(vertical, $casesV, 'Read Down the Column, in Real Year Rows');
   }
   // The owner's clock: Safford, Arizona (no daylight saving). "Today" and "now" in the rows are read there,
   // whatever the phone's own clock says.
@@ -2251,7 +2265,7 @@
     document.body.append(bg); trackOverlay(bg, close);
     return close;
   };
-  const toolsUi = window.Tools ? window.Tools.install({ routes, h, sv, fill, render, count, toast, api, go, numeroscopeSvg, singleNameSvg, openWord, rowsTable, yearRowLabel, meaningSheet, sheet: wordsSheet, overlay: trackOverlay, overlayGone: untrackOverlay, setCleanup: (fn) => { viewerCleanup = fn; } }) : null;
+  const toolsUi = window.Tools ? window.Tools.install({ routes, h, sv, fill, render, count, toast, api, go, numeroscopeSvg, singleNameSvg, openWord, rowsTable, yearRowLabel, meaningSheet, sheet: wordsSheet, courseWords: (bits, passages) => (meaningUi ? meaningUi.section(bits, passages) : []), overlay: trackOverlay, overlayGone: untrackOverlay, setCleanup: (fn) => { viewerCleanup = fn; } }) : null;
   if (toolsUi) Object.assign(USAGE_LABELS, toolsUi.USAGE_LABELS);
   // Reading a chart (facts, AI reading, questions), Ask the Vault and the AI settings live in reading.js.
   const readingUi = window.Reading ? window.Reading.install({ routes, h, fill, api, toast, count, go, render, pageTop }) : null;

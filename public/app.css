@@ -878,6 +878,9 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .crow .x { flex: 0 0 44px; padding: 0; min-height: 52px; font-size: 20px; }
 .cfoot { margin-top: 4px; }
 .sheet.possheet { max-height: 85vh; display: flex; flex-direction: column; }
+.sheet.rowsheet { max-height: 88vh; overflow: auto; }
+.sheet.rowsheet .mmore { width: auto; min-height: 40px; }
+.reading .mcite { display: inline; }
 .sheet.possheet .poslist { overflow: auto; }
 .sheet.possheet .posrow { margin-top: 0; }
 .sheet.possheet .chip { width: auto; min-height: 40px; margin-top: 0; }

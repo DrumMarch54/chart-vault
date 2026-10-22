@@ -15,7 +15,7 @@ const { ensureDirs } = await import('../server/config.js');
 const { openDb } = await import('../server/db.js');
 const { createApp } = await import('../server/app.js');
 const { setInputs } = await import('../server/positions.js');
-const { meaningFor, countWith, topicsFor, bitsFor } = await import('../server/meaning.js');
+const { meaningFor, countWith, topicsFor, bitsFor, setsFor } = await import('../server/meaning.js');
 
 const heads = (list) => list.map((p) => p.heading.split(' > ').pop());
 
@@ -184,6 +184,9 @@ test('every card from a course PDF says its book and page; a hand-written point 
   assert.ok(eleven.bits.groups.some((g) => g.title === 'Name Cleanse'), 'the Name Cleanse group on an 11');
   assert.ok(!eleven.nameChart.bits.groups.some((g) => g.title === 'Name Cleanse'), 'not again in the name chart twin');
   assert.ok(!meaningFor({ chart: 'name', position: 'heart', sum: 7 }).bits.groups.some((g) => g.title === 'Name Cleanse'), 'a 7 has no Name Cleanse group');
+  // the screens' own sets (hand/karmic/*, hand/rows/*) are reached by id, a page's set never is
+  assert.ok(setsFor('hand/rows/17') && setsFor(['hand/karmic/connected']).groups[0].cites[0].book === 'Karmic Connections book');
+  assert.equal(setsFor('hand/name.heart:7'), null); assert.equal(setsFor('hand/rows/nothere'), null);
   const dharma = meaningFor({ chart: 'essence', position: 'dharmaDiamond', sum: 15 });
   assert.deepEqual(dharma.bits.groups[0].cites, [{ book: 'Essence book', page: 47 }]);
   assert.match(dharma.bits.groups[0].points[0], /charisma code/);
@@ -233,6 +236,31 @@ test('GET /api/meaning: the meaning plus how many vault charts hold the number t
 });
 
 // The position map (.brain/numerology/position-sources.md, 2026-10-20): every spot the course describes finds its words.
+test('GET /api/book: a course book for a screen, its passages paged, its hand-written points cited; other books refused', async () => {
+  const get = (q) => fetch(`${base}/api/book?${q}`, { headers: { authorization: 'Bearer test-password' } });
+  const rows = await (await get('slug=year-row-cases-book&num=17')).json();
+  assert.equal(rows.book, 'Year Row Cases book'); assert.equal(rows.num, 17);
+  assert.ok(rows.passages.length >= 5, 'the cases book talks about 17/8 on many pages');
+  for (const p of rows.passages) { assert.equal(p.book, 'Year Row Cases book'); assert.ok(p.page >= 6 && p.page <= 91, p.page); assert.equal(p.source, 'year-row-cases-book'); }
+  assert.ok(!rows.passages.some((p) => /^(Introduction|Coming Up)/.test(p.heading.split(' > ').pop())), 'no front or back matter');
+  const g = rows.bits.groups[0];
+  assert.ok(g.points.length >= 3 && g.cites.length === g.points.length);
+  assert.ok(g.points.some((t) => /star of visibility/.test(t)));
+  assert.deepEqual(g.cites[g.points.findIndex((t) => /star of visibility/.test(t))], { book: 'Year Row Cases book', page: 35 });
+  assert.equal((await (await get('slug=year-row-cases-book&num=99')).json()).bits, null, 'a number the book never reads has no points');
+  const k = await (await get('slug=karmic-connections-book&sets=connected,same,free,nothere')).json();
+  assert.equal(k.book, 'Karmic Connections book'); assert.equal(k.num, null);
+  assert.deepEqual(Object.keys(k.sets).sort(), ['connected', 'free', 'same']);
+  assert.ok(k.sets.connected.groups[0].points[0].includes('destiny rhythms')); assert.equal(k.sets.connected.groups[0].cites[0].page, 9);
+  assert.ok(k.bits.groups[0].points.length >= 12, 'the whole book as short points');
+  assert.ok(k.passages.some((p) => p.book === 'Karmic Connections book' && p.page === 11), 'the book\'s own pages');
+  assert.ok(k.passages.some((p) => p.book === 'Forecasting book' && /KARMIC CONNECTIONS/.test(p.heading)), 'the Forecasting book\'s karmic chapter follows (the index keeps one copy of a reprinted paragraph)');
+  assert.ok(!k.passages.some((p) => /^TOOL: /.test(p.heading.split(' > ').pop())));
+  assert.equal((await get('slug=essence-book')).status, 400, 'a meaning-page book is not served here');
+  assert.equal((await get('slug=year-row-cases-book&num=0')).status, 400);
+  assert.equal((await fetch(`${base}/api/book?slug=karmic-connections-book`)).status, 401, 'password-protected like everything else');
+});
+
 test('essence: the month doc, the dharma fusion doc and the Superdates appendix (day, life path, DVLP) are the spot\'s own words', () => {
   const month = meaningFor({ chart: 'essence', position: 'month', sum: 12 });
   assert.equal(month.passages[0].source, 'higher-self-month-positions'); assert.match(month.passages[0].heading, /Month Vibration 12: Expansion/);

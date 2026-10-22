@@ -162,6 +162,7 @@ color in the book.
 | `important-notes-for-ai.md` | Important Notes For A.I. | drive 1TYg1oWTbxjFk7h1wnl5WvCDuT9NPUfZ3QLy0GjQ6fW0 | 2 KB | owner-notes |
 | `interpretation-guide.md` | Interpretation Guide (course book; in "Essence, Psyche Name and Sub-Charts") | drive 1YWBzzhNqcaJ5rmCPOOO2AZrE4nqvk2LK | 8 KB | method |
 | `jung-date-correspondence.md` | Jung Date correspondence | drive 11AdG68sZfmLPGCBlHTVc7UR5LwBQwJvmOOr3EgwftQ4 | 18 KB | method |
+| `karmic-connections-book.md` | Karmic Connections: Life Lessons and Learning in Relationships (book) | drive 1K0Jneuu1f35aYcixYwWxW9KuIV-fhQSI | 30 KB | method |
 | `lecture-2026-intro.md` | 2026 Essence course INTRO (lecture transcript) | drive 17SAZM_X_v6-3AXPgXHCTWJPp06LpFD90YOIUjBUTXPc | 46 KB | essence |
 | `lecture-2026-part-1-theory.md` | 2026 Essence course PART 1 - THEORY (lecture transcript) | drive 188RJqUOX9C9ks3-xMESCgxaiNFp3QxoxYfORd2tDpw4 | 58 KB | essence |
 | `lecture-2026-part-2-diamonds-and-pyramids.md` | 2026 Essence course PART 2 - YOUR DIAMONDS AND PYRAMIDS (lecture transcript) | drive 1ZikjDyr81X0Q3AnVIzuXcvaZZ0l2lm_FQEQ5Jx7R33o | 185 KB | essence |
@@ -293,6 +294,7 @@ color in the book.
 | `what-is-a-name-1.md` | What a Name Actually Is a name (1) | drive 12dGhbtj2iPOfZJPI_MDYcaEoBXpxaOsB9FJOsRfWqdY | 7 KB | name-chart |
 | `what-is-a-name-2.md` | What a name actually is a name (2) | drive 1U9UAwlQT17wueZ0_eq2xoSG50uVzo8BbybOwy9syePU | 9 KB | name-chart |
 | `what-is-a-name-3.md` | What actually is a name? (3) | drive 1A_ihNfrM1Q-2ouU7ODRn1zPdWc-UIC58t3eEYConsjI | 6 KB | name-chart |
+| `year-row-cases-book.md` | Year Row Cases: Real-Life Year Row Case Studies from Historic Moments (book) | drive 13y_YOV8ttrbbkXiuHQCvjfZhxbwGTple | 100 KB | method |
 
 ## Repaired exports (2026-10-20)
 Six Google Docs came out of the Drive connector as one run of text with their headings flattened to plain lines,
@@ -348,3 +350,14 @@ when each passage was said. `knowledge/books.json` "lectures" names the transcri
 lecture"); such a point's citation is `{ book, at: "mm:ss" }`, the speaker line its words sit under, shown as
 "Sub-chart Rules lecture at 8:07". test/meaning.test.js checks every citation: a page from "books" or a minute from
 "lectures", never both.
+
+Two more books from their PDFs (2026-10-22): `karmic-connections-book.md` (NP-KarmicRelations-INT-v1, 23 pp.) and
+`year-row-cases-book.md` (NU-YearRowCases-ver1, 91 pp.) were made straight from `pdftotext -layout` (form feeds =
+pages, so every page mark is exact): the page number and running header dropped, hyphenated line ends joined,
+the table of contents' titles and all-caps lines made headings, bullet glyphs made list items, a paragraph that
+runs over a page break joined to its start. The Year Row Cases book's three Nixon year-row tables (pp. 62, 68, 74)
+are pictures laid out as text and were left out; its "PLAYER 1 / PLAYER 2" picture captions too. The Karmic
+Connections book reprints the Forecasting book's karmic chapter word for word; the index keeps the first copy
+(the Forecasting book's), so `server/book.js` shows that chapter after the Karmic book's own passages. Neither
+book is a meaning-page source: `server/book.js` serves them to the Karmic Connections tool and the Year Rows
+number sheet only (`GET /api/book`).

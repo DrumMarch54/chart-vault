@@ -165,7 +165,7 @@ const byKey = (a, b) => { for (let j = 0; j < a.key.length; j++) if (a.key[j] !=
 
 // A passage as the screen shows it: the course file, its heading, the text, and (for a course book with page
 // marks) the book's short name and the page(s) the words are on, so every card can be checked in the book.
-function card(c) {
+export function card(c) {
   const b = bookOf(c.source);
   return { source: c.source, title: c.title, heading: c.heading, text: c.text, ...(b ? { book: b.book } : {}), ...(c.page ? { page: c.page, pageEnd: c.pageEnd || c.page } : {}) };
 }
@@ -204,7 +204,16 @@ function loadBits() {
 // page, the name-change booklet's rules on a sub-chart page): its groups come after the page's own.
 export function bitsFor(key) {
   const { sets, pages, more } = loadBits();
-  const list = [pages[key], ...[].concat(more[key] || [])].map((id) => sets[id]).filter(Boolean);
+  return mergeSets([pages[key], ...[].concat(more[key] || [])].map((id) => sets[id]).filter(Boolean));
+}
+// Hand-written sets a screen asks for by id (the Karmic Connections tool, the Year Rows number sheet): only the
+// families made for screens, never a page's set by its id.
+const SCREEN_SETS = /^hand\/(karmic|rows)\//;
+export function setsFor(ids) {
+  const { sets } = loadBits();
+  return mergeSets([].concat(ids).filter((id) => SCREEN_SETS.test(id)).map((id) => sets[id]).filter(Boolean));
+}
+function mergeSets(list) {
   if (!list.length) return null;
   const copy = (g) => ({ title: g.title, points: g.points.slice(), ...(g.cites ? { cites: g.cites.map((c) => (c ? { ...c } : null)) } : {}) });
   // several sets with the same heading ("When Choosing a Name" from the booklet and from the lecture) are one card

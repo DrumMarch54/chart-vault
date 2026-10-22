@@ -82,6 +82,18 @@ PDFs, with what each holds for a NUMBER IN A POSITION:
   and what it becomes (11 boundaries → master teacher; 12 victimization → Jupiter expansion; 13 dissatisfaction →
   innovation; 16 fear of loss → bliss of the 7; 18 control → the spiritual warrior burning karma); all five battle
   the ego. On every meaning page where one of them sits, as the "Name Cleanse" group.
+- **Karmic Connections book** (NP-KarmicRelations-INT-v1, 23 pp., read 2026-10-22, `karmic-connections-book`): the four
+  kinds of connection (soul groups, karmic connections, very similar Higher Selves, not sharing rhythms), what a
+  contract is about, how long, what it feels like, how it ends, the lessons (the two day numbers in a diamond: 8 and 1 =
+  18/9 one way, 81/9 the other), short and long-term connections, release through forgiveness, supportive ones, twins,
+  soul groups, karmic DNA, the recap. Largely a reprint of the Forecasting book's karmic chapter (pp. 62-77). On the
+  Karmic Connections tool.
+- **Year Row Cases book** (NU-YearRowCases-ver1, 91 pp., read 2026-10-22, `year-row-cases-book`): real year rows read
+  row by row: Carlsen–Anand 2013 (pp. 11-17), Wimbledon 2015 and 2017 (pp. 19-29), JFK 1961-63 (pp. 33-59, with "year
+  row age mirroring" p. 58), Nixon 1972-74 (pp. 61-77), Clinton, Hillary and Lewinsky 1998 (pp. 79-89). The words it
+  gives a number in a row (17/8 the spotlight, 16/7 karmic loss, 9 – 17/8 – 8 the integrity lesson, 5 – 10/1 – 5 the
+  media number, 32/5 the Emperor and the Deflated Emperor, 88/7 karmic reckoning, ...) are on the Year Rows number
+  sheet. Its Nixon tables (pp. 62, 68, 74) are pictures: not in the store.
 Also paged the same day (separate PDFs exist): the psyche book, psyche cases, psychic disorders, the
 interpretation guide, the two sub-chart books, statistics, the templates rules, single name charts, relations.
 

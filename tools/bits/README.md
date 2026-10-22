@@ -35,3 +35,8 @@ booklet's rule, the Sub-chart Rules lecture's general rules for the position (`h
 reasons, and last the Name Cleanse lecture's group (`hand/cleanse/11..18`, on every page where 11, 12, 13, 16 or 18
 sits). `bitsFor` folds sets with the same heading into one card. The sets are edited in bits.json itself (they were
 written by hand from the transcripts, one point per minute line); no tool regenerates them.
+
+Sets for screens that are not meaning pages (2026-10-22): `hand/karmic/book`, `hand/karmic/connected|same|free`
+(the Karmic Connections tool) and `hand/rows/<n>` (the Year Rows number sheet, the Year Row Cases book) are not
+in `pages` or `more`; `setsFor(ids)` in server/meaning.js serves them by id to `GET /api/book` (server/book.js) and
+refuses any other family. Group title "" (the screen gives the heading); every point cites its book page.

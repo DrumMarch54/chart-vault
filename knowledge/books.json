@@ -85,6 +85,16 @@
       "book": "Name Change 5 Steps booklet",
       "pdf": "NameChangeMethod5Steps-v1_ocred.pdf",
       "drive": "1m2GGrMDs_hF0QdH1MQDJCERwntu3ZyqD"
+    },
+    "karmic-connections-book": {
+      "book": "Karmic Connections book",
+      "pdf": "NP-KarmicRelations-INT-v1.pdf",
+      "drive": "1K0Jneuu1f35aYcixYwWxW9KuIV-fhQSI"
+    },
+    "year-row-cases-book": {
+      "book": "Year Row Cases book",
+      "pdf": "NU-YearRowCases-ver1.pdf",
+      "drive": "13y_YOV8ttrbbkXiuHQCvjfZhxbwGTple"
     }
   },
   "lectures": {

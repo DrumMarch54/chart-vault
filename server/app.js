@@ -22,6 +22,7 @@ import { readingFor, writeReading, answerQuestion, deleteReadings, readingEstima
 import { askVault } from './ask.js';
 import { factsFor } from './facts.js';
 import { meaningFor, countWith } from './meaning.js';
+import { bookFor } from './book.js';
 import { wordsFor, wordInfo } from './words.js';
 
 const MAX_IMPORT = 50 * 1024 * 1024;
@@ -249,6 +250,15 @@ export function createApp(db, { log = console.log } = {}) {
     const m = meaningFor({ chart: String(req.query.chart || ''), position: String(req.query.position || ''), sum: Number(req.query.sum), pair, rel });
     if (!m) return res.status(400).json({ error: 'That position or number is not one the app knows.' });
     res.json({ ...m, count: countWith(db, m.chart, m.position, m.sum), related: m.related.map((r) => ({ ...r, count: countWith(db, r.chart, r.position, r.sum) })) });
+  });
+  // A course book's words for a screen: GET /api/book?slug=year-row-cases-book&num=17 (the book's passages about
+  // 17 and the hand-written points for 17 in a row), /api/book?slug=karmic-connections-book (the whole book).
+  app.get('/api/book', (req, res) => {
+    const num = req.query.num == null || req.query.num === '' ? null : Number(req.query.num);
+    if (num !== null && !(Number.isInteger(num) && num > 0 && num < 100)) return res.status(400).json({ error: 'The number must be 1 to 99.' });
+    const b = bookFor(String(req.query.slug || ''), { num, sets: String(req.query.sets || '').split(',').filter(Boolean).slice(0, 8) });
+    if (!b) return res.status(400).json({ error: 'That book is not one the app shows here.' });
+    res.json(b);
   });
   app.get('/api/tags', (req, res) => {
     const limit = Math.min(Math.max(Number(req.query.limit) || 30, 1), 200);

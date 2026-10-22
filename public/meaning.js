@@ -108,7 +108,8 @@
       const rel = String(el.getAttribute('data-rel') || '').split(',').filter(Boolean).map((x) => { const [p, n] = x.split(':'); return { position: p, sum: Number(n) }; });
       return { chart, position, sum: Number(el.getAttribute('data-num')), pair, rel };
     };
-    return { open, fromEl };
+    // section(bits, passages): the short points and the folded course words, for other screens that show a book
+    return { open, fromEl, section };
   }
   root.Meaning = { install };
 })(window);

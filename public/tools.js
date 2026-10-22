@@ -713,12 +713,20 @@
   }
 
   // ---------- Karmic Connections ----------
+  // The rule is the Forecasting book's (shared destiny rhythms = the same birth-year number, T.karmic). The words
+  // are the Karmic Connections book's (2026-10-22): under each person the book's own sentence for that verdict,
+  // cited by page, and at the foot the whole book as short points with the course words folded (GET /api/book).
   function karmicView() {
     light();
     const saved = recall('karmic', { me: '', others: ['', '', '', ''] });
     const yearField = (v, ph) => A.h('input', { type: 'text', inputmode: 'numeric', maxlength: 4, placeholder: ph, value: v || '', autocomplete: 'off' });
     const $me = yearField(saved.me, 'your birth year'), $others = saved.others.map((v, i) => yearField(v, `birth year ${i + 1}`));
-    const $body = A.h('div', {});
+    const $body = A.h('div', {}), $book = A.h('div', {});
+    let book = null;
+    const bold = (t) => String(t).split('**').map((part, i) => (i % 2 ? A.h('b', {}, part) : part)).filter((x) => x !== '');
+    const cite = (c) => (c ? A.h('span', { class: 'mcite' }, `${c.book} p. ${c.page}`) : null);
+    const cited = (set) => (set ? set.groups.flatMap((g) => g.points.map((t, i) => A.h('p', {}, ...bold(t), cite(g.cites && g.cites[i])))) : []);
+    const verdict = (o) => (!book ? [] : cited(book.sets[o.shared ? (o.sameYear ? 'same' : 'connected') : 'free']));
     const draw = () => {
       remember('karmic', { me: $me.value, others: $others.map((f) => f.value) });
       const k = T.karmic($me.value, $others.map((f) => f.value));
@@ -726,15 +734,22 @@
       A.fill($body,
         A.h('div', { class: 'reading' }, A.h('div', { class: 'head' }, A.h('b', {}, `${k.year}`), A.h('span', { class: 'nm' }, `year number ${k.ds} · rhythm ${k.rhythm.join('-')}`)), A.h('p', {}, `Your destiny rhythm: ${k.periods.slice(0, 6).map((p) => `${p.number} (${p.start}–${p.end})`).join(', ')} …`)),
         ...k.others.map((o) => A.h('div', { class: 'reading ' + (o.shared ? 'yes' : 'no') }, A.h('div', { class: 'head' }, A.h('b', {}, String(o.year)), A.h('span', { class: 'nm' }, `year number ${o.ds}`), A.h('span', { class: 'rate ' + (o.shared ? 'super' : 'quiet') }, o.shared ? (o.sameYear ? 'Same year: connected' : 'Karmically connected') : 'Not connected')),
-          A.h('p', {}, o.shared ? 'Shares your destiny rhythm: the same planets and lessons at the same points of life. With a close relationship this is a karmic connection.' : 'A different rhythm. A close relationship is still possible, without a karmic contract.'))),
-        A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'From Forecasting Numerology pp. 63-77: shared destiny rhythms come from the same birth-year number. Your own year rows and periods are under Quick Chart ⋮ "Year Rows and Day Vibrations".'));
+          ...(book ? verdict(o) : [A.h('p', {}, o.shared ? 'Shares your destiny rhythm: the same planets and lessons at the same points of life.' : 'A different rhythm.')]))),
+        A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'The rule is the Forecasting book\'s (pp. 63-77): shared destiny rhythms come from the same birth-year number. Your own year rows and periods are under Quick Chart ⋮ "Year Rows and Day Vibrations".'));
     };
+    const drawBook = () => {
+      if (!book) return;
+      A.fill($book, A.h('div', { class: 'wlabel tl' }, 'The Karmic Connections Book'),
+        A.h('p', { class: 'muted small', style: 'margin:0 2px 8px' }, 'Short points first; "Course Words" opens the book\'s own text. A very similar Higher Self makes a connection extra strong: compare two charts in the vault with Compare or Similar Charts.'),
+        ...A.courseWords(book.bits, book.passages));
+    };
+    A.api('/api/book?slug=karmic-connections-book&sets=connected,same,free').then((b) => { book = b; draw(); drawBook(); A.count('karmic.book'); }).catch((err) => A.fill($book, A.h('p', { class: 'err small' }, err.message)));
     [$me, ...$others].forEach(($f) => $f.addEventListener('input', draw));
     const useMe = async () => { try { const me = await A.api('/api/mychart'); if (!me.year) { A.toast('Set up My Chart first (Settings).', true); return; } $me.value = String(me.year); draw(); } catch (err) { A.toast(err.message, true); } };
     A.render(A.h('div', { class: 'screen qscreen tscreen' }, top('Karmic Connections'),
       A.h('div', { class: 'two-people' }, A.h('div', {}, A.h('div', { class: 'muted small', style: 'padding:0 2px 4px' }, 'You'), $me), A.h('div', {}, A.h('div', { class: 'muted small', style: 'padding:0 2px 4px' }, 'Others'), ...$others)),
       A.h('div', { class: 'togglerow' }, chip('Use My Chart', false, useMe)),
-      $body));
+      $body, $book));
     draw();
     if (!$me.value) useMe().catch(() => {});
   }
@@ -1256,7 +1271,7 @@
     'planrows.pick_chart': 'Plan With Year Rows: pick a chart from the vault', 'planrows.combo': 'Plan With Year Rows: a combination on or off', 'planrows.year': 'Plan With Year Rows: previous or next year', 'planrows.hit': 'Plan With Year Rows: tap a found combination',
     'famous.day': 'Famous People: By Birthday', 'famous.career': 'Famous People: By Career', 'famous.pick_day': 'Famous People: pick a day', 'famous.pick_career': 'Famous People: pick a career', 'famous.vault': 'Famous People: charts in the vault born that day',
     'phone.phone': 'Phone and Domain: the Phone Number tab', 'phone.domain': 'Phone and Domain: the Domain tab', 'words.pick': 'Business Words: pick a number', 'words.check': 'Business Words: Check a Word', 'words.open': 'Business Words: open a word\'s charts',
-    'price.find': 'Price Tool: Find a Price', 'price.vibe': 'Price Tool: pick a vibration', 'price.range': 'Price Tool: pick a range', 'price.pick': 'Price Tool: pick a found price', 'price.number': 'Price Tool: a number in the price', 'price.vibe_text': 'Price Tool: the book\'s page for a vibration', 'price.pyramid': 'Price Tool: the number pyramid', 'price.chart': 'Price Tool: the price chart', 'price.chart_day': 'Price Tool: a day on top of the chart', 'relation.use_me': 'Relationship: me as the first person', 'mychart.save': 'My Chart: save',
+    'price.find': 'Price Tool: Find a Price', 'price.vibe': 'Price Tool: pick a vibration', 'price.range': 'Price Tool: pick a range', 'price.pick': 'Price Tool: pick a found price', 'price.number': 'Price Tool: a number in the price', 'price.vibe_text': 'Price Tool: the book\'s page for a vibration', 'price.pyramid': 'Price Tool: the number pyramid', 'price.chart': 'Price Tool: the price chart', 'price.chart_day': 'Price Tool: a day on top of the chart', 'relation.use_me': 'Relationship: me as the first person', 'karmic.book': 'Karmic Connections: the book\'s words shown', 'mychart.save': 'My Chart: save',
   };
 
   function install(app) {

@@ -968,3 +968,16 @@ shows once. Every point was written from the transcript by hand; where the trans
 18 "gives anger" at 01:51) the point keeps the ambiguity ("one of 16 and 18 ... the other ...") rather than guess.
 Checked on the dev app at 390×844: vocation solar plexus 12/3, vocation heart 11/2, name chart mind center 16/7.
 
+## 2026-10-22 The Karmic Connections book and the Year Row Cases book on their screens
+Items 3 and 4 of the owner's "do these". Both PDFs went into the store straight from their text (pages exact, see
+knowledge/README "Two more books"). The index drops a paragraph it has already seen, and the Karmic Connections book
+reprints the Forecasting book's karmic chapter, so its "1) Soul Groups" passage lives under the Forecasting book:
+`server/book.js` shows the Karmic book's own passages first and that chapter after, each with its own book and page,
+never relabeled. The screens: the Karmic Connections tool keeps the Forecasting rule and gets the book's sentence for
+each verdict under each person (cited), then the whole book as short points with the course words folded; the Year
+Rows number sheet gets "N in Real Year Rows" with hand-written points per number cited by page and the book's
+passages about that number folded (the sheet now scrolls). Points for 53 numbers: the cell numbers and the "subtle"
+compounds the book names. A screen's sets are reached by id (`setsFor`, families hand/karmic and hand/rows only),
+never a page's. Built on the branch and screenshotted on the dev app at 390×844 for the owner's OK before deploying,
+per the owner's standing rule.
+
