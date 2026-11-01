@@ -153,7 +153,7 @@ export function cleanTempFiles(log = () => {}) {
 
 // A Quick chart saved to the vault: a new chart record named after the person and date, tagged with
 // the typed name, filed under /Quick chart/. The picture itself then arrives through receiveUpload.
-export function createQuickChart(db, { name, date }) {
+export function createQuickChart(db, { name, date, title }) {
   const person = String(name || '').trim().replace(/\s+/g, ' ');
   if (!person) throw new UploadError('Type a name first.');
   if (person.length > 120) throw new UploadError('The name is too long.');
@@ -173,8 +173,10 @@ export function createQuickChart(db, { name, date }) {
     const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(when);
     setInputs(db, id, { day: m ? Number(m[3]) : '', month: m ? Number(m[2]) : '', year: m ? Number(m[1]) : '', name: person }, { source: 'quick' });
     // Who the chart is, under the thumbnail: first and last name of what was typed, no middle names
-    // (the title rule in server/titles.js). The owner typed it, so it needs no checking.
-    setTitle(db, id, shortName(person));
+    // (the title rule in server/titles.js). The owner typed it, so it needs no checking. Look Up Someone
+    // hands the name the public knows ("50 Cent"), which the title rule allows as a stage name.
+    const given = String(title || '').trim().replace(/\s+/g, ' ').slice(0, 80);
+    setTitle(db, id, given || shortName(person));
     return { id, filename };
   })();
 }

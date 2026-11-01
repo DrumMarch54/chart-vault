@@ -11,6 +11,7 @@ import { getMyChart } from './mychart.js';
 import { titleStats } from './titles.js';
 import { inputStats, tagCheck, chartsWithoutInputs, getInputs, valuesFor, chartLabel } from './positions.js';
 import { aiReport, redact } from './ai.js';
+import { lookupReport } from './lookup.js';
 import { listDeleted, findDuplicates } from './trash.js';
 
 const started = Date.now();
@@ -106,6 +107,7 @@ export function snapshot(db, { scope = 'full', id = null, commit = 'unknown', bu
   }
   line('');
   for (const l of aiReport()) line(l);
+  for (const l of lookupReport()) line(redact(l));
   const rc = db.prepare("SELECT count(*) c, sum(kind = 'reading') r, sum(kind = 'answer') a, round(sum(usd), 4) usd FROM readings").get();
   line(`stored readings: ${rc.r || 0} readings, ${rc.a || 0} answers, $${rc.usd || 0} all time`);
   line('');

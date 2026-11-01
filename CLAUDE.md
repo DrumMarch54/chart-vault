@@ -196,6 +196,14 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   proves the key never leaks and the cap blocks. Measured 2026-10-16: a reading about 25-40 cents (about 50k tokens in,
   mostly course passages); a question about a chart about 3 cents while cached; a vault question about a cent. Never call the model from a test or a tool.
 
+## Look Up Someone (built 2026-11-01)
+- Home "Look Up" tile, or press and hold the app icon (manifest shortcut, `#/lookup?listen=1`): tap the microphone
+  (the browser's speech recognition) and say a name or describe someone. `server/lookup.js`: the vault first, free
+  (`vaultMatches`); then Claude Haiku 5.5 with the web search tool finds the birth name and date (`give_answer`, up to
+  three people). Searches cost $0.01 each on top of tokens (`WEB_SEARCH_USD` in ai.js). A source is shown only if the
+  search returned it; no source = "unsure". Nothing is saved until Save to Vault (`/api/quick/save` with `title` = the
+  public name). Lookups are in the snapshot (LOOK UP SOMEONE). Screen: `public/lookup.js`.
+
 ## Archetype lines (built 2026-10-21): words on a combination of numbers
 - The owner's ask: "wholesome (24/6) expander (12/3)". `server/archetype-words.js` is the word bank: every number 1-99
   with its course title and alt title, bright adjectives and nouns, shadow adjectives and nouns, drafted by a Claude

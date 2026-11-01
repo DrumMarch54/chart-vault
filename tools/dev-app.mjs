@@ -80,6 +80,15 @@ const FAKE_READING = '## Nexus\nThe 19/1 day vibration with the 6/6 life path ma
 useClientFactory(() => ({ messages: { create: async (params) => {
   await new Promise((r) => setTimeout(r, 1000));
   const usage = { input_tokens: 42000, output_tokens: 700 };
+  // Look Up Someone: a fake web search and answer (the dev app never searches the real web).
+  if (params.tools && params.tools.some((t) => t.type && t.type.startsWith('web_search'))) {
+    const url = 'https://en.wikipedia.org/wiki/50_Cent';
+    return { content: [
+      { type: 'server_tool_use', id: 'srv1', name: 'web_search', input: { query: '50 Cent birth name' } },
+      { type: 'web_search_tool_result', tool_use_id: 'srv1', content: [{ type: 'web_search_result', url, title: '50 Cent - Wikipedia' }] },
+      { type: 'tool_use', id: 'a1', name: 'give_answer', input: { note: '', people: [{ known_as: '50 Cent', birth_name: 'Curtis James Jackson III', birth_date: '1975-07-06', who: 'American rapper from Queens, New York', sure: true, note: '', sources: [url] }] } },
+    ], stop_reason: 'tool_use', usage: { input_tokens: 9000, output_tokens: 300, server_tool_use: { web_search_requests: 1 } } };
+  }
   if (params.tools) {
     const last = params.messages.at(-1);
     if (last.role === 'user' && typeof last.content === 'string') return { content: [{ type: 'tool_use', id: 't1', name: 'rank_charts', input: { by: 'imbalance', limit: 5 } }], stop_reason: 'tool_use', usage: { input_tokens: 3000, output_tokens: 80 } };

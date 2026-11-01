@@ -247,7 +247,7 @@ body.noscroll { overflow: hidden; }
 .home .searchbox input { min-height: 56px; font-size: 18px; padding-left: 46px; background: var(--panel) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%23a5abbd' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.8-3.8'/%3E%3C/svg%3E") 14px center no-repeat; }
 .home .searchbox .clear { top: 8px; }
 /* The three tiles under the home search bar: Quick Chart, By Position, Ask the Vault. */
-.acts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.acts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
 .act { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 68px; padding: 8px 6px; border-radius: var(--radius); background: var(--panel); color: var(--text); text-decoration: none; font-weight: 600; font-size: 14px; text-align: center; line-height: 1.15; }
 .act .qicon { font-size: 22px; line-height: 1; }
 .act.primary { background: var(--accent); color: #1a1408; }
@@ -896,3 +896,16 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .arch-block .arch-bright { font-size: 18px; margin: 6px 0 0; }
 .arch-block .arch-shadow { font-size: 17px; font-weight: 600; margin: 6px 0 0; }
 .arch-words { background: var(--panel); border-radius: 12px; padding: 10px 12px; line-height: 1.35; }
+
+/* Look Up Someone (lookup.js): the big microphone, the found person's card. */
+.lookup-top { display: flex; align-items: center; gap: 14px; }
+.lookup-mic { width: 72px; min-width: 72px; height: 72px; border-radius: 50%; padding: 0; font-size: 32px; background: var(--accent); color: var(--accent-text); box-shadow: 0 2px 10px var(--shadow); }
+.lookup-mic.on { background: var(--red); animation: lookup-pulse 1.2s ease-in-out infinite; }
+@keyframes lookup-pulse { 50% { transform: scale(1.08); } }
+.lookup-hint { flex: 1; min-width: 0; }
+.lookup-who { margin: 0; font-size: 22px; }
+.lookup-facts { display: flex; flex-direction: column; gap: 2px; }
+.lookup-warn { margin: 0; padding: 8px 10px; border-radius: 10px; background: var(--warn-bg); color: var(--text); }
+.lookup-card .nscope-box { margin-top: 0; }
+.lookup-fields { flex-wrap: nowrap; gap: 6px; }
+.lookup-fields input { min-height: 42px; height: 42px; padding: 0 10px; font-size: 16px; border-radius: 10px; }

@@ -175,6 +175,7 @@
   // waits for that step through afterOverlayClosed.
   let overlays = []; // [{ el, close }], oldest first
   let meaningUi = null; // set once public/meaning.js is installed (bottom of this file)
+  let lookupUi = null; // set once public/lookup.js is installed (bottom of this file)
   let closingAll = false, pendingBack = 0, afterBack = [];
   const trackOverlay = (el, close = null) => { overlays.push({ el, close }); try { history.pushState({ overlay: true }, '', location.href); } catch {} };
   const untrackOverlay = (el) => {
@@ -529,7 +530,8 @@
     const $acts = h('div', { class: 'acts' },
       h('a', { class: 'act primary', href: '#/quick', onclick: () => count('home.quick') }, h('span', { class: 'qicon' }, '◈'), h('span', { class: 'al' }, 'Quick Chart')),
       h('a', { class: 'act', href: '#/position', onclick: () => count('home.position') }, h('span', { class: 'qicon' }, '⌖'), h('span', { class: 'al' }, 'By Position')),
-      readingUi ? readingUi.homeButton() : null);
+      readingUi ? readingUi.homeButton() : null,
+      lookupUi ? lookupUi.homeButton() : null);
     drawCmpBar(true);
     render(h('div', { class: `screen ${home ? 'home' : ''}` },
       home ? h('div', { class: 'pagetop hometop' }, h('h1', {}, 'Chart Vault'), $gear) : null,
@@ -2260,6 +2262,9 @@
   const archUi = window.Archetypes ? window.Archetypes.install({ routes, h, fill, api, toast, count, go, render, pageTop, posRows, loadCatalog, catalog: () => catalog, posLabel, numLabel, overlay: trackOverlay, overlayGone: untrackOverlay }) : null;
   if (archUi) Object.assign(USAGE_LABELS, archUi.USAGE_LABELS);
   // What a number means where it sits (public/meaning.js): a tap on a number of a drawn chart.
+  // Look Up Someone (say a name, the web finds the birth name and date, the chart is drawn): lookup.js.
+  lookupUi = window.Lookup ? window.Lookup.install({ routes, h, fill, api, toast, count, go, render, pageTop, drawnChart, chartPng }) : null;
+  if (lookupUi) Object.assign(USAGE_LABELS, lookupUi.USAGE_LABELS);
   meaningUi = window.Meaning ? window.Meaning.install({ h, fill, api, count, go, positionHash, overlay: trackOverlay, overlayGone: untrackOverlay }) : null;
 
   // ---------- start ----------

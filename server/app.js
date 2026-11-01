@@ -20,6 +20,7 @@ import { paths } from './config.js';
 import { aiSettings, setAiSettings, spendState, pendingWarning, markWarningSeen, AiError } from './ai.js';
 import { readingFor, writeReading, answerQuestion, deleteReadings, readingEstimate, readingChoices } from './reading.js';
 import { askVault } from './ask.js';
+import { lookupPerson, vaultMatches, rememberLookup } from './lookup.js';
 import { factsFor } from './facts.js';
 import { meaningFor, countWith } from './meaning.js';
 import { wordsFor, wordInfo } from './words.js';
@@ -370,7 +371,7 @@ export function createApp(db, { log = console.log } = {}) {
     lastUpload = Date.now();
     let made = null;
     try {
-      made = createQuickChart(db, { name: req.query.name, date: req.query.date });
+      made = createQuickChart(db, { name: req.query.name, date: req.query.date, title: req.query.title });
       const result = await receiveUpload(db, req, { filename: made.filename, sha256Header: req.get('x-sha256') });
       log(`quick chart saved #${result.id} ${made.filename} (${result.size} bytes)`);
       res.json(result);
@@ -454,6 +455,25 @@ export function createApp(db, { log = console.log } = {}) {
       log(`ask: ${r.ids.length} charts, ${r.turns} turns, $${r.usd}`);
       res.json({ ...r, spend: spendState(), warning: pendingWarning() });
     } catch (err) { if (err instanceof AiError) return res.status(400).json({ error: err.message }); next(err); }
+  });
+
+  // Look Up Someone: the vault first (free), then the web (paid, through ai.js). Nothing is saved here;
+  // the screen draws the chart and the owner taps Save to Vault (PUT /api/quick/save).
+  app.post('/api/lookup', express.json({ limit: '4kb' }), async (req, res, next) => {
+    const body = req.body || {};
+    try {
+      if (!body.web) {
+        const vault = vaultMatches(db, body.query);
+        if (vault.length) return res.json({ query: String(body.query || '').trim(), vault, people: null, spend: spendState() });
+      }
+      const r = await lookupPerson(db, body.query);
+      rememberLookup({ query: r.query, people: r.people, searches: r.searches, usd: r.usd });
+      log(`lookup: ${r.people.length} people, ${r.searches} searches, $${r.usd}`);
+      res.json({ ...r, spend: spendState(), warning: pendingWarning() });
+    } catch (err) {
+      if (err instanceof AiError) { rememberLookup({ query: String(body.query || '').slice(0, 200), error: err.message }); return res.status(400).json({ error: err.message }); }
+      next(err);
+    }
   });
 
   // Status, export, backup

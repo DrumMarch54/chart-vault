@@ -16,7 +16,10 @@ import { redactionWords } from './auth.js';
 export const MODELS = {
   reading: { id: 'claude-opus-5-5', label: 'Claude Opus 5.5', input: 4, output: 20, cacheRead: 0.2, cacheWrite: 5 },
   ask: { id: 'claude-haiku-5-5', label: 'Claude Haiku 5.5', input: 0.1, output: 0.5, cacheRead: 0.01, cacheWrite: 0.125 },
+  lookup: { id: 'claude-haiku-5-5', label: 'Claude Haiku 5.5', input: 0.1, output: 0.5, cacheRead: 0.01, cacheWrite: 0.125 },
 };
+// The web search tool (Look Up Someone) is billed per search on top of the tokens: $10 per 1,000.
+export const WEB_SEARCH_USD = 0.01;
 export const DEFAULT_CAP = 8;
 export const WARN_AT = 0.8;
 
@@ -97,7 +100,8 @@ export function costOf(usage, model) {
   if (!usage) return 0;
   const m = model || MODELS.reading;
   const inTok = usage.input_tokens || 0, out = usage.output_tokens || 0, cr = usage.cache_read_input_tokens || 0, cw = usage.cache_creation_input_tokens || 0;
-  return round((inTok * m.input + out * m.output + cr * m.cacheRead + cw * m.cacheWrite) / 1e6);
+  const searches = (usage.server_tool_use && usage.server_tool_use.web_search_requests) || 0;
+  return round((inTok * m.input + out * m.output + cr * m.cacheRead + cw * m.cacheWrite) / 1e6 + searches * WEB_SEARCH_USD);
 }
 function addSpend(usd) {
   const o = load();
@@ -151,6 +155,8 @@ export async function callModel(kind, params, { estimateUsd = 0, what = '' } = {
     entry.ok = true; entry.status = 200; entry.usd = usd; entry.seconds = round((Date.now() - t0) / 1000);
     entry.tokens = { input: message.usage?.input_tokens || 0, output: message.usage?.output_tokens || 0, cache_read: message.usage?.cache_read_input_tokens || 0, cache_write: message.usage?.cache_creation_input_tokens || 0 };
     entry.stop = message.stop_reason;
+    const searches = message.usage?.server_tool_use?.web_search_requests || 0;
+    if (searches) entry.searches = searches;
     record(entry);
     const state = addSpend(usd);
     return { message, usd, seconds: entry.seconds, state, model: m };
@@ -190,7 +196,7 @@ export function aiReport() {
     `spend ${s.month}: $${s.spent.toFixed(4)} of cap $${s.cap.toFixed(2)} (${s.calls} calls, level ${s.level})`];
   const calls = recentCalls(20);
   lines.push(`LAST ${calls.length} AI CALLS`);
-  for (const c of calls) lines.push(`  ${c.at} ${c.model} ${c.what} ${c.ok ? 'ok' : 'FAILED'} status ${c.status ?? '-'} ${c.seconds}s $${c.usd.toFixed(4)}${c.tokens ? ` in ${c.tokens.input} out ${c.tokens.output} cache ${c.tokens.cache_read}/${c.tokens.cache_write}` : ''}${c.error ? ` error: ${c.error}` : ''}`);
+  for (const c of calls) lines.push(`  ${c.at} ${c.model} ${c.what} ${c.ok ? 'ok' : 'FAILED'} status ${c.status ?? '-'} ${c.seconds}s $${c.usd.toFixed(4)}${c.tokens ? ` in ${c.tokens.input} out ${c.tokens.output} cache ${c.tokens.cache_read}/${c.tokens.cache_write}` : ''}${c.searches ? ` web searches ${c.searches}` : ''}${c.error ? ` error: ${c.error}` : ''}`);
   if (!calls.length) lines.push('  none this process');
   return lines.map(redact);
 }
