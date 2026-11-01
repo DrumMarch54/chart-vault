@@ -110,3 +110,22 @@ test('the snapshot lists the lookups', async () => {
   assert.match(text, /LOOK UP SOMEONE/);
   assert.match(text, /"fifty cent" → 50 Cent = Curtis James Jackson III 1975-07-06/);
 });
+
+// A strict tool schema may not carry the keywords the API refuses ("For 'array' type, property 'maxItems' is
+// not supported", the first live lookup, 2026-11-01). Every strict tool the app sends is checked here.
+test('no strict tool schema uses a keyword the API refuses', async () => {
+  const { ASK_TOOLS } = await import('../server/ask.js');
+  const { LOOKUP_TOOLS } = await import('../server/lookup.js');
+  const BANNED = ['maxItems', 'minimum', 'maximum', 'exclusiveMinimum', 'exclusiveMaximum', 'multipleOf', 'minLength', 'maxLength', 'pattern', 'format'];
+  const walk = (o, at) => {
+    if (!o || typeof o !== 'object') return;
+    for (const [k, v] of Object.entries(o)) {
+      if (k !== 'properties' && BANNED.includes(k)) assert.fail(`${at}: ${k}`);
+      if (k === 'minItems' && v > 1) assert.fail(`${at}: minItems ${v}`);
+      walk(v, `${at}.${k}`);
+    }
+  };
+  const strict = [...ASK_TOOLS, ...LOOKUP_TOOLS].filter((t) => t.strict);
+  assert.ok(strict.length >= 7);
+  for (const t of strict) walk(t.input_schema, t.name);
+});

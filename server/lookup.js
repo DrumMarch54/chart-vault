@@ -20,13 +20,13 @@ Write in plain American English, short.`;
 
 const ANSWER_TOOL = {
   name: 'give_answer',
-  description: 'The people found, best match first. Call exactly once, after searching.',
+  description: 'The people found, best match first (at most three, each with at most four sources). Call exactly once, after searching.',
   strict: true,
   input_schema: {
     type: 'object', additionalProperties: false, required: ['people', 'note'],
     properties: {
       note: { type: 'string', description: 'One short sentence for the owner: doubts, disagreements between sources, or why nobody was found. Empty if nothing to say.' },
-      people: { type: 'array', maxItems: 3, items: {
+      people: { type: 'array', items: {
         type: 'object', additionalProperties: false,
         required: ['known_as', 'birth_name', 'birth_date', 'who', 'sure', 'note', 'sources'],
         properties: {
@@ -36,7 +36,7 @@ const ANSWER_TOOL = {
           who: { type: 'string', description: 'A few words: what they are known for, like "American rapper from Queens".' },
           sure: { type: 'boolean', description: 'true when the sources agree on both the birth name and the date.' },
           note: { type: 'string', description: 'What disagrees or is uncertain for this person. Empty if nothing.' },
-          sources: { type: 'array', maxItems: 4, items: { type: 'string' }, description: 'The URLs from the search results that give the name or the date.' },
+          sources: { type: 'array', items: { type: 'string' }, description: 'The URLs from the search results that give the name or the date.' },
         },
       } },
     },
@@ -133,3 +133,4 @@ export function lookupReport() {
   if (!RECENT.length) lines.push('  none');
   return lines;
 }
+export const LOOKUP_TOOLS = [ANSWER_TOOL];

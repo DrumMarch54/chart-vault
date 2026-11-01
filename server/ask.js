@@ -19,17 +19,17 @@ Work in as few tool calls as you can. When you have the charts to show, call sho
 
 const TOOLS = [
   { name: 'find_charts', description: 'Charts holding a number in a position. chart "*" = any chart; position "*" = any position of that chart. ds true matches the digit sum instead of the exact compound number. Returns ids, names and how many matched.',
-    input_schema: { type: 'object', properties: { chart: { type: 'string' }, position: { type: 'string' }, number: { type: 'integer', minimum: 1, maximum: 99 }, ds: { type: 'boolean' }, limit: { type: 'integer', minimum: 1, maximum: 50 } }, required: ['number'], additionalProperties: false }, strict: true },
+    input_schema: { type: 'object', properties: { chart: { type: 'string' }, position: { type: 'string' }, number: { type: 'integer' }, ds: { type: 'boolean' }, limit: { type: 'integer' } }, required: ['number'], additionalProperties: false }, strict: true },
   { name: 'count_by_position', description: 'How many charts hold a number in each position of each chart (a quick overview before find_charts).',
-    input_schema: { type: 'object', properties: { number: { type: 'integer', minimum: 1, maximum: 99 }, ds: { type: 'boolean' } }, required: ['number'], additionalProperties: false }, strict: true },
+    input_schema: { type: 'object', properties: { number: { type: 'integer' }, ds: { type: 'boolean' } }, required: ['number'], additionalProperties: false }, strict: true },
   { name: 'rank_charts', description: 'Rank charts by a rule-based score. by "imbalance" (worst first when order is desc) or "influence" of a number (needs number: a digit 1-9 or a compound 10-99). Returns ids, names, score and why.',
-    input_schema: { type: 'object', properties: { by: { type: 'string', enum: ['imbalance', 'influence'] }, number: { type: 'integer', minimum: 1, maximum: 99 }, order: { type: 'string', enum: ['desc', 'asc'] }, limit: { type: 'integer', minimum: 1, maximum: 30 } }, required: ['by'], additionalProperties: false }, strict: true },
+    input_schema: { type: 'object', properties: { by: { type: 'string', enum: ['imbalance', 'influence'] }, number: { type: 'integer' }, order: { type: 'string', enum: ['desc', 'asc'] }, limit: { type: 'integer' } }, required: ['by'], additionalProperties: false }, strict: true },
   { name: 'chart_numbers', description: 'Every number of every position of one chart, by id, with the typed name and date.',
     input_schema: { type: 'object', properties: { id: { type: 'integer' } }, required: ['id'], additionalProperties: false }, strict: true },
   { name: 'find_people', description: 'Charts whose name matches a word (word-start match on the name under the thumbnail).',
-    input_schema: { type: 'object', properties: { name: { type: 'string' }, limit: { type: 'integer', minimum: 1, maximum: 50 } }, required: ['name'], additionalProperties: false }, strict: true },
+    input_schema: { type: 'object', properties: { name: { type: 'string' }, limit: { type: 'integer' } }, required: ['name'], additionalProperties: false }, strict: true },
   { name: 'show_charts', description: 'The charts to show the owner as the answer, in order. Call once, right before the final answer.',
-    input_schema: { type: 'object', properties: { ids: { type: 'array', items: { type: 'integer' }, maxItems: 30 } }, required: ['ids'], additionalProperties: false }, strict: true },
+    input_schema: { type: 'object', properties: { ids: { type: 'array', items: { type: 'integer' } } }, required: ['ids'], additionalProperties: false }, strict: true },
 ];
 const CHART_KEYS = new Set(['*', ...CHARTS.map((c) => c.key)]);
 
