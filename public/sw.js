@@ -11,15 +11,27 @@ self.addEventListener('install', (e) => {
 self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim()));
 });
+// Opening the app must not wait for the network (owner 2026-11-01: a loading screen on every launch).
+// Code files carry the commit in their address (?v=...), so a cached copy is never stale: cache first.
+// The page itself: the cached copy at once, refreshed in the background; a new build shows the
+// "Updated to build" banner, whose tap fetches the page fresh before reloading.
+const put = (req, res) => (res.ok ? caches.open(CACHE).then((c) => c.put(req, res.clone())).catch(() => {}) : Promise.resolve());
+const network = (req) => fetch(req, { cache: 'no-cache' }).then((res) => put(req, res).then(() => res));
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET' || url.origin !== location.origin) return;
   if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/img/') || url.pathname.startsWith('/thumb/')) return;
-  // Network first (always fresh when online); cached copy only when offline.
-  e.respondWith(
-    fetch(e.request, { cache: 'no-cache' }).then((res) => {
-      if (res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(e.request, copy)); }
-      return res;
-    }).catch(() => caches.match(e.request).then((hit) => hit || caches.match('/')))
-  );
+  const fixed = url.searchParams.has('v') || /^\/(icons|planets|fonts)\//.test(url.pathname);
+  if (fixed) {
+    e.respondWith(caches.match(e.request).then((hit) => hit || network(e.request)));
+    return;
+  }
+  if (e.request.mode === 'navigate' && url.pathname === '/' && !url.search) {
+    const fresh = network(e.request);
+    e.waitUntil(fresh.catch(() => {}));
+    e.respondWith(caches.match('/').then((hit) => hit || fresh).catch(() => fresh));
+    return;
+  }
+  // Everything else (the sign-in link, the banner's fresh fetch): network first, cached copy only offline.
+  e.respondWith(network(e.request).catch(() => caches.match(e.request).then((hit) => hit || caches.match('/'))));
 });

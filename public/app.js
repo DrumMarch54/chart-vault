@@ -2228,7 +2228,7 @@
       const hb = await hResp.json();
       if (knownCommit === null) knownCommit = hb.commit;
       else if (hb.commit !== knownCommit && !document.getElementById('newver') && !activeUpload) {
-        document.body.append(h('button', { id: 'newver', type: 'button', class: 'btn-primary', onclick: () => location.reload() }, `Updated to build ${hb.commit}, tap to reload`));
+        document.body.append(h('button', { id: 'newver', type: 'button', class: 'btn-primary', onclick: () => fetch('/', { credentials: 'same-origin', cache: 'no-store' }).catch(() => {}).then(() => location.reload()) }, `Updated to build ${hb.commit}, tap to reload`));
       }
     } catch {}
   }
@@ -2271,7 +2271,7 @@
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js?v=' + (window.APP_VERSION || '0'), { updateViaCache: 'none' }).catch(() => {});
   (async () => {
     try {
-      const me = await fetch('/api/me', { credentials: 'same-origin' }).then((r) => r.json());
+      const me = await (window.ME || fetch('/api/me', { credentials: 'same-origin' }).then((r) => r.json()));
       if (!me.loggedIn) return showLogin();
       route(); checkVersion();
     } catch { render(h('div', { class: 'screen center' }, h('p', { class: 'err' }, 'Cannot reach the server. Check your connection and reload.'))); }
