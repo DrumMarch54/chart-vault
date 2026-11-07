@@ -48,7 +48,7 @@
     'screen.home': 'Home Screen', 'screen.chart': 'Chart Viewer', 'screen.settings': 'Settings', 'settings.search': 'Settings: search', 'settings.look': 'Settings: light or dark look', 'screen.quick': 'Quick Chart',
     'screen.tags': 'All Tags', 'screen.upload': 'Upload Screenshots', 'screen.import': 'Import Tags', 'screen.status': 'Status and backup',
     'viewer.add_tag': 'Add a tag to a chart', 'quick.save': 'Save a quick chart', 'quick.full_screen': 'Quick Chart full screen',
-    'quick.year_rows': 'Year Rows and Day Vibrations', 'quick.show_parts': 'Show and Hide Parts', 'quick.augment': 'Augmentation On or Off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
+    'quick.year_rows': 'Year Rows and Day Vibrations', 'rows.on_date': 'Year Rows: pick a date', 'quick.show_parts': 'Show and Hide Parts', 'quick.augment': 'Augmentation On or Off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
     'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'status.recompute': 'Recompute chart numbers',
     'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart', 'viewer.year_rows': 'Year Rows from a chart',
     'position.search_more': 'Narrow a position search by another number', 'position.add_more': 'Tap + Another number', 'position.combo': 'Open the combination screen from Search by Position', 'position.hsd': 'Higher Self Diamond charts from Search by Position', 'combo.search': 'Show Charts on the combination screen', 'reading.show_number': 'Most Often → ring a number on the chart', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'viewer.share': 'Share Picture from a chart', 'quick.share': 'Share Picture from the Quick Chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
@@ -2150,6 +2150,27 @@
     const $periods = h('div', { class: 'periods' }), $yearTitle = h('div', { class: 'wlabel' }), $yearNote = h('p', { class: 'muted small ynote' }), $year = h('div', {});
     const $dayTitle = h('div', { class: 'wlabel' }), $dayNote = h('p', { class: 'muted small ynote', style: 'padding:0 2px 6px' }), $day = h('div', {});
     const $date = h('input', { type: 'date', class: 'datebox', value: `${date.y}-${String(date.m).padStart(2, '0')}-${String(date.d).padStart(2, '0')}` });
+    // On a Date (owner 2026-11-07): any date, past or coming, moves the whole popup there: the destiny period, the
+    // year row the date falls in (marked) and the day vibrations, with one summary line of what the person was in.
+    const $onDate = h('div', { class: 'ondate' });
+    const longDay = (d) => `${MON[d.m - 1]} ${d.d}, ${d.y}`;
+    const inRow = (x, d) => (d.m > x.month || (d.m === x.month && d.d >= x.day)) && (d.m < x.until.month || (d.m === x.until.month && d.d <= x.until.day));
+    const drawOnDate = () => {
+      if (date.y < birthYear || (date.y === birthYear && (date.m < e.month.sum || (date.m === e.month.sum && date.d < e.day.sum)))) { fill($onDate, h('p', { class: 'muted small', style: 'margin:0' }, `${longDay(date)} is before the birth date.`)); return; }
+      const p = Numeroscope.destinyPeriods(birthYear, 12).find((x) => date.y >= x.start && date.y <= x.end);
+      const r = Numeroscope.yearRows(input, date.y);
+      const x = r && r.rows.find((row) => inRow(row, date));
+      const num = (v, vert, plain = true) => (v ? h('button', { type: 'button', class: 'onum', onclick: () => meaningSheet(v, vert) }, plain ? rowText(v) : v.text) : h('span', { class: 'muted' }, '–'));
+      const line = (label, a, b) => h('div', { class: 'onrow' }, h('span', { class: 'muted small' }, label), ...a.flatMap((v, i) => [i ? h('span', { class: 'muted small' }, b[i]) : null, v]));
+      fill($onDate,
+        h('div', { class: 'onhead' }, longDay(date), h('span', { class: 'muted small' }, ` · age ${date.y - birthYear - (date.m < e.month.sum || (date.m === e.month.sum && date.d < e.day.sum) ? 1 : 0)}`)),
+        p ? line('Destiny period', [num({ sum: p.number, ds: p.number, text: String(p.number) })], []) : null,
+        x ? h('div', { class: 'muted small', style: 'margin:6px 0 2px' }, `Year row ${yearRowLabel(x)} · ${FORMULA_WORDS[x.source]}`) : null,
+        x ? line('Human self', [num(x.main, x.vertical, x.source !== 'sum'), num(x.aura, null, false), num(x.shadow, x.verticalShadow, x.source !== 'sum')], ['', 'aura', 'shadow']) : null,
+        x && x.vertical ? line('With the two rows above', [num(x.vertical, null, false)], []) : null,
+        x ? line('Psychic self', [num(x.psyche.main, x.psyche.vertical, x.source !== 'sum'), num(x.psyche.aura, null, false), num(x.psyche.shadow, x.psyche.verticalShadow, x.source !== 'sum')], ['', 'aura', 'shadow']) : null,
+        h('p', { class: 'muted small', style: 'margin:6px 0 0' }, 'Tap a number for what it means. The rows below are marked at this date.'));
+    };
     const drawPeriods = () => {
       const ps = Numeroscope.destinyPeriods(birthYear, 12).filter((p) => p.start <= birthYear + 99);
       fill($periods, ...ps.map((p) => h('button', { type: 'button', class: `period ${year >= p.start && year <= p.end ? 'active' : ''}`, onclick: () => { year = Math.max(p.start, birthYear); drawYear(); drawPeriods(); } },
@@ -2160,7 +2181,7 @@
       $yearTitle.textContent = `Year rows ${year}`;
       if (!r) { fill($year, h('p', { class: 'muted' }, 'Before the birth year.')); $yearNote.textContent = ''; return; }
       $yearNote.textContent = `Age ${r.formula.age} · ${r.formula.words}${r.hasName ? '' : ' · type a name to fill the life expression and pillar rows'}`;
-      const isNow = (x) => year === now.y && (now.m > x.month || (now.m === x.month && now.d >= x.day)) && (now.m < x.until.month || (now.m === x.until.month && now.d <= x.until.day));
+      const isNow = (x) => year === date.y && inRow(x, date);
       fill($year, rowsTable(r.rows, yearRowLabel, (x) => (isNow(x) ? 'now' : '')));
     };
     const drawDay = () => {
@@ -2171,21 +2192,23 @@
       fill($day, rowsTable(r.rows, (x) => span(x.from, x.until), (x) => (today && now.minutes >= x.from && now.minutes < x.until ? 'now' : '')));
     };
     const drawAll = () => { drawYear(); drawDay(); };
-    const shiftDay = (by) => { const dt = new Date(date.y, date.m - 1, date.d + by); date = { y: dt.getFullYear(), m: dt.getMonth() + 1, d: dt.getDate() }; $date.value = `${date.y}-${String(date.m).padStart(2, '0')}-${String(date.d).padStart(2, '0')}`; drawDay(); };
-    $date.addEventListener('change', () => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec($date.value); if (m) { date = { y: Number(m[1]), m: Number(m[2]), d: Number(m[3]) }; drawDay(); } });
+    // A new date moves everything: the year shown follows it (when it is after the birth year).
+    const setDate = (d) => { date = d; $date.value = `${date.y}-${String(date.m).padStart(2, '0')}-${String(date.d).padStart(2, '0')}`; if (date.y >= birthYear && date.y !== year) { year = date.y; drawPeriods(); } drawYear(); drawDay(); drawOnDate(); };
+    const shiftDay = (by) => { const dt = new Date(date.y, date.m - 1, date.d + by); setDate({ y: dt.getFullYear(), m: dt.getMonth() + 1, d: dt.getDate() }); };
+    $date.addEventListener('change', () => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec($date.value); if (m) { count('rows.on_date'); setDate({ y: Number(m[1]), m: Number(m[2]), d: Number(m[3]) }); } });
     const name = String(input.name || '').trim();
     const $pop = h('div', { class: 'wordpop' },
       h('div', { class: 'pagetop' }, h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Close', onclick: close }, '‹'), h('h1', {}, name || 'Year Rows'), h('span', { class: 'muted small' }, `${e.day.sum} ${MON[e.month.sum - 1]} ${birthYear}`)),
+      h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'On a Date'), h('div', { class: 'row ynav' }, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Previous day', onclick: () => shiftDay(-1) }, '‹'), $date, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Next day', onclick: () => shiftDay(1) }, '›')), $onDate),
       h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'Destiny Periods'), $periods),
       h('div', { class: 'wcard' }, $yearTitle,
         h('div', { class: 'row ynav' }, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Previous year', onclick: () => { if (year > birthYear) { year--; drawYear(); drawPeriods(); } } }, '‹'), $yearNote, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Next year', onclick: () => { year++; drawYear(); drawPeriods(); } }, '›')),
         $year, h('p', { class: 'muted small', style: 'margin:8px 0 0' }, 'Tap a number for what it means; a sum also shows the two rows above it read as one number.')),
       h('div', { class: 'wcard' }, $dayTitle,
-        h('div', { class: 'row ynav' }, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Previous day', onclick: () => shiftDay(-1) }, '‹'), $date, h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Next day', onclick: () => shiftDay(1) }, '›')),
         $dayNote, $day,
         h('p', { class: 'muted small', style: 'margin:8px 0 0' }, 'Arizona time. Nine periods of 2 h 40 min from midnight, as in the course book.')));
     trackOverlay($pop, close); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
-    drawPeriods(); drawAll();
+    drawPeriods(); drawAll(); drawOnDate();
   }
 
   // ---------- status ----------
