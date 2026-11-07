@@ -91,6 +91,7 @@ a.chip { text-decoration: none; }
 .rsearch { display: flex; width: 100%; justify-content: space-between; align-items: center; padding: 8px 10px; margin-bottom: 8px; min-height: 56px; }
 .rsearch .chips { gap: 6px; flex: 1; min-width: 0; }
 .rsearch .chip { min-height: 36px; font-size: 15px; }
+.rsearch .pl { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; flex: 1; min-width: 0; line-height: 1.25; }
 .recent { margin-top: 6px; }
 /* grid */
 .grid { display: grid; grid-template-columns: repeat(var(--grid-cols, 3), 1fr); gap: 6px; }

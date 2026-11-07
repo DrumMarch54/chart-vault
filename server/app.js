@@ -126,7 +126,7 @@ export function createApp(db, { log = console.log } = {}) {
     const limit = Math.min(Math.max(Number(req.query.limit) || 60, 1), 200);
     const offset = Math.max(Number(req.query.offset) || 0, 0);
     const ids = req.query.ids ? String(req.query.ids).split(',').map(Number) : null;
-    res.json(listImages(db, { tags: asList(req.query.tag), positions: positionsOf(req.query), name: String(req.query.name || ''), onlyUploaded: req.query.uploaded === '1', kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', limit, offset, ids, drawn: drawnOf(req.query) }));
+    res.json(listImages(db, { tags: asList(req.query.tag), positions: positionsOf(req.query), name: String(req.query.name || ''), onlyUploaded: req.query.uploaded === '1', kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', limit, offset, ids, drawn: drawnOf(req.query), pattern: String(req.query.pattern || '') }));
   });
   app.get('/api/images/:id', (req, res) => {
     const img = getImage(db, Number(req.params.id));
@@ -165,7 +165,7 @@ export function createApp(db, { log = console.log } = {}) {
   app.get('/api/images/:id/context', (req, res) => {
     const id = Number(req.params.id);
     if (!getImage(db, id)) return res.status(404).json({ error: 'No such chart.' });
-    res.json(imageContext(db, id, { tags: asList(req.query.tag), positions: positionsOf(req.query), name: String(req.query.name || ''), kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', drawn: drawnOf(req.query) }));
+    res.json(imageContext(db, id, { tags: asList(req.query.tag), positions: positionsOf(req.query), name: String(req.query.name || ''), kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', drawn: drawnOf(req.query), pattern: String(req.query.pattern || '') }));
   });
 
   // Who a chart is: the name under the thumbnail. The owner types or fixes it ("Who is this?"), or

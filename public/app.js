@@ -42,6 +42,8 @@
   // A NAME and a count only: never what was typed, never a chart, a tag or a
   // filename. Never throws, never waits, so a count can never break a tap.
   // A renamed or removed button changes its name and its label here, same commit.
+  // Whole-chart shapes searched by name (?pattern=), the SQL in server/queries.js PATTERNS.
+  const PATTERN_NAMES = { hsd: 'Higher Self Diamond' };
   const USAGE_LABELS = {
     'screen.home': 'Home Screen', 'screen.chart': 'Chart Viewer', 'screen.settings': 'Settings', 'settings.search': 'Settings: search', 'settings.look': 'Settings: light or dark look', 'screen.quick': 'Quick Chart',
     'screen.tags': 'All Tags', 'screen.upload': 'Upload Screenshots', 'screen.import': 'Import Tags', 'screen.status': 'Status and backup',
@@ -49,7 +51,7 @@
     'quick.year_rows': 'Year Rows and Day Vibrations', 'quick.show_parts': 'Show and Hide Parts', 'quick.augment': 'Augmentation On or Off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
     'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'status.recompute': 'Recompute chart numbers',
     'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart', 'viewer.year_rows': 'Year Rows from a chart',
-    'position.search_more': 'Narrow a position search by another number', 'position.add_more': 'Tap + Another number', 'position.combo': 'Open the combination screen from Search by Position', 'combo.search': 'Show Charts on the combination screen', 'reading.show_number': 'Most Often → ring a number on the chart', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'viewer.share': 'Share Picture from a chart', 'quick.share': 'Share Picture from the Quick Chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
+    'position.search_more': 'Narrow a position search by another number', 'position.add_more': 'Tap + Another number', 'position.combo': 'Open the combination screen from Search by Position', 'position.hsd': 'Higher Self Diamond charts from Search by Position', 'combo.search': 'Show Charts on the combination screen', 'reading.show_number': 'Most Often → ring a number on the chart', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'viewer.share': 'Share Picture from a chart', 'quick.share': 'Share Picture from the Quick Chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
     'grid.size': 'Chart size on the grid (− / +)', 'similar.size': 'Chart size on Similar Charts (− / +)', 'duplicates.size': 'Chart size on Possible Duplicates (− / +)',
     'viewer.similar': 'Similar Charts from a chart', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
     'viewer.delete': 'Delete a chart from the chart page', 'duplicates.delete': 'Delete a chart from Possible Duplicates', 'duplicates.keep': 'Keep a duplicate group', 'deleted.restore': 'Put a deleted chart back',
@@ -488,9 +490,11 @@
     const name = query.get('name') || '';
     // ?drawn=0: only the charts still shown as the screenshot (no name and date read yet), from Settings.
     const drawn = query.get('drawn') === '0' ? false : query.get('drawn') === '1' ? true : null;
+    // ?pattern=hsd: a shape of the whole chart (server/queries.js PATTERNS), from Search by Position.
+    const pattern = PATTERN_NAMES[query.get('pattern')] ? query.get('pattern') : '';
     const setName = (n) => go('#/?' + new URLSearchParams({ name: n }));
     const setTag = (t, k = kind) => { const p = new URLSearchParams(); if (k === 'archetype') p.set('kind', 'archetype'); if (t) p.set('tag', t); go('#/' + (p.toString() ? '?' + p : '')); };
-    const home = !tag && !position && !name && kind === 'chart' && drawn === null;
+    const home = !tag && !position && !name && kind === 'chart' && drawn === null && !pattern;
     const $quickIcon = h('a', { class: 'btn iconbtn gear', href: '#/quick', 'aria-label': 'Quick Chart', title: 'Quick Chart' }, '◈');
     const $gear = h('a', { class: 'btn iconbtn gear', href: '#/settings', 'aria-label': 'Settings', title: 'Settings' }, '⚙');
     const $input = h('input', { type: 'search', placeholder: 'Search names, tags, numbers', autocomplete: 'off', enterkeyhint: 'search' });
@@ -505,6 +509,7 @@
     showClear();
     const $filters = kind === 'archetype' ? h('div', { class: 'filters' }, chip({ name: 'Archetype Pics', kind: 'name' }, { active: true, removable: true, onclick: () => setTag(tag, 'chart') }))
       : drawn === false ? h('div', { class: 'filters' }, chip({ name: 'Still the screenshot', kind: 'name' }, { active: true, removable: true, onclick: () => setTag('', 'chart') }))
+      : pattern ? h('div', { class: 'filters' }, chip({ name: PATTERN_NAMES[pattern], kind: 'name' }, { active: true, removable: true, onclick: () => setTag('', 'chart') }))
       // One chip per condition: tap it to change it on the combination screen (every condition kept), tap × to drop it.
       // "+ Another number" opens the combination screen with every condition kept and a new row to fill.
       : position ? h('div', { class: 'filters' },
@@ -552,7 +557,7 @@
     if (home) return;
 
     let offset = 0, total = null, loading = false, done = false;
-    const params = () => { const p = new URLSearchParams({ limit: 60, offset, kind }); if (tag) p.append('tag', tag); if (position) for (const c of conds) { p.append('pos', c.pos); p.append('num', c.num); } if (name) p.set('name', name); if (drawn !== null) p.set('drawn', drawn ? '1' : '0'); return p; };
+    const params = () => { const p = new URLSearchParams({ limit: 60, offset, kind }); if (tag) p.append('tag', tag); if (position) for (const c of conds) { p.append('pos', c.pos); p.append('num', c.num); } if (name) p.set('name', name); if (drawn !== null) p.set('drawn', drawn ? '1' : '0'); if (pattern) p.set('pattern', pattern); return p; };
     async function more() {
       if (loading || done) return; loading = true; $sentinel.textContent = 'Loading…';
       try {
@@ -561,8 +566,8 @@
         for (const img of r.items) $grid.append(cell(img));
         done = offset >= total || r.items.length === 0;
         const noun = kind === 'archetype' ? 'archetype pic' : 'chart';
-        $summary.textContent = drawn === false ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} still showing the screenshot` : position ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with ${searchLabel(conds)}${mostFirst ? ', most first' : ''}` : name ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} named ${name}` : `${fmtN(total)} ${noun}${total === 1 ? '' : 's'}${tag ? '' : ', newest first'}`;
-        $sentinel.textContent = done ? (total === 0 ? (drawn === false ? 'Every chart is drawn by the app now.' : kind === 'archetype' && !tag ? 'No archetype pics yet. Add them on the Upload page.' : position ? (conds.length > 1 ? 'No chart has all of these. Remove one with its × to widen the search.' : 'No chart has that number there. Only charts whose name and date have been read can be found this way.') : `No ${noun}s match.`) : '') : '';
+        $summary.textContent = drawn === false ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} still showing the screenshot` : pattern ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with a ${PATTERN_NAMES[pattern]}` : position ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with ${searchLabel(conds)}${mostFirst ? ', most first' : ''}` : name ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} named ${name}` : `${fmtN(total)} ${noun}${total === 1 ? '' : 's'}${tag ? '' : ', newest first'}`;
+        $sentinel.textContent = done ? (total === 0 ? (drawn === false ? 'Every chart is drawn by the app now.' : pattern ? 'No chart has this. Only charts whose birth date has been read can be found this way.' : kind === 'archetype' && !tag ? 'No archetype pics yet. Add them on the Upload page.' : position ? (conds.length > 1 ? 'No chart has all of these. Remove one with its × to widen the search.' : 'No chart has that number there. Only charts whose name and date have been read can be found this way.') : `No ${noun}s match.`) : '') : '';
       } catch (err) { $sentinel.textContent = err.message; }
       loading = false;
     }
@@ -626,6 +631,7 @@
     const listQ = new URLSearchParams(); for (const t of query.getAll('tag')) listQ.append('tag', t); if (query.get('kind') === 'archetype') listQ.set('kind', 'archetype'); if (query.get('name')) listQ.set('name', query.get('name'));
     for (const k of ['pos', 'num']) for (const v of query.getAll(k)) listQ.append(k, v);
     if (query.get('drawn')) listQ.set('drawn', query.get('drawn'));
+    if (query.get('pattern')) listQ.set('pattern', query.get('pattern'));
     const backHash = '#/' + (listQ.toString() ? '?' + listQ : '');
     // Back goes to the screen the viewer was opened from (the list, a search, the quick chart). Opened from a
     // link or a fresh load, there is no such screen, so it goes to the list this chart belongs to.
@@ -1883,6 +1889,8 @@
       h('div', { class: 'row posnum', style: 'flex-wrap:nowrap' }, $num, h('span', { class: 'muted small andword' }, 'meets'), $num2, $ds),
       // A number in each of several positions at once (owner 2026-10-21): the combination screen.
       h('button', { type: 'button', class: 'rsearch alltags', onclick: () => { count('position.combo'); swap('#/combo?' + condsQuery(fixed, { add: 1 })); } }, h('span', {}, 'Combination: a number in each position'), h('span', { class: 'muted' }, '›')),
+      // A shape of the whole chart, no number to type (owner 2026-11-07): the day's digit sum equals the dharma diamond's.
+      fixed.length ? null : h('button', { type: 'button', class: 'rsearch alltags', onclick: () => { count('position.hsd'); go('#/?pattern=hsd'); } }, h('span', { class: 'pl' }, h('span', {}, 'Higher Self Diamond'), h('span', { class: 'muted small' }, 'The day has the same digit sum as the dharma diamond')), h('span', { class: 'muted' }, '›')),
       $hint, $charts, $list));
     try { await loadCatalog(true); } catch (err) { if (!catalog) { fill($list, h('p', { class: 'err' }, err.message)); return; } }
     let counts = null, seq = 0;

@@ -254,3 +254,21 @@ test('similar charts name what is alike in the course words: the biggest matchin
   assert.equal(gistOf({ per: { name: 16 }, of, matches: [] }), 'Name Chart Nearly the Same');
   assert.equal(gistOf({ per: {}, of, matches: [] }), 'A few scattered numbers');
 });
+
+// Owner 2026-11-07: the Higher Self Diamond = the day's digit sum equals the dharma diamond's digit sum
+// (dharma 78 = 15/6 with a day of 6, 15 or 24), so the higher self chart reads like the diamond of one number.
+test('Higher Self Diamond: the day and the dharma diamond share a digit sum (?pattern=hsd)', async () => {
+  const db = openDb(':memory:');
+  const { listImages, imageContext } = await import('../server/queries.js');
+  const yes = addImage(db, 'yes.jpg'), yes2 = addImage(db, 'yes2.jpg'), no = addImage(db, 'no.jpg'), none = addImage(db, 'none.jpg');
+  P.setInputs(db, yes, { day: 16, month: 7, year: 1980, name: '' }); // dharma diamond 7 beside 18/9 = 79, 16/7; day 16/7
+  P.setInputs(db, yes2, { day: 25, month: 7, year: 1980, name: '' }); // day 25/7 counts too: only the digit sums meet
+  P.setInputs(db, no, { day: 8, month: 7, year: 1980, name: '' });
+  const essence = (id, pos) => db.prepare("SELECT sum, ds FROM chart_values WHERE image_id = ? AND chart = 'essence' AND position = ?").get(id, pos);
+  assert.deepEqual(essence(yes, 'dharmaDiamond'), { sum: 79, ds: 7 });
+  const got = listImages(db, { pattern: 'hsd' });
+  assert.deepEqual(got.items.map((i) => i.id).sort(), [yes, yes2].sort()); assert.equal(got.total, 2);
+  assert.equal(listImages(db, { pattern: 'nonsense' }).total, 4); // an unknown pattern filters nothing
+  assert.equal(imageContext(db, yes, { pattern: 'hsd' }).total, 2);
+  void none;
+});

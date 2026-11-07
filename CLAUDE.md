@@ -113,6 +113,9 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   pairwise in the address (`?pos=essence.day&num=8&pos=name.first&num=15`, `conditionsSql`); the grid shows one
   chip per condition (tap = change it, × = drop it) and "+ Another number", which reopens the picker with the
   conditions kept and every count narrowed to them (`/api/positions/counts?num=&fixed=pos:num,…`).
+- Higher Self Diamond (owner 2026-11-07, the owner's own name): the day's digit sum = the dharma diamond's digit sum
+  (dharma 78 = 15/6, day 6/15/24), so the higher self chart reads like one number's diamond. Search by Position's
+  "Higher Self Diamond" row → `#/?pattern=hsd`; whole-chart shapes live in `PATTERNS` (server/queries.js).
 - Combination screen (owner 2026-10-21, `#/combo`, `routes.combo`): one row per position (tap it for a sheet of the
   same rows as the picker, `posRows`; type the number beside it), "+ Add Another Position", the foot counts the charts
   with everything and "Show Charts" lists them. "+ Another number" and a condition chip on the results open it with the
