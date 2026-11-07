@@ -98,7 +98,8 @@
       const own = bits.groups.some((g) => g.cites && g.cites.some(Boolean));
       const from = own ? [] : bookPages(passages);
       return h('div', { class: 'mbits' }, ...bits.groups.map((g) => h('div', { class: 'mbits-g' },
-        g.title ? h('div', { class: `mbits-t ${/out of balance|imbalance|unbalanced/i.test(g.title) ? 'err' : /in balance|balanced/i.test(g.title) ? 'ok' : ''}` }, g.title) : null,
+        g.title ? h('div', { class: `mbits-t ${/out of balance|imbalance|unbalanced/i.test(g.title) ? 'err' : /in balance|balanced/i.test(g.title) ? 'ok' : /^Only With/.test(g.title) ? 'other' : ''}` }, g.title) : null,
+        g.note ? h('div', { class: 'mbits-note' }, g.note) : null,
         h('ul', {}, ...g.points.map((t, i) => h('li', {}, ...boldParts(t), cite(g.cites && g.cites[i])))))),
       from.length ? h('div', { class: 'mbits-from' }, `From ${from.join(' · ')}`) : null);
     };
@@ -114,7 +115,34 @@
       return [pointsCard(bits, passages), $btn, $words];
     };
     const where = (m) => titleCase(m.label);
+    // A combination's points (owner 2026-11-07): the course writes "3 + 6 Combinations (and 12/3 + 6, 3 + 15/6, etc.)" as
+    // one family, so some points are about one exact compound number. A point that names a compound this chart does NOT
+    // have moves to its own group, titled with those numbers, so the family's words never pass for this chart's own.
+    const COMPOUND = /\b(\d{1,2})\/(\d)\b/g;
+    const pairSplit = (bits, own) => {
+      if (!bits) return bits;
+      const mine = new Set(own);
+      const groups = [];
+      for (const g of bits.groups) {
+        const keep = { ...g, points: [], cites: g.cites ? [] : undefined }, other = { named: new Set(), points: [] };
+        g.points.forEach((t, i) => {
+          const named = [...String(t).matchAll(COMPOUND)].map((x) => x[0]).filter((x) => !mine.has(x));
+          if (!named.length) { keep.points.push(t); if (keep.cites) keep.cites.push(g.cites[i]); return; }
+          for (const x of named) other.named.add(x);
+          other.points.push(t);
+        });
+        if (keep.points.length) groups.push(keep);
+        if (other.points.length) {
+          const n = [...other.named].sort((a, b) => parseInt(a) - parseInt(b));
+          const list = n.length > 1 ? `${n.slice(0, -1).join(', ')} or ${n[n.length - 1]}` : n[0];
+          groups.push({ title: `Only With ${list}`, note: `This chart has ${own.join(' and ')}, not ${list}. Each point says which numbers it is about; shown because the course writes them as one family.`, points: other.points });
+        }
+      }
+      return { ...bits, groups };
+    };
 
+    // "12/3 with 15/6" for a 3 with a 6: the two-digit forms of the same digit sums, as the course's family headings name them.
+    const pairExample = (m, p) => { const two = (t) => (/\//.test(t) ? t : `${Number(t) + 9}/${t}`); return `${two(m.text)} with ${p.with.map((x) => two(x.text)).join(' and ')}`; };
     function open({ chart, position, sum, pair, rel }) {
       if (document.querySelector('.mpop')) return; // one at a time
       const $title = h('h1', { class: 'mtitle' }, '…');
@@ -150,7 +178,8 @@
           ...(nc ? section(nc.bits, nc.passages) : []),
           p ? label(`${m.text} with ${others} in the ${where(m).replace(/ Extra Vibration$/, '')}`) : null,
           p && !p.passages.length && !p.bits ? h('p', { class: 'muted small' }, `The course has nothing yet on ${m.text} together with ${others}.`) : null,
-          ...(p ? section(p.bits, p.passages) : []),
+          p ? h('div', { class: 'muted small mpairnote' }, `Exactly ${m.text} with ${others} on this chart. Points about another form of these numbers${pairExample(m, p) === `${m.text} with ${others}` ? '' : ` (like ${pairExample(m, p)})`} are set apart and named.`) : null,
+          ...(p ? section(pairSplit(p.bits, [m.text, ...p.with.map((x) => x.text)]), p.passages) : []),
           ...m.related.flatMap((r) => [
             h('div', { class: 'mrel' }, h('div', { class: 'mrel-t' }, `${titleCase(r.label)} ${r.text}`), h('div', { class: 'muted small' }, [r.name, 'the diamond behind this number'].filter(Boolean).join(' · '))),
             top(r),

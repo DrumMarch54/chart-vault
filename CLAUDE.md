@@ -246,6 +246,8 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   books are never shown as the spot's words, except the Superdates appendix sections "Day Vibration N", "Life Path N"
   and "DVLP N" (the course's own per-number texts for the day, life path and nexus; `HOME` in meaning.js).
   `GET /api/meaning?pair=&rel=`; screen `public/meaning.js`; numbers carry `data-pos/num/pair/rel` from `numeroscopeSvg`.
+- A circle's pair points (owner 2026-11-07): the course writes a family ("3 + 6 (and 12/3 + 6, 3 + 15/6)"); a point naming
+  a compound this chart does not have goes under "Only With 12/3, 15/6 …" with a note (`pairSplit` in meaning.js), never mixed in.
 - "Open the Document" (owner 2026-11-07): every Course Words card has the button; it opens the course file itself
   (`knowledge/raw/<source>.md`, `server/doc.js`, `GET /api/knowledge/doc`) at the card's words, marked yellow, with
   Show Earlier / Show More. The passage is found by its own words (test: every meaning-page passage is found).
