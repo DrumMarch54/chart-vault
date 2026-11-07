@@ -365,3 +365,27 @@ test('short points: one set never serves two numbers of the same position; raw e
     if (/→ [-+]?\d+ pts.*\d+ → [-+]?\d+ pts/.test(line)) glued.push(`${f}: ${line.slice(0, 60)}`);
   assert.deepEqual(glued, []);
 });
+
+// Owner 2026-11-07: "Open the Document" from a course-words card opens the whole document at those words.
+test('Open the Document: every passage on a meaning page is found in its document; windows read further; bad names refused', async () => {
+  const { findInDoc } = await import('../server/doc.js');
+  const { POSITIONS } = await import('../server/positions.js');
+  const missed = [];
+  for (const p of POSITIONS.filter((_, i) => i % 4 === 0)) for (const n of [3, 7, 12, 16, 22]) {
+    const m = meaningFor({ chart: p.chart, position: p.key, sum: n, pair: [6] });
+    if (!m) continue;
+    for (const c of [...m.passages, ...(m.nameChart ? m.nameChart.passages : []), ...m.related.flatMap((r) => r.passages), ...(m.pair ? m.pair.passages : [])])
+      if (findInDoc(c.source, { text: c.text, heading: c.heading }) === null) missed.push(`${c.source} | ${c.heading}`);
+  }
+  assert.deepEqual(missed, []);
+  // the personality chart's mind center 3: opened at its own entry, the entry before it is one block up
+  const r = await (await get('/api/knowledge/doc?' + new URLSearchParams({ source: 'subvibrations-book', text: 'A 3 in the heart center gives you an expansive, expressive quality.', heading: 'Personality Chart Heart Main Vibrations' }))).json();
+  const hit = r.blocks.find((b) => b.n === r.at);
+  assert.match(hit.text, /^3 → \+4 pts A 3 in the heart center/);
+  assert.match(r.blocks.find((b) => b.n === r.at - 1).text, /^2 → \+4 pts The number 2/);
+  assert.ok(r.from <= r.at && r.at < r.to && r.total > r.to);
+  const next = await (await get(`/api/knowledge/doc?source=subvibrations-book&from=${r.to}&to=${r.to + 10}`)).json();
+  assert.equal(next.blocks[0].n, r.to); assert.equal(next.blocks.length, 10);
+  assert.equal((await get('/api/knowledge/doc?source=../../.env&from=0&to=5')).status, 404);
+  assert.equal((await get('/api/knowledge/doc?source=no-such-doc&text=x')).status, 404);
+});

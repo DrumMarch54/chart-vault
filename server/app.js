@@ -23,6 +23,7 @@ import { askVault } from './ask.js';
 import { lookupPerson, vaultMatches, rememberLookup } from './lookup.js';
 import { factsFor } from './facts.js';
 import { meaningFor, countWith } from './meaning.js';
+import { findInDoc, docWindow } from './doc.js';
 import { wordsFor, wordInfo } from './words.js';
 
 const MAX_IMPORT = 50 * 1024 * 1024;
@@ -250,6 +251,19 @@ export function createApp(db, { log = console.log } = {}) {
     const m = meaningFor({ chart: String(req.query.chart || ''), position: String(req.query.position || ''), sum: Number(req.query.sum), pair, rel });
     if (!m) return res.status(400).json({ error: 'That position or number is not one the app knows.' });
     res.json({ ...m, count: countWith(db, m.chart, m.position, m.sum), related: m.related.map((r) => ({ ...r, count: countWith(db, r.chart, r.position, r.sum) })) });
+  });
+  // "Open the Document" from a course-words card (server/doc.js): ?source=&text=&heading= opens the document at those
+  // words (`at` = the part holding them, null = not found, opened at the top); ?source=&from=&to= reads more of it.
+  app.get('/api/knowledge/doc', (req, res) => {
+    const source = String(req.query.source || '');
+    if (req.query.from !== undefined) {
+      const w = docWindow(source, { from: Number(req.query.from) || 0, to: Number(req.query.to) || 0 });
+      return w ? res.json(w) : res.status(404).json({ error: 'That document is not in the course library.' });
+    }
+    const at = findInDoc(source, { text: String(req.query.text || '').slice(0, 600), heading: String(req.query.heading || '').slice(0, 300) });
+    const w = docWindow(source, { from: Math.max(0, (at ?? 0) - 30), to: Math.max(0, (at ?? 0) - 30) + 80 });
+    if (!w) return res.status(404).json({ error: 'That document is not in the course library.' });
+    res.json({ ...w, at });
   });
   app.get('/api/tags', (req, res) => {
     const limit = Math.min(Math.max(Number(req.query.limit) || 30, 1), 200);

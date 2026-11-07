@@ -246,6 +246,9 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   books are never shown as the spot's words, except the Superdates appendix sections "Day Vibration N", "Life Path N"
   and "DVLP N" (the course's own per-number texts for the day, life path and nexus; `HOME` in meaning.js).
   `GET /api/meaning?pair=&rel=`; screen `public/meaning.js`; numbers carry `data-pos/num/pair/rel` from `numeroscopeSvg`.
+- "Open the Document" (owner 2026-11-07): every Course Words card has the button; it opens the course file itself
+  (`knowledge/raw/<source>.md`, `server/doc.js`, `GET /api/knowledge/doc`) at the card's words, marked yellow, with
+  Show Earlier / Show More. The passage is found by its own words (test: every meaning-page passage is found).
 - WHERE each position's words live (owner's NotebookLM map, 2026-10-20): `.brain/numerology/position-sources.md`, checked
   per position against the store and the engine. A position's HOME documents (`HOME` in meaning.js) rank first. The
   list docs (problem areas, psyche pillars, aura scoring: the number inside the entry, not in a heading) are read by

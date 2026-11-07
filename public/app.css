@@ -732,6 +732,17 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .mbits-from { font-size: 12px; color: #8a8f9c; letter-spacing: .02em; padding: 4px 0 6px; border-top: 1px solid #eceef2; margin-top: 6px; }
 .mmore { background: none; color: var(--muted); min-height: 40px; padding: 0 4px; font-size: 15px; margin: 0 0 8px; }
 .mwords[hidden] { display: none; }
+/* Open the Document (public/meaning.js openDoc): the course file on a white card, the words read marked. */
+.mdocbtn { background: none; color: #2f6feb; min-height: 40px; padding: 0; font-size: 15px; font-weight: 600; margin-top: 2px; }
+.docpop { z-index: 36; }
+.ddoc { padding: 14px 14px 8px; }
+.ddoc p, .ddoc li { font-size: 16px; line-height: 1.5; margin: 0 0 10px; overflow-wrap: anywhere; }
+.ddoc ul { margin: 0 0 10px; padding-left: 20px; }
+.ddoc .dhead { color: #1d2230; margin: 16px 0 8px; line-height: 1.25; overflow-wrap: anywhere; }
+.ddoc h2.dhead { font-size: 21px; } .ddoc h3.dhead { font-size: 19px; } .ddoc h4.dhead, .ddoc h5.dhead { font-size: 17px; }
+.ddoc .dhl { background: #fff3b8; box-shadow: 0 0 0 6px #fff3b8; border-radius: 2px; }
+.dmore[hidden] { display: none; }
+.dmore { margin: 0 0 10px; }
 
 /* Hold to confirm: the button fills while the finger stays on it (destructive taps, owner's rule). */
 .hold { position: relative; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; }

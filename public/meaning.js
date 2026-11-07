@@ -17,7 +17,65 @@
     // Where the words come from: the book's short name and its page(s) when the passage is from a course PDF with
     // page marks (knowledge/books.json), else the document's title. "Name Numeroscopes book · 7 in the Heart Center · p. 140".
     const pages = (p) => (!p.page ? '' : p.pageEnd && p.pageEnd !== p.page ? `pp. ${p.page}–${p.pageEnd}` : `p. ${p.page}`);
-    const card = (p) => h('div', { class: 'mcard' }, h('div', { class: 'mfrom' }, [p.book || p.title, tail(p.heading), pages(p)].filter(Boolean).join(' · ')), ...paras(p.text).map((t) => h('p', {}, t)));
+    const card = (p) => h('div', { class: 'mcard' }, h('div', { class: 'mfrom' }, [p.book || p.title, tail(p.heading), pages(p)].filter(Boolean).join(' · ')), ...paras(p.text).map((t) => h('p', {}, t)),
+      p.source ? h('button', { type: 'button', class: 'mdocbtn', onclick: () => openDoc(p) }, 'Open the Document ›') : null);
+
+    // "Open the Document" (owner 2026-11-07): the whole document a card's words come from, opened AT those words
+    // (marked), with what is written above and below; Show Earlier / Show More read further (GET /api/knowledge/doc,
+    // server/doc.js). One step in Back history, over the meaning page.
+    const inline = (t) => String(t).replace(/<[^>]*>/g, '').split('**').map((part, i) => (i % 2 ? h('b', {}, part) : part)).filter((x) => x !== '');
+    const docBlock = (b) => {
+      if (b.heading) return h(`h${Math.min(b.heading + 1, 5)}`, { class: 'dblock dhead', 'data-n': b.n }, ...inline(b.text.replace(/^\*\*|\*\*$/g, '')));
+      const lines = b.text.split('\n').map((l) => l.trim()).filter(Boolean);
+      const items = lines.filter((l) => /^[-*•]\s+/.test(l));
+      if (items.length && items.length === lines.length) return h('ul', { class: 'dblock', 'data-n': b.n }, ...items.map((l) => h('li', {}, ...inline(l.replace(/^[-*•]\s+/, '')))));
+      return h('p', { class: 'dblock', 'data-n': b.n }, ...inline(lines.join(' ')));
+    };
+    function openDoc(p) {
+      count('meaning.open_doc');
+      const $body = h('div', { class: 'dbody' }, h('p', { class: 'muted' }, 'Opening the document…'));
+      const $title = h('h1', { class: 'mtitle' }, p.book || p.title || 'Course Document');
+      const close = () => { $pop.remove(); overlayGone($pop); };
+      const $pop = h('div', { class: 'wordpop mpop docpop' },
+        h('div', { class: 'pagetop' }, h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Close', onclick: close }, '‹'), h('div', { class: 'mhead' }, $title, h('div', { class: 'muted small msub' }, 'The words you were reading are marked in yellow.'))),
+        $body);
+      overlay($pop, close); document.body.append($pop);
+      let from = 0, to = 0, total = 0;
+      const $earlier = h('button', { type: 'button', class: 'btn btn-block dmore' }, '↑ Show Earlier');
+      const $later = h('button', { type: 'button', class: 'btn btn-block dmore' }, 'Show More ↓');
+      const $doc = h('div', { class: 'mcard ddoc' });
+      const more = async (dir) => {
+        const a = dir < 0 ? Math.max(0, from - 80) : to, b = dir < 0 ? from : to + 80;
+        if (a >= b) return;
+        const btn = dir < 0 ? $earlier : $later; btn.disabled = true;
+        try {
+          const w = await api('/api/knowledge/doc?' + new URLSearchParams({ source: p.source, from: a, to: b }));
+          const nodes = w.blocks.map(docBlock);
+          if (dir < 0) { const keep = $doc.firstChild; const y0 = keep ? keep.getBoundingClientRect().top : 0; $doc.prepend(...nodes); from = w.from; if (keep) $pop.scrollTop += keep.getBoundingClientRect().top - y0; }
+          else { $doc.append(...nodes); to = w.to; }
+        } catch (err) { toastErr(btn, err); }
+        btn.disabled = false; showButtons();
+      };
+      const toastErr = (btn, err) => { btn.textContent = err.message; };
+      const showButtons = () => { $earlier.hidden = from <= 0; $later.hidden = to >= total; };
+      $earlier.onclick = () => more(-1); $later.onclick = () => more(1);
+      api('/api/knowledge/doc?' + new URLSearchParams({ source: p.source, text: String(p.text || '').slice(0, 600), heading: p.heading || '' })).then((w) => {
+        from = w.from; to = w.to; total = w.total;
+        if (w.title && !p.book) $title.textContent = w.title;
+        fill($doc, ...w.blocks.map(docBlock));
+        fill($body, w.at === null || w.at === undefined ? h('p', { class: 'muted small' }, 'These words could not be found in the document, so it opens at the top.') : null, $earlier, $doc, $later);
+        showButtons();
+        if (w.at !== null && w.at !== undefined) {
+          // the found block, and the paragraph under it when it is a heading line
+          const hit = $doc.querySelector(`[data-n="${w.at}"]`);
+          if (hit) {
+            hit.classList.add('dhl');
+            if (hit.classList.contains('dhead') && hit.nextElementSibling && !hit.nextElementSibling.classList.contains('dhead')) hit.nextElementSibling.classList.add('dhl');
+            requestAnimationFrame(() => hit.scrollIntoView({ block: 'center' }));
+          }
+        }
+      }).catch((err) => fill($body, h('p', { class: 'err' }, err.message)));
+    }
     const label = (text) => h('div', { class: 'wlabel tl' }, text);
     // A section: the short points first (knowledge/bits.json, the course's words shortened), the full course words
     // folded under "Course Words" (owner 2026-10-19). With no points yet, the course words show open.

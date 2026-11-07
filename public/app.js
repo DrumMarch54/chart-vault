@@ -56,7 +56,7 @@
     'viewer.similar': 'Similar Charts from a chart', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
     'viewer.delete': 'Delete a chart from the chart page', 'duplicates.delete': 'Delete a chart from Possible Duplicates', 'duplicates.keep': 'Keep a duplicate group', 'deleted.restore': 'Put a deleted chart back',
     'screen.duplicates': 'Possible Duplicates', 'screen.deleted': 'Deleted Charts', 'search.position': 'Search box → a position',
-    'viewer.meaning': 'Tap a number on a chart for its meaning', 'quick.meaning': 'Tap a number on the Quick Chart for its meaning', 'meaning.show_charts': 'Meaning → show the charts with that number there', 'meaning.course_words': 'Meaning → open the full course words',
+    'viewer.meaning': 'Tap a number on a chart for its meaning', 'quick.meaning': 'Tap a number on the Quick Chart for its meaning', 'meaning.show_charts': 'Meaning → show the charts with that number there', 'meaning.course_words': 'Meaning → open the full course words', 'meaning.open_doc': 'Meaning → Open the Document',
   };
   const count = (name) => { try { fetch('/api/usage', { method: 'POST', credentials: 'same-origin', keepalive: true, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name }) }).catch(() => {}); } catch { /* counting never breaks a tap */ } };
 
