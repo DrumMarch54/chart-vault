@@ -220,3 +220,21 @@ test('facts are free and need no key', async () => {
   const r2 = await json(await api('/api/images/3/facts'));
   assert.equal(r2.body.missing, true);
 });
+
+// Ask About This on a number's page (owner 2026-11-07): answered from the course's words for that spot only.
+test('Ask About This: the spot\'s course words go to the model, the answer comes back, empty questions are refused', async () => {
+  assert.equal((await put('/api/ai/settings', { key: KEY, cap: 1000 })).status, 200);
+  script.length = 0; requests.length = 0;
+  script.push(msg([{ type: 'text', text: 'The 3 here is expressive and charming [Sub-chart Guide].' }]));
+  const r = await json(await post('/api/meaning/ask', { chart: 'personality', position: 'heart', sum: 3, pair: [6], question: 'What does it do in love?' }));
+  assert.equal(r.status, 200, JSON.stringify(r.body));
+  assert.match(r.body.text, /expressive and charming/);
+  const sent = requests.at(-1).params.messages[0].content.map((b) => b.text).join('\n');
+  assert.match(sent, /THE SPOT: 3 as the Mind center main vibration of the Personality chart/);
+  assert.match(sent, /A 3 in the heart center gives you an expansive, expressive quality/); // the spot's own course words
+  assert.match(sent, /THE QUESTION\nWhat does it do in love\?/);
+  assert.doesNotMatch(JSON.stringify(requests.at(-1).params), new RegExp(KEY));
+  assert.equal((await json(await post('/api/meaning/ask', { chart: 'personality', position: 'heart', sum: 3, question: '  ' }))).status, 400);
+  assert.equal((await json(await post('/api/meaning/ask', { chart: 'nope', position: 'heart', sum: 3, question: 'x' }))).status, 400);
+  assert.equal(script.length, 0); // no call for the refused ones
+});

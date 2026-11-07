@@ -248,6 +248,9 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   `GET /api/meaning?pair=&rel=`; screen `public/meaning.js`; numbers carry `data-pos/num/pair/rel` from `numeroscopeSvg`.
 - A circle's pair points (owner 2026-11-07): the course writes a family ("3 + 6 (and 12/3 + 6, 3 + 15/6)"); a point naming
   a compound this chart does not have goes under "Only With 12/3, 15/6 …" with a note (`pairSplit` in meaning.js), never mixed in.
+- Ask About This (owner 2026-11-07): a question box at the foot of every meaning page; Claude Opus 5.5 answers from the
+  page's own course words + 6 more passages on the number (`server/spot-ask.js`, POST /api/meaning/ask, ~10k chars,
+  about 2-3 cents). Not stored; every call is in the snapshot's AI calls.
 - "Open the Document" (owner 2026-11-07): every Course Words card has the button; it opens the course file itself
   (`knowledge/raw/<source>.md`, `server/doc.js`, `GET /api/knowledge/doc`) at the card's words, marked yellow, with
   Show Earlier / Show More. The passage is found by its own words (test: every meaning-page passage is found).

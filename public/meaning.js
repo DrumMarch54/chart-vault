@@ -143,6 +143,36 @@
 
     // "12/3 with 15/6" for a 3 with a 6: the two-digit forms of the same digit sums, as the course's family headings name them.
     const pairExample = (m, p) => { const two = (t) => (/\//.test(t) ? t : `${Number(t) + 9}/${t}`); return `${two(m.text)} with ${p.with.map((x) => two(x.text)).join(' and ')}`; };
+    // Ask About This (owner 2026-11-07): a question about this number in this spot, answered by the AI from the
+    // course's words for it (POST /api/meaning/ask, server/spot-ask.js). Paid: the button says so. Answers stay on
+    // the page while it is open, newest first.
+    const answerParts = (text) => String(text).split(/\n{2,}/).map((t) => t.trim()).filter(Boolean).map((t) => (/^[-*•] /m.test(t)
+      ? h('ul', {}, ...t.split('\n').map((l) => l.replace(/^[-*•]\s+/, '').trim()).filter(Boolean).map((l) => h('li', {}, ...boldParts(l))))
+      : h('p', {}, ...boldParts(t.replace(/^#+\s*/, '').replace(/\n/g, ' ')))));
+    function askBox(m, spot) {
+      const $q = h('textarea', { class: 'maskq', rows: 3, maxlength: 500, placeholder: `Ask about ${m.text} here, like “what does it do in love?”` });
+      const $answers = h('div', { class: 'stack' });
+      const label = 'Ask (about 2 to 3 cents)';
+      const $btn = h('button', { type: 'button', class: 'btn btn-primary btn-block' }, label);
+      $btn.onclick = async () => {
+        const question = $q.value.trim();
+        if (!question) { $q.focus(); return; }
+        count('meaning.ask');
+        $btn.disabled = true; $btn.textContent = 'Reading the course…';
+        try {
+          const r = await api('/api/meaning/ask', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...spot, question }) });
+          $answers.prepend(h('div', { class: 'mbits manswer' }, h('div', { class: 'mbits-t' }, question), ...answerParts(r.text),
+            h('div', { class: 'mbits-from' }, `Answered from the course's words for this spot · $${Number(r.usd).toFixed(3)}`)));
+          $q.value = '';
+        } catch (err) {
+          $answers.prepend(h('p', { class: 'err' }, err.message));
+        }
+        $btn.disabled = false; $btn.textContent = label;
+      };
+      return h('div', { class: 'mrel mask' }, h('div', { class: 'mrel-t' }, 'Ask About This'),
+        h('p', { class: 'muted small', style: 'margin:2px 0 8px' }, `The AI answers from the course's words on ${m.text} here, the numbers beside it and the diamond behind it, and names its sources.`),
+        $q, $btn, $answers);
+    }
     function open({ chart, position, sum, pair, rel }) {
       if (document.querySelector('.mpop')) return; // one at a time
       const $title = h('h1', { class: 'mtitle' }, '…');
@@ -185,7 +215,8 @@
             top(r),
             ...section(r.bits, r.passages),
             !r.passages.length && !r.bits ? h('p', { class: 'muted small' }, `The course has no words yet for ${r.text} here.`) : null,
-          ]));
+          ]),
+          askBox(m, { chart, position, sum, pair: pair || [], rel: rel || [] }));
       }).catch((err) => fill($body, h('p', { class: 'err' }, err.message)));
     }
     // What a tapped number carries (data- attributes set by numeroscopeSvg in app.js).

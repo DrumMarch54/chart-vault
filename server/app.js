@@ -24,6 +24,7 @@ import { lookupPerson, vaultMatches, rememberLookup } from './lookup.js';
 import { factsFor } from './facts.js';
 import { meaningFor, countWith } from './meaning.js';
 import { findInDoc, docWindow } from './doc.js';
+import { askAboutSpot, spotContext } from './spot-ask.js';
 import { wordsFor, wordInfo } from './words.js';
 
 const MAX_IMPORT = 50 * 1024 * 1024;
@@ -459,6 +460,14 @@ export function createApp(db, { log = console.log } = {}) {
     return { ...r, spend: spendState(), warning: pendingWarning() };
   }));
   app.delete('/api/images/:id/reading', aiRoute(async (img) => ({ deleted: deleteReadings(db, img.id), ...readingFor(db, img.id) })));
+  // Ask About This on a number's meaning page (server/spot-ask.js): paid, answered from the course's words for that spot.
+  // GET = what a question would cost (no call).
+  const spotOf = (b) => ({ chart: String(b.chart || ''), position: String(b.position || ''), sum: Number(b.sum),
+    pair: (Array.isArray(b.pair) ? b.pair : String(b.pair || '').split(',')).map(Number).filter((x) => Number.isInteger(x) && x > 0).slice(0, 4),
+    rel: (Array.isArray(b.rel) ? b.rel : []).map((r) => ({ position: String(r && r.position), sum: Number(r && r.sum) })).slice(0, 4) });
+  app.post('/api/meaning/ask', express.json({ limit: '4kb' }), async (req, res, next) => {
+    try { res.json(await askAboutSpot(spotOf(req.body || {}), (req.body || {}).question)); } catch (err) { if (err instanceof AiError) return res.status(400).json({ error: err.message }); next(err); }
+  });
   app.post('/api/images/:id/ask', express.json({ limit: '4kb' }), aiRoute(async (img, body) => {
     const r = await answerQuestion(db, img.id, body.question, { length: body.length });
     return { ...r, spend: spendState(), warning: pendingWarning() };
