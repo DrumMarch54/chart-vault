@@ -1739,7 +1739,7 @@
         $table),
       wholeName || day ? null : h('p', { class: 'muted small', style: 'margin:0 0 8px' }, 'Type a birth day to see the top half of the charts and the pillars.'),
       wholeName ? null : h('div', { class: 'wcard' }, h('div', { class: 'wlabel' }, 'Name Chart'), singleNameSvg(r.name, '', r.letters, day)),
-      wholeName ? null : h('div', { class: 'two' }, small('Vocation', r.vowels, 'v.'), small('Personality', r.consonants, 'c.')));
+      wholeName ? null : h('div', { class: 'two' }, small('Personality', r.consonants, 'c.'), small('Vocation', r.vowels, 'v.')));  // personality on the left (owner 2026-11-07)
     trackOverlay($pop, close); document.body.append($pop); document.body.classList.add('noscroll'); window.addEventListener('keydown', keys);
     // A pyramid wider than the card starts scrolled to its middle, where the top sits, and says it can be swiped.
     if ($pyr.scrollWidth > $pyr.clientWidth) { $pyr.scrollLeft = ($pyr.scrollWidth - $pyr.clientWidth) / 2; $pyr.after(h('p', { class: 'muted small', style: 'margin:2px 6px 0;color:#8a8f9c' }, 'Wider than the screen: swipe the pyramid sideways to see its edges.')); }
@@ -1826,14 +1826,18 @@
     $save.onclick = async () => {
       count('quick.save');
       const name = $name.value.trim();
-      if (!name) { toast('Type a name first.', true); $name.focus(); return; }
       const d = Number($day.value), m = Number($month.value), y = Number($year.value);
       const date = d && m && y >= 1000 ? `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}` : '';
+      // No name is fine when the date is there (owner 2026-11-07): the chart page opens next to add tags.
+      if (!name && !date) { toast('Type a name or the whole birth date first.', true); $name.focus(); return; }
       $save.disabled = true; $save.textContent = 'Saving…'; $menu.classList.remove('hidden');
       try {
         const png = await chartPng(svg);
         const r = await api(`/api/quick/save?name=${encodeURIComponent(name)}&date=${date}`, { method: 'PUT', headers: { 'content-type': 'image/png' }, body: png });
-        toast(`Saved “${name}” to the vault`);
+        toast(name ? `Saved “${name}” to the vault` : 'Saved to the vault. Add its tags.');
+        // The chart opens OVER this screen, which stays drawn underneath: put the button back first, or
+        // Back shows "Saving…" stuck forever (owner 2026-11-07).
+        $save.disabled = false; $save.textContent = 'Save to Vault'; $menu.classList.add('hidden');
         go(`#/chart/${r.id}?sheet=1`);
       } catch (err) { toast(err.message, true); $save.disabled = false; $save.textContent = 'Save to Vault'; $menu.classList.add('hidden'); }
     };

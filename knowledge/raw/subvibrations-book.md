@@ -329,9 +329,13 @@ Over time, with each adjustment, we get closer and closer to a point system that
 
 3 → +5 pts The 3 in the heart center supports creative self-expression and a natural urge to expand, communicate, and uplift others. It gives an enthusiastic and outward-oriented mindset.
 
-4 → -4 pts A 4 here supports innovative thinking and a desire to improve or rebuild reality. This vibration can spark a longing for progress and transformation. However, in an unbalanced setup, the 4 may cause detachment from reality—where thoughts and beliefs no longer resonate with the surrounding environment. 5 → +8 pts Highly favorable. The 5 resonates strongly with money, success, charisma, and adaptability. It often brings luck and opportunity in financial and career-related matters.
+4 → -4 pts A 4 here supports innovative thinking and a desire to improve or rebuild reality. This vibration can spark a longing for progress and transformation. However, in an unbalanced setup, the 4 may cause detachment from reality—where thoughts and beliefs no longer resonate with the surrounding environment.
 
-6 → +8 pts Excellent. The 6 in the heart center attracts love, emotional harmony, and meaningful relationships. It radiates warmth and trustworthiness, making it beneficial in almost any vocational setup. 7 → +8 pts Also excellent. The 7 brings a deep sense of spirituality, intuition, and inner guidance. It supports heart-centered insight and alignment with higher values.
+5 → +8 pts Highly favorable. The 5 resonates strongly with money, success, charisma, and adaptability. It often brings luck and opportunity in financial and career-related matters.
+
+6 → +8 pts Excellent. The 6 in the heart center attracts love, emotional harmony, and meaningful relationships. It radiates warmth and trustworthiness, making it beneficial in almost any vocational setup.
+
+7 → +8 pts Also excellent. The 7 brings a deep sense of spirituality, intuition, and inner guidance. It supports heart-centered insight and alignment with higher values.
 
 <!-- page 62 -->
 8 → -8 pts The 8 seeks to unite reason and emotion and can create powerful harmony between material and spiritual life. However, even slight imbalances (e.g., disharmonious surrounding numbers) may lead to internal resistance, self-doubt, emotional coldness, overwork, and a controlling attitude.
@@ -371,14 +375,18 @@ Highly sensitive and receptive.
 
 - Auras 5 and 6: 0 pts – One of the best combinations. Brings popularity and social intuition. No deduction needed.
 
-12/3 → -10 pts This vibration can create misunderstandings in communication. However, if the rest of the setup is strong and clear, 12/3 may contribute qualities like courage, learning, and intellectual expansion. 13/4 → 0 pts A transformative and inventive vibration. Great for those seeking to challenge norms or inspire change. In unbalanced contexts, it can become overly contrarian or resistant.
+12/3 → -10 pts This vibration can create misunderstandings in communication. However, if the rest of the setup is strong and clear, 12/3 may contribute qualities like courage, learning, and intellectual expansion.
+
+13/4 → 0 pts A transformative and inventive vibration. Great for those seeking to challenge norms or inspire change. In unbalanced contexts, it can become overly contrarian or resistant.
 
 14/5 → +10 pts Excellent. Resonates strongly with money, wealth, charisma, and success. Brings movement, adaptability, and great opportunities in professional life.
 
 16/7 → -20 pts Generally not recommended. This vibration can trigger nervousness, anxiety, and stress. It often leads to withdrawal, overthinking, or psychological strain.
 
 <!-- page 64 -->
-17/8 → -5 pts Can bring artistic flair, visibility, and creative inspiration. In unbalanced charts, it may lead to unwanted attention or negative spotlight. 18/9 → -20 pts This vibration has a powerful, warrior-like energy that can drive success. However, it often leans toward fanaticism, inner pressure, or overly aggressive ambition. It is better used as a secondary heart vibration rather than the main one, ideally alongside a more harmonious setup.
+17/8 → -5 pts Can bring artistic flair, visibility, and creative inspiration. In unbalanced charts, it may lead to unwanted attention or negative spotlight.
+
+18/9 → -20 pts This vibration has a powerful, warrior-like energy that can drive success. However, it often leans toward fanaticism, inner pressure, or overly aggressive ambition. It is better used as a secondary heart vibration rather than the main one, ideally alongside a more harmonious setup.
 
 <!-- page 65 -->
 ### VocationChartHcandSpDoubleCombinations
@@ -431,7 +439,9 @@ The secondary heart vibration in the vocation chart adds a subtle influence or �
 
 4 → -4 pts A 4 here indicates a deep, introspective relationship with one’s own emotions and thoughts. You may engage in psychological processes and try to understand your feelings from a detached perspective. At the same time, this can cause a persistent sense of longing or dissatisfaction. In unbalanced setups, the 4 may create chaotic energy patterns, blocked emotional flow, and inner discomfort—as if you’re striving toward something that never materializes.
 
-5 → +10 pts Highly favorable. The 5 resonates with communication, money, success, and adaptability. It brings a strong inner drive and self-confidence. 6 → +10 pts Excellent placement. The 6 brings divine love, harmony, and emotional fulfillment. It radiates warmth and nurturance in relationships and creative endeavors.
+5 → +10 pts Highly favorable. The 5 resonates with communication, money, success, and adaptability. It brings a strong inner drive and self-confidence.
+
+6 → +10 pts Excellent placement. The 6 brings divine love, harmony, and emotional fulfillment. It radiates warmth and nurturance in relationships and creative endeavors.
 
 7 → +8 pts A strong vibration for spiritual and emotional depth. The 7 enhances intuition, insight, and soulful self-understanding.
 
@@ -459,7 +469,11 @@ and a tendency to help others excessively without setting clear boundaries.
 
 13/4 → -4 pts Often brings dissatisfaction with one’s current situation and a longing for something else. In some cases, this may manifest as infidelity or emotional restlessness.
 
-14/5 → +10 pts Excellent. This vibration resonates strongly with abundance, movement, confidence, and financial success. It brings vitality and dynamic energy to the solar plexus. 16/7 → -20 pts Highly imbalanced in this position. The 16/7 often results in emotional detachment, depression, anxiety, sadness, and even infertility. It tends to shut down emotional and life-giving energies. 17/8 → -4 pts Can bring anxiety around being exposed or having private details made public. May create a subtle fear of visibility or vulnerability in emotional matters.
+14/5 → +10 pts Excellent. This vibration resonates strongly with abundance, movement, confidence, and financial success. It brings vitality and dynamic energy to the solar plexus.
+
+16/7 → -20 pts Highly imbalanced in this position. The 16/7 often results in emotional detachment, depression, anxiety, sadness, and even infertility. It tends to shut down emotional and life-giving energies.
+
+17/8 → -4 pts Can bring anxiety around being exposed or having private details made public. May create a subtle fear of visibility or vulnerability in emotional matters.
 
 18/9 → -20 pts Very imbalanced here. It may lead to emotional suppression, explosive anger, and disconnection from inner nurturing energy. Like the 16/7, it can also contribute to infertility or issues in creative and emotional expression.
 
@@ -489,13 +503,17 @@ The following point adjustments apply when these secondary vibrations are presen
 <!-- page 71 -->
 ### Personality Chart Heart Main Vibrations
 
-2 → +4 pts The number 2 in the heart center is generally positive, bringing empathy and emotional awareness. However, be mindful of tendencies toward laziness or an overindulgent lifestyle if this energy is overrepresented. 3 → +4 pts A 3 in the heart center gives you an expansive, expressive quality. You radiate creativity and joy, but be aware of the potential to use charm as a defense or emotional shield.
+2 → +4 pts The number 2 in the heart center is generally positive, bringing empathy and emotional awareness. However, be mindful of tendencies toward laziness or an overindulgent lifestyle if this energy is overrepresented.
+
+3 → +4 pts A 3 in the heart center gives you an expansive, expressive quality. You radiate creativity and joy, but be aware of the potential to use charm as a defense or emotional shield.
 
 4 → -3 pts With a 4 here, you’re often drawn to deep thinking and innovation. You may feel a strong urge to create a better version of reality. However, this energy can make you appear contrarian or disconnected from your surroundings if your ideas don’t resonate with others. There’s a risk of being perceived as odd or out of touch.
 
 5 → +6 pts The 5 resonates well with money, communication, and charisma. It gives you a magnetic presence and can attract financial opportunity and attention from others.
 
-6 → +6 pts An excellent placement. The 6 attracts love, harmony, and popularity. You’re perceived as nurturing, trustworthy, and desirable—someone others naturally gravitate toward. 7 → +6 pts The 7 brings intuition, insight, and analytical ability. It allows you to connect with a wide range of people and understand things on a deeper level. You’re seen as wise and mentally sharp.
+6 → +6 pts An excellent placement. The 6 attracts love, harmony, and popularity. You’re perceived as nurturing, trustworthy, and desirable—someone others naturally gravitate toward.
+
+7 → +6 pts The 7 brings intuition, insight, and analytical ability. It allows you to connect with a wide range of people and understand things on a deeper level. You’re seen as wise and mentally sharp.
 
 8 → -4 pts Formed by two 4s: -20 pts
 
@@ -521,7 +539,11 @@ struggle to set boundaries, leading to burnout.
 
 - 4 and 7 → -4 pts: Heightens sensitivity, making you emotionally hypersensitive to your environment.
 
-- 5 and 6 → 0 pts: One of the best combinations. Brings popularity and emotional attunement to others’ needs. No deduction. 12/3 → -8 pts An unbalanced vibration in this position. It often leads to overthinking, internalized anxiety, and taking things too personally. You may become mentally overwhelmed or misinterpret others’ words and intentions. 14/5 → +8 pts A very favorable vibration. The 14 enhances communication, networking, and wealth attraction. You naturally connect people and opportunities, radiating abundance and confidence.
+- 5 and 6 → 0 pts: One of the best combinations. Brings popularity and emotional attunement to others’ needs. No deduction.
+
+12/3 → -8 pts An unbalanced vibration in this position. It often leads to overthinking, internalized anxiety, and taking things too personally. You may become mentally overwhelmed or misinterpret others’ words and intentions.
+
+14/5 → +8 pts A very favorable vibration. The 14 enhances communication, networking, and wealth attraction. You naturally connect people and opportunities, radiating abundance and confidence.
 
 16/7 → +16 pts A highly intense and challenging vibration. While it can bring profound spiritual insight, it often causes mental anxiety, deep depression, or existential fear. Others may find your energy intimidating. The gaze can appear vacant, and your aura may carry a somber or heavy tone, associated with loss or symbolic death.
 
@@ -578,9 +600,15 @@ The following point adjustments apply:
 
 2 → +4 pts The number 2 in the solar plexus center is generally positive. It brings emotional sensitivity and a cooperative attitude. However, be cautious of tendencies toward laziness or indulgence in comfort and luxury.
 
-3 → +4 pts The 3 here supports expansion, communication, and personal expression. It adds warmth and charm. However, there may be a tendency to create an emotional shield, using cheerfulness or lightheartedness to mask deeper feelings. 4 → -3 pts A 4 in the solar plexus center often gives the impression of someone who feels different or disconnected. Others may see you as aloof, eccentric, or overly absorbed in your own thoughts. There may be an automatic urge to resist consensus or go against the grain. This placement can create inner frustration and a critical view of how society or others live, leading to a sense of superiority and isolation. 5 → +6 pts The 5 resonates well with money, communication, adaptability, and charisma. It supports financial flow and personal magnetism, giving a vibrant and engaging presence.
+3 → +4 pts The 3 here supports expansion, communication, and personal expression. It adds warmth and charm. However, there may be a tendency to create an emotional shield, using cheerfulness or lightheartedness to mask deeper feelings.
 
-6 → +8 pts This is an excellent placement. The 6 in the solar plexus radiates love, warmth, and emotional stability. You are seen as caring, trustworthy, and loving, which supports both personal and romantic relationships. 7 → +6 pts The 7 brings spiritual depth, intuition, and emotional sensitivity. It allows for a subtle and insightful presence that others find comforting and wise.
+4 → -3 pts A 4 in the solar plexus center often gives the impression of someone who feels different or disconnected. Others may see you as aloof, eccentric, or overly absorbed in your own thoughts. There may be an automatic urge to resist consensus or go against the grain. This placement can create inner frustration and a critical view of how society or others live, leading to a sense of superiority and isolation.
+
+5 → +6 pts The 5 resonates well with money, communication, adaptability, and charisma. It supports financial flow and personal magnetism, giving a vibrant and engaging presence.
+
+6 → +8 pts This is an excellent placement. The 6 in the solar plexus radiates love, warmth, and emotional stability. You are seen as caring, trustworthy, and loving, which supports both personal and romantic relationships.
+
+7 → +6 pts The 7 brings spiritual depth, intuition, and emotional sensitivity. It allows for a subtle and insightful presence that others find comforting and wise.
 
 <!-- page 77 -->
 8 → -8 pts An 8 in this position can make you appear emotionally reserved, stern, or conservative. You may show strong self-control and hold back your feelings, projecting an image of discipline and stability. In a balanced chart, this placement provides excellent grounding, confidence, and inner strength. In imbalance, it may come off as emotionally rigid or overly conformist.
@@ -602,7 +630,9 @@ The following point adjustments apply:
 <!-- page 78 -->
 lement. You may become overly influenced by others’ expectations and feel like a “hostage” to their agendas. There’s also a tendency to overdramatize or take things too personally.
 
-14/5 → +8 pts A very favorable vibration. The 14 gives you a radiant energy of abundance, success, and charisma. It enhances communication skills and helps attract opportunities for growth and prosperity. 16/7 → -16 pts This is a highly challenging placement. The 16 radiates anxiety and emotional instability. Subconsciously, it may make others feel uneasy or even fearful around you. It often signals inner turmoil and mental distress.
+14/5 → +8 pts A very favorable vibration. The 14 gives you a radiant energy of abundance, success, and charisma. It enhances communication skills and helps attract opportunities for growth and prosperity.
+
+16/7 → -16 pts This is a highly challenging placement. The 16 radiates anxiety and emotional instability. Subconsciously, it may make others feel uneasy or even fearful around you. It often signals inner turmoil and mental distress.
 
 18/9 → -16 pts Another difficult placement. The 18 can result in choleric tendencies—intense, short-tempered reactions—or a complete shutdown of emotional warmth and charisma. It may project emotional coldness or even intimidation.
 

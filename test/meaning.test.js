@@ -338,3 +338,30 @@ test('the outer challenge number 15/6 shows its own section only, never the 65/2
   assert.equal(m.passages[0].heading, '15/6 as an Outer Challenge');
   for (const p of m.passages) assert.doesNotMatch(p.text, /65\/2/, p.heading);
 });
+
+// Owner 2026-11-07: the personality chart's mind center 3 showed the 2's points. The export ran "2 → +4 pts …
+// 3 → +4 pts …" on one line, and one set of short points was written from the first entry and served to every
+// number of that position. A set of points belongs to ONE number per position (a set that names each number
+// it covers, like the twenties aura's "16/7: …" / "17/8: …", is allowed), and no raw line holds two entries.
+test('short points: one set never serves two numbers of the same position; raw entries sit one per line', async () => {
+  const fs = await import('node:fs');
+  const b = JSON.parse(fs.readFileSync(new URL('../knowledge/bits.json', import.meta.url), 'utf8'));
+  const by = new Map();
+  for (const [k, id] of Object.entries(b.pages)) {
+    if (k.includes('+')) continue;
+    const [pos, n] = k.split(':');
+    const key = `${id}|${pos}`;
+    by.set(key, [...(by.get(key) || []), n]);
+  }
+  const bad = [...by].filter(([key, ns]) => {
+    if (ns.length < 2) return false;
+    const pts = b.sets[key.split('|')[0]].groups.flatMap((g) => g.points).join(' ');
+    return !ns.every((n) => new RegExp(`(^|\\D)${n}(\\/\\d)?:`).test(pts));
+  });
+  assert.deepEqual(bad, []);
+  const dir = new URL('../knowledge/raw/', import.meta.url);
+  const glued = [];
+  for (const f of fs.readdirSync(dir)) for (const line of fs.readFileSync(new URL(f, dir), 'utf8').split('\n'))
+    if (/→ [-+]?\d+ pts.*\d+ → [-+]?\d+ pts/.test(line)) glued.push(`${f}: ${line.slice(0, 60)}`);
+  assert.deepEqual(glued, []);
+});

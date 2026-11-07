@@ -448,7 +448,14 @@ test('quick chart "Save to vault": a PNG becomes a chart tagged with the typed n
   assert.deepEqual(seedQuickInputs(db), { added: 1, looked: 1 });
   assert.deepEqual((await json(await api(`/api/images/${old}`))).body.inputs, { day: 3, month: 2, year: 1990, name: 'Jane Doe' });
   assert.deepEqual(seedQuickInputs(db), { added: 0, looked: 0 });
-  // refused: no name, or not a picture; nothing is left behind
+  // no name but a date (owner 2026-11-07): saved with no tag and no title; the owner tags it next
+  const png2 = await sharp({ create: { width: 806, height: 1270, channels: 3, background: '#fef' } }).png().toBuffer();
+  r = await json(await api('/api/quick/save?name=&date=1990-02-03', { method: 'PUT', body: png2 }));
+  assert.equal(r.status, 200);
+  const nameless = (await json(await api(`/api/images/${r.body.id}`))).body;
+  assert.match(nameless.filename, /^Quick_No-Name_1990-02-03_/); assert.deepEqual(nameless.tags, []);
+  assert.deepEqual(nameless.inputs, { day: 3, month: 2, year: 1990, name: '' });
+  // refused: no name and no date, or not a picture; nothing is left behind
   const before = db.prepare('SELECT COUNT(*) AS n FROM images').get().n;
   r = await json(await api('/api/quick/save?name=', { method: 'PUT', body: png })); assert.equal(r.status, 400);
   r = await json(await api('/api/quick/save?name=Bob', { method: 'PUT', body: Buffer.from('not a picture') })); assert.equal(r.status, 400);

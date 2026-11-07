@@ -47,6 +47,10 @@
           const title = p.known_as && p.known_as !== name ? p.known_as : '';
           const r = await api(`/api/quick/save?name=${encodeURIComponent(name)}&date=${date}${title ? `&title=${encodeURIComponent(title)}` : ''}`, { method: 'PUT', headers: { 'content-type': 'image/png' }, body: png });
           toast(`Saved “${title || name}” to the vault`);
+          // The chart opens OVER this screen, which stays drawn underneath: the button must not stay
+          // "Saving…" (owner 2026-11-07). It now opens the saved chart; a second tap never saves twice.
+          $save.disabled = false; $save.textContent = 'Saved ✓ Open the Chart';
+          $save.onclick = () => go(`#/chart/${r.id}?sheet=1`);
           go(`#/chart/${r.id}?sheet=1`);
         } catch (err) { toast(err.message, true); $save.disabled = false; $save.textContent = 'Save to Vault'; }
       };

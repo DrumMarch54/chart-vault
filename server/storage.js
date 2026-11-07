@@ -155,19 +155,23 @@ export function cleanTempFiles(log = () => {}) {
 // the typed name, filed under /Quick chart/. The picture itself then arrives through receiveUpload.
 export function createQuickChart(db, { name, date, title }) {
   const person = String(name || '').trim().replace(/\s+/g, ' ');
-  if (!person) throw new UploadError('Type a name first.');
   if (person.length > 120) throw new UploadError('The name is too long.');
   const when = /^\d{4}-\d{2}-\d{2}$/.test(String(date || '')) ? String(date) : '';
+  // A chart with no name on the name line may be saved (owner's ask 2026-11-07): the date carries it, and the
+  // owner adds tags on the chart page that opens next. Neither a name nor a date = nothing to save.
+  if (!person && !when) throw new UploadError('Type a name or a birth date first.');
   const now = new Date().toISOString();
   const stamp = now.slice(0, 19).replace(/[-:]/g, '').replace('T', '_');
-  const filename = `Quick_${person.replace(/[^\p{L}\p{N} ]/gu, '')}${when ? '_' + when : ''}_${stamp}.png`.replace(/ /g, '-');
+  const filename = `Quick_${person.replace(/[^\p{L}\p{N} ]/gu, '') || 'No-Name'}${when ? '_' + when : ''}_${stamp}.png`.replace(/ /g, '-');
   return db.transaction(() => {
     db.prepare("INSERT INTO images (filename, taken_at, kind) VALUES (?, ?, 'chart')").run(filename, now.slice(0, 19));
     const id = db.prepare('SELECT id FROM images WHERE filename = ?').get(filename).id;
     db.prepare('INSERT OR IGNORE INTO image_paths (image_id, path) VALUES (?, ?)').run(id, `/Quick chart/${filename}`);
-    db.prepare('INSERT OR IGNORE INTO tags (name, kind) VALUES (?, ?)').run(person, tagKind(person));
-    const tagId = db.prepare('SELECT id FROM tags WHERE name = ?').get(person).id;
-    db.prepare("INSERT OR IGNORE INTO image_tags (image_id, tag_id, source) VALUES (?, ?, 'app')").run(id, tagId);
+    if (person) {
+      db.prepare('INSERT OR IGNORE INTO tags (name, kind) VALUES (?, ?)').run(person, tagKind(person));
+      const tagId = db.prepare('SELECT id FROM tags WHERE name = ?').get(person).id;
+      db.prepare("INSERT OR IGNORE INTO image_tags (image_id, tag_id, source) VALUES (?, ?, 'app')").run(id, tagId);
+    }
     // The typed name and date are the chart's inputs too (owner's ask 2026-10-17): the saved chart is drawn
     // by the app like every other, can be found by position and has its year rows.
     const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(when);
@@ -176,7 +180,7 @@ export function createQuickChart(db, { name, date, title }) {
     // (the title rule in server/titles.js). The owner typed it, so it needs no checking. Look Up Someone
     // hands the name the public knows ("50 Cent"), which the title rule allows as a stage name.
     const given = String(title || '').trim().replace(/\s+/g, ' ').slice(0, 80);
-    setTitle(db, id, given || shortName(person));
+    if (given || person) setTitle(db, id, given || shortName(person));
     return { id, filename };
   })();
 }
