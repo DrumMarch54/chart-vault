@@ -23,7 +23,7 @@ import { askVault } from './ask.js';
 import { lookupPerson, vaultMatches, rememberLookup } from './lookup.js';
 import { factsFor } from './facts.js';
 import { meaningFor, countWith } from './meaning.js';
-import { findInDoc, docWindow } from './doc.js';
+import { findInDoc, docWindow, findNumberSection, findPhrase } from './doc.js';
 import { askAboutSpot, spotContext } from './spot-ask.js';
 import { wordsFor, wordInfo } from './words.js';
 
@@ -261,7 +261,15 @@ export function createApp(db, { log = console.log } = {}) {
       const w = docWindow(source, { from: Number(req.query.from) || 0, to: Number(req.query.to) || 0 });
       return w ? res.json(w) : res.status(404).json({ error: 'That document is not in the course library.' });
     }
-    const at = findInDoc(source, { text: String(req.query.text || '').slice(0, 600), heading: String(req.query.heading || '').slice(0, 300) });
+    // ?number=51: that number's own section in the number books; ?find=51/6&after=YEAR ROW INTERPRETATION: a phrase.
+    if (req.query.number !== undefined) {
+      const hit = findNumberSection(req.query.number);
+      if (!hit) return res.status(404).json({ error: 'The number books have no section for that number.' });
+      const w = docWindow(hit.source, { from: Math.max(0, hit.at - 2), to: Math.max(0, hit.at - 2) + 80 });
+      return res.json({ ...w, at: hit.at });
+    }
+    const at = req.query.find !== undefined ? findPhrase(source, String(req.query.find).slice(0, 80), String(req.query.after || '').slice(0, 120))
+      : findInDoc(source, { text: String(req.query.text || '').slice(0, 600), heading: String(req.query.heading || '').slice(0, 300) });
     const w = docWindow(source, { from: Math.max(0, (at ?? 0) - 30), to: Math.max(0, (at ?? 0) - 30) + 80 });
     if (!w) return res.status(404).json({ error: 'That document is not in the course library.' });
     res.json({ ...w, at });

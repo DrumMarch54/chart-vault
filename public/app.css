@@ -294,6 +294,10 @@ body.noscroll { overflow: hidden; }
 .yrows .yv.ps { background: #eef4f8; color: #5f7990; }
 .yrows .yv.ps.num { background: #d7e4ee; color: #2f5673; }
 .ondate { margin-top: 8px; }
+.rsheet { max-height: 85vh; overflow: auto; }
+.rread { border-top: 1px solid var(--panel2); padding: 10px 0 4px; }
+.rread .rmade { font-size: 20px; margin: 2px 0 4px; }
+.rread .mdocbtn { color: var(--blue); min-height: 36px; }
 .ondate .onhead { font-weight: 700; font-size: 17px; margin-bottom: 4px; }
 .ondate .onrow { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; padding: 3px 0; }
 .ondate .onrow > .muted:first-child { min-width: 92px; }
@@ -747,7 +751,7 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .manswer .mbits-t { text-transform: none; letter-spacing: 0; font-size: 14px; }
 /* Open the Document (public/meaning.js openDoc): the course file on a white card, the words read marked. */
 .mdocbtn { background: none; color: #2f6feb; min-height: 40px; padding: 0; font-size: 15px; font-weight: 600; margin-top: 2px; }
-.docpop { z-index: 36; }
+.docpop { z-index: 60; } /* above the meaning page and the Year Rows sheet it can be opened from */
 .ddoc { padding: 14px 14px 8px; }
 .ddoc p, .ddoc li { font-size: 16px; line-height: 1.5; margin: 0 0 10px; overflow-wrap: anywhere; }
 .ddoc ul { margin: 0 0 10px; padding-left: 20px; }

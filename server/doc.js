@@ -68,3 +68,30 @@ export function docWindow(source, { from = 0, to = 60 } = {}) {
   const bk = bookOf(source);
   return { source, title: d.title, ...(bk ? { book: bk.book } : {}), total, from: a, to: b, blocks: d.blocks.slice(a, b).map((x, i) => ({ n: a + i, ...x })) };
 }
+
+// A number's own section in the number books ("### 51/6 THE SOCIALITE"): { source, at } or null. Year Rows (owner
+// 2026-11-08) opens it for a vertical or horizontal number; the books are 10-45 and 46-99 (three files).
+const NUMBER_BOOKS = ['book-10-45', 'book-46-99-part-1', 'book-46-99-part-2', 'book-46-99-part-3'];
+export function findNumberSection(n) {
+  const num = Number(n);
+  if (!(Number.isInteger(num) && num >= 10 && num <= 99)) return null;
+  const re = new RegExp(`^${num}\\/\\d+\\s+[A-Za-z]`); // "51/6 THE SOCIALITE", never a list heading "51/6, 60/6, ..."
+  for (const source of NUMBER_BOOKS) {
+    const d = blocksOf(source);
+    if (!d) continue;
+    const at = d.blocks.findIndex((b) => b.heading && re.test(b.text.replace(/\*\*/g, '').trim()));
+    if (at >= 0) return { source, at };
+  }
+  return null;
+}
+// The first block holding a short phrase ("51/6"), after a heading that starts with `after` when given: the Forecasting
+// book's own words on a year-row combination sit after its "YEAR ROW INTERPRETATION" chapter heading.
+export function findPhrase(source, phrase, after = '') {
+  const d = blocksOf(source);
+  const want = String(phrase || '').trim();
+  if (!d || want.length < 3) return null;
+  let from = 0;
+  if (after) { const a = plain(after); const i = d.blocks.findIndex((b, j) => b.heading && d.plains[j].startsWith(a)); if (i >= 0) from = i; }
+  for (let i = from; i < d.blocks.length; i++) if (d.blocks[i].text.includes(want)) return i;
+  return null;
+}

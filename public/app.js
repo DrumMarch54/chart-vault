@@ -48,7 +48,7 @@
     'screen.home': 'Home Screen', 'screen.chart': 'Chart Viewer', 'screen.settings': 'Settings', 'settings.search': 'Settings: search', 'settings.look': 'Settings: light or dark look', 'screen.quick': 'Quick Chart',
     'screen.tags': 'All Tags', 'screen.upload': 'Upload Screenshots', 'screen.import': 'Import Tags', 'screen.status': 'Status and backup',
     'viewer.add_tag': 'Add a tag to a chart', 'quick.save': 'Save a quick chart', 'quick.full_screen': 'Quick Chart full screen',
-    'quick.year_rows': 'Year Rows and Day Vibrations', 'rows.on_date': 'Year Rows: pick a date', 'quick.show_parts': 'Show and Hide Parts', 'quick.augment': 'Augmentation On or Off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
+    'quick.year_rows': 'Year Rows and Day Vibrations', 'rows.on_date': 'Year Rows: pick a date', 'rows.meaning': 'Year Rows: tap a number for its meaning', 'quick.show_parts': 'Show and Hide Parts', 'quick.augment': 'Augmentation On or Off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
     'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'status.recompute': 'Recompute chart numbers',
     'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart', 'viewer.year_rows': 'Year Rows from a chart',
     'position.search_more': 'Narrow a position search by another number', 'position.add_more': 'Tap + Another number', 'position.combo': 'Open the combination screen from Search by Position', 'position.hsd': 'Higher Self Diamond charts from Search by Position', 'combo.search': 'Show Charts on the combination screen', 'reading.show_number': 'Most Often → ring a number on the chart', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'viewer.share': 'Share Picture from a chart', 'quick.share': 'Share Picture from the Quick Chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
@@ -2130,17 +2130,65 @@
   // object, { row: 'hit', cells: ['main', 'ps.shadow', ...] } to ring the cells a search found.
   const FORMULA_WORDS = { year: 'Year digit sum', day: 'Birth day digit sum', sum: 'Sum of two prev.', le: 'Life expression', age: 'Age digit sum', last: 'Last period', this: 'This period', leaving: 'Leaving this period', pillar: 'Pillar digit sum', date: 'Date digit sum', month: 'Month digit sum' };
   const yearRowLabel = (x) => `${MON[x.month - 1]} ${x.day} – ${MON[x.until.month - 1]} ${x.until.day}`;
+  // What a number in the rows means (owner 2026-11-08), read the way the Forecasting book reads the rows: DOWN, the two
+  // rows above a sum row and the sum as one number (5-1-6 = 51/6 "Advancement"); ACROSS, number, aura and shadow as one
+  // number (8-5-6 = 86/5); the human self = outside events, the psychic self = the inner experience. Each number shows its
+  // number-book name and, when the Forecasting book lists the combination, its words there (Numeroscope.ROW_COMBOS);
+  // buttons open the number's own section in the number books and the Forecasting book's chapter. No AI, no new words.
+  const FORECAST_CHAPTER = (words) => (/^Karmic/.test(words) ? 'Karmic periods' : /^World conqueror/i.test(words) ? 'The World Conqueror' : /^Money triad/i.test(words) ? 'The Money Triad'
+    : /^Stress/.test(words) ? 'Stress and fatigue' : /love|attraction|family|remembered/i.test(words) ? 'Love combinations' : /media|speech|leader|CEO/i.test(words) ? 'Career combinations' : 'EXAMPLES OF THE KNOWN NUMBER COMBINATIONS');
+  const SELF_PLANE = { human: 'Human self: the outside events and concrete results', psychic: 'Psychic self: the inner experience, feelings and thoughts' };
+  function rowSheet(rows, i, self, col, label) {
+    const x = rows[i]; if (!x) return;
+    const of = (r) => (self === 'psychic' ? r.psyche : r);
+    const v = of(x)[col];
+    if (!v) return;
+    count('rows.meaning');
+    const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
+    const close = () => { bg.remove(); untrackOverlay(bg); };
+    const plain = (n) => (n && n.sum < 10 && (n.ds === n.sum) ? String(n.sum) : n ? n.text : '–');
+    const docBtn = (text, p) => (meaningUi && meaningUi.openDoc ? h('button', { type: 'button', class: 'mdocbtn', onclick: () => meaningUi.openDoc(p) }, text) : null);
+    // One read number: the three numbers it is made of, the number, its names and the books.
+    const read = (title, parts, made) => {
+      const combo = Numeroscope.ROW_COMBOS[made.sum];
+      return h('div', { class: 'rread' },
+        h('div', { class: 'wlabel tl' }, title),
+        h('div', { class: 'rmade' }, h('span', { class: 'muted' }, parts.map(plain).join(' · ') + ' = '), h('b', {}, made.text)),
+        TagCodes.NAMES[made.sum] ? h('div', {}, h('span', { class: 'muted small' }, 'Number book: '), h('b', {}, TagCodes.NAMES[made.sum])) : null,
+        combo ? h('div', {}, h('span', { class: 'muted small' }, 'Forecasting book: '), h('b', {}, combo)) : null,
+        h('div', { class: 'row', style: 'gap:4px 16px;flex-wrap:wrap' }, made.sum >= 10 ? docBtn(`Open ${made.text} in the Number Book ›`, { number: made.sum }) : null,
+          combo ? docBtn('Open the Forecasting Book ›', { source: 'forecasting-book', heading: FORECAST_CHAPTER(combo) }) : null));
+    };
+    // Down: every vertical the tapped cell is part of (a sum row and the two rows above it), in its own column.
+    const downs = col === 'aura' ? [] : [i, i + 1, i + 2].filter((j) => rows[j] && rows[j].source === 'sum' && j - 2 >= 0 && j - 2 <= i)
+      .map((j) => ({ j, parts: [of(rows[j - 2])[col], of(rows[j - 1])[col], of(rows[j])[col]], made: col === 'main' ? of(rows[j]).vertical : of(rows[j]).verticalShadow }))
+      .filter((d) => d.made && d.parts.every(Boolean));
+    // Across: number, aura and shadow of this row: the number's and the shadow's digit sums side by side (8 and 6 = 86/5).
+    const r = of(x), across = r.main && r.shadow && r.aura ? Numeroscope.val(r.main.ds * 10 + r.shadow.ds) : null;
+    bg.append(h('div', { class: 'sheet rsheet' },
+      h('h3', { style: 'margin-bottom:2px' }, `${plain(v)}${TagCodes.NAMES[v.sum] ? ` · ${TagCodes.NAMES[v.sum]}` : ''}`),
+      h('div', { class: 'muted small' }, `${label(x)} · ${FORMULA_WORDS[x.source] || ''}`),
+      h('div', { class: 'muted small', style: 'margin-bottom:8px' }, SELF_PLANE[self]),
+      Numeroscope.MEANINGS[v.sum] || Numeroscope.MEANINGS[v.ds] ? h('p', { style: 'margin:0 0 8px' }, Numeroscope.MEANINGS[v.sum] || Numeroscope.MEANINGS[v.ds]) : null,
+      ...downs.map((d) => read(downs.length > 1 ? `Read Down (ending ${label(rows[d.j])})` : 'Read Down', d.parts, d.made)),
+      across ? read('Read Across', [r.main, r.aura, r.shadow], across) : null,
+      h('button', { type: 'button', class: 'btn-block', style: 'margin-top:10px', onclick: close }, 'Close')));
+    document.body.append(bg); trackOverlay(bg, close);
+  }
   function rowsTable(rows, label, mark) {
     const text = (v, plain) => (v ? (plain && v.sum < 10 ? String(v.sum) : v.text) : '–');
-    const cell = (v, cls, plain, vertical) => h('div', { class: `yv ${cls || ''}`, onclick: () => meaningSheet(v, vertical) }, text(v, plain));
+    let at = null; // the row being drawn: a tap opens the sheet for that row, self and column
+    const cell = (v, cls, plain) => { const where = at; return h('div', { class: `yv ${cls || ''}`, onclick: () => (v ? rowSheet(rows, where.i, where.self(cls), where.col(cls), label) : null) }, text(v, plain)); };
     const head = () => [h('div', { class: 'yh yg' }, ''), h('div', { class: 'yh yg' }, 'Human self'), h('div', { class: 'yh yg' }, 'Psychic self'),
       h('div', { class: 'yh' }, 'Period'), h('div', { class: 'yh' }, 'Num.'), h('div', { class: 'yh' }, 'Aura'), h('div', { class: 'yh' }, 'Shad.'), h('div', { class: 'yh ps' }, 'Num.'), h('div', { class: 'yh ps' }, 'Aura'), h('div', { class: 'yh ps' }, 'Shad.')];
-    const six = (x, now, hit) => { const plain = x.source !== 'sum', p = x.psyche, c = (k) => (hit.includes(k) ? ' hit' : ''); return [
+    const six = (x, now, hit, i) => { const plain = x.source !== 'sum', p = x.psyche, c = (k) => (hit.includes(k) ? ' hit' : '');
+      at = { i, self: (cls) => (/\bps\b/.test(cls) ? 'psychic' : 'human'), col: (cls) => (/\bnum\b/.test(cls) ? 'main' : /\baura\b/.test(cls) ? 'aura' : 'shadow') };
+      return [
       cell(x.main, `num ${now}${c('main')}`, plain, x.vertical), cell(x.aura, `aura ${now}${c('aura')}`), cell(x.shadow, `${now}${c('shadow')}`, plain, x.verticalShadow),
       cell(p.main, `ps num ${now}${c('ps.main')}`, plain, p.vertical), cell(p.aura, `ps aura ${now}${c('ps.aura')}`), cell(p.shadow, `ps ${now}${c('ps.shadow')}`, plain, p.verticalShadow)]; };
     return h('div', { class: 'yrows' }, ...head(), ...rows.flatMap((x, i) => {
       const m = mark ? mark(x, i) || '' : '', n = typeof m === 'string' ? m : m.row || '', hit = typeof m === 'string' ? [] : m.cells || [];
-      return [h('div', { class: `ydate ${n}` }, h('b', {}, label(x)), h('span', {}, FORMULA_WORDS[x.source])), ...six(x, n, hit)]; }));
+      return [h('div', { class: `ydate ${n}` }, h('b', {}, label(x)), h('span', {}, FORMULA_WORDS[x.source])), ...six(x, n, hit, i)]; }));
   }
   function openForecast(input) {
     const e = Numeroscope.essence(input.day, input.month, input.year);
@@ -2164,15 +2212,17 @@
       const p = Numeroscope.destinyPeriods(birthYear, 12).find((x) => date.y >= x.start && date.y <= x.end);
       const r = Numeroscope.yearRows(input, date.y);
       const x = r && r.rows.find((row) => inRow(row, date));
-      const num = (v, vert, plain = true) => (v ? h('button', { type: 'button', class: 'onum', onclick: () => meaningSheet(v, vert) }, plain ? rowText(v) : v.text) : h('span', { class: 'muted' }, '–'));
+      // A row's numbers open the same sheet as the table (read down and across); the period and the vertical keep the short one.
+      const xi = x ? r.rows.indexOf(x) : -1;
+      const num = (v, vert, plain = true, at = null) => (v ? h('button', { type: 'button', class: 'onum', onclick: () => (at ? rowSheet(r.rows, xi, at[0], at[1], yearRowLabel) : meaningSheet(v, vert)) }, plain ? rowText(v) : v.text) : h('span', { class: 'muted' }, '–'));
       const line = (label, a, b) => h('div', { class: 'onrow' }, h('span', { class: 'muted small' }, label), ...a.flatMap((v, i) => [i ? h('span', { class: 'muted small' }, b[i]) : null, v]));
       fill($onDate,
         h('div', { class: 'onhead' }, longDay(date), h('span', { class: 'muted small' }, ` · age ${date.y - birthYear - (date.m < e.month.sum || (date.m === e.month.sum && date.d < e.day.sum) ? 1 : 0)}`)),
         p ? line('Destiny period', [num({ sum: p.number, ds: p.number, text: String(p.number) })], []) : null,
         x ? h('div', { class: 'muted small', style: 'margin:6px 0 2px' }, `Year row ${yearRowLabel(x)} · ${FORMULA_WORDS[x.source]}`) : null,
-        x ? line('Human self', [num(x.main, x.vertical, x.source !== 'sum'), num(x.aura, null, false), num(x.shadow, x.verticalShadow, x.source !== 'sum')], ['', 'aura', 'shadow']) : null,
+        x ? line('Human self', [num(x.main, x.vertical, x.source !== 'sum', ['human', 'main']), num(x.aura, null, false, ['human', 'aura']), num(x.shadow, x.verticalShadow, x.source !== 'sum', ['human', 'shadow'])], ['', 'aura', 'shadow']) : null,
         x && x.vertical ? line('With the two rows above', [num(x.vertical, null, false)], []) : null,
-        x ? line('Psychic self', [num(x.psyche.main, x.psyche.vertical, x.source !== 'sum'), num(x.psyche.aura, null, false), num(x.psyche.shadow, x.psyche.verticalShadow, x.source !== 'sum')], ['', 'aura', 'shadow']) : null,
+        x ? line('Psychic self', [num(x.psyche.main, x.psyche.vertical, x.source !== 'sum', ['psychic', 'main']), num(x.psyche.aura, null, false, ['psychic', 'aura']), num(x.psyche.shadow, x.psyche.verticalShadow, x.source !== 'sum', ['psychic', 'shadow'])], ['', 'aura', 'shadow']) : null,
         h('p', { class: 'muted small', style: 'margin:6px 0 0' }, 'Tap a number for what it means. The rows below are marked at this date.'));
     };
     const drawPeriods = () => {

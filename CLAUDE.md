@@ -270,6 +270,9 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   on the course's JFK 1963 and Nixon 1972 cases; keep those tests green.
   Year Rows popup "On a Date" (owner 2026-11-07): any date moves the destiny period, the year row it falls in
   (marked) and the day rows; one summary line (JFK Nov 22 1963: 6/6, aura 11/2, shadow 5/5, vertical 51/6).
+  Tap a number in the rows (owner 2026-11-08, `rowSheet`): Read Down (the two rows above a sum + the sum, 5-1-6 = 51/6)
+  and Read Across (number, aura, shadow: main ds beside shadow ds, 8-5-6 = 86/5), each with its number-book name, the
+  Forecasting book's words (`Numeroscope.ROW_COMBOS`) and Open buttons (`?number=` / Forecasting chapter). No new words.
   A one-word name is the first name alone. Tap a name on the line for its own
   charts and pyramid (`singleName`); every formula there is screenshot-proven.
 - `node tools/dev-app.mjs [port]` runs a THROWAWAY copy with fake charts on

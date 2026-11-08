@@ -389,3 +389,15 @@ test('Open the Document: every passage on a meaning page is found in its documen
   assert.equal((await get('/api/knowledge/doc?source=../../.env&from=0&to=5')).status, 404);
   assert.equal((await get('/api/knowledge/doc?source=no-such-doc&text=x')).status, 404);
 });
+
+// Year Rows (owner 2026-11-08): a read-down or read-across number opens its own section in the number books, and the
+// Forecasting book opens at a chapter heading.
+test('Year Rows documents: a number opens its own section in the number books; a chapter heading opens the Forecasting book', async () => {
+  for (const [n, title] of [[51, /^51\/6 The Socialite/], [42, /^42\/6 THE WORLD HEALER/], [88, /^88\/7 Master of Karma/]]) {
+    const r = await (await get(`/api/knowledge/doc?number=${n}`)).json();
+    assert.match(r.blocks.find((b) => b.n === r.at).text, title);
+  }
+  assert.equal((await get('/api/knowledge/doc?number=7')).status, 404);
+  const f = await (await get('/api/knowledge/doc?' + new URLSearchParams({ source: 'forecasting-book', heading: 'The Money Triad' }))).json();
+  assert.match(f.blocks.find((b) => b.n === f.at).text, /^The Money Triad/);
+});

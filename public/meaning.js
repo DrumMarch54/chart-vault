@@ -49,7 +49,7 @@
         if (a >= b) return;
         const btn = dir < 0 ? $earlier : $later; btn.disabled = true;
         try {
-          const w = await api('/api/knowledge/doc?' + new URLSearchParams({ source: p.source, from: a, to: b }));
+          const w = await api('/api/knowledge/doc?' + new URLSearchParams({ source, from: a, to: b }));
           const nodes = w.blocks.map(docBlock);
           if (dir < 0) { const keep = $doc.firstChild; const y0 = keep ? keep.getBoundingClientRect().top : 0; $doc.prepend(...nodes); from = w.from; if (keep) $pop.scrollTop += keep.getBoundingClientRect().top - y0; }
           else { $doc.append(...nodes); to = w.to; }
@@ -59,8 +59,12 @@
       const toastErr = (btn, err) => { btn.textContent = err.message; };
       const showButtons = () => { $earlier.hidden = from <= 0; $later.hidden = to >= total; };
       $earlier.onclick = () => more(-1); $later.onclick = () => more(1);
-      api('/api/knowledge/doc?' + new URLSearchParams({ source: p.source, text: String(p.text || '').slice(0, 600), heading: p.heading || '' })).then((w) => {
-        from = w.from; to = w.to; total = w.total;
+      // p.number (Year Rows, owner 2026-11-08): that number's own section in the number books.
+      let source = p.source || '';
+      const q = p.number ? { number: String(p.number) } : { source, text: String(p.text || '').slice(0, 600), heading: p.heading || '' };
+      api('/api/knowledge/doc?' + new URLSearchParams(q)).then((w) => {
+        source = w.source; from = w.from; to = w.to; total = w.total;
+        if (w.book) $title.textContent = w.book;
         if (w.title && !p.book) $title.textContent = w.title;
         fill($doc, ...w.blocks.map(docBlock));
         fill($body, w.at === null || w.at === undefined ? h('p', { class: 'muted small' }, 'These words could not be found in the document, so it opens at the top.') : null, $earlier, $doc, $later);
@@ -226,7 +230,7 @@
       const rel = String(el.getAttribute('data-rel') || '').split(',').filter(Boolean).map((x) => { const [p, n] = x.split(':'); return { position: p, sum: Number(n) }; });
       return { chart, position, sum: Number(el.getAttribute('data-num')), pair, rel };
     };
-    return { open, fromEl };
+    return { open, fromEl, openDoc };
   }
   root.Meaning = { install };
 })(window);
