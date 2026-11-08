@@ -1570,7 +1570,8 @@
       const PD = ['publicDiamond', Numeroscope.joined(top, c.first && c.first.value)];
       const mx = (i) => (t.middle2 && c.middle.length <= 2 ? cx + spread(c.middle.length, t.middle2, i) : nL + (nR - nL) * (i + 1) / (c.middle.length + 1));
       return [
-        ...num(cx, t.dvY, top, tone(pre + 'day', top, pre === ''), t.day, null, { chart: 'essence', key: 'day', rel: [['nexus', data.essence.nexus]] }),
+        // The name chart's day is the ESSENCE day: drawn in its own group below (owner 2026-11-08), not with the name chart.
+        ...(pre === '' ? [] : num(cx, t.dvY, top, tone(pre + 'day', top, false), t.day, null, { chart: 'essence', key: 'day', rel: [['nexus', data.essence.nexus]] })),
         ...num(aL, t.upY, c.upperLeft, tone(pre + 'ul', c.upperLeft), t.small, an, at('upperLeft', null, 0, MD)), ...num(aR, t.upY, c.upperRight, tone(pre + 'ur', c.upperRight), t.small, an, at('upperRight', null, 0, MD)),
         ...num(cx, t.heartY, c.heart, tone(pre + 'heart', c.heart, true), t.heart, null, at('heart', c.heartExtra, 0, MD)),
         ...c.heartExtra.flatMap((v, i) => num(cx + spread(c.heartExtra.length, t.extra2, i), t.heartY + t.extraUp, v, tone(pre + 'heartExtra', v), t.extra, null, at('heartExtra', [c.heart], i, [HSD[i] || MD[0]]))),
@@ -1589,6 +1590,9 @@
     };
     const tap = (x, w) => sv('rect', { x: x - 50, y: L.main.text.nameY - 32, width: 100, height: 40, fill: 'transparent', class: 'n-tap k-name', 'data-word': w.text, role: 'button', 'aria-label': `Charts of the name ${w.text}` });
     const day = data.essence.day;
+    // The day vibration belongs to the essence chart: it stays drawn while the Essence Chart OR the Name Chart is shown
+    // (owner 2026-11-08: "only the essence chart" took the day away). CSS: hidden only when both are hidden.
+    svg.append(grp('day', null, ...num(M.cx, M.text.dvY, day, tone('day', day, true), M.text.day, null, { chart: 'essence', key: 'day', rel: [['nexus', data.essence.nexus]] })));
     svg.append(grp('main', null, ...numbers('', data.name, { ...M.text, bigX: M.big[0] }, M.cx, day),
       txt(M.letter[0], M.text.letterY, data.name.letters ? String(data.name.letters) : null, 'n-blue n-bold k-letters', M.text.letterFont)));
     svg.append(grp('con', null, ...numbers('c.', data.consonants, { ...S.text, ...S.left }, S.left.cx, day)), grp('vow', null, ...numbers('v.', data.vowels, { ...S.text, ...S.right }, S.right.cx, day)));

@@ -235,6 +235,7 @@ body.noscroll { overflow: hidden; }
 .nsfull-x { position: absolute; top: calc(8px + env(safe-area-inset-top)); right: 8px; z-index: 2; }
 /* Show sheet: hide whole charts or kinds of numbers on the quick chart */
 .nscope.hide-c-ess [data-chart=ess], .nscope.hide-c-psy [data-chart=psy], .nscope.hide-c-main [data-chart=main], .nscope.hide-c-vow [data-chart=vow], .nscope.hide-c-con [data-chart=con] { display: none; }
+.nscope.hide-c-ess.hide-c-main [data-chart=day] { display: none; }
 .nscope.hide-k-day .k-day, .nscope.hide-k-aura .k-aura, .nscope.hide-k-center .k-center, .nscope.hide-k-name .k-name, .nscope.hide-k-line .k-line, .nscope.hide-k-spine .k-spine, .nscope.hide-k-le .k-le, .nscope.hide-k-pillar .k-pillar, .nscope.hide-k-letters .k-letters, .nscope.hide-k-shape [data-kind=shape] { display: none; }
 .showsheet { max-height: 70vh; overflow: auto; }
 .showsheet .chips button { width: auto; min-height: 40px; margin: 0; font-size: 15px; padding: 0 12px; }
