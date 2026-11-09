@@ -1,6 +1,6 @@
 {
   "name": "chart-vault",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "private": true,
   "description": "Safe copy of numerology chart screenshots and their tags",
   "type": "module",
