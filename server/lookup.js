@@ -16,6 +16,8 @@ Search the web, then call give_answer exactly once.
 For each person: the name they are known by, their FULL BIRTH NAME (every first, middle and last name given at birth, spelled as the sources spell it; not a later married or legal change name; keep a suffix like Jr. or III only if sources include it in the birth name), and their birth date. Prefer reliable sources (encyclopedias, official biographies, major news). If sources disagree on the date or the name, give the most supported one and say so in note.
 Give one person when the words clearly mean one. Give up to three when the description fits several, best match first. If nobody fits, give an empty list and say why in note.
 Never guess a birth name or date that no source gives; leave it empty instead.
+Anyone in the news counts, including people known for a crime or a tragedy: the app only draws a chart from a name and a date.
+Every person you name goes in people, never only in note. An empty list means nobody fits at all.
 Write in plain American English, short.`;
 
 const ANSWER_TOOL = {
@@ -102,7 +104,18 @@ export async function lookupPerson(db, query) {
     errors.push(...searchErrors(msg.content));
     if (msg.stop_reason === 'refusal') throw new AiError('The AI declined this search.');
     const use = (msg.content || []).find((b) => b.type === 'tool_use' && b.name === 'give_answer');
-    if (use) { answer = use.input || {}; break; }
+    if (use) {
+      answer = use.input || {};
+      // The person named in the note but the list left empty (2026-11-09, "James Holmes shooter"): ask once more.
+      const empty = !Array.isArray(answer.people) || !answer.people.length;
+      if (empty && /\b(1[0-9]|20)\d\d\b/.test(String(answer.note || '')) && !nudged && calls < MAX_CALLS) {
+        nudged = true; answer = null;
+        messages.push({ role: 'assistant', content: msg.content });
+        messages.push({ role: 'user', content: [{ type: 'tool_result', tool_use_id: use.id, content: 'Your note names a person but people is empty. Call give_answer again with that person in people.', is_error: true }] });
+        continue;
+      }
+      break;
+    }
     messages.push({ role: 'assistant', content: msg.content });
     if (msg.stop_reason === 'pause_turn') continue; // the server resumes its own search turn
     // It answered in words instead of the tool: ask once for the tool, then give up.
@@ -129,7 +142,7 @@ const RECENT = [];
 export function rememberLookup(entry) { RECENT.push({ at: new Date().toISOString(), ...entry }); if (RECENT.length > 20) RECENT.shift(); }
 export function lookupReport() {
   const lines = [`LOOK UP SOMEONE: last ${RECENT.length} this process`];
-  for (const e of RECENT.slice().reverse()) lines.push(`  ${e.at} "${e.query}" → ${e.error ? `FAILED ${e.error}` : `${e.people.map((p) => `${p.known_as || '?'} = ${p.birth_name || '(no birth name)'} ${p.birth_date || '(no date)'}${p.sure ? '' : ' UNSURE'}`).join('; ') || 'nobody'} · ${e.searches} searches · $${e.usd}`}`);
+  for (const e of RECENT.slice().reverse()) lines.push(`  ${e.at} "${e.query}" → ${e.error ? `FAILED ${e.error}` : `${e.people.map((p) => `${p.known_as || '?'} = ${p.birth_name || '(no birth name)'} ${p.birth_date || '(no date)'}${p.sure ? '' : ' UNSURE'}`).join('; ') || 'nobody'}${e.note ? ` · note: ${e.note}` : ''} · ${e.searches} searches · $${e.usd}`}`);
   if (!RECENT.length) lines.push('  none');
   return lines;
 }

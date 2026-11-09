@@ -95,6 +95,25 @@ test('a paused search turn is resumed; no source makes it unsure; a bad date is 
   assert.equal(r.body.people[0].sure, false);
 });
 
+test('a person named only in the note is asked for once more and comes back as a card', async () => {
+  const holmes = { ...fifty, known_as: 'James Holmes', birth_name: 'James Eagan Holmes', birth_date: '1987-12-13', who: 'Aurora theater shooter' };
+  script.push({ content: [...searched([URL1]), answer([], 'James Eagan Holmes, born December 13, 1987, is the Aurora theater shooter.')], stop_reason: 'tool_use', usage: { input_tokens: 100, output_tokens: 10 } });
+  script.push({ content: [answer([holmes])], stop_reason: 'tool_use', usage: { input_tokens: 100, output_tokens: 10 } });
+  const r = await post('/api/lookup', { query: 'James holmes shooter', web: true });
+  assert.equal(r.status, 200, JSON.stringify(r.body));
+  assert.equal(r.body.calls, 2);
+  assert.equal(r.body.people[0].birth_name, 'James Eagan Holmes');
+  const last = requests.at(-1).messages.at(-1);
+  assert.equal(last.content[0].type, 'tool_result');
+});
+
+test('nobody found (no year in the note) is not asked again', async () => {
+  script.push({ content: [answer([], 'Nobody by that description.')], stop_reason: 'tool_use', usage: { input_tokens: 100, output_tokens: 10 } });
+  const r = await post('/api/lookup', { query: 'zzz nobody', web: true });
+  assert.equal(r.body.calls, 1);
+  assert.equal(r.body.people.length, 0);
+});
+
 test('Save to Vault keeps the public name as the title and the birth name as the input', async () => {
   const png = fs.readFileSync(new URL('../public/icons/icon-192.png', import.meta.url));
   const r = await fetch(`${base}/api/quick/save?name=${encodeURIComponent('Curtis James Jackson III')}&date=1975-07-06&title=${encodeURIComponent('50 Cent')}`, { method: 'PUT', headers: { cookie, 'content-type': 'image/png' }, body: png });
@@ -109,6 +128,7 @@ test('the snapshot lists the lookups', async () => {
   const text = await r.text();
   assert.match(text, /LOOK UP SOMEONE/);
   assert.match(text, /"fifty cent" → 50 Cent = Curtis James Jackson III 1975-07-06/);
+  assert.match(text, /"zzz nobody" → nobody · note: Nobody by that description\./);
 });
 
 // A strict tool schema may not carry the keywords the API refuses ("For 'array' type, property 'maxItems' is

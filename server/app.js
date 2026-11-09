@@ -498,7 +498,7 @@ export function createApp(db, { log = console.log } = {}) {
         if (vault.length) return res.json({ query: String(body.query || '').trim(), vault, people: null, spend: spendState() });
       }
       const r = await lookupPerson(db, body.query);
-      rememberLookup({ query: r.query, people: r.people, searches: r.searches, usd: r.usd });
+      rememberLookup({ query: r.query, people: r.people, note: r.note, searches: r.searches, usd: r.usd });
       log(`lookup: ${r.people.length} people, ${r.searches} searches, $${r.usd}`);
       res.json({ ...r, spend: spendState(), warning: pendingWarning() });
     } catch (err) {
