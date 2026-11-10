@@ -38,11 +38,14 @@
         const name = $name.value.trim();
         if (!name) { toast('Type a name first.', true); $name.focus(); return; }
         const d = Number($day.value), mo = Number($month.value), y = Number($year.value);
-        if (!(d >= 1 && d <= 31 && mo >= 1 && mo <= 12 && y >= 1000)) { toast('Fill in the whole birth date first.', true); return; }
+        // No birth date found is fine (owner 2026-11-10): the chart is saved with the name line only.
+        // A half-typed date is still refused, so a wrong date never gets saved by accident.
+        const noDate = !$day.value.trim() && !$month.value.trim() && !$year.value.trim();
+        if (!noDate && !(d >= 1 && d <= 31 && mo >= 1 && mo <= 12 && y >= 1000)) { toast('Fill in the whole birth date, or clear all three boxes to save the name only.', true); return; }
         count('lookup.save');
         $save.disabled = true; $save.textContent = 'Saving…';
         try {
-          const date = `${y}-${String(mo).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+          const date = noDate ? '' : `${y}-${String(mo).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
           const png = await chartPng(svg);
           const title = p.known_as && p.known_as !== name ? p.known_as : '';
           const r = await api(`/api/quick/save?name=${encodeURIComponent(name)}&date=${date}${title ? `&title=${encodeURIComponent(title)}` : ''}`, { method: 'PUT', headers: { 'content-type': 'image/png' }, body: png });

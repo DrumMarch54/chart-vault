@@ -123,6 +123,16 @@ test('Save to Vault keeps the public name as the title and the birth name as the
   assert.equal(db.prepare('SELECT name FROM chart_inputs WHERE image_id = ?').get(body.id).name, 'Curtis James Jackson III');
 });
 
+test('Save to Vault with no birth date found saves the name line only', async () => {
+  const png = fs.readFileSync(new URL('../public/icons/icon-192.png', import.meta.url));
+  const r = await fetch(`${base}/api/quick/save?name=${encodeURIComponent('Farrell McGuire')}&date=`, { method: 'PUT', headers: { cookie, 'content-type': 'image/png' }, body: png });
+  const body = await r.json();
+  assert.equal(r.status, 200, JSON.stringify(body));
+  const row = db.prepare('SELECT name, day, month, year FROM chart_inputs WHERE image_id = ?').get(body.id);
+  assert.equal(row.name, 'Farrell McGuire');
+  assert.ok(!row.day && !row.month && !row.year);
+});
+
 test('the snapshot lists the lookups', async () => {
   const r = await fetch(base + '/api/debug/snapshot', { headers: { cookie } });
   const text = await r.text();
