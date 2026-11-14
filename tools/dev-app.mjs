@@ -82,6 +82,16 @@ useClientFactory(() => ({ messages: { create: async (params) => {
   const usage = { input_tokens: 42000, output_tokens: 700 };
   // Look Up Someone: a fake web search and answer (the dev app never searches the real web).
   if (params.tools && params.tools.some((t) => t.type && t.type.startsWith('web_search'))) {
+    // A business (say "apple"): two names and two dates to pick from, as the real search lays them out.
+    if (/apple/i.test(String(params.messages[0].content))) {
+      const url = 'https://en.wikipedia.org/wiki/Apple_Inc.';
+      return { content: [
+        { type: 'server_tool_use', id: 'srv1', name: 'web_search', input: { query: 'Apple Inc. date of incorporation' } },
+        { type: 'web_search_tool_result', tool_use_id: 'srv1', content: [{ type: 'web_search_result', url, title: 'Apple Inc. - Wikipedia' }] },
+        { type: 'tool_use', id: 'a1', name: 'give_answer', input: { note: '', people: [{ kind: 'business', known_as: 'Apple', birth_name: 'Apple Inc.', birth_date: '1977-01-03', who: 'American maker of phones and computers',
+          other_names: [{ name: 'Apple Computer, Inc.', what: 'Registered name 1977-2007' }], other_dates: [{ date: '1976-04-01', what: 'Founded as a partnership' }], sure: false, note: 'Founded April 1, 1976; incorporated January 3, 1977.', sources: [url] }] } },
+      ], stop_reason: 'tool_use', usage: { input_tokens: 9000, output_tokens: 300, server_tool_use: { web_search_requests: 2 } } };
+    }
     const url = 'https://en.wikipedia.org/wiki/50_Cent';
     return { content: [
       { type: 'server_tool_use', id: 'srv1', name: 'web_search', input: { query: '50 Cent birth name' } },

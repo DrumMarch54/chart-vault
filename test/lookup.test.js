@@ -107,6 +107,33 @@ test('a person named only in the note is asked for once more and comes back as a
   assert.equal(last.content[0].type, 'tool_result');
 });
 
+test('a business: the registered name without its legal ending, every name and date laid out to pick', async () => {
+  const APPLE = 'https://en.wikipedia.org/wiki/Apple_Inc.';
+  const apple = { kind: 'business', known_as: 'Apple', birth_name: 'Apple Inc.', birth_date: '1977-01-03', who: 'American maker of phones',
+    other_names: [{ name: 'Apple Computer, Inc.', what: 'Registered name 1977-2007' }, { name: 'Apple, Inc', what: 'same name again' }],
+    other_dates: [{ date: '1976-04-01', what: 'Founded as a partnership' }, { date: '1976', what: 'year only' }], sure: true, note: '', sources: [APPLE] };
+  script.push({ content: [...searched([APPLE]), answer([apple])], stop_reason: 'tool_use', usage: { input_tokens: 100, output_tokens: 10, server_tool_use: { web_search_requests: 2 } } });
+  const r = await post('/api/lookup', { query: 'apple the company', web: true });
+  assert.equal(r.status, 200, JSON.stringify(r.body));
+  const p = r.body.people[0];
+  assert.equal(p.kind, 'business');
+  assert.deepEqual(p.names.map((n) => [n.name, n.chart]), [['Apple Inc.', 'Apple'], ['Apple Computer, Inc.', 'Apple Computer']]); // the same chart name twice is shown once
+  assert.deepEqual(p.dates.map((d) => d.date), ['1977-01-03', '1976-04-01']); // a year alone is not a date
+  assert.equal(p.sure, false); // more than one to choose from = check it
+  assert.match(requests.at(-1).system, /DATE OF INCORPORATION/);
+  const snap = await (await fetch(base + '/api/debug/snapshot', { headers: { cookie } })).text();
+  assert.match(snap, /\[business\] Apple = Apple Inc\. 1977-01-03 UNSURE · names: Apple Inc\. \(Registered name\), Apple Computer, Inc\. \(Registered name 1977-2007\) · dates: 1977-01-03/);
+});
+
+test('the legal ending comes off a business name only; Co. and Company stay', async () => {
+  const { chartName } = await import('../server/lookup.js');
+  assert.equal(chartName('Tesla, Inc.', 'business'), 'Tesla');
+  assert.equal(chartName('Beiersdorf AG', 'business'), 'Beiersdorf');
+  assert.equal(chartName('Acme Holdings, LLC', 'business'), 'Acme Holdings');
+  assert.equal(chartName('The Coca-Cola Company', 'business'), 'The Coca-Cola Company');
+  assert.equal(chartName('Curtis James Jackson Inc', 'person'), 'Curtis James Jackson Inc');
+});
+
 test('nobody found (no year in the note) is not asked again', async () => {
   script.push({ content: [answer([], 'Nobody by that description.')], stop_reason: 'tool_use', usage: { input_tokens: 100, output_tokens: 10 } });
   const r = await post('/api/lookup', { query: 'zzz nobody', web: true });

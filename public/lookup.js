@@ -1,4 +1,4 @@
-/* Look Up Someone (owner's ask 2026-11-01): tap the microphone and say a name ("Fifty Cent") or describe
+/* Look Up (owner's ask 2026-11-01; businesses and organizations 2026-11-14): tap the microphone and say a name ("Fifty Cent") or describe
    someone ("the rapper who got shot nine times"). The vault is checked first, for free; then the AI searches
    the web for the birth name and birth date (about 2 to 4 cents) and each person found is drawn as a chart,
    with the name and date in boxes to fix and a Save to Vault button. Nothing is saved until that tap.
@@ -7,9 +7,10 @@
 (function (root) {
   'use strict';
   const USAGE_LABELS = {
-    'screen.lookup': 'Look Up Someone', 'home.lookup': 'Look Up Someone (home)', 'lookup.mic': 'Look Up: speak a name',
+    'screen.lookup': 'Look Up', 'home.lookup': 'Look Up (home)', 'lookup.mic': 'Look Up: speak a name',
     'lookup.search': 'Look Up: search the web', 'lookup.web_anyway': 'Look Up: search the web anyway', 'lookup.save': 'Look Up: Save to Vault',
-    'lookup.quick': 'Look Up: open in Quick Chart',
+    'lookup.quick': 'Look Up: open in Quick Chart', 'lookup.pick_name': 'Look Up: pick a name', 'lookup.pick_date': 'Look Up: pick a date',
+    'lookup.clarify': 'Look Up: add a detail and search again',
   };
 
   function install(A) {
@@ -26,12 +27,29 @@
     function personCard(p) {
       const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(p.birth_date || '');
       const box = (ph, value, attrs = {}) => h('input', { type: 'text', inputmode: 'numeric', placeholder: ph, autocomplete: 'off', value, ...attrs });
-      const $name = h('input', { type: 'text', placeholder: 'Full birth name', autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false', value: p.birth_name || p.known_as || '' });
+      const biz = p.kind === 'business';
+      const names = p.names || [], dates = p.dates || [];
+      const $name = h('input', { type: 'text', placeholder: biz ? 'Registered name' : 'Full birth name', autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false', value: names[0] ? names[0].chart : (p.birth_name || p.known_as || '') });
       const $day = box('day', m ? String(+m[3]) : '', { maxlength: 2 }), $month = box('month', m ? String(+m[2]) : '', { maxlength: 2 }), $year = box('year', m ? m[1] : '', { maxlength: 4 });
       const $chart = h('div', { class: 'nscope-box' });
       let svg = null;
       const inp = () => ({ day: $day.value, month: $month.value, year: $year.value, name: $name.value });
       const draw = () => { svg = drawnChart(inp()); fill($chart, svg); };
+      // Every name and date the sources gave, the main answer first; a tap fills the boxes and redraws
+      // (owner 2026-11-14: "lay everything out and I will click what's correct"). Typing in a box unmarks them.
+      const optList = (title, items, label, sub, onPick) => {
+        if (items.length < 2) return { el: null, clear() {} };
+        const btns = items.map((it, i) => h('button', { type: 'button', class: 'lookup-opt' + (i ? '' : ' on'), onclick: () => { for (const b of btns) b.classList.toggle('on', b === btns[i]); onPick(it); draw(); } },
+          h('b', {}, label(it)), sub(it) ? h('span', { class: 'muted small' }, sub(it)) : null));
+        return { el: h('div', { class: 'stack lookup-opts' }, h('div', { class: 'small' }, h('b', {}, title)), ...btns), clear() { for (const b of btns) b.classList.remove('on'); } };
+      };
+      const nameSub = (n) => [n.what, n.chart !== n.name ? `on the chart: ${n.chart}` : '', n.long ? 'over 34 letters: the course uses the shorter name it goes by' : ''].filter(Boolean).join(' · ');
+      const nameOpts = optList(biz ? 'Which name? Tap the right one.' : 'Which birth name? Tap the right one.', names, (n) => n.name, nameSub, (n) => { count('lookup.pick_name'); $name.value = n.chart; });
+      const dateOpts = optList(biz ? 'Which date? Tap the right one.' : 'Which birth date? Tap the right one.', dates, (d) => longDate(d.date), (d) => d.what, (d) => {
+        count('lookup.pick_date'); const [y, mo, dd] = d.date.split('-'); $day.value = String(+dd); $month.value = String(+mo); $year.value = y;
+      });
+      $name.addEventListener('input', () => nameOpts.clear());
+      for (const el of [$day, $month, $year]) el.addEventListener('input', () => dateOpts.clear());
       for (const el of [$name, $day, $month, $year]) el.addEventListener('input', draw);
       const $save = h('button', { type: 'button', class: 'btn-primary btn-block' }, 'Save to Vault');
       $save.onclick = async () => {
@@ -67,24 +85,27 @@
         $chart,
         h('div', {}, h('h2', { class: 'lookup-who' }, p.known_as || p.birth_name), p.who ? h('div', { class: 'muted small' }, p.who) : null),
         h('div', { class: 'lookup-facts' },
-          h('div', {}, h('span', { class: 'muted small' }, 'Birth name '), h('b', {}, p.birth_name || 'not found')),
-          h('div', {}, h('span', { class: 'muted small' }, 'Born '), h('b', {}, longDate(p.birth_date) || 'date not found'))),
-        p.sure ? null : h('p', { class: 'lookup-warn small' }, p.note || 'The sources do not agree, or none were found. Check before saving.'),
+          h('div', {}, h('span', { class: 'muted small' }, biz ? 'Registered name ' : 'Birth name '), h('b', {}, p.birth_name || 'not found')),
+          biz && names[0] && names[0].chart !== names[0].name ? h('div', { class: 'muted small' }, `On the chart: ${names[0].chart}. The course leaves out LLC, Inc., Corp. and the like.`) : null,
+          h('div', {}, h('span', { class: 'muted small' }, biz ? 'Registered (incorporated) ' : 'Born '), h('b', {}, longDate(p.birth_date) || 'date not found'))),
+        biz && names[0] && names[0].long ? h('p', { class: 'lookup-warn small' }, 'This name is over 34 letters. The course uses the shorter name the business goes by: fix it in the box.') : null,
+        p.sure ? null : h('p', { class: 'lookup-warn small' }, p.note || (names.length > 1 || dates.length > 1 ? 'More than one answer came back. Tap the right name and date below.' : 'The sources do not agree, or none were found. Check before saving.')),
         p.sure && p.note ? h('p', { class: 'muted small', style: 'margin:0' }, p.note) : null,
         p.sources && p.sources.length ? h('div', { class: 'muted small' }, 'Found on ', ...p.sources.flatMap((s, i) => [i ? ' · ' : '', h('a', { href: s.url, target: '_blank', rel: 'noopener noreferrer' }, s.site)])) : null,
+        nameOpts.el, dateOpts.el,
         h('div', { class: 'muted small' }, 'Wrong? Fix the name or date here; the chart redraws.'),
         h('div', { class: 'row lookup-fields' }, $day, $month, $year),
         h('div', { class: 'row lookup-fields' }, $name),
         $save, $quick,
-        p.vault && p.vault.length ? h('div', { class: 'stack' }, h('div', { class: 'muted small' }, 'Already in your vault, born that day or with that name:'), h('div', { class: 'grid' }, ...p.vault.map(cell))) : null);
+        p.vault && p.vault.length ? h('div', { class: 'stack' }, h('div', { class: 'muted small' }, biz ? 'Already in your vault, the same date or name:' : 'Already in your vault, born that day or with that name:'), h('div', { class: 'grid' }, ...p.vault.map(cell))) : null);
     }
 
     routes.lookup = function lookupView(_, query) {
       count('screen.lookup');
-      const $q = h('input', { type: 'text', placeholder: 'A name, or describe them…', autocomplete: 'off', enterkeyhint: 'search', maxlength: 200, value: query && query.get('q') ? query.get('q') : '' });
+      const $q = h('input', { type: 'text', placeholder: 'A person, a business, or describe them…', autocomplete: 'off', enterkeyhint: 'search', maxlength: 200, value: query && query.get('q') ? query.get('q') : '' });
       const $go = h('button', { type: 'button', class: 'btn-primary', onclick: () => send(false) }, 'Search');
       const $out = h('div', { class: 'stack' });
-      const $hint = h('div', { class: 'muted small lookup-hint' }, SR ? 'Tap the microphone and say a name, or describe the person.' : 'Type a name, or use the microphone on your keyboard.');
+      const $hint = h('div', { class: 'muted small lookup-hint' }, SR ? 'Tap the microphone and say a name, a business or an organization, or describe them.' : 'Type a name or a business, or use the microphone on your keyboard.');
       let rec = null, listening = false;
       const $mic = h('button', { type: 'button', class: 'lookup-mic', 'aria-label': 'Speak a name' }, '🎙');
       const stopMic = () => { listening = false; $mic.classList.remove('on'); try { rec && rec.stop(); } catch {} };
@@ -103,11 +124,26 @@
         rec.onend = () => { const was = listening; listening = false; $mic.classList.remove('on'); if (was && heard) send(false); };
         try { rec.start(); listening = true; $mic.classList.add('on'); $hint.textContent = 'Listening… say the name.'; } catch (err) { $hint.textContent = 'The microphone could not start. Tap it again, or type instead.'; }
       };
-      const send = async (web) => {
+      // "Not right?" (owner 2026-11-14: "I will click what's correct or clarify"): a detail added to the
+      // same words, searched again (paid, like any web search).
+      const clarifyBox = (q) => {
+        const $more = h('input', { type: 'text', placeholder: 'For example: the one in Texas', autocomplete: 'off', enterkeyhint: 'search', maxlength: 120 });
+        const again = () => {
+          const d = $more.value.trim();
+          if (!d) { toast('Type the detail first.', true); $more.focus(); return; }
+          count('lookup.clarify');
+          $q.value = `${q}. ${d}`.slice(0, 200); send(true, true);
+        };
+        $more.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); again(); } });
+        return h('div', { class: 'card stack' }, h('b', {}, 'Not right? Tell it more'),
+          h('div', { class: 'muted small' }, 'Add a detail and it searches again: about 3 cents.'),
+          $more, h('button', { type: 'button', class: 'btn btn-block', onclick: again }, 'Search Again'));
+      };
+      const send = async (web, quiet) => {
         const q = $q.value.trim();
         if (!q) { toast('Say or type a name first.', true); return; }
         if (listening) stopMic();
-        count(web ? 'lookup.web_anyway' : 'lookup.search');
+        if (!quiet) count(web ? 'lookup.web_anyway' : 'lookup.search');
         $go.disabled = true; $go.textContent = 'Searching…';
         fill($out, h('p', { class: 'muted' }, web ? 'Searching the web… about 10 to 30 seconds.' : 'Looking in your vault, then on the web… about 10 to 30 seconds.'));
         try {
@@ -119,19 +155,20 @@
           } else {
             const head = r.people.length ? null : h('div', { class: 'card' }, h('p', { style: 'margin:0' }, r.note || 'Nobody found. Try saying it another way.'));
             fill($out, head, ...r.people.map(personCard),
-              r.people.length > 1 ? h('p', { class: 'muted small' }, 'More than one person fits. The best match is first.') : null,
+              r.people.length > 1 ? h('p', { class: 'muted small' }, 'More than one fits. The best match is first.') : null,
               r.people.length && r.note ? h('p', { class: 'muted small' }, r.note) : null,
               h('div', { class: 'muted small' }, `${money(r.usd)} · ${r.searches} web search${r.searches === 1 ? '' : 'es'} · ${Math.round(r.seconds)} s${r.spend ? ` · $${r.spend.spent.toFixed(2)} of $${r.spend.cap.toFixed(2)} this month` : ''}`),
-              r.warning ? h('p', { class: 'lookup-warn small' }, r.warning.text) : null);
+              r.warning ? h('p', { class: 'lookup-warn small' }, r.warning.text) : null,
+              clarifyBox(r.query));
           }
         } catch (err) { fill($out, h('p', { class: 'err' }, err.message)); }
         $go.disabled = false; $go.textContent = 'Search';
       };
       $q.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); send(false); } });
-      render(h('div', { class: 'screen stack' }, pageTop('Look Up Someone', '#/'),
+      render(h('div', { class: 'screen stack' }, pageTop('Look Up', '#/'),
         h('div', { class: 'lookup-top' }, $mic, $hint),
         h('div', { class: 'row', style: 'flex-wrap:nowrap' }, $q, $go),
-        h('p', { class: 'muted small', style: 'margin:0' }, 'Your vault is checked first, for free. A web search finds the birth name and birth date: about 2 to 4 cents. Nothing is saved until you tap Save to Vault.'),
+        h('p', { class: 'muted small', style: 'margin:0' }, 'Your vault is checked first, for free. A web search finds a person\'s birth name and birth date, or a business\'s registered name and founding date: about 2 to 4 cents. Nothing is saved until you tap Save to Vault.'),
         $out));
       api('/api/ai/settings').then((s) => { if (!s.key_set) fill($out, h('div', { class: 'card stack' }, h('p', { class: 'muted', style: 'margin:0' }, 'Add the AI key first.'), h('a', { class: 'btn btn-block', href: '#/ai' }, 'AI Reading Settings'))); }).catch(() => {});
       if ($q.value) send(false);

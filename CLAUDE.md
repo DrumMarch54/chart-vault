@@ -206,6 +206,9 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   three people). Searches cost $0.01 each on top of tokens (`WEB_SEARCH_USD` in ai.js). A source is shown only if the
   search returned it; no source = "unsure". Nothing is saved until Save to Vault (`/api/quick/save` with `title` = the
   public name). Lookups are in the snapshot (LOOK UP SOMEONE). Screen: `public/lookup.js`.
+- Businesses and organizations too (owner 2026-11-14): `kind: business` = the REGISTERED name (register first) and the DATE OF
+  INCORPORATION (Module 12: the company's birth date; LLC/Inc./Corp. not counted, `chartName`). Every other name and date the
+  sources give is laid out as tap-to-pick buttons (`names`/`dates`), never decided for the owner; "Not right? Tell it more" re-searches.
 
 ## Archetype lines (built 2026-10-21): words on a combination of numbers
 - The owner's ask: "wholesome (24/6) expander (12/3)". `server/archetype-words.js` is the word bank: every number 1-99
