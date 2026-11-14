@@ -18,6 +18,7 @@ Search the web, then call give_answer exactly once.
 Decide what is meant: a person (kind "person") or a business, company, brand, charity, club, band, team or other organization (kind "business").
 For a person: the name they are known by, their FULL BIRTH NAME (every first, middle and last name given at birth, spelled as the sources spell it; not a later married or legal change name; keep a suffix like Jr. or III only if sources include it in the birth name), and their birth date.
 For a business or organization: the name the public knows (the brand), its REGISTERED NAME exactly as the official business register writes it, legal ending included ("Apple Inc.", "Beiersdorf AG"), and its DATE OF INCORPORATION or registration as the register gives it (that is its birth date). Look for the official register first (a US Secretary of State registry, Companies House, OpenCorporates, a national company register, SEC filings), then the company's own site and encyclopedias. An organization that was never registered: its founding date.
+Full transparency (owner 2026-11-14): the owner picks, so never hide a doubt. For a business always give BOTH dates when the sources have them: the founding date and the date of incorporation or registration, each saying what it is. Say where the registered name and date are recorded (register, state or country) in register, and what the main date is in date_what. A founding date known only to the year or month still goes in other_dates as YYYY or YYYY-MM.
 Lay out every real alternative, because the owner picks the right one: in other_names, the brand name if it differs, earlier registered names (say the years), and the parent or another entity of the same name; in other_dates, the founding date when it differs from the incorporation date, a re-incorporation, a date under an earlier name, or a date another source gives, each saying what it is. For a person: other spellings of the birth name and other birth dates the sources give. Nothing goes in them that no source says.
 Prefer reliable sources (official registers, encyclopedias, official biographies, major news). If sources disagree, give the most supported one as the main answer, the rest in other_names or other_dates, and say so in note.
 Give one result when the words clearly mean one. Give up to three when the words fit several, best match first. If nothing fits, give an empty list and say why in note.
@@ -36,18 +37,20 @@ const ANSWER_TOOL = {
       note: { type: 'string', description: 'One short sentence for the owner: doubts, disagreements between sources, or why nobody was found. Empty if nothing to say.' },
       people: { type: 'array', items: {
         type: 'object', additionalProperties: false,
-        required: ['kind', 'known_as', 'birth_name', 'birth_date', 'other_names', 'other_dates', 'who', 'sure', 'note', 'sources'],
+        required: ['kind', 'known_as', 'birth_name', 'birth_date', 'date_what', 'register', 'other_names', 'other_dates', 'who', 'sure', 'note', 'sources'],
         properties: {
           kind: { type: 'string', enum: ['person', 'business'], description: 'person, or business for any business, company, brand or organization.' },
           known_as: { type: 'string', description: 'The name the public knows, like "50 Cent" or "Nivea".' },
           birth_name: { type: 'string', description: 'A person: full birth name, every given name, like "Curtis James Jackson III". A business: the registered name exactly as the register writes it, legal ending included, like "Apple Inc.". Empty if no source gives it.' },
           birth_date: { type: 'string', description: 'YYYY-MM-DD. A person: the birth date. A business: the date of incorporation or registration. Empty if no source gives the full date.' },
+          date_what: { type: 'string', description: 'A few words: what birth_date is, like "Incorporated in California" or "Born". Empty if no date.' },
+          register: { type: 'string', description: 'A business: where the registered name and date are recorded, like "California Secretary of State" or "Companies House (UK)". Empty if not found or a person.' },
           other_names: { type: 'array', description: 'Other names the owner may mean (brand name, earlier registered names, other spellings). Empty if none.', items: {
             type: 'object', additionalProperties: false, required: ['name', 'what'],
             properties: { name: { type: 'string' }, what: { type: 'string', description: 'A few words: what this name is, like "Brand name" or "Registered name 1977-2007".' } } } },
           other_dates: { type: 'array', description: 'Other dates the owner may mean (founding date, earlier incorporation, a date another source gives). Empty if none.', items: {
             type: 'object', additionalProperties: false, required: ['date', 'what'],
-            properties: { date: { type: 'string', description: 'YYYY-MM-DD' }, what: { type: 'string', description: 'A few words: what this date is, like "Founded as a partnership".' } } } },
+            properties: { date: { type: 'string', description: 'YYYY-MM-DD, or YYYY-MM or YYYY when only that much is known' }, what: { type: 'string', description: 'A few words: what this date is, like "Founded as a partnership".' } } } },
           who: { type: 'string', description: 'A few words: what they are known for, like "American rapper from Queens" or "American maker of phones and computers".' },
           sure: { type: 'boolean', description: 'true when the sources agree on both the name and the date and there is no other name or date to choose from.' },
           note: { type: 'string', description: 'What disagrees or is uncertain for this result. Empty if nothing.' },
@@ -151,20 +154,36 @@ export async function lookupPerson(db, query) {
     const kind = p.kind === 'business' ? 'business' : 'person';
     const person = {
       kind, known_as: clean(p.known_as, 120), birth_name: clean(p.birth_name, 160), birth_date: validDate(p.birth_date),
-      who: clean(p.who, 160), sure: !!p.sure, note: clean(p.note, 300),
+      who: clean(p.who, 160), sure: !!p.sure, note: clean(p.note, 300), register: kind === 'business' ? clean(p.register, 120) : '',
       sources: (Array.isArray(p.sources) ? p.sources : []).filter((u) => found.has(u)).slice(0, 4).map((url) => ({ url, site: hostOf(url), title: found.get(url) })),
     };
     // Every name and date to choose from, the main answer first (owner 2026-11-14: "lay everything out and I
     // will click what's correct"). `chart` is what the chart is drawn from: a business without its legal ending.
+    // A business name with a legal ending is offered both ways (owner 2026-11-14: "tell me, and let me see it
+    // with and without it"): without first (the course leaves it out), then with. `ending` names what comes off.
     const names = [], dates = [];
-    const addName = (name, what) => { const n = clean(name, 160), c = chartName(n, kind); if (c && !names.some((x) => x.chart.toLowerCase() === c.toLowerCase())) names.push({ name: n, chart: c, what: clean(what, 80), long: kind === 'business' && letters(c) > 34 }); };
-    const addDate = (date, what) => { const d = validDate(date); if (d && !dates.some((x) => x.date === d)) dates.push({ date: d, what: clean(what, 80) }); };
+    const same = (x, y) => x.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '') === y.toLowerCase().replace(/[^\p{L}\p{N}]/gu, ''); // "Apple, Inc" = "Apple Inc."
+    const pushName = (o) => { if (o.chart && !names.some((x) => same(x.chart, o.chart))) names.push({ ...o, long: kind === 'business' && letters(o.chart) > 34 }); };
+    const addName = (name, what) => {
+      const n = clean(name, 160), c = chartName(n, kind), w = clean(what, 80);
+      if (c === n) return pushName({ name: n, chart: n, what: w, ending: '' });
+      const ending = n.slice(c.length).replace(/^[\s,]+/, '');
+      pushName({ name: n, chart: c, what: w, ending, with: false });
+      pushName({ name: n, chart: n, what: w, ending, with: true });
+    };
+    // A date known only to the year or month is shown too (it cannot be drawn): `partial`.
+    const addDate = (date, what) => {
+      const raw = clean(date, 10), d = validDate(raw), part = !d && /^\d{4}(-(0[1-9]|1[0-2]))?$/.test(raw) ? raw : '';
+      const key = d || part;
+      if (key && !dates.some((x) => x.date === key)) dates.push({ date: key, what: clean(what, 80), ...(part ? { partial: true } : {}) });
+    };
     addName(person.birth_name, kind === 'business' ? 'Registered name' : 'Birth name');
     for (const o of Array.isArray(p.other_names) ? p.other_names.slice(0, 5) : []) addName(o && o.name, o && o.what);
-    addDate(person.birth_date, kind === 'business' ? 'Registered (incorporated)' : 'Birth date');
+    addDate(person.birth_date, clean(p.date_what, 80) || (kind === 'business' ? 'Registered (incorporated)' : 'Birth date'));
     for (const o of Array.isArray(p.other_dates) ? p.other_dates.slice(0, 5) : []) addDate(o && o.date, o && o.what);
     person.names = names; person.dates = dates;
-    if (!person.sources.length || names.length > 1 || dates.length > 1) person.sure = false; // more than one to choose from = check it
+    const drawable = dates.filter((d) => !d.partial).length, realNames = names.filter((n) => !n.with).length;
+    if (!person.sources.length || realNames > 1 || drawable > 1 || dates.length > drawable) person.sure = false; // more than one to choose from = check it
     person.vault = inVault(db, person).map((i) => ({ id: i.id, title: i.title || i.filename, has_file: !!i.has_file }));
     return person;
   }).filter((p) => p.known_as || p.birth_name);
@@ -176,7 +195,7 @@ const RECENT = [];
 export function rememberLookup(entry) { RECENT.push({ at: new Date().toISOString(), ...entry }); if (RECENT.length > 20) RECENT.shift(); }
 export function lookupReport() {
   const lines = [`LOOK UP SOMEONE: last ${RECENT.length} this process`];
-  for (const e of RECENT.slice().reverse()) lines.push(`  ${e.at} "${e.query}" → ${e.error ? `FAILED ${e.error}` : `${e.people.map((p) => `${p.kind === 'business' ? '[business] ' : ''}${p.known_as || '?'} = ${p.birth_name || '(no birth name)'} ${p.birth_date || '(no date)'}${p.sure ? '' : ' UNSURE'}${(p.names || []).length > 1 ? ` · names: ${p.names.map((n) => `${n.name} (${n.what})`).join(', ')}` : ''}${(p.dates || []).length > 1 ? ` · dates: ${p.dates.map((d) => `${d.date} (${d.what})`).join(', ')}` : ''}`).join('; ') || 'nobody'}${e.note ? ` · note: ${e.note}` : ''} · ${e.searches} searches · $${e.usd}`}`);
+  for (const e of RECENT.slice().reverse()) lines.push(`  ${e.at} "${e.query}" → ${e.error ? `FAILED ${e.error}` : `${e.people.map((p) => `${p.kind === 'business' ? '[business] ' : ''}${p.known_as || '?'} = ${p.birth_name || '(no birth name)'} ${p.birth_date || '(no date)'}${p.sure ? '' : ' UNSURE'}${p.register ? ` · register: ${p.register}` : ''}${(p.names || []).length > 1 ? ` · names: ${p.names.map((n) => `${n.chart} (${n.what}${n.ending ? `, ${n.with ? 'with' : 'without'} ${n.ending}` : ''})`).join(', ')}` : ''}${(p.dates || []).length > 1 ? ` · dates: ${p.dates.map((d) => `${d.date} (${d.what}${d.partial ? ', not a full date' : ''})`).join(', ')}` : ''}`).join('; ') || 'nobody'}${e.note ? ` · note: ${e.note}` : ''} · ${e.searches} searches · $${e.usd}`}`);
   if (!RECENT.length) lines.push('  none');
   return lines;
 }

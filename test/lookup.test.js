@@ -109,7 +109,7 @@ test('a person named only in the note is asked for once more and comes back as a
 
 test('a business: the registered name without its legal ending, every name and date laid out to pick', async () => {
   const APPLE = 'https://en.wikipedia.org/wiki/Apple_Inc.';
-  const apple = { kind: 'business', known_as: 'Apple', birth_name: 'Apple Inc.', birth_date: '1977-01-03', who: 'American maker of phones',
+  const apple = { kind: 'business', known_as: 'Apple', birth_name: 'Apple Inc.', birth_date: '1977-01-03', date_what: 'Incorporated in California', register: 'California Secretary of State', who: 'American maker of phones',
     other_names: [{ name: 'Apple Computer, Inc.', what: 'Registered name 1977-2007' }, { name: 'Apple, Inc', what: 'same name again' }],
     other_dates: [{ date: '1976-04-01', what: 'Founded as a partnership' }, { date: '1976', what: 'year only' }], sure: true, note: '', sources: [APPLE] };
   script.push({ content: [...searched([APPLE]), answer([apple])], stop_reason: 'tool_use', usage: { input_tokens: 100, output_tokens: 10, server_tool_use: { web_search_requests: 2 } } });
@@ -117,12 +117,17 @@ test('a business: the registered name without its legal ending, every name and d
   assert.equal(r.status, 200, JSON.stringify(r.body));
   const p = r.body.people[0];
   assert.equal(p.kind, 'business');
-  assert.deepEqual(p.names.map((n) => [n.name, n.chart]), [['Apple Inc.', 'Apple'], ['Apple Computer, Inc.', 'Apple Computer']]); // the same chart name twice is shown once
-  assert.deepEqual(p.dates.map((d) => d.date), ['1977-01-03', '1976-04-01']); // a year alone is not a date
+  // Each name with a legal ending comes both ways, without first; the same chart name twice is shown once.
+  assert.deepEqual(p.names.map((n) => [n.chart, n.ending, n.with]), [['Apple', 'Inc.', false], ['Apple Inc.', 'Inc.', true], ['Apple Computer', 'Inc.', false], ['Apple Computer, Inc.', 'Inc.', true]]);
+  // A year alone is listed (it cannot be drawn), never dropped.
+  assert.deepEqual(p.dates.map((d) => [d.date, !!d.partial]), [['1977-01-03', false], ['1976-04-01', false], ['1976', true]]);
+  assert.equal(p.register, 'California Secretary of State');
+  assert.equal(p.dates[0].what, 'Incorporated in California');
   assert.equal(p.sure, false); // more than one to choose from = check it
   assert.match(requests.at(-1).system, /DATE OF INCORPORATION/);
   const snap = await (await fetch(base + '/api/debug/snapshot', { headers: { cookie } })).text();
-  assert.match(snap, /\[business\] Apple = Apple Inc\. 1977-01-03 UNSURE · names: Apple Inc\. \(Registered name\), Apple Computer, Inc\. \(Registered name 1977-2007\) · dates: 1977-01-03/);
+  assert.match(snap, /\[business\] Apple = Apple Inc\. 1977-01-03 UNSURE · register: California Secretary of State · names: Apple \(Registered name, without Inc\.\), Apple Inc\. \(Registered name, with Inc\.\)/);
+  assert.match(snap, /1976 \(year only, not a full date\)/);
 });
 
 test('the legal ending comes off a business name only; Co. and Company stay', async () => {

@@ -19,6 +19,7 @@
     const money = (usd) => { const c = Math.round(usd * 100); return usd < 0.005 ? 'under a cent' : c === 1 ? '1 cent' : usd < 1 ? `${c} cents` : `$${usd.toFixed(2)}`; };
     const postJson = (url, body) => api(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
     const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const partialDate = (s) => { const m = /^(\d{4})(?:-(\d{2}))?$/.exec(s || ''); return m ? (m[2] ? `${MON[+m[2] - 1]} ${m[1]}` : m[1]) : ''; };
     const longDate = (iso) => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ''); return m ? `${MON[+m[2] - 1]} ${+m[3]}, ${m[1]}` : ''; };
     const cell = (img) => h('a', { class: 'cell', href: `#/chart/${img.id}` }, img.has_file ? h('img', { class: 'thumb', src: `/thumb/${img.id}`, loading: 'lazy', alt: img.title || '' }) : h('div', { class: 'nofile' }, 'no picture'), h('div', { class: 'label' }, img.title || img.filename));
 
@@ -37,15 +38,21 @@
       const draw = () => { svg = drawnChart(inp()); fill($chart, svg); };
       // Every name and date the sources gave, the main answer first; a tap fills the boxes and redraws
       // (owner 2026-11-14: "lay everything out and I will click what's correct"). Typing in a box unmarks them.
+      // A business always shows its lists, even with one answer (owner 2026-11-14: "full transparency").
+      // A date known only to the year or month is listed but cannot be picked (it cannot be drawn).
       const optList = (title, items, label, sub, onPick) => {
-        if (items.length < 2) return { el: null, clear() {} };
-        const btns = items.map((it, i) => h('button', { type: 'button', class: 'lookup-opt' + (i ? '' : ' on'), onclick: () => { for (const b of btns) b.classList.toggle('on', b === btns[i]); onPick(it); draw(); } },
-          h('b', {}, label(it)), sub(it) ? h('span', { class: 'muted small' }, sub(it)) : null));
+        if (items.length < (biz ? 1 : 2)) return { el: null, clear() {} };
+        const first = items.findIndex((it) => !it.partial);
+        const btns = items.map((it, i) => it.partial
+          ? h('div', { class: 'lookup-opt off' }, h('b', {}, label(it)), h('span', { class: 'muted small' }, [sub(it), 'not a full date, so it cannot be drawn'].filter(Boolean).join(' · ')))
+          : h('button', { type: 'button', class: 'lookup-opt' + (i === first ? ' on' : ''), onclick: () => { for (const b of btns) b.classList.toggle('on', b === btns[i]); onPick(it); draw(); } },
+            h('b', {}, label(it)), sub(it) ? h('span', { class: 'muted small' }, sub(it)) : null));
         return { el: h('div', { class: 'stack lookup-opts' }, h('div', { class: 'small' }, h('b', {}, title)), ...btns), clear() { for (const b of btns) b.classList.remove('on'); } };
       };
-      const nameSub = (n) => [n.what, n.chart !== n.name ? `on the chart: ${n.chart}` : '', n.long ? 'over 34 letters: the course uses the shorter name it goes by' : ''].filter(Boolean).join(' · ');
-      const nameOpts = optList(biz ? 'Which name? Tap the right one.' : 'Which birth name? Tap the right one.', names, (n) => n.name, nameSub, (n) => { count('lookup.pick_name'); $name.value = n.chart; });
-      const dateOpts = optList(biz ? 'Which date? Tap the right one.' : 'Which birth date? Tap the right one.', dates, (d) => longDate(d.date), (d) => d.what, (d) => {
+      const nameSub = (n) => [n.what, n.ending ? (n.with ? `with “${n.ending}”, as registered` : `without “${n.ending}”, the course leaves it out`) : '',
+        n.long ? 'over 34 letters: the course uses the shorter name it goes by' : ''].filter(Boolean).join(' · ');
+      const nameOpts = optList(biz ? 'Which name goes on the chart? Tap one.' : 'Which birth name? Tap the right one.', names, (n) => n.chart, nameSub, (n) => { count('lookup.pick_name'); $name.value = n.chart; });
+      const dateOpts = optList(biz ? 'Which date goes on the chart? Tap one.' : 'Which birth date? Tap the right one.', dates, (d) => longDate(d.date) || partialDate(d.date), (d) => d.what, (d) => {
         count('lookup.pick_date'); const [y, mo, dd] = d.date.split('-'); $day.value = String(+dd); $month.value = String(+mo); $year.value = y;
       });
       $name.addEventListener('input', () => nameOpts.clear());
@@ -86,8 +93,10 @@
         h('div', {}, h('h2', { class: 'lookup-who' }, p.known_as || p.birth_name), p.who ? h('div', { class: 'muted small' }, p.who) : null),
         h('div', { class: 'lookup-facts' },
           h('div', {}, h('span', { class: 'muted small' }, biz ? 'Registered name ' : 'Birth name '), h('b', {}, p.birth_name || 'not found')),
-          biz && names[0] && names[0].chart !== names[0].name ? h('div', { class: 'muted small' }, `On the chart: ${names[0].chart}. The course leaves out LLC, Inc., Corp. and the like.`) : null,
-          h('div', {}, h('span', { class: 'muted small' }, biz ? 'Registered (incorporated) ' : 'Born '), h('b', {}, longDate(p.birth_date) || 'date not found'))),
+          biz && p.register ? h('div', {}, h('span', { class: 'muted small' }, 'Recorded in '), h('b', {}, p.register)) : null,
+          h('div', {}, h('span', { class: 'muted small' }, biz ? `${(dates[0] && dates[0].what) || 'Registered'} ` : 'Born '), h('b', {}, longDate(p.birth_date) || 'date not found'))),
+        biz && names[0] && names[0].ending ? h('p', { class: 'lookup-warn small' }, `The registered name ends in “${names[0].ending}”. The course leaves that out of the chart. Both ways are below: tap the one you want.`) : null,
+        biz && dates.length > 1 ? h('p', { class: 'lookup-warn small' }, 'More than one date came back (for example founded and registered). Each one is below with what it is: tap the one you want.') : null,
         biz && names[0] && names[0].long ? h('p', { class: 'lookup-warn small' }, 'This name is over 34 letters. The course uses the shorter name the business goes by: fix it in the box.') : null,
         p.sure ? null : h('p', { class: 'lookup-warn small' }, p.note || (names.length > 1 || dates.length > 1 ? 'More than one answer came back. Tap the right name and date below.' : 'The sources do not agree, or none were found. Check before saving.')),
         p.sure && p.note ? h('p', { class: 'muted small', style: 'margin:0' }, p.note) : null,
