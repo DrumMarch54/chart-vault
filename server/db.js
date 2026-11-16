@@ -149,6 +149,19 @@ export const MIGRATIONS = [
       created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
     );
   `),
+  // 9: past Look Up searches (owner 2026-11-16: "pull back up the past things I've searched"). Every paid web
+  //    search's whole answer (people, names, dates, sources, cost) as JSON, so opening one again is free.
+  (db) => db.exec(`
+    CREATE TABLE IF NOT EXISTS lookups (
+      id INTEGER PRIMARY KEY,
+      query TEXT NOT NULL,
+      result TEXT NOT NULL,
+      names TEXT,
+      usd REAL,
+      build TEXT,
+      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+    );
+  `),
 ];
 
 export function migrate(db) {

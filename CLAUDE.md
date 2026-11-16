@@ -211,6 +211,8 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   sources give is laid out as tap-to-pick buttons (`names`/`dates`), never decided for the owner: a name with a legal ending
   both ways (`ending`, `with`), the founding AND registration dates, a year-only date listed (`partial`), where it is recorded
   (`register`). "Not right? Tell it more" re-searches.
+- Past Searches (owner 2026-11-16): every web search's whole answer is kept in `lookups` (migration 9, `storeLookup`);
+  the Look Up screen lists them under the box, a tap opens one free (`#/lookup?past=<id>`, vault matches redone), hold to remove.
 
 ## Archetype lines (built 2026-10-21): words on a combination of numbers
 - The owner's ask: "wholesome (24/6) expander (12/3)". `server/archetype-words.js` is the word bank: every number 1-99

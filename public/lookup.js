@@ -10,11 +10,13 @@
     'screen.lookup': 'Look Up', 'home.lookup': 'Look Up (home)', 'lookup.mic': 'Look Up: speak a name',
     'lookup.search': 'Look Up: search the web', 'lookup.web_anyway': 'Look Up: search the web anyway', 'lookup.save': 'Look Up: Save to Vault',
     'lookup.quick': 'Look Up: open in Quick Chart', 'lookup.pick_name': 'Look Up: pick a name', 'lookup.pick_date': 'Look Up: pick a date',
-    'lookup.clarify': 'Look Up: add a detail and search again',
+    'lookup.clarify': 'Look Up: add a detail and search again', 'lookup.past_open': 'Look Up: open a past search',
+    'lookup.past_remove': 'Look Up: remove a past search',
   };
 
   function install(A) {
-    const { routes, h, fill, api, toast, count, go, render, pageTop, drawnChart, chartPng } = A;
+    const { routes, h, fill, api, toast, count, go, render, pageTop, drawnChart, chartPng, holdButton } = A;
+    const whenOf = (iso) => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ', ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); };
     const SR = root.SpeechRecognition || root.webkitSpeechRecognition;
     const money = (usd) => { const c = Math.round(usd * 100); return usd < 0.005 ? 'under a cent' : c === 1 ? '1 cent' : usd < 1 ? `${c} cents` : `$${usd.toFixed(2)}`; };
     const postJson = (url, body) => api(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
@@ -115,7 +117,7 @@
       const $go = h('button', { type: 'button', class: 'btn-primary', onclick: () => send(false) }, 'Search');
       const $out = h('div', { class: 'stack' });
       const $hint = h('div', { class: 'muted small lookup-hint' }, SR ? 'Tap the microphone and say a name, a business or an organization, or describe them.' : 'Type a name or a business, or use the microphone on your keyboard.');
-      let rec = null, listening = false;
+      let rec = null, listening = false, searched = false;
       const $mic = h('button', { type: 'button', class: 'lookup-mic', 'aria-label': 'Speak a name' }, '🎙');
       const stopMic = () => { listening = false; $mic.classList.remove('on'); try { rec && rec.stop(); } catch {} };
       $mic.onclick = () => {
@@ -148,12 +150,27 @@
           h('div', { class: 'muted small' }, 'Add a detail and it searches again: about 3 cents.'),
           $more, h('button', { type: 'button', class: 'btn btn-block', onclick: again }, 'Search Again'));
       };
+      // The people found, laid out the same way for a new search and for a past one opened again.
+      const showResult = (r) => {
+        const head = r.people.length ? null : h('div', { class: 'card' }, h('p', { style: 'margin:0' }, r.note || 'Nobody found. Try saying it another way.'));
+        const past = r.past ? h('p', { class: 'lookup-past-head small' }, `Past search from ${whenOf(r.past.at)}. Opening it again is free; tap Search to look it up fresh.`) : null;
+        fill($out, past, head, ...r.people.map(personCard),
+          r.people.length > 1 ? h('p', { class: 'muted small' }, 'More than one fits. The best match is first.') : null,
+          r.people.length && r.note ? h('p', { class: 'muted small' }, r.note) : null,
+          h('div', { class: 'muted small' }, `${r.past ? 'It cost ' : ''}${money(r.usd)} · ${r.searches} web search${r.searches === 1 ? '' : 'es'} · ${Math.round(r.seconds)} s${r.spend ? ` · $${r.spend.spent.toFixed(2)} of $${r.spend.cap.toFixed(2)} this month` : ''}`),
+          r.warning ? h('p', { class: 'lookup-warn small' }, r.warning.text) : null,
+          clarifyBox(r.query),
+          r.past ? holdButton('Hold to Remove From Past Searches', async () => {
+            try { await api(`/api/lookups/${r.id}`, { method: 'DELETE' }); count('lookup.past_remove'); toast('Removed from Past Searches'); location.replace('#/lookup'); } catch (err) { toast(err.message, true); }
+          }) : null);
+      };
       const send = async (web, quiet) => {
         const q = $q.value.trim();
         if (!q) { toast('Say or type a name first.', true); return; }
         if (listening) stopMic();
         if (!quiet) count(web ? 'lookup.web_anyway' : 'lookup.search');
         $go.disabled = true; $go.textContent = 'Searching…';
+        searched = true; fill($past);
         fill($out, h('p', { class: 'muted' }, web ? 'Searching the web… about 10 to 30 seconds.' : 'Looking in your vault, then on the web… about 10 to 30 seconds.'));
         try {
           const r = await postJson('/api/lookup', { query: q, web });
@@ -161,27 +178,36 @@
             fill($out, h('div', { class: 'card stack' }, h('b', {}, 'Already in your vault'),
               h('div', { class: 'grid' }, ...r.vault.map(cell)),
               h('button', { type: 'button', class: 'btn btn-block', onclick: () => send(true) }, 'Search the Web Anyway (about 3 cents)')));
-          } else {
-            const head = r.people.length ? null : h('div', { class: 'card' }, h('p', { style: 'margin:0' }, r.note || 'Nobody found. Try saying it another way.'));
-            fill($out, head, ...r.people.map(personCard),
-              r.people.length > 1 ? h('p', { class: 'muted small' }, 'More than one fits. The best match is first.') : null,
-              r.people.length && r.note ? h('p', { class: 'muted small' }, r.note) : null,
-              h('div', { class: 'muted small' }, `${money(r.usd)} · ${r.searches} web search${r.searches === 1 ? '' : 'es'} · ${Math.round(r.seconds)} s${r.spend ? ` · $${r.spend.spent.toFixed(2)} of $${r.spend.cap.toFixed(2)} this month` : ''}`),
-              r.warning ? h('p', { class: 'lookup-warn small' }, r.warning.text) : null,
-              clarifyBox(r.query));
-          }
+          } else showResult(r);
         } catch (err) { fill($out, h('p', { class: 'err' }, err.message)); }
         $go.disabled = false; $go.textContent = 'Search';
+      };
+      // Past Searches (owner 2026-11-16): every web search is kept; a tap opens it again, free. Newest first.
+      const $past = h('div', { class: 'stack' });
+      const pastList = () => api('/api/lookups').then(({ items }) => {
+        if (!items.length || searched) return;
+        fill($past, h('h3', { class: 'lookup-past-title' }, 'Past Searches'),
+          h('div', { class: 'card lookup-past' }, ...items.map((it) => h('a', { class: 'lookup-past-row', href: `#/lookup?past=${it.id}`, onclick: () => count('lookup.past_open') },
+            h('b', {}, `“${it.query}”`),
+            h('span', { class: 'muted small' }, it.names ? `Found: ${it.names}` : 'Nobody found'),
+            h('span', { class: 'muted small' }, whenOf(it.created_at))))));
+      }).catch((err) => fill($past, h('p', { class: 'err' }, `Past Searches could not load: ${err.message}`)));
+      const openPast = (id) => {
+        fill($out, h('p', { class: 'muted' }, 'Opening the past search…'));
+        api(`/api/lookups/${encodeURIComponent(id)}`).then((r) => { $q.value = r.query; showResult(r); })
+          .catch((err) => fill($out, h('p', { class: 'err' }, err.message)));
       };
       $q.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); send(false); } });
       render(h('div', { class: 'screen stack' }, pageTop('Look Up', '#/'),
         h('div', { class: 'lookup-top' }, $mic, $hint),
         h('div', { class: 'row', style: 'flex-wrap:nowrap' }, $q, $go),
         h('p', { class: 'muted small', style: 'margin:0' }, 'Your vault is checked first, for free. A web search finds a person\'s birth name and birth date, or a business\'s registered name and founding date: about 2 to 4 cents. Nothing is saved until you tap Save to Vault.'),
-        $out));
+        $out, $past));
       api('/api/ai/settings').then((s) => { if (!s.key_set) fill($out, h('div', { class: 'card stack' }, h('p', { class: 'muted', style: 'margin:0' }, 'Add the AI key first.'), h('a', { class: 'btn btn-block', href: '#/ai' }, 'AI Reading Settings'))); }).catch(() => {});
-      if ($q.value) send(false);
+      if (query && query.get('past')) openPast(query.get('past'));
+      else if ($q.value) send(false);
       else if (query && query.get('listen') && SR) setTimeout(() => $mic.click(), 300);
+      if (!(query && query.get('past')) && !$q.value) pastList();
     };
 
     const homeButton = () => h('a', { class: 'act', href: '#/lookup', onclick: () => count('home.lookup') }, h('span', { class: 'qicon' }, '🎙'), h('span', { class: 'al' }, 'Look Up'));

@@ -190,11 +190,31 @@ export async function lookupPerson(db, query) {
   return { query: q, people, note: clean(answer.note, 300), usd: Math.round(usd * 10000) / 10000, seconds, calls, searches };
 }
 
+// Past searches (owner 2026-11-16): every web answer is kept, so it can be opened again without paying.
+// `names` is what the list shows: who came back. The vault matches are worked out again when one is opened,
+// so a chart saved since then shows up.
+export function storeLookup(db, r, build) {
+  const names = r.people.map((p) => p.known_as || p.birth_name).filter(Boolean).join(', ');
+  return db.prepare('INSERT INTO lookups (query, result, names, usd, build) VALUES (?, ?, ?, ?, ?)').run(r.query, JSON.stringify(r), names, r.usd || 0, build || null).lastInsertRowid;
+}
+export function pastLookups(db, limit = 100) {
+  return db.prepare('SELECT id, query, names, usd, created_at FROM lookups ORDER BY id DESC LIMIT ?').all(limit);
+}
+export function pastLookup(db, id) {
+  const row = db.prepare('SELECT * FROM lookups WHERE id = ?').get(id);
+  if (!row) return null;
+  const r = JSON.parse(row.result);
+  for (const p of r.people || []) p.vault = inVault(db, p).map((i) => ({ id: i.id, title: i.title || i.filename, has_file: !!i.has_file }));
+  return { ...r, id: row.id, past: { at: row.created_at, build: row.build } };
+}
+export function deleteLookup(db, id) { return db.prepare('DELETE FROM lookups WHERE id = ?').run(id).changes > 0; }
+
 // The last lookups this process ran, for the snapshot: what was said, who came back, the cost.
 const RECENT = [];
 export function rememberLookup(entry) { RECENT.push({ at: new Date().toISOString(), ...entry }); if (RECENT.length > 20) RECENT.shift(); }
-export function lookupReport() {
-  const lines = [`LOOK UP SOMEONE: last ${RECENT.length} this process`];
+export function lookupReport(db) {
+  const kept = db ? db.prepare('SELECT count(*) n, max(created_at) last FROM lookups').get() : null;
+  const lines = [`LOOK UP SOMEONE: last ${RECENT.length} this process${kept ? ` · ${kept.n} past searches kept (Past Searches on the Look Up screen)${kept.last ? `, newest ${kept.last}` : ''}` : ''}`];
   for (const e of RECENT.slice().reverse()) lines.push(`  ${e.at} "${e.query}" → ${e.error ? `FAILED ${e.error}` : `${e.people.map((p) => `${p.kind === 'business' ? '[business] ' : ''}${p.known_as || '?'} = ${p.birth_name || '(no birth name)'} ${p.birth_date || '(no date)'}${p.sure ? '' : ' UNSURE'}${p.register ? ` · register: ${p.register}` : ''}${(p.names || []).length > 1 ? ` · names: ${p.names.map((n) => `${n.chart} (${n.what}${n.ending ? `, ${n.with ? 'with' : 'without'} ${n.ending}` : ''})`).join(', ')}` : ''}${(p.dates || []).length > 1 ? ` · dates: ${p.dates.map((d) => `${d.date} (${d.what}${d.partial ? ', not a full date' : ''})`).join(', ')}` : ''}`).join('; ') || 'nobody'}${e.note ? ` · note: ${e.note}` : ''} · ${e.searches} searches · $${e.usd}`}`);
   if (!RECENT.length) lines.push('  none');
   return lines;

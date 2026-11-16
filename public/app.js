@@ -2382,7 +2382,7 @@
   if (archUi) Object.assign(USAGE_LABELS, archUi.USAGE_LABELS);
   // What a number means where it sits (public/meaning.js): a tap on a number of a drawn chart.
   // Look Up Someone (say a name, the web finds the birth name and date, the chart is drawn): lookup.js.
-  lookupUi = window.Lookup ? window.Lookup.install({ routes, h, fill, api, toast, count, go, render, pageTop, drawnChart, chartPng }) : null;
+  lookupUi = window.Lookup ? window.Lookup.install({ routes, h, fill, api, toast, count, go, render, pageTop, drawnChart, chartPng, holdButton }) : null;
   if (lookupUi) Object.assign(USAGE_LABELS, lookupUi.USAGE_LABELS);
   meaningUi = window.Meaning ? window.Meaning.install({ h, fill, api, count, go, positionHash, overlay: trackOverlay, overlayGone: untrackOverlay }) : null;
 

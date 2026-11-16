@@ -191,3 +191,23 @@ test('no strict tool schema uses a keyword the API refuses', async () => {
   assert.ok(strict.length >= 7);
   for (const t of strict) walk(t.input_schema, t.name);
 });
+
+test('every web search is kept: listed newest first, opened again free with today\'s vault, removable', async () => {
+  const spentBefore = requests.length;
+  const list = (await (await fetch(base + '/api/lookups', { headers: { cookie } })).json()).items;
+  assert.ok(list.length >= 4);
+  assert.ok(list.every((x, i) => !i || list[i - 1].id > x.id)); // newest first
+  const fiftyRow = list.find((x) => x.query === 'fifty cent');
+  assert.equal(fiftyRow.names, '50 Cent');
+  assert.ok(!list.some((x) => x.query === 'Elvis')); // the free vault answer is not a web search
+  const r = await (await fetch(base + `/api/lookups/${fiftyRow.id}`, { headers: { cookie } })).json();
+  assert.equal(r.people[0].birth_name, 'Curtis James Jackson III');
+  assert.equal(r.past.build, 'lookuptest');
+  assert.ok(Array.isArray(r.people[0].vault));
+  assert.equal(requests.length, spentBefore); // nothing re-searched
+  const del = await fetch(base + `/api/lookups/${fiftyRow.id}`, { method: 'DELETE', headers: { cookie } });
+  assert.equal(del.status, 200);
+  assert.equal((await fetch(base + `/api/lookups/${fiftyRow.id}`, { headers: { cookie } })).status, 404);
+  const snap = await (await fetch(base + '/api/debug/snapshot', { headers: { cookie } })).text();
+  assert.match(snap, /past searches kept/);
+});

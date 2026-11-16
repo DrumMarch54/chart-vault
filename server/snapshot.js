@@ -107,7 +107,7 @@ export function snapshot(db, { scope = 'full', id = null, commit = 'unknown', bu
   }
   line('');
   for (const l of aiReport()) line(l);
-  for (const l of lookupReport()) line(redact(l));
+  for (const l of lookupReport(db)) line(redact(l));
   const rc = db.prepare("SELECT count(*) c, sum(kind = 'reading') r, sum(kind = 'answer') a, round(sum(usd), 4) usd FROM readings").get();
   line(`stored readings: ${rc.r || 0} readings, ${rc.a || 0} answers, $${rc.usd || 0} all time`);
   line('');

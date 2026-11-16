@@ -20,7 +20,7 @@ import { paths } from './config.js';
 import { aiSettings, setAiSettings, spendState, pendingWarning, markWarningSeen, AiError } from './ai.js';
 import { readingFor, writeReading, answerQuestion, deleteReadings, readingEstimate, readingChoices } from './reading.js';
 import { askVault } from './ask.js';
-import { lookupPerson, vaultMatches, rememberLookup } from './lookup.js';
+import { lookupPerson, vaultMatches, rememberLookup, storeLookup, pastLookups, pastLookup, deleteLookup } from './lookup.js';
 import { factsFor } from './facts.js';
 import { meaningFor, countWith } from './meaning.js';
 import { findInDoc, docWindow, findNumberSection, findPhrase } from './doc.js';
@@ -499,12 +499,25 @@ export function createApp(db, { log = console.log } = {}) {
       }
       const r = await lookupPerson(db, body.query);
       rememberLookup({ query: r.query, people: r.people, note: r.note, searches: r.searches, usd: r.usd });
-      log(`lookup: ${r.people.length} people, ${r.searches} searches, $${r.usd}`);
-      res.json({ ...r, spend: spendState(), warning: pendingWarning() });
+      const id = storeLookup(db, r, COMMIT);
+      log(`lookup #${id}: ${r.people.length} people, ${r.searches} searches, $${r.usd}`);
+      res.json({ ...r, id, spend: spendState(), warning: pendingWarning() });
     } catch (err) {
       if (err instanceof AiError) { rememberLookup({ query: String(body.query || '').slice(0, 200), error: err.message }); return res.status(400).json({ error: err.message }); }
       next(err);
     }
+  });
+
+  // Past searches: the list (newest first), one opened again (free, nothing re-searched), one removed.
+  app.get('/api/lookups', (req, res) => res.json({ items: pastLookups(db) }));
+  app.get('/api/lookups/:id', (req, res) => {
+    const r = pastLookup(db, Number(req.params.id));
+    if (!r) return res.status(404).json({ error: 'That past search is gone.' });
+    res.json(r);
+  });
+  app.delete('/api/lookups/:id', (req, res) => {
+    if (!deleteLookup(db, Number(req.params.id))) return res.status(404).json({ error: 'That past search is gone.' });
+    res.json({ ok: true });
   });
 
   // Status, export, backup
