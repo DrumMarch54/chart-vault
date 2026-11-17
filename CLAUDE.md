@@ -109,6 +109,10 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - Two numbers ("4 meets 9", `num=4+9`) search a combination: the two parts of a center or a diamond
   (`PARTS` in positions.js, `comboSql`), either way round; a one-digit part is the digit sum. The name line
   diamond exists only for a first + last name (no middle name); the engine stores nothing for it otherwise.
+- What made a number (owner 2026-11-16, "35/8 where the 3 comes from 12/3", "a pure 3"): with two numbers the picker shows
+  "Plain 3 Only" (`!3`, a 3 that is no 12/3) and "Making 35/8 / 53/8" (`12+5@35`: the diamond itself is 35, so 53 never
+  counts). Only diamonds make a number (`MADE_BESIDE`, digit sums side by side); a center's circle never does.
+  `parseNumber` also reads "35 from 12" and "36/9 from 12/3 and 15/6" (a one-digit part there is plain).
 - Several positions at once (owner 2026-10-17, "day 8 AND first name 15"): a search is a list of conditions,
   pairwise in the address (`?pos=essence.day&num=8&pos=name.first&num=15`, `conditionsSql`); the grid shows one
   chip per condition (tap = change it, × = drop it) and "+ Another number", which reopens the picker with the

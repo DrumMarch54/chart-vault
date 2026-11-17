@@ -98,6 +98,20 @@ test('store, search by position, tag check, fix and clear', () => {
   assert.deepEqual(ids({ chart: 'name', position: '*', ...combo(4, 3) }), [k]);
   assert.deepEqual(ids({ chart: '*', position: '*', ...combo(4, 3) }), [k]);
   assert.deepEqual(ids({ chart: 'name', position: 'first', ...combo(4, 3) }), []); // not a center or diamond
+  // What made a number (owner 2026-11-16: "35/8 where the 3 comes from 12/3", "a pure 3"): the diamond must BE the
+  // number, and a plain part is that number only. Katrine: inner diamond 14/5 = day 19/1 beside year 22/4.
+  const cond = (pos, text) => P.parseCondition(pos, text);
+  assert.deepEqual(ids(cond('name.*', '34 from 3 and 4')), [k]);
+  assert.deepEqual(ids(cond('name.*', '3+4@43')), [], 'her mind diamond is 34, never 43');
+  assert.deepEqual(ids(cond('essence.innerDiamond', '1+4')), [k], 'one digit = any 1, so 19/1 counts');
+  assert.deepEqual(ids(cond('essence.innerDiamond', '!1+4')), [], 'a plain 1 only: 19/1 does not count');
+  assert.deepEqual(ids(cond('essence.*', '14 from 19')), [k]);
+  assert.deepEqual(ids(cond('essence.*', '14 from 1')), [], 'from: a one-digit part is plain');
+  assert.deepEqual(ids(cond('*.*', '19+22@14')), [k]);
+  assert.deepEqual(ids(cond('name.*', '79 from 7 and 18')), [k], 'the sub diamond: heart 7 beside middle name 18/9');
+  assert.deepEqual(ids(cond('name.heart', '7+18@79')), [], 'a center circle never makes a number');
+  assert.equal(P.positionCounts(db, P.parseNumber('34 from 3')).counts['name.mindDiamond'], 1);
+  assert.equal(P.positionCounts(db, P.parseNumber('34 from 3')).counts['name.heart'], 0);
   // Several conditions at once (day 19 AND mind center 7): every one must hold. Katrine: day 19, heart 7; Test: day 1, heart 16.
   const both = (list) => { const params = []; return db.prepare(`SELECT i.id FROM images i WHERE 1=1${P.conditionsSql(list, params)}`).all(...params).map((r) => r.id); };
   const day19 = P.parseCondition('essence.day', '19'), heart7 = P.parseCondition('name.heart', '7'), heart16 = P.parseCondition('name.heart', '16');
@@ -172,6 +186,15 @@ test('parseNumber reads what the owner types', () => {
   assert.deepEqual(P.parseNumber('13 and 18').combo, [{ number: 13, ds: false }, { number: 18, ds: false }]);
   assert.deepEqual(P.parseNumber('4 9').combo, P.parseNumber('4, 9').combo);
   assert.equal(P.parseNumber('4+abc'), null);
+  // What made it: "@35" or "35 from ..."; "!3" a plain 3. A one-digit part in the "from" wording is plain.
+  assert.deepEqual(P.parseNumber('12+5@35'), { number: 12, ds: false, combo: [{ number: 12, ds: false }, { number: 5, ds: true }], made: 35 });
+  assert.deepEqual(P.parseNumber('35 from 12'), P.parseNumber('12+/5@35'));
+  assert.deepEqual(P.parseNumber('35/8 from 12/3').combo, [{ number: 12, ds: false }, { number: 5, ds: true }]);
+  assert.deepEqual(P.parseNumber('36/9 from 12/3 and 15/6'), { number: 12, ds: false, combo: [{ number: 12, ds: false }, { number: 15, ds: false }], made: 36 });
+  assert.deepEqual(P.parseNumber('35 from 3').combo, [{ number: 3, ds: false }, { number: 5, ds: true }]);
+  assert.deepEqual(P.parseNumber('!3+5').combo, [{ number: 3, ds: false }, { number: 5, ds: true }]);
+  assert.equal(P.parseNumber('12+5@53').made, 53, 'either side');
+  for (const bad of ['35 from 4', '12+15@35', '12@35', '35 from', '!12+5']) assert.equal(P.parseNumber(bad), null, bad);
 });
 
 // --- API ---

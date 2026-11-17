@@ -51,7 +51,7 @@
     'quick.year_rows': 'Year Rows and Day Vibrations', 'rows.on_date': 'Year Rows: pick a date', 'rows.meaning': 'Year Rows: tap a number for its meaning', 'quick.show_parts': 'Show and Hide Parts', 'quick.augment': 'Augmentation On or Off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
     'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'status.recompute': 'Recompute chart numbers',
     'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart', 'viewer.year_rows': 'Year Rows from a chart',
-    'position.search_more': 'Narrow a position search by another number', 'position.add_more': 'Tap + Another number', 'position.combo': 'Open the combination screen from Search by Position', 'position.hsd': 'Higher Self Diamond charts from Search by Position', 'combo.search': 'Show Charts on the combination screen', 'reading.show_number': 'Most Often → ring a number on the chart', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'viewer.share': 'Share Picture from a chart', 'quick.share': 'Share Picture from the Quick Chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
+    'position.search_more': 'Narrow a position search by another number', 'position.add_more': 'Tap + Another number', 'position.combo': 'Open the combination screen from Search by Position', 'position.hsd': 'Higher Self Diamond charts from Search by Position', 'position.plain': 'Plain number only, in a two-number position search', 'position.making': 'Pick the number two parts make (Making 35/8)', 'combo.search': 'Show Charts on the combination screen', 'reading.show_number': 'Most Often → ring a number on the chart', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'viewer.share': 'Share Picture from a chart', 'quick.share': 'Share Picture from the Quick Chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
     'grid.size': 'Chart size on the grid (− / +)', 'similar.size': 'Chart size on Similar Charts (− / +)', 'duplicates.size': 'Chart size on Possible Duplicates (− / +)',
     'viewer.similar': 'Similar Charts from a chart', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
     'viewer.delete': 'Delete a chart from the chart page', 'duplicates.delete': 'Delete a chart from Possible Duplicates', 'duplicates.keep': 'Keep a duplicate group', 'deleted.restore': 'Put a deleted chart back',
@@ -86,7 +86,8 @@
   const chartLabel = (key) => (key === '*' ? 'any chart' : ((catalog && catalog.charts.find((c) => c.key === key)) || {}).label || key);
   const posLabel = (pos) => { const [chart, key = '*'] = String(pos).split('.'); if (key === '*') return chart === '*' ? 'anywhere' : `anywhere in the ${chartLabel(chart).toLowerCase()}`; const p = catalog && catalog.positions.find((x) => x.chart === chart && x.key === key); return `${p ? p.label : key} · ${chartLabel(chart)}`; };
   // "12" reads 12/3; "/3" reads "digit sum 3".
-  const numLabel = (num) => { if (/\+/.test(String(num))) return String(num).split('+').map(numLabel).join(' and '); const m = /^(\d+)?(?:\/(\d))?$/.exec(String(num)); if (!m) return String(num); if (!m[1]) return `digit sum ${m[2]}`; const n = Number(m[1]); return n < 10 ? String(n) : `${n}/${TagCodes.digitSum(n)}`; };
+  // "12+5@35" reads "35/8 from 12/3 and 5" (the diamond the two make); "!3" reads "plain 3" (a 3 that is no 12/3).
+  const numLabel = (num) => { const made = /^(.*)@(\d+)$/.exec(String(num)); if (made) return `${numLabel(made[2])} from ${numLabel(made[1])}`; if (/\+/.test(String(num))) return String(num).split('+').map(numLabel).join(' and '); if (/^!\d$/.test(String(num))) return `plain ${String(num).slice(1)}`; const m = /^(\d+)?(?:\/(\d))?$/.exec(String(num)); if (!m) return String(num); if (!m[1]) return `digit sum ${m[2]}`; const n = Number(m[1]); return n < 10 ? String(n) : `${n}/${TagCodes.digitSum(n)}`; };
   // A position search is a list of conditions [{ pos, num }], all of which a chart must meet (day 8 AND first
   // name 15). The address carries them pairwise (?pos=essence.day&num=8&pos=name.first&num=15).
   const condLabel = (c) => { const p = posLabel(c.pos); return p.startsWith('anywhere') ? `${numLabel(c.num)} ${p}` : `${numLabel(c.num)} in ${p}`; };
@@ -1879,9 +1880,13 @@
     const startNum = query.get('edit') || '';
     let chart = 'name'; try { chart = localStorage.getItem('posChart') || 'name'; } catch {}
     // Two numbers ("4" and "9") look for a combination: the two parts of a center or a diamond, either way round.
-    const [startA, startB = ''] = startNum.split('+');
-    const $num = h('input', { type: 'text', inputmode: 'numeric', placeholder: fixed.length ? 'Next number' : 'Number, like 12', autocomplete: 'off', maxlength: 3, value: startA.replace('/', ''), enterkeyhint: 'search' });
-    const $num2 = h('input', { type: 'text', class: 'second', inputmode: 'numeric', placeholder: 'number', autocomplete: 'off', maxlength: 3, value: startB.replace('/', ''), enterkeyhint: 'search', 'aria-label': 'Second number of a combination, meeting the first in a center or diamond' });
+    // "12+!5@35": a part with ! is a plain number (owner 2026-11-16: "a pure 3"), @35 = the diamond they make.
+    const [startPair, startMade = ''] = startNum.split('@');
+    const [startA, startB = ''] = startPair.split('+');
+    const plain = { a: startA.startsWith('!'), b: startB.startsWith('!') };
+    let made = Number(startMade) || null;
+    const $num = h('input', { type: 'text', inputmode: 'numeric', placeholder: fixed.length ? 'Next number' : 'Number, like 12', autocomplete: 'off', maxlength: 3, value: startA.replace(/[/!]/g, ''), enterkeyhint: 'search' });
+    const $num2 = h('input', { type: 'text', class: 'second', inputmode: 'numeric', placeholder: 'number', autocomplete: 'off', maxlength: 3, value: startB.replace(/[/!]/g, ''), enterkeyhint: 'search', 'aria-label': 'Second number of a combination, meeting the first in a center or diamond' });
     const $ds = h('button', { type: 'button', class: 'chip off', title: 'Digit sum' }, 'as a digit sum');
     let ds = startA.startsWith('/');
     const combo = () => !!($num.value.trim() && $num2.value.trim());
@@ -1889,8 +1894,11 @@
     const $charts = h('div', { class: 'chips tabs' });
     const $list = h('div', { class: 'stack poslist' });
     const $hint = h('p', { class: 'muted small' });
+    // Under two numbers: "Plain 3 Only" for a one-digit number (otherwise a 12/3 counts as a 3), and the diamond the two
+    // make side by side ("Making 35/8", never 53/8), owner 2026-11-16.
+    const $made = h('div', { class: 'stack posmade' });
     render(h('div', { class: 'screen' }, pageTop('Search by Position', () => (fixed.length ? swap(positionHash(fixed)) : leaveFlow())), $fixed,
-      h('div', { class: 'row posnum', style: 'flex-wrap:nowrap' }, $num, h('span', { class: 'muted small andword' }, 'meets'), $num2, $ds),
+      h('div', { class: 'row posnum', style: 'flex-wrap:nowrap' }, $num, h('span', { class: 'muted small andword' }, 'meets'), $num2, $ds), $made,
       // A number in each of several positions at once (owner 2026-10-21): the combination screen.
       h('button', { type: 'button', class: 'rsearch alltags', onclick: () => { count('position.combo'); swap('#/combo?' + condsQuery(fixed, { add: 1 })); } }, h('span', {}, 'Combination: a number in each position'), h('span', { class: 'muted' }, '›')),
       // A shape of the whole chart, no number to type (owner 2026-11-07): the day's digit sum equals the dharma diamond's.
@@ -1898,11 +1906,30 @@
       $hint, $charts, $list));
     try { await loadCatalog(true); } catch (err) { if (!catalog) { fill($list, h('p', { class: 'err' }, err.message)); return; } }
     let counts = null, seq = 0;
-    const numText = () => { const n = $num.value.trim(); if (!n) return ''; if (combo()) return `${n}+${$num2.value.trim()}`; return ds ? `/${n.slice(-1)}` : n; };
+    const one = (v) => /^\d$/.test(v);
+    const dsOf = (v) => { let n = Number(v); while (n > 9) n = String(n).split('').reduce((t, d) => t + Number(d), 0); return n; };
+    // The numbers two parts can make side by side: 12/3 and 5 make 35/8 or 53/8.
+    const makeable = () => { const a = dsOf($num.value.trim()), b = dsOf($num2.value.trim()); return [...new Set([a * 10 + b, b * 10 + a])]; };
+    const numText = () => {
+      const n = $num.value.trim(); if (!n) return '';
+      if (combo()) { const m = $num2.value.trim(); const part = (v, p) => (p && one(v) ? '!' : '') + v; return `${part(n, plain.a)}+${part(m, plain.b)}${made && makeable().includes(made) ? '@' + made : ''}`; }
+      return ds ? `/${n.slice(-1)}` : n;
+    };
+    const drawMade = () => {
+      if (!combo() || !/^\d{1,3}$/.test($num.value.trim()) || !/^\d{1,3}$/.test($num2.value.trim())) { fill($made); return; }
+      if (made && !makeable().includes(made)) made = null;
+      const chip = (label, on, click) => h('button', { type: 'button', class: `chip ${on ? 'active' : 'off'}`, onclick: () => { click(); drawMade(); refresh(); } }, label);
+      const plainChip = (k, $el) => (one($el.value.trim()) ? chip(`Plain ${$el.value.trim()} Only`, plain[k], () => { plain[k] = !plain[k]; count('position.plain'); }) : null);
+      const plains = [plainChip('a', $num), plainChip('b', $num2)].filter(Boolean);
+      fill($made, plains.length ? h('div', { class: 'chips' }, ...plains) : null,
+        h('div', { class: 'chips' }, h('span', { class: 'muted small', style: 'align-self:center' }, 'Making'), chip('Any', !made, () => { made = null; }),
+          ...makeable().map((v) => chip(numLabel(String(v)), made === v, () => { made = made === v ? null : v; count('position.making'); }))));
+    };
     const fixedParam = () => fixed.map((c) => `${c.pos}:${c.num}`).join(',');
     const refresh = async () => {
       const n = numText(); const my = ++seq;
       $ds.classList.toggle('hidden', combo() || !/^\d$/.test($num.value.trim()));
+      drawMade();
       if (!n) { counts = null; drawList(); return; }
       try { const c = await api('/api/positions/counts?num=' + encodeURIComponent(n) + (fixed.length ? '&fixed=' + encodeURIComponent(fixedParam()) : '')); if (my === seq) { counts = c; drawList(); } } catch (err) { if (my === seq) { counts = { error: err.message }; drawList(); } }
     };
@@ -1921,12 +1948,12 @@
     const drawList = () => {
       drawFixed();
       const n = numText();
-      const have = `${fmtN(counts ? counts.total : 0)} chart${counts && counts.total === 1 ? '' : 's'}${fixed.length ? ' of these' : ''} have ${numLabel(n)}${combo() ? ' meeting in a center or diamond (one digit means the digit sum, so 4 finds a 13/4 or a 22/4)' : ' somewhere'}. Tap the position it must be in.`;
+      const have = `${fmtN(counts ? counts.total : 0)} chart${counts && counts.total === 1 ? '' : 's'}${fixed.length ? ' of these' : ''} have ${numLabel(n)}${n.includes('@') ? ' in a diamond' : combo() ? ' meeting in a center or diamond (one digit means the digit sum, so 4 finds a 13/4 or a 22/4; tap Plain 4 Only for a plain 4)' : ' somewhere'}. Tap the position it must be in.`;
       $hint.textContent = n ? (counts && !counts.error ? have : '')
         : fixed.length ? 'Type the next number, then tap the position it must be in. Only charts with everything above are counted.'
         : 'Type a number, then tap the position it must be in. Two numbers side by side, like 4 and 9, find them meeting in a center or diamond. Once the charts show, tap “+ Another number” above them to ask for a second position too, like day 8 with first name 15. Charts are found by their name and date, tags or not.';
       if (counts && counts.error) { fill($list, h('p', { class: 'err' }, counts.error)); return; }
-      fill($list, ...posRows(chart, counts, combo(), pick));
+      fill($list, ...posRows(chart, counts, combo() ? (n.includes('@') ? 'made' : true) : false, pick));
     };
     for (const el of [$num, $num2]) {
       el.addEventListener('input', () => { clearTimeout($num.t); $num.t = setTimeout(refresh, 150); });
@@ -1948,8 +1975,9 @@
     const most = isCombo ? '' : ' · the charts with it the most first';
     if (chart === '*') return [row('*.*', 'Anywhere', 'Any position of any chart' + most), ...catalog.charts.map((c) => row(`${c.key}.*`, `Anywhere in the ${c.label.toLowerCase()}`, c.note + most))];
     const c = catalog.charts.find((x) => x.key === chart);
-    const list = catalog.positions.filter((p) => p.chart === chart && (!isCombo || p.combo));
-    return [row(`${chart}.*`, `Anywhere in the ${c.label.toLowerCase()}`, isCombo ? 'Any center or diamond of it' : c.note + most), ...list.map((p) => row(`${chart}.${p.key}`, p.label))];
+    // isCombo 'made': the two parts making one number side by side, which only a diamond does.
+    const list = catalog.positions.filter((p) => p.chart === chart && (!isCombo || (isCombo === 'made' ? p.made : p.combo)));
+    return [row(`${chart}.*`, `Anywhere in the ${c.label.toLowerCase()}`, isCombo === 'made' ? 'Any diamond of it' : isCombo ? 'Any center or diamond of it' : c.note + most), ...list.map((p) => row(`${chart}.${p.key}`, p.label))];
   }
 
   // ---------- combination search: a number in each of several positions (owner 2026-10-21) ----------
@@ -2001,7 +2029,7 @@
       const others = complete().filter((r) => r !== row);
       let counts = null;
       const n = numOf(row);
-      const isCombo = /\+/.test(n);
+      const isCombo = /@/.test(n) ? 'made' : /\+/.test(n);
       const drawList = () => fill($list, ...posRows(chart, counts, isCombo, (pos) => { row.pos = pos; close(); drawRows(); changed(); }));
       const drawCharts = () => fill($charts, ...[{ key: '*', label: 'Any chart' }, ...catalog.charts].map((c) => h('button', { type: 'button', class: `chip ${chart === c.key ? 'active' : 'off'}`, onclick: () => { chart = c.key; try { localStorage.setItem('posChart', chart); } catch {} drawCharts(); drawList(); } }, c.label)));
       $hint.textContent = n ? (others.length ? 'Counts: among the charts that already meet the other rows.' : 'Counts: how many charts have it there.') : 'Type the number first and the counts show here.';

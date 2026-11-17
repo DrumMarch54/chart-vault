@@ -246,23 +246,32 @@ export function loadSeedFile() {
 // position '*' = any position of that chart. ds: match the digit sum instead of the exact number.
 // Which positions are made of two parts a combination can be looked for in (the centers and the diamonds), per chart.
 export const comboPositions = (chart) => POSITIONS.filter((p) => (chart === '*' || !chart || p.chart === chart) && PARTS[p.key] && !p.hidden);
-// One part of a combination: a one-digit number is the digit sum (4 = a 13/4 or a 22/4), a bigger one the number itself.
+// One part of a combination: a one-digit number is the digit sum (4 = a 13/4 or a 22/4), a bigger one the number itself;
+// a plain part ({ ds: false } on one digit, typed "!3") is that number only (owner 2026-11-16: "a pure 3, not a 12/3").
 const partSql = (alias, part) => `${alias}.${part.ds ? 'ds' : 'sum'} = ?`;
+// The diamonds: their number is the digit sums of their two parts side by side (12/3 beside 15/6 = 36/9; checked on
+// every seeded chart 2026-11-16). A centre's circle and its extra vibration are not made that way, so "making" a
+// number (owner 2026-11-16: "35/8 where the 3 comes from 12/3") only looks in these.
+export const MADE_BESIDE = new Set(Object.keys(PARTS).filter((k) => DIAMONDS.has(k)));
 // "4 and 9 in the emotion center" = 4 and 9 in its circle, main and extra vibration, either way round (the owner's
 // combo tags: 4combo9ec); in a diamond, its two parts. A part may live in another chart (the public diamond's day).
-function comboSql(chart, position, [a, b], params) {
-  const targets = position && position !== '*' ? comboPositions(chart).filter((p) => p.key === position) : comboPositions(chart);
+// `made`: the diamond itself must be that number, so 12 + 5 making 35 never finds a 53.
+function comboSql(chart, position, [a, b], params, made = null) {
+  let targets = position && position !== '*' ? comboPositions(chart).filter((p) => p.key === position) : comboPositions(chart);
+  if (made) targets = targets.filter((p) => MADE_BESIDE.has(p.key));
   if (!targets.length) return 'AND 0';
   const one = (p) => {
     const [c1, k1] = PARTS[p.key][0].includes('.') ? PARTS[p.key][0].split('.') : [p.chart, PARTS[p.key][0]];
     const [c2, k2] = PARTS[p.key][1].includes('.') ? PARTS[p.key][1].split('.') : [p.chart, PARTS[p.key][1]];
     params.push(c1, k1, c2, k2, a.number, b.number, b.number, a.number);
-    return `EXISTS (SELECT 1 FROM chart_values x JOIN chart_values y ON y.image_id = x.image_id WHERE x.image_id = i.id AND x.chart = ? AND x.position = ? AND y.chart = ? AND y.position = ? AND ((${partSql('x', a)} AND ${partSql('y', b)}) OR (${partSql('x', b)} AND ${partSql('y', a)})))`;
+    let sql = `EXISTS (SELECT 1 FROM chart_values x JOIN chart_values y ON y.image_id = x.image_id WHERE x.image_id = i.id AND x.chart = ? AND x.position = ? AND y.chart = ? AND y.position = ? AND ((${partSql('x', a)} AND ${partSql('y', b)}) OR (${partSql('x', b)} AND ${partSql('y', a)}))`;
+    if (made) { sql += ' AND EXISTS (SELECT 1 FROM chart_values z WHERE z.image_id = i.id AND z.chart = ? AND z.position = ? AND z.sum = ?)'; params.push(p.chart, p.key, made); }
+    return sql + ')';
   };
   return 'AND (' + targets.map(one).join(' OR ') + ')';
 }
-export function positionSql({ chart, position, number, ds = false, combo = null }, params) {
-  if (combo) return comboSql(chart, position, combo, params);
+export function positionSql({ chart, position, number, ds = false, combo = null, made = null }, params) {
+  if (combo) return comboSql(chart, position, combo, params, made);
   const col = ds ? 'ds' : 'sum';
   let where = `${col} = ?`; params.push(number);
   if (chart && chart !== '*') { where += ' AND chart = ?'; params.push(chart); }
@@ -296,38 +305,66 @@ export function parseCondition(pos, numText) {
   if (typeof pos !== 'string' || !pos || !num) return null;
   const [chart, position = '*'] = pos.split('.');
   if (!CHART_KEYS.has(chart) || !/^[A-Za-z*]+$/.test(position)) return null;
-  return { chart, position, number: num.number, ds: num.ds, combo: num.combo || null };
+  return { chart, position, number: num.number, ds: num.ds, combo: num.combo || null, made: num.made || null };
 }
 // Conditions already fixed, as the counts endpoint receives them: "essence.day:8,name.first:4+9".
 export const parseFixed = (text) => String(text || '').split(',').filter(Boolean).map((part) => { const i = part.indexOf(':'); return i < 0 ? null : parseCondition(part.slice(0, i), part.slice(i + 1)); }).filter(Boolean);
 // "12", "12/3", "3" -> { number, ds }. A number typed as "/3" means any number whose digit sum is 3.
-// Two numbers ("4+9", "4 and 9", "13+18") -> { combo: [part, part] }: a combination in a center or diamond.
+// Two numbers ("4+9", "4 and 9", "13+18") -> { combo: [part, part] }: a combination in a center or diamond; a one-digit
+// part is the digit sum, "!3" a plain 3 only. "12+5@35" (or "35 from 12 and 5") -> also { made: 35 }: the diamond the
+// two make must be 35/8, never 53/8. In the "from" wording a one-digit part is plain (the owner names what they mean).
 export function parseNumber(text) {
-  const t = String(text || '').trim();
+  let t = String(text || '').trim();
+  const from = /^(\d{1,3})(?:\/\d)?\s+from\s+(.+)$/i.exec(t);
+  if (from) {
+    const plain = (x) => x.replace(/^(\d)$/, '!$1');
+    const parts = from[2].split(/\s*(?:\+|&|,|\band\b)\s*/i).filter(Boolean).map(plain);
+    if (parts.length === 1) parts.push('/' + digitsOther(Number(from[1]), parts[0]));
+    if (parts.length !== 2 || parts.includes('/null')) return null;
+    t = `${parts[0]}+${parts[1]}@${from[1]}`;
+  }
+  let made = null;
+  const at = /^(.*?)\s*@\s*(\d{1,3})(?:\/\d)?$/.exec(t);
+  if (at) { t = at[1]; made = Number(at[2]); if (!/[+&,]|\band\b|\s/i.test(t)) return null; }
   const two = /^(\S+?)\s*(?:\+|&|,|and)\s*(\S+)$/i.exec(t) || /^(\d+)\s+(\d+)$/.exec(t);
   if (two) {
-    const parts = [two[1], two[2]].map((x) => { const n = parseNumber(x); return n && !n.combo ? (n.number < 10 && !n.ds ? { number: n.number, ds: true } : n) : null; });
-    return parts.every(Boolean) ? { number: parts[0].number, ds: parts[0].ds, combo: parts } : null;
+    const part = (x) => { const bang = /^!(\d)$/.exec(x); if (bang) return { number: Number(bang[1]), ds: false, plain: true }; const n = parseNumber(x); return n && !n.combo ? (n.number < 10 && !n.ds ? { number: n.number, ds: true } : n) : null; };
+    const parts = [two[1], two[2]].map(part);
+    if (!parts.every(Boolean)) return null;
+    if (made !== null && !makes(parts, made)) return null;
+    return { number: parts[0].number, ds: parts[0].ds, combo: parts.map(({ number, ds }) => ({ number, ds })), ...(made !== null ? { made } : {}) };
   }
+  if (made !== null) return null;
   const m = /^(\d{1,3})?\s*(?:\/\s*(\d))?$/.exec(t);
   if (!m || (!m[1] && !m[2])) return null;
   if (!m[1]) return { number: Number(m[2]), ds: true };
   return { number: Number(m[1]), ds: false };
+}
+const digitSum = (n) => { while (n > 9) n = String(n).split('').reduce((a, d) => a + Number(d), 0); return n; };
+// The digit sums a part can stand for: a plain or exact number its own, a "/5" part 5.
+const partDs = (p) => (p.ds ? p.number : digitSum(p.number));
+// Two parts side by side can make `made` only as ds(a) beside ds(b) or the other way round.
+const makes = ([a, b], made) => [partDs(a) * 10 + partDs(b), partDs(b) * 10 + partDs(a)].includes(made);
+// "35 from 12": the other part is whatever digit 35 has left once 12/3 took the 3.
+function digitsOther(made, partText) {
+  const p = parseNumber(partText.startsWith('!') ? partText.slice(1) : partText); if (!p || p.combo || made < 10 || made > 99) return null;
+  const d = p.ds ? p.number : digitSum(p.number), tens = Math.floor(made / 10), ones = made % 10;
+  return d === tens ? ones : d === ones ? tens : null;
 }
 
 // How many charts hold `number` in each position (the picker shows the count beside every position).
 // For a combination: how many charts have the two parts meeting in each center or diamond.
 // `fixed`: conditions already chosen; only charts meeting all of them are counted, so the picker shows
 // how far the next number narrows the search ("41 have day 8; 3 of them have first name 15").
-export function positionCounts(db, { number, ds = false, combo = null }, fixed = []) {
+export function positionCounts(db, { number, ds = false, combo = null, made = null }, fixed = []) {
   const fp = [];
   const within = fixed.length ? `AND image_id IN (SELECT i.id FROM images i WHERE i.kind = 'chart'${conditionsSql(fixed, fp)})` : '';
   const fixedTotal = fixed.length ? db.prepare(`SELECT count(*) AS c FROM images i WHERE i.kind = 'chart'${conditionsSql(fixed, [])}`).get(...fp).c : null;
   if (combo) {
-    const count = (chart, position) => { const params = []; const sql = positionSql({ chart, position, combo }, params); return db.prepare(`SELECT count(*) AS c FROM images i WHERE i.kind = 'chart' ${sql}${conditionsSql(fixed, params)}`).get(...params).c; };
+    const count = (chart, position) => { const params = []; const sql = positionSql({ chart, position, combo, made }, params); return db.prepare(`SELECT count(*) AS c FROM images i WHERE i.kind = 'chart' ${sql}${conditionsSql(fixed, params)}`).get(...params).c; };
     const counts = {}; for (const p of comboPositions('*')) counts[`${p.chart}.${p.key}`] = count(p.chart, p.key);
     const perChart = {}; for (const c of CHARTS) perChart[c.key] = count(c.key, '*');
-    return { number, ds, combo, counts, perChart, total: count('*', '*'), fixedTotal };
+    return { number, ds, combo, made, counts, perChart, total: count('*', '*'), fixedTotal };
   }
   const col = ds ? 'ds' : 'sum';
   const rows = db.prepare(`SELECT chart, position, count(DISTINCT image_id) AS c FROM chart_values WHERE ${col} = ? ${within} GROUP BY chart, position`).all(number, ...fp);
@@ -336,7 +373,7 @@ export function positionCounts(db, { number, ds = false, combo = null }, fixed =
   const total = db.prepare(`SELECT count(DISTINCT image_id) AS c FROM chart_values WHERE ${col} = ? ${within}`).get(number, ...fp).c;
   return { number, ds, counts, perChart, total, fixedTotal };
 }
-export const catalog = () => ({ charts: CHARTS, positions: POSITIONS.filter((p) => !p.hidden).map((p) => ({ chart: p.chart, key: p.key, label: p.label, combo: !!PARTS[p.key] })) });
+export const catalog = () => ({ charts: CHARTS, positions: POSITIONS.filter((p) => !p.hidden).map((p) => ({ chart: p.chart, key: p.key, label: p.label, combo: !!PARTS[p.key], made: MADE_BESIDE.has(p.key) })) });
 
 // --- the quality gate: do the owner's position tags agree with the computed charts? ---
 export function tagCheck(db) {
