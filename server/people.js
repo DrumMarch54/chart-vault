@@ -122,6 +122,21 @@ export function peopleKinds(db) {
   return { ...peopleStats(db), fields: list('field'), flags: list('flag'), kinds: list('kind'), deaths: list('death') };
 }
 
+// About cards worth the owner's look (owner 2026-11-20: "make it clear what's going on"): the birth date online differs
+// from the chart's, a note to check, or facts from memory only. One row per person, their newest chart to open.
+export function peopleToCheck(db) {
+  const rows = db.prepare(`SELECT p.id, p.record, max(c.image_id) AS image_id, count(c.image_id) AS charts
+    FROM people p JOIN person_charts c ON c.person_id = p.id GROUP BY p.id`).all();
+  const out = { date: [], note: [], memory: [] };
+  for (const r of rows) {
+    const rec = JSON.parse(r.record);
+    const item = { image_id: r.image_id, title: rec.title, born: rec.born, note: rec.note, checked: rec.checked };
+    if (rec.date_matches === false) out.date.push(item); else if (rec.note) out.note.push(item); else if (!rec.checked) out.memory.push(item);
+  }
+  for (const k of Object.keys(out)) out[k].sort((a, b) => a.title.localeCompare(b.title));
+  return out;
+}
+
 export function peopleStats(db) {
   const g = (sql) => db.prepare(sql).get().c;
   return {

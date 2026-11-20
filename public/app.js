@@ -1323,6 +1323,7 @@
     ['Quick Chart', '#/quick', 'draw a chart, name and date, numeroscope, pyramid'],
     ['All Tags', '#/tags', 'every tag, counts, tag list'],
     ['Kinds of People', '#/people', 'who each person is, musicians, rappers, criminals, athletes, careers, jobs, life events, prison, groups of people, about'],
+    ['About Cards to Check', '#/peoplecheck', 'research, facts, birth date differs, worth checking, from memory, wrong, fix, about card'],
     ['Names to Check', '#/names', 'who is this, guessed names, confirm a name, titles'],
     ['Possible Duplicates', '#/duplicates', 'same chart twice, same picture, same name and birth date, repeats'],
     ['Deleted Charts', '#/deleted', 'trash, put back, restore, undelete'],

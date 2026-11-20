@@ -27,7 +27,7 @@ import { meaningFor, countWith } from './meaning.js';
 import { findInDoc, docWindow, findNumberSection, findPhrase } from './doc.js';
 import { askAboutSpot, spotContext } from './spot-ask.js';
 import { wordsFor, wordInfo } from './words.js';
-import { personFor, peopleKinds, parseWho } from './people.js';
+import { personFor, peopleKinds, parseWho, peopleToCheck } from './people.js';
 
 const MAX_IMPORT = 50 * 1024 * 1024;
 
@@ -180,6 +180,7 @@ export function createApp(db, { log = console.log } = {}) {
     res.json({ person: personFor(db, img.id) });
   });
   app.get('/api/people/kinds', (req, res) => res.json(peopleKinds(db)));
+  app.get('/api/people/check', (req, res) => res.json(peopleToCheck(db)));
 
   // Who a chart is: the name under the thumbnail. The owner types or fixes it ("Who is this?"), or
   // confirms a seeded one; "Names to check" lists the ones still waiting on them.

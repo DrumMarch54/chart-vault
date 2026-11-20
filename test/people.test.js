@@ -96,6 +96,14 @@ test('What This Group Shares takes a kind of person as the group', async () => {
   assert.equal(viaApi.size, 4);
 });
 
+test('About Cards to Check lists what is not settled, never a friend', async () => {
+  const c = await api('/api/people/check');
+  assert.ok(c.memory.some((x) => x.title === 'Kyle Forgeard · NELK'), 'from memory only');
+  assert.equal(c.memory.some((x) => x.title === 'Lil Wayne'), false, 'a looked-up person is not listed');
+  assert.ok(c.date.every((x) => x.image_id) && c.note.every((x) => x.image_id));
+  assert.equal([...c.date, ...c.note, ...c.memory].some((x) => x.title === 'Some Neighbor'), false);
+});
+
 test('the snapshot counts them', () => {
   const s = snapshot(db, { scope: 'short' });
   assert.match(s, /WHO EACH PERSON IS/);

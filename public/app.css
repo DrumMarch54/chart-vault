@@ -1031,3 +1031,8 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .krow .kl { flex: 1; min-width: 0; font-weight: 600; }
 .krow .kn { color: var(--muted); font-variant-numeric: tabular-nums; }
 .krow .kchev { color: var(--muted); font-size: 18px; }
+.abadge { align-self: flex-start; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 10px; }
+.abadge.ok { background: var(--who); }
+.abadge.mem { background: var(--warn-bg); }
+.krow.tall { min-height: 56px; padding-top: 8px; padding-bottom: 8px; }
+.krow .kwhy { display: block; font-weight: 400; font-size: 13px; color: var(--muted); line-height: 1.3; margin-top: 2px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
