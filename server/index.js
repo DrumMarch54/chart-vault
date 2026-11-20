@@ -6,6 +6,7 @@ import { ensureThumbs, cleanTempFiles } from './storage.js';
 import { seedInputs, seedQuickInputs, loadSeedFile } from './positions.js';
 import { seedTitles, loadTitleSeed } from './titles.js';
 
+import { seedPeople, loadPeopleSeed } from './people.js';
 import { remember } from './logbuf.js';
 import { COMMIT } from './build.js';
 
@@ -24,6 +25,9 @@ catch (err) { log(`position search seed failed: ${err.message}`); }
 try { const r = seedQuickInputs(db); if (r.added) log(`position search: gave ${r.added} Quick Chart save(s) their name and date from the tag and filename`); } catch (err) { log(`quick chart inputs: ${err.message}`); }
 try { const r = seedTitles(db, loadTitleSeed()); if (r.added) log(`names: loaded ${r.added} chart name(s) from the repo (${r.skipped} already there, ${r.unknown} not in this vault)`); }
 catch (err) { log(`chart name seed failed: ${err.message}`); }
+// Who each person is (server/chart-people.json): researched facts, added and refreshed from the repo.
+try { const r = seedPeople(db, loadPeopleSeed(), { build: COMMIT }); if (r.added || r.updated) log(`people: ${r.added} added, ${r.updated} refreshed, ${r.same} unchanged`); }
+catch (err) { log(`people seed failed: ${err.message}`); }
 const app = createApp(db, { log });
 
 app.listen(config.port, config.host, () => {

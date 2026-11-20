@@ -72,6 +72,16 @@ const { seedTitles } = await import('../server/titles.js');
 const fakeNames = ['Alex Jones', 'Jimmy Rowe', 'Kanye West', 'Erica', 'Patrick Crusius', 'Josh Provencio'];
 seedTitles(db, names.map((filename, i) => (i % 7 === 6 ? null : { filename, title: i % 5 === 4 ? '' : i % 6 === 3 ? 'Erica' : fakeNames[i % fakeNames.length], source: 'known', check: i % 6 === 3 || i % 5 === 4 })).filter(Boolean));
 
+// Who each person is: a few made-up records for the fake names, so the About card and Kinds of People can be looked at.
+const { seedPeople } = await import('../server/people.js');
+seedPeople(db, [
+  { title: 'Alex Jones', kind: 'person', known_as: 'Alex Jones', summary: 'American radio host and founder of a media company, known for conspiracy theories.', fields: ['commentary', 'conspiracy', 'podcast'], roles: ['radio host'], country: 'US', born: '1974-02-11', date_matches: true,
+    events: [{ year: 1999, what: 'Founded his media company' }, { year: 2022, what: 'Ordered to pay about $1.5 billion in defamation cases' }], flags: ['founder', 'bankruptcy', 'cancelled_or_banned', 'major_scandal'], fame: 4, checked: true, sources: ['https://en.wikipedia.org/wiki/Alex_Jones'] },
+  { title: 'Kanye West', kind: 'person', summary: 'American rapper, producer and fashion designer.', fields: ['rapper', 'music', 'fashion'], roles: ['rapper', 'producer'], country: 'US', born: '1977-06-08', date_matches: false, note: 'Sources give 8 June 1977.', events: [{ year: 2004, what: 'Released The College Dropout' }], flags: ['major_award', 'billionaire', 'major_scandal'], fame: 5, checked: false, sources: [] },
+  { title: 'Patrick Crusius', kind: 'person', summary: 'Gunman who killed 23 people at a store in El Paso in 2019.', fields: ['mass_violence', 'crime'], roles: ['mass shooter'], country: 'US', events: [{ year: 2019, what: 'El Paso shooting' }, { year: 2023, what: 'Sentenced to 90 life terms' }], flags: ['convicted_crime', 'violent_crime', 'killed_someone', 'prison'], fame: 3, checked: true, sources: ['https://en.wikipedia.org/wiki/2019_El_Paso_shooting'] },
+  { title: 'Jimmy Rowe', kind: 'person', summary: 'American YouTuber.', fields: ['youtube'], roles: ['youtuber'], country: 'US', flags: [], fame: 2, checked: false, sources: [] },
+], { build: 'dev' });
+
 // A FAKE AI model: the Reading section, Ask the Vault and the AI settings can be looked at without spending
 // a cent. A fake key is stored in the throwaway data folder; answers arrive after a second, like the real thing.
 const { useClientFactory, setAiSettings } = await import('../server/ai.js');

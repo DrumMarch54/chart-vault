@@ -177,6 +177,7 @@
   // steps back the same way, so the history never piles up; anything asked for right after (a screen change)
   // waits for that step through afterOverlayClosed.
   let overlays = []; // [{ el, close }], oldest first
+  let peopleUi = null; // set once public/people.js is installed (bottom of this file)
   let meaningUi = null; // set once public/meaning.js is installed (bottom of this file)
   let lookupUi = null; // set once public/lookup.js is installed (bottom of this file)
   let closingAll = false, pendingBack = 0, afterBack = [];
@@ -493,9 +494,11 @@
     const drawn = query.get('drawn') === '0' ? false : query.get('drawn') === '1' ? true : null;
     // ?pattern=hsd: a shape of the whole chart (server/queries.js PATTERNS), from Search by Position.
     const pattern = PATTERN_NAMES[query.get('pattern')] ? query.get('pattern') : '';
+    // ?who=field:music: a kind of person (public/people.js, server/people.js), from Kinds of People or a chart's About card.
+    const who = peopleUi ? query.getAll('who').filter(Boolean) : [];
     const setName = (n) => go('#/?' + new URLSearchParams({ name: n }));
     const setTag = (t, k = kind) => { const p = new URLSearchParams(); if (k === 'archetype') p.set('kind', 'archetype'); if (t) p.set('tag', t); go('#/' + (p.toString() ? '?' + p : '')); };
-    const home = !tag && !position && !name && kind === 'chart' && drawn === null && !pattern;
+    const home = !tag && !position && !name && kind === 'chart' && drawn === null && !pattern && !who.length;
     const $quickIcon = h('a', { class: 'btn iconbtn gear', href: '#/quick', 'aria-label': 'Quick Chart', title: 'Quick Chart' }, '◈');
     const $gear = h('a', { class: 'btn iconbtn gear', href: '#/settings', 'aria-label': 'Settings', title: 'Settings' }, '⚙');
     const $input = h('input', { type: 'search', placeholder: 'Search names, tags, numbers', autocomplete: 'off', enterkeyhint: 'search' });
@@ -511,6 +514,7 @@
     const $filters = kind === 'archetype' ? h('div', { class: 'filters' }, chip({ name: 'Archetype Pics', kind: 'name' }, { active: true, removable: true, onclick: () => setTag(tag, 'chart') }))
       : drawn === false ? h('div', { class: 'filters' }, chip({ name: 'Still the screenshot', kind: 'name' }, { active: true, removable: true, onclick: () => setTag('', 'chart') }))
       : pattern ? h('div', { class: 'filters' }, chip({ name: PATTERN_NAMES[pattern], kind: 'name' }, { active: true, removable: true, onclick: () => setTag('', 'chart') }))
+      : who.length ? peopleUi.filters(who)
       // One chip per condition: tap it to change it on the combination screen (every condition kept), tap × to drop it.
       // "+ Another number" opens the combination screen with every condition kept and a new row to fill.
       : position ? h('div', { class: 'filters' },
@@ -527,7 +531,7 @@
     const $bar = h('div', { class: 'gridbar' }, $summary, size.node);
     const $sentinel = h('div', { class: 'sentinel' });
     // A tag's charts against the rest of the vault (owner 2026-11-20); shown once the tag has three charts or more.
-    const $group = tag && kind === 'chart' ? h('a', { class: 'btn btn-block groupbtn hidden', href: '#/group?' + new URLSearchParams({ tag }), onclick: () => count('grid.group') }, 'What This Group Shares') : null;
+    const $group = (tag || who.length) && kind === 'chart' ? h('a', { class: 'btn btn-block groupbtn hidden', href: '#/group?' + (who.length ? new URLSearchParams(who.map((w) => ['who', w])) : new URLSearchParams({ tag })), onclick: () => count('grid.group') }, 'What This Group Shares') : null;
     const $recent = h('div', { class: 'recent hidden' });
     // The home screen is the search box and the way into the quick chart; the recently opened charts sit
     // below. The recent searches and the way to every tag drop down from the search box when it is tapped.
@@ -574,7 +578,7 @@
     if (home) return;
 
     let offset = 0, total = null, loading = false, done = false;
-    const params = () => { const p = new URLSearchParams({ limit: 60, offset, kind }); if (tag) p.append('tag', tag); if (position) for (const c of conds) { p.append('pos', c.pos); p.append('num', c.num); } if (name) p.set('name', name); if (drawn !== null) p.set('drawn', drawn ? '1' : '0'); if (pattern) p.set('pattern', pattern); return p; };
+    const params = () => { const p = new URLSearchParams({ limit: 60, offset, kind }); if (tag) p.append('tag', tag); if (position) for (const c of conds) { p.append('pos', c.pos); p.append('num', c.num); } if (name) p.set('name', name); if (drawn !== null) p.set('drawn', drawn ? '1' : '0'); if (pattern) p.set('pattern', pattern); for (const w of who) p.append('who', w); return p; };
     async function more() {
       if (loading || done) return; loading = true; $sentinel.textContent = 'Loading…';
       try {
@@ -584,7 +588,7 @@
         for (const img of r.items) $grid.append(cell(img));
         done = offset >= total || r.items.length === 0;
         const noun = kind === 'archetype' ? 'archetype pic' : 'chart';
-        $summary.textContent = drawn === false ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} still showing the screenshot` : pattern ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with a ${PATTERN_NAMES[pattern]}` : position ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with ${searchLabel(conds)}${mostFirst ? ', most first' : ''}` : name ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} named ${name}` : `${fmtN(total)} ${noun}${total === 1 ? '' : 's'}${tag ? '' : ', newest first'}`;
+        $summary.textContent = drawn === false ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} still showing the screenshot` : pattern ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with a ${PATTERN_NAMES[pattern]}` : position ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} with ${searchLabel(conds)}${mostFirst ? ', most first' : ''}` : name ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'} named ${name}` : who.length ? `${fmtN(total)} ${noun}${total === 1 ? '' : 's'}: ${who.map(peopleUi.label).join(' + ')}` : `${fmtN(total)} ${noun}${total === 1 ? '' : 's'}${tag ? '' : ', newest first'}`;
         $sentinel.textContent = done ? (total === 0 ? (drawn === false ? 'Every chart is drawn by the app now.' : pattern ? 'No chart has this. Only charts whose birth date has been read can be found this way.' : kind === 'archetype' && !tag ? 'No archetype pics yet. Add them on the Upload page.' : position ? (conds.length > 1 ? 'No chart has all of these. Remove one with its × to widen the search.' : 'No chart has that number there. Only charts whose name and date have been read can be found this way.') : `No ${noun}s match.`) : '') : '';
       } catch (err) { $sentinel.textContent = err.message; }
       loading = false;
@@ -980,6 +984,7 @@
         h('div', { class: 'addtag row', style: 'flex-wrap:nowrap' }, $tagInput, h('button', { type: 'button', class: 'btn-primary', onclick: () => { const v = $tagInput.value.trim(); if (v) { count('viewer.add_tag'); addTag(v); $tagInput.value = ''; } } }, 'Add'), $sugg),
         ...(codeTags.length ? folded(`${codeTags.length} position and number tag${codeTags.length === 1 ? '' : 's'}`, h('div', { class: 'chips' }, ...codeTags.map(tagBtn))) : []),
         $numbers,
+        img.kind === 'chart' && peopleUi ? peopleUi.section(img) : null,
         img.kind === 'chart' && archUi ? archUi.section(img) : null,
         img.kind === 'chart' && readingUi ? readingUi.section(img, { showNumber }) : null,
         ...folded('File details', h('div', { class: 'small muted' },
@@ -1308,6 +1313,7 @@
   const SETTINGS = [
     ['Quick Chart', '#/quick', 'draw a chart, name and date, numeroscope, pyramid'],
     ['All Tags', '#/tags', 'every tag, counts, tag list'],
+    ['Kinds of People', '#/people', 'who each person is, musicians, rappers, criminals, athletes, careers, jobs, life events, prison, groups of people, about'],
     ['Names to Check', '#/names', 'who is this, guessed names, confirm a name, titles'],
     ['Possible Duplicates', '#/duplicates', 'same chart twice, same picture, same name and birth date, repeats'],
     ['Deleted Charts', '#/deleted', 'trash, put back, restore, undelete'],
@@ -1384,12 +1390,13 @@
   // far more often in the group. A card = the charts that share it, what they share (tap = the position search),
   // how sure it is, and who. Counting only: no meanings, no AI.
   routes.group = async function groupView(_, query) {
-    const tag = query.get('tag') || '';
-    if (!tag) return swap('#/');
+    const tag = query.get('tag') || '', kinds = query.getAll('who').filter(Boolean);
+    if (!tag && !kinds.length) return swap('#/');
+    const groupQ = kinds.length ? new URLSearchParams(kinds.map((w) => ['who', w])) : new URLSearchParams({ tag });
     const $body = h('div', { class: 'stack' }, h('p', { class: 'muted' }, 'Counting every position…'));
-    render(h('div', { class: 'screen stack qscreen' }, pageTop('What This Group Shares', '#/?' + new URLSearchParams({ tag })), $body));
+    render(h('div', { class: 'screen stack qscreen' }, pageTop('What This Group Shares', '#/?' + groupQ), $body));
     let d;
-    try { d = await api('/api/group?' + new URLSearchParams({ tag })); } catch (err) { fill($body, h('p', { class: 'err' }, err.message)); return; }
+    try { d = await api('/api/group?' + groupQ); } catch (err) { fill($body, h('p', { class: 'err' }, err.message)); return; }
     const pct = (a, of) => (of ? Math.round((a / of) * 100) : 0);
     const bars = (x) => h('div', { class: 'gbars' },
       h('div', { class: 'gline' }, h('span', { class: 'gbar' }, h('i', { style: `width:${Math.max(pct(x.in_group, x.group_of), 2)}%` })), h('span', { class: 'gnum' }, `${x.in_group} of ${x.group_of} here`)),
@@ -2456,7 +2463,7 @@
     document.body.append(bg); trackOverlay(bg, close);
     return close;
   };
-  const toolsUi = window.Tools ? window.Tools.install({ routes, h, sv, fill, render, count, toast, api, go, numeroscopeSvg, singleNameSvg, openWord, rowsTable, yearRowLabel, meaningSheet, sheet: wordsSheet, overlay: trackOverlay, overlayGone: untrackOverlay, setCleanup: (fn) => { viewerCleanup = fn; } }) : null;
+  const toolsUi = window.Tools ? window.Tools.install({ extraTools: () => (peopleUi ? [peopleUi.homeButton()] : []), routes, h, sv, fill, render, count, toast, api, go, numeroscopeSvg, singleNameSvg, openWord, rowsTable, yearRowLabel, meaningSheet, sheet: wordsSheet, overlay: trackOverlay, overlayGone: untrackOverlay, setCleanup: (fn) => { viewerCleanup = fn; } }) : null;
   if (toolsUi) Object.assign(USAGE_LABELS, toolsUi.USAGE_LABELS);
   // Reading a chart (facts, AI reading, questions), Ask the Vault and the AI settings live in reading.js.
   const readingUi = window.Reading ? window.Reading.install({ routes, h, fill, api, toast, count, go, render, pageTop }) : null;
@@ -2468,6 +2475,8 @@
   // Look Up Someone (say a name, the web finds the birth name and date, the chart is drawn): lookup.js.
   lookupUi = window.Lookup ? window.Lookup.install({ routes, h, fill, api, toast, count, go, render, pageTop, drawnChart, chartPng, holdButton }) : null;
   if (lookupUi) Object.assign(USAGE_LABELS, lookupUi.USAGE_LABELS);
+  peopleUi = window.People ? window.People.install({ routes, h, fill, api, count, go, render, pageTop, fmtN }) : null;
+  if (peopleUi) Object.assign(USAGE_LABELS, peopleUi.USAGE_LABELS);
   meaningUi = window.Meaning ? window.Meaning.install({ h, fill, api, count, go, positionHash, overlay: trackOverlay, overlayGone: untrackOverlay }) : null;
 
   // ---------- start ----------

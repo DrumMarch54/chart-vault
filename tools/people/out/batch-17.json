@@ -1,0 +1,1068 @@
+[
+ {
+  "title": "Ismail Seoudi",
+  "ids": [
+   110
+  ],
+  "kind": "unknown",
+  "checked": false,
+  "sources": [],
+  "note": "One search found no public figure with this name and date."
+ },
+ {
+  "title": "Airrack",
+  "ids": [
+   109
+  ],
+  "kind": "person",
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2019,
+    "what": "Launched his Airrack YouTube channel (per Wikipedia)"
+   },
+   {
+    "year": 2024,
+    "what": "His creator film-school startup was reported sold to VidIQ"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Airrack",
+   "https://www.famousbirthdays.com/people/airrack.html"
+  ],
+  "note": "",
+  "known_as": "Airrack",
+  "summary": "American YouTuber known for challenge, prank and stunt videos with a very large subscriber count.",
+  "fields": [
+   "youtube",
+   "influencer"
+  ],
+  "roles": [
+   "youtuber",
+   "vlogger"
+  ],
+  "country": "US",
+  "born": "1997-01-12",
+  "date_matches": true,
+  "fame": 3
+ },
+ {
+  "title": "Steiny · NELK",
+  "ids": [
+   108
+  ],
+  "kind": "person",
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [],
+  "flags": [],
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.com/wiki/NELK",
+   "https://www.tubefilter.com/tag/steiny/"
+  ],
+  "note": "No source found for his birth date; the batch date 1995-01-01 could not be confirmed (it looks like a placeholder).",
+  "known_as": "Steiny",
+  "summary": "Member of the NELK group and co-host of the Full Send Podcast, from Denver, Colorado.",
+  "fields": [
+   "podcast",
+   "youtube",
+   "influencer"
+  ],
+  "roles": [
+   "podcast host",
+   "youtuber"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "fame": 3
+ },
+ {
+  "title": "Garrett Garcia · Overboard",
+  "ids": [
+   106
+  ],
+  "kind": "person",
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [],
+  "flags": [],
+  "checked": true,
+  "sources": [
+   "https://www.famousbirthdays.com/people/garrett-garcia.html"
+  ],
+  "note": "Only one source (Famous Birthdays); the link to \"Overboard\" in the title was not confirmed by the search.",
+  "known_as": "Garrett Garcia",
+  "summary": "YouTube personality from California, listed by Famous Birthdays with this birth date.",
+  "fields": [
+   "youtube"
+  ],
+  "roles": [
+   "youtuber"
+  ],
+  "country": "US",
+  "born": "1992-02-13",
+  "date_matches": true,
+  "fame": 2
+ },
+ {
+  "title": "Joshua Block · World of T-Shirts",
+  "ids": [
+   105
+  ],
+  "kind": "person",
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2024,
+    "what": "Arrested by the NYPD for allegedly attempting subway surfing; released and fined"
+   },
+   {
+    "year": 2025,
+    "what": "Trip to Dubai drew wide online attention; reported to have been sent back"
+   }
+  ],
+  "flags": [],
+  "checked": true,
+  "sources": [
+   "https://knowyourmeme.com/memes/people/world-of-t-shirts-joshua-block",
+   "https://www.thedailybeast.com/the-voyeuristic-obsession-with-binge-drinking-tiktoker-worldoftshirts"
+  ],
+  "note": "Birth date comes from Know Your Meme, which credits fans on his subreddit; not from an official source.",
+  "known_as": "World of T-Shirts",
+  "summary": "New York City TikTok creator and self-styled tour guide known as World of T-Shirts.",
+  "fields": [
+   "influencer",
+   "youtube"
+  ],
+  "roles": [
+   "tiktok creator",
+   "content creator"
+  ],
+  "country": "US",
+  "born": "2001-08-07",
+  "date_matches": true,
+  "fame": 3
+ },
+ {
+  "title": "Fedsmoker",
+  "ids": [
+   104
+  ],
+  "kind": "person",
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2020,
+    "what": "Reported dead by several outlets; none could independently verify it"
+   }
+  ],
+  "flags": [],
+  "checked": true,
+  "sources": [
+   "https://monstersandcritics.com/celebrity/conald-fedsmoker-petersen-reportedly-dead",
+   "https://dailydot.com/?p=706295"
+  ],
+  "note": "Death is reported but unverified, so died is left empty. Birth date not found in any source; the Daily Dot gave his age as 51 at the reported death, which does not fit a 1967 birth.",
+  "known_as": "Fedsmoker",
+  "summary": "Internet personality known for videos confronting and ranting about police, and for lighting his hair on fire.",
+  "fields": [
+   "youtube",
+   "other"
+  ],
+  "roles": [
+   "internet personality"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "fame": 2
+ },
+ {
+  "title": "Justin Bieber",
+  "ids": [
+   364
+  ],
+  "kind": "person",
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2009,
+    "what": "Debut release My World made him a teen star"
+   },
+   {
+    "year": 2010,
+    "what": "Single \"Baby\" became a worldwide hit"
+   },
+   {
+    "year": 2014,
+    "what": "Arrested in Miami Beach; later pleaded guilty to careless driving and resisting arrest"
+   },
+   {
+    "year": 2016,
+    "what": "Won his first Grammy Award"
+   },
+   {
+    "year": 2018,
+    "what": "Married Hailey Baldwin"
+   },
+   {
+    "year": 2025,
+    "what": "Released the album Swag"
+   }
+  ],
+  "flags": [
+   "child_star",
+   "major_award",
+   "charged_crime",
+   "convicted_crime"
+  ],
+  "checked": false,
+  "sources": [],
+  "note": "",
+  "known_as": "Justin Bieber",
+  "summary": "Canadian pop singer discovered on YouTube as a teenager who became one of the best-selling music artists in the world.",
+  "fields": [
+   "music"
+  ],
+  "roles": [
+   "singer",
+   "songwriter"
+  ],
+  "country": "CA",
+  "born": "1994-03-01",
+  "date_matches": true,
+  "fame": 5
+ },
+ {
+  "title": "Tyler Phouthavong",
+  "ids": [
+   102
+  ],
+  "kind": "unknown",
+  "checked": false,
+  "sources": [],
+  "note": "Web search budget ran out before this one could be searched; not known to me as a public figure. The batch date 2004-01-01 looks like a placeholder."
+ },
+ {
+  "title": "Johannes Ehvass",
+  "ids": [
+   101
+  ],
+  "kind": "person",
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [],
+  "flags": [],
+  "checked": false,
+  "sources": [],
+  "note": "Two web searches returned nothing on him; identified from the course books in this repo (knowledge/raw/biz-superdates-cosmic-calendar.md, biz-marketing-numerology.md). Birth date and country (Denmark, from memory) not confirmed.",
+  "known_as": "Johannes Ehvass",
+  "summary": "Numerologist and author of the Numerologist PRO books, including Superdates Cosmic Calendar and Marketing Numerology.",
+  "fields": [
+   "spirituality",
+   "writing",
+   "business"
+  ],
+  "roles": [
+   "numerologist",
+   "author"
+  ],
+  "country": "DK",
+  "born": null,
+  "date_matches": null,
+  "fame": 2
+ },
+ {
+  "title": "Mikko Saari",
+  "ids": [
+   100
+  ],
+  "kind": "unknown",
+  "checked": false,
+  "sources": [],
+  "note": "One search found several people named Mikko Saari, none with this full name and date."
+ },
+ {
+  "title": "Rulon Jeffs",
+  "ids": [
+   99
+  ],
+  "kind": "person",
+  "died": "2002-09-08",
+  "death_cause": "natural",
+  "age_at_death": 92,
+  "events": [
+   {
+    "year": 1986,
+    "what": "Became president of the FLDS Church"
+   },
+   {
+    "year": 2002,
+    "what": "Died; his son Warren Jeffs took over the church"
+   }
+  ],
+  "flags": [
+   "religious_leader"
+  ],
+  "checked": false,
+  "sources": [],
+  "note": "",
+  "known_as": "Rulon Jeffs",
+  "summary": "President and prophet of the polygamist Fundamentalist Church of Jesus Christ of Latter-Day Saints from 1986 until his death; father of Warren Jeffs.",
+  "fields": [
+   "religion",
+   "cult"
+  ],
+  "roles": [
+   "religious leader",
+   "church president"
+  ],
+  "country": "US",
+  "born": "1909-12-06",
+  "date_matches": true,
+  "fame": 3
+ },
+ {
+  "title": "Warren Jeffs",
+  "ids": [
+   98
+  ],
+  "kind": "person",
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2002,
+    "what": "Became president of the FLDS Church after his father died"
+   },
+   {
+    "year": 2006,
+    "what": "Placed on the FBI's Ten Most Wanted list and arrested in Nevada"
+   },
+   {
+    "year": 2007,
+    "what": "Convicted in Utah as an accomplice to rape (overturned in 2010)"
+   },
+   {
+    "year": 2011,
+    "what": "Convicted in Texas of sexual assault of two children; sentenced to life plus 20 years"
+   }
+  ],
+  "flags": [
+   "convicted_crime",
+   "violent_crime",
+   "prison",
+   "religious_leader",
+   "cult_leader",
+   "major_scandal"
+  ],
+  "checked": false,
+  "sources": [],
+  "note": "",
+  "known_as": "Warren Jeffs",
+  "summary": "Leader of the polygamist FLDS Church, serving life in a Texas prison for sexually assaulting girls he took as wives.",
+  "fields": [
+   "cult",
+   "religion",
+   "crime"
+  ],
+  "roles": [
+   "religious leader",
+   "church president"
+  ],
+  "country": "US",
+  "born": "1955-12-03",
+  "date_matches": true,
+  "fame": 4
+ },
+ {
+  "title": "Bobby Lee",
+  "ids": [
+   97
+  ],
+  "kind": "person",
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2001,
+    "what": "Joined the cast of MADtv"
+   },
+   {
+    "year": 2015,
+    "what": "Started the TigerBelly podcast"
+   },
+   {
+    "year": 2020,
+    "what": "Started the Bad Friends podcast with Andrew Santino"
+   }
+  ],
+  "flags": [],
+  "checked": false,
+  "sources": [],
+  "note": "",
+  "known_as": "Bobby Lee",
+  "summary": "American stand-up comedian and actor, a MADtv cast member and host of the TigerBelly and Bad Friends podcasts.",
+  "fields": [
+   "comedy",
+   "podcast",
+   "acting"
+  ],
+  "roles": [
+   "comedian",
+   "actor",
+   "podcast host"
+  ],
+  "country": "US",
+  "born": "1971-09-17",
+  "date_matches": true,
+  "fame": 4
+ },
+ {
+  "title": "Tristan Tate",
+  "ids": [
+   96
+  ],
+  "kind": "person",
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2011,
+    "what": "Appeared on the British reality show Shipwrecked"
+   },
+   {
+    "year": 2022,
+    "what": "Arrested in Romania with his brother Andrew"
+   },
+   {
+    "year": 2023,
+    "what": "Charged in Romania with human trafficking and forming an organized crime group; denies it"
+   },
+   {
+    "year": 2025,
+    "what": "Travel ban lifted; flew from Romania to the United States"
+   }
+  ],
+  "flags": [
+   "charged_crime"
+  ],
+  "checked": false,
+  "sources": [],
+  "note": "Not searched (search budget ran out): the state of his cases in 2025-2026 should be re-checked.",
+  "known_as": "Tristan Tate",
+  "summary": "Former kickboxer and online personality, younger brother of Andrew Tate, charged with him in Romania with human trafficking.",
+  "fields": [
+   "influencer",
+   "combat_sports",
+   "business"
+  ],
+  "roles": [
+   "online personality",
+   "kickboxer"
+  ],
+  "country": "US",
+  "born": "1988-07-15",
+  "date_matches": true,
+  "fame": 4
+ },
+ {
+  "title": "Sketch",
+  "ids": [
+   95
+  ],
+  "kind": "person",
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2024,
+    "what": "Rose to wide fame as his catchphrase went viral, including among pro athletes"
+   }
+  ],
+  "flags": [],
+  "checked": false,
+  "sources": [],
+  "note": "Web search budget ran out before this one could be searched; facts are from memory.",
+  "known_as": "Sketch",
+  "summary": "American Twitch streamer and YouTuber known for Madden streams and the catchphrase \"What's up, brother?\"",
+  "fields": [
+   "streaming",
+   "youtube"
+  ],
+  "roles": [
+   "twitch streamer",
+   "youtuber"
+  ],
+  "country": "US",
+  "born": "1998-11-19",
+  "date_matches": true,
+  "fame": 3
+ },
+ {
+  "title": "Andrew Callaghan · Channel 5",
+  "ids": [
+   94
+  ],
+  "kind": "person",
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2019,
+    "what": "Started the web series All Gas No Brakes"
+   },
+   {
+    "year": 2021,
+    "what": "Launched Channel 5 after leaving All Gas No Brakes"
+   },
+   {
+    "year": 2022,
+    "what": "HBO released his documentary This Place Rules"
+   },
+   {
+    "year": 2023,
+    "what": "Accused of sexual misconduct by several women; posted an apology"
+   },
+   {
+    "year": 2024,
+    "what": "Released the documentary Dear Kelly"
+   }
+  ],
+  "flags": [
+   "major_scandal"
+  ],
+  "checked": false,
+  "sources": [],
+  "note": "",
+  "known_as": "Andrew Callaghan",
+  "summary": "American journalist and YouTuber behind the street-interview shows All Gas No Brakes and Channel 5.",
+  "fields": [
+   "journalism",
+   "youtube",
+   "film_tv"
+  ],
+  "roles": [
+   "journalist",
+   "youtuber",
+   "documentary filmmaker"
+  ],
+  "country": "US",
+  "born": "1997-04-23",
+  "date_matches": true,
+  "fame": 3
+ },
+ {
+  "title": "Pazuzu Algarad",
+  "ids": [
+   93,
+   92
+  ],
+  "kind": "person",
+  "died": "2015-10-28",
+  "death_cause": "suicide",
+  "age_at_death": 37,
+  "events": [
+   {
+    "year": 2002,
+    "what": "Legally changed his name from John Alexander Lawson"
+   },
+   {
+    "year": 2014,
+    "what": "Arrested and charged with murder after two bodies were found at his house"
+   },
+   {
+    "year": 2015,
+    "what": "Died by suicide in Central Prison, Raleigh, before trial"
+   }
+  ],
+  "flags": [
+   "charged_crime",
+   "violent_crime",
+   "suicide",
+   "died_young"
+  ],
+  "checked": false,
+  "sources": [],
+  "note": "Web search budget ran out before this one could be searched; facts are from memory. He died before trial, so the murder charges were never proven in court.",
+  "known_as": "Pazuzu Algarad",
+  "summary": "Self-proclaimed Satanist in Clemmons, North Carolina, charged with murder after two bodies were found buried in his backyard.",
+  "fields": [
+   "crime",
+   "occult"
+  ],
+  "roles": [
+   "murder suspect"
+  ],
+  "country": "US",
+  "born": "1978-08-12",
+  "date_matches": true,
+  "fame": 3
+ },
+ {
+  "title": "Jared Leto",
+  "ids": [
+   91
+  ],
+  "kind": "person",
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1994,
+    "what": "Broke through in the TV series My So-Called Life"
+   },
+   {
+    "year": 1998,
+    "what": "Formed the band Thirty Seconds to Mars"
+   },
+   {
+    "year": 2000,
+    "what": "Starred in Requiem for a Dream"
+   },
+   {
+    "year": 2014,
+    "what": "Won the Academy Award for Best Supporting Actor for Dallas Buyers Club"
+   },
+   {
+    "year": 2025,
+    "what": "Accused of sexual misconduct by nine women in an Air Mail report; he denied it"
+   }
+  ],
+  "flags": [
+   "major_award"
+  ],
+  "checked": false,
+  "sources": [],
+  "note": "",
+  "known_as": "Jared Leto",
+  "summary": "American actor and lead singer of Thirty Seconds to Mars; won an Oscar for Dallas Buyers Club.",
+  "fields": [
+   "acting",
+   "music"
+  ],
+  "roles": [
+   "actor",
+   "singer"
+  ],
+  "country": "US",
+  "born": "1971-12-26",
+  "date_matches": true,
+  "fame": 5
+ },
+ {
+  "title": "Whoopi Goldberg",
+  "ids": [
+   90
+  ],
+  "kind": "person",
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1985,
+    "what": "Film breakthrough in The Color Purple"
+   },
+   {
+    "year": 1991,
+    "what": "Won the Academy Award for Best Supporting Actress for Ghost"
+   },
+   {
+    "year": 2002,
+    "what": "Completed the EGOT with a Tony Award"
+   },
+   {
+    "year": 2007,
+    "what": "Became moderator of The View"
+   },
+   {
+    "year": 2022,
+    "what": "Suspended from The View for two weeks over remarks about the Holocaust"
+   }
+  ],
+  "flags": [
+   "major_award"
+  ],
+  "checked": false,
+  "sources": [],
+  "note": "",
+  "known_as": "Whoopi Goldberg",
+  "summary": "American actress, comedian and co-host of The View; one of the few people to win an Emmy, Grammy, Oscar and Tony.",
+  "fields": [
+   "acting",
+   "comedy",
+   "film_tv"
+  ],
+  "roles": [
+   "actress",
+   "comedian",
+   "talk show host"
+  ],
+  "country": "US",
+  "born": "1955-11-13",
+  "date_matches": true,
+  "fame": 5
+ },
+ {
+  "title": "Bradley Martyn",
+  "ids": [
+   89
+  ],
+  "kind": "person",
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2014,
+    "what": "Started his fitness YouTube channel"
+   },
+   {
+    "year": 2017,
+    "what": "Opened the Zoo Culture gym in Los Angeles"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "checked": false,
+  "sources": [],
+  "note": "",
+  "known_as": "Bradley Martyn",
+  "summary": "American fitness YouTuber and bodybuilder, founder of the Zoo Culture gym and host of the Raw Talk podcast.",
+  "fields": [
+   "youtube",
+   "influencer",
+   "podcast"
+  ],
+  "roles": [
+   "fitness youtuber",
+   "bodybuilder",
+   "podcast host"
+  ],
+  "country": "US",
+  "born": "1989-05-22",
+  "date_matches": true,
+  "fame": 3
+ },
+ {
+  "title": "Kyle Forgeard · NELK",
+  "ids": [
+   88
+  ],
+  "kind": "person",
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2010,
+    "what": "Co-founded NELK"
+   },
+   {
+    "year": 2021,
+    "what": "Launched Happy Dad hard seltzer and the Full Send Podcast"
+   },
+   {
+    "year": 2022,
+    "what": "Full Send Podcast interviewed Donald Trump; YouTube removed the episode"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "checked": false,
+  "sources": [],
+  "note": "",
+  "known_as": "Kyle Forgeard",
+  "summary": "Canadian YouTuber, co-founder of the prank group NELK, the Full Send brand and Happy Dad hard seltzer.",
+  "fields": [
+   "youtube",
+   "business",
+   "podcast"
+  ],
+  "roles": [
+   "youtuber",
+   "entrepreneur",
+   "podcast host"
+  ],
+  "country": "CA",
+  "born": "1994-07-12",
+  "date_matches": true,
+  "fame": 3
+ },
+ {
+  "title": "Joe Dinas",
+  "ids": [
+   87
+  ],
+  "kind": "unknown",
+  "checked": false,
+  "sources": [],
+  "note": "Web search budget ran out before this one could be searched; not known to me as a public figure. Title is \"Joe Dinas\" but the typed name is Joseph Clyde Kennedy."
+ },
+ {
+  "title": "Bert Kreischer",
+  "ids": [
+   84
+  ],
+  "kind": "person",
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1997,
+    "what": "Rolling Stone profiled him as the top partyer at Florida State University"
+   },
+   {
+    "year": 2016,
+    "what": "His \"The Machine\" story went viral"
+   },
+   {
+    "year": 2018,
+    "what": "Netflix special Secret Time"
+   },
+   {
+    "year": 2023,
+    "what": "Starred in the film The Machine"
+   }
+  ],
+  "flags": [],
+  "checked": false,
+  "sources": [],
+  "note": "",
+  "known_as": "Bert Kreischer",
+  "summary": "American stand-up comedian and podcaster known as \"The Machine\", for performing shirtless and for his Netflix specials.",
+  "fields": [
+   "comedy",
+   "podcast",
+   "acting"
+  ],
+  "roles": [
+   "comedian",
+   "podcast host",
+   "actor"
+  ],
+  "country": "US",
+  "born": "1972-11-03",
+  "date_matches": true,
+  "fame": 4
+ },
+ {
+  "title": "Lil Peep",
+  "ids": [
+   81
+  ],
+  "kind": "person",
+  "died": "2017-11-15",
+  "death_cause": "overdose",
+  "age_at_death": 21,
+  "events": [
+   {
+    "year": 2015,
+    "what": "Began releasing music online"
+   },
+   {
+    "year": 2017,
+    "what": "Released debut album Come Over When You're Sober, Pt. 1"
+   },
+   {
+    "year": 2017,
+    "what": "Died on his tour bus in Tucson of an accidental fentanyl and Xanax overdose"
+   },
+   {
+    "year": 2018,
+    "what": "Posthumous hit \"Falling Down\" with XXXTentacion"
+   }
+  ],
+  "flags": [
+   "overdose",
+   "died_young"
+  ],
+  "checked": false,
+  "sources": [],
+  "note": "",
+  "known_as": "Lil Peep",
+  "summary": "American rapper and singer who helped shape emo rap; died of an accidental overdose at 21.",
+  "fields": [
+   "rapper",
+   "music"
+  ],
+  "roles": [
+   "rapper",
+   "singer"
+  ],
+  "country": "US",
+  "born": "1996-11-01",
+  "date_matches": true,
+  "fame": 4
+ },
+ {
+  "title": "Victor Cipriano Dominguez",
+  "ids": [
+   78
+  ],
+  "kind": "unknown",
+  "checked": false,
+  "sources": [],
+  "note": "Web search budget ran out before this one could be searched; not known to me as a public figure."
+ },
+ {
+  "title": "Richard Kaler",
+  "ids": [
+   77
+  ],
+  "kind": "unknown",
+  "checked": false,
+  "sources": [],
+  "note": "Web search budget ran out before this one could be searched; not known to me as a public figure."
+ },
+ {
+  "title": "Robert Swonger · Sharp",
+  "ids": [
+   76
+  ],
+  "kind": "unknown",
+  "checked": false,
+  "sources": [],
+  "note": "Web search budget ran out before this one could be searched; not known to me as a public figure; the \"Sharp\" in the title may be an online name worth a search."
+ },
+ {
+  "title": "Zain Hafeez",
+  "ids": [
+   75
+  ],
+  "kind": "unknown",
+  "checked": false,
+  "sources": [],
+  "note": "Web search budget ran out before this one could be searched; not known to me as a public figure."
+ },
+ {
+  "title": "MGK",
+  "ids": [
+   73
+  ],
+  "kind": "person",
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2012,
+    "what": "Debut album Lace Up"
+   },
+   {
+    "year": 2018,
+    "what": "Diss track \"Rap Devil\" in a feud with Eminem"
+   },
+   {
+    "year": 2020,
+    "what": "Pop-punk album Tickets to My Downfall reached number one in the US"
+   },
+   {
+    "year": 2025,
+    "what": "Released the album Lost Americana"
+   }
+  ],
+  "flags": [],
+  "checked": false,
+  "sources": [],
+  "note": "",
+  "known_as": "MGK (Machine Gun Kelly)",
+  "summary": "American rapper turned pop-punk musician and actor, known for Tickets to My Downfall and a feud with Eminem.",
+  "fields": [
+   "music",
+   "rapper",
+   "acting"
+  ],
+  "roles": [
+   "rapper",
+   "singer",
+   "actor"
+  ],
+  "country": "US",
+  "born": "1990-04-22",
+  "date_matches": true,
+  "fame": 5
+ },
+ {
+  "title": "Boris Johnson",
+  "ids": [
+   70
+  ],
+  "kind": "person",
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2008,
+    "what": "Elected Mayor of London"
+   },
+   {
+    "year": 2016,
+    "what": "Led the Leave campaign in the Brexit referendum; became Foreign Secretary"
+   },
+   {
+    "year": 2019,
+    "what": "Became Prime Minister and won a large election majority"
+   },
+   {
+    "year": 2022,
+    "what": "Fined over lockdown parties (Partygate); resigned as Prime Minister"
+   },
+   {
+    "year": 2023,
+    "what": "Resigned as MP; a committee found he misled Parliament"
+   }
+  ],
+  "flags": [
+   "elected_office",
+   "major_scandal"
+  ],
+  "checked": false,
+  "sources": [],
+  "note": "",
+  "known_as": "Boris Johnson",
+  "summary": "British Conservative politician, Mayor of London, Brexit campaigner and Prime Minister of the United Kingdom from 2019 to 2022.",
+  "fields": [
+   "politics",
+   "journalism",
+   "writing"
+  ],
+  "roles": [
+   "prime minister",
+   "mayor of london",
+   "journalist"
+  ],
+  "country": "GB",
+  "born": "1964-06-19",
+  "date_matches": true,
+  "fame": 5
+ }
+]

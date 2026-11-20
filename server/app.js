@@ -27,6 +27,7 @@ import { meaningFor, countWith } from './meaning.js';
 import { findInDoc, docWindow, findNumberSection, findPhrase } from './doc.js';
 import { askAboutSpot, spotContext } from './spot-ask.js';
 import { wordsFor, wordInfo } from './words.js';
+import { personFor, peopleKinds, parseWho } from './people.js';
 
 const MAX_IMPORT = 50 * 1024 * 1024;
 
@@ -129,7 +130,7 @@ export function createApp(db, { log = console.log } = {}) {
     const limit = Math.min(Math.max(Number(req.query.limit) || 60, 1), 200);
     const offset = Math.max(Number(req.query.offset) || 0, 0);
     const ids = req.query.ids ? String(req.query.ids).split(',').map(Number) : null;
-    res.json(listImages(db, { tags: asList(req.query.tag), positions: positionsOf(req.query), name: String(req.query.name || ''), onlyUploaded: req.query.uploaded === '1', kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', limit, offset, ids, drawn: drawnOf(req.query), pattern: String(req.query.pattern || '') }));
+    res.json(listImages(db, { tags: asList(req.query.tag), positions: positionsOf(req.query), name: String(req.query.name || ''), onlyUploaded: req.query.uploaded === '1', kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', limit, offset, ids, drawn: drawnOf(req.query), pattern: String(req.query.pattern || ''), who: parseWho(asList(req.query.who)) }));
   });
   app.get('/api/images/:id', (req, res) => {
     const img = getImage(db, Number(req.params.id));
@@ -168,8 +169,17 @@ export function createApp(db, { log = console.log } = {}) {
   app.get('/api/images/:id/context', (req, res) => {
     const id = Number(req.params.id);
     if (!getImage(db, id)) return res.status(404).json({ error: 'No such chart.' });
-    res.json(imageContext(db, id, { tags: asList(req.query.tag), positions: positionsOf(req.query), name: String(req.query.name || ''), kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', drawn: drawnOf(req.query), pattern: String(req.query.pattern || '') }));
+    res.json(imageContext(db, id, { tags: asList(req.query.tag), positions: positionsOf(req.query), name: String(req.query.name || ''), kind: req.query.kind === 'archetype' ? 'archetype' : 'chart', drawn: drawnOf(req.query), pattern: String(req.query.pattern || ''), who: parseWho(asList(req.query.who)) }));
   });
+
+  // Who the person is (server/people.js): researched facts about the person a chart belongs to, and the
+  // kinds of people the vault holds. ?who=field:music on /api/images lists a kind's charts.
+  app.get('/api/images/:id/person', (req, res) => {
+    const img = getImage(db, Number(req.params.id));
+    if (!img) return res.status(404).json({ error: 'No such chart.' });
+    res.json({ person: personFor(db, img.id) });
+  });
+  app.get('/api/people/kinds', (req, res) => res.json(peopleKinds(db)));
 
   // Who a chart is: the name under the thumbnail. The owner types or fixes it ("Who is this?"), or
   // confirms a seeded one; "Names to check" lists the ones still waiting on them.
@@ -221,9 +231,9 @@ export function createApp(db, { log = console.log } = {}) {
   });
   // What the charts carrying one tag share, against every other chart (server/group.js). Counting only.
   app.get('/api/group', (req, res) => {
-    const tag = String(req.query.tag || '');
-    if (!tag) return res.status(400).json({ error: 'Pick a tag first.' });
-    res.json(groupShares(db, tag));
+    const tag = String(req.query.tag || ''), who = parseWho(asList(req.query.who));
+    if (!tag && !who.length) return res.status(400).json({ error: 'Pick a tag or a kind of person first.' });
+    res.json(groupShares(db, tag, { who }));
   });
   app.get('/api/images/:id/numbers', (req, res) => {
     const img = getImage(db, Number(req.params.id));

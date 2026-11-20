@@ -12,6 +12,7 @@ import { POSITIONS, NOT_A_REPEAT } from './positions.js';
 import { positionName } from './similar.js';
 import { fmt } from './facts.js';
 import { displayName } from './tagnames.js';
+import { whoSql } from './people.js';
 
 const VISIBLE = new Set(POSITIONS.filter((p) => !p.hidden).map((p) => `${p.chart}.${p.key}`));
 const ORDER = new Map(POSITIONS.map((p, i) => [`${p.chart}.${p.key}`, i]));
@@ -31,11 +32,19 @@ export function chanceOf(a, n, K, N) {
 
 const strengthOf = (expected) => (expected < 0.05 ? 'Strong' : expected < 1 ? 'Worth a Look' : 'Could Be Chance');
 
-export function groupShares(db, tag, { limit = 12, anywhereLimit = 8 } = {}) {
+// The group is a tag's charts, or (who: [{ type, value, label }], server/people.js) a kind of person: "Rappers",
+// "Went to Prison".
+export function groupShares(db, tag, { limit = 12, anywhereLimit = 8, who = [] } = {}) {
+  if (who.length) return shares(db, { who: who.map((w) => `${w.type}:${w.value}`), tag: '', display: who.map((w) => w.label).join(' + '), tagged: 0, size: 0, rest: 0, tried: 0, cards: [], anywhere: [] },
+    (() => { const params = []; const sql = whoSql(who, params); return new Set(db.prepare(`SELECT i.id FROM images i WHERE i.kind = 'chart' ${sql}`).all(...params).map((r) => r.id)); })(), { limit, anywhereLimit });
   const tagRow = db.prepare('SELECT id, name FROM tags WHERE name = ?').get(String(tag || ''));
   const out = { tag: tagRow ? tagRow.name : String(tag || ''), display: displayName(tagRow ? tagRow.name : String(tag || '')), tagged: 0, size: 0, rest: 0, tried: 0, cards: [], anywhere: [] };
   if (!tagRow) return out;
   const tagged = new Set(db.prepare("SELECT it.image_id AS id FROM image_tags it JOIN images i ON i.id = it.image_id WHERE it.tag_id = ? AND i.kind = 'chart'").all(tagRow.id).map((r) => r.id));
+  return shares(db, out, tagged, { limit, anywhereLimit });
+}
+
+function shares(db, out, tagged, { limit, anywhereLimit }) {
   out.tagged = tagged.size;
 
   // One chart per person (same typed name and date = one person); a person is in the group if any of their charts is.

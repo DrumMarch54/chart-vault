@@ -1,0 +1,1200 @@
+[
+ {
+  "title": "Charles Ross · Ross Creations",
+  "ids": [
+   227
+  ],
+  "kind": "person",
+  "known_as": "RossCreations",
+  "summary": "American YouTube prankster behind the RossCreations channel, arrested several times over public pranks.",
+  "fields": [
+   "youtube",
+   "comedy"
+  ],
+  "roles": [
+   "youtuber",
+   "prankster"
+  ],
+  "country": "US",
+  "born": "1994-01-20",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2008,
+    "what": "Started his YouTube channel"
+   }
+  ],
+  "flags": [],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://www.thefamouspeople.com/profiles/ross-creations-154759.php",
+   "https://www.sportskeeda.com/esports/what-charles-ross-now-exploring-career-youtuber-known-arrested-multiple-times-due-pranks",
+   "https://www.greenmatters.com/news/what-happened-to-ross-creations"
+  ],
+  "note": "Birth date found on one biography site only. Reports say he was arrested several times over pranks and investigated by two state agencies over an opossum-launching video; I could not confirm years or outcomes, so no events or flags for those."
+ },
+ {
+  "title": "Stephen McCullough · Gpa",
+  "ids": [
+   225
+  ],
+  "kind": "unknown",
+  "note": "Looks like a family member (\"Gpa\"); not researched."
+ },
+ {
+  "title": "Joe Rogan",
+  "ids": [
+   223
+  ],
+  "kind": "person",
+  "known_as": "Joe Rogan",
+  "summary": "American podcaster, comedian and UFC commentator who hosts The Joe Rogan Experience, one of the most listened-to podcasts in the world.",
+  "fields": [
+   "podcast",
+   "comedy",
+   "commentary"
+  ],
+  "roles": [
+   "podcast host",
+   "stand-up comedian",
+   "ufc commentator"
+  ],
+  "country": "US",
+  "born": "1967-08-11",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1997,
+    "what": "Began working for the UFC as an interviewer, later color commentator"
+   },
+   {
+    "year": 2001,
+    "what": "Became host of the TV show Fear Factor"
+   },
+   {
+    "year": 2009,
+    "what": "Launched The Joe Rogan Experience podcast"
+   },
+   {
+    "year": 2020,
+    "what": "Signed an exclusive podcast licensing deal with Spotify"
+   },
+   {
+    "year": 2022,
+    "what": "Artists pulled music from Spotify in protest over COVID-19 claims on his show"
+   },
+   {
+    "year": 2024,
+    "what": "Interviewed Donald Trump and endorsed him for president"
+   }
+  ],
+  "flags": [],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ },
+ {
+  "title": "Matan Evans",
+  "ids": [
+   222
+  ],
+  "kind": "person",
+  "known_as": "Matan Even",
+  "summary": "Teenager known as the \"Bill Clinton kid\" who crashed the stage at The Game Awards 2022 during the Game of the Year speech.",
+  "fields": [
+   "youtube",
+   "other"
+  ],
+  "roles": [
+   "stage crasher",
+   "youtuber"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2022,
+    "what": "Walked on stage at The Game Awards during the Elden Ring acceptance speech and was arrested by police afterwards"
+   },
+   {
+    "year": 2023,
+    "what": "Turned up at a Kai Cenat and xQc stream at Universal Studios"
+   }
+  ],
+  "flags": [],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://www.pcgamer.com/game-awards-elden-ring-guy-stage-ambush-2022",
+   "https://www.thedailybeast.com/game-awards-2022-ends-in-bizarre-bill-clinton-speech-arrest",
+   "https://sportskeeda.com/esports/news-guy-crashed-game-awards-tries-get-kai-cenat-xqc-s-streams-universal-theme-park"
+  ],
+  "note": "The chart says \"Matan Evans\"; the public figure is spelled Matan Even. Assumed to be him from the name and the youtube tag. No source for his birth date was found, so the date is not confirmed."
+ },
+ {
+  "title": "Sam Barber",
+  "ids": [
+   221
+  ],
+  "kind": "person",
+  "known_as": "Sam Barber",
+  "summary": "American country singer-songwriter from Missouri known for \"Straight and Narrow\" and the album Restless Mind.",
+  "fields": [
+   "music"
+  ],
+  "roles": [
+   "country singer",
+   "songwriter"
+  ],
+  "country": "US",
+  "born": "2003-04-15",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2023,
+    "what": "\"Straight and Narrow\" became his breakthrough song"
+   },
+   {
+    "year": 2024,
+    "what": "Released debut album Restless Mind"
+   },
+   {
+    "year": 2024,
+    "what": "Song \"Tear Us Apart\" on the Twisters film soundtrack"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.com/wiki/Sam_Barber_(country_musician)",
+   "https://www.famousbirthdays.com/people/sam-barber.html"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Heinrich Himmler",
+  "ids": [
+   220
+  ],
+  "kind": "person",
+  "known_as": "Heinrich Himmler",
+  "summary": "Head of the Nazi SS and Gestapo and a chief architect of the Holocaust.",
+  "fields": [
+   "politics",
+   "mass_violence",
+   "military"
+  ],
+  "roles": [
+   "reichsfuhrer-ss",
+   "nazi leader",
+   "police chief"
+  ],
+  "country": "DE",
+  "born": "1900-10-07",
+  "date_matches": true,
+  "died": "1945-05-23",
+  "death_cause": "suicide",
+  "age_at_death": 44,
+  "events": [
+   {
+    "year": 1923,
+    "what": "Took part in the Beer Hall Putsch"
+   },
+   {
+    "year": 1929,
+    "what": "Appointed Reichsfuhrer-SS"
+   },
+   {
+    "year": 1936,
+    "what": "Became chief of all German police"
+   },
+   {
+    "year": 1941,
+    "what": "Directed the SS killing units and the extermination camps of the Holocaust"
+   },
+   {
+    "year": 1945,
+    "what": "Captured by British forces and killed himself with cyanide"
+   }
+  ],
+  "flags": [
+   "suicide",
+   "killed_someone",
+   "violent_crime"
+  ],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": "He died before any trial, so there is no conviction; the flags rest on the historical record of the Holocaust."
+ },
+ {
+  "title": "Mike Tyson",
+  "ids": [
+   219,
+   69
+  ],
+  "kind": "person",
+  "known_as": "Mike Tyson",
+  "summary": "American boxer who became the youngest heavyweight champion in history, later convicted of rape.",
+  "fields": [
+   "combat_sports",
+   "sports"
+  ],
+  "roles": [
+   "boxer",
+   "heavyweight champion"
+  ],
+  "country": "US",
+  "born": "1966-06-30",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1986,
+    "what": "Became the youngest heavyweight champion at age 20"
+   },
+   {
+    "year": 1990,
+    "what": "Lost the title to Buster Douglas in a major upset"
+   },
+   {
+    "year": 1992,
+    "what": "Convicted of rape, sentenced to six years, released in 1995"
+   },
+   {
+    "year": 1997,
+    "what": "Disqualified for biting Evander Holyfield's ear"
+   },
+   {
+    "year": 2003,
+    "what": "Filed for bankruptcy"
+   },
+   {
+    "year": 2024,
+    "what": "Lost to Jake Paul by unanimous decision at age 58"
+   }
+  ],
+  "flags": [
+   "convicted_crime",
+   "violent_crime",
+   "prison",
+   "bankruptcy",
+   "addiction_public",
+   "major_award"
+  ],
+  "fame": 5,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Mike_Tyson"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Billy Carson",
+  "ids": [
+   218
+  ],
+  "kind": "person",
+  "known_as": "Billy Carson",
+  "summary": "American author and media figure, founder of 4biddenknowledge, known for talks on ancient civilizations and alternative history.",
+  "fields": [
+   "spirituality",
+   "conspiracy",
+   "business"
+  ],
+  "roles": [
+   "author",
+   "speaker",
+   "media founder"
+  ],
+  "country": "US",
+  "born": "1971-09-04",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2024,
+    "what": "A debate with Christian apologist Wes Huff went viral and drew wide criticism of his claims"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://wikitia.com/wiki/Billy_Carson",
+   "https://famousbirthdays.com/people/billy-carson.html",
+   "https://aalbc.com/authors/Billy+Carson"
+  ],
+  "note": "The 2024 debate event is from my own knowledge, not from the search results."
+ },
+ {
+  "title": "Jose Murillo",
+  "ids": [
+   217,
+   181
+  ],
+  "kind": "unknown",
+  "note": "Common name, no public figure identified; not researched further."
+ },
+ {
+  "title": "Michelle Smith",
+  "ids": [
+   215
+  ],
+  "kind": "unknown",
+  "note": "Common name, no public figure identified; not researched further."
+ },
+ {
+  "title": "Aldous Huxley",
+  "ids": [
+   214
+  ],
+  "kind": "person",
+  "known_as": "Aldous Huxley",
+  "summary": "English writer and philosopher, author of Brave New World and The Doors of Perception.",
+  "fields": [
+   "writing"
+  ],
+  "roles": [
+   "novelist",
+   "essayist",
+   "philosopher"
+  ],
+  "country": "GB",
+  "born": "1894-07-26",
+  "date_matches": true,
+  "died": "1963-11-22",
+  "death_cause": "illness",
+  "age_at_death": 69,
+  "events": [
+   {
+    "year": 1932,
+    "what": "Published Brave New World"
+   },
+   {
+    "year": 1937,
+    "what": "Moved to the United States"
+   },
+   {
+    "year": 1954,
+    "what": "Published The Doors of Perception about his mescaline experience"
+   },
+   {
+    "year": 1962,
+    "what": "Published his last novel, Island"
+   },
+   {
+    "year": 1963,
+    "what": "Died of laryngeal cancer"
+   }
+  ],
+  "flags": [],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ },
+ {
+  "title": "Bo Alford · Bodittle",
+  "ids": [
+   212
+  ],
+  "kind": "unknown",
+  "note": "Searched \"Bodittle\" and Bo Alford twice; nothing found. Not clearly a public figure."
+ },
+ {
+  "title": "Kamala Harris",
+  "ids": [
+   211
+  ],
+  "kind": "person",
+  "known_as": "Kamala Harris",
+  "summary": "American politician, vice president of the United States 2021-2025 and the Democratic nominee for president in 2024.",
+  "fields": [
+   "politics"
+  ],
+  "roles": [
+   "vice president",
+   "senator",
+   "attorney general"
+  ],
+  "country": "US",
+  "born": "1964-10-20",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2010,
+    "what": "Elected attorney general of California"
+   },
+   {
+    "year": 2016,
+    "what": "Elected to the US Senate"
+   },
+   {
+    "year": 2020,
+    "what": "Elected vice president, the first woman in the office"
+   },
+   {
+    "year": 2024,
+    "what": "Became the Democratic nominee after Biden withdrew and lost to Donald Trump"
+   },
+   {
+    "year": 2025,
+    "what": "Left office and published the memoir 107 Days"
+   }
+  ],
+  "flags": [
+   "elected_office"
+  ],
+  "fame": 5,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Kamala_Harris"
+  ],
+  "note": ""
+ },
+ {
+  "title": "David Bowie",
+  "ids": [
+   210
+  ],
+  "kind": "person",
+  "known_as": "David Bowie",
+  "summary": "English singer-songwriter and actor, one of the most influential musicians of the 20th century.",
+  "fields": [
+   "music",
+   "acting"
+  ],
+  "roles": [
+   "singer",
+   "songwriter",
+   "actor"
+  ],
+  "country": "GB",
+  "born": "1947-01-08",
+  "date_matches": true,
+  "died": "2016-01-10",
+  "death_cause": "illness",
+  "age_at_death": 69,
+  "events": [
+   {
+    "year": 1969,
+    "what": "First hit with \"Space Oddity\""
+   },
+   {
+    "year": 1972,
+    "what": "Broke through with the Ziggy Stardust album and persona"
+   },
+   {
+    "year": 1983,
+    "what": "Biggest commercial success with Let's Dance"
+   },
+   {
+    "year": 1996,
+    "what": "Inducted into the Rock and Roll Hall of Fame"
+   },
+   {
+    "year": 2016,
+    "what": "Released Blackstar and died of liver cancer two days later"
+   }
+  ],
+  "flags": [
+   "major_award",
+   "addiction_public"
+  ],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ },
+ {
+  "title": "Michael",
+  "ids": [
+   208
+  ],
+  "kind": "unknown",
+  "note": "No name or date on the chart."
+ },
+ {
+  "title": "Michael Hammonds · Drill Tech",
+  "ids": [
+   207
+  ],
+  "kind": "unknown",
+  "note": "Could not be searched: the web search limit for this run was reached. Unchecked."
+ },
+ {
+  "title": "Ozzy Osbourne",
+  "ids": [
+   204
+  ],
+  "kind": "person",
+  "known_as": "Ozzy Osbourne",
+  "summary": "English singer, frontman of Black Sabbath and solo star, called the Prince of Darkness and a founder of heavy metal.",
+  "fields": [
+   "music",
+   "film_tv"
+  ],
+  "roles": [
+   "singer",
+   "songwriter",
+   "reality tv star"
+  ],
+  "country": "GB",
+  "born": "1948-12-03",
+  "date_matches": true,
+  "died": "2025-07-22",
+  "death_cause": "natural",
+  "age_at_death": 76,
+  "events": [
+   {
+    "year": 1970,
+    "what": "Black Sabbath released their debut album"
+   },
+   {
+    "year": 1979,
+    "what": "Fired from Black Sabbath over drug and alcohol use"
+   },
+   {
+    "year": 1980,
+    "what": "Launched solo career with Blizzard of Ozz"
+   },
+   {
+    "year": 2002,
+    "what": "Reality show The Osbournes began on MTV"
+   },
+   {
+    "year": 2020,
+    "what": "Made his Parkinson's disease diagnosis public"
+   },
+   {
+    "year": 2025,
+    "what": "Played a farewell concert in Birmingham on 5 July and died on 22 July"
+   }
+  ],
+  "flags": [
+   "major_award",
+   "addiction_public",
+   "convicted_crime",
+   "prison"
+  ],
+  "fame": 5,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Ozzy_Osbourne"
+  ],
+  "note": "Death date and age confirmed on Wikipedia. The cause (heart attack, as reported from the death certificate) and the short jail term for burglary as a teenager are from my own knowledge, not from the part of the page I read."
+ },
+ {
+  "title": "Spanian",
+  "ids": [
+   201
+  ],
+  "kind": "person",
+  "known_as": "Spanian",
+  "summary": "Australian YouTuber and drill rapper from Sydney who spent about thirteen years in prison before making the Into the Hood series.",
+  "fields": [
+   "youtube",
+   "rapper",
+   "crime"
+  ],
+  "roles": [
+   "youtuber",
+   "drill rapper",
+   "author"
+  ],
+  "country": "AU",
+  "born": null,
+  "date_matches": null,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2011,
+    "what": "Sentenced to eight years for running a criminal group dealing drugs"
+   },
+   {
+    "year": 2017,
+    "what": "Released from Bathurst Correctional Centre"
+   },
+   {
+    "year": 2018,
+    "what": "Started his YouTube channel; the Into the Hood series followed"
+   },
+   {
+    "year": 2021,
+    "what": "Autobiography Spanian: The Unfiltered Hood Life published"
+   },
+   {
+    "year": 2024,
+    "what": "Dropped by his label and publisher over Instagram posts"
+   },
+   {
+    "year": 2024,
+    "what": "Opened the first Spanian's Kebabs food truck in Sydney"
+   }
+  ],
+  "flags": [
+   "convicted_crime",
+   "violent_crime",
+   "prison",
+   "cancelled_or_banned"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Spanian",
+   "https://Dexerto.com/youtube/who-is-spanian-former-criminal-turned-social-media-superstar-explained-2623928/"
+  ],
+  "note": "Real name Anthony Lees matches. Wikipedia gives only a birth year, 1985 (its categories say 1986); the chart says 1987-08-21. No source for the exact date was found."
+ },
+ {
+  "title": "L Ron Hubbard",
+  "ids": [
+   199
+  ],
+  "kind": "person",
+  "known_as": "L. Ron Hubbard",
+  "summary": "American science fiction writer who wrote Dianetics and founded the Church of Scientology.",
+  "fields": [
+   "religion",
+   "writing",
+   "cult"
+  ],
+  "roles": [
+   "scientology founder",
+   "author"
+  ],
+  "country": "US",
+  "born": "1911-03-13",
+  "date_matches": true,
+  "died": "1986-01-24",
+  "death_cause": "natural",
+  "age_at_death": 74,
+  "events": [
+   {
+    "year": 1946,
+    "what": "Took part in occult rituals with Jack Parsons in Pasadena"
+   },
+   {
+    "year": 1950,
+    "what": "Published Dianetics"
+   },
+   {
+    "year": 1953,
+    "what": "Founded the Church of Scientology"
+   },
+   {
+    "year": 1978,
+    "what": "Convicted of fraud in absentia by a French court"
+   },
+   {
+    "year": 1980,
+    "what": "Went into seclusion for the rest of his life"
+   },
+   {
+    "year": 1986,
+    "what": "Died of a stroke in California"
+   }
+  ],
+  "flags": [
+   "founder",
+   "religious_leader",
+   "convicted_crime",
+   "military_service"
+  ],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": "Scientology is widely described as a cult by critics and some governments; I left the cult_leader flag off because that is disputed, not a finding."
+ },
+ {
+  "title": "Kenneth Grant",
+  "ids": [
+   197
+  ],
+  "kind": "person",
+  "known_as": "Kenneth Grant",
+  "summary": "English occultist and writer, secretary to Aleister Crowley and head of the Typhonian Order.",
+  "fields": [
+   "occult",
+   "writing"
+  ],
+  "roles": [
+   "occultist",
+   "ceremonial magician",
+   "author"
+  ],
+  "country": "GB",
+  "born": "1924-05-23",
+  "date_matches": true,
+  "died": "2011-01-15",
+  "death_cause": "unknown",
+  "age_at_death": 86,
+  "events": [
+   {
+    "year": 1944,
+    "what": "Met Aleister Crowley and became his secretary"
+   },
+   {
+    "year": 1955,
+    "what": "Founded the New Isis Lodge; expelled from the O.T.O. by Karl Germer"
+   },
+   {
+    "year": 1972,
+    "what": "Published The Magical Revival, first of the Typhonian Trilogies"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "fame": 2,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ },
+ {
+  "title": "Manly P Hall",
+  "ids": [
+   196
+  ],
+  "kind": "person",
+  "known_as": "Manly P. Hall",
+  "summary": "Canadian-born American author and lecturer on mysticism, best known for The Secret Teachings of All Ages.",
+  "fields": [
+   "occult",
+   "spirituality",
+   "writing"
+  ],
+  "roles": [
+   "author",
+   "lecturer",
+   "mystic"
+  ],
+  "country": "US",
+  "born": "1901-03-18",
+  "date_matches": true,
+  "died": "1990-08-29",
+  "death_cause": "natural",
+  "age_at_death": 89,
+  "events": [
+   {
+    "year": 1928,
+    "what": "Published The Secret Teachings of All Ages"
+   },
+   {
+    "year": 1934,
+    "what": "Founded the Philosophical Research Society in Los Angeles"
+   },
+   {
+    "year": 1990,
+    "what": "Died in Los Angeles"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "fame": 3,
+  "checked": false,
+  "sources": [],
+  "note": "His death was recorded as natural, but the circumstances were questioned and investigated at the time."
+ },
+ {
+  "title": "Aleister Crowley",
+  "ids": [
+   195
+  ],
+  "kind": "person",
+  "known_as": "Aleister Crowley",
+  "summary": "English occultist, ceremonial magician and writer who founded the religion of Thelema.",
+  "fields": [
+   "occult",
+   "religion",
+   "writing"
+  ],
+  "roles": [
+   "occultist",
+   "ceremonial magician",
+   "author"
+  ],
+  "country": "GB",
+  "born": "1875-10-12",
+  "date_matches": true,
+  "died": "1947-12-01",
+  "death_cause": "illness",
+  "age_at_death": 72,
+  "events": [
+   {
+    "year": 1898,
+    "what": "Joined the Hermetic Order of the Golden Dawn"
+   },
+   {
+    "year": 1904,
+    "what": "Wrote The Book of the Law in Cairo, the founding text of Thelema"
+   },
+   {
+    "year": 1907,
+    "what": "Co-founded the order A.A."
+   },
+   {
+    "year": 1920,
+    "what": "Set up the Abbey of Thelema in Sicily"
+   },
+   {
+    "year": 1923,
+    "what": "Expelled from Italy by Mussolini's government after a follower died"
+   },
+   {
+    "year": 1947,
+    "what": "Died in Hastings of bronchitis and heart disease"
+   }
+  ],
+  "flags": [
+   "founder",
+   "religious_leader",
+   "addiction_public"
+  ],
+  "fame": 4,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ },
+ {
+  "title": "Jack Parsons",
+  "ids": [
+   194,
+   193
+  ],
+  "kind": "person",
+  "known_as": "Jack Parsons",
+  "summary": "American rocket engineer, a founder of the Jet Propulsion Laboratory and Aerojet, and a follower of Aleister Crowley's Thelema.",
+  "fields": [
+   "science",
+   "occult"
+  ],
+  "roles": [
+   "rocket engineer",
+   "chemist",
+   "occultist"
+  ],
+  "country": "US",
+  "born": "1914-10-02",
+  "date_matches": true,
+  "died": "1952-06-17",
+  "death_cause": "accident",
+  "age_at_death": 37,
+  "events": [
+   {
+    "year": 1936,
+    "what": "Began rocket experiments with the Caltech GALCIT group"
+   },
+   {
+    "year": 1942,
+    "what": "Co-founded Aerojet"
+   },
+   {
+    "year": 1943,
+    "what": "The group became the Jet Propulsion Laboratory"
+   },
+   {
+    "year": 1944,
+    "what": "Forced out of JPL and Aerojet"
+   },
+   {
+    "year": 1946,
+    "what": "Performed the Babalon Working rituals with L. Ron Hubbard"
+   },
+   {
+    "year": 1952,
+    "what": "Killed by an explosion in his home laboratory"
+   }
+  ],
+  "flags": [
+   "founder",
+   "died_young"
+  ],
+  "fame": 3,
+  "checked": false,
+  "sources": [],
+  "note": "Born Marvel Whiteside Parsons; later used John. Both names are on the charts."
+ },
+ {
+  "title": "Wally Pulliam",
+  "ids": [
+   192
+  ],
+  "kind": "unknown",
+  "note": "Could not be searched: the web search limit for this run was reached. Unchecked."
+ },
+ {
+  "title": "Lily Kate",
+  "ids": [
+   191
+  ],
+  "kind": "person",
+  "known_as": "Lily Kate",
+  "summary": "American conservative YouTuber and influencer from Texas who has worked with PragerU and Turning Point USA.",
+  "fields": [
+   "youtube",
+   "influencer",
+   "commentary"
+  ],
+  "roles": [
+   "youtuber",
+   "conservative influencer"
+  ],
+  "country": "US",
+  "born": "2002-02-19",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [],
+  "flags": [],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://www.thefamouspeople.com/profiles/lily-kate-cole-123347.php",
+   "https://dailydot.com/lily-kate-cole-suzanne-lambert-ministry",
+   "https://steamboatinstitute.org/?p=6492"
+  ],
+  "note": "Birth date found on biography sites only."
+ },
+ {
+  "title": "Lex Fridman",
+  "ids": [
+   190
+  ],
+  "kind": "person",
+  "known_as": "Lex Fridman",
+  "summary": "Russian-American computer scientist and host of the Lex Fridman Podcast, long interviews with scientists, tech leaders and politicians.",
+  "fields": [
+   "podcast",
+   "tech",
+   "youtube"
+  ],
+  "roles": [
+   "podcast host",
+   "ai researcher"
+  ],
+  "country": "US",
+  "born": "1983-08-15",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2018,
+    "what": "Started the podcast, first called the Artificial Intelligence Podcast"
+   },
+   {
+    "year": 2019,
+    "what": "A Tesla Autopilot study brought wide attention and an Elon Musk interview"
+   },
+   {
+    "year": 2024,
+    "what": "Interviewed Donald Trump"
+   },
+   {
+    "year": 2025,
+    "what": "Interviewed Volodymyr Zelensky and Narendra Modi"
+   }
+  ],
+  "flags": [],
+  "fame": 4,
+  "checked": false,
+  "sources": [],
+  "note": "The chart spells the name \"Alexeil Fridman\"; his birth name is reported as Alexei."
+ },
+ {
+  "title": "Savannah Craven",
+  "ids": [
+   188
+  ],
+  "kind": "person",
+  "known_as": "Savannah Craven Antao",
+  "summary": "American pro-life activist and street interviewer behind the Her Patriot Voice YouTube channel.",
+  "fields": [
+   "activism",
+   "youtube",
+   "commentary"
+  ],
+  "roles": [
+   "pro-life activist",
+   "youtuber",
+   "street interviewer"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2025,
+    "what": "Punched in the face during a street interview in Harlem for Live Action"
+   },
+   {
+    "year": 2025,
+    "what": "Assault case against the woman was dismissed after prosecutors missed a deadline"
+   },
+   {
+    "year": 2025,
+    "what": "Filed a civil lawsuit against the woman"
+   }
+  ],
+  "flags": [],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://www.foxnews.com/media/pro-life-influencer-attacked-nyc-files-lawsuit-after-da-alvin-bragg-drops-case",
+   "https://www.ibtimes.co.uk/youtuber-her-patriot-voice-sucker-punched-nyc-interview-activist-files-lawsuit-after-da-drops-1757053",
+   "https://wrno.iheart.com/content/2025-11-21-conservative-influencer-sues-woman-who-punched-her-in-face-during-interview"
+  ],
+  "note": "Birth date could not be checked (the web search limit for this run was reached)."
+ },
+ {
+  "title": "Harland Williams",
+  "ids": [
+   186
+  ],
+  "kind": "person",
+  "known_as": "Harland Williams",
+  "summary": "Canadian-American comedian and actor known for Dumb and Dumber, RocketMan, Half Baked and There's Something About Mary.",
+  "fields": [
+   "comedy",
+   "acting",
+   "podcast"
+  ],
+  "roles": [
+   "stand-up comedian",
+   "actor",
+   "podcast host"
+  ],
+  "country": "US",
+  "born": "1962-11-14",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1994,
+    "what": "Film debut as the state trooper in Dumb and Dumber"
+   },
+   {
+    "year": 1997,
+    "what": "Starred in RocketMan"
+   },
+   {
+    "year": 1998,
+    "what": "Appeared in Half Baked and There's Something About Mary"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ },
+ {
+  "title": "Thurl",
+  "ids": [
+   185
+  ],
+  "kind": "unknown",
+  "note": "No name on the chart and it could not be searched: the web search limit for this run was reached. Tags suggest a YouTuber called Thurl. Unchecked."
+ },
+ {
+  "title": "Adolf Hitler",
+  "ids": [
+   184
+  ],
+  "kind": "person",
+  "known_as": "Adolf Hitler",
+  "summary": "Dictator of Nazi Germany 1933-1945 who started World War II in Europe and ordered the Holocaust.",
+  "fields": [
+   "politics",
+   "mass_violence",
+   "military"
+  ],
+  "roles": [
+   "dictator",
+   "nazi party leader",
+   "chancellor"
+  ],
+  "country": "DE",
+  "born": "1889-04-20",
+  "date_matches": true,
+  "died": "1945-04-30",
+  "death_cause": "suicide",
+  "age_at_death": 56,
+  "events": [
+   {
+    "year": 1923,
+    "what": "Led the failed Beer Hall Putsch"
+   },
+   {
+    "year": 1924,
+    "what": "Convicted of treason, jailed at Landsberg, wrote Mein Kampf"
+   },
+   {
+    "year": 1933,
+    "what": "Appointed chancellor of Germany"
+   },
+   {
+    "year": 1939,
+    "what": "Invaded Poland, starting World War II in Europe"
+   },
+   {
+    "year": 1941,
+    "what": "Invaded the Soviet Union; the Holocaust began"
+   },
+   {
+    "year": 1945,
+    "what": "Killed himself in his Berlin bunker"
+   }
+  ],
+  "flags": [
+   "head_of_state",
+   "convicted_crime",
+   "prison",
+   "suicide",
+   "killed_someone",
+   "violent_crime",
+   "military_service"
+  ],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ }
+]

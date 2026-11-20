@@ -162,6 +162,29 @@ export const MIGRATIONS = [
       created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
     );
   `),
+  // 10: who each person is (server/people.js, owner 2026-11-20). people = one row per person, the researched
+  //     record as JSON, keyed by the chart name in lower case; person_marks = what a person can be searched by
+  //     (field, flag, kind, death); person_charts = which chart belongs to which person: a VIEW, joined by the chart's
+  //     name, so a renamed chart follows its new name and a chart saved later joins its person by itself.
+  (db) => db.exec(`
+    CREATE TABLE IF NOT EXISTS people (
+      id INTEGER PRIMARY KEY,
+      key TEXT NOT NULL UNIQUE,
+      record TEXT NOT NULL,
+      hash TEXT NOT NULL,
+      build TEXT,
+      updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+    );
+    CREATE TABLE IF NOT EXISTS person_marks (
+      person_id INTEGER NOT NULL REFERENCES people(id) ON DELETE CASCADE,
+      type TEXT NOT NULL,
+      value TEXT NOT NULL,
+      PRIMARY KEY (person_id, type, value)
+    );
+    CREATE INDEX IF NOT EXISTS idx_person_marks_value ON person_marks(type, value);
+    CREATE VIEW IF NOT EXISTS person_charts AS
+      SELECT i.id AS image_id, p.id AS person_id FROM images i JOIN people p ON p.key = lower(trim(i.title)) WHERE i.kind = 'chart';
+  `),
 ];
 
 export function migrate(db) {

@@ -1,0 +1,1288 @@
+[
+ {
+  "title": "Tony Hawk",
+  "ids": [
+   476
+  ],
+  "kind": "person",
+  "known_as": "Tony Hawk",
+  "summary": "American professional skateboarder, the first to land a 900, and the name behind the Tony Hawk's Pro Skater video games.",
+  "fields": [
+   "sports",
+   "business"
+  ],
+  "roles": [
+   "skateboarder",
+   "entrepreneur"
+  ],
+  "country": "US",
+  "born": "1968-05-12",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1982,
+    "what": "Turned professional skateboarder at 14"
+   },
+   {
+    "year": 1992,
+    "what": "Founded the skateboard company Birdhouse"
+   },
+   {
+    "year": 1999,
+    "what": "Landed the first 900 at the X Games"
+   },
+   {
+    "year": 1999,
+    "what": "First Tony Hawk's Pro Skater video game released"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": "Not checked online (search budget ran out); from general knowledge."
+ },
+ {
+  "title": "6ix9ine",
+  "ids": [
+   475,
+   474,
+   293
+  ],
+  "kind": "person",
+  "known_as": "6ix9ine (Tekashi 6ix9ine)",
+  "summary": "American rapper known for the hit \"Gummo\", a federal racketeering case and testifying against his former gang.",
+  "fields": [
+   "rapper",
+   "music"
+  ],
+  "roles": [
+   "rapper"
+  ],
+  "country": "US",
+  "born": "1996-05-08",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2015,
+    "what": "Pleaded guilty to use of a child in a sexual performance"
+   },
+   {
+    "year": 2017,
+    "what": "Broke through with the single \"Gummo\""
+   },
+   {
+    "year": 2018,
+    "what": "Arrested on federal racketeering and firearms charges"
+   },
+   {
+    "year": 2019,
+    "what": "Pleaded guilty, testified against Nine Trey gang members, sentenced to two years"
+   },
+   {
+    "year": 2025,
+    "what": "Sentenced to three months in prison for supervised release violations"
+   },
+   {
+    "year": 2026,
+    "what": "Served the sentence in a Brooklyn federal jail, released around April"
+   }
+  ],
+  "flags": [
+   "convicted_crime",
+   "charged_crime",
+   "prison"
+  ],
+  "fame": 4,
+  "checked": true,
+  "sources": [
+   "https://www.rollingstone.com/music/music-news/tekashi-6ix9ine-sentenced-prison-probation-violations-1235479449/",
+   "https://abc7ny.com/post/rapper-tekashi-6ix9ine-turns-himself-brooklyn-jail-mdc-3-month-sentence/18362953/",
+   "https://www.hot97.com/news/6ix9ine-reportedly-released-from-prison/"
+  ],
+  "note": "Recent events (2025-2026) checked online; earlier ones from general knowledge."
+ },
+ {
+  "title": "Danny Duncan",
+  "ids": [
+   473,
+   378
+  ],
+  "kind": "person",
+  "known_as": "Danny Duncan",
+  "summary": "American YouTuber known for prank and skateboarding videos and the \"Virginity Rocks\" clothing line.",
+  "fields": [
+   "youtube",
+   "influencer",
+   "business"
+  ],
+  "roles": [
+   "youtuber",
+   "prankster"
+  ],
+  "country": "US",
+  "born": "1992-07-27",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2014,
+    "what": "Started his YouTube channel"
+   },
+   {
+    "year": 2017,
+    "what": "Launched the \"Virginity Rocks\" merchandise line"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": false,
+  "sources": [],
+  "note": "Not checked online (search budget ran out); from general knowledge."
+ },
+ {
+  "title": "Patty Mayo",
+  "ids": [
+   472
+  ],
+  "kind": "person",
+  "known_as": "Patty Mayo",
+  "summary": "American YouTuber known for staged bounty hunter and sheriff's deputy videos.",
+  "fields": [
+   "youtube",
+   "acting"
+  ],
+  "roles": [
+   "youtuber",
+   "actor"
+  ],
+  "country": "US",
+  "born": "1987-07-06",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2017,
+    "what": "Bounty hunter series made his YouTube channel popular"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://iiab.live/kiwix/content/wikipedia_en_all_maxi_2023-05/A/Patty_Mayo",
+   "https://www.legit.ng/1236885-what-happened-patty-mayo-a-real-fake-bounty-hunter.html"
+  ],
+  "note": "The 2017 year is from general knowledge, not from the sources."
+ },
+ {
+  "title": "Hawaii",
+  "ids": [
+   471
+  ],
+  "kind": "place",
+  "known_as": "Hawaii",
+  "summary": "Pacific island state of the United States, admitted as the 50th state on August 21, 1959.",
+  "fields": [
+   "other"
+  ],
+  "roles": [
+   "us state"
+  ],
+  "country": "US",
+  "born": "1959-08-21",
+  "date_matches": true,
+  "events": [
+   {
+    "year": 1893,
+    "what": "Kingdom of Hawaii overthrown"
+   },
+   {
+    "year": 1898,
+    "what": "Annexed by the United States"
+   },
+   {
+    "year": 1941,
+    "what": "Attack on Pearl Harbor"
+   },
+   {
+    "year": 1959,
+    "what": "Became the 50th US state"
+   },
+   {
+    "year": 2023,
+    "what": "Maui wildfires destroyed Lahaina"
+   }
+  ],
+  "flags": [],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": "Not checked online (search budget ran out); from general knowledge."
+ },
+ {
+  "title": "Doja Cat",
+  "ids": [
+   470,
+   205
+  ],
+  "kind": "person",
+  "known_as": "Doja Cat",
+  "summary": "American rapper and singer known for hits such as \"Say So\", \"Kiss Me More\" and \"Paint the Town Red\".",
+  "fields": [
+   "music",
+   "rapper"
+  ],
+  "roles": [
+   "rapper",
+   "singer",
+   "songwriter"
+  ],
+  "country": "US",
+  "born": "1995-10-21",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2018,
+    "what": "Went viral with the song \"Mooo!\""
+   },
+   {
+    "year": 2020,
+    "what": "\"Say So\" reached number one in the US"
+   },
+   {
+    "year": 2021,
+    "what": "Released the album Planet Her"
+   },
+   {
+    "year": 2022,
+    "what": "Won a Grammy for \"Kiss Me More\""
+   },
+   {
+    "year": 2023,
+    "what": "\"Paint the Town Red\" reached number one in the US"
+   }
+  ],
+  "flags": [
+   "major_award"
+  ],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": "Not checked online (search budget ran out); from general knowledge."
+ },
+ {
+  "title": "Cardi B",
+  "ids": [
+   469,
+   332
+  ],
+  "kind": "person",
+  "known_as": "Cardi B",
+  "summary": "American rapper known for \"Bodak Yellow\" and \"WAP\", the first solo woman to win the Grammy for Best Rap Album.",
+  "fields": [
+   "rapper",
+   "music",
+   "film_tv"
+  ],
+  "roles": [
+   "rapper",
+   "songwriter",
+   "television personality"
+  ],
+  "country": "US",
+  "born": "1992-10-11",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2015,
+    "what": "Joined the reality show Love & Hip Hop: New York"
+   },
+   {
+    "year": 2017,
+    "what": "\"Bodak Yellow\" reached number one in the US"
+   },
+   {
+    "year": 2019,
+    "what": "Won the Grammy for Best Rap Album for Invasion of Privacy"
+   },
+   {
+    "year": 2020,
+    "what": "Released \"WAP\" with Megan Thee Stallion"
+   },
+   {
+    "year": 2022,
+    "what": "Pleaded guilty to two misdemeanors over a 2018 strip club fight"
+   },
+   {
+    "year": 2025,
+    "what": "Released second album Am I the Drama?"
+   }
+  ],
+  "flags": [
+   "major_award",
+   "convicted_crime"
+  ],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": "Not checked online (search budget ran out); from general knowledge."
+ },
+ {
+  "title": "Caleb Pressley · Barstool",
+  "ids": [
+   468
+  ],
+  "kind": "person",
+  "known_as": "Caleb Pressley",
+  "summary": "American Barstool Sports personality, podcaster and comic interviewer, formerly a walk-on quarterback at North Carolina.",
+  "fields": [
+   "comedy",
+   "podcast",
+   "influencer"
+  ],
+  "roles": [
+   "interviewer",
+   "podcaster",
+   "blogger"
+  ],
+  "country": "US",
+  "born": "1992-11-13",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2015,
+    "what": "Joined Barstool Sports after graduating from the University of North Carolina"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.wikipedia.com/wiki/Caleb_Pressley"
+  ],
+  "note": ""
+ },
+ {
+  "title": "IShowSpeed",
+  "ids": [
+   467,
+   466,
+   256
+  ],
+  "kind": "person",
+  "known_as": "IShowSpeed (Speed)",
+  "summary": "American YouTuber and live streamer known for loud, high-energy streams, soccer fandom and world tour broadcasts.",
+  "fields": [
+   "streaming",
+   "youtube",
+   "music"
+  ],
+  "roles": [
+   "youtube streamer",
+   "internet personality"
+  ],
+  "country": "US",
+  "born": "2005-01-21",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2021,
+    "what": "Streams went viral and his channel grew rapidly"
+   },
+   {
+    "year": 2021,
+    "what": "Banned from Twitch"
+   },
+   {
+    "year": 2022,
+    "what": "Won Breakout Streamer at the Streamy Awards"
+   },
+   {
+    "year": 2024,
+    "what": "Named Streamer of the Year at the Streamer Awards"
+   },
+   {
+    "year": 2025,
+    "what": "Streamed a widely watched tour of China"
+   }
+  ],
+  "flags": [
+   "cancelled_or_banned"
+  ],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": "Not checked online (search budget ran out); from general knowledge."
+ },
+ {
+  "title": "Woah Vicky",
+  "ids": [
+   465,
+   464
+  ],
+  "kind": "person",
+  "known_as": "Woah Vicky",
+  "summary": "American social media personality who went viral in 2017 and is known for online feuds and stunts.",
+  "fields": [
+   "influencer"
+  ],
+  "roles": [
+   "social media personality"
+  ],
+  "country": "US",
+  "born": "2000-03-07",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2017,
+    "what": "Went viral on Instagram"
+   },
+   {
+    "year": 2018,
+    "what": "Arrested at a North Carolina mall"
+   },
+   {
+    "year": 2019,
+    "what": "Public fight with Bhad Bhabie"
+   },
+   {
+    "year": 2025,
+    "what": "Admitted she faked her own kidnapping during a trip to Nigeria"
+   }
+  ],
+  "flags": [
+   "major_scandal"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://tribune.com.pk/story/2519065/influencer-woah-vickys-fake-kidnapper-in-a-foreign-country-revealed-as-her-brother",
+   "https://www.premiumtimesng.com/entertainment/naija-fashion/764799-american-influencer-who-faked-own-kidnap-in-nigeria-under-fire-over-tweets.html"
+  ],
+  "note": "Only the Nigeria hoax was checked online; birth date and earlier events are from general knowledge. The 2018 arrest charges were not verified."
+ },
+ {
+  "title": "Juggalo",
+  "ids": [
+   463
+  ],
+  "kind": "group",
+  "known_as": "Juggalos",
+  "summary": "The fan subculture of the hip hop duo Insane Clown Posse and Psychopathic Records, known for face paint and yearly gatherings.",
+  "fields": [
+   "music"
+  ],
+  "roles": [
+   "fan subculture"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "events": [
+   {
+    "year": 1994,
+    "what": "Name arose at an Insane Clown Posse concert"
+   },
+   {
+    "year": 2000,
+    "what": "First Gathering of the Juggalos"
+   },
+   {
+    "year": 2011,
+    "what": "FBI report listed Juggalos as a loosely organized hybrid gang"
+   },
+   {
+    "year": 2017,
+    "what": "Juggalo March on Washington against the gang label"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": false,
+  "sources": [],
+  "note": "Could not confirm the batch date 1994-07-23 as the origin of the name; only the year 1994 is known to me. Not checked online (search budget ran out); from general knowledge."
+ },
+ {
+  "title": "Kevin Sell",
+  "ids": [
+   461
+  ],
+  "kind": "unknown",
+  "checked": true,
+  "sources": [],
+  "note": "No public figure found with this name and date."
+ },
+ {
+  "title": "Minneapolis",
+  "ids": [
+   460,
+   459,
+   445
+  ],
+  "kind": "place",
+  "known_as": "Minneapolis",
+  "summary": "Largest city in the US state of Minnesota, on the Mississippi River, twin city of Saint Paul.",
+  "fields": [
+   "other"
+  ],
+  "roles": [
+   "city"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "events": [
+   {
+    "year": 1867,
+    "what": "Incorporated as a city"
+   },
+   {
+    "year": 1872,
+    "what": "Merged with the city of St. Anthony"
+   },
+   {
+    "year": 2007,
+    "what": "I-35W Mississippi River bridge collapsed"
+   },
+   {
+    "year": 2020,
+    "what": "Murder of George Floyd set off worldwide protests"
+   }
+  ],
+  "flags": [],
+  "fame": 4,
+  "checked": false,
+  "sources": [],
+  "note": "Incorporated as a city in 1867; the exact day (batch says February 6) was not confirmed. Not checked online (search budget ran out); from general knowledge."
+ },
+ {
+  "title": "United States",
+  "ids": [
+   457,
+   456,
+   150
+  ],
+  "kind": "place",
+  "known_as": "United States of America",
+  "summary": "Federal republic of 50 states in North America; independence declared July 4, 1776.",
+  "fields": [
+   "other"
+  ],
+  "roles": [
+   "country"
+  ],
+  "country": "US",
+  "born": "1776-07-04",
+  "date_matches": true,
+  "events": [
+   {
+    "year": 1776,
+    "what": "Declaration of Independence adopted"
+   },
+   {
+    "year": 1788,
+    "what": "Constitution ratified"
+   },
+   {
+    "year": 1861,
+    "what": "Civil War began"
+   },
+   {
+    "year": 1945,
+    "what": "Emerged from World War II as a superpower"
+   },
+   {
+    "year": 2001,
+    "what": "September 11 attacks"
+   }
+  ],
+  "flags": [],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": "Not checked online (search budget ran out); from general knowledge."
+ },
+ {
+  "title": "Kyle Wagner",
+  "ids": [
+   455
+  ],
+  "kind": "unknown",
+  "checked": true,
+  "sources": [],
+  "note": "Several people have this name; none found with this birth date."
+ },
+ {
+  "title": "Minnesota",
+  "ids": [
+   454,
+   451
+  ],
+  "kind": "place",
+  "known_as": "Minnesota",
+  "summary": "Upper Midwest state of the United States, admitted as the 32nd state on May 11, 1858.",
+  "fields": [
+   "other"
+  ],
+  "roles": [
+   "us state"
+  ],
+  "country": "US",
+  "born": "1858-05-11",
+  "date_matches": true,
+  "events": [
+   {
+    "year": 1849,
+    "what": "Minnesota Territory created"
+   },
+   {
+    "year": 1858,
+    "what": "Became the 32nd US state"
+   },
+   {
+    "year": 1862,
+    "what": "US-Dakota War"
+   }
+  ],
+  "flags": [],
+  "fame": 4,
+  "checked": false,
+  "sources": [],
+  "note": "Not checked online (search budget ran out); from general knowledge."
+ },
+ {
+  "title": "Tim Walz",
+  "ids": [
+   453,
+   452
+  ],
+  "kind": "person",
+  "known_as": "Tim Walz",
+  "summary": "Governor of Minnesota since 2019, former congressman and teacher, and the Democratic nominee for vice president in 2024.",
+  "fields": [
+   "politics",
+   "education",
+   "military"
+  ],
+  "roles": [
+   "governor",
+   "former congressman",
+   "teacher"
+  ],
+  "country": "US",
+  "born": "1964-04-06",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2006,
+    "what": "Elected to the US House from Minnesota"
+   },
+   {
+    "year": 2018,
+    "what": "Elected governor of Minnesota"
+   },
+   {
+    "year": 2022,
+    "what": "Re-elected governor"
+   },
+   {
+    "year": 2024,
+    "what": "Democratic vice presidential nominee with Kamala Harris; the ticket lost"
+   },
+   {
+    "year": 2026,
+    "what": "Dropped his bid for a third term as governor amid a state fraud scandal"
+   }
+  ],
+  "flags": [
+   "elected_office",
+   "military_service"
+  ],
+  "fame": 4,
+  "checked": true,
+  "sources": [
+   "https://www.pbs.org/newshour/politics/minnesota-gov-tim-walz-wont-run-for-a-third-term",
+   "https://www.nbcnews.com/politics/2026-election/minnesota-gov-tim-walz-says-dropping-re-election-bid-rcna252300"
+  ],
+  "note": "Sources say he is not implicated in the fraud scheme. Anything after January 2026 not checked."
+ },
+ {
+  "title": "Reddit",
+  "ids": [
+   448,
+   403
+  ],
+  "kind": "company",
+  "known_as": "Reddit",
+  "summary": "American social news and discussion website made of user-run communities called subreddits.",
+  "fields": [
+   "tech",
+   "business"
+  ],
+  "roles": [
+   "social media company"
+  ],
+  "country": "US",
+  "born": "2005-06-23",
+  "date_matches": true,
+  "events": [
+   {
+    "year": 2005,
+    "what": "Founded by Steve Huffman and Alexis Ohanian"
+   },
+   {
+    "year": 2006,
+    "what": "Bought by Conde Nast"
+   },
+   {
+    "year": 2021,
+    "what": "r/wallstreetbets drove the GameStop short squeeze"
+   },
+   {
+    "year": 2023,
+    "what": "Thousands of communities went dark over API pricing"
+   },
+   {
+    "year": 2024,
+    "what": "Went public on the New York Stock Exchange"
+   }
+  ],
+  "flags": [],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": "Not checked online (search budget ran out); from general knowledge."
+ },
+ {
+  "title": "FouseyTube",
+  "ids": [
+   447
+  ],
+  "kind": "person",
+  "known_as": "Fousey (FouseyTube)",
+  "summary": "American YouTuber and streamer known for prank and \"social experiment\" videos and public breakdowns on stream.",
+  "fields": [
+   "youtube",
+   "streaming",
+   "comedy"
+  ],
+  "roles": [
+   "youtuber",
+   "streamer"
+  ],
+  "country": "US",
+  "born": "1990-01-22",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2011,
+    "what": "Started the FouseyTube channel"
+   },
+   {
+    "year": 2018,
+    "what": "His Los Angeles event was evacuated after a bomb threat"
+   },
+   {
+    "year": 2023,
+    "what": "Arrested during a live stream in Miami; banned from Kick"
+   }
+  ],
+  "flags": [
+   "cancelled_or_banned"
+  ],
+  "fame": 3,
+  "checked": false,
+  "sources": [],
+  "note": "The 2023 arrest and ban are from memory; charge and outcome not verified. Not checked online (search budget ran out); from general knowledge."
+ },
+ {
+  "title": "Staffan Taylor · Yes Theory",
+  "ids": [
+   446
+  ],
+  "kind": "person",
+  "known_as": "Staffan Taylor",
+  "summary": "Member of the YouTube travel and adventure channel Yes Theory.",
+  "fields": [
+   "youtube"
+  ],
+  "roles": [
+   "youtuber",
+   "filmmaker"
+  ],
+  "country": null,
+  "born": null,
+  "date_matches": null,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [],
+  "flags": [],
+  "fame": 2,
+  "checked": true,
+  "sources": [],
+  "note": "Two searches returned nothing on him; the Yes Theory link is from general knowledge and the owner's tag. Birth date could not be confirmed."
+ },
+ {
+  "title": "JD Vance",
+  "ids": [
+   444,
+   443
+  ],
+  "kind": "person",
+  "known_as": "JD Vance",
+  "summary": "Vice president of the United States since 2025, former Ohio senator and author of the memoir Hillbilly Elegy.",
+  "fields": [
+   "politics",
+   "writing",
+   "military"
+  ],
+  "roles": [
+   "vice president",
+   "former senator",
+   "author"
+  ],
+  "country": "US",
+  "born": "1984-08-02",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2003,
+    "what": "Enlisted in the US Marine Corps, served in Iraq"
+   },
+   {
+    "year": 2016,
+    "what": "Published the memoir Hillbilly Elegy"
+   },
+   {
+    "year": 2022,
+    "what": "Elected US senator from Ohio"
+   },
+   {
+    "year": 2024,
+    "what": "Elected vice president with Donald Trump"
+   },
+   {
+    "year": 2025,
+    "what": "Sworn in as the 50th vice president"
+   }
+  ],
+  "flags": [
+   "elected_office",
+   "military_service"
+  ],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": "Born James Donald Bowman; later renamed James David Vance. Not checked online (search budget ran out); from general knowledge."
+ },
+ {
+  "title": "BlackRock",
+  "ids": [
+   442
+  ],
+  "kind": "company",
+  "known_as": "BlackRock",
+  "summary": "American investment company, the world's largest asset manager.",
+  "fields": [
+   "finance",
+   "business"
+  ],
+  "roles": [
+   "asset manager"
+  ],
+  "country": "US",
+  "born": "1988",
+  "date_matches": false,
+  "events": [
+   {
+    "year": 1988,
+    "what": "Founded by Larry Fink and partners"
+   },
+   {
+    "year": 1999,
+    "what": "Went public on the New York Stock Exchange"
+   },
+   {
+    "year": 2009,
+    "what": "Bought Barclays Global Investors, including iShares"
+   },
+   {
+    "year": 2024,
+    "what": "Launched a spot bitcoin fund"
+   }
+  ],
+  "flags": [],
+  "fame": 4,
+  "checked": false,
+  "sources": [],
+  "note": "Founded in 1988. The batch date 1999-10-01 is the day its shares began trading (IPO), not the founding. Not checked online (search budget ran out); from general knowledge."
+ },
+ {
+  "title": "Logic",
+  "ids": [
+   439
+  ],
+  "kind": "person",
+  "known_as": "Logic",
+  "summary": "American rapper and producer known for the suicide-prevention song \"1-800-273-8255\".",
+  "fields": [
+   "rapper",
+   "music",
+   "writing"
+  ],
+  "roles": [
+   "rapper",
+   "record producer",
+   "author"
+  ],
+  "country": "US",
+  "born": "1990-01-22",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2014,
+    "what": "Released debut album Under Pressure"
+   },
+   {
+    "year": 2017,
+    "what": "\"1-800-273-8255\" became a top-three US hit"
+   },
+   {
+    "year": 2019,
+    "what": "Published the novel Supermarket"
+   },
+   {
+    "year": 2020,
+    "what": "Announced his retirement from music"
+   },
+   {
+    "year": 2021,
+    "what": "Returned to music"
+   }
+  ],
+  "flags": [],
+  "fame": 4,
+  "checked": false,
+  "sources": [],
+  "note": "Not checked online (search budget ran out); from general knowledge."
+ },
+ {
+  "title": "Tony Robbins",
+  "ids": [
+   438
+  ],
+  "kind": "person",
+  "known_as": "Tony Robbins",
+  "summary": "American motivational speaker, author and business coach known for his self-help seminars and books.",
+  "fields": [
+   "business",
+   "writing",
+   "other"
+  ],
+  "roles": [
+   "motivational speaker",
+   "author",
+   "coach"
+  ],
+  "country": "US",
+  "born": "1960-02-29",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1986,
+    "what": "Published Unlimited Power"
+   },
+   {
+    "year": 1991,
+    "what": "Published Awaken the Giant Within"
+   },
+   {
+    "year": 2019,
+    "what": "BuzzFeed News reported accusations of sexual misconduct, which he denied"
+   }
+  ],
+  "flags": [],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": "Not checked online (search budget ran out); from general knowledge."
+ },
+ {
+  "title": "Maki Hanawa",
+  "ids": [
+   437
+  ],
+  "kind": "unknown",
+  "checked": true,
+  "sources": [],
+  "note": "No public figure found with this name and date."
+ },
+ {
+  "title": "Dan Bilzerian",
+  "ids": [
+   435
+  ],
+  "kind": "person",
+  "known_as": "Dan Bilzerian",
+  "summary": "American social media personality and poker player known for flaunting a lavish lifestyle on Instagram.",
+  "fields": [
+   "influencer",
+   "business"
+  ],
+  "roles": [
+   "social media personality",
+   "poker player",
+   "businessman"
+  ],
+  "country": "US",
+  "born": "1980-12-07",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2009,
+    "what": "Played in the World Series of Poker Main Event"
+   },
+   {
+    "year": 2014,
+    "what": "Arrested at Los Angeles airport on bomb-making charges, later dropped"
+   },
+   {
+    "year": 2018,
+    "what": "Launched the company Ignite"
+   }
+  ],
+  "flags": [
+   "charged_crime",
+   "founder"
+  ],
+  "fame": 4,
+  "checked": false,
+  "sources": [],
+  "note": "Anything from 2025-2026 not checked. Not checked online (search budget ran out); from general knowledge."
+ },
+ {
+  "title": "Bryce Crawford",
+  "ids": [
+   434
+  ],
+  "kind": "person",
+  "known_as": "Bryce Crawford",
+  "summary": "American Gen Z Christian evangelist, street preacher and podcaster with a large social media following.",
+  "fields": [
+   "religion",
+   "influencer",
+   "podcast"
+  ],
+  "roles": [
+   "evangelist",
+   "street preacher",
+   "podcaster"
+  ],
+  "country": "US",
+  "born": "2003-10-22",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2021,
+    "what": "Says an encounter with Jesus at 17 turned him to evangelism"
+   },
+   {
+    "year": 2026,
+    "what": "Married in January"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://religionnews.com/2026/05/20/can-virality-create-revival-gen-z-evangelist-bryce-crawford-has-faith/",
+   "https://www.thecityceleb.com/biography/personality/content-creator/bryce-crawford-biography-age-net-worth-wife-religion-parents-height-youtube-ethnicity/",
+   "https://churchleaders.com/news/2212134-bryce-crawford-jesus-loves-you-isnt-gospel.html"
+  ],
+  "note": "The birth date comes from one low-quality biography site; news articles only confirm he was 22 in 2026. The 2021 year is worked out from \"age 17\"."
+ },
+ {
+  "title": "Hasbulla",
+  "ids": [
+   432
+  ],
+  "kind": "person",
+  "known_as": "Hasbulla",
+  "summary": "Russian social media personality from Dagestan who went viral in 2021 and is linked with UFC fighters.",
+  "fields": [
+   "influencer",
+   "combat_sports"
+  ],
+  "roles": [
+   "social media personality"
+  ],
+  "country": "RU",
+  "born": "2002-07-07",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2021,
+    "what": "Went viral on TikTok and Instagram"
+   },
+   {
+    "year": 2022,
+    "what": "Signed a promotional deal with the UFC"
+   },
+   {
+    "year": 2023,
+    "what": "Detained in Dagestan over traffic violations"
+   }
+  ],
+  "flags": [],
+  "fame": 4,
+  "checked": false,
+  "sources": [],
+  "note": "Birth date as widely reported (some sources give 2003). Not checked online (search budget ran out); from general knowledge."
+ },
+ {
+  "title": "Chase Briscoe",
+  "ids": [
+   431
+  ],
+  "kind": "person",
+  "known_as": "Chase Briscoe",
+  "summary": "American NASCAR Cup Series driver for Joe Gibbs Racing, formerly with Stewart-Haas Racing.",
+  "fields": [
+   "sports"
+  ],
+  "roles": [
+   "nascar driver"
+  ],
+  "country": "US",
+  "born": "1994-12-15",
+  "date_matches": false,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2020,
+    "what": "Won nine Xfinity Series races"
+   },
+   {
+    "year": 2022,
+    "what": "First Cup Series win, at Phoenix"
+   },
+   {
+    "year": 2024,
+    "what": "Won the Southern 500"
+   },
+   {
+    "year": 2025,
+    "what": "Joined Joe Gibbs Racing in the No. 19 car"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.nascar.com/drivers/chase-briscoe",
+   "https://en.wikipedia.com/wiki/Chase_Briscoe",
+   "https://www.motorsport.com/driver/chase-briscoe-2/54367/"
+  ],
+  "note": "DATE DIFFERS: NASCAR lists his birth date as 1994-12-15, the batch has 1997-05-04. 2026 season results not checked."
+ },
+ {
+  "title": "China",
+  "ids": [
+   430
+  ],
+  "kind": "place",
+  "known_as": "People's Republic of China",
+  "summary": "East Asian country governed by the Chinese Communist Party, proclaimed by Mao Zedong on October 1, 1949.",
+  "fields": [
+   "other"
+  ],
+  "roles": [
+   "country"
+  ],
+  "country": "CN",
+  "born": "1949-10-01",
+  "date_matches": true,
+  "events": [
+   {
+    "year": 1949,
+    "what": "People's Republic proclaimed in Beijing"
+   },
+   {
+    "year": 1966,
+    "what": "Cultural Revolution began"
+   },
+   {
+    "year": 1978,
+    "what": "Economic reforms began under Deng Xiaoping"
+   },
+   {
+    "year": 1989,
+    "what": "Tiananmen Square protests crushed"
+   },
+   {
+    "year": 2001,
+    "what": "Joined the World Trade Organization"
+   }
+  ],
+  "flags": [],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": "Not checked online (search budget ran out); from general knowledge."
+ }
+]

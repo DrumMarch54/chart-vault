@@ -978,3 +978,22 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .lookup-opt.off { cursor: default; opacity: .75; }
 .lookup-opt.on b::before { content: "✓ "; color: var(--accent); }
 .lookup-fields input { min-height: 42px; height: 42px; padding: 0 10px; font-size: 16px; border-radius: 10px; }
+
+/* Who each person is (public/people.js): the chart sheet's About card and the Kinds of People screen. */
+.about { border-top: 1px solid var(--panel2); padding-top: 10px; }
+.asum { font-size: 17px; line-height: 1.35; }
+.apills { display: flex; flex-wrap: wrap; gap: 6px; }
+.apill { display: inline-flex; align-items: center; min-height: 34px; padding: 4px 12px; border-radius: 17px; font-size: 14px; line-height: 1.2; text-decoration: none; color: var(--text); background: var(--who); }
+.apill.flag { background: var(--panel2); }
+.about .linkbtn { align-self: flex-start; color: var(--blue); padding: 0; }
+.aevents { display: flex; flex-direction: column; gap: 6px; }
+.aevent { display: flex; gap: 10px; font-size: 15px; line-height: 1.3; }
+.aevent b { flex: 0 0 44px; color: var(--muted); font-weight: 600; }
+.anote { font-size: 14px; line-height: 1.35; color: var(--muted); background: var(--panel2); border-radius: 10px; padding: 8px 10px; }
+.anote.warn { background: var(--warn-bg); color: var(--text); }
+.asrc a { color: var(--blue); }
+.klist { display: flex; flex-direction: column; gap: 6px; }
+.krow { display: flex; align-items: center; gap: 10px; min-height: var(--tap); padding: 0 14px; border-radius: 12px; background: var(--panel); color: var(--text); text-decoration: none; }
+.krow .kl { flex: 1; min-width: 0; font-weight: 600; }
+.krow .kn { color: var(--muted); font-variant-numeric: tabular-nums; }
+.krow .kchev { color: var(--muted); font-size: 18px; }

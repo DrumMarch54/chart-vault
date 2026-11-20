@@ -1,0 +1,1217 @@
+[
+ {
+  "title": "Lofe",
+  "ids": [
+   147
+  ],
+  "kind": "person",
+  "known_as": "Lofe",
+  "summary": "American YouTuber known for prank videos and vlogs, with over a million subscribers.",
+  "fields": [
+   "youtube"
+  ],
+  "roles": [
+   "youtuber",
+   "prankster"
+  ],
+  "country": "US",
+  "born": "2000-06-07",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2019,
+    "what": "First YouTube video"
+   }
+  ],
+  "flags": [],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://wiki.sportskeeda.com/youtube/lofes-net-worth",
+   "https://www.sportskeeda.com/pop-culture/how-tall-is-lofe-the-youtuber"
+  ],
+  "note": "Birth date comes from biography sites only, no authoritative source."
+ },
+ {
+  "title": "Patrick Bet-David",
+  "ids": [
+   145
+  ],
+  "kind": "person",
+  "known_as": "Patrick Bet-David",
+  "summary": "Iranian-American entrepreneur and media host who founded PHP Agency and the Valuetainment media company and hosts the PBD Podcast.",
+  "fields": [
+   "business",
+   "podcast",
+   "commentary"
+  ],
+  "roles": [
+   "entrepreneur",
+   "podcast host",
+   "author"
+  ],
+  "country": "US",
+  "born": "1978-10-18",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1989,
+    "what": "Family left Iran; later settled in the United States"
+   },
+   {
+    "year": 2009,
+    "what": "Founded the insurance marketing firm PHP Agency"
+   },
+   {
+    "year": 2012,
+    "what": "Started Valuetainment on YouTube"
+   },
+   {
+    "year": 2022,
+    "what": "PHP Agency acquired by Integrity Marketing Group"
+   }
+  ],
+  "flags": [
+   "founder",
+   "self_made_wealth",
+   "military_service"
+  ],
+  "fame": 3,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ },
+ {
+  "title": "Bill Gates",
+  "ids": [
+   144
+  ],
+  "kind": "person",
+  "known_as": "Bill Gates",
+  "summary": "Co-founder of Microsoft, for years the richest person in the world, later a philanthropist through the Gates Foundation.",
+  "fields": [
+   "tech",
+   "business"
+  ],
+  "roles": [
+   "software entrepreneur",
+   "philanthropist"
+  ],
+  "country": "US",
+  "born": "1955-10-28",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1975,
+    "what": "Co-founded Microsoft with Paul Allen"
+   },
+   {
+    "year": 1995,
+    "what": "Windows 95 released; became the richest person in the world"
+   },
+   {
+    "year": 2000,
+    "what": "Stepped down as Microsoft CEO; started the Bill & Melinda Gates Foundation"
+   },
+   {
+    "year": 2020,
+    "what": "Left the Microsoft board"
+   },
+   {
+    "year": 2021,
+    "what": "Divorced from Melinda French Gates"
+   }
+  ],
+  "flags": [
+   "billionaire",
+   "self_made_wealth",
+   "founder",
+   "major_award"
+  ],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ },
+ {
+  "title": "Marilyn vos Savant",
+  "ids": [
+   143,
+   142
+  ],
+  "kind": "person",
+  "known_as": "Marilyn vos Savant",
+  "summary": "American columnist once listed by Guinness for the highest recorded IQ, author of the \"Ask Marilyn\" column in Parade magazine.",
+  "fields": [
+   "writing"
+  ],
+  "roles": [
+   "columnist",
+   "author"
+  ],
+  "country": "US",
+  "born": "1946-08-11",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1985,
+    "what": "Listed in the Guinness Book of World Records for highest IQ"
+   },
+   {
+    "year": 1986,
+    "what": "Started the \"Ask Marilyn\" column in Parade"
+   },
+   {
+    "year": 1990,
+    "what": "Her Monty Hall problem answer drew thousands of letters and proved correct"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ },
+ {
+  "title": "Baldemar Balderrama",
+  "ids": [
+   141,
+   4
+  ],
+  "kind": "unknown",
+  "note": "Not a public figure I can identify by name and date; the web search allowance ran out before this one could be searched."
+ },
+ {
+  "title": "Arab",
+  "ids": [
+   140
+  ],
+  "kind": "person",
+  "known_as": "YourFellowArab (Arab)",
+  "summary": "Lebanese-American YouTuber and streamer known for danger-travel videos; kidnapped by a gang in Haiti in 2024 and later released.",
+  "fields": [
+   "youtube",
+   "streaming"
+  ],
+  "roles": [
+   "youtuber",
+   "streamer"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2024,
+    "what": "Kidnapped in Haiti by the 400 Mawozo gang while trying to interview gang leader Jimmy \"Barbecue\" Cherizier; released after about 17 days"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.sportskeeda.com/esports/news-popular-youtuber-streamer-yourfellowarab-reportedly-kidnapped-held-600-000-ransom-haiti",
+   "https://dexerto.com/youtube/youtuber-yourfellowarab-released-after-being-kidnapped-in-haiti-2621120",
+   "https://thenationalnews.com/news/us/2024/03/29/arab-american-youtuber-reportedly-kidnapped-in-haiti"
+  ],
+  "note": "Name confirmed (Addison Pierre Maalouf); no source seen for the birth date, so it is not confirmed. Reports conflict on whether a ransom was paid."
+ },
+ {
+  "title": "Me · number test",
+  "ids": [
+   139,
+   138
+  ],
+  "kind": "unknown",
+  "note": "Not a person lookup: the names are numbers, the owner's own test chart."
+ },
+ {
+  "title": "Mahatma Gandhi",
+  "ids": [
+   137
+  ],
+  "kind": "person",
+  "known_as": "Mahatma Gandhi",
+  "summary": "Leader of India's independence movement against British rule, known for nonviolent civil disobedience.",
+  "fields": [
+   "politics",
+   "activism",
+   "spirituality"
+  ],
+  "roles": [
+   "independence leader",
+   "lawyer",
+   "activist"
+  ],
+  "country": "IN",
+  "born": "1869-10-02",
+  "date_matches": true,
+  "died": "1948-01-30",
+  "death_cause": "homicide",
+  "age_at_death": 78,
+  "events": [
+   {
+    "year": 1893,
+    "what": "Went to South Africa, where he began civil rights campaigning"
+   },
+   {
+    "year": 1915,
+    "what": "Returned to India"
+   },
+   {
+    "year": 1922,
+    "what": "Convicted of sedition and sentenced to six years in prison"
+   },
+   {
+    "year": 1930,
+    "what": "Led the Salt March"
+   },
+   {
+    "year": 1947,
+    "what": "India became independent"
+   },
+   {
+    "year": 1948,
+    "what": "Shot dead in New Delhi by Nathuram Godse"
+   }
+  ],
+  "flags": [
+   "murdered",
+   "prison",
+   "convicted_crime"
+  ],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": "The name on the chart is typed \"Gandh\" (the final i is missing)."
+ },
+ {
+  "title": "Gavin Newsom",
+  "ids": [
+   136
+  ],
+  "kind": "person",
+  "known_as": "Gavin Newsom",
+  "summary": "Democratic politician, Governor of California since 2019 and former mayor of San Francisco.",
+  "fields": [
+   "politics",
+   "business"
+  ],
+  "roles": [
+   "governor",
+   "former mayor"
+  ],
+  "country": "US",
+  "born": "1967-10-10",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1992,
+    "what": "Co-founded the PlumpJack wine business"
+   },
+   {
+    "year": 2004,
+    "what": "Became mayor of San Francisco; ordered same-sex marriage licenses issued"
+   },
+   {
+    "year": 2011,
+    "what": "Became lieutenant governor of California"
+   },
+   {
+    "year": 2019,
+    "what": "Became governor of California"
+   },
+   {
+    "year": 2021,
+    "what": "Defeated a recall election"
+   },
+   {
+    "year": 2022,
+    "what": "Re-elected governor"
+   }
+  ],
+  "flags": [
+   "elected_office",
+   "founder"
+  ],
+  "fame": 4,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ },
+ {
+  "title": "Bob Marley",
+  "ids": [
+   135,
+   704
+  ],
+  "kind": "person",
+  "known_as": "Bob Marley",
+  "summary": "Jamaican singer and songwriter who brought reggae to a worldwide audience with the Wailers.",
+  "fields": [
+   "music"
+  ],
+  "roles": [
+   "singer",
+   "songwriter",
+   "guitarist"
+  ],
+  "country": "JM",
+  "born": "1945-02-06",
+  "date_matches": true,
+  "died": "1981-05-11",
+  "death_cause": "illness",
+  "age_at_death": 36,
+  "events": [
+   {
+    "year": 1963,
+    "what": "Formed the Wailers"
+   },
+   {
+    "year": 1973,
+    "what": "International breakthrough with the album Catch a Fire"
+   },
+   {
+    "year": 1976,
+    "what": "Wounded in a shooting at his home in Kingston"
+   },
+   {
+    "year": 1977,
+    "what": "Released Exodus"
+   },
+   {
+    "year": 1981,
+    "what": "Died of melanoma in Miami"
+   },
+   {
+    "year": 1994,
+    "what": "Inducted into the Rock and Roll Hall of Fame"
+   }
+  ],
+  "flags": [
+   "died_young",
+   "major_award"
+  ],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ },
+ {
+  "title": "Terence McKenna",
+  "ids": [
+   134
+  ],
+  "kind": "person",
+  "known_as": "Terence McKenna",
+  "summary": "American ethnobotanist, author and lecturer known for his ideas about psychedelic plants and consciousness.",
+  "fields": [
+   "writing",
+   "spirituality"
+  ],
+  "roles": [
+   "ethnobotanist",
+   "author",
+   "lecturer"
+  ],
+  "country": "US",
+  "born": "1946-11-16",
+  "date_matches": true,
+  "died": "2000-04-03",
+  "death_cause": "illness",
+  "age_at_death": 53,
+  "events": [
+   {
+    "year": 1971,
+    "what": "Expedition to La Chorrera in the Colombian Amazon"
+   },
+   {
+    "year": 1975,
+    "what": "Published The Invisible Landscape with his brother Dennis"
+   },
+   {
+    "year": 1992,
+    "what": "Published Food of the Gods"
+   },
+   {
+    "year": 2000,
+    "what": "Died of brain cancer"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ },
+ {
+  "title": "Jeffrey Epstein",
+  "ids": [
+   133
+  ],
+  "kind": "person",
+  "known_as": "Jeffrey Epstein",
+  "summary": "American financier and convicted sex offender who died in jail while awaiting trial on federal sex trafficking charges.",
+  "fields": [
+   "finance",
+   "crime"
+  ],
+  "roles": [
+   "financier"
+  ],
+  "country": "US",
+  "born": "1953-01-20",
+  "date_matches": true,
+  "died": "2019-08-10",
+  "death_cause": "suicide",
+  "age_at_death": 66,
+  "events": [
+   {
+    "year": 2005,
+    "what": "Police in Palm Beach, Florida began investigating him"
+   },
+   {
+    "year": 2008,
+    "what": "Pleaded guilty in Florida to soliciting prostitution, including from a minor; served about 13 months"
+   },
+   {
+    "year": 2019,
+    "what": "Arrested on federal sex trafficking charges"
+   },
+   {
+    "year": 2019,
+    "what": "Found dead in his New York jail cell; ruled a suicide"
+   }
+  ],
+  "flags": [
+   "convicted_crime",
+   "charged_crime",
+   "prison",
+   "suicide",
+   "major_scandal"
+  ],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ },
+ {
+  "title": "YNW Melly",
+  "ids": [
+   132
+  ],
+  "kind": "person",
+  "known_as": "YNW Melly",
+  "summary": "Florida rapper known for \"Murder on My Mind\", jailed since 2019 awaiting retrial on two murder charges.",
+  "fields": [
+   "rapper",
+   "music"
+  ],
+  "roles": [
+   "rapper",
+   "singer"
+  ],
+  "country": "US",
+  "born": "1999-05-01",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2018,
+    "what": "\"Murder on My Mind\" became a hit"
+   },
+   {
+    "year": 2019,
+    "what": "Arrested and charged with two counts of first-degree murder in the 2018 deaths of two friends; pleaded not guilty"
+   },
+   {
+    "year": 2023,
+    "what": "First trial ended in a mistrial with a hung jury"
+   },
+   {
+    "year": 2026,
+    "what": "Witness tampering charges dropped; denied bond; retrial set for January 2027"
+   }
+  ],
+  "flags": [
+   "charged_crime"
+  ],
+  "fame": 4,
+  "checked": true,
+  "sources": [
+   "https://www.local10.com/news/local/2026/04/30/rapper-ynw-melly-back-in-court-as-he-seeks-bond-ahead-of-double-murder-retrial/",
+   "https://www.rollingstone.com/music/music-news/ynw-melly-tampering-charges-dropped-trial-1235501976/",
+   "https://www.xxlmag.com/ynw-melly-double-murder-retrial-postponed-2027/"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Leo Dottavio",
+  "ids": [
+   131
+  ],
+  "kind": "person",
+  "known_as": "Leo Dottavio",
+  "summary": "American reality television personality, stuntman and comedian who competed on season 14 of The Bachelorette.",
+  "fields": [
+   "film_tv",
+   "comedy"
+  ],
+  "roles": [
+   "reality tv contestant",
+   "stuntman",
+   "comedian"
+  ],
+  "country": "US",
+  "born": "1986-08-14",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2018,
+    "what": "Competed on The Bachelorette season 14 and Bachelor in Paradise"
+   },
+   {
+    "year": 2018,
+    "what": "Accused of sexual harassment on social media; denied it; placed on leave from his stunt job at Universal Studios"
+   }
+  ],
+  "flags": [],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://ipfs.ssi.eecc.de/ipns/en.wikipedia-on-ipfs.org/wiki/Leo_Dottavio",
+   "https://www.foxnews.com/entertainment/bachelor-star-leandro-dottavio-on-leave-from-stunt-job-following-harassment-allegations.amp",
+   "https://hollywoodlife.com/2018/07/02/who-is-leo-dottavio-the-bachelorette-season-14-contestant/"
+  ],
+  "note": "Birth date seen only on a mirror copy of Wikipedia. The 2018 accusations were made on social media; no charge or finding found."
+ },
+ {
+  "title": "Zach Miller",
+  "ids": [
+   130
+  ],
+  "kind": "unknown",
+  "note": "One search for the full name and date found no public figure."
+ },
+ {
+  "title": "Alan Watts",
+  "ids": [
+   129
+  ],
+  "kind": "person",
+  "known_as": "Alan Watts",
+  "summary": "British-born writer and speaker who popularized Zen Buddhism and Eastern philosophy for Western audiences.",
+  "fields": [
+   "writing",
+   "spirituality"
+  ],
+  "roles": [
+   "writer",
+   "speaker",
+   "philosopher"
+  ],
+  "country": "US",
+  "born": "1915-01-06",
+  "date_matches": true,
+  "died": "1973-11-16",
+  "death_cause": "natural",
+  "age_at_death": 58,
+  "events": [
+   {
+    "year": 1936,
+    "what": "Published The Spirit of Zen"
+   },
+   {
+    "year": 1938,
+    "what": "Moved from England to the United States"
+   },
+   {
+    "year": 1945,
+    "what": "Ordained an Episcopal priest; left the ministry in 1950"
+   },
+   {
+    "year": 1957,
+    "what": "Published The Way of Zen"
+   },
+   {
+    "year": 1973,
+    "what": "Died in his sleep at his home in California"
+   }
+  ],
+  "flags": [],
+  "fame": 4,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ },
+ {
+  "title": "Andy Elliott",
+  "ids": [
+   128
+  ],
+  "kind": "person",
+  "known_as": "Andy Elliott",
+  "summary": "American sales trainer and motivational speaker, founder and CEO of The Elliott Group, known for high-intensity sales training videos.",
+  "fields": [
+   "business",
+   "influencer"
+  ],
+  "roles": [
+   "sales trainer",
+   "motivational speaker"
+  ],
+  "country": "US",
+  "born": "1979-10-21",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [],
+  "flags": [
+   "founder"
+  ],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://www.explosion.com/156289/andy-elliott-from-car-salesman-to-sales-training-mogul/",
+   "https://gothamartists.com/andy-elliott",
+   "https://www.famousbirthdays.com/people/andy-elliott.html"
+  ],
+  "note": "Birth date comes from biography sites only. Sources disagree on when The Elliott Group started (2010 or 2019), so no dated events are given."
+ },
+ {
+  "title": "Trisha Paytas",
+  "ids": [
+   127
+  ],
+  "kind": "person",
+  "known_as": "Trisha Paytas",
+  "summary": "American YouTuber, podcaster and singer, on YouTube since 2007 and known for vlogs, internet feuds and the Frenemies podcast.",
+  "fields": [
+   "youtube",
+   "podcast",
+   "music"
+  ],
+  "roles": [
+   "youtuber",
+   "podcaster",
+   "singer"
+  ],
+  "country": "US",
+  "born": "1988-05-08",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2007,
+    "what": "Started the YouTube channel blndsundoll4mj"
+   },
+   {
+    "year": 2017,
+    "what": "Appeared on Celebrity Big Brother in the UK"
+   },
+   {
+    "year": 2020,
+    "what": "Started the Frenemies podcast with Ethan Klein; left it in 2021"
+   },
+   {
+    "year": 2023,
+    "what": "Started the Just Trish podcast"
+   }
+  ],
+  "flags": [],
+  "fame": 4,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ },
+ {
+  "title": "Tyler Oliveira",
+  "ids": [
+   126
+  ],
+  "kind": "person",
+  "known_as": "Tyler Oliveira",
+  "summary": "American YouTuber and self-described journalist known for documentary-style videos, described by Wikipedia as right-wing.",
+  "fields": [
+   "youtube",
+   "commentary"
+  ],
+  "roles": [
+   "youtuber",
+   "video journalist"
+  ],
+  "country": "US",
+  "born": "2000-01-06",
+  "date_matches": false,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Tyler_Oliveira",
+   "https://www.thefamouspeople.com/profiles/tyler-oliveira-143091.php",
+   "https://knowyourmeme.com/memes/people/tyler-oliveira"
+  ],
+  "note": "Date differs: the chart has 1995-07-06, but Wikipedia and every other source found give January 6, 2000 (Modesto, California). No source found for July 6, 1995."
+ },
+ {
+  "title": "Seth Davis",
+  "ids": [
+   124
+  ],
+  "kind": "unknown",
+  "note": "Not a public figure I can identify by name and date; the web search allowance ran out before this one could be searched. The sportswriter Seth Davis was born in 1970, so he is not this chart."
+ },
+ {
+  "title": "Kenneth Copeland",
+  "ids": [
+   123
+  ],
+  "kind": "person",
+  "known_as": "Kenneth Copeland",
+  "summary": "American televangelist and prosperity gospel preacher, founder of Kenneth Copeland Ministries in Texas.",
+  "fields": [
+   "religion"
+  ],
+  "roles": [
+   "televangelist",
+   "pastor",
+   "author"
+  ],
+  "country": "US",
+  "born": "1936-12-06",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1967,
+    "what": "Founded Kenneth Copeland Ministries"
+   },
+   {
+    "year": 1979,
+    "what": "Began the Believer's Voice of Victory television broadcast"
+   },
+   {
+    "year": 2007,
+    "what": "His ministry was one of six examined in a US Senate inquiry into televangelists' finances"
+   },
+   {
+    "year": 2020,
+    "what": "Videos of him \"blowing away\" COVID-19 went viral"
+   }
+  ],
+  "flags": [
+   "religious_leader",
+   "founder"
+  ],
+  "fame": 4,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ },
+ {
+  "title": "Fred Beyer",
+  "ids": [
+   122
+  ],
+  "kind": "person",
+  "known_as": "Fred Beyer",
+  "summary": "American YouTuber known for prank videos on strangers in public, with over a million subscribers.",
+  "fields": [
+   "youtube",
+   "comedy"
+  ],
+  "roles": [
+   "youtuber",
+   "prankster"
+  ],
+  "country": "US",
+  "born": "2002-02-25",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2021,
+    "what": "Started his YouTube channel"
+   }
+  ],
+  "flags": [],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://es.famousbirthdays.com/people/fred-beyer.html",
+   "https://thefamouspeople.com/profiles/fred-beyer-146077.php",
+   "https://vidiq.com/youtube-stats/channel/UC8jFPZS-p9MmVRCZi8giNcw"
+  ],
+  "note": "Birth date comes from biography sites only."
+ },
+ {
+  "title": "Moist Critikal",
+  "ids": [
+   121
+  ],
+  "kind": "person",
+  "known_as": "MoistCr1TiKaL (penguinz0)",
+  "summary": "American YouTuber and streamer known for deadpan commentary videos as penguinz0, and co-founder of Moist Esports.",
+  "fields": [
+   "youtube",
+   "streaming",
+   "commentary"
+  ],
+  "roles": [
+   "youtuber",
+   "streamer",
+   "commentator"
+  ],
+  "country": "US",
+  "born": "1994-08-02",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2007,
+    "what": "Started the penguinz0 YouTube channel"
+   },
+   {
+    "year": 2018,
+    "what": "Began streaming regularly on Twitch"
+   },
+   {
+    "year": 2021,
+    "what": "Co-founded the esports organization Moist Esports"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "fame": 4,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ },
+ {
+  "title": "MrBeast",
+  "ids": [
+   120
+  ],
+  "kind": "person",
+  "known_as": "MrBeast",
+  "summary": "American YouTuber with the most-subscribed channel in the world, known for expensive challenge and giveaway videos.",
+  "fields": [
+   "youtube",
+   "business"
+  ],
+  "roles": [
+   "youtuber",
+   "entrepreneur",
+   "philanthropist"
+  ],
+  "country": "US",
+  "born": "1998-05-07",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2012,
+    "what": "Started posting on YouTube"
+   },
+   {
+    "year": 2017,
+    "what": "Went viral counting to 100,000"
+   },
+   {
+    "year": 2021,
+    "what": "Recreated Squid Game in real life"
+   },
+   {
+    "year": 2022,
+    "what": "Launched the Feastables snack brand"
+   },
+   {
+    "year": 2024,
+    "what": "Became the most-subscribed YouTube channel"
+   },
+   {
+    "year": 2024,
+    "what": "Beast Games premiered on Prime Video"
+   }
+  ],
+  "flags": [
+   "founder",
+   "self_made_wealth"
+  ],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ },
+ {
+  "title": "Jennelle Gordon",
+  "ids": [
+   118
+  ],
+  "kind": "unknown",
+  "note": "Not a public figure I can identify by name and date; the web search allowance ran out before this one could be searched."
+ },
+ {
+  "title": "Franky Venegas",
+  "ids": [
+   116
+  ],
+  "kind": "person",
+  "known_as": "Kodiyakredd (Island Boys)",
+  "summary": "American social media personality and rapper, one of the twin Island Boys who went viral on TikTok in 2021.",
+  "fields": [
+   "influencer",
+   "rapper"
+  ],
+  "roles": [
+   "social media personality",
+   "rapper"
+  ],
+  "country": "US",
+  "born": "2001-07-16",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2021,
+    "what": "\"I'm an Island Boy\" video went viral on TikTok"
+   },
+   {
+    "year": 2025,
+    "what": "Arrested in Naples, Florida on drug possession and altered firearm charges"
+   },
+   {
+    "year": 2025,
+    "what": "Arrested again on New Year's Eve in Collier County, Florida, on drug charges"
+   }
+  ],
+  "flags": [
+   "charged_crime"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.com/wiki/Island_Boys",
+   "https://www.tmz.com/2025/02/24/island-boy-frank-venegas-arrest-gun-drug-florida-collier-alex/",
+   "https://www.nbcmiami.com/news/local/tiktok-star-kodiyakredd-arrested-on-gun-and-drug-charges-in-naples/3551452/?amp=1"
+  ],
+  "note": "His twin brother Alex (Flyysoulja) has the same birth date. The outcome of the 2025 arrests was not found."
+ },
+ {
+  "title": "Johnny Somali",
+  "ids": [
+   115
+  ],
+  "kind": "person",
+  "known_as": "Johnny Somali",
+  "summary": "American livestreamer known for harassing people in public abroad; sentenced to six months in prison in South Korea in 2026.",
+  "fields": [
+   "streaming",
+   "crime"
+  ],
+  "roles": [
+   "livestreamer"
+  ],
+  "country": "US",
+  "born": "2000-09-26",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2023,
+    "what": "Arrested in Japan over disruptive livestreams; later fined"
+   },
+   {
+    "year": 2024,
+    "what": "Kissed a Statue of Peace memorial in Seoul on stream; indicted in South Korea"
+   },
+   {
+    "year": 2026,
+    "what": "Seoul court sentenced him to six months in prison for obstruction of business and distributing sexually explicit deepfakes"
+   },
+   {
+    "year": 2026,
+    "what": "Appeals court upheld the sentence"
+   }
+  ],
+  "flags": [
+   "convicted_crime",
+   "charged_crime",
+   "prison",
+   "cancelled_or_banned"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.cbsnews.com/news/johnny-somali-influencer-troll-social-media-south-korea-prison/",
+   "https://www.koreatimes.co.kr/southkorea/law-crime/20260626/seoul-court-upholds-6-month-prison-sentence-for-us-streamer-johnny-somali",
+   "https://globalnews.ca/news/11802278/youtuber-johnny-somali-sentenced-jail-south-korea-statue/"
+  ],
+  "note": "The 2026 sentence is sourced. The birth date and the 2023 Japan case are from memory, not from the sources listed. A further appeal to the Supreme Court was expected."
+ },
+ {
+  "title": "Joe Biden",
+  "ids": [
+   114
+  ],
+  "kind": "person",
+  "known_as": "Joe Biden",
+  "summary": "46th President of the United States (2021-2025), earlier vice president under Barack Obama and a senator from Delaware for 36 years.",
+  "fields": [
+   "politics"
+  ],
+  "roles": [
+   "president",
+   "vice president",
+   "senator"
+  ],
+  "country": "US",
+  "born": "1942-11-20",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1972,
+    "what": "Elected US senator from Delaware at 29"
+   },
+   {
+    "year": 2008,
+    "what": "Elected vice president"
+   },
+   {
+    "year": 2020,
+    "what": "Elected president, defeating Donald Trump"
+   },
+   {
+    "year": 2024,
+    "what": "Withdrew from his re-election campaign"
+   },
+   {
+    "year": 2025,
+    "what": "Left office"
+   }
+  ],
+  "flags": [
+   "elected_office",
+   "head_of_state",
+   "major_award"
+  ],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ },
+ {
+  "title": "Enrique Silva",
+  "ids": [
+   113,
+   21
+  ],
+  "kind": "unknown",
+  "note": "Not a public figure I can identify by name and date; the web search allowance ran out before this one could be searched."
+ },
+ {
+  "title": "David Dobrik",
+  "ids": [
+   112
+  ],
+  "kind": "person",
+  "known_as": "David Dobrik",
+  "summary": "Slovak-born American YouTuber who rose on Vine and led the Vlog Squad, known for fast-cut vlogs and giveaways.",
+  "fields": [
+   "youtube",
+   "influencer",
+   "business"
+  ],
+  "roles": [
+   "youtuber",
+   "vlogger",
+   "podcaster"
+  ],
+  "country": "US",
+  "born": "1996-07-23",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2013,
+    "what": "Began posting on Vine"
+   },
+   {
+    "year": 2015,
+    "what": "Started his YouTube vlog channel"
+   },
+   {
+    "year": 2019,
+    "what": "Launched the photo app that became Dispo"
+   },
+   {
+    "year": 2021,
+    "what": "Lost sponsors and left Dispo after a sexual assault allegation against a former Vlog Squad member"
+   },
+   {
+    "year": 2022,
+    "what": "Sued by Jeff Wittek over a 2020 excavator stunt injury"
+   },
+   {
+    "year": 2022,
+    "what": "Opened Doughbrik's Pizza in Los Angeles"
+   }
+  ],
+  "flags": [
+   "major_scandal",
+   "founder"
+  ],
+  "fame": 4,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ }
+]

@@ -968,3 +968,16 @@ shows once. Every point was written from the transcript by hand; where the trans
 18 "gives anger" at 01:51) the point keeps the ambiguity ("one of 16 and 18 ... the other ...") rather than guess.
 Checked on the dev app at 390×844: vocation solar plexus 12/3, vocation heart 11/2, name chart mind center 16/7.
 
+
+## 2026-11-20: Who each person is (the people research)
+The owner wanted to use a strong model's allowance to make the vault smarter: "look up people's names so you can log
+what they are and who they are, so we can have better insights into what numbers relate to what". 574 distinct chart
+names; 24 tagged Friend / family / me were set aside untouched; 550 went to 19 research agents (30 each) with one brief
+(tools/people/BRIEF.md). Result: 444 people, groups, companies and places logged, 106 left `unknown` (coworkers, private
+names, charts that are questions). LESSON: web search is capped at 200 calls per turn ACROSS all agents; 19 agents at
+once burned it in the first minute, so 308 of 444 records came from memory (`checked: false`). Next time: few agents per
+turn, the obscure and the recent first. The research also found 13 charts whose typed birth date differs from the
+sources (Whitney Houston 1973 for 1963, George Soros 1910 for 1930, David Blaine, Dave Chappelle, Tyler Oliveira, Chase
+Briscoe, Kaitlin Bennett, Greg Doucette): shown on the chart's About card, never changed for the owner.
+Design choice: the chart-to-person link is the chart's NAME (a view), not the filename: a second chart of a person
+saved later joins by itself, and a renamed chart cannot keep another person's facts.

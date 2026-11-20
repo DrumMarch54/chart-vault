@@ -13,6 +13,7 @@ import { inputStats, tagCheck, chartsWithoutInputs, getInputs, valuesFor, chartL
 import { aiReport, redact } from './ai.js';
 import { lookupReport } from './lookup.js';
 import { listDeleted, findDuplicates } from './trash.js';
+import { peopleReport, personFor } from './people.js';
 
 const started = Date.now();
 const fmtB = (b) => (b >= 1e9 ? (b / 1e9).toFixed(2) + ' GB' : b >= 1e6 ? (b / 1e6).toFixed(1) + ' MB' : Math.round((b || 0) / 1e3) + ' KB');
@@ -48,6 +49,8 @@ export function snapshot(db, { scope = 'full', id = null, commit = 'unknown', bu
       line(`inputs: ${inp.day ?? '?'}.${inp.month ?? '?'}.${inp.year ?? '?'} "${inp.name}" (source ${inp.source}, build ${inp.build || 'unknown'}, ${inp.updated_at})`);
       for (const c of valuesFor(db, img.id)) line(`  ${c.label}: ${c.values.map((v) => `${v.label}${v.n ? ' ' + (v.n + 1) : ''} ${v.text}`).join(' · ')}`);
     }
+    const who = personFor(db, img.id);
+    line(`person: ${who ? `${who.kind}, ${who.summary || ''} [${[...who.fields, ...who.flags].join(', ')}] fame ${who.fame ?? '?'}${who.checked ? '' : ' (from memory, not searched)'}${who.note ? ` NOTE: ${who.note}` : ''}` : 'no researched facts'}`);
     const rd = db.prepare('SELECT kind, question, model, usd, build, created_at, length(text) AS chars FROM readings WHERE image_id = ? ORDER BY id').all(img.id);
     line(`ai readings: ${rd.length ? rd.map((r) => `${r.kind}${r.question ? ` "${r.question}"` : ''} by ${r.model} build ${r.build || '?'} $${r.usd} ${r.chars} chars ${r.created_at}`).join(' | ') : 'none'}`);
     return redact(out.join('\n'));
@@ -105,6 +108,8 @@ export function snapshot(db, { scope = 'full', id = null, commit = 'unknown', bu
     line(`CHARTS WITHOUT INPUTS (${none.length})`);
     for (const r of none) line(`  #${r.id} ${r.filename}${r.has_file ? '' : ' (no file)'}`);
   }
+  line('');
+  for (const l of peopleReport(db)) line(l);
   line('');
   for (const l of aiReport()) line(l);
   for (const l of lookupReport(db)) line(redact(l));

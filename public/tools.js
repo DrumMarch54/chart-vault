@@ -1251,7 +1251,8 @@
         btn('#/price', '$', 'Price Tool', '', 'home.price'),
         btn('#/today', '☀', 'Today', e ? `${MON[now.m - 1]} ${now.d} · ${e.dv.text}` : '', 'home.today'),
         $me,
-        btn('#/archetype', '✦', 'Archetype Words', 'numbers to words', 'home.archetype')),
+        btn('#/archetype', '✦', 'Archetype Words', 'numbers to words', 'home.archetype'),
+        ...(A.extraTools ? A.extraTools() : [])),
       $more, $rest);
   }
 
