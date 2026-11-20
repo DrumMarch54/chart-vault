@@ -145,7 +145,7 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 
 ## Home and What This Group Shares (2026-11-20)
 - Home order follows the owner's tap counts: search, two top tiles, Quick Chart and Look Up (the owner's word: "the main buttons I use"; By Position
-  and Ask the Vault are the first Tools tiles), Recently Opened (two rows, "Show All"), then Tools as small tiles, the rarely opened ones behind
+  and Ask the Vault are the first Tools tiles), Recently Opened (two rows, "Show All", no size buttons: owner 2026-11-20), then Tools as small tiles, the rarely opened ones behind
   "More Tools" (`homeButtons` in tools.js). Move a tile only on the counts or the owner's word.
 - Back after a while (owner 2026-11-20, "backing out a million times"): every Back-history step carries its depth
   (`history.state.d`); away over 15 min (`AWAY_MS`, `lastSeen`), `backToStart` rewinds to the first step and opens

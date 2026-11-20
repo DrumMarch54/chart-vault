@@ -567,7 +567,9 @@
         const byId = new Map(r.items.map((i) => [i.id, i]));
         const items = recentIds().map((id) => byId.get(id)).filter(Boolean);
         if (!items.length) return;
-        // Opening charts is the most used thing in the app (owner's tap counts, 2026-11-20): Recently Opened sits right
+        // No size buttons here (owner 2026-11-20: they looked bad and went unused); the size is the one the search
+    // results' − / + set (`gridCols`).
+    // Opening charts is the most used thing in the app (owner's tap counts, 2026-11-20): Recently Opened sits right
         // under the top tiles, two rows of it, and "Show All" opens the rest so the tools stay one short scroll away.
         const cells = items.map(cell);
         let all = false;
@@ -579,7 +581,7 @@
           $more.textContent = all ? 'Show Fewer' : `Show All ${cells.length}`;
         };
         onCols = trim;
-        fill($recent, h('div', { class: 'gridbar' }, h('div', { class: 'summary rhead' }, 'Recently Opened'), size.node), h('div', { class: 'grid' }, ...cells), $more);
+        fill($recent, h('div', { class: 'gridbar' }, h('div', { class: 'summary rhead' }, 'Recently Opened')), h('div', { class: 'grid' }, ...cells), $more);
         trim();
         $recent.classList.remove('hidden');
       }).catch(() => {});

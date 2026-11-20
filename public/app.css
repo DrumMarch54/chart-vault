@@ -455,7 +455,7 @@ html.light .tscreen .reading .rate { margin-left: auto; }
 .mini .mhead { display: flex; justify-content: space-between; align-items: center; padding: 2px 4px; }
 .mini .mhead .d { font-size: 13px; font-weight: 700; }
 .sizectl { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; }
-.sizectl .cbtn { min-width: 44px; min-height: 44px; font-size: 24px; font-weight: 600; }
+.sizectl .cbtn { min-width: 36px; min-height: 36px; font-size: 20px; }
 .sizectl .cbtn[disabled] { opacity: .35; }
 .minis[data-cols="4"] .mhead .d, .minis[data-cols="5"] .mhead .d, .minis[data-cols="6"] .mhead .d, .minis[data-cols="7"] .mhead .d, .minis[data-cols="8"] .mhead .d { font-size: 11px; }
 .minis[data-cols="4"] .rate, .minis[data-cols="5"] .rate, .minis[data-cols="6"] .rate, .minis[data-cols="7"] .rate, .minis[data-cols="8"] .rate { font-size: 9px; padding: 1px 5px; }
