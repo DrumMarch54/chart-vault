@@ -1,0 +1,2184 @@
+[
+ {
+  "title": "Pazuzu Algarad",
+  "ids": [
+   93,
+   92
+  ],
+  "kind": "person",
+  "known_as": "Pazuzu Algarad",
+  "summary": "Self-proclaimed Satanist in Clemmons, North Carolina, charged with murder after two bodies were found buried in his backyard.",
+  "fields": [
+   "crime",
+   "occult"
+  ],
+  "roles": [
+   "murder suspect"
+  ],
+  "country": "US",
+  "born": "1978-08-12",
+  "date_matches": true,
+  "died": "2015-10-28",
+  "death_cause": "suicide",
+  "age_at_death": 37,
+  "events": [
+   {
+    "year": 2002,
+    "what": "Legally changed his name from John Alexander Lawson"
+   },
+   {
+    "year": 2014,
+    "what": "Arrested and charged with murder after two bodies were found at his house"
+   },
+   {
+    "year": 2015,
+    "what": "Died by suicide in Central Prison, Raleigh, before trial"
+   }
+  ],
+  "flags": [
+   "charged_crime",
+   "suicide",
+   "died_young"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Pazuzu_Algarad",
+   "https://www.dac.nc.gov/press-release/inmate-dies-apparent-suicide-0"
+  ],
+  "note": "He died before trial, so the murder charges were never proven in court (violent_crime flag dropped for that reason). Most sources give 12 Aug 1978 (one says December 1978); the prison press release gave his age as 36, the dates make him 37."
+ },
+ {
+  "title": "Bradley Martyn",
+  "ids": [
+   89
+  ],
+  "kind": "person",
+  "known_as": "Bradley Martyn",
+  "summary": "American fitness YouTuber and bodybuilder, founder of the Zoo Culture gym and host of the Raw Talk podcast.",
+  "fields": [
+   "youtube",
+   "influencer",
+   "podcast"
+  ],
+  "roles": [
+   "fitness youtuber",
+   "bodybuilder",
+   "podcast host"
+  ],
+  "country": "US",
+  "born": "1989-05-22",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2014,
+    "what": "Started his fitness YouTube channel"
+   },
+   {
+    "year": 2017,
+    "what": "Opened the Zoo Culture gym in Los Angeles"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "fame": 3,
+  "checked": false,
+  "sources": [],
+  "note": ""
+ },
+ {
+  "title": "Kyle Forgeard · NELK",
+  "ids": [
+   88
+  ],
+  "kind": "person",
+  "known_as": "Kyle Forgeard",
+  "summary": "Canadian YouTuber, co-founder of the prank group NELK, the Full Send brand and Happy Dad hard seltzer.",
+  "fields": [
+   "youtube",
+   "business",
+   "podcast"
+  ],
+  "roles": [
+   "youtuber",
+   "entrepreneur",
+   "podcast host"
+  ],
+  "country": "CA",
+  "born": "1994-07-12",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2010,
+    "what": "Co-founded NELK"
+   },
+   {
+    "year": 2021,
+    "what": "Launched Happy Dad hard seltzer and the Full Send Podcast"
+   },
+   {
+    "year": 2022,
+    "what": "Full Send Podcast interviewed Donald Trump; YouTube removed the episode"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Nelk",
+   "https://www.thefamouspeople.com/profiles/kyle-forgeard-123127.php"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Allie Sherlock",
+  "ids": [
+   51
+  ],
+  "kind": "person",
+  "known_as": "Allie Sherlock",
+  "summary": "Irish singer and guitarist from Cork who became known as a child busking on Dublin's Grafton Street.",
+  "fields": [
+   "music",
+   "youtube"
+  ],
+  "roles": [
+   "singer",
+   "guitarist",
+   "busker"
+  ],
+  "country": "IE",
+  "born": "2005-04-07",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2017,
+    "what": "Busking cover of Ed Sheeran's Supermarket Flowers goes viral"
+   },
+   {
+    "year": 2024,
+    "what": "Released her first self-written single, How Love Works, and played her first headline dates in Ireland and the UK"
+   }
+  ],
+  "flags": [
+   "child_star"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Allie_Sherlock",
+   "https://www.rte.ie/entertainment/2024/1107/1476287-behind-the-music-allie-sherlock"
+  ],
+  "note": "The earlier \"appeared on Ellen\" event was dropped: a 2017 Cork report says she turned down an appearance, and the search did not confirm one."
+ },
+ {
+  "title": "JiDion",
+  "ids": [
+   41
+  ],
+  "kind": "person",
+  "known_as": "JiDion",
+  "summary": "American YouTuber and streamer from Houston, first known for prank videos and stunts, later for videos exposing online predators.",
+  "fields": [
+   "youtube",
+   "streaming",
+   "influencer"
+  ],
+  "roles": [
+   "youtuber",
+   "prankster",
+   "streamer"
+  ],
+  "country": "US",
+  "born": "2000-12-12",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2022,
+    "what": "Banned from Twitch after sending his viewers to harass streamer Pokimane"
+   },
+   {
+    "year": 2022,
+    "what": "Ejected from Wimbledon for blowing an air horn during a match"
+   },
+   {
+    "year": 2025,
+    "what": "Arrested live on stream in Woodhaven, Michigan, during a dispute over an alleged squatter"
+   }
+  ],
+  "flags": [
+   "cancelled_or_banned"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/JiDion",
+   "https://www.dexerto.com/kick/jidion-says-hes-quitting-streaming-after-getting-arrested-live-on-kick-3383867/"
+  ],
+  "note": "His name is given as Jidon Armani Adams; the chart has \"Jideon Armani Adams\". Birth date confirmed. The year of the Michigan arrest comes from search summaries; charges, if any, not confirmed."
+ },
+ {
+  "title": "Lil Mabu",
+  "ids": [
+   36
+  ],
+  "kind": "person",
+  "known_as": "Lil Mabu",
+  "summary": "American drill rapper from Manhattan, New York, who broke through as a teenager with Mathematical Disrespect.",
+  "fields": [
+   "rapper",
+   "music"
+  ],
+  "roles": [
+   "rapper"
+  ],
+  "country": "US",
+  "born": "2005-04-04",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2023,
+    "what": "Mathematical Disrespect goes viral and reaches the Billboard Hot 100"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Lil_Mabu"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Cheiro",
+  "ids": [
+   33
+  ],
+  "kind": "person",
+  "known_as": "Cheiro",
+  "summary": "Irish palmist, astrologer and numerologist who read for famous clients and wrote popular books on palmistry and numbers.",
+  "fields": [
+   "occult",
+   "writing"
+  ],
+  "roles": [
+   "palmist",
+   "numerologist",
+   "astrologer",
+   "author"
+  ],
+  "country": "IE",
+  "born": "1866-11-01",
+  "date_matches": true,
+  "died": "1936-10-08",
+  "death_cause": "natural",
+  "age_at_death": 69,
+  "events": [
+   {
+    "year": 1894,
+    "what": "Publishes Cheiro's Language of the Hand"
+   },
+   {
+    "year": 1926,
+    "what": "Publishes Cheiro's Book of Numbers"
+   },
+   {
+    "year": 1936,
+    "what": "Dies in Hollywood, California"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Cheiro",
+   "https://encyclopedia.com/science/encyclopedias-almanacs-transcripts-and-maps/cheiro-count-louis-hamon-1866-1936"
+  ],
+  "note": "Also known as Count Louis Hamon. Death date differs by source: 8 October 1936 (Wikipedia infobox, Encyclopedia.com) or 19 October 1936 (Wikipedia text)."
+ },
+ {
+  "title": "Shia LaBeouf",
+  "ids": [
+   757
+  ],
+  "kind": "person",
+  "known_as": "Shia LaBeouf",
+  "summary": "American actor known for Even Stevens, Transformers and Honey Boy, and for repeated arrests and an abuse lawsuit.",
+  "fields": [
+   "acting",
+   "film_tv"
+  ],
+  "roles": [
+   "actor",
+   "filmmaker",
+   "performance artist"
+  ],
+  "country": "US",
+  "born": "1986-06-11",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2000,
+    "what": "Became a child star in Disney's Even Stevens"
+   },
+   {
+    "year": 2007,
+    "what": "Starred in Transformers"
+   },
+   {
+    "year": 2014,
+    "what": "Arrested for disrupting a Broadway play in New York; pleaded guilty"
+   },
+   {
+    "year": 2017,
+    "what": "Arrested in Savannah, Georgia; later pleaded guilty to obstruction"
+   },
+   {
+    "year": 2020,
+    "what": "Sued by FKA Twigs, who accused him of abuse; the suit was settled in July 2025"
+   },
+   {
+    "year": 2026,
+    "what": "Arrested twice in February in New Orleans on simple battery charges after a Mardi Gras bar fight; ordered into substance abuse treatment"
+   }
+  ],
+  "flags": [
+   "child_star",
+   "convicted_crime",
+   "charged_crime",
+   "major_scandal",
+   "addiction_public"
+  ],
+  "fame": 4,
+  "checked": true,
+  "sources": [
+   "https://www.nbcnews.com/news/us-news/shia-labeouf-arrested-new-orleans-brawl-mardi-gras-rcna259363",
+   "https://www.cbsnews.com/news/shia-labeouf-arrested-again-battery-charge-new-orleans",
+   "https://www.axios.com/local/new-orleans/2026/02/17/shia-labeouf-arrested-mardi-gras-new-orleans"
+  ],
+  "note": "He had not entered a plea in the 2026 New Orleans battery case in the reports found; the outcome is not known."
+ },
+ {
+  "title": "Don Lemon",
+  "ids": [
+   755,
+   694
+  ],
+  "kind": "person",
+  "known_as": "Don Lemon",
+  "summary": "American journalist, CNN anchor from 2006 until he was fired in 2023, now an independent online host.",
+  "fields": [
+   "journalism",
+   "commentary"
+  ],
+  "roles": [
+   "news anchor",
+   "journalist",
+   "online host"
+  ],
+  "country": "US",
+  "born": "1966-03-01",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2006,
+    "what": "Joined CNN"
+   },
+   {
+    "year": 2014,
+    "what": "Began hosting CNN Tonight in prime time"
+   },
+   {
+    "year": 2023,
+    "what": "Fired by CNN after on-air remarks about women's age"
+   },
+   {
+    "year": 2024,
+    "what": "Started The Don Lemon Show independently after a deal with X was cancelled"
+   },
+   {
+    "year": 2026,
+    "what": "Arrested by federal agents in January and charged with civil rights conspiracy and a FACE Act violation over an anti-ICE protest inside a St. Paul church he was covering"
+   }
+  ],
+  "flags": [
+   "charged_crime"
+  ],
+  "fame": 4,
+  "checked": true,
+  "sources": [
+   "https://www.opb.org/article/2026/01/30/don-lemon-arrested",
+   "https://www.startribune.com/federal-agents-arrest-don-lemon-over-minnesota-church-protest/601573941"
+  ],
+  "note": "He says he was there as a journalist and will fight the charges; a magistrate had first refused to approve charges against him. Outcome of the case not found."
+ },
+ {
+  "title": "David Miscavige · Scientology",
+  "ids": [
+   676
+  ],
+  "kind": "person",
+  "known_as": "David Miscavige",
+  "summary": "Leader of the Church of Scientology since L. Ron Hubbard's death in 1986, as chairman of the Religious Technology Center.",
+  "fields": [
+   "religion",
+   "cult"
+  ],
+  "roles": [
+   "church leader",
+   "scientology chairman"
+  ],
+  "country": "US",
+  "born": "1960-04-30",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1986,
+    "what": "Took over leadership of Scientology after L. Ron Hubbard died"
+   },
+   {
+    "year": 1987,
+    "what": "Became chairman of the board of the Religious Technology Center"
+   },
+   {
+    "year": 1993,
+    "what": "The IRS granted the Church of Scientology tax-exempt status"
+   }
+  ],
+  "flags": [
+   "religious_leader"
+  ],
+  "fame": 4,
+  "checked": true,
+  "sources": [
+   "https://tonyortega.org/2026/02/22/dave-blinks-scientology-pauses-its-uk-expansion-plans-in-the-face-of-so-much-opposition/",
+   "https://www.theblaze.com/news/leah-remini-sues-church-of-scientology-over-alleged-stalking-harassment-tax-exempt-cult-using-mob-style-tactics"
+  ],
+  "note": "Not charged with any crime. He is named in civil suits by former members (a federal human trafficking suit, where a judge found he was evading service, and Leah Remini's harassment suit); the church denies the claims."
+ },
+ {
+  "title": "Bam Margera",
+  "ids": [
+   670
+  ],
+  "kind": "person",
+  "known_as": "Bam Margera",
+  "summary": "American professional skateboarder and stunt performer, a star of MTV's Jackass and Viva La Bam.",
+  "fields": [
+   "film_tv",
+   "sports"
+  ],
+  "roles": [
+   "skateboarder",
+   "stunt performer",
+   "tv personality"
+  ],
+  "country": "US",
+  "born": "1979-09-28",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2000,
+    "what": "Rose to fame on MTV's Jackass"
+   },
+   {
+    "year": 2003,
+    "what": "His own MTV show Viva La Bam began"
+   },
+   {
+    "year": 2021,
+    "what": "Dismissed from the film Jackass Forever; sued the producers"
+   },
+   {
+    "year": 2023,
+    "what": "Charged with assault after a fight with his brother in Pennsylvania"
+   },
+   {
+    "year": 2024,
+    "what": "Pleaded guilty to two counts of disorderly conduct; six months probation with drug testing"
+   }
+  ],
+  "flags": [
+   "charged_crime",
+   "convicted_crime",
+   "addiction_public"
+  ],
+  "fame": 4,
+  "checked": true,
+  "sources": [
+   "https://abcnews.go.com/US/wireStory/jackass-star-bam-margera-spend-months-probation-after-111447900",
+   "https://inquirer.com/news/pennsylvania/bam-margera-guilty-plea-chester-county-20240626.html"
+  ],
+  "note": "Nothing from 2025-2026 turned up in the search."
+ },
+ {
+  "title": "Klaus Schwab · WEF",
+  "ids": [
+   632
+  ],
+  "kind": "person",
+  "known_as": "Klaus Schwab",
+  "summary": "German economist and engineer who founded the World Economic Forum and led it for more than five decades.",
+  "fields": [
+   "business",
+   "politics",
+   "writing"
+  ],
+  "roles": [
+   "economist",
+   "wef founder",
+   "author"
+  ],
+  "country": "CH",
+  "born": "1938-03-30",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1971,
+    "what": "Founded the European Management Forum, later the World Economic Forum"
+   },
+   {
+    "year": 2016,
+    "what": "Published The Fourth Industrial Revolution"
+   },
+   {
+    "year": 2020,
+    "what": "Launched the Great Reset initiative"
+   },
+   {
+    "year": 2025,
+    "what": "Resigned as WEF chairman in April after whistleblower allegations; the board's investigation cleared him of material wrongdoing in August"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "fame": 4,
+  "checked": true,
+  "sources": [
+   "https://www.ctvnews.ca/business/article/wef-clears-founder-schwab-of-wrongdoing-appoints-interim-co-chairs/",
+   "https://www.swissinfo.ch/eng/world-economic-forum-clears-schwab%2C-names-fink-as-co-chair/89843055"
+  ],
+  "note": "The investigation noted minor expense irregularities only."
+ },
+ {
+  "title": "Andrew Tate",
+  "ids": [
+   629,
+   458,
+   433
+  ],
+  "kind": "person",
+  "known_as": "Andrew Tate",
+  "summary": "American-British former kickboxing champion turned online personality, known for misogynistic content and facing criminal charges in Romania and the UK.",
+  "fields": [
+   "influencer",
+   "combat_sports",
+   "business"
+  ],
+  "roles": [
+   "kickboxer",
+   "online personality"
+  ],
+  "country": "US",
+  "born": "1986-12-01",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2016,
+    "what": "Removed from Big Brother UK"
+   },
+   {
+    "year": 2022,
+    "what": "Banned from major social media platforms; arrested in Romania in December"
+   },
+   {
+    "year": 2023,
+    "what": "Charged in Romania with rape, human trafficking and forming an organized crime group"
+   },
+   {
+    "year": 2025,
+    "what": "Left Romania for the US after a travel ban was lifted"
+   },
+   {
+    "year": 2025,
+    "what": "UK prosecutors confirmed charges against him and his brother, including rape and human trafficking"
+   }
+  ],
+  "flags": [
+   "charged_crime",
+   "cancelled_or_banned",
+   "major_scandal"
+  ],
+  "fame": 5,
+  "checked": true,
+  "sources": [
+   "https://www.npr.org/2025/05/28/nx-s1-5414499/tate-brothers-rape-trafficking-assault-uk",
+   "https://www.aljazeera.com/news/2025/5/28/influencers-andrew-and-tristan-tate-face-uk-rape-and-trafficking-charges",
+   "https://www.rollingstone.com/culture/culture-features/andrew-tate-tristan-arrest-extradition-uk-1235596380/"
+  ],
+  "note": "He denies all allegations. One report (NME) says he and Tristan were arrested in Miami on 38 further UK charges; its date could not be confirmed. A UK civil suit by four women is due for trial in 2027."
+ },
+ {
+  "title": "Blueface",
+  "ids": [
+   618
+  ],
+  "kind": "person",
+  "known_as": "Blueface",
+  "summary": "Los Angeles rapper who broke through with the 2018 hit Thotiana, later known for reality shows and repeated legal trouble.",
+  "fields": [
+   "rapper",
+   "music"
+  ],
+  "roles": [
+   "rapper"
+  ],
+  "country": "US",
+  "born": "1997-01-20",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2018,
+    "what": "Thotiana went viral; the remix reached the Billboard top ten in 2019"
+   },
+   {
+    "year": 2022,
+    "what": "Arrested in Las Vegas on an attempted murder charge over a shooting"
+   },
+   {
+    "year": 2023,
+    "what": "Pleaded guilty to reduced charges in the Las Vegas case and got probation"
+   },
+   {
+    "year": 2024,
+    "what": "Jailed for violating probation in a 2021 assault case and sentenced to four years in prison"
+   },
+   {
+    "year": 2025,
+    "what": "Released from prison in November after about 21 months"
+   }
+  ],
+  "flags": [
+   "convicted_crime",
+   "violent_crime",
+   "prison"
+  ],
+  "fame": 4,
+  "checked": true,
+  "sources": [
+   "https://www.xxlmag.com/blueface-released-prison/",
+   "https://www.bet.com/article/owk3ff/blueface-released-from-prison-after-two-year-sentence"
+  ],
+  "note": "Most reports say the probation came from a 2021 assault on a club bouncer; one names the 2022 shooting case instead."
+ },
+ {
+  "title": "Erika Kirk",
+  "ids": [
+   605,
+   354
+  ],
+  "kind": "person",
+  "known_as": "Erika Kirk",
+  "summary": "Former Miss Arizona USA and businesswoman who became CEO and chair of Turning Point USA after her husband Charlie Kirk was assassinated in 2025.",
+  "fields": [
+   "activism",
+   "politics",
+   "business"
+  ],
+  "roles": [
+   "turning point usa ceo",
+   "podcast host",
+   "former pageant winner"
+  ],
+  "country": "US",
+  "born": "1988-11-20",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2012,
+    "what": "Won Miss Arizona USA"
+   },
+   {
+    "year": 2021,
+    "what": "Married Turning Point USA founder Charlie Kirk"
+   },
+   {
+    "year": 2025,
+    "what": "Charlie Kirk was shot dead at Utah Valley University on September 10"
+   },
+   {
+    "year": 2025,
+    "what": "Named CEO and chair of Turning Point USA"
+   }
+  ],
+  "flags": [],
+  "fame": 4,
+  "checked": true,
+  "sources": [
+   "https://www.npr.org/2025/09/19/nx-s1-5546856/erika-kirk-ceo-turning-point-usa-charlie-kirk-death",
+   "https://www.cbsnews.com/news/erika-kirk-charlie-kirk-widow-turning-point-usa-ceo"
+  ],
+  "note": "Her role is confirmed and her age (36 in September 2025) fits 1988, but the search did not confirm the exact birth day."
+ },
+ {
+  "title": "AOC",
+  "ids": [
+   598
+  ],
+  "kind": "person",
+  "known_as": "Alexandria Ocasio-Cortez",
+  "summary": "Democratic US Representative from New York since 2019 and a leading voice of the party's progressive wing.",
+  "fields": [
+   "politics",
+   "activism"
+  ],
+  "roles": [
+   "us representative",
+   "politician"
+  ],
+  "country": "US",
+  "born": "1989-10-13",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2018,
+    "what": "Beat ten-term incumbent Joe Crowley in the Democratic primary and won the seat"
+   },
+   {
+    "year": 2019,
+    "what": "Took office as the youngest woman ever elected to Congress; introduced the Green New Deal resolution"
+   },
+   {
+    "year": 2025,
+    "what": "Toured the country with Bernie Sanders on the Fighting Oligarchy rallies"
+   }
+  ],
+  "flags": [
+   "elected_office"
+  ],
+  "fame": 4,
+  "checked": true,
+  "sources": [
+   "https://ballotpedia.org/Alexandria Ocasio-Cortez",
+   "https://www.ajc.com/news/2026/10/aoc-can-draw-a-crowd-the-midterms-will-test-whether-her-politics-can-win-before-2028/"
+  ],
+  "note": "She was on the ballot for re-election on 3 November 2026; the search did not show the result."
+ },
+ {
+  "title": "Hasan Piker",
+  "ids": [
+   595
+  ],
+  "kind": "person",
+  "known_as": "HasanAbi",
+  "summary": "Turkish-American Twitch streamer and left-wing political commentator, one of the most watched political streamers.",
+  "fields": [
+   "streaming",
+   "commentary",
+   "politics"
+  ],
+  "roles": [
+   "twitch streamer",
+   "political commentator"
+  ],
+  "country": "US",
+  "born": "1991-07-25",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2013,
+    "what": "Began working at The Young Turks"
+   },
+   {
+    "year": 2018,
+    "what": "Started streaming on Twitch"
+   },
+   {
+    "year": 2020,
+    "what": "His US election night coverage was among the most watched streams on Twitch"
+   },
+   {
+    "year": 2025,
+    "what": "Said he was detained and questioned by US border agents on returning to the country"
+   },
+   {
+    "year": 2025,
+    "what": "Suspended from Twitch after discussing the alleged manifesto behind the Israeli embassy staff shooting"
+   },
+   {
+    "year": 2026,
+    "what": "Became a point of division among Democrats as candidates campaigned with him before the midterms"
+   }
+  ],
+  "flags": [
+   "cancelled_or_banned"
+  ],
+  "fame": 4,
+  "checked": true,
+  "sources": [
+   "https://katu.com/news/nation-world/who-is-hasan-piker-prominent-streamer-dividing-democratic-party-young-male-voters-progressive-rhetoric-francesca-hong-aoc",
+   "https://www.mediaite.com/media/news/hasan-piker-hit-with-twitch-ban-over-improper-handling-of-terrorist-propaganda-related-to-israeli-embassy-shooting-comments"
+  ],
+  "note": ""
+ },
+ {
+  "title": "George Soros",
+  "ids": [
+   570,
+   569
+  ],
+  "kind": "person",
+  "known_as": "George Soros",
+  "summary": "Hungarian-American billionaire investor and philanthropist, founder of the Open Society Foundations and a major funder of liberal causes.",
+  "fields": [
+   "finance",
+   "business",
+   "activism"
+  ],
+  "roles": [
+   "investor",
+   "hedge fund manager",
+   "philanthropist"
+  ],
+  "country": "US",
+  "born": "1930-08-12",
+  "date_matches": false,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1947,
+    "what": "Left Hungary for England after surviving the Nazi occupation"
+   },
+   {
+    "year": 1970,
+    "what": "Founded Soros Fund Management"
+   },
+   {
+    "year": 1992,
+    "what": "Made about one billion dollars betting against the British pound on Black Wednesday"
+   },
+   {
+    "year": 1993,
+    "what": "Founded the Open Society Institute (now Open Society Foundations)"
+   },
+   {
+    "year": 2002,
+    "what": "Convicted of insider trading in France over Societe Generale shares; fined"
+   },
+   {
+    "year": 2023,
+    "what": "Handed control of his foundations to his son Alexander"
+   }
+  ],
+  "flags": [
+   "billionaire",
+   "self_made_wealth",
+   "founder",
+   "convicted_crime"
+  ],
+  "fame": 5,
+  "checked": true,
+  "sources": [
+   "https://fortune.com/2026/05/20/we-will-not-be-intimidated-into-silence-george-soros-foundation-pledges-300-million-toward-democratic-rights/",
+   "https://www.gurufocus.com/guru/George Soros/summary"
+  ],
+  "note": "Date differs: he was born in 1930 (12 August); the batch has 1910, twenty years off, likely a typing slip. Birth name Gyorgy Schwartz is right. Alive and active in 2026: reported as the largest individual donor of the 2026 midterm cycle."
+ },
+ {
+  "title": "Zach Bryan",
+  "ids": [
+   565,
+   260
+  ],
+  "kind": "person",
+  "known_as": "Zach Bryan",
+  "summary": "American country singer-songwriter and US Navy veteran who rose from self-posted videos to chart-topping albums and stadium tours.",
+  "fields": [
+   "music"
+  ],
+  "roles": [
+   "singer-songwriter",
+   "country musician"
+  ],
+  "country": "US",
+  "born": "1996-04-02",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2019,
+    "what": "Self-released debut album DeAnn while serving in the Navy"
+   },
+   {
+    "year": 2021,
+    "what": "Honorably discharged from the US Navy to pursue music"
+   },
+   {
+    "year": 2022,
+    "what": "Major-label album American Heartbreak; Something in the Orange becomes a hit"
+   },
+   {
+    "year": 2023,
+    "what": "Self-titled album and I Remember Everything both reach number one"
+   },
+   {
+    "year": 2023,
+    "what": "Arrested in Oklahoma on a charge of obstructing an investigation; apologized publicly"
+   },
+   {
+    "year": 2024,
+    "what": "Won a Grammy for I Remember Everything"
+   }
+  ],
+  "flags": [
+   "military_service",
+   "major_award",
+   "charged_crime"
+  ],
+  "fame": 4,
+  "checked": true,
+  "sources": [
+   "https://www.nbcnews.com/pop-culture/music/country-singer-zach-bryan-arrested-incident-oklahoma-troopers-rcna104010",
+   "https://variety.com/2023/music/news/zach-bryan-arrested-oklahoma-1235717256"
+  ],
+  "note": "The search found nothing newer than the 2023 arrest; how that case ended was not shown."
+ },
+ {
+  "title": "Johnny Depp",
+  "ids": [
+   557,
+   556
+  ],
+  "kind": "person",
+  "known_as": "Johnny Depp",
+  "summary": "American actor known for Edward Scissorhands and as Jack Sparrow in the Pirates of the Caribbean films.",
+  "fields": [
+   "acting",
+   "music"
+  ],
+  "roles": [
+   "actor",
+   "producer",
+   "musician"
+  ],
+  "country": "US",
+  "born": "1963-06-09",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1987,
+    "what": "Became a teen idol on the TV series 21 Jump Street"
+   },
+   {
+    "year": 1990,
+    "what": "Edward Scissorhands, first film with Tim Burton"
+   },
+   {
+    "year": 2003,
+    "what": "Pirates of the Caribbean makes him one of the world's top-paid stars"
+   },
+   {
+    "year": 2016,
+    "what": "Amber Heard files for divorce and accuses him of domestic abuse"
+   },
+   {
+    "year": 2020,
+    "what": "Lost his UK libel case against The Sun"
+   },
+   {
+    "year": 2022,
+    "what": "Won his US defamation case against Amber Heard"
+   }
+  ],
+  "flags": [
+   "major_award",
+   "major_scandal"
+  ],
+  "fame": 5,
+  "checked": true,
+  "sources": [
+   "https://www.npr.org/tags/131974292/johnny-depp"
+  ],
+  "note": "A search for 2025-2026 news found nothing major."
+ },
+ {
+  "title": "Rod Wave",
+  "ids": [
+   553
+  ],
+  "kind": "person",
+  "known_as": "Rod Wave",
+  "summary": "American rapper and singer from St. Petersburg, Florida, known for emotional, melodic songs and several number-one albums.",
+  "fields": [
+   "rapper",
+   "music"
+  ],
+  "roles": [
+   "rapper",
+   "singer",
+   "songwriter"
+  ],
+  "country": "US",
+  "born": "1998-08-27",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2019,
+    "what": "Heart on Ice goes viral; debut album Ghetto Gospel"
+   },
+   {
+    "year": 2021,
+    "what": "SoulFly becomes his first number-one album"
+   },
+   {
+    "year": 2023,
+    "what": "Nostalgia becomes his third straight number-one album"
+   },
+   {
+    "year": 2024,
+    "what": "Arrested in Florida on a gun charge; the case was later dropped"
+   },
+   {
+    "year": 2025,
+    "what": "Arrested in May in Georgia on aggravated assault and gun charges; released on bond, his lawyer denies them"
+   },
+   {
+    "year": 2025,
+    "what": "Arrested in November in Atlanta on drug and weapon charges, the day of his first Grammy nomination"
+   }
+  ],
+  "flags": [
+   "charged_crime"
+  ],
+  "fame": 4,
+  "checked": true,
+  "sources": [
+   "https://www.tmz.com/2025/05/21/rod-wave-arrested-aggravated-assault-possession-of-firearm-georgia/",
+   "https://www.rollingstone.com/music/music-news/rod-wave-arrested-drugs-weapons-charges-grammys-1235462608/"
+  ],
+  "note": "The earlier battery case was dated October 2020 in 2025 reports (first pass had 2022). Outcomes of the 2025 cases not found."
+ },
+ {
+  "title": "Drake",
+  "ids": [
+   538
+  ],
+  "kind": "person",
+  "known_as": "Drake",
+  "summary": "Canadian rapper and singer, one of the best-selling music artists ever, who began as an actor on Degrassi.",
+  "fields": [
+   "rapper",
+   "music",
+   "acting"
+  ],
+  "roles": [
+   "rapper",
+   "singer",
+   "actor"
+  ],
+  "country": "CA",
+  "born": "1986-10-24",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2001,
+    "what": "Cast in the teen series Degrassi: The Next Generation"
+   },
+   {
+    "year": 2009,
+    "what": "Mixtape So Far Gone made him a star"
+   },
+   {
+    "year": 2012,
+    "what": "Founded the OVO Sound label"
+   },
+   {
+    "year": 2013,
+    "what": "Won his first Grammy, for Take Care"
+   },
+   {
+    "year": 2024,
+    "what": "Public feud with Kendrick Lamar (\"Not Like Us\")"
+   },
+   {
+    "year": 2025,
+    "what": "His defamation suit against Universal Music Group over \"Not Like Us\" was dismissed in October; he appealed"
+   }
+  ],
+  "flags": [
+   "child_star",
+   "founder",
+   "major_award"
+  ],
+  "fame": 5,
+  "checked": true,
+  "sources": [
+   "https://abc7.com/post/drakes-defamation-case-record-label-umg-dismissed-federal-judge-stemming-rap-battle-kendrick-lamar/17973242/",
+   "https://ca.billboard.com/business/legal/unprecedented-drake-appeals-dismissal-of-lawsuit-over-kendrick-lamars-not-like-us"
+  ],
+  "note": "The appeal was still pending as of spring 2026."
+ },
+ {
+  "title": "Wiz Khalifa",
+  "ids": [
+   526
+  ],
+  "kind": "person",
+  "known_as": "Wiz Khalifa",
+  "summary": "American rapper known for Black and Yellow and See You Again.",
+  "fields": [
+   "rapper",
+   "music"
+  ],
+  "roles": [
+   "rapper",
+   "singer",
+   "songwriter"
+  ],
+  "country": "US",
+  "born": "1987-09-08",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2010,
+    "what": "Black and Yellow became his first number one single"
+   },
+   {
+    "year": 2011,
+    "what": "Major-label debut album Rolling Papers"
+   },
+   {
+    "year": 2015,
+    "what": "See You Again spent twelve weeks at number one"
+   },
+   {
+    "year": 2024,
+    "what": "Detained in Romania after smoking cannabis on stage at a festival"
+   },
+   {
+    "year": 2025,
+    "what": "Fined in April; in December a Romanian appeals court sentenced him to nine months for drug possession"
+   }
+  ],
+  "flags": [
+   "charged_crime",
+   "convicted_crime"
+  ],
+  "fame": 5,
+  "checked": true,
+  "sources": [
+   "https://www.cbsnews.com/amp/pittsburgh/news/wiz-khalifa-sentenced-drug-possession-romania",
+   "https://www.startribune.com/romanian-court-sentences-us-rapper-wiz-khalifa-to-9-months-for-drug-possession/601548969"
+  ],
+  "note": "The sentence was handed down in his absence; it is unclear whether Romania will seek extradition."
+ },
+ {
+  "title": "Infowars",
+  "ids": [
+   505,
+   421,
+   390
+  ],
+  "kind": "company",
+  "known_as": "Infowars",
+  "summary": "Far-right conspiracy theory website and broadcast outlet founded by Alex Jones and run through Free Speech Systems LLC.",
+  "fields": [
+   "conspiracy",
+   "commentary"
+  ],
+  "roles": [
+   "media outlet",
+   "website"
+  ],
+  "country": "US",
+  "born": "1999-03-06",
+  "date_matches": true,
+  "events": [
+   {
+    "year": 1999,
+    "what": "Website launched by Alex Jones in Austin, Texas"
+   },
+   {
+    "year": 2018,
+    "what": "Removed from Facebook, YouTube, Apple and other major platforms"
+   },
+   {
+    "year": 2022,
+    "what": "Courts ordered Jones and Free Speech Systems to pay about $1.5 billion to Sandy Hook families; the company filed for bankruptcy"
+   },
+   {
+    "year": 2024,
+    "what": "The Onion won a bankruptcy auction for Infowars; the judge rejected the sale"
+   },
+   {
+    "year": 2025,
+    "what": "US Supreme Court declined to hear Jones's appeal of the Connecticut judgment"
+   },
+   {
+    "year": 2026,
+    "what": "A receiver's licensing deal with The Onion was paused by a Texas appeals court; Infowars stopped broadcasting and closed its Austin headquarters on 1 May"
+   }
+  ],
+  "flags": [
+   "major_scandal",
+   "cancelled_or_banned",
+   "bankruptcy"
+  ],
+  "fame": 4,
+  "checked": true,
+  "sources": [
+   "https://fortune.com/2026/04/21/the-onion-alex-jones-infowars-bankruptcy-tim-heidecker/",
+   "https://news.bloomberglaw.com/bankruptcy-law/alex-jones-announces-shutdown-of-infowars-conspiracy-platform"
+  ],
+  "note": "6 March 1999 is the website's launch date, not the LLC's registration date. The Onion said it still intends to relaunch Infowars as satire; nothing after May 2026 was found."
+ },
+ {
+  "title": "Kanye West",
+  "ids": [
+   497,
+   496,
+   119
+  ],
+  "kind": "person",
+  "known_as": "Kanye West (Ye)",
+  "summary": "American rapper, producer and fashion designer, among the most influential hip-hop artists, later widely condemned for antisemitic statements.",
+  "fields": [
+   "rapper",
+   "music",
+   "fashion"
+  ],
+  "roles": [
+   "rapper",
+   "record producer",
+   "fashion designer"
+  ],
+  "country": "US",
+  "born": "1977-06-08",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2004,
+    "what": "Debut album The College Dropout"
+   },
+   {
+    "year": 2009,
+    "what": "Interrupted Taylor Swift's speech at the MTV Video Music Awards"
+   },
+   {
+    "year": 2015,
+    "what": "Launched the Yeezy line with Adidas"
+   },
+   {
+    "year": 2020,
+    "what": "Ran for US president as an independent"
+   },
+   {
+    "year": 2022,
+    "what": "Adidas and other partners cut ties after his antisemitic remarks; lost billionaire status"
+   },
+   {
+    "year": 2026,
+    "what": "Apologized in a Wall Street Journal ad in January; barred from entering the UK in April, which cancelled Wireless Festival, and several European shows were cancelled"
+   }
+  ],
+  "flags": [
+   "major_award",
+   "major_scandal",
+   "cancelled_or_banned",
+   "self_made_wealth",
+   "founder"
+  ],
+  "fame": 5,
+  "checked": true,
+  "sources": [
+   "https://www.opb.org/article/2026/04/07/wireless-festival-canceled-after-ye-is-barred-from-u-k-over-antisemitism/",
+   "https://krdo.com/news/2026/04/15/does-anyone-really-want-to-deal-with-kanye-west/"
+  ],
+  "note": "Legally changed his name to Ye in 2021."
+ },
+ {
+  "title": "Nicki Minaj",
+  "ids": [
+   491,
+   489
+  ],
+  "kind": "person",
+  "known_as": "Nicki Minaj",
+  "summary": "Trinidadian-born American rapper and singer, one of the best-selling female rappers of all time.",
+  "fields": [
+   "rapper",
+   "music"
+  ],
+  "roles": [
+   "rapper",
+   "singer",
+   "songwriter"
+  ],
+  "country": "US",
+  "born": "1982-12-08",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2009,
+    "what": "Signed to Lil Wayne's Young Money label"
+   },
+   {
+    "year": 2010,
+    "what": "Debut album Pink Friday"
+   },
+   {
+    "year": 2014,
+    "what": "\"Anaconda\" reached number 2 on the Billboard Hot 100"
+   },
+   {
+    "year": 2022,
+    "what": "\"Super Freaky Girl\" debuted at number 1 on the Billboard Hot 100"
+   },
+   {
+    "year": 2023,
+    "what": "Album Pink Friday 2 debuted at number 1"
+   },
+   {
+    "year": 2024,
+    "what": "Detained at Amsterdam airport over alleged soft drugs; fined and released"
+   }
+  ],
+  "flags": [],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": "Not checked online (search limit reached); nothing from 2025-2026 is covered."
+ },
+ {
+  "title": "Kevin Gates",
+  "ids": [
+   478,
+   477
+  ],
+  "kind": "person",
+  "known_as": "Kevin Gates",
+  "summary": "American rapper and singer from Baton Rouge, Louisiana, known for the album Islah and the hit \"2 Phones\".",
+  "fields": [
+   "rapper",
+   "music"
+  ],
+  "roles": [
+   "rapper",
+   "singer"
+  ],
+  "country": "US",
+  "born": "1986-02-05",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2013,
+    "what": "Mixtape The Luca Brasi Story brought national attention"
+   },
+   {
+    "year": 2016,
+    "what": "Debut album Islah reached number 2 on the Billboard 200 with \"2 Phones\" and \"Really Really\""
+   },
+   {
+    "year": 2016,
+    "what": "Convicted of battery for kicking a fan at a Florida concert; sentenced to 180 days in jail"
+   },
+   {
+    "year": 2017,
+    "what": "Sentenced to 30 months in prison in Illinois on a weapons charge"
+   },
+   {
+    "year": 2018,
+    "what": "Released from prison on parole"
+   }
+  ],
+  "flags": [
+   "convicted_crime",
+   "violent_crime",
+   "prison"
+  ],
+  "fame": 4,
+  "checked": false,
+  "sources": [],
+  "note": "Not checked online (search limit reached); nothing from 2025-2026 is covered."
+ },
+ {
+  "title": "Dan Bilzerian",
+  "ids": [
+   435
+  ],
+  "kind": "person",
+  "known_as": "Dan Bilzerian",
+  "summary": "American social media personality and poker player known for flaunting a lavish lifestyle on Instagram.",
+  "fields": [
+   "influencer",
+   "business"
+  ],
+  "roles": [
+   "social media personality",
+   "poker player",
+   "businessman",
+   "congressional candidate"
+  ],
+  "country": "US",
+  "born": "1980-12-07",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2009,
+    "what": "Played in the World Series of Poker Main Event"
+   },
+   {
+    "year": 2014,
+    "what": "Arrested at Los Angeles airport on bomb-making charges, later dropped"
+   },
+   {
+    "year": 2018,
+    "what": "Launched the company Ignite"
+   },
+   {
+    "year": 2026,
+    "what": "Ran against Rep. Randy Fine in the Republican primary for Florida's 6th district and lost in August; his ads were widely called antisemitic"
+   }
+  ],
+  "flags": [
+   "charged_crime",
+   "founder"
+  ],
+  "fame": 4,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Dan_Bilzerian",
+   "https://www.aol.com/news/influencer-dan-bilzerian-files-paperwork-175429521.html",
+   "https://www.ajc.org/node/9379"
+  ],
+  "note": "The 2014 arrest and the Ignite launch were not re-checked."
+ },
+ {
+  "title": "X",
+  "ids": [
+   400,
+   399
+  ],
+  "kind": "company",
+  "known_as": "X (X Corp.)",
+  "summary": "Social media platform formerly called Twitter, owned by Elon Musk's X Corp., which was incorporated in Nevada in March 2023.",
+  "fields": [
+   "tech",
+   "business"
+  ],
+  "roles": [
+   "social media platform"
+  ],
+  "country": "US",
+  "born": "2023-03-09",
+  "date_matches": true,
+  "events": [
+   {
+    "year": 2006,
+    "what": "Began as Twitter (first tweet 21 March 2006)"
+   },
+   {
+    "year": 2022,
+    "what": "Twitter acquired by Elon Musk for $44 billion"
+   },
+   {
+    "year": 2023,
+    "what": "X Corp. incorporated on 9 March; Twitter, Inc. merged into it; platform rebranded X in July"
+   },
+   {
+    "year": 2025,
+    "what": "X Corp. was acquired by Musk's AI company xAI"
+   }
+  ],
+  "flags": [],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": "Both batch dates fit: 9 March 2023 is X Corp.'s incorporation, 21 March 2006 is Twitter's first tweet. Ownership changes in 2026 were not checked."
+ },
+ {
+  "title": "Alex Jones",
+  "ids": [
+   397,
+   243
+  ],
+  "kind": "person",
+  "known_as": "Alex Jones",
+  "summary": "American far-right radio host and conspiracy theorist, founder of Infowars, found liable for defaming Sandy Hook families.",
+  "fields": [
+   "conspiracy",
+   "commentary",
+   "podcast"
+  ],
+  "roles": [
+   "radio host",
+   "conspiracy theorist",
+   "infowars founder"
+  ],
+  "country": "US",
+  "born": "1974-02-11",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1999,
+    "what": "Founded Infowars"
+   },
+   {
+    "year": 2012,
+    "what": "Began claiming the Sandy Hook school shooting was a hoax"
+   },
+   {
+    "year": 2018,
+    "what": "Banned from YouTube, Facebook, Apple and Twitter"
+   },
+   {
+    "year": 2022,
+    "what": "Ordered to pay about $1.4 billion in damages to Sandy Hook families; filed for bankruptcy"
+   },
+   {
+    "year": 2024,
+    "what": "Court ordered his personal assets liquidated to pay the families"
+   }
+  ],
+  "flags": [
+   "founder",
+   "bankruptcy",
+   "major_scandal",
+   "cancelled_or_banned"
+  ],
+  "fame": 4,
+  "checked": false,
+  "sources": [],
+  "note": "Not checked: the search limit ran out before this one. What has happened to Infowars and the judgments in 2025-2026 was not looked up."
+ },
+ {
+  "title": "Keir Starmer",
+  "ids": [
+   361
+  ],
+  "kind": "person",
+  "known_as": "Keir Starmer",
+  "summary": "British Labour politician and former chief prosecutor who was Prime Minister of the United Kingdom from July 2024 to July 2026.",
+  "fields": [
+   "politics"
+  ],
+  "roles": [
+   "former prime minister",
+   "member of parliament",
+   "barrister"
+  ],
+  "country": "GB",
+  "born": "1962-09-02",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2008,
+    "what": "Became Director of Public Prosecutions"
+   },
+   {
+    "year": 2015,
+    "what": "Elected Member of Parliament for Holborn and St Pancras"
+   },
+   {
+    "year": 2020,
+    "what": "Elected leader of the Labour Party"
+   },
+   {
+    "year": 2024,
+    "what": "Won a landslide general election and became Prime Minister"
+   },
+   {
+    "year": 2026,
+    "what": "Resigned as Prime Minister on 20 July after losing his party's support; succeeded by Andy Burnham"
+   }
+  ],
+  "flags": [
+   "elected_office",
+   "head_of_state"
+  ],
+  "fame": 5,
+  "checked": true,
+  "sources": [
+   "https://www.gov.uk/government/speeches/keir-starmers-final-speech-as-prime-minister-20-july-2026",
+   "https://www.aljazeera.com/news/2026/6/22/decent-but-despised-the-downfall-of-keir-starmer"
+  ],
+  "note": "Head of government, not formally head of state; the flag is kept as the closest fit. One source says he stays on as a backbench MP."
+ },
+ {
+  "title": "Tommy Robinson",
+  "ids": [
+   359,
+   242,
+   117
+  ],
+  "kind": "person",
+  "known_as": "Tommy Robinson",
+  "summary": "British far-right, anti-Islam activist who co-founded the English Defence League and has been jailed several times.",
+  "fields": [
+   "activism",
+   "commentary"
+  ],
+  "roles": [
+   "activist",
+   "online commentator"
+  ],
+  "country": "GB",
+  "born": "1982-11-27",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2005,
+    "what": "Convicted of assaulting an off-duty police officer and jailed"
+   },
+   {
+    "year": 2009,
+    "what": "Co-founded the English Defence League"
+   },
+   {
+    "year": 2014,
+    "what": "Jailed for mortgage fraud"
+   },
+   {
+    "year": 2024,
+    "what": "Jailed for 18 months for contempt of court for repeating libels about a Syrian refugee (also jailed for contempt in 2019)"
+   },
+   {
+    "year": 2025,
+    "what": "Released in May; led the large \"Unite the Kingdom\" march in London in September"
+   },
+   {
+    "year": 2026,
+    "what": "Convicted in October of harassing two Daily Mail journalists; sentencing due in December"
+   }
+  ],
+  "flags": [
+   "convicted_crime",
+   "violent_crime",
+   "prison",
+   "founder",
+   "cancelled_or_banned",
+   "bankruptcy"
+  ],
+  "fame": 4,
+  "checked": true,
+  "sources": [
+   "https://www.thestar.com.my/news/world/2026/10/28/uk-anti-islam-activist-robinson-convicted-of-harassing-two-journalists",
+   "https://www.ibtimes.co.uk/tommy-robinson-guilty-harassing-daily-mail-journalists-1828661"
+  ],
+  "note": "Sentence for the 2026 harassment conviction not yet known. Separately acquitted of a terrorism-law offence for refusing to give police his phone PIN (date not confirmed)."
+ },
+ {
+  "title": "Dr Phil",
+  "ids": [
+   357
+  ],
+  "kind": "person",
+  "known_as": "Dr. Phil (Phil McGraw)",
+  "summary": "American television host and former psychologist who became famous on Oprah and hosted the talk show Dr. Phil for 21 years.",
+  "fields": [
+   "film_tv",
+   "writing",
+   "business"
+  ],
+  "roles": [
+   "talk show host",
+   "author",
+   "former psychologist"
+  ],
+  "country": "US",
+  "born": "1950-09-01",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1998,
+    "what": "Began regular appearances on The Oprah Winfrey Show"
+   },
+   {
+    "year": 2002,
+    "what": "Launched his own daily talk show, Dr. Phil"
+   },
+   {
+    "year": 2023,
+    "what": "Dr. Phil ended after 21 seasons"
+   },
+   {
+    "year": 2024,
+    "what": "Launched the TV network Merit Street Media"
+   },
+   {
+    "year": 2025,
+    "what": "Merit Street Media filed for bankruptcy"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "fame": 4,
+  "checked": false,
+  "sources": [],
+  "note": "The 2025 bankruptcy was his company's, not a personal one."
+ },
+ {
+  "title": "Dan Crenshaw",
+  "ids": [
+   350
+  ],
+  "kind": "person",
+  "known_as": "Dan Crenshaw",
+  "summary": "American Republican congressman from Texas since 2019 and former Navy SEAL officer.",
+  "fields": [
+   "politics",
+   "military"
+  ],
+  "roles": [
+   "congressman",
+   "navy seal"
+  ],
+  "country": "US",
+  "born": "1984-03-14",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2012,
+    "what": "Wounded by a bomb blast in Afghanistan while serving as a Navy SEAL"
+   },
+   {
+    "year": 2018,
+    "what": "Elected to the US House for Texas's 2nd district; a Saturday Night Live joke about him made national news"
+   },
+   {
+    "year": 2026,
+    "what": "Lost the Republican primary on 3 March to state Rep. Steve Toth, the first sitting member of Congress to lose renomination that cycle"
+   }
+  ],
+  "flags": [
+   "elected_office",
+   "military_service"
+  ],
+  "fame": 4,
+  "checked": true,
+  "sources": [
+   "https://www.nbcnews.com/politics/2026-election/dan-crenshaw-texas-election-primary-loss-house-seat-rcna261351",
+   "https://www.texastribune.org/2026/03/04/texas-congressional-primary-results-2/"
+  ],
+  "note": "His House term ends in January 2027."
+ },
+ {
+  "title": "Polo G",
+  "ids": [
+   306
+  ],
+  "kind": "person",
+  "known_as": "Polo G",
+  "summary": "American rapper from Chicago known for Pop Out and the number-one single Rapstar.",
+  "fields": [
+   "rapper",
+   "music"
+  ],
+  "roles": [
+   "rapper",
+   "songwriter"
+  ],
+  "country": "US",
+  "born": "1999-01-06",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2019,
+    "what": "Broke through with Pop Out and the debut album Die a Legend"
+   },
+   {
+    "year": 2021,
+    "what": "Rapstar reached number one on the Billboard Hot 100; album Hall of Fame also number one"
+   },
+   {
+    "year": 2021,
+    "what": "Arrested in Miami and charged with battery on a police officer; felonies dropped that year, misdemeanors in 2022 after an anger management course"
+   },
+   {
+    "year": 2023,
+    "what": "Arrested after a police raid on his home and charged with robbery, kidnapping and assault"
+   },
+   {
+    "year": 2024,
+    "what": "Arrested in New York in April on gun charges; dismissed in December"
+   }
+  ],
+  "flags": [
+   "charged_crime"
+  ],
+  "fame": 4,
+  "checked": true,
+  "sources": [
+   "https://www.tmz.com/2022/04/09/rapper-polo-g-cop-attack-case-drop-anger-management-complete/",
+   "https://www.hotnewhiphop.com/705674-polo-g-released-prison-police-raid-hip-hop-news",
+   "https://musicxclusives.com/2024/12/11/polo-g-celebrates-dismissal-of-nyc-gun-charges-following-april-arrest"
+  ],
+  "note": "Outcome of the 2023 robbery and kidnapping case not found."
+ },
+ {
+  "title": "Lil Pump",
+  "ids": [
+   304
+  ],
+  "kind": "person",
+  "known_as": "Lil Pump",
+  "summary": "American rapper from Miami who rose from SoundCloud as a teenager with the 2017 hit \"Gucci Gang\".",
+  "fields": [
+   "rapper",
+   "music"
+  ],
+  "roles": [
+   "rapper",
+   "songwriter"
+  ],
+  "country": "US",
+  "born": "2000-08-17",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2017,
+    "what": "\"Gucci Gang\" reached number 3 on the Billboard Hot 100; debut album released"
+   },
+   {
+    "year": 2018,
+    "what": "\"I Love It\" with Kanye West became a worldwide hit"
+   },
+   {
+    "year": 2019,
+    "what": "Released the album Harverd Dropout"
+   }
+  ],
+  "flags": [],
+  "fame": 4,
+  "checked": false,
+  "sources": [],
+  "note": "Not searched (the search allowance ran out); written from memory, nothing after mid-2026 checked."
+ },
+ {
+  "title": "Young Thug",
+  "ids": [
+   287
+  ],
+  "kind": "person",
+  "known_as": "Young Thug",
+  "summary": "American rapper from Atlanta and founder of the YSL label, who pleaded guilty in Georgia's long-running YSL racketeering case.",
+  "fields": [
+   "rapper",
+   "music"
+  ],
+  "roles": [
+   "rapper",
+   "songwriter",
+   "label founder"
+  ],
+  "country": "US",
+  "born": "1991-08-16",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2014,
+    "what": "Broke through with \"Stoner\" and \"Lifestyle\""
+   },
+   {
+    "year": 2019,
+    "what": "Won a Grammy as co-writer of \"This Is America\"; album So Much Fun reached number 1"
+   },
+   {
+    "year": 2022,
+    "what": "Arrested and charged in a racketeering indictment against YSL"
+   },
+   {
+    "year": 2024,
+    "what": "Pleaded guilty to gang, drug and gun charges; released on time served with 15 years of probation"
+   },
+   {
+    "year": 2025,
+    "what": "Released the album UY Scuti"
+   }
+  ],
+  "flags": [
+   "charged_crime",
+   "convicted_crime",
+   "founder",
+   "major_award"
+  ],
+  "fame": 4,
+  "checked": true,
+  "sources": [
+   "https://www.fox5atlanta.com/news/young-thug-allowed-visit-atlanta-home-starting-2027-he-does",
+   "https://www.yahoo.com/news/judge-declines-revoke-young-thug-214242012.html"
+  ],
+  "note": "He spent about two and a half years in jail awaiting and during trial. His 15 years of probation include a 10-year ban from the Atlanta area. A judge declined a prosecutors' bid to revoke his probation over a social media repost (date not confirmed). Nothing from 2026 was found."
+ },
+ {
+  "title": "Tucker Carlson",
+  "ids": [
+   274
+  ],
+  "kind": "person",
+  "known_as": "Tucker Carlson",
+  "summary": "American conservative commentator who hosted Fox News's top-rated show until 2023 and now runs his own online network.",
+  "fields": [
+   "commentary",
+   "journalism",
+   "podcast"
+  ],
+  "roles": [
+   "political commentator",
+   "tv host",
+   "podcaster"
+  ],
+  "country": "US",
+  "born": "1969-05-16",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2001,
+    "what": "Became a co-host of CNN's Crossfire"
+   },
+   {
+    "year": 2010,
+    "what": "Co-founded the news site The Daily Caller"
+   },
+   {
+    "year": 2016,
+    "what": "Tucker Carlson Tonight began on Fox News and became cable's most-watched show"
+   },
+   {
+    "year": 2023,
+    "what": "Dismissed by Fox News; started a show on X and the Tucker Carlson Network"
+   },
+   {
+    "year": 2024,
+    "what": "Interviewed Vladimir Putin in Moscow"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "fame": 4,
+  "checked": false,
+  "sources": [],
+  "note": "Not searched (the search allowance ran out); nothing from 2026 was checked."
+ },
+ {
+  "title": "David Blaine",
+  "ids": [
+   262
+  ],
+  "kind": "person",
+  "known_as": "David Blaine",
+  "summary": "American illusionist and endurance artist known for street magic television specials and public endurance stunts.",
+  "fields": [
+   "film_tv",
+   "other"
+  ],
+  "roles": [
+   "magician",
+   "illusionist",
+   "endurance artist"
+  ],
+  "country": "US",
+  "born": "1973-04-04",
+  "date_matches": false,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1997,
+    "what": "Television special David Blaine: Street Magic made him famous"
+   },
+   {
+    "year": 1999,
+    "what": "Buried Alive: seven days in a plastic coffin in New York"
+   },
+   {
+    "year": 2000,
+    "what": "Frozen in Time: encased in a block of ice in Times Square"
+   },
+   {
+    "year": 2003,
+    "what": "Above the Below: 44 days without food in a box over the Thames in London"
+   },
+   {
+    "year": 2008,
+    "what": "Held his breath for 17 minutes on live television, a record at the time"
+   },
+   {
+    "year": 2020,
+    "what": "Ascension: floated to about 24,000 feet holding helium balloons"
+   }
+  ],
+  "flags": [],
+  "fame": 5,
+  "checked": false,
+  "sources": [],
+  "note": "Year differs: David Blaine was born 4 April 1973; the chart has 1983-04-04 (ten years off). Not re-checked by web search."
+ },
+ {
+  "title": "Candace Owens",
+  "ids": [
+   250,
+   249
+  ],
+  "kind": "person",
+  "known_as": "Candace Owens",
+  "summary": "American conservative political commentator, author and podcast host, formerly of Turning Point USA and The Daily Wire.",
+  "fields": [
+   "commentary",
+   "podcast",
+   "politics"
+  ],
+  "roles": [
+   "political commentator",
+   "podcaster",
+   "author"
+  ],
+  "country": "US",
+  "born": "1989-04-29",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2017,
+    "what": "Rose to notice with her Red Pill Black videos; became communications director of Turning Point USA"
+   },
+   {
+    "year": 2018,
+    "what": "Launched the Blexit campaign"
+   },
+   {
+    "year": 2021,
+    "what": "Joined The Daily Wire with her own show"
+   },
+   {
+    "year": 2024,
+    "what": "Left The Daily Wire after a public dispute and started an independent show"
+   },
+   {
+    "year": 2025,
+    "what": "Sued for defamation in Delaware by Emmanuel and Brigitte Macron"
+   },
+   {
+    "year": 2026,
+    "what": "A Delaware judge ruled the court had no jurisdiction over her personally (her companies remain defendants); the Macrons filed a new federal suit in Tennessee"
+   }
+  ],
+  "flags": [],
+  "fame": 4,
+  "checked": true,
+  "sources": [
+   "https://www.thestar.com.my/news/world/2026/10/28/us-judge-narrows-french-president-macron039s-defamation-lawsuit-against-podcaster",
+   "https://thegrio.com/2026/11/11/candace-owens-lawsuit-macrons-tennessee-2026/"
+  ],
+  "note": "The Macron suits have not been decided on the merits."
+ }
+]
