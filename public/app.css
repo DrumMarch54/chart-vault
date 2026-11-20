@@ -335,9 +335,13 @@ body.noscroll { overflow: hidden; }
 .fixfields input { background: var(--panel2); border: 1px solid var(--panel2); color: var(--text); }
 
 /* ---------- number tools (public/tools.js): Today, Coming days, Number fun, Price tool, Relationship, Karmic ---------- */
-.tools .btn { justify-content: flex-start; min-height: 56px; font-size: 17px; gap: 14px; margin-top: 8px; width: 100%; background: var(--panel); color: var(--text); }
-.tools .btn .qicon { font-size: 22px; width: 30px; text-align: center; }
-.tools .btn .sub { color: var(--muted); font-size: 14px; margin-left: auto; text-align: right; }
+.toolgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.toolgrid + .showall, .showall + .toolgrid { margin-top: 8px; }
+.tools .toolgrid .btn { flex-direction: column; justify-content: center; align-items: center; gap: 3px; min-height: 84px; padding: 8px 4px; font-size: 14px; line-height: 1.15; text-align: center; white-space: normal; width: 100%; margin: 0; background: var(--panel); color: var(--text); }
+.tools .toolgrid .btn .qicon { font-size: 22px; line-height: 1; }
+.tools .toolgrid .btn .sub { color: var(--muted); font-size: 11.5px; font-weight: 400; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.showall { background: transparent; color: var(--muted); font-size: 14px; min-height: 40px; }
+.recent .showall { margin-top: 6px; }
 .tools .rhead { margin-top: 20px; }
 .tscreen { color: #303030; }
 .ttop { gap: 6px; padding: 4px 0 4px; }
@@ -552,16 +556,12 @@ body.withcmp .screen { padding-bottom: calc(100px + env(safe-area-inset-bottom))
 
 /* ---- laptop and desktop ---- */
 @media (min-width: 700px) {
-  .tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-  .tools .rhead { grid-column: 1 / -1; }
-  .tools .btn { margin-top: 0; white-space: nowrap; }
-  .tools .btn .sub { font-size: 13px; overflow: hidden; text-overflow: ellipsis; }
+  .toolgrid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .act { min-height: 76px; font-size: 15px; }
   .picks { grid-template-columns: 1fr 1fr; }
   .prices { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (min-width: 1000px) {
-  .tools { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 /* The day look of Today, Coming Days and the full-screen day (the owner's pick C, 2026-10-16): a soft light page,

@@ -49,7 +49,7 @@
     'screen.tags': 'All Tags', 'screen.upload': 'Upload Screenshots', 'screen.import': 'Import Tags', 'screen.status': 'Status and backup',
     'viewer.add_tag': 'Add a tag to a chart', 'quick.save': 'Save a quick chart', 'quick.full_screen': 'Quick Chart full screen',
     'quick.year_rows': 'Year Rows and Day Vibrations', 'rows.on_date': 'Year Rows: pick a date', 'rows.meaning': 'Year Rows: tap a number for its meaning', 'quick.show_parts': 'Show and Hide Parts', 'quick.augment': 'Augmentation On or Off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
-    'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'status.recompute': 'Recompute chart numbers',
+    'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.recent_all': 'Home → Recently Opened: Show All', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'status.recompute': 'Recompute chart numbers',
     'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart', 'viewer.year_rows': 'Year Rows from a chart',
     'position.search_more': 'Narrow a position search by another number', 'position.add_more': 'Tap + Another number', 'position.combo': 'Open the combination screen from Search by Position', 'position.hsd': 'Higher Self Diamond charts from Search by Position', 'position.plain': 'Plain number only, in a two-number position search', 'position.making': 'Pick the number two parts make (Making 35/8)', 'combo.search': 'Show Charts on the combination screen', 'reading.show_number': 'Most Often → ring a number on the chart', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'viewer.share': 'Share Picture from a chart', 'quick.share': 'Share Picture from the Quick Chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
     'grid.size': 'Chart size on the grid (− / +)', 'similar.size': 'Chart size on Similar Charts (− / +)', 'duplicates.size': 'Chart size on Possible Duplicates (− / +)',
@@ -522,7 +522,8 @@
     const $grid = h('div', { class: 'grid' });
     // One size for every grid of charts (the list, the search results, Recently Opened): − / + beside the count.
     const wide = window.innerWidth >= 1000 ? 2 : window.innerWidth >= 700 ? 1 : 0;
-    const size = sizeControl('gridCols', { min: 2, max: [5, 7, 9][wide], def: [3, 5, 6][wide], countName: 'grid.size', apply: (c) => document.documentElement.style.setProperty('--grid-cols', c) });
+    let onCols = null; // the home screen's Recently Opened keeps to two rows whatever the size
+    const size = sizeControl('gridCols', { min: 2, max: [5, 7, 9][wide], def: [3, 5, 6][wide], countName: 'grid.size', apply: (c) => { document.documentElement.style.setProperty('--grid-cols', c); if (onCols) onCols(c); } });
     const $bar = h('div', { class: 'gridbar' }, $summary, size.node);
     const $sentinel = h('div', { class: 'sentinel' });
     const $recent = h('div', { class: 'recent hidden' });
@@ -543,15 +544,28 @@
       home ? h('div', { class: 'pagetop hometop' }, h('h1', {}, 'Chart Vault'), $gear) : null,
       h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), home ? null : $quickIcon, home ? null : $gear), $filters),
       home && readingUi ? readingUi.homeBanner() : null,
-      home ? $acts : null, home && toolsUi ? toolsUi.homeButtons() : null,
-      $recent, home ? null : $bar, home ? null : $grid, home ? null : $sentinel));
+      home ? $acts : null, $recent, home && toolsUi ? toolsUi.homeButtons() : null,
+      home ? null : $bar, home ? null : $grid, home ? null : $sentinel));
     // Recently Opened charts (this phone remembers the last 48), a grid like a search result, only on the home screen.
     if (home && recentIds().length) {
       api('/api/images?ids=' + recentIds().join(',') + '&limit=50').then((r) => {
         const byId = new Map(r.items.map((i) => [i.id, i]));
         const items = recentIds().map((id) => byId.get(id)).filter(Boolean);
         if (!items.length) return;
-        fill($recent, h('div', { class: 'gridbar' }, h('div', { class: 'summary rhead' }, 'Recently Opened'), size.node), h('div', { class: 'grid' }, ...items.map(cell)));
+        // Opening charts is the most used thing in the app (owner's tap counts, 2026-11-20): Recently Opened sits right
+        // under the top tiles, two rows of it, and "Show All" opens the rest so the tools stay one short scroll away.
+        const cells = items.map(cell);
+        let all = false;
+        const $more = h('button', { type: 'button', class: 'btn btn-block showall', onclick: () => { all = !all; count('home.recent_all'); trim(); } });
+        const trim = (c) => {
+          const cols = Number(c) || Number(getComputedStyle(document.documentElement).getPropertyValue('--grid-cols')) || 3;
+          cells.forEach((el, i) => el.classList.toggle('hidden', !all && i >= cols * 2));
+          $more.classList.toggle('hidden', cells.length <= cols * 2);
+          $more.textContent = all ? 'Show Fewer' : `Show All ${cells.length}`;
+        };
+        onCols = trim;
+        fill($recent, h('div', { class: 'gridbar' }, h('div', { class: 'summary rhead' }, 'Recently Opened'), size.node), h('div', { class: 'grid' }, ...cells), $more);
+        trim();
         $recent.classList.remove('hidden');
       }).catch(() => {});
     }
