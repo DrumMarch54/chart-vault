@@ -12,7 +12,7 @@ const seen = new Map(); let unknown = 0, dropped = [];
 for (const f of fs.readdirSync(dir).filter((f) => /^batch-\d+\.json$/.test(f)).sort()) {
   for (const e of JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'))) {
     const rec = cleanRecord(e);
-    if (!rec) { unknown++; continue; }
+    if (!rec) { unknown++; seen.delete(keyOf(e.title)); continue; } // a re-check that finds nobody removes the earlier guess
     const raw = { fields: e.fields || [], flags: e.flags || [] };
     for (const w of [...raw.fields.filter((x) => !rec.fields.includes(x)), ...raw.flags.filter((x) => !rec.flags.includes(x))]) dropped.push(`${e.title}: ${w}`);
     seen.set(keyOf(e.title), rec); // a later batch (a re-check) replaces an earlier one
