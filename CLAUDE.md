@@ -257,6 +257,9 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   books are never shown as the spot's words, except the Superdates appendix sections "Day Vibration N", "Life Path N"
   and "DVLP N" (the course's own per-number texts for the day, life path and nexus; `HOME` in meaning.js).
   `GET /api/meaning?pair=&rel=`; screen `public/meaning.js`; numbers carry `data-pos/num/pair/rel` from `numeroscopeSvg`.
+- The page's look (owner 2026-11-20, pick A of three samples): Quick Gist on top (`gist`: each group's first bold words as chips
+  under a FILLED badge, so a label never reads as a point), jump buttons, then one part per subject under a dark band (`part`),
+  In Balance on green, Out of Balance on red, a point = its leading bold words as headline + the rest smaller (`point`). Nothing reworded.
 - A circle's pair points (owner 2026-11-07): the course writes a family ("3 + 6 (and 12/3 + 6, 3 + 15/6)"); a point naming
   a compound this chart does not have goes under "Only With 12/3, 15/6 …" with a note (`pairSplit` in meaning.js), never mixed in.
 - Ask About This (owner 2026-11-07): a question box at the foot of every meaning page; Claude Opus 5.5 answers from the

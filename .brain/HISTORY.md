@@ -968,3 +968,6 @@ shows once. Every point was written from the transcript by hand; where the trans
 18 "gives anger" at 01:51) the point keeps the ambiguity ("one of 16 and 18 ... the other ...") rather than guess.
 Checked on the dev app at 390×844: vocation solar plexus 12/3, vocation heart 11/2, name chart mind center 16/7.
 
+
+## 2026-11-20: meaning page laid out again (Look A)
+The owner: the page a tapped number opens was hard to scan; bullet text too long, section titles meshed with the text, colors odd; wants the quick gist first and depth below. Could not say which layout, so three samples were published as an artifact (A bands, B tabs, C folding bars); the owner picked A. First sample was blank: `const top` at script top level clashes with `window.top`. The first gist box had its In Balance / Out of Balance labels in the same weight and color as the words; the owner's rule: a label must look different from the points (filled badge, words as chips). Built in public/meaning.js (`gist`, `part`, `point`), theme variables in app.css.
