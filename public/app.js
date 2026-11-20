@@ -49,7 +49,7 @@
     'screen.tags': 'All Tags', 'screen.upload': 'Upload Screenshots', 'screen.import': 'Import Tags', 'screen.status': 'Status and backup',
     'viewer.add_tag': 'Add a tag to a chart', 'quick.save': 'Save a quick chart', 'quick.full_screen': 'Quick Chart full screen',
     'quick.year_rows': 'Year Rows and Day Vibrations', 'rows.on_date': 'Year Rows: pick a date', 'rows.meaning': 'Year Rows: tap a number for its meaning', 'quick.show_parts': 'Show and Hide Parts', 'quick.augment': 'Augmentation On or Off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
-    'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.recent_all': 'Home → Recently Opened: Show All', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'status.recompute': 'Recompute chart numbers',
+    'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.recent_all': 'Home → Recently Opened: Show All', 'app.back_to_start': 'Back to the home screen after a while away', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'status.recompute': 'Recompute chart numbers',
     'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart', 'viewer.year_rows': 'Year Rows from a chart',
     'position.search_more': 'Narrow a position search by another number', 'position.add_more': 'Tap + Another number', 'position.combo': 'Open the combination screen from Search by Position', 'position.hsd': 'Higher Self Diamond charts from Search by Position', 'position.plain': 'Plain number only, in a two-number position search', 'position.making': 'Pick the number two parts make (Making 35/8)', 'combo.search': 'Show Charts on the combination screen', 'reading.show_number': 'Most Often → ring a number on the chart', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'viewer.share': 'Share Picture from a chart', 'quick.share': 'Share Picture from the Quick Chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
     'grid.size': 'Chart size on the grid (− / +)', 'similar.size': 'Chart size on Similar Charts (− / +)', 'duplicates.size': 'Chart size on Possible Duplicates (− / +)',
@@ -110,8 +110,16 @@
   const OVER_FLOW = new Set(['chart', 'compare', 'similar']); // screens that lie over the search and come back to it
   let flowFromApp = false;
   const leaveFlow = () => (flowFromApp ? history.back() : swap('#/'));
+  // How deep this step of the phone's Back history is (`d` in history.state; 0 = the step the app started on).
+  // Coming back after a while rewinds to that first step and opens home (backToStart, below).
+  let depth = Number.isInteger(history.state && history.state.d) ? history.state.d : 0, replacing = false, rewinding = false;
+  const markDepth = (d) => { depth = d; try { history.replaceState({ ...(history.state || {}), d }, '', location.href); } catch {} };
+  markDepth(depth);
   function route() {
     const hash = location.hash || '#/';
+    if (Number.isInteger(history.state && history.state.d)) depth = history.state.d; else markDepth(replacing ? depth : depth + 1);
+    replacing = false;
+    seen();
     const [, name = '', arg = ''] = /^#\/([^/?]*)\/?([^?]*)/.exec(hash) || [];
     const query = new URLSearchParams(hash.split('?')[1] || '');
     const view = routes[name] || routes[''];
@@ -147,7 +155,7 @@
   const go = (hash) => afterOverlayClosed(() => { location.hash = hash; });
   // Same screen change, but without adding a step to the browser's history (used between charts in the
   // viewer, so the phone's Back button returns to the screen the viewer was opened from, not to the last chart).
-  const swap = (hash) => afterOverlayClosed(() => { location.replace(hash); });
+  const swap = (hash) => afterOverlayClosed(() => { if ((location.hash || '#/') !== hash) replacing = true; location.replace(hash); });
   // Like replaceChildren, but skips null/false so a conditional part never shows as the word "null".
   const fill = (el, ...nodes) => el.replaceChildren(...nodes.filter((n) => n !== null && n !== undefined && n !== false));
   const render = (...nodes) => { fill($app, ...nodes); window.scrollTo(0, 0); };
@@ -181,7 +189,7 @@
   let meaningUi = null; // set once public/meaning.js is installed (bottom of this file)
   let lookupUi = null; // set once public/lookup.js is installed (bottom of this file)
   let closingAll = false, pendingBack = 0, afterBack = [];
-  const trackOverlay = (el, close = null) => { overlays.push({ el, close }); try { history.pushState({ overlay: true }, '', location.href); } catch {} };
+  const trackOverlay = (el, close = null) => { overlays.push({ el, close }); try { history.pushState({ overlay: true, d: depth + 1 }, '', location.href); depth += 1; } catch {} };
   const untrackOverlay = (el) => {
     const wasTop = overlays.length && overlays[overlays.length - 1].el === el;
     overlays = overlays.filter((o) => o.el !== el);
@@ -194,6 +202,8 @@
     overlays = []; document.body.classList.remove('noscroll');
   }
   window.addEventListener('popstate', () => {
+    if (Number.isInteger(history.state && history.state.d)) depth = history.state.d;
+    if (rewinding) return;
     if (pendingBack) { pendingBack--; if (!pendingBack) { const fns = afterBack; afterBack = []; for (const fn of fns) fn(); } return; }
     const top = overlays[overlays.length - 1];
     if (top) { closingAll = true; try { if (top.close) top.close(); else top.el.remove(); } finally { closingAll = false; } overlays = overlays.filter((o) => o !== top); if (!overlays.length) document.body.classList.remove('noscroll'); return; }
@@ -539,11 +549,10 @@
     if (position) rememberSearch([], kind, { conds });
     if (name) rememberSearch([], kind, { name });
     if (!namesLoaded) loadTagNames().then(() => { if (tag && document.activeElement !== $input) $input.value = pretty(tag); });
-    // Under the search bar: three small tiles side by side (the three big stacked buttons were too much, owner 2026-10-16).
+    // Under the search bar: the two buttons the owner uses most, Quick Chart and Look Up (owner 2026-11-20);
+    // By Position and Ask the Vault are the first tiles of the Tools grid (tools.js homeButtons).
     const $acts = h('div', { class: 'acts' },
       h('a', { class: 'act primary', href: '#/quick', onclick: () => count('home.quick') }, h('span', { class: 'qicon' }, '◈'), h('span', { class: 'al' }, 'Quick Chart')),
-      h('a', { class: 'act', href: '#/position', onclick: () => count('home.position') }, h('span', { class: 'qicon' }, '⌖'), h('span', { class: 'al' }, 'By Position')),
-      readingUi ? readingUi.homeButton() : null,
       lookupUi ? lookupUi.homeButton() : null);
     drawCmpBar(true);
     render(h('div', { class: `screen ${home ? 'home' : ''}` },
@@ -2447,6 +2456,31 @@
   window.addEventListener('hashchange', checkVersion);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) checkVersion(); });
 
+  // ---------- coming back after a while (owner 2026-11-20) ----------
+  // "I'm in somebody's whole name pyramid, I close the app, and next time I have to back out a million times to
+  // get to Quick Chart." Away longer than AWAY_MS (the app hidden, or the phone closed it and brought it back):
+  // the whole Back history is rewound to the step the app started on and home opens, so Quick Chart is one tap
+  // and Back closes the app. Nothing typed is lost: the Quick Chart keeps its draft (quickDraft).
+  const AWAY_MS = 15 * 60 * 1000;
+  function seen() { try { localStorage.setItem('lastSeen', String(Date.now())); } catch {} }
+  const awayTooLong = () => { try { const t = Number(localStorage.getItem('lastSeen')); return t > 0 && Date.now() - t > AWAY_MS; } catch { return false; } };
+  function backToStart() {
+    if (pendingBack || activeUpload) return;
+    const atHome = () => (location.hash || '#/') === '#/';
+    if (depth <= 0 && !overlays.length && atHome()) return;
+    count('app.back_to_start');
+    const land = () => { rewinding = false; closeOverlays(); markDepth(0); if (!atHome()) { replacing = true; location.replace('#/'); } };
+    if (depth <= 0) { land(); return; }
+    rewinding = true;
+    let landed = false;
+    const once = () => { if (landed) return; landed = true; window.removeEventListener('popstate', once); land(); };
+    window.addEventListener('popstate', once);
+    setTimeout(once, 1000); // a history shorter than it says: land where we are
+    history.go(-depth);
+  }
+  document.addEventListener('visibilitychange', () => { if (document.hidden) seen(); else if (awayTooLong()) backToStart(); else seen(); });
+  window.addEventListener('pagehide', seen);
+
   // ---------- number tools (public/tools.js) ----------
   // Today, Coming Days, Number Fun, Price Tool, Relationship, Karmic Connections, My Chart: their screens
   // live in tools.js and get the plumbing here (screens, drawing, counting). A bottom sheet for a number's words.
@@ -2486,7 +2520,9 @@
     try {
       const me = await (window.ME || fetch('/api/me', { credentials: 'same-origin' }).then((r) => r.json()));
       if (!me.loggedIn) return showLogin();
+      const wasAway = awayTooLong();
       route(); checkVersion();
+      if (wasAway) backToStart();
     } catch { render(h('div', { class: 'screen center' }, h('p', { class: 'err' }, 'Cannot reach the server. Check your connection and reload.'))); }
   })();
 })();
