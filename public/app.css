@@ -812,7 +812,8 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 /* What This Group Shares */
 .groupbtn { margin: 8px 0 10px; }
 .gcard { display: flex; flex-direction: column; gap: 10px; margin: 0; }
-.gstrength { align-self: flex-start; padding: 3px 10px; border-radius: 12px; background: var(--panel2); color: var(--muted); font-size: 12.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
+.gtop { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.gstrength { padding: 3px 10px; border-radius: 12px; background: var(--panel2); color: var(--muted); font-size: 12.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
 .gstrength.strong { background: var(--accent); color: var(--accent-text); }
 .gstrength.look { color: var(--text); }
 .gcard a.simpill { color: var(--text); text-decoration: none; }
