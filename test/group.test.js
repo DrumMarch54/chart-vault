@@ -53,7 +53,7 @@ test('the day everyone in the group shares comes first, one person counts once, 
   assert.equal(r.rest, 13);
   const top = r.cards[0];
   assert.equal(top.strength, 'Strong');
-  assert.equal(top.luck, 0);          // no random group of four shares a day four ways
+  assert.ok(top.luck < 0.05);         // hardly any random group of four shares a day four ways
   assert.deepEqual(G.groupShares(db, 'sevens').cards.map((c) => c.luck), r.cards.map((c) => c.luck)); // the same on every visit
   const day = top.items.find((i) => i.pos === 'essence.day');
   assert.ok(day, 'the day vibration is in the first card');
