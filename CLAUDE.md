@@ -143,6 +143,16 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - The Quick Chart keeps what was typed on the device (`quickDraft`) and brings it back on the next visit;
   "My Chart" overwrites it.
 
+## Home and What This Group Shares (2026-11-20)
+- Home order follows the owner's tap counts: search, the four top tiles (Quick Chart first; Ask the Vault stays, the
+  owner uses it), Recently Opened (two rows, "Show All"), then Tools as small tiles, the rarely opened ones behind
+  "More Tools" (`homeButtons` in tools.js). Move a tile only on the counts or the owner's word.
+- What This Group Shares (`server/group.js`, `GET /api/group?tag=`, `#/group?tag=`, the button on a tag's results):
+  a tag's people against the rest of the vault, per position and number. One person counts once; copies of a
+  position (`NOT_A_REPEAT`) never count. The label on a card (Strong / Worth a Look / Could Be Chance) comes from 300
+  random groups of the same size, never from the raw chance: with thousands of pairs tried, the raw chance called
+  luck "Strong". Counting only: no meanings, no AI. Weak finds stay folded.
+
 ## Number tools (built 2026-10-15): Today, Coming days, Number fun, Price tool, Relationship, Karmic connections, My chart
 - Screens in `public/tools.js` (app.js hands over its plumbing through `Tools.install`), math in
   `public/numbertools.js` (node-tested in `test/numbertools.test.js` against the books' own examples:
