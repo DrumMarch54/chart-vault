@@ -1,0 +1,1957 @@
+[
+ {
+  "title": "N3on",
+  "ids": [
+   480,
+   479,
+   436
+  ],
+  "kind": "person",
+  "known_as": "N3on",
+  "summary": "American livestreamer, Rangesh Mutama, among the most-watched streamers on Kick, known for provocative real-life streams.",
+  "fields": [
+   "streaming",
+   "youtube"
+  ],
+  "roles": [
+   "kick streamer",
+   "youtuber"
+  ],
+  "country": "US",
+  "born": "2004-08-13",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2023,
+    "what": "Moved to the streaming platform Kick and became one of its biggest streamers"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.wikiwand.com/en/articles/N3on",
+   "https://www.complex.com/pop-culture/a/jacob-kramer/n3on-twitch-kick-interview"
+  ],
+  "note": "Birth date 13 Aug 2004 confirmed. Sources differ on his legal name: most say Rangesh Mutama, a Wikipedia copy and Complex say Mikyle Rafiq."
+ },
+ {
+  "title": "Danny Duncan",
+  "ids": [
+   473,
+   378
+  ],
+  "kind": "person",
+  "known_as": "Danny Duncan",
+  "summary": "American YouTuber known for prank and skateboarding videos and the \"Virginity Rocks\" clothing line.",
+  "fields": [
+   "youtube",
+   "influencer",
+   "business"
+  ],
+  "roles": [
+   "youtuber",
+   "prankster"
+  ],
+  "country": "US",
+  "born": "1992-07-27",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2014,
+    "what": "Started his YouTube channel"
+   },
+   {
+    "year": 2017,
+    "what": "Launched the \"Virginity Rocks\" merchandise line"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Danny_Duncan_(YouTuber)"
+  ],
+  "note": "Birth date confirmed (Wikipedia). Event years are from the first pass, not re-checked."
+ },
+ {
+  "title": "Juggalo",
+  "ids": [
+   463
+  ],
+  "kind": "group",
+  "known_as": "Juggalos",
+  "summary": "The fan subculture of the hip hop duo Insane Clown Posse and Psychopathic Records, known for face paint and yearly gatherings.",
+  "fields": [
+   "music"
+  ],
+  "roles": [
+   "fan subculture"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1992,
+    "what": "Insane Clown Posse released the song \"The Juggla\" on Carnival of Carnage, the source of the name"
+   },
+   {
+    "year": 1994,
+    "what": "Violent J called the crowd \"Juggalos\" at a concert and the name stuck"
+   },
+   {
+    "year": 2000,
+    "what": "First Gathering of the Juggalos"
+   },
+   {
+    "year": 2011,
+    "what": "FBI report listed Juggalos as a loosely organized hybrid gang"
+   },
+   {
+    "year": 2017,
+    "what": "Juggalo March on Washington against the gang label"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.merriam-webster.com/wordplay/what-does-juggalo-mean-icp",
+   "https://www.wikiwand.com/en/articles/Juggalo"
+  ],
+  "note": "Sources give only the year 1994 (a concert) for the name; the batch date 1994-07-23 could not be confirmed. The band itself disputes the one-concert story."
+ },
+ {
+  "title": "FouseyTube",
+  "ids": [
+   447
+  ],
+  "kind": "person",
+  "known_as": "Fousey (FouseyTube)",
+  "summary": "American YouTuber and streamer known for prank and \"social experiment\" videos and public breakdowns on stream.",
+  "fields": [
+   "youtube",
+   "streaming",
+   "comedy"
+  ],
+  "roles": [
+   "youtuber",
+   "streamer"
+  ],
+  "country": "US",
+  "born": "1990-01-22",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2011,
+    "what": "Started the FouseyTube channel"
+   },
+   {
+    "year": 2018,
+    "what": "His Los Angeles event was evacuated after a bomb threat"
+   },
+   {
+    "year": 2023,
+    "what": "Taken into police custody in Miami after calling 911 to his hotel room during a live stream"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.thedailybeast.com/youtuber-fousey-calls-police-on-livestream-gets-arrested",
+   "https://voz.us/en/society/230823/7032/show-youtuber-fousey-during-his-alleged-detention-in-miami.html"
+  ],
+  "note": "Said on stream in 2023 he was 33, which fits 1990; the exact day was not confirmed. No source found for a charge, its outcome or a platform ban, so the ban flag was dropped. The 2018 event is from the first pass."
+ },
+ {
+  "title": "Jacob Frey",
+  "ids": [
+   396
+  ],
+  "kind": "person",
+  "known_as": "Jacob Frey",
+  "summary": "American politician and lawyer, mayor of Minneapolis since 2018, in office during the George Floyd killing and protests.",
+  "fields": [
+   "politics"
+  ],
+  "roles": [
+   "mayor",
+   "lawyer"
+  ],
+  "country": "US",
+  "born": "1981-07-23",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2013,
+    "what": "Elected to the Minneapolis City Council"
+   },
+   {
+    "year": 2017,
+    "what": "Elected mayor of Minneapolis"
+   },
+   {
+    "year": 2020,
+    "what": "Led the city through the killing of George Floyd and the unrest that followed"
+   },
+   {
+    "year": 2021,
+    "what": "Re-elected mayor"
+   },
+   {
+    "year": 2025,
+    "what": "Won a third term over Omar Fateh in ranked-choice counting; said it would be his last"
+   }
+  ],
+  "flags": [
+   "elected_office"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.pbs.org/newshour/politics/jacob-frey-fends-off-democratic-socialists-challenge-to-win-3rd-term-as-minneapolis-mayor",
+   "https://www.mprnews.org/story/2025/11/05/jacob-frey-wins-minneapolis-mayor-election"
+  ],
+  "note": "The 2025 third term is confirmed. The birth date was not part of the search; it is from the first pass."
+ },
+ {
+  "title": "Oompaville",
+  "ids": [
+   395
+  ],
+  "kind": "person",
+  "known_as": "Oompaville",
+  "summary": "American YouTuber known for commentary and reaction videos on internet culture.",
+  "fields": [
+   "youtube",
+   "commentary"
+  ],
+  "roles": [
+   "youtuber",
+   "commentator"
+  ],
+  "country": "US",
+  "born": "1996-08-29",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.everybodywiki.com/Oompaville",
+   "https://www.famousbirthdays.com/people/papa-oompsie.html"
+  ],
+  "note": "Birth date 29 Aug 1996 found on fan wiki and birthday sites only (no major outlet)."
+ },
+ {
+  "title": "Russ McKamey · McKamey Manor",
+  "ids": [
+   391
+  ],
+  "kind": "person",
+  "known_as": "Russ McKamey",
+  "summary": "American owner of McKamey Manor, an extreme \"survival horror\" haunted attraction widely criticized as torture.",
+  "fields": [
+   "other"
+  ],
+  "roles": [
+   "haunted attraction owner"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2017,
+    "what": "Moved McKamey Manor from San Diego to Summertown, Tennessee"
+   },
+   {
+    "year": 2019,
+    "what": "A petition calling for the attraction to be shut down drew wide attention"
+   },
+   {
+    "year": 2023,
+    "what": "Subject of the Hulu documentary Monster Inside: America's Most Extreme Haunted House"
+   },
+   {
+    "year": 2024,
+    "what": "Arrested in Summertown and charged with attempted second-degree murder, rape and domestic assault"
+   },
+   {
+    "year": 2024,
+    "what": "All charges dropped by the district attorney after a hearing in Lawrence County"
+   }
+  ],
+  "flags": [
+   "charged_crime"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.wkrn.com/news/local-news/attempted-murder-rape-charges-against-mckamey-manor-owner-dropped/amp/",
+   "https://en.wikipedia.org/wiki/McKamey_Manor"
+  ],
+  "note": "Charges were dropped (Sept 2024). No source gave his age or birth date, so the batch date 1941-01-24 is unconfirmed; the first pass recalled news giving his age as 65 in 2024 (born about 1959), not verified here. Military service flag dropped: no source found."
+ },
+ {
+  "title": "Kyle Kulinski · Secular Talk",
+  "ids": [
+   373
+  ],
+  "kind": "person",
+  "known_as": "Kyle Kulinski",
+  "summary": "American left-wing political commentator who hosts the YouTube show Secular Talk and co-founded Justice Democrats.",
+  "fields": [
+   "commentary",
+   "youtube",
+   "podcast"
+  ],
+  "roles": [
+   "political commentator",
+   "youtuber",
+   "podcast host"
+  ],
+  "country": "US",
+  "born": "1988-01-31",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2008,
+    "what": "Started the Secular Talk channel on YouTube"
+   },
+   {
+    "year": 2017,
+    "what": "Co-founded the political group Justice Democrats"
+   },
+   {
+    "year": 2021,
+    "what": "Launched the podcast Krystal Kyle & Friends with Krystal Ball"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Kyle_Kulinski"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Chris Chan",
+  "ids": [
+   368
+  ],
+  "kind": "person",
+  "known_as": "Chris Chan",
+  "summary": "American internet personality from Virginia, creator of the Sonichu webcomic and one of the most documented people on the internet.",
+  "fields": [
+   "art",
+   "youtube"
+  ],
+  "roles": [
+   "webcomic creator",
+   "internet personality"
+  ],
+  "country": "US",
+  "born": "1982-02-24",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2007,
+    "what": "Discovered by online forums; years of trolling and documentation followed"
+   },
+   {
+    "year": 2021,
+    "what": "Arrested in Virginia and charged with incest"
+   },
+   {
+    "year": 2023,
+    "what": "Released from jail in March"
+   },
+   {
+    "year": 2023,
+    "what": "The incest charge was dismissed in August under Virginia's deferred-disposition law"
+   }
+  ],
+  "flags": [
+   "charged_crime"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.aol.com/timeline-chris-chans-incest-charge-170537192.html",
+   "https://knowyourmeme.com/memes/events/chris-chan-mother-incest-allegations"
+  ],
+  "note": "News reports name Christine Weston Chandler. The charge was dismissed, not tried; no conviction."
+ },
+ {
+  "title": "Gwen Shamblin Lara",
+  "ids": [
+   356
+  ],
+  "kind": "person",
+  "known_as": "Gwen Shamblin Lara",
+  "summary": "American author who founded the Christian diet program Weigh Down Workshop and the Remnant Fellowship Church, which former members have called a cult.",
+  "fields": [
+   "religion",
+   "writing",
+   "cult"
+  ],
+  "roles": [
+   "church founder",
+   "author",
+   "diet program founder"
+  ],
+  "country": "US",
+  "born": "1955-02-18",
+  "date_matches": true,
+  "died": "2021-05-29",
+  "death_cause": "accident",
+  "age_at_death": 66,
+  "events": [
+   {
+    "year": 1986,
+    "what": "Founded the Weigh Down Workshop"
+   },
+   {
+    "year": 1997,
+    "what": "Published the bestseller The Weigh Down Diet"
+   },
+   {
+    "year": 1999,
+    "what": "Founded Remnant Fellowship Church in Tennessee"
+   },
+   {
+    "year": 2021,
+    "what": "Died in a private plane crash into Percy Priest Lake near Nashville"
+   },
+   {
+    "year": 2021,
+    "what": "HBO documentary series The Way Down examined her church"
+   }
+  ],
+  "flags": [
+   "founder",
+   "religious_leader"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.nbcnews.com/news/us-news/plane-crash-killed-diet-guru-gwen-shamblin-tarzan-actor-joe-lara-was-r-rcna76276",
+   "https://EN.wikipedia.com/wiki/2021_Percy_Priest_Lake_Cessna_Citation_crash"
+  ],
+  "note": "Death in the 29 May 2021 crash confirmed, age 66 (fits 1955); the exact birth day was not confirmed. NTSB found pilot error by her husband. \"Cult\" is what critics, former members and the HBO series call the church; no court or official finding. Her birth name was Gwen Henley."
+ },
+ {
+  "title": "Drew Binsky",
+  "ids": [
+   355
+  ],
+  "kind": "person",
+  "known_as": "Drew Binsky",
+  "summary": "American travel YouTuber who visited every country in the world and films the people he meets.",
+  "fields": [
+   "youtube",
+   "influencer"
+  ],
+  "roles": [
+   "travel youtuber",
+   "vlogger"
+  ],
+  "country": "US",
+  "born": "1991-05-24",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2015,
+    "what": "Began making travel videos full time after teaching English in South Korea"
+   },
+   {
+    "year": 2021,
+    "what": "Finished visiting every country in the world on 29 October, ending in Saudi Arabia"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Drew_Binsky",
+   "https://www.cnbc.com/2021/11/05/how-to-visit-every-country-drew-binsky-got-paid-to-travel-the-world-.html"
+  ],
+  "note": ""
+ },
+ {
+  "title": "James O'Keefe",
+  "ids": [
+   348
+  ],
+  "kind": "person",
+  "known_as": "James O'Keefe",
+  "summary": "American conservative activist who founded Project Veritas and makes hidden-camera sting videos of media and political groups.",
+  "fields": [
+   "activism",
+   "journalism",
+   "commentary"
+  ],
+  "roles": [
+   "activist",
+   "undercover video maker"
+  ],
+  "country": "US",
+  "born": "1984-06-28",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2009,
+    "what": "Hidden-camera videos of ACORN workers made him nationally known"
+   },
+   {
+    "year": 2010,
+    "what": "Arrested at Senator Mary Landrieu's office; pleaded guilty to a misdemeanor"
+   },
+   {
+    "year": 2010,
+    "what": "Founded Project Veritas"
+   },
+   {
+    "year": 2023,
+    "what": "Removed by the Project Veritas board, which cited financial malfeasance; launched O'Keefe Media Group"
+   },
+   {
+    "year": 2023,
+    "what": "Sued by Project Veritas for breach of contract"
+   }
+  ],
+  "flags": [
+   "convicted_crime",
+   "founder"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://EN.wikipedia.com/wiki/James_O%27Keefe",
+   "https://www.influencewatch.org/person/james-okeefe/",
+   "https://fortune.com/2023/02/21/project-veritas-founder-james-okeefe-removed-board-financial-malfeasance-spending-donor-funds-personal-luxuries"
+  ],
+  "note": "Birth date conflict: one source gives 28 June 1984 (matches), InfluenceWatch gives 8 June 1984. The 2010 guilty plea is from Wikipedia/first pass, not re-read here."
+ },
+ {
+  "title": "Kevin Hodge · Hodgetwins",
+  "ids": [
+   341,
+   710
+  ],
+  "kind": "person",
+  "known_as": "Kevin Hodge (Hodgetwins)",
+  "summary": "American YouTuber and comedian, one half of the Hodgetwins, known for fitness videos and conservative political commentary.",
+  "fields": [
+   "youtube",
+   "comedy",
+   "commentary"
+  ],
+  "roles": [
+   "youtuber",
+   "comedian",
+   "political commentator"
+  ],
+  "country": "US",
+  "born": "1975-09-17",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2008,
+    "what": "Started the Hodgetwins YouTube channel with twin brother Keith"
+   }
+  ],
+  "flags": [
+   "military_service"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://briefly.co.za/facts-lifehacks/celebrities-biographies/232624-the-hodgetwins-parents-wives-early-life-virginia-facts-keith-kevins-background"
+  ],
+  "note": "Birth date and Marine Corps service confirmed by one profile site only (briefly.co.za)."
+ },
+ {
+  "title": "Keith Hodge · Hodgetwins",
+  "ids": [
+   340
+  ],
+  "kind": "person",
+  "known_as": "Keith Hodge (Hodgetwins)",
+  "summary": "American YouTuber and comedian, one half of the Hodgetwins, known for fitness videos and conservative political commentary.",
+  "fields": [
+   "youtube",
+   "comedy",
+   "commentary"
+  ],
+  "roles": [
+   "youtuber",
+   "comedian",
+   "political commentator"
+  ],
+  "country": "US",
+  "born": "1975-09-17",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2008,
+    "what": "Started the Hodgetwins YouTube channel with twin brother Kevin"
+   }
+  ],
+  "flags": [
+   "military_service"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://briefly.co.za/facts-lifehacks/celebrities-biographies/232624-the-hodgetwins-parents-wives-early-life-virginia-facts-keith-kevins-background"
+  ],
+  "note": "Birth date and Marine Corps service confirmed by one profile site only (briefly.co.za)."
+ },
+ {
+  "title": "David Berg · Children of God",
+  "ids": [
+   335
+  ],
+  "kind": "person",
+  "known_as": "David Berg (\"Moses David\")",
+  "summary": "American preacher who founded and led the Children of God, later The Family International, widely described as a cult.",
+  "fields": [
+   "cult",
+   "religion"
+  ],
+  "roles": [
+   "cult leader",
+   "preacher"
+  ],
+  "country": "US",
+  "born": "1919-02-18",
+  "date_matches": true,
+  "died": "1994-10-01",
+  "death_cause": "natural",
+  "age_at_death": 75,
+  "events": [
+   {
+    "year": 1968,
+    "what": "Founded the Children of God in Huntington Beach, California"
+   },
+   {
+    "year": 1974,
+    "what": "Introduced 'flirty fishing', using sex to recruit members"
+   },
+   {
+    "year": 1978,
+    "what": "Reorganized the group as the Family of Love"
+   },
+   {
+    "year": 1994,
+    "what": "Died in Costa de Caparica, Portugal, while in hiding"
+   }
+  ],
+  "flags": [
+   "cult_leader",
+   "religious_leader",
+   "founder",
+   "major_scandal"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/David_Berg",
+   "https://en.wikipedia.org/wiki/The_Family_International"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Robin DiAngelo",
+  "ids": [
+   328
+  ],
+  "kind": "person",
+  "known_as": "Robin DiAngelo",
+  "summary": "American author and diversity trainer best known for the 2018 bestseller White Fragility.",
+  "fields": [
+   "writing",
+   "education",
+   "activism"
+  ],
+  "roles": [
+   "author",
+   "diversity trainer",
+   "academic"
+  ],
+  "country": "US",
+  "born": "1956-09-08",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2011,
+    "what": "Coined the term 'white fragility' in an academic paper"
+   },
+   {
+    "year": 2018,
+    "what": "Published White Fragility"
+   },
+   {
+    "year": 2020,
+    "what": "White Fragility topped bestseller lists after George Floyd's death"
+   },
+   {
+    "year": 2024,
+    "what": "Accused of plagiarism in her doctoral thesis in a complaint to the University of Washington"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://freebeacon.com/campus/robin-diangelo-plagiarized-minority-scholars-complaint-alleges/",
+   "https://www.foxnews.com/media/white-fragility-author-allegedly-plagiarized-minority-academics-doctoral-thesis"
+  ],
+  "note": "Birth date not confirmed by the search (from the first pass). The 2024 plagiarism complaint is confirmed; one headline says it was later dismissed, not confirmed here."
+ },
+ {
+  "title": "Jesse Lee Peterson",
+  "ids": [
+   323
+  ],
+  "kind": "person",
+  "known_as": "Jesse Lee Peterson",
+  "summary": "American conservative radio host and minister who founded the nonprofit BOND and hosts The Jesse Lee Peterson Show.",
+  "fields": [
+   "commentary",
+   "religion",
+   "podcast"
+  ],
+  "roles": [
+   "radio host",
+   "minister",
+   "author"
+  ],
+  "country": "US",
+  "born": "1949-05-22",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1990,
+    "what": "Founded BOND (Brotherhood Organization of a New Destiny)"
+   },
+   {
+    "year": 2022,
+    "what": "Accused of sexual misconduct by several men in a Church Militant report; he denied it"
+   }
+  ],
+  "flags": [
+   "founder",
+   "religious_leader"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Jesse_Lee_Peterson"
+  ],
+  "note": "Birth date and 1990 founding of BOND confirmed. The 2022 allegations event is from the first pass, not re-checked."
+ },
+ {
+  "title": "Andy Ngo",
+  "ids": [
+   308
+  ],
+  "kind": "person",
+  "known_as": "Andy Ngo",
+  "summary": "American conservative journalist and author, editor-at-large of The Post Millennial, known for covering antifa and street protests in Portland.",
+  "fields": [
+   "journalism",
+   "commentary",
+   "writing"
+  ],
+  "roles": [
+   "journalist",
+   "author",
+   "editor"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2019,
+    "what": "Assaulted while covering a protest in Portland; the footage drew national attention"
+   },
+   {
+    "year": 2021,
+    "what": "Published the bestseller Unmasked"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.com/wiki/Andy_Ngo",
+   "https://www.foxnews.com/us/andy-ngo-antifa-violent-extremism-interview"
+  ],
+  "note": "No birth date in the vault; Wikipedia gives only 1986 or 1987."
+ },
+ {
+  "title": "Mantak Chia",
+  "ids": [
+   296
+  ],
+  "kind": "person",
+  "known_as": "Mantak Chia",
+  "summary": "Thai-born Taoist teacher and author who created the Universal Healing Tao system and runs Tao Garden in Chiang Mai.",
+  "fields": [
+   "spirituality",
+   "writing"
+  ],
+  "roles": [
+   "taoist teacher",
+   "qigong teacher",
+   "author"
+  ],
+  "country": "TH",
+  "born": "1944-04-24",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1974,
+    "what": "Opened his first school in Thailand"
+   },
+   {
+    "year": 1979,
+    "what": "Opened his first Healing Tao center in New York"
+   },
+   {
+    "year": 1984,
+    "what": "Published Taoist Secrets of Love"
+   },
+   {
+    "year": 1994,
+    "what": "Moved back to Thailand and began building Tao Garden near Chiang Mai"
+   },
+   {
+    "year": 1996,
+    "what": "Co-wrote the bestseller The Multi-Orgasmic Man"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.wikipedia.org/wiki/Mantak_Chia"
+  ],
+  "note": "Birth date confirmed (Wikipedia). The 1984 and 1996 book years are from the first pass, not re-checked."
+ },
+ {
+  "title": "Trippie Redd",
+  "ids": [
+   281
+  ],
+  "kind": "person",
+  "known_as": "Trippie Redd",
+  "summary": "American rapper and singer from Canton, Ohio, part of the SoundCloud rap wave, known for the A Love Letter to You mixtapes.",
+  "fields": [
+   "rapper",
+   "music"
+  ],
+  "roles": [
+   "rapper",
+   "singer",
+   "songwriter"
+  ],
+  "country": "US",
+  "born": "1999-06-18",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2017,
+    "what": "Broke through with \"Love Scars\" and the mixtape A Love Letter to You"
+   },
+   {
+    "year": 2018,
+    "what": "Debut album Life's a Trip; arrested in Atlanta on aggravated assault charges"
+   },
+   {
+    "year": 2019,
+    "what": "Pleaded no contest to disorderly conduct over a 2018 fight; six months' probation"
+   },
+   {
+    "year": 2019,
+    "what": "A Love Letter to You 4 reached number 1 on the Billboard 200"
+   },
+   {
+    "year": 2021,
+    "what": "Prosecutors declined to pursue the 2018 aggravated assault case; \"Miss the Rage\" with Playboi Carti"
+   }
+  ],
+  "flags": [
+   "charged_crime"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.complex.com/music/a/j-rose/trippie-redd-will-not-be-prosecuted-for-2018-aggravated-assault-charge",
+   "https://www.tmz.com/2019/01/28/trippie-redd-plea-deal-battery-fight-arrested-atlanta-lil-wop/"
+  ],
+  "note": "Birth name Michael Lamar White IV (Complex). Released from jail on his 19th birthday in June 2018, which fits the batch date."
+ },
+ {
+  "title": "Eddie Bravo",
+  "ids": [
+   278,
+   277
+  ],
+  "kind": "person",
+  "known_as": "Eddie Bravo",
+  "summary": "American jiu-jitsu teacher who founded 10th Planet Jiu-Jitsu, known for beating Royler Gracie in 2003 and for promoting conspiracy theories.",
+  "fields": [
+   "combat_sports",
+   "conspiracy",
+   "podcast"
+  ],
+  "roles": [
+   "jiu-jitsu instructor",
+   "grappler",
+   "podcaster"
+  ],
+  "country": "US",
+  "born": "1970-05-15",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2003,
+    "what": "Submitted Royler Gracie at the ADCC championship in a famous upset"
+   },
+   {
+    "year": 2003,
+    "what": "Received his black belt and founded 10th Planet Jiu-Jitsu in Los Angeles"
+   },
+   {
+    "year": 2014,
+    "what": "Rematch with Royler Gracie ended in a draw; launched the Eddie Bravo Invitational"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Eddie_Bravo",
+   "https://en.wikipedia.org/wiki/10th_Planet_Jiu_Jitsu"
+  ],
+  "note": "Born Edgar Cano, later Bravo, which fits the two names in the batch. Birth date confirmed."
+ },
+ {
+  "title": "Edward Kelley",
+  "ids": [
+   276,
+   275
+  ],
+  "kind": "person",
+  "known_as": "Edward Kelley",
+  "summary": "English Renaissance occultist and alchemist who worked as John Dee's spirit medium and later served Emperor Rudolf II in Bohemia.",
+  "fields": [
+   "occult"
+  ],
+  "roles": [
+   "alchemist",
+   "spirit medium",
+   "scryer"
+  ],
+  "country": "GB",
+  "born": "1555-08-01",
+  "date_matches": true,
+  "died": "1597",
+  "death_cause": "accident",
+  "age_at_death": 42,
+  "events": [
+   {
+    "year": 1582,
+    "what": "Began working as John Dee's scryer, receiving the Enochian angel communications"
+   },
+   {
+    "year": 1583,
+    "what": "Left England with Dee for Poland and Bohemia"
+   },
+   {
+    "year": 1590,
+    "what": "Knighted by Emperor Rudolf II"
+   },
+   {
+    "year": 1591,
+    "what": "Arrested on Rudolf II's orders and imprisoned"
+   },
+   {
+    "year": 1597,
+    "what": "Died in Bohemia, by tradition from injuries suffered trying to escape imprisonment"
+   }
+  ],
+  "flags": [
+   "prison"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Edward_Kelley",
+   "https://drc.usask.ca/projects/ark/public/public_person.php?id=3109"
+  ],
+  "note": "The birth date 1 Aug 1555 comes from a horoscope John Dee drew up. Death is given as 1597 or 1598 (one source: 1 Nov 1597); the escape-injury story is tradition, so cause and age are approximate."
+ },
+ {
+  "title": "Steven Crowder",
+  "ids": [
+   272
+  ],
+  "kind": "person",
+  "known_as": "Steven Crowder",
+  "summary": "American-Canadian conservative commentator and comedian who hosts the online show Louder with Crowder.",
+  "fields": [
+   "commentary",
+   "comedy",
+   "youtube"
+  ],
+  "roles": [
+   "political commentator",
+   "comedian",
+   "podcast host"
+  ],
+  "country": "US",
+  "born": "1987-07-07",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2000,
+    "what": "Voiced the Brain on the children's cartoon Arthur as a teenager"
+   },
+   {
+    "year": 2009,
+    "what": "Became a Fox News contributor, until 2013"
+   },
+   {
+    "year": 2018,
+    "what": "His \"Change My Mind\" campus segment became a widely used meme"
+   },
+   {
+    "year": 2019,
+    "what": "YouTube cut off his ad revenue after harassment complaints by journalist Carlos Maza"
+   },
+   {
+    "year": 2023,
+    "what": "Public feud with The Daily Wire over a contract offer; moved his show to Rumble"
+   }
+  ],
+  "flags": [
+   "cancelled_or_banned"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.mediaite.com/tag/louder-with-crowder/"
+  ],
+  "note": "The search confirmed the show still running in late 2025 but did not confirm the birth date (from the first pass). \"Banned\" here means YouTube's demonetization and temporary suspensions, not a permanent ban."
+ },
+ {
+  "title": "Alex Karp",
+  "ids": [
+   269
+  ],
+  "kind": "person",
+  "known_as": "Alex Karp",
+  "summary": "American billionaire, co-founder and chief executive of the data analytics and defense software company Palantir Technologies.",
+  "fields": [
+   "tech",
+   "business"
+  ],
+  "roles": [
+   "chief executive",
+   "company co-founder"
+  ],
+  "country": "US",
+  "born": "1967-10-02",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2002,
+    "what": "Earned a doctorate in social theory from Goethe University Frankfurt"
+   },
+   {
+    "year": 2004,
+    "what": "Became chief executive of Palantir, co-founded with Peter Thiel and others"
+   },
+   {
+    "year": 2020,
+    "what": "Took Palantir public on the New York Stock Exchange"
+   },
+   {
+    "year": 2025,
+    "what": "Published the book The Technological Republic"
+   }
+  ],
+  "flags": [
+   "founder",
+   "billionaire",
+   "self_made_wealth"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Alex_Karp",
+   "https://www.fortune.com/2026/07/17/palantir-ceo-alex-karp-artifical-intelligence-wealth-inequality-problem-billionaire-net-worth-surge-but-middle-class-left-behind/"
+  ],
+  "note": "Birth date and billionaire status confirmed (about $15 billion per Fortune, July 2026). Sources give 2003 or 2004 for Palantir's founding."
+ },
+ {
+  "title": "Hamilton Morris",
+  "ids": [
+   259
+  ],
+  "kind": "person",
+  "known_as": "Hamilton Morris",
+  "summary": "American journalist and chemistry researcher who created and hosted the Vice documentary series Hamilton's Pharmacopeia about psychoactive drugs.",
+  "fields": [
+   "journalism",
+   "film_tv",
+   "science"
+  ],
+  "roles": [
+   "journalist",
+   "documentary host",
+   "chemistry researcher"
+  ],
+  "country": "US",
+  "born": "1987-04-14",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2009,
+    "what": "Began the Hamilton's Pharmacopeia column for Vice"
+   },
+   {
+    "year": 2010,
+    "what": "The Vice web series began"
+   },
+   {
+    "year": 2016,
+    "what": "Hamilton's Pharmacopeia premiered as a television series on Viceland"
+   },
+   {
+    "year": 2020,
+    "what": "Started The Hamilton Morris Podcast"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Hamilton_Morris"
+  ],
+  "note": "Birth date confirmed. Son of filmmaker Errol Morris."
+ },
+ {
+  "title": "Alex O'Connor",
+  "ids": [
+   241
+  ],
+  "kind": "person",
+  "known_as": "Alex O'Connor (formerly CosmicSkeptic)",
+  "summary": "English YouTuber and podcaster who discusses philosophy, ethics and religion and hosts the podcast Within Reason.",
+  "fields": [
+   "youtube",
+   "podcast",
+   "education"
+  ],
+  "roles": [
+   "youtuber",
+   "podcaster",
+   "public debater"
+  ],
+  "country": "GB",
+  "born": "1999-03-27",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2016,
+    "what": "Started the YouTube channel CosmicSkeptic"
+   },
+   {
+    "year": 2019,
+    "what": "Started his podcast, first called The Cosmic Skeptic Podcast, later Within Reason"
+   },
+   {
+    "year": 2021,
+    "what": "Graduated from Oxford in philosophy and theology"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Alex_O%27Connor"
+  ],
+  "note": "Birth date confirmed. The 2016 and 2021 years are from the first pass."
+ },
+ {
+  "title": "Michael Knowles",
+  "ids": [
+   236
+  ],
+  "kind": "person",
+  "known_as": "Michael Knowles",
+  "summary": "American conservative commentator and author who hosts The Michael Knowles Show at The Daily Wire.",
+  "fields": [
+   "commentary",
+   "podcast",
+   "writing"
+  ],
+  "roles": [
+   "political commentator",
+   "podcaster",
+   "author"
+  ],
+  "country": "US",
+  "born": "1990-03-18",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2017,
+    "what": "Published the blank book Reasons to Vote for Democrats, a bestseller; began The Michael Knowles Show"
+   },
+   {
+    "year": 2021,
+    "what": "Published Speechless: Controlling Words, Controlling Minds"
+   },
+   {
+    "year": 2023,
+    "what": "A CPAC speech about transgenderism drew wide criticism"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Michael_Knowles_(political_commentator)",
+   "https://www.dailywire.com/author/michael-j-knowles"
+  ],
+  "note": ""
+ },
+ {
+  "title": "John Morgan · Morgan & Morgan",
+  "ids": [
+   234
+  ],
+  "kind": "person",
+  "known_as": "John Morgan",
+  "summary": "American attorney who founded the personal injury law firm Morgan & Morgan and bankrolled Florida's medical marijuana and minimum wage ballot measures.",
+  "fields": [
+   "business",
+   "politics",
+   "other"
+  ],
+  "roles": [
+   "personal injury attorney",
+   "law firm founder",
+   "political donor"
+  ],
+  "country": "US",
+  "born": "1956-03-31",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1988,
+    "what": "Founded Morgan & Morgan in Orlando"
+   },
+   {
+    "year": 2016,
+    "what": "Florida voters passed the medical marijuana amendment he funded"
+   },
+   {
+    "year": 2020,
+    "what": "Florida voters passed the $15 minimum wage amendment he funded"
+   },
+   {
+    "year": 2025,
+    "what": "Named a self-made billionaire on the Forbes 2025 list (about $1.5 billion)"
+   }
+  ],
+  "flags": [
+   "founder",
+   "self_made_wealth",
+   "billionaire"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.wftv.com/news/local/john-morgan-named-self-made-billionaire-forbes-2025-list/7LTJESIR4JDTXEAMCRV22RG574/",
+   "https://www.wikiwand.com/en/articles/John_Morgan_(lawyer)"
+  ],
+  "note": "Birth date and Forbes 2025 billionaire listing confirmed."
+ },
+ {
+  "title": "Manly P Hall",
+  "ids": [
+   196
+  ],
+  "kind": "person",
+  "known_as": "Manly P. Hall",
+  "summary": "Canadian-born American author and lecturer on mysticism, best known for The Secret Teachings of All Ages.",
+  "fields": [
+   "occult",
+   "spirituality",
+   "writing"
+  ],
+  "roles": [
+   "author",
+   "lecturer",
+   "mystic"
+  ],
+  "country": "US",
+  "born": "1901-03-18",
+  "date_matches": true,
+  "died": "1990-08-29",
+  "death_cause": "unknown",
+  "age_at_death": 89,
+  "events": [
+   {
+    "year": 1928,
+    "what": "Published The Secret Teachings of All Ages"
+   },
+   {
+    "year": 1934,
+    "what": "Founded the Philosophical Research Society in Los Angeles"
+   },
+   {
+    "year": 1990,
+    "what": "Died in Los Angeles"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Manly_P._Hall",
+   "https://manlyphall.info/death-of-manly-p-hall.htm"
+  ],
+  "note": "Death date confirmed. Circumstances disputed: his widow accused his assistant Daniel Fritz of murder; it was never proven and Fritz was not found guilty (he was found to have taken money from Hall). Cause set to unknown."
+ },
+ {
+  "title": "Jack Parsons",
+  "ids": [
+   194,
+   193
+  ],
+  "kind": "person",
+  "known_as": "Jack Parsons",
+  "summary": "American rocket engineer, a founder of the Jet Propulsion Laboratory and Aerojet, and a follower of Aleister Crowley's Thelema.",
+  "fields": [
+   "science",
+   "occult"
+  ],
+  "roles": [
+   "rocket engineer",
+   "chemist",
+   "occultist"
+  ],
+  "country": "US",
+  "born": "1914-10-02",
+  "date_matches": true,
+  "died": "1952-06-17",
+  "death_cause": "accident",
+  "age_at_death": 37,
+  "events": [
+   {
+    "year": 1936,
+    "what": "Began rocket experiments with the Caltech GALCIT group"
+   },
+   {
+    "year": 1942,
+    "what": "Co-founded Aerojet"
+   },
+   {
+    "year": 1943,
+    "what": "The group became the Jet Propulsion Laboratory"
+   },
+   {
+    "year": 1944,
+    "what": "Forced out of JPL and Aerojet"
+   },
+   {
+    "year": 1946,
+    "what": "Performed the Babalon Working rituals with L. Ron Hubbard"
+   },
+   {
+    "year": 1952,
+    "what": "Killed by an explosion in his home laboratory"
+   }
+  ],
+  "flags": [
+   "founder",
+   "died_young"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Jack_Parsons"
+  ],
+  "note": "Born Marvel Whiteside Parsons; later used John. Both names are on the charts. Police ruled the explosion an accident; some associates suspected suicide or murder."
+ },
+ {
+  "title": "Harland Williams",
+  "ids": [
+   186
+  ],
+  "kind": "person",
+  "known_as": "Harland Williams",
+  "summary": "Canadian-American comedian and actor known for Dumb and Dumber, RocketMan, Half Baked and There's Something About Mary.",
+  "fields": [
+   "comedy",
+   "acting",
+   "podcast"
+  ],
+  "roles": [
+   "stand-up comedian",
+   "actor",
+   "podcast host"
+  ],
+  "country": "CA",
+  "born": "1962-11-14",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1994,
+    "what": "Film debut as the state trooper in Dumb and Dumber"
+   },
+   {
+    "year": 1997,
+    "what": "Starred in RocketMan"
+   },
+   {
+    "year": 1998,
+    "what": "Appeared in Half Baked and There's Something About Mary"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Harland_Williams",
+   "https://encyclopedia.com/education/news-wires-white-papers-and-books/williams-harland-1962"
+  ],
+  "note": "Born in Toronto; Canadian and American. Most sources give 14 Nov 1962; Encyclopedia.com notes some give 10 December."
+ },
+ {
+  "title": "Adam22",
+  "ids": [
+   170
+  ],
+  "kind": "person",
+  "known_as": "Adam22",
+  "summary": "American podcaster and YouTuber who founded No Jumper, a hip-hop interview show and media brand.",
+  "fields": [
+   "podcast",
+   "youtube",
+   "business"
+  ],
+  "roles": [
+   "podcaster",
+   "youtuber",
+   "interviewer"
+  ],
+  "country": "US",
+  "born": "1983-11-24",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2015,
+    "what": "No Jumper took off on YouTube with interviews of rising rappers"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Adam22"
+  ],
+  "note": "Birth date confirmed."
+ },
+ {
+  "title": "Sam Hyde",
+  "ids": [
+   152
+  ],
+  "kind": "person",
+  "known_as": "Sam Hyde",
+  "summary": "American comedian, co-founder of the sketch group Million Dollar Extreme and creator of the reality web series Fishtank Live.",
+  "fields": [
+   "comedy",
+   "youtube",
+   "streaming"
+  ],
+  "roles": [
+   "comedian",
+   "writer",
+   "online personality"
+  ],
+  "country": "US",
+  "born": "1985-04-16",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2013,
+    "what": "A prank TEDx talk went viral"
+   },
+   {
+    "year": 2016,
+    "what": "Million Dollar Extreme Presents: World Peace aired on Adult Swim and was cancelled after one season"
+   },
+   {
+    "year": 2022,
+    "what": "Boxing debut"
+   },
+   {
+    "year": 2023,
+    "what": "Launched the reality web series Fishtank"
+   }
+  ],
+  "flags": [
+   "cancelled_or_banned",
+   "founder"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://wikiwand.com/en/Sam_Hyde",
+   "https://knowyourmeme.com/memes/people/sam-hyde"
+  ],
+  "note": "Birth date confirmed. Also the subject of a long-running internet hoax naming him after mass shootings; he has no part in them."
+ },
+ {
+  "title": "Whistlin Diesel",
+  "ids": [
+   148
+  ],
+  "kind": "person",
+  "known_as": "WhistlinDiesel",
+  "summary": "American YouTuber known for extreme durability tests and destruction of trucks, cars and expensive vehicles.",
+  "fields": [
+   "youtube",
+   "influencer"
+  ],
+  "roles": [
+   "youtuber",
+   "automotive content creator"
+  ],
+  "country": "US",
+  "born": "1998-07-18",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2015,
+    "what": "Started the WhistlinDiesel YouTube channel"
+   },
+   {
+    "year": 2020,
+    "what": "Truck durability test videos brought millions of subscribers"
+   },
+   {
+    "year": 2025,
+    "what": "Indicted and arrested in Williamson County, Tennessee, on a felony charge of evading state tax on a Ferrari registered in Montana; pleads innocent"
+   }
+  ],
+  "flags": [
+   "charged_crime"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.cleveland19.com/2025/11/14/popular-youtuber-accused-tax-evasion-over-ferrari-purchase/",
+   "https://www.yahoo.com/entertainment/celebrity/articles/youtuber-whistlindiesel-charged-tax-evasion-110243809.html"
+  ],
+  "note": "The Nov 2025 charge is confirmed; no outcome found (latest reports say the case is ongoing). Birth date was not confirmed by the search (from the first pass)."
+ },
+ {
+  "title": "Patrick Bet-David",
+  "ids": [
+   145
+  ],
+  "kind": "person",
+  "known_as": "Patrick Bet-David",
+  "summary": "Iranian-American entrepreneur and media host who founded PHP Agency and the Valuetainment media company and hosts the PBD Podcast.",
+  "fields": [
+   "business",
+   "podcast",
+   "commentary"
+  ],
+  "roles": [
+   "entrepreneur",
+   "podcast host",
+   "author"
+  ],
+  "country": "US",
+  "born": "1978-10-18",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1989,
+    "what": "Family left Iran; later settled in the United States"
+   },
+   {
+    "year": 2009,
+    "what": "Founded the insurance marketing firm PHP Agency"
+   },
+   {
+    "year": 2013,
+    "what": "Started Valuetainment on YouTube"
+   },
+   {
+    "year": 2022,
+    "what": "PHP Agency acquired by Integrity Marketing Group"
+   }
+  ],
+  "flags": [
+   "founder",
+   "self_made_wealth",
+   "military_service"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.com/wiki/Patrick_Bet-David",
+   "https://valuetainment.com/?p=19258"
+  ],
+  "note": "Birth date confirmed. US Army service (101st Airborne) per profile sources."
+ },
+ {
+  "title": "Marilyn vos Savant",
+  "ids": [
+   143,
+   142
+  ],
+  "kind": "person",
+  "known_as": "Marilyn vos Savant",
+  "summary": "American columnist once listed by Guinness for the highest recorded IQ, author of the \"Ask Marilyn\" column in Parade magazine.",
+  "fields": [
+   "writing"
+  ],
+  "roles": [
+   "columnist",
+   "author"
+  ],
+  "country": "US",
+  "born": "1946-08-11",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1985,
+    "what": "Listed in the Guinness Book of World Records for highest IQ"
+   },
+   {
+    "year": 1986,
+    "what": "Started the \"Ask Marilyn\" column in Parade"
+   },
+   {
+    "year": 1990,
+    "what": "Her Monty Hall problem answer drew thousands of letters and proved correct"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Marilyn_vos_Savant"
+  ],
+  "note": "Born Marilyn Mach, which fits the first chart name. Birth date confirmed."
+ },
+ {
+  "title": "Terence McKenna",
+  "ids": [
+   134
+  ],
+  "kind": "person",
+  "known_as": "Terence McKenna",
+  "summary": "American ethnobotanist, author and lecturer known for his ideas about psychedelic plants and consciousness.",
+  "fields": [
+   "writing",
+   "spirituality"
+  ],
+  "roles": [
+   "ethnobotanist",
+   "author",
+   "lecturer"
+  ],
+  "country": "US",
+  "born": "1946-11-16",
+  "date_matches": true,
+  "died": "2000-04-03",
+  "death_cause": "illness",
+  "age_at_death": 53,
+  "events": [
+   {
+    "year": 1971,
+    "what": "Expedition to La Chorrera in the Colombian Amazon"
+   },
+   {
+    "year": 1975,
+    "what": "Published The Invisible Landscape with his brother Dennis"
+   },
+   {
+    "year": 1992,
+    "what": "Published Food of the Gods"
+   },
+   {
+    "year": 2000,
+    "what": "Died of brain cancer"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Terence_McKenna",
+   "https://www.erowid.org/culture/characters/mckenna_terence"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Rulon Jeffs",
+  "ids": [
+   99
+  ],
+  "kind": "person",
+  "known_as": "Rulon Jeffs",
+  "summary": "President and prophet of the polygamist Fundamentalist Church of Jesus Christ of Latter-Day Saints from 1986 until his death; father of Warren Jeffs.",
+  "fields": [
+   "religion",
+   "cult"
+  ],
+  "roles": [
+   "religious leader",
+   "church president"
+  ],
+  "country": "US",
+  "born": "1909-12-06",
+  "date_matches": true,
+  "died": "2002-09-08",
+  "death_cause": "natural",
+  "age_at_death": 92,
+  "events": [
+   {
+    "year": 1986,
+    "what": "Became president of the FLDS Church"
+   },
+   {
+    "year": 2002,
+    "what": "Died; his son Warren Jeffs took over the church"
+   }
+  ],
+  "flags": [
+   "religious_leader"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.deseret.com/2002/9/10/19676494/obituary-president-rulon-t-jeffs/",
+   "https://en.wikipedia.org/wiki/Rulon_Jeffs"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Sketch",
+  "ids": [
+   95
+  ],
+  "kind": "person",
+  "known_as": "Sketch",
+  "summary": "American Twitch streamer and YouTuber known for Madden streams and the catchphrase \"What's up, brother?\"",
+  "fields": [
+   "streaming",
+   "youtube"
+  ],
+  "roles": [
+   "twitch streamer",
+   "youtuber"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2024,
+    "what": "His catchphrase \"What's up, brother?\" went viral and was named Twitch's catchphrase of the year"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Sketch_(streamer)",
+   "https://win.gg/news/whats-up-brother-all-about-streamer-sketch/"
+  ],
+  "note": "Identity fits (Kylie Cox). No source gives his exact birth date: Wikipedia says 1998 or 1999, so the batch date 1998-11-19 is unconfirmed."
+ },
+ {
+  "title": "Andrew Callaghan · Channel 5",
+  "ids": [
+   94
+  ],
+  "kind": "person",
+  "known_as": "Andrew Callaghan",
+  "summary": "American journalist and YouTuber behind the street-interview shows All Gas No Brakes and Channel 5.",
+  "fields": [
+   "journalism",
+   "youtube",
+   "film_tv"
+  ],
+  "roles": [
+   "journalist",
+   "youtuber",
+   "documentary filmmaker"
+  ],
+  "country": "US",
+  "born": "1997-04-23",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2019,
+    "what": "Started the web series All Gas No Brakes"
+   },
+   {
+    "year": 2021,
+    "what": "Launched Channel 5 after leaving All Gas No Brakes"
+   },
+   {
+    "year": 2022,
+    "what": "HBO released his documentary This Place Rules"
+   },
+   {
+    "year": 2023,
+    "what": "Accused of sexual misconduct by several women; posted an apology and returned to YouTube nine months later"
+   },
+   {
+    "year": 2024,
+    "what": "Released the documentary Dear Kelly"
+   }
+  ],
+  "flags": [
+   "major_scandal"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.npr.org/2023/01/20/1149748975/a-full-guide-to-the-sexual-misconduct-allegations-against-youtuber-andrew-callag",
+   "https://www.rollingstone.com/culture/culture-news/andrew-callaghan-hbo-this-place-rules-sexual-misconduct-allegations-1234658336/"
+  ],
+  "note": "The 2023 allegations are confirmed. Reported as 25 in January 2023, which fits 1997; the exact day was not confirmed."
+ }
+]
