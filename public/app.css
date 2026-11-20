@@ -739,9 +739,8 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .msub { margin-top: 2px; }
 .mtop { gap: 8px 12px; align-items: center; margin: 2px 0 10px; }
 .mverdict { display: inline-block; padding: 6px 12px; border-radius: 14px; font-weight: 700; font-size: 14px; }
-.mverdict.ok { background: #e3f5e8; color: #1f7a38; } .mverdict.mid { background: #fdf1d6; color: #8a5f00; } .mverdict.err { background: #fbe3e3; color: #a52a2a; }
 .mshow { background: var(--panel2); color: var(--text); min-height: 40px; padding: 0 14px; border-radius: 14px; font-size: 15px; }
-.mcard { background: #fff; color: #303030; border-radius: var(--radius); padding: 10px 12px; margin-bottom: 10px; }
+.mcard { background: var(--panel); color: var(--text); border-radius: var(--radius); padding: 10px 12px; margin-bottom: 10px; }
 .mcard p { margin: 0 0 8px; font-size: 16px; line-height: 1.45; } .mcard p:last-child { margin-bottom: 0; }
 .mfrom { font-size: 12px; color: #8a8f9c; letter-spacing: .02em; margin-bottom: 6px; }
 .nscope .n-sel { fill: rgba(47, 111, 235, .12); stroke: #2f6feb; stroke-width: 3; pointer-events: none; }
@@ -759,35 +758,47 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .mbits-from { font-size: 12px; color: #8a8f9c; letter-spacing: .02em; padding: 4px 0 6px; border-top: 1px solid #eceef2; margin-top: 6px; }
 .mmore { background: none; color: var(--muted); min-height: 40px; padding: 0 4px; font-size: 15px; margin: 0 0 8px; }
 .mwords[hidden] { display: none; }
-/* Meaning page look A (owner 2026-11-20): Quick Gist, jump buttons, one part per subject under a dark band. */
-.mgist { background: var(--panel); border-radius: var(--radius); padding: 12px 14px 14px; margin-bottom: 10px; }
-.mgist-t { font: 700 13px/1.2 system-ui, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-.mgist-r + .mgist-r { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--panel2); }
-.mbadge { display: inline-block; font: 800 12px/1 system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; padding: 6px 10px; border-radius: 6px; background: var(--panel2); color: var(--text); }
-.mbadge.ok { background: var(--ok-solid); color: var(--solid-text); } .mbadge.err { background: var(--bad-solid); color: var(--solid-text); }
-.mgist-w { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
-.mgist-w li { font-size: 16px; line-height: 1.25; padding: 6px 10px; border-radius: 10px; background: var(--panel2); color: var(--text); }
-.mjump { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-.mjump button { min-height: 40px; padding: 0 14px; border-radius: 20px; font-size: 15px; font-weight: 600; }
-.mpart { margin-bottom: 18px; border-radius: var(--radius); overflow: hidden; scroll-margin-top: 8px; }
-.mband { background: var(--band); color: var(--band-text); padding: 12px 14px; }
-.mband-t { font-size: 20px; font-weight: 800; line-height: 1.2; } .mband-s { font-size: 14px; opacity: .8; margin-top: 2px; }
-.mblk { background: var(--panel); color: var(--text); padding: 12px 14px; }
-.mblk + .mblk { border-top: 1px solid var(--panel2); }
-.mblk.ok { background: var(--ok-bg); } .mblk.err { background: var(--bad-bg); } .mblk.other { background: var(--other-bg); }
-.mblk-t { font: 800 14px/1.2 system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-.mblk.ok .mblk-t { color: var(--ok-ink); } .mblk.err .mblk-t { color: var(--bad-ink); } .mblk.other .mblk-t { color: var(--other-ink); }
-.mblk-note { font-size: 13px; line-height: 1.35; color: var(--muted); margin: -4px 0 10px; }
-.mpt + .mpt { margin-top: 12px; }
-.mpt-h { display: block; font-size: 17px; line-height: 1.3; }
-.mpt-s { display: block; font-size: 15px; line-height: 1.4; color: var(--muted); }
-.mpt-s.whole { font-size: 16px; color: var(--text); } .mpt-s b { color: var(--text); }
-.mblk .mtop { margin: 0; }
-.mfoot-from { font-size: 12px; color: var(--muted); letter-spacing: .02em; margin-bottom: 8px; }
-.mfoot .mmore { width: 100%; justify-content: flex-start; background: none; border: 1px solid var(--panel2); color: var(--text); min-height: 44px; padding: 0 14px; font-weight: 600; margin: 0; }
-.mfoot .mwords { margin-top: 10px; } .mfoot .mcard:last-child { margin-bottom: 0; }
-.mfoot .mcard { border: 1px solid var(--panel2); }
-#mp-ask { scroll-margin-top: 8px; }
+/* Meaning page (owner 2026-11-20): every part has its own color (band, jump-chip dot, bullets); one point shape. */
+.mpop { --p-spot: #a36b00; --p-name: #b8336a; --p-pair: #2563c9; --p-dia: #6d45c4; --p-sub: #0f7f80; --p-ask: #a36b00; }
+.c-spot { --pc: var(--p-spot); } .c-name { --pc: var(--p-name); } .c-pair { --pc: var(--p-pair); }
+.c-dia { --pc: var(--p-dia); } .c-sub { --pc: var(--p-sub); } .c-ask { --pc: var(--p-ask); }
+.mverdict.ok { background: var(--ok-bg); color: var(--ok-ink); } .mverdict.mid { background: var(--other-bg); color: var(--other-ink); } .mverdict.err { background: var(--bad-bg); color: var(--bad-ink); }
+.mgist { background: var(--panel); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px; }
+.mgist-t { font-size: 18px; font-weight: 800; }
+.mgist-l { font-size: 14px; font-weight: 800; margin-bottom: 6px; }
+.mgist-r.ok .mgist-l { color: var(--ok-ink); } .mgist-r.err .mgist-l { color: var(--bad-ink); }
+.mgist-w { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.mgist-w li { font-size: 15px; font-weight: 600; line-height: 1.25; padding: 7px 11px; border-radius: 10px; background: var(--panel2); color: var(--text); }
+.mgist-r.ok li { background: var(--ok-bg); color: var(--ok-ink); } .mgist-r.err li { background: var(--bad-bg); color: var(--bad-ink); }
+.mjump { display: flex; gap: 8px; overflow-x: auto; margin: 0 -12px 14px; padding: 0 12px 2px; scrollbar-width: none; }
+.mjump::-webkit-scrollbar { display: none; }
+.mjump button { flex: none; white-space: nowrap; min-height: 40px; padding: 0 14px 0 12px; border-radius: 20px; font-size: 15px; font-weight: 600; background: var(--panel); border: 1.5px solid var(--pc); }
+.mdot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--pc); flex: none; }
+.mpart { margin-bottom: 16px; border-radius: var(--radius); overflow: hidden; background: var(--panel); border: 1.5px solid var(--pc); scroll-margin-top: 8px; }
+.mband { background: var(--pc); color: #fff; padding: 11px 14px; }
+.mband-t { font-size: 19px; font-weight: 800; line-height: 1.2; } .mband-s { font-size: 14px; opacity: .9; margin-top: 2px; }
+.mblk { padding: 12px 14px; color: var(--text); }
+.mpre, .mnote { border-bottom: 1px solid var(--panel2); }
+.mnote { font-size: 14px; color: var(--muted); }
+.mempty { display: flex; flex-direction: column; gap: 10px; }
+.mempty .mtop { margin: 0; }
+.mgrp-h { padding: 8px 14px; font-size: 15px; font-weight: 800; background: var(--panel2); color: var(--text); }
+.mgrp.ok .mgrp-h { background: var(--ok-solid); color: var(--solid-text); }
+.mgrp.err .mgrp-h { background: var(--bad-solid); color: var(--solid-text); }
+.mgrp.other .mgrp-h { background: var(--other-bg); color: var(--other-ink); }
+.mgrp.ok { --dot: var(--ok-solid); } .mgrp.err { --dot: var(--bad-solid); }
+.mpts { padding-block: 4px; }
+.mpt { display: flex; gap: 10px; align-items: baseline; padding: 10px 0; }
+.mpt + .mpt { border-top: 1px solid var(--panel2); }
+.mpt .mdot { background: var(--dot, var(--pc)); transform: translateY(-1px); }
+.mpt-x { min-width: 0; font-size: 16px; line-height: 1.45; }
+.mpt-x .mcite { margin-left: 0; }
+.mfoot { border-top: 1px solid var(--panel2); display: flex; flex-direction: column; gap: 10px; }
+.mfoot-from { font-size: 13px; color: var(--muted); }
+.mfoot .mmore { width: 100%; justify-content: center; background: var(--panel2); color: var(--text); min-height: 44px; padding: 0 14px; font-weight: 700; margin: 0; border-radius: 12px; }
+.mfoot .mwords:not([hidden]) { display: flex; flex-direction: column; gap: 10px; }
+.mfoot .mcard { border: 1px solid var(--panel2); margin: 0; }
+.mask .maskq { margin-bottom: 10px; }
 .mask .maskq { width: 100%; box-sizing: border-box; font-size: 16px; padding: 10px 12px; border-radius: 12px; margin-bottom: 8px; resize: vertical; }
 .mask .btn-block { margin-bottom: 10px; }
 .manswer p { font-size: 16px; line-height: 1.45; margin: 0 0 8px; }

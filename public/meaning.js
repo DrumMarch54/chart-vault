@@ -7,7 +7,7 @@
 (function (root) {
   'use strict';
   function install({ h, fill, api, count, go, overlay, overlayGone, positionHash }) {
-    const VERDICT = { balanced: ['Balanced here', 'ok'], semi: ['Semi-balanced here', 'mid'], unbalanced: ['Unbalanced here', 'err'] };
+    const VERDICT = { balanced: ['Balanced Here', 'ok'], semi: ['Semi-Balanced Here', 'mid'], unbalanced: ['Unbalanced Here', 'err'] };
     const titleCase = (s) => String(s).replace(/(^|[\s(+])([a-z])/g, (m, pre, c) => pre + c.toUpperCase());
     // Course text with a little markdown: a leading bold title line, bold marks and heading marks go; line breaks
     // inside a paragraph become spaces; blank lines split paragraphs.
@@ -97,33 +97,36 @@
       }
       return [...[...by].map(([book, r]) => `${book} ${r.a === r.b ? `p. ${r.a}` : `pp. ${r.a}–${r.b}`}`), ...docs];
     };
-    // The page's look (owner 2026-11-20, pick A of three samples): a Quick Gist on top, then one PART per subject
-    // (this spot, the name chart's same spot, the circle's pair, each diamond behind it), each under a dark title band
-    // so parts never blend; In Balance on green, Out of Balance on red; a point is a bold headline with the rest
-    // smaller under it. Nothing is reworded: the headline is the point's own leading bold words.
-    const kindOf = (title) => (/out of balance|imbalance|unbalanced/i.test(title || '') ? 'err' : /in balance|balanced/i.test(title || '') ? 'ok' : /^Only With/.test(title || '') ? 'other' : '');
+    // The page's look (owner 2026-11-20, pick A of three samples, redone the same day after "one massive blob"):
+    // Quick Gist chips on top, colored by balance; a one-line row of jump chips; then one PART per subject (this
+    // spot, the name chart's same spot, the circle's pair, each diamond behind it), each with its OWN color: its
+    // band, its jump chip's dot and its bullets match. Inside a part every point has the same shape (a colored dot,
+    // the course's words, bold words bold, a line between points); In Balance / Out of Balance are solid green / red
+    // strips, never text that looks like a point. A part with no words is one short row. Nothing is reworded.
+    const kindOf = (title) => (/out of balance|imbalance|unbalanced/i.test(title || '') ? 'err' : /in balance|balanced/i.test(title || '') ? 'ok' : /^Only With/.test(title || '') ? 'other' : title ? 'topic' : '');
     const capFirst = (t) => t.replace(/^([^A-Za-z0-9]*)([a-z])/, (m, pre, c) => pre + c.toUpperCase());
-    const point = (t, c) => {
-      const m = /^\*\*([^*]+)\*\*\s*[;:,.–—-]?\s*([\s\S]*)$/.exec(String(t).trim());
-      if (!m) return h('div', { class: 'mpt' }, h('span', { class: 'mpt-s whole' }, ...boldParts(t), cite(c)));
-      const rest = capFirst(m[2].trim());
-      return h('div', { class: 'mpt' }, h('b', { class: 'mpt-h' }, capFirst(m[1].trim().replace(/[;:,.]+$/, ''))),
-        rest || c ? h('span', { class: 'mpt-s' }, ...boldParts(rest), cite(c)) : null);
-    };
-    // Quick Gist: the first bold words of the first points of each group, the label a filled badge so it never
-    // reads as one of the points (owner 2026-11-20).
+    const point = (t, c) => h('div', { class: 'mpt' }, h('i', { class: 'mdot', 'aria-hidden': 'true' }),
+      h('div', { class: 'mpt-x' }, ...boldParts(capFirst(String(t).trim())), c ? h('div', {}, cite(c)) : null));
+    // Quick Gist: each point's first bold words as chips, green for In Balance, red for Out of Balance, plain when the
+    // course does not split them. Side topics (a titled group like "Name Cleanse", "Only With …") stay out of it.
     const gist = (bits) => {
       if (!bits) return null;
       const rows = bits.groups.map((g) => {
         const k = kindOf(g.title);
-        if (k === 'other') return null;
-        const words = g.points.map((t) => (/\*\*([^*]+)\*\*/.exec(String(t)) || [])[1]).filter(Boolean).slice(0, 4).map((w) => capFirst(w.trim().replace(/[;:,.]+$/, '')));
-        return words.length ? h('div', { class: 'mgist-r' }, h('span', { class: `mbadge ${k}` }, k === 'ok' ? 'In Balance' : k === 'err' ? 'Out of Balance' : g.title || 'Key Points'),
+        if (k === 'other' || k === 'topic') return null;
+        const words = g.points.map((t) => (/\*\*([^*]+)\*\*/.exec(String(t)) || [])[1]).filter(Boolean).slice(0, 5).map((w) => capFirst(w.trim().replace(/[;:,.]+$/, '')));
+        return words.length ? h('div', { class: `mgist-r ${k}` }, k ? h('div', { class: 'mgist-l' }, k === 'ok' ? 'In Balance' : 'Out of Balance') : null,
           h('ul', { class: 'mgist-w' }, ...words.map((w) => h('li', {}, w)))) : null;
       }).filter(Boolean);
       return rows.length ? h('div', { class: 'mgist' }, h('div', { class: 'mgist-t' }, 'Quick Gist'), ...rows) : null;
     };
-    const part = ({ id, title, sub, bits, passages = [], pre = [], empty }) => {
+    const part = ({ id, color, title, sub, bits, passages = [], pre = [], note }) => {
+      const band = h('div', { class: 'mband' }, h('div', { class: 'mband-t' }, title), sub ? h('div', { class: 'mband-s' }, sub) : null);
+      const extra = pre.filter(Boolean);
+      if (!bits && !passages.length) {
+        return h('section', { class: `mpart c-${color}`, id }, band,
+          h('div', { class: 'mblk mempty' }, h('span', { class: 'muted' }, 'No course words yet.'), ...extra));
+      }
       const own = bits && bits.groups.some((g) => g.cites && g.cites.some(Boolean));
       const from = bits && !own ? bookPages(passages) : [];
       const foot = [];
@@ -132,20 +135,21 @@
         const $words = h('div', { class: 'mwords', hidden: true }, ...passages.map(card));
         const $btn = h('button', { type: 'button', class: 'mmore', 'aria-expanded': 'false', onclick: () => {
           $words.hidden = !$words.hidden; $btn.setAttribute('aria-expanded', String(!$words.hidden));
-          $btn.textContent = `Course Words (${passages.length}) ${$words.hidden ? '›' : '⌄'}`;
+          $btn.textContent = `${$words.hidden ? 'Show' : 'Hide'} the Full Course Words (${passages.length})`;
           if (!$words.hidden) count('meaning.course_words');
-        } }, `Course Words (${passages.length}) ›`);
+        } }, `Show the Full Course Words (${passages.length})`);
         foot.push($btn, $words);
       } else if (passages.length) foot.push(...passages.map(card));
-      if (!bits && !passages.length && empty) foot.push(h('p', { class: 'muted small' }, empty));
-      const extra = pre.filter(Boolean);
-      return h('section', { class: 'mpart', id },
-        h('div', { class: 'mband' }, h('div', { class: 'mband-t' }, title), sub ? h('div', { class: 'mband-s' }, sub) : null),
-        extra.length ? h('div', { class: 'mblk' }, ...extra) : null,
-        ...(bits ? bits.groups.map((g) => h('div', { class: `mblk ${kindOf(g.title)}` },
-          g.title ? h('div', { class: 'mblk-t' }, g.title) : null,
-          g.note ? h('div', { class: 'mblk-note' }, g.note) : null,
-          ...g.points.map((t, i) => point(t, g.cites && g.cites[i])))) : []),
+      return h('section', { class: `mpart c-${color}`, id }, band,
+        extra.length ? h('div', { class: 'mblk mpre' }, ...extra) : null,
+        note ? h('div', { class: 'mblk mnote' }, note) : null,
+        ...(bits ? bits.groups.map((g) => {
+          const k = kindOf(g.title);
+          return h('div', { class: `mgrp ${k}` },
+            g.title ? h('div', { class: 'mgrp-h' }, k === 'ok' ? 'In Balance' : k === 'err' ? 'Out of Balance' : titleCase(g.title)) : null,
+            g.note ? h('div', { class: 'mblk mnote' }, g.note) : null,
+            h('div', { class: 'mblk mpts' }, ...g.points.map((t, i) => point(t, g.cites && g.cites[i]))));
+        }) : []),
         foot.length ? h('div', { class: 'mblk mfoot' }, ...foot) : null);
     };
     const where = (m) => titleCase(m.label);
@@ -203,9 +207,9 @@
         }
         $btn.disabled = false; $btn.textContent = label;
       };
-      return h('div', { class: 'mrel mask' }, h('div', { class: 'mrel-t' }, 'Ask About This'),
-        h('p', { class: 'muted small', style: 'margin:2px 0 8px' }, `The AI answers from the course's words on ${m.text} here, the numbers beside it and the diamond behind it, and names its sources.`),
-        $q, $btn, $answers);
+      return h('section', { class: 'mpart c-ask mask' }, h('div', { class: 'mband' }, h('div', { class: 'mband-t' }, 'Ask About This')),
+        h('div', { class: 'mblk' }, h('p', { class: 'muted small', style: 'margin:0 0 8px' }, `The AI answers from the course's words on ${m.text} here, the numbers beside it and the diamond behind it, and names its sources.`),
+        $q, $btn, $answers));
     }
     function open({ chart, position, sum, pair, rel }) {
       if (document.querySelector('.mpop')) return; // one at a time
@@ -231,22 +235,30 @@
       };
       api('/api/meaning?' + q).then((m) => {
         $title.textContent = `${m.text} in the ${where(m)}`;
-        $sub.textContent = [m.chartLabel, m.name].filter(Boolean).join(' · ');
+        $sub.textContent = [m.chartLabel.replace(/ chart$/i, ' Chart'), m.name].filter(Boolean).join(' · ');
         const p = m.pair, nc = m.nameChart;
         const others = p ? p.with.map((x) => x.text).join(' and ') : '';
-        const center = where(m).replace(/ Extra Vibration$/, '');
-        const parts = [{ jump: 'This Spot', id: 'mp-spot', title: `${m.text} in the ${where(m)}`, sub: m.chartLabel.replace(/ chart$/i, ' Chart'), bits: m.bits, passages: m.passages,
-          empty: `The course has no words yet for ${m.text} in this position.` }];
-        if (nc) parts.push({ jump: 'Name Chart', id: 'mp-name', title: `${nc.text} in the ${where(nc)}`, sub: 'Name Chart · the same spot there', bits: nc.bits, passages: nc.passages });
-        if (p) parts.push({ jump: `With ${others}`, id: 'mp-pair', title: `${m.text} with ${others}`, sub: `Together in the ${center}`,
-          bits: pairSplit(p.bits, [m.text, ...p.with.map((x) => x.text)]), passages: p.passages, empty: `The course has nothing yet on ${m.text} together with ${others}.`,
-          pre: [h('div', { class: 'muted small' }, `Exactly ${m.text} with ${others} on this chart. Points about another form of these numbers${pairExample(m, p) === `${m.text} with ${others}` ? '' : ` (like ${pairExample(m, p)})`} are set apart and named.`)] });
-        m.related.forEach((r, i) => parts.push({ jump: `${titleCase(r.label)} ${r.text}`, id: `mp-rel${i}`, title: `${titleCase(r.label)} ${r.text}`,
-          sub: [r.name, 'the diamond behind this number'].filter(Boolean).join(' · '), bits: r.bits, passages: r.passages, pre: [top(r)], empty: `The course has no words yet for ${r.text} here.` }));
+        const center = where(m).replace(/ (Main|Extra) Vibration$/, '');
+        const parts = [{ jump: 'This Spot', color: 'spot', id: 'mp-spot', title: `${m.text} in the ${where(m)}`, sub: m.chartLabel.replace(/ chart$/i, ' Chart'), bits: m.bits, passages: m.passages }];
+        if (nc) parts.push({ jump: 'Name Chart', color: 'name', id: 'mp-name', title: `${nc.text} in the ${where(nc)}`, sub: 'Name Chart · the same spot there', bits: nc.bits, passages: nc.passages });
+        if (p) {
+          const ex = pairExample(m, p);
+          parts.push({ jump: `With ${others}`, color: 'pair', id: 'mp-pair', title: `${m.text} with ${others}`, sub: `Together in the ${center}`,
+            bits: pairSplit(p.bits, [m.text, ...p.with.map((x) => x.text)]), passages: p.passages,
+            note: ex === `${m.text} with ${others}` ? null : `Points about another form (like ${ex}) are set apart and named.` });
+        }
+        // "Mind Center Sub Diamond (Main + Middle Name)" → title "Sub Diamond 35/8", the bracket goes in the line under it
+        m.related.forEach((r, i) => {
+          const full = titleCase(r.label), inParens = (/\(([^)]*)\)/.exec(full) || [])[1];
+          const name = full.replace(/\s*\([^)]*\)/g, '').replace(/^(Mind|Emotion) Center (?=Sub Diamond)/, '');
+          parts.push({ jump: `${name.replace(/^Mental |^Emotional /, '')} ${r.text}`, color: /Sub Diamond/.test(name) ? 'sub' : 'dia', id: `mp-rel${i}`, title: `${name} ${r.text}`,
+            sub: [inParens, r.name, 'the diamond behind this number'].filter(Boolean).join(' · '), bits: r.bits, passages: r.passages, pre: [top(r)] });
+        });
         const jumpTo = (id) => () => { count('meaning.jump'); const el = $pop.querySelector('#' + id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
         const $ask = askBox(m, { chart, position, sum, pair: pair || [], rel: rel || [] }); $ask.id = 'mp-ask';
+        const chip = (x) => h('button', { type: 'button', class: `c-${x.color}`, onclick: jumpTo(x.id) }, h('i', { class: 'mdot', 'aria-hidden': 'true' }), x.jump);
         fill($body, top(m), gist(m.bits),
-          h('div', { class: 'mjump' }, ...parts.map((x) => h('button', { type: 'button', onclick: jumpTo(x.id) }, x.jump)), h('button', { type: 'button', onclick: jumpTo('mp-ask') }, 'Ask')),
+          h('div', { class: 'mjump' }, ...parts.map(chip), chip({ color: 'ask', id: 'mp-ask', jump: 'Ask' })),
           ...parts.map(part), $ask);
       }).catch((err) => fill($body, h('p', { class: 'err' }, err.message)));
     }
