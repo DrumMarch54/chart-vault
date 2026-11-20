@@ -1226,24 +1226,33 @@
     const h = A.h, now = todayIn(), e = T.dayEnergy(now.y, now.m, now.d);
     const me = recall('mychart', null);
     const btn = (href, icon, label, sub, name) => h('a', { class: 'btn', href, onclick: () => A.count(name) }, h('span', { class: 'qicon' }, icon), label, sub ? h('span', { class: 'sub' }, sub) : null);
-    const $me = btn(me && me.day ? '#/quick?me=1' : '#/mychart', '☰', 'My Chart', me && me.day ? 'year rows, day rows' : 'set it up', 'home.mychart');
+    const $me = btn(me && me.day ? '#/quick?me=1' : '#/mychart', '☰', 'My Chart', me && me.day ? 'year rows' : 'set it up', 'home.mychart');
     // This phone may not have seen the saved chart yet: ask the server once and fix the button in place.
-    if (!me) A.api('/api/mychart').then((r) => { remember('mychart', r); if (r.day) { $me.href = '#/quick?me=1'; $me.querySelector('.sub').textContent = 'year rows, day rows'; } }).catch(() => {});
-    return h('div', { class: 'tools' }, h('div', { class: 'summary rhead' }, 'Tools'),
-      btn('#/today', '☀', 'Today', e ? `${DOW[e.weekday].slice(0, 3)} ${MON[now.m - 1]} ${now.d} · ${e.dv.text}` : '', 'home.today'),
-      btn('#/coming', '▦', 'Coming Days', 'next 31 days', 'home.coming'),
-      btn('#/finddate', '◎', 'Find a Date', 'launch, deal, event', 'home.finddate'),
-      btn('#/planrows', '≡', 'Plan With Year Rows', 'good periods', 'home.planrows'),
-      btn('#/numberfun', '◇', 'Number Fun', '1 to 99', 'home.numberfun'),
+    if (!me) A.api('/api/mychart').then((r) => { remember('mychart', r); if (r.day) { $me.href = '#/quick?me=1'; $me.querySelector('.sub').textContent = 'year rows'; } }).catch(() => {});
+    // Small tiles, three across, the most used first (the owner's own tap counts, 2026-11-20); the tools that are
+    // rarely opened wait behind "More Tools", and the phone remembers whether that is open.
+    const $rest = h('div', { class: 'toolgrid' },
+      btn('#/relation', '⧫', 'Relationship', 'two people', 'home.relation'),
       btn('#/famous', '★', 'Famous People', 'by birthday', 'home.famous'),
-      btn('#/price', '$', 'Price Tool', '', 'home.price'),
+      btn('#/finddate', '◎', 'Find a Date', 'launch, deal, event', 'home.finddate'),
+      btn('#/karmic', '∞', 'Karmic Connections', 'shared rhythms', 'home.karmic'),
+      btn('#/planrows', '≡', 'Plan With Year Rows', 'good periods', 'home.planrows'),
       btn('#/house', '⌂', 'House Number', 'home or business', 'home.house'),
       btn('#/phone', '☎', 'Phone and Domain', '', 'home.phone'),
-      btn('#/words', 'Aa', 'Business Words', 'by number', 'home.words'),
-      btn('#/archetype', '✦', 'Archetype Words', 'numbers to words', 'home.archetype'),
-      btn('#/relation', '⧫', 'Relationship', 'two people', 'home.relation'),
-      btn('#/karmic', '∞', 'Karmic Connections', 'shared rhythms', 'home.karmic'),
-      $me);
+      btn('#/words', 'Aa', 'Business Words', 'by number', 'home.words'));
+    let open = recall('moreTools', false) === true;
+    const $more = h('button', { type: 'button', class: 'btn btn-block showall', onclick: () => { open = !open; remember('moreTools', open); A.count('home.more_tools'); show(); } });
+    const show = () => { $rest.classList.toggle('hidden', !open); $more.textContent = open ? 'Fewer Tools' : 'More Tools'; };
+    show();
+    return h('div', { class: 'tools' }, h('div', { class: 'summary rhead' }, 'Tools'),
+      h('div', { class: 'toolgrid' },
+        btn('#/coming', '▦', 'Coming Days', 'next 31 days', 'home.coming'),
+        btn('#/numberfun', '◇', 'Number Fun', '1 to 99', 'home.numberfun'),
+        btn('#/price', '$', 'Price Tool', '', 'home.price'),
+        btn('#/today', '☀', 'Today', e ? `${MON[now.m - 1]} ${now.d} · ${e.dv.text}` : '', 'home.today'),
+        $me,
+        btn('#/archetype', '✦', 'Archetype Words', 'numbers to words', 'home.archetype')),
+      $more, $rest);
   }
 
   const USAGE_LABELS = {
@@ -1251,6 +1260,7 @@
     'home.today': 'Home → Today', 'home.coming': 'Home → Coming Days', 'home.numberfun': 'Home → Number Fun', 'home.price': 'Home → Price Tool', 'home.relation': 'Home → Relationship', 'home.karmic': 'Home → Karmic Connections', 'home.mychart': 'Home → My Chart',
     'today.psyche': 'Today: psyche charts on or off', 'today.full': 'Today: full screen day', 'today.ruler': 'Today: ruler of the day', 'today.company': 'Today: a company started this day', 'dayfull.move': 'Full screen day: previous or next day', 'coming.open_day': 'Coming Days: open a day', 'coming.size': 'Coming Days: chart size', 'coming.super_only': 'Coming Days: super dates only', 'numberfun.type': 'Number Fun: type a number', 'numberfun.grid': 'Number Fun: All Numbers grid on or off', 'numberfun.size': 'Number Fun: grid chart size', 'numberfun.tap_cell': 'Number Fun: open a number from the grid', 'numberfun.open_from_sheet': 'Number Fun: open a number from its sheet', 'numberfun.tap_diamond': 'Number Fun: tap a diamond', 'numberfun.tap_other': 'Number Fun: tap a number it appears in',
     'screen.house': 'House Number', 'screen.phone': 'Phone and Domain', 'screen.words': 'Business Words', 'home.house': 'Home → House Number', 'home.phone': 'Home → Phone and Domain', 'home.words': 'Home → Business Words',
+    'home.more_tools': 'Home → More Tools',
     'screen.finddate': 'Find a Date', 'screen.planrows': 'Plan With Year Rows', 'screen.famous': 'Famous People', 'home.finddate': 'Home → Find a Date', 'home.planrows': 'Home → Plan With Year Rows', 'home.famous': 'Home → Famous People',
     'finddate.purpose': 'Find a Date: pick a purpose', 'finddate.super_only': 'Find a Date: super dates only', 'finddate.open_day': 'Find a Date: open a day',
     'planrows.pick_chart': 'Plan With Year Rows: pick a chart from the vault', 'planrows.combo': 'Plan With Year Rows: a combination on or off', 'planrows.year': 'Plan With Year Rows: previous or next year', 'planrows.hit': 'Plan With Year Rows: tap a found combination',
