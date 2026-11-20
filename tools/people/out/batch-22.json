@@ -1,0 +1,1763 @@
+[
+ {
+  "title": "Numerologist Pro",
+  "ids": [
+   487,
+   486
+  ],
+  "kind": "company",
+  "known_as": "Numerologist PRO",
+  "summary": "Online numerology business offering courses and chart software.",
+  "fields": [
+   "spirituality",
+   "business"
+  ],
+  "roles": [
+   "numerology software",
+   "online courses"
+  ],
+  "country": null,
+  "born": null,
+  "date_matches": null,
+  "events": [],
+  "flags": [],
+  "fame": 1,
+  "checked": false,
+  "sources": [],
+  "note": "One web search on the second pass found nothing on Numerologist PRO's founder or founding date; the batch has two dates (2016-05-27 and 2017-08-23) and neither could be verified."
+ },
+ {
+  "title": "Nick Crompton",
+  "ids": [
+   416
+  ],
+  "kind": "person",
+  "known_as": "Nick Crompton",
+  "summary": "English social media personality and businessman, former chief operating officer of Jake Paul's Team 10, known for the line \"England is my city\".",
+  "fields": [
+   "influencer",
+   "youtube",
+   "business"
+  ],
+  "roles": [
+   "internet personality",
+   "talent manager"
+  ],
+  "country": "GB",
+  "born": "1995-02-05",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2017,
+    "what": "Appeared in Jake Paul's It's Everyday Bro; his \"England is my city\" verse became a meme"
+   },
+   {
+    "year": 2018,
+    "what": "Left Team 10"
+   }
+  ],
+  "flags": [],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://www.famousbirthdays.com/people/nick-crompton.html"
+  ],
+  "note": "Birth date 1995-02-05 confirmed only by celebrity birthday sites; birthplace given as Bradford or Manchester."
+ },
+ {
+  "title": "Greg Paul",
+  "ids": [
+   414
+  ],
+  "kind": "person",
+  "known_as": "Greg Paul",
+  "summary": "Father of YouTubers Logan and Jake Paul who appears in their videos and runs his own social media channels.",
+  "fields": [
+   "influencer"
+  ],
+  "roles": [
+   "internet personality"
+  ],
+  "country": "US",
+  "born": "1963-10-28",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [],
+  "flags": [],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://www.famousbirthdays.com/people/greg-paul.html",
+   "https://www.thefamouspeople.com/profiles/greg-paul-35915.php"
+  ],
+  "note": "Birth date from celebrity biography sites only."
+ },
+ {
+  "title": "Ammon Hillman",
+  "ids": [
+   408,
+   253
+  ],
+  "kind": "person",
+  "known_as": "Ammon Hillman",
+  "summary": "American classicist and author of The Chemical Muse who runs the YouTube channel Lady Babylon about drugs in ancient texts.",
+  "fields": [
+   "education",
+   "youtube",
+   "writing"
+  ],
+  "roles": [
+   "classicist",
+   "author",
+   "youtuber"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2008,
+    "what": "Published The Chemical Muse: Drug Use and the Roots of Western Civilization"
+   }
+  ],
+  "flags": [],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Ammon_Hillman"
+  ],
+  "note": "Sources give the birth year 1971 (same year as the batch) but not the day and month."
+ },
+ {
+  "title": "Alex Rosen",
+  "ids": [
+   406
+  ],
+  "kind": "person",
+  "known_as": "Alex Rosen",
+  "summary": "American founder of Predator Poachers, a Houston-based group that films confrontations with people it accuses of seeking sex with minors.",
+  "fields": [
+   "activism",
+   "youtube"
+  ],
+  "roles": [
+   "online predator hunter",
+   "content creator"
+  ],
+  "country": "US",
+  "born": "2000-03-15",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2019,
+    "what": "Founded Predator Poachers"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Alex_Rosen",
+   "https://www.famousbirthdays.com/people/alex-rosen.html"
+  ],
+  "note": "Birth date from a Wikipedia copy; legal cases involving him were not looked up."
+ },
+ {
+  "title": "Shawn Grate",
+  "ids": [
+   358
+  ],
+  "kind": "person",
+  "known_as": "Shawn Grate",
+  "summary": "American serial killer who murdered five women in northern Ohio between 2006 and 2016; on death row.",
+  "fields": [
+   "crime"
+  ],
+  "roles": [
+   "serial killer"
+  ],
+  "country": "US",
+  "born": "1976-08-08",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2016,
+    "what": "Arrested in Ashland, Ohio, after a woman he held captive called 911; bodies were found"
+   },
+   {
+    "year": 2018,
+    "what": "Convicted of two murders and sentenced to death"
+   },
+   {
+    "year": 2019,
+    "what": "Received life sentences for three more murders"
+   },
+   {
+    "year": 2020,
+    "what": "Ohio Supreme Court upheld his convictions and death sentence"
+   }
+  ],
+  "flags": [
+   "convicted_crime",
+   "charged_crime",
+   "violent_crime",
+   "killed_someone",
+   "prison"
+  ],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Shawn_Grate",
+   "https://courtnewsohio.gov/cases/2020/SCO/1210/180968.asp"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Gypsy Crusader",
+  "ids": [
+   349
+  ],
+  "kind": "person",
+  "known_as": "GypsyCrusader (Paul Miller)",
+  "summary": "American white supremacist livestreamer known for racist rants at strangers on Omegle, often dressed as the Joker.",
+  "fields": [
+   "streaming",
+   "commentary"
+  ],
+  "roles": [
+   "livestreamer",
+   "former muay thai fighter"
+  ],
+  "country": "US",
+  "born": "1988-08-11",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2020,
+    "what": "Became known for racist Omegle livestreams; banned from mainstream platforms"
+   },
+   {
+    "year": 2021,
+    "what": "Arrested by the FBI in Florida; sentenced to 41 months in federal prison on firearms charges"
+   },
+   {
+    "year": 2023,
+    "what": "Released from federal prison"
+   }
+  ],
+  "flags": [
+   "convicted_crime",
+   "charged_crime",
+   "prison",
+   "cancelled_or_banned"
+  ],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/GypsyCrusader",
+   "https://www.justice.gov/usao-sdfl/pr/florida-man-who-called-race-based-civil-war-sentenced-multiple-firearms-offenses"
+  ],
+  "note": "Release in early 2023 is from less reliable sites."
+ },
+ {
+  "title": "Kirill Tereshin",
+  "ids": [
+   339
+  ],
+  "kind": "person",
+  "known_as": "Kirill Tereshin (\"Popeye\", \"Bazooka Arms\")",
+  "summary": "Russian internet personality who went viral for enlarging his arms with injections of synthol and petroleum jelly.",
+  "fields": [
+   "influencer",
+   "combat_sports"
+  ],
+  "roles": [
+   "internet personality",
+   "amateur fighter"
+  ],
+  "country": "RU",
+  "born": "1996-08-06",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2017,
+    "what": "Went viral for his injected oversized arms"
+   },
+   {
+    "year": 2019,
+    "what": "Lost an MMA fight that drew wide online attention"
+   },
+   {
+    "year": 2022,
+    "what": "Had several operations to remove the injected mass from his arms"
+   }
+  ],
+  "flags": [],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://www.bedeutungonline.de/who-is-kirill-tereshin-life-profile-biography/",
+   "https://24smi.org/celebrity/29266-kirill-tereshin.html"
+  ],
+  "note": "Birth date 1996-08-06 from one biography site only."
+ },
+ {
+  "title": "Leon Lush",
+  "ids": [
+   307
+  ],
+  "kind": "person",
+  "known_as": "Leon Lush",
+  "summary": "American YouTuber known for comedic commentary videos.",
+  "fields": [
+   "youtube",
+   "comedy"
+  ],
+  "roles": [
+   "youtuber",
+   "commentator"
+  ],
+  "country": "US",
+  "born": "1985-04-05",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [],
+  "flags": [],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://www.thefamouspeople.com/profiles/leon-lush-147556.php",
+   "https://last.fm/music/Leon+Lush/+wiki"
+  ],
+  "note": "Birth date from biography sites only (one gives 1985-05-26 instead); real name James Simons not confirmed by any source."
+ },
+ {
+  "title": "Atozy",
+  "ids": [
+   305
+  ],
+  "kind": "person",
+  "known_as": "Atozy",
+  "summary": "YouTuber known for commentary videos on internet personalities and online drama.",
+  "fields": [
+   "youtube",
+   "commentary"
+  ],
+  "roles": [
+   "youtuber",
+   "commentator"
+  ],
+  "country": null,
+  "born": "1997-04-21",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [],
+  "flags": [],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://es.famousbirthdays.com/people/atozy.html",
+   "https://coinpaper.com/2912/erling-mengshoel-bio-atozy-girlfriend-net-worth-and-bit-boy-lawsuit"
+  ],
+  "note": "Birth date from a birthday site and a fan wiki only; said to be born in Boston and raised in Oslo, so country left blank."
+ },
+ {
+  "title": "Lon Milo DuQuette",
+  "ids": [
+   270
+  ],
+  "kind": "person",
+  "known_as": "Lon Milo DuQuette",
+  "summary": "American occult author, lecturer and musician, a senior officer of Ordo Templi Orientis known for humorous books on magic, tarot and Qabalah.",
+  "fields": [
+   "occult",
+   "writing",
+   "music"
+  ],
+  "roles": [
+   "occult author",
+   "lecturer",
+   "singer-songwriter"
+  ],
+  "country": "US",
+  "born": "1948-07-11",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1975,
+    "what": "Initiated into Ordo Templi Orientis, later becoming its US Deputy Grand Master"
+   },
+   {
+    "year": 1999,
+    "what": "Published the memoir My Life with the Spirits"
+   },
+   {
+    "year": 2001,
+    "what": "Published The Chicken Qabalah of Rabbi Lamed Ben Clifford"
+   },
+   {
+    "year": 2003,
+    "what": "Published Understanding Aleister Crowley's Thoth Tarot"
+   }
+  ],
+  "flags": [
+   "religious_leader"
+  ],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Lon_Milo_DuQuette"
+  ],
+  "note": "A book of his came out in 2025; no report of his death found."
+ },
+ {
+  "title": "Artsiom Kulik · Trilogy Media",
+  "ids": [
+   231
+  ],
+  "kind": "person",
+  "known_as": "Art Kulik (Trilogy Media)",
+  "summary": "Co-founder and co-host of Trilogy Media, a YouTube channel that baits and exposes phone and online scammers.",
+  "fields": [
+   "youtube"
+  ],
+  "roles": [
+   "youtuber",
+   "scambaiter"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2016,
+    "what": "Co-founded Trilogy Media with Ashton Bingham"
+   },
+   {
+    "year": 2025,
+    "what": "Their work helped federal investigators break up a scam ring targeting seniors"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Trilogy_Media",
+   "https://www.tmz.com/2025/08/29/trilogy-media-youtubers-took-down-scam-ring/"
+  ],
+  "note": "Birth date not found in any source."
+ },
+ {
+  "title": "Ashton Bingham · Trilogy Media",
+  "ids": [
+   230
+  ],
+  "kind": "person",
+  "known_as": "Ashton Bingham (Trilogy Media)",
+  "summary": "Co-founder and co-host of Trilogy Media, a YouTube channel that baits and exposes phone and online scammers.",
+  "fields": [
+   "youtube"
+  ],
+  "roles": [
+   "youtuber",
+   "scambaiter"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2016,
+    "what": "Co-founded Trilogy Media with Art Kulik"
+   },
+   {
+    "year": 2025,
+    "what": "Their work helped federal investigators break up a scam ring targeting seniors"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Trilogy_Media",
+   "https://www.tmz.com/2025/08/29/trilogy-media-youtubers-took-down-scam-ring/"
+  ],
+  "note": "Birth date not found in any source."
+ },
+ {
+  "title": "Mikki Mase",
+  "ids": [
+   229
+  ],
+  "kind": "person",
+  "known_as": "Mikki Mase",
+  "summary": "American high-stakes gambler and social media personality known for posting large baccarat wins and for being banned from casinos.",
+  "fields": [
+   "influencer",
+   "other"
+  ],
+  "roles": [
+   "gambler",
+   "social media personality"
+  ],
+  "country": "US",
+  "born": "1991-10-27",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2024,
+    "what": "Video surfaced of police detaining him over a reported gunshot incident"
+   }
+  ],
+  "flags": [],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://www.pokernews.com/news/2022/07/mikki-mase-baccarat-poker-player-41769.htm",
+   "https://www.pokernews.com/news/2024/04/mikki-mase-poker-player-detained-police-45710.htm",
+   "https://somuchpoker.com/news/who-is-mikki-mase-net-worth-life-part-1"
+  ],
+  "note": "Birth date from biography sites; past prison time is mentioned by one site but was not checked."
+ },
+ {
+  "title": "Kanel Joseph",
+  "ids": [
+   228
+  ],
+  "kind": "person",
+  "known_as": "Kanel Joseph",
+  "summary": "American YouTuber known for public prank and stunt videos.",
+  "fields": [
+   "youtube"
+  ],
+  "roles": [
+   "youtuber",
+   "prankster"
+  ],
+  "country": "US",
+  "born": "2000-09-21",
+  "date_matches": false,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2025,
+    "what": "Suspended indefinitely by Twitch in January; back on the platform in April"
+   },
+   {
+    "year": 2026,
+    "what": "Announced a break from making content, then returned"
+   }
+  ],
+  "flags": [
+   "cancelled_or_banned"
+  ],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://www.sportskeeda.com/us/streamers/news-kanel-joseph-s-twitch-channel-reinstated-indefinitely-banned-recording-people-against-will",
+   "https://www.famousbirthdays.com/people/kanel-joseph.html",
+   "https://win.gg/kanel-joseph-quitting-streaming/"
+  ],
+  "note": "Sources give 2000-09-21, one year before the batch's 2001-09-21; the middle name is spelled Dominic there."
+ },
+ {
+  "title": "Kenneth Grant",
+  "ids": [
+   197
+  ],
+  "kind": "person",
+  "known_as": "Kenneth Grant",
+  "summary": "English occultist and writer, secretary to Aleister Crowley and head of the Typhonian Order.",
+  "fields": [
+   "occult",
+   "writing"
+  ],
+  "roles": [
+   "occultist",
+   "ceremonial magician",
+   "author"
+  ],
+  "country": "GB",
+  "born": "1924-05-23",
+  "date_matches": true,
+  "died": "2011-01-15",
+  "death_cause": "unknown",
+  "age_at_death": 86,
+  "events": [
+   {
+    "year": 1944,
+    "what": "Met Aleister Crowley and became his secretary"
+   },
+   {
+    "year": 1955,
+    "what": "Founded the New Isis Lodge; expelled from the O.T.O. by Karl Germer"
+   },
+   {
+    "year": 1972,
+    "what": "Published The Magical Revival, first of the Typhonian Trilogies"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Kenneth_Grant_(occultist)",
+   "https://www.goodreads.com/author_blog_posts/938638-kenneth-grant-1924-2011?tab=author"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Johannes Ehvass",
+  "ids": [
+   101
+  ],
+  "kind": "person",
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [],
+  "flags": [],
+  "checked": false,
+  "sources": [],
+  "note": "Searched again on the second pass: no web source mentions him. Identified from the course books in this repo (knowledge/raw/biz-superdates-cosmic-calendar.md, biz-marketing-numerology.md). Birth date and country (Denmark, from memory) not confirmed.",
+  "known_as": "Johannes Ehvass",
+  "summary": "Numerologist and author of the Numerologist PRO books, including Superdates Cosmic Calendar and Marketing Numerology.",
+  "fields": [
+   "spirituality",
+   "writing",
+   "business"
+  ],
+  "roles": [
+   "numerologist",
+   "author"
+  ],
+  "country": "DK",
+  "born": null,
+  "date_matches": null,
+  "fame": 2
+ },
+ {
+  "title": "Audrey Hale (Aiden Hale)",
+  "ids": [
+   763
+  ],
+  "kind": "person",
+  "known_as": "Audrey Hale",
+  "summary": "Shooter who killed three children and three adults at The Covenant School in Nashville in 2023 and was shot dead by police.",
+  "fields": [
+   "mass_violence"
+  ],
+  "roles": [
+   "mass shooter"
+  ],
+  "country": "US",
+  "born": "1995-03-24",
+  "date_matches": false,
+  "died": "2023-03-27",
+  "death_cause": "killed_by_police",
+  "age_at_death": 28,
+  "events": [
+   {
+    "year": 2023,
+    "what": "Killed six people at The Covenant School, Nashville"
+   },
+   {
+    "year": 2023,
+    "what": "Shot dead by police at the school"
+   }
+  ],
+  "flags": [
+   "violent_crime",
+   "killed_someone",
+   "died_young"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/2023_Nashville_school_shooting",
+   "https://abcnews.com/US/nashville-shooter-audrey-hale/story?id=98166039"
+  ],
+  "note": "Published birth date is 1995-03-24, one day before the batch's 1995-03-25."
+ },
+ {
+  "title": "Chrisean Rock",
+  "ids": [
+   752
+  ],
+  "kind": "person",
+  "known_as": "Chrisean Rock",
+  "summary": "Baltimore rapper and reality TV personality known for the Baddies shows and her relationship with rapper Blueface.",
+  "fields": [
+   "rapper",
+   "film_tv",
+   "influencer"
+  ],
+  "roles": [
+   "rapper",
+   "reality tv personality"
+  ],
+  "country": "US",
+  "born": "2000-03-14",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2020,
+    "what": "Appeared on Blueface's online show Blue Girls Club and signed to his label"
+   },
+   {
+    "year": 2022,
+    "what": "Starred with Blueface in the reality series Crazy in Love"
+   },
+   {
+    "year": 2024,
+    "what": "Served a 30-day jail term in Los Angeles, then pleaded guilty in an Oklahoma drug case and got four years' probation"
+   }
+  ],
+  "flags": [
+   "charged_crime",
+   "convicted_crime"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.xxlmag.com/chrisean-rock-sentenced-to-30-days-jail/",
+   "https://allhiphop.com/news/chrisean-rock-avoids-jail-sentenced-to-4-years-probation-in-oklahoma-drugs-case"
+  ],
+  "note": "Birth date not re-checked (from memory). One outlet said the Oklahoma case was dismissed while others report probation; no 2025-2026 news found."
+ },
+ {
+  "title": "Rupert Sheldrake",
+  "ids": [
+   746
+  ],
+  "kind": "person",
+  "known_as": "Rupert Sheldrake",
+  "summary": "English biologist and author known for the disputed idea of morphic resonance and for parapsychology research.",
+  "fields": [
+   "science",
+   "writing",
+   "spirituality"
+  ],
+  "roles": [
+   "biologist",
+   "author",
+   "parapsychology researcher"
+  ],
+  "country": "GB",
+  "born": "1942-06-28",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1981,
+    "what": "Published A New Science of Life; the journal Nature called it a candidate for burning"
+   },
+   {
+    "year": 2012,
+    "what": "Published The Science Delusion"
+   },
+   {
+    "year": 2013,
+    "what": "His TEDx talk was taken off the main TED channel, causing a public dispute"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Rupert_Sheldrake"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Stephen Deleonardis",
+  "ids": [
+   735
+  ],
+  "kind": "person",
+  "known_as": "SteveWillDoIt",
+  "summary": "Florida YouTuber and Nelk Boys member known for extreme eating and drinking challenges and large cash and car giveaways.",
+  "fields": [
+   "youtube",
+   "influencer"
+  ],
+  "roles": [
+   "youtuber",
+   "online personality"
+  ],
+  "country": "US",
+  "born": "1998-08-26",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2019,
+    "what": "Joined the Nelk Boys after his challenge videos went viral"
+   },
+   {
+    "year": 2022,
+    "what": "YouTube terminated his channel"
+   },
+   {
+    "year": 2025,
+    "what": "YouTube reinstated him in December after a three-year ban"
+   }
+  ],
+  "flags": [
+   "cancelled_or_banned"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.soapcentral.com/pop-culture/news-who-stevewilldoit-all-youtuber-gets-unbanned-3-years",
+   "https://fandomwire.com/why-is-stevewilldoit-banned-from-youtube-reason-why-logan-paul-kicked-him-out-from-his-podcast/"
+  ],
+  "note": "Sources disagree on his birthday (1998-08-26 or 1998-02-26); 08-26 agrees with the batch."
+ },
+ {
+  "title": "Ruhi Çenet",
+  "ids": [
+   733
+  ],
+  "kind": "person",
+  "known_as": "Ruhi Çenet",
+  "summary": "Turkish YouTuber who makes travel and documentary videos about unusual and hard-to-reach places around the world.",
+  "fields": [
+   "youtube",
+   "film_tv"
+  ],
+  "roles": [
+   "youtuber",
+   "documentary maker"
+  ],
+  "country": "TR",
+  "born": "1990-10-20",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Ruhi_%C3%87enet",
+   "https://haberturk.com/ruhi-cenet-kimdir-kac-yasinda-nereli-ruhi-cenet-ne-is-yapiyor-neden-gundeme-geldi-3882886"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Joey Diaz",
+  "ids": [
+   695
+  ],
+  "kind": "person",
+  "known_as": "Joey Diaz",
+  "summary": "Cuban-American stand-up comedian, actor and podcast host, known for The Church of What's Happening Now and Joe Rogan appearances.",
+  "fields": [
+   "comedy",
+   "podcast",
+   "acting"
+  ],
+  "roles": [
+   "stand-up comedian",
+   "podcast host",
+   "actor"
+  ],
+  "country": "US",
+  "born": "1963-02-19",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1988,
+    "what": "Found guilty of kidnapping and aggravated robbery in Colorado; served 16 months of a four-year sentence"
+   },
+   {
+    "year": 1991,
+    "what": "Began performing stand-up comedy"
+   },
+   {
+    "year": 2012,
+    "what": "Launched the podcast The Church of What's Happening Now"
+   },
+   {
+    "year": 2020,
+    "what": "Started the podcast Uncle Joey's Joint"
+   }
+  ],
+  "flags": [
+   "convicted_crime",
+   "violent_crime",
+   "prison"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Joey_Diaz"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Shakey Graves",
+  "ids": [
+   686,
+   685
+  ],
+  "kind": "person",
+  "known_as": "Shakey Graves",
+  "summary": "American Americana singer-songwriter and one-man-band from Austin, Texas, known for \"Dearly Departed\" and the album And the War Came.",
+  "fields": [
+   "music",
+   "acting"
+  ],
+  "roles": [
+   "singer-songwriter",
+   "guitarist",
+   "actor"
+  ],
+  "country": "US",
+  "born": "1987-06-04",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2011,
+    "what": "Self-released debut album Roll the Bones"
+   },
+   {
+    "year": 2014,
+    "what": "Released And the War Came, with the single \"Dearly Departed\""
+   },
+   {
+    "year": 2015,
+    "what": "Won Best Emerging Artist at the Americana Music Awards"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Shakey_Graves"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Chanel West Coast",
+  "ids": [
+   674
+  ],
+  "kind": "person",
+  "known_as": "Chanel West Coast",
+  "summary": "American television personality and rapper, known for MTV's Rob Dyrdek's Fantasy Factory and as a longtime co-host of Ridiculousness.",
+  "fields": [
+   "film_tv",
+   "rapper",
+   "music"
+  ],
+  "roles": [
+   "tv personality",
+   "rapper",
+   "singer"
+  ],
+  "country": "US",
+  "born": "1988-09-01",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2009,
+    "what": "Joined MTV's Rob Dyrdek's Fantasy Factory"
+   },
+   {
+    "year": 2011,
+    "what": "Became co-host of MTV's Ridiculousness"
+   },
+   {
+    "year": 2023,
+    "what": "Left Ridiculousness after 12 years and signed a deal with Paramount"
+   },
+   {
+    "year": 2024,
+    "what": "Her reality series The West Coast Hustle premiered"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Chanel_West_Coast",
+   "https://foxla.com/news/chanel-west-coast-leaving-ridiculousness-30-seasons"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Shirley Phelps-Roper · Westboro",
+  "ids": [
+   672
+  ],
+  "kind": "person",
+  "known_as": "Shirley Phelps-Roper",
+  "summary": "American lawyer and longtime spokesperson of the Westboro Baptist Church in Topeka, Kansas, known for its funeral pickets.",
+  "fields": [
+   "religion",
+   "activism"
+  ],
+  "roles": [
+   "church spokesperson",
+   "lawyer",
+   "picketer"
+  ],
+  "country": "US",
+  "born": "1957-10-31",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2007,
+    "what": "Featured in Louis Theroux's BBC documentary The Most Hated Family in America"
+   },
+   {
+    "year": 2011,
+    "what": "US Supreme Court ruled for the church in Snyder v. Phelps, protecting its funeral protests as free speech"
+   },
+   {
+    "year": 2014,
+    "what": "Her role as the church's spokesperson was reduced after a power struggle"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Shirley_Phelps-Roper"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Tania Fernandes Anderson",
+  "ids": [
+   644
+  ],
+  "kind": "person",
+  "known_as": "Tania Fernandes Anderson",
+  "summary": "Former Boston city councilor who pleaded guilty in 2025 to federal charges over a kickback scheme involving a staff bonus.",
+  "fields": [
+   "politics"
+  ],
+  "roles": [
+   "city councilor"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2021,
+    "what": "Elected to the Boston City Council"
+   },
+   {
+    "year": 2024,
+    "what": "Arrested on federal wire fraud and theft charges over a staff-bonus kickback"
+   },
+   {
+    "year": 2025,
+    "what": "Pleaded guilty, resigned from the council and was sentenced to one month in prison"
+   },
+   {
+    "year": 2025,
+    "what": "Released from federal prison in November"
+   }
+  ],
+  "flags": [
+   "charged_crime",
+   "convicted_crime",
+   "prison",
+   "elected_office",
+   "major_scandal"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.justice.gov/usao-ma/pr/former-boston-city-councilor-sentenced-prison-federal-public-corruption-charges",
+   "https://www.wbur.org/news/2025/09/05/tania-fernandes-anderson-sentence-boston-kickback-scheme"
+  ],
+  "note": "Plea, sentence and release confirmed; birth date not found in any source."
+ },
+ {
+  "title": "Tectone",
+  "ids": [
+   638
+  ],
+  "kind": "person",
+  "known_as": "Tectone",
+  "summary": "American live streamer and YouTuber known for gacha game content such as Genshin Impact and Arknights.",
+  "fields": [
+   "streaming",
+   "youtube"
+  ],
+  "roles": [
+   "streamer",
+   "youtuber"
+  ],
+  "country": "US",
+  "born": "1993-12-29",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2024,
+    "what": "Left the streamer organization OTK after about three years"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://streamscharts.com/channels/Tectone",
+   "https://www.famousbirthdays.com/people/tectone.html",
+   "https://www.legit.ng/ask-legit/biographies/1448801-tectones-biography-age-height-real-wife-drama-net-worth"
+  ],
+  "note": "Birth date from stats and birthday sites (one says 1993-12-23); real name John Robert Robertson appears in only one source."
+ },
+ {
+  "title": "Jake Lang",
+  "ids": [
+   636,
+   509
+  ],
+  "kind": "person",
+  "known_as": "Jake Lang",
+  "summary": "American far-right activist charged with assaulting police on January 6, held about four years, pardoned in 2025, and arrested again in 2026.",
+  "fields": [
+   "activism",
+   "politics"
+  ],
+  "roles": [
+   "activist",
+   "january 6 defendant",
+   "senate candidate"
+  ],
+  "country": "US",
+  "born": "1995-04-07",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2021,
+    "what": "Arrested and charged with assaulting police officers during the January 6 Capitol attack"
+   },
+   {
+    "year": 2025,
+    "what": "Pardoned by President Trump before his case went to trial"
+   },
+   {
+    "year": 2025,
+    "what": "Announced a run for US Senate in Florida; he did not make the 2026 primary ballot"
+   },
+   {
+    "year": 2026,
+    "what": "Charged with damaging an anti-ICE sculpture in Minnesota; pleaded not guilty"
+   },
+   {
+    "year": 2026,
+    "what": "Arrested in Texas on a terroristic threat charge"
+   }
+  ],
+  "flags": [
+   "charged_crime",
+   "prison"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Jake_Lang",
+   "https://ballotpedia.org/Jake_Lang"
+  ],
+  "note": "Several 2026 arrests and charges are pending; none had a verdict in the sources."
+ },
+ {
+  "title": "Alex Stein",
+  "ids": [
+   634,
+   633
+  ],
+  "kind": "person",
+  "known_as": "Alex Stein",
+  "summary": "American comedian and provocateur known for viral stunts at city council meetings and for hosting Prime Time with Alex Stein on BlazeTV.",
+  "fields": [
+   "comedy",
+   "commentary",
+   "youtube"
+  ],
+  "roles": [
+   "comedian",
+   "internet troll",
+   "show host"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2012,
+    "what": "Appeared on the ABC reality show The Glass House"
+   },
+   {
+    "year": 2022,
+    "what": "Went viral for city council stunts and for heckling Rep. Alexandria Ocasio-Cortez"
+   },
+   {
+    "year": 2023,
+    "what": "Began Prime Time with Alex Stein on BlazeTV"
+   },
+   {
+    "year": 2024,
+    "what": "Removed from the Republican National Convention after disrupting an interview"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Alex_Stein_(comedian)",
+   "https://dallasexpress.com/tarrant/alex-steins-prime-time-show-ends-after-three-years-on-blaze-tv/"
+  ],
+  "note": "Wikipedia gives two birth dates: 1986-10-08 in the infobox and 1986-10-10 (the batch date) in the text. Check which is right."
+ },
+ {
+  "title": "Paul Joseph Watson",
+  "ids": [
+   613
+  ],
+  "kind": "person",
+  "known_as": "Paul Joseph Watson",
+  "summary": "British right-wing YouTuber and commentator, long-time editor at Alex Jones's Infowars.",
+  "fields": [
+   "commentary",
+   "youtube",
+   "conspiracy"
+  ],
+  "roles": [
+   "youtuber",
+   "political commentator",
+   "infowars editor"
+  ],
+  "country": "GB",
+  "born": "1982-05-24",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2002,
+    "what": "Began working with Alex Jones, later editor-at-large of Infowars"
+   },
+   {
+    "year": 2016,
+    "what": "Reached a wide audience with his YouTube commentary videos"
+   },
+   {
+    "year": 2018,
+    "what": "Joined the UK Independence Party"
+   },
+   {
+    "year": 2019,
+    "what": "Permanently banned from Facebook and Instagram"
+   }
+  ],
+  "flags": [
+   "cancelled_or_banned"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Paul_Joseph_Watson"
+  ],
+  "note": ""
+ },
+ {
+  "title": "ShoeOnHead",
+  "ids": [
+   607
+  ],
+  "kind": "person",
+  "known_as": "ShoeOnHead",
+  "summary": "American YouTuber known for satirical commentary videos on politics and internet culture.",
+  "fields": [
+   "youtube",
+   "commentary"
+  ],
+  "roles": [
+   "youtuber",
+   "political commentator"
+  ],
+  "country": "US",
+  "born": "1991-06-22",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2014,
+    "what": "Channel grew quickly with commentary videos during the Gamergate period"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://es.famousbirthdays.com/people/shoe0nhead.html",
+   "https://en.wikipedia.com/wiki/Shoe0nHead"
+  ],
+  "note": "Birth date from a birthday site only."
+ },
+ {
+  "title": "Bob Proctor",
+  "ids": [
+   603,
+   602
+  ],
+  "kind": "person",
+  "known_as": "Bob Proctor",
+  "summary": "Canadian self-help author and speaker, known for You Were Born Rich and for appearing in the film The Secret.",
+  "fields": [
+   "spirituality",
+   "writing",
+   "business"
+  ],
+  "roles": [
+   "self-help author",
+   "motivational speaker"
+  ],
+  "country": "CA",
+  "born": "1934-07-05",
+  "date_matches": true,
+  "died": "2022-02-03",
+  "death_cause": "natural",
+  "age_at_death": 87,
+  "events": [
+   {
+    "year": 1961,
+    "what": "Read Think and Grow Rich, which he credited with changing his life"
+   },
+   {
+    "year": 1984,
+    "what": "Published You Were Born Rich"
+   },
+   {
+    "year": 2006,
+    "what": "Featured in the film The Secret"
+   },
+   {
+    "year": 2022,
+    "what": "Died aged 87"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Bob_Proctor_(author)",
+   "https://www.newswire.com/news/personal-development-legend-and-the-secret-teacher-bob-proctor-dies-at-21624568"
+  ],
+  "note": "Cause of death given only as natural causes by his company."
+ },
+ {
+  "title": "Lena the Plug",
+  "ids": [
+   600
+  ],
+  "kind": "person",
+  "known_as": "Lena the Plug",
+  "summary": "American YouTuber, podcaster and adult content creator, co-host of the Plug Talk show with her husband Adam22.",
+  "fields": [
+   "youtube",
+   "influencer",
+   "podcast"
+  ],
+  "roles": [
+   "youtuber",
+   "adult content creator",
+   "podcast host"
+  ],
+  "country": "US",
+  "born": "1991-06-01",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2016,
+    "what": "Started her YouTube channel, which grew quickly"
+   },
+   {
+    "year": 2021,
+    "what": "Plug Talk show with Adam22 began"
+   },
+   {
+    "year": 2023,
+    "what": "Married Adam22"
+   },
+   {
+    "year": 2026,
+    "what": "Adam22 announced their separation"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Adam22",
+   "https://www.complex.com/pop-culture/a/alex-ocho/lena-the-plug-denies-divorce-adam22"
+  ],
+  "note": "Birth date 1991-06-01 not found in any source."
+ },
+ {
+  "title": "Ryan Upchurch",
+  "ids": [
+   591,
+   301
+  ],
+  "kind": "person",
+  "known_as": "Upchurch",
+  "summary": "Tennessee country rapper and comedian who built a large independent following through YouTube.",
+  "fields": [
+   "music",
+   "rapper",
+   "youtube"
+  ],
+  "roles": [
+   "country rapper",
+   "singer",
+   "comedian"
+  ],
+  "country": "US",
+  "born": "1991-05-24",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2014,
+    "what": "Began posting comedy videos as Upchurch the Redneck"
+   },
+   {
+    "year": 2016,
+    "what": "Debut album Heart of America reached the country charts"
+   },
+   {
+    "year": 2018,
+    "what": "Album Supernatural peaked at No. 6 on Top Country Albums"
+   },
+   {
+    "year": 2026,
+    "what": "A federal jury ordered him to pay $17.5 million for defaming the family of a missing teenager"
+   }
+  ],
+  "flags": [
+   "major_scandal"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Upchurch_(musician)",
+   "https://www.celebritynetworth.com/richest-celebrities/richest-rappers/upchurch-net-worth/"
+  ],
+  "note": "The 2026 verdict is a civil case, not a crime."
+ },
+ {
+  "title": "JZ Knight · Ramtha",
+  "ids": [
+   562
+  ],
+  "kind": "person",
+  "known_as": "JZ Knight",
+  "summary": "American spiritual teacher who claims to channel a 35,000-year-old warrior called Ramtha; founder of Ramtha's School of Enlightenment in Yelm, Washington.",
+  "fields": [
+   "spirituality",
+   "business"
+  ],
+  "roles": [
+   "channeler",
+   "spiritual teacher",
+   "author"
+  ],
+  "country": "US",
+  "born": "1946-03-16",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 1977,
+    "what": "Says Ramtha first appeared to her in Tacoma, Washington"
+   },
+   {
+    "year": 1988,
+    "what": "Founded Ramtha's School of Enlightenment in Yelm"
+   },
+   {
+    "year": 2004,
+    "what": "Featured in the film What the Bleep Do We Know!?, made by her students"
+   },
+   {
+    "year": 2012,
+    "what": "Leaked videos of offensive remarks during a session caused a public controversy"
+   }
+  ],
+  "flags": [
+   "founder"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/J._Z._Knight",
+   "https://www.seattlemet.com/news-and-city-life/2022/11/jz-knight-ramtha-yelm-washington-school-of-enlightenment"
+  ],
+  "note": "No 2025-2026 news found."
+ },
+ {
+  "title": "Supa Hot Fire",
+  "ids": [
+   559
+  ],
+  "kind": "person",
+  "known_as": "Supa Hot Fire",
+  "summary": "American comedian and YouTuber whose 2011 rap battle parody videos became a lasting internet meme.",
+  "fields": [
+   "comedy",
+   "youtube"
+  ],
+  "roles": [
+   "comedian",
+   "youtuber"
+  ],
+  "country": "US",
+  "born": "1991-03-03",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2011,
+    "what": "The Rap Battle (Parody) goes viral"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.imdb.com/name/nm5566815/",
+   "https://www.thefamouspeople.com/profiles/deshawn-raw-143267.php"
+  ],
+  "note": "Birth date from celebrity biography sites only."
+ },
+ {
+  "title": "Tim Dillon",
+  "ids": [
+   544,
+   103
+  ],
+  "kind": "person",
+  "known_as": "Tim Dillon",
+  "summary": "American stand-up comedian and host of The Tim Dillon Show podcast.",
+  "fields": [
+   "comedy",
+   "podcast"
+  ],
+  "roles": [
+   "stand-up comedian",
+   "podcast host"
+  ],
+  "country": "US",
+  "born": "1985-01-22",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2016,
+    "what": "Named a New Face at the Just for Laughs festival"
+   },
+   {
+    "year": 2022,
+    "what": "Netflix special A Real Hero"
+   },
+   {
+    "year": 2025,
+    "what": "Special I'm Your Mother"
+   },
+   {
+    "year": 2025,
+    "what": "Said he was dropped from the Riyadh Comedy Festival over jokes about Saudi Arabia"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Tim_Dillon_(comedian)",
+   "https://www.cbsnews.com/news/tim-dillon-riyadh-comedy-festival-saudi-arabia-fired-jokes-slavery"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Duncan Trussell",
+  "ids": [
+   540
+  ],
+  "kind": "person",
+  "known_as": "Duncan Trussell",
+  "summary": "American comedian and host of the Duncan Trussell Family Hour podcast, co-creator of the Netflix series The Midnight Gospel.",
+  "fields": [
+   "comedy",
+   "podcast",
+   "acting"
+  ],
+  "roles": [
+   "stand-up comedian",
+   "podcast host",
+   "voice actor"
+  ],
+  "country": "US",
+  "born": "1974-04-20",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2012,
+    "what": "Started the Duncan Trussell Family Hour podcast"
+   },
+   {
+    "year": 2020,
+    "what": "The Midnight Gospel, built on his podcast, released on Netflix"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Duncan_Trussell",
+   "https://en.wikipedia.org/wiki/The_Midnight_Gospel"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Lauren Phillips",
+  "ids": [
+   520
+  ],
+  "kind": "person",
+  "known_as": "Lauren Phillips",
+  "summary": "American adult film actress and feature dancer, active since 2013.",
+  "fields": [
+   "film_tv"
+  ],
+  "roles": [
+   "adult film actress"
+  ],
+  "country": "US",
+  "born": "1987-12-08",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2013,
+    "what": "Began her adult film career"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Lauren_Phillips_(American_actress)",
+   "https://es.famousbirthdays.com/people/lauren-phillips.html"
+  ],
+  "note": "Birth date from a birthday site only (Atlantic City, NJ, which fits Wikipedia)."
+ }
+]
