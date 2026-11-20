@@ -56,16 +56,16 @@ export function cleanRecord(e) {
   return {
     title: text(e.title, 120), kind,
     known_as: text(e.known_as, 120), summary: text(e.summary, 300),
-    fields: pick(e.fields, FIELDS).slice(0, 3), roles: (Array.isArray(e.roles) ? e.roles : []).map((r) => text(r, 40)).filter(Boolean).slice(0, 4),
+    fields: pick(e.fields, FIELDS).slice(0, 4), roles: (Array.isArray(e.roles) ? e.roles : []).map((r) => text(r, 40)).filter(Boolean).slice(0, 5),
     country: /^[A-Z]{2}$/.test(e.country || '') ? e.country : null,
     born: date(e.born), date_matches: typeof e.date_matches === 'boolean' ? e.date_matches : null,
     died: date(e.died), death_cause: e.died && DEATHS[e.death_cause] ? e.death_cause : null,
     age_at_death: Number.isInteger(e.age_at_death) ? e.age_at_death : null,
-    events: (Array.isArray(e.events) ? e.events : []).map((x) => ({ year: Number.isInteger(x && x.year) ? x.year : null, what: text(x && x.what, 200) })).filter((x) => x.what).slice(0, 6),
+    events: (Array.isArray(e.events) ? e.events : []).map((x) => ({ year: Number.isInteger(x && x.year) ? x.year : null, what: text(x && x.what, 200) })).filter((x) => x.what).slice(0, 10),
     flags: pick(e.flags, FLAGS),
     fame: [1, 2, 3, 4, 5].includes(e.fame) ? e.fame : null,
     checked: e.checked === true,
-    sources: (Array.isArray(e.sources) ? e.sources : []).filter((u) => typeof u === 'string' && /^https?:\/\/\S+$/.test(u)).slice(0, 3),
+    sources: (Array.isArray(e.sources) ? e.sources : []).filter((u) => typeof u === 'string' && /^https?:\/\/\S+$/.test(u)).slice(0, 4),
     note: text(e.note, 400),
   };
 }

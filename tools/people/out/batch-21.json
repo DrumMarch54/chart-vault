@@ -1,844 +1,844 @@
 [
-  {
-    "title": "Andrea Crowder",
-    "ids": [
-      647,
-      646
-    ],
-    "kind": "unknown",
-    "checked": true,
-    "sources": [],
-    "note": "Checked 2026-11-20: one search found no public figure with this name and birth date."
-  },
-  {
-    "title": "Allison Frank",
-    "ids": [
-      643
-    ],
-    "kind": "unknown",
-    "note": "Not searched: the tags (\"mychart\") suggest a private person."
-  },
-  {
-    "title": "Joshua Johnson · Bricks and Minifigs",
-    "ids": [
-      642
-    ],
-    "kind": "person",
-    "known_as": "Joshua Johnson",
-    "summary": "Former co-owner of the Salem, Oregon Bricks & Minifigs LEGO store, named in the 2026 dispute over a collector's consigned LEGO collection.",
-    "fields": [
-      "business"
-    ],
-    "roles": [
-      "store franchise owner"
-    ],
-    "country": "US",
-    "born": null,
-    "date_matches": null,
-    "died": null,
-    "death_cause": null,
-    "age_at_death": null,
-    "events": [
-      {
-        "year": 2026,
-        "what": "Named in the viral dispute over a $200,000 consigned LEGO collection and YouTuber Reckless Ben's investigation; the company later parted ways with the Salem franchise owners"
-      }
-    ],
-    "flags": [],
-    "fame": 1,
-    "checked": true,
-    "sources": [
-      "https://tribune.com.pk/story/2610876/who-is-joshua-johnson-mormon-mafia-trends-as-bricks-minifigs-backlash-intensifies-over-reckless-ben?amp=1",
-      "https://bricksandminifigs.com/blog/"
-    ],
-    "note": "No birth date on the chart to check against; identified from the title only. Known only through this 2026 controversy; reporting says he has not been charged with any crime."
-  },
-  {
-    "title": "Emily Satlow",
-    "ids": [
-      641
-    ],
-    "kind": "unknown",
-    "checked": true,
-    "sources": [],
-    "note": "Checked 2026-11-20: one search found no public figure with this name and birth date."
-  },
-  {
-    "title": "Amunra Irving",
-    "ids": [
-      568,
-      567
-    ],
-    "kind": "unknown",
-    "checked": true,
-    "sources": [],
-    "note": "Checked 2026-11-20: two searches found no public figure named Amunra (Ryan) Irving."
-  },
-  {
-    "title": "Anthony Panza",
-    "ids": [
-      563
-    ],
-    "kind": "unknown",
-    "checked": true,
-    "sources": [],
-    "note": "Checked 2026-11-20: one search found no public figure with this name and birth date."
-  },
-  {
-    "title": "Jesus Munoz · Drill Tech",
-    "ids": [
-      561,
-      560,
-      550
-    ],
-    "kind": "unknown",
-    "checked": true,
-    "sources": [],
-    "note": "Checked 2026-11-20: a search for Jesus Munoz / Drill Tech found no public figure or channel by that name."
-  },
-  {
-    "title": "Miles Spiel",
-    "ids": [
-      551
-    ],
-    "kind": "person",
-    "known_as": "1900Rugrat",
-    "summary": "American rapper from Florida whose 2024 'One Take Freestyle' went viral; named to the 2025 XXL Freshman class.",
-    "fields": [
-      "rapper",
-      "music"
-    ],
-    "roles": [
-      "rapper"
-    ],
-    "country": "US",
-    "born": "2003-08-08",
-    "date_matches": true,
-    "died": null,
-    "death_cause": null,
-    "age_at_death": null,
-    "events": [
-      {
-        "year": 2024,
-        "what": "'One Take Freestyle' reached No. 1 on Spotify's US Viral chart, later certified gold"
-      },
-      {
-        "year": 2025,
-        "what": "Released the mixtape Porch 2 the Pent"
-      },
-      {
-        "year": 2025,
-        "what": "Named to the XXL Freshman class"
-      },
-      {
-        "year": 2025,
-        "what": "Released the album Big Ah Kidz"
-      }
-    ],
-    "flags": [],
-    "fame": 3,
-    "checked": true,
-    "sources": [
-      "https://en.wikipedia.org/wiki/1900Rugrat"
-    ],
-    "note": ""
-  },
-  {
-    "title": "Manish Panchal",
-    "ids": [
-      533,
-      172
-    ],
-    "kind": "unknown",
-    "checked": true,
-    "sources": [],
-    "note": "Checked 2026-11-20: one search found no public figure with this name and birth date."
-  },
-  {
-    "title": "Sena Unsal",
-    "ids": [
-      529
-    ],
-    "kind": "unknown",
-    "checked": true,
-    "sources": [],
-    "note": "Checked 2026-11-20: one search found no public figure with this name and birth date."
-  },
-  {
-    "title": "Jason Scoop",
-    "ids": [
-      528
-    ],
-    "kind": "person",
-    "known_as": "Jason Scoop",
-    "summary": "American comedian and impressionist who won the impressions competition on Dana Carvey's First Impressions.",
-    "fields": [
-      "comedy"
-    ],
-    "roles": [
-      "comedian",
-      "impressionist"
-    ],
-    "country": "US",
-    "born": null,
-    "date_matches": null,
-    "died": null,
-    "death_cause": null,
-    "age_at_death": null,
-    "events": [
-      {
-        "year": 2016,
-        "what": "Appeared on Dana Carvey's First Impressions and won its impressions competition"
-      }
-    ],
-    "flags": [],
-    "fame": 2,
-    "checked": true,
-    "sources": [
-      "https://atlanticcitynj.com/events/event-list/jason-scoop-and-special-guests",
-      "https://www.tvmaze.com/people/131664/jason-scoop"
-    ],
-    "note": "The comedian Jason Scoop matches the owner's tag, but no source found gives his real name (Szkup) or his birth date, so the date could not be checked."
-  },
-  {
-    "title": "Brian Shapiro",
-    "ids": [
-      525
-    ],
-    "kind": "unknown",
-    "checked": true,
-    "sources": [],
-    "note": "Checked 2026-11-20: no politician or public figure named Brian Shapiro born 1980-04-13 was found."
-  },
-  {
-    "title": "Murat Serbetci · Muro",
-    "ids": [
-      518
-    ],
-    "kind": "unknown",
-    "checked": true,
-    "sources": [],
-    "note": "Checked 2026-11-20: no source links Murat Serbetci to the name Muro."
-  },
-  {
-    "title": "Kristina Patrick",
-    "ids": [
-      511
-    ],
-    "kind": "unknown",
-    "checked": false,
-    "sources": [],
-    "note": "Appears to be a private person (tagged with another private name); not searched."
-  },
-  {
-    "title": "Lourdes Garcia",
-    "ids": [
-      495
-    ],
-    "kind": "unknown",
-    "checked": false,
-    "sources": [],
-    "note": "Appears to be a private person; not searched."
-  },
-  {
-    "title": "Kailey McCullough",
-    "ids": [
-      405
-    ],
-    "kind": "unknown",
-    "checked": false,
-    "sources": [],
-    "note": "Not identified as a public figure (and a child by the date given); the search limit ran out before a search could run."
-  },
-  {
-    "title": "Nicholas Campana · Gobcast",
-    "ids": [
-      377
-    ],
-    "kind": "unknown",
-    "checked": true,
-    "sources": [],
-    "note": "Checked 2026-11-20: two searches found no podcast called Gobcast and nothing on a Nicholas Campana."
-  },
-  {
-    "title": "Russell Jones",
-    "ids": [
-      353
-    ],
-    "kind": "unknown",
-    "checked": true,
-    "sources": [],
-    "note": "Checked 2026-11-20: one search found no public figure with this name and birth date."
-  },
-  {
-    "title": "Doenut",
-    "ids": [
-      347,
-      320,
-      319,
-      318
-    ],
-    "kind": "unknown",
-    "checked": true,
-    "sources": [],
-    "note": "Checked 2026-11-20: a Rumble channel called DOENUT FACTORY exists (about 18K followers), but nothing found links it to Alex Mathew Bleecker or this birth date."
-  },
-  {
-    "title": "Ash Alk",
-    "ids": [
-      310,
-      309
-    ],
-    "kind": "person",
-    "known_as": "Ash Alk",
-    "summary": "American TikTok and YouTube creator known for prank and challenge videos, with about a million YouTube subscribers.",
-    "fields": [
-      "youtube",
-      "influencer",
-      "comedy"
-    ],
-    "roles": [
-      "youtuber",
-      "tiktok creator",
-      "prankster"
-    ],
-    "country": "US",
-    "born": "2002-08-28",
-    "date_matches": true,
-    "died": null,
-    "death_cause": null,
-    "age_at_death": null,
-    "events": [],
-    "flags": [],
-    "fame": 3,
-    "checked": true,
-    "sources": [
-      "https://vidiq.com/youtube-stats/channel/UCrDfOGBF5MkNVFnd7Bu3REA",
-      "https://www.favikon.com/blog/who-is-ash-alk",
-      "https://www.thefamouspeople.com/profiles/ash-alk-147507.php"
-    ],
-    "note": "Birth date comes from a fan biography site only."
-  },
-  {
-    "title": "Michael Hammonds · Drill Tech",
-    "ids": [
-      207
-    ],
-    "kind": "unknown",
-    "checked": true,
-    "sources": [],
-    "note": "Checked 2026-11-20: two searches (Michael Hammonds / Drill Tech) found no public figure or channel by that name."
-  },
-  {
-    "title": "Wally Pulliam",
-    "ids": [
-      192
-    ],
-    "kind": "unknown",
-    "checked": true,
-    "sources": [],
-    "note": "Checked 2026-11-20: one search found no public figure with this name and birth date."
-  },
-  {
-    "title": "Thurl",
-    "ids": [
-      185
-    ],
-    "kind": "person",
-    "known_as": "Thurl Des",
-    "summary": "Florida comedy creator on YouTube and Snapchat (@thurldes) with about 330K Snapchat followers.",
-    "fields": [
-      "youtube",
-      "comedy",
-      "influencer"
-    ],
-    "roles": [
-      "youtuber",
-      "snapchat creator"
-    ],
-    "country": "US",
-    "born": null,
-    "date_matches": null,
-    "died": null,
-    "death_cause": null,
-    "age_at_death": null,
-    "events": [],
-    "flags": [],
-    "fame": 2,
-    "checked": true,
-    "sources": [
-      "https://www.snapchat.com/add/youngnutt"
-    ],
-    "note": "Identified by the handle in the owner's tags; no name on the chart and no birth date found to check against."
-  },
-  {
-    "title": "Gabriella Smith",
-    "ids": [
-      178
-    ],
-    "kind": "unknown",
-    "note": "Not searched: the web search allowance ran out. No public figure known to me with this name and birth date (the composer Gabriella Smith was born in 1991, not a match)."
-  },
-  {
-    "title": "Daniel Adams",
-    "ids": [
-      168
-    ],
-    "kind": "unknown",
-    "note": "Not searched: the web search allowance ran out. A common name; nobody public with this birth date is known to me."
-  },
-  {
-    "title": "Tyler Phouthavong",
-    "ids": [
-      102
-    ],
-    "kind": "unknown",
-    "checked": false,
-    "sources": [],
-    "note": "Web search budget ran out before this one could be searched; not known to me as a public figure. The batch date 2004-01-01 looks like a placeholder."
-  },
-  {
-    "title": "Joe Dinas",
-    "ids": [
-      87
-    ],
-    "kind": "unknown",
-    "checked": true,
-    "sources": [],
-    "note": "Checked 2026-11-20: no public figure named Joe Dinas found (typed birth name Joseph Clyde Kennedy)."
-  },
-  {
-    "title": "Victor Cipriano Dominguez",
-    "ids": [
-      78
-    ],
-    "kind": "unknown",
-    "checked": false,
-    "sources": [],
-    "note": "Web search budget ran out before this one could be searched; not known to me as a public figure."
-  },
-  {
-    "title": "Richard Kaler",
-    "ids": [
-      77
-    ],
-    "kind": "unknown",
-    "checked": false,
-    "sources": [],
-    "note": "Web search budget ran out before this one could be searched; not known to me as a public figure."
-  },
-  {
-    "title": "Robert Swonger · Sharp",
-    "ids": [
-      76
-    ],
-    "kind": "unknown",
-    "checked": true,
-    "sources": [],
-    "note": "Checked 2026-11-20: no public figure named Robert Swonger or Sharp with this date found."
-  },
-  {
-    "title": "Zain Hafeez",
-    "ids": [
-      75
-    ],
-    "kind": "unknown",
-    "checked": false,
-    "sources": [],
-    "note": "Web search budget ran out before this one could be searched; not known to me as a public figure."
-  },
-  {
-    "title": "Jianfeng Zhao",
-    "ids": [
-      28
-    ],
-    "kind": "unknown",
-    "checked": false,
-    "sources": [],
-    "note": "Could not be searched (search limit reached); not a name I know as a public figure."
-  },
-  {
-    "title": "John Jones",
-    "ids": [
-      751
-    ],
-    "kind": "person",
-    "known_as": "John Edward Jones",
-    "summary": "Medical student who died in 2009 after being trapped upside down for over a day in Utah's Nutty Putty Cave.",
-    "fields": [
-      "other"
-    ],
-    "roles": [
-      "medical student",
-      "caver"
-    ],
-    "country": "US",
-    "born": "1983-01-21",
-    "date_matches": true,
-    "died": "2009-11-25",
-    "death_cause": "accident",
-    "age_at_death": 26,
-    "events": [
-      {
-        "year": 2009,
-        "what": "Became stuck in a narrow passage of Nutty Putty Cave and died after a failed rescue"
-      },
-      {
-        "year": 2009,
-        "what": "The cave was sealed permanently with his body inside"
-      },
-      {
-        "year": 2016,
-        "what": "The film The Last Descent told his story"
-      }
-    ],
-    "flags": [
-      "died_young"
-    ],
-    "fame": 2,
-    "checked": true,
-    "sources": [
-      "https://en.wikipedia.org/wiki/Nutty_Putty_Cave",
-      "https://science.howstuffworks.com/environmental/earth/geology/nutty-putty-cave.htm"
-    ],
-    "note": ""
-  },
-  {
-    "title": "Paris Bennett",
-    "ids": [
-      743
-    ],
-    "kind": "person",
-    "known_as": "Paris Bennett",
-    "summary": "Texas man who at 13 killed his four-year-old sister Ella in Abilene in 2007; serving a 40-year sentence.",
-    "fields": [
-      "crime"
-    ],
-    "roles": [
-      "convicted murderer"
-    ],
-    "country": "US",
-    "born": null,
-    "date_matches": null,
-    "died": null,
-    "death_cause": null,
-    "age_at_death": null,
-    "events": [
-      {
-        "year": 2007,
-        "what": "Killed his four-year-old sister Ella at home in Abilene, Texas, aged 13"
-      },
-      {
-        "year": 2007,
-        "what": "Pleaded guilty to capital murder in juvenile court; sentenced to 40 years"
-      }
-    ],
-    "flags": [
-      "convicted_crime",
-      "violent_crime",
-      "killed_someone",
-      "prison"
-    ],
-    "fame": 2,
-    "checked": true,
-    "sources": [
-      "https://en.wikipedia.org/wiki/Murder_of_Ella_Bennett",
-      "https://www.sacurrent.com/news/murder-destroyed-charity-lees-family-forever-altered-her-concept-of-justice-2246452/"
-    ],
-    "note": "Exact birth date not found; sources give his age (13 in February 2007, 53 in February 2047), which fits 1993-10-10. Parole eligibility February 2027."
-  },
-  {
-    "title": "Andrew Gold",
-    "ids": [
-      640
-    ],
-    "kind": "person",
-    "known_as": "Andrew Gold",
-    "summary": "British journalist, documentary maker and host of the interview podcast Heretics (formerly On the Edge with Andrew Gold).",
-    "fields": [
-      "podcast",
-      "journalism",
-      "youtube"
-    ],
-    "roles": [
-      "journalist",
-      "podcaster",
-      "documentary maker",
-      "author"
-    ],
-    "country": "GB",
-    "born": "1989-03-21",
-    "date_matches": true,
-    "died": null,
-    "death_cause": null,
-    "age_at_death": null,
-    "events": [
-      {
-        "year": 2018,
-        "what": "Made the BBC documentary Exorcism: The Battle for Young Minds"
-      },
-      {
-        "year": 2020,
-        "what": "Launched the podcast On the Edge, later renamed Heretics"
-      },
-      {
-        "year": 2024,
-        "what": "Published the book The Psychology of Secrets"
-      }
-    ],
-    "flags": [],
-    "fame": 3,
-    "checked": true,
-    "sources": [
-      "https://en.wikipedia.org/wiki/Andrew_Gold_(journalist)",
-      "https://podcasts.apple.com/us/podcast/heretics-andrew-gold/id1515932214"
-    ],
-    "note": "Birth date from Wikipedia, where it is marked 'citation needed'."
-  },
-  {
-    "title": "Handsome Truth",
-    "ids": [
-      635,
-      631
-    ],
-    "kind": "person",
-    "known_as": "Jon Minadeo II (\"Handsome Truth\")",
-    "summary": "American founder of the antisemitic hate group Goyim Defense League and its video site GoyimTV.",
-    "fields": [
-      "activism",
-      "streaming",
-      "conspiracy"
-    ],
-    "roles": [
-      "hate group leader",
-      "streamer"
-    ],
-    "country": "US",
-    "born": "1982-12-15",
-    "date_matches": true,
-    "died": null,
-    "death_cause": null,
-    "age_at_death": null,
-    "events": [
-      {
-        "year": 2022,
-        "what": "Arrested in Poland under hate speech laws after a protest outside Auschwitz"
-      },
-      {
-        "year": 2022,
-        "what": "Moved from California to Florida"
-      },
-      {
-        "year": 2023,
-        "what": "Arrested in Macon, Georgia, for disorderly conduct at a protest outside a synagogue"
-      },
-      {
-        "year": 2023,
-        "what": "Convicted by a jury of littering over antisemitic flyers in Palm Beach County; sentenced to 30 days in jail"
-      },
-      {
-        "year": 2024,
-        "what": "Moved to Arkansas"
-      },
-      {
-        "year": 2025,
-        "what": "Sued in federal civil court over an alleged 2024 assault in Nashville; case ongoing in 2026"
-      }
-    ],
-    "flags": [
-      "convicted_crime",
-      "founder"
-    ],
-    "fame": 3,
-    "checked": true,
-    "sources": [
-      "https://en.wikipedia.org/wiki/Jon_Minadeo_II",
-      "https://forward.com/fast-forward/568041/goyim-defense-league-founder-jon-minadeo-sentenced-to-30-days-jail-for-antisemitic-littering/"
-    ],
-    "note": "Dropped the first pass's cancelled_or_banned flag: no source found for a ban."
-  },
-  {
-    "title": "Elizabeth April",
-    "ids": [
-      564
-    ],
-    "kind": "person",
-    "known_as": "Elizabeth April",
-    "summary": "Self-described psychic, remote viewer and channeler with a large YouTube following, author of You're Not Dying, You're Just Waking Up.",
-    "fields": [
-      "spirituality",
-      "youtube",
-      "writing"
-    ],
-    "roles": [
-      "psychic",
-      "channeler",
-      "author"
-    ],
-    "country": "US",
-    "born": "1992-07-08",
-    "date_matches": true,
-    "died": null,
-    "death_cause": null,
-    "age_at_death": null,
-    "events": [
-      {
-        "year": 2021,
-        "what": "Appeared in the Peacock docuseries Unidentified with Demi Lovato"
-      }
-    ],
-    "flags": [],
-    "fame": 3,
-    "checked": true,
-    "sources": [
-      "https://www.famousbirthdays.com/people/elizabeth-april.html",
-      "https://www.yahoo.com/lifestyle/demi-lovatos-docuseries-psychic-message-200041308.html",
-      "https://www.simonandschuster.ca/authors/Elizabeth-April/238606379"
-    ],
-    "note": "Birth date and US birthplace from Famous Birthdays only; the first pass said Canadian, which no source confirmed."
-  },
-  {
-    "title": "Sam Tripoli",
-    "ids": [
-      537
-    ],
-    "kind": "person",
-    "known_as": "Sam Tripoli",
-    "summary": "American stand-up comedian and host of the conspiracy-themed podcast Tin Foil Hat with Sam Tripoli.",
-    "fields": [
-      "comedy",
-      "podcast",
-      "conspiracy"
-    ],
-    "roles": [
-      "stand-up comedian",
-      "podcast host"
-    ],
-    "country": "US",
-    "born": null,
-    "date_matches": null,
-    "died": null,
-    "death_cause": null,
-    "age_at_death": null,
-    "events": [
-      {
-        "year": 2000,
-        "what": "Moved to Los Angeles and began working at The Comedy Store"
-      },
-      {
-        "year": 2006,
-        "what": "Co-host of Spike TV's Wild World of Spike"
-      },
-      {
-        "year": 2017,
-        "what": "Released the comedy album The Diabolical"
-      },
-      {
-        "year": 2018,
-        "what": "Began co-hosting the Tin Foil Hat podcast and YouTube show"
-      }
-    ],
-    "flags": [],
-    "fame": 3,
-    "checked": true,
-    "sources": [
-      "https://en.wikipedia.org/wiki/Sam_Tripoli"
-    ],
-    "note": "Wikipedia gives only the birth year 1973, which fits; the day (28 October) was found only on an unreliable site."
-  },
-  {
-    "title": "Dakota Wint · Dakota of Earth",
-    "ids": [
-      534
-    ],
-    "kind": "person",
-    "known_as": "Dakota Wint (Dakota of Earth)",
-    "summary": "American YouTuber, documentary maker and podcast host (A Place for Humans) covering spiritual traditions and holy men around the world.",
-    "fields": [
-      "youtube",
-      "spirituality",
-      "podcast"
-    ],
-    "roles": [
-      "youtuber",
-      "documentary maker",
-      "podcast host"
-    ],
-    "country": "US",
-    "born": "1992-06-13",
-    "date_matches": true,
-    "died": null,
-    "death_cause": null,
-    "age_at_death": null,
-    "events": [
-      {
-        "year": 2021,
-        "what": "Released the documentary Aghori: Holy Men of the Dead"
-      }
-    ],
-    "flags": [],
-    "fame": 3,
-    "checked": true,
-    "sources": [
-      "https://en.wikipedia.org/wiki/Dakota_Wint",
-      "https://dailycaller.com/2021/08/23/meet-dakota-wint-a-passionate-traveler-shining-light-on-different-cultures",
-      "https://www.sunsigns.org/june-13-famous-birthdays/"
-    ],
-    "note": "Birth date from a horoscope birthday list only."
-  },
-  {
-    "title": "Crip Mac",
-    "ids": [
-      527,
-      216
-    ],
-    "kind": "person",
-    "known_as": "Crip Mac (Trevor Hurd)",
-    "summary": "Los Angeles rapper and internet personality known for viral interviews, a self-described member of the 55th Street Neighborhood Crips.",
-    "fields": [
-      "rapper",
-      "youtube",
-      "influencer"
-    ],
-    "roles": [
-      "rapper",
-      "youtuber",
-      "internet personality"
-    ],
-    "country": "US",
-    "born": null,
-    "date_matches": null,
-    "died": null,
-    "death_cause": null,
-    "age_at_death": null,
-    "events": [
-      {
-        "year": 2023,
-        "what": "Arrested on a federal case after being found with a ghost gun and ammunition"
-      },
-      {
-        "year": 2024,
-        "what": "Pleaded guilty to being a felon in possession of ammunition"
-      },
-      {
-        "year": 2024,
-        "what": "Sentenced to two years and nine months in federal prison"
-      },
-      {
-        "year": 2026,
-        "what": "Released from federal prison in late January"
-      }
-    ],
-    "flags": [
-      "convicted_crime",
-      "prison"
-    ],
-    "fame": 3,
-    "checked": true,
-    "sources": [
-      "https://foxla.com/news/youtuber-crip-mac-sentenced-prison-after-felony-conviction",
-      "https://www.complex.com/pop-culture/a/maggie-ekberg/crip-mac-adam22-prison-commissary-money"
-    ],
-    "note": "Exact birth date not found; his reported ages (31 in August 2024, 33 in March 2026) fit 1993-02-20. Sources differ on the arrest year (2022 or 2023)."
-  }
+ {
+  "title": "Andrea Crowder",
+  "ids": [
+   647,
+   646
+  ],
+  "kind": "unknown",
+  "checked": true,
+  "sources": [],
+  "note": "Checked 2026-11-20: one search found no public figure with this name and birth date."
+ },
+ {
+  "title": "Allison Frank",
+  "ids": [
+   643
+  ],
+  "kind": "unknown",
+  "note": "Not searched: the tags (\"mychart\") suggest a private person."
+ },
+ {
+  "title": "Joshua Johnson · Bricks and Minifigs",
+  "ids": [
+   642
+  ],
+  "kind": "person",
+  "known_as": "Joshua Johnson",
+  "summary": "Former co-owner of the Salem, Oregon Bricks & Minifigs LEGO store, named in the 2026 dispute over a collector's consigned LEGO collection.",
+  "fields": [
+   "business"
+  ],
+  "roles": [
+   "store franchise owner"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2026,
+    "what": "Named in the viral dispute over a $200,000 consigned LEGO collection and YouTuber Reckless Ben's investigation; the company later parted ways with the Salem franchise owners"
+   }
+  ],
+  "flags": [],
+  "fame": 1,
+  "checked": true,
+  "sources": [
+   "https://tribune.com.pk/story/2610876/who-is-joshua-johnson-mormon-mafia-trends-as-bricks-minifigs-backlash-intensifies-over-reckless-ben?amp=1",
+   "https://bricksandminifigs.com/blog/"
+  ],
+  "note": "No birth date on the chart to check against; identified from the title only. Known only through this 2026 controversy; reporting says he has not been charged with any crime."
+ },
+ {
+  "title": "Emily Satlow",
+  "ids": [
+   641
+  ],
+  "kind": "unknown",
+  "checked": true,
+  "sources": [],
+  "note": "Checked 2026-11-20: one search found no public figure with this name and birth date."
+ },
+ {
+  "title": "Amunra Irving",
+  "ids": [
+   568,
+   567
+  ],
+  "kind": "unknown",
+  "checked": true,
+  "sources": [],
+  "note": "Checked 2026-11-20: two searches found no public figure named Amunra (Ryan) Irving."
+ },
+ {
+  "title": "Anthony Panza",
+  "ids": [
+   563
+  ],
+  "kind": "unknown",
+  "checked": true,
+  "sources": [],
+  "note": "Checked 2026-11-20: one search found no public figure with this name and birth date."
+ },
+ {
+  "title": "Jesus Munoz · Drill Tech",
+  "ids": [
+   561,
+   560,
+   550
+  ],
+  "kind": "unknown",
+  "checked": true,
+  "sources": [],
+  "note": "Checked 2026-11-20: a search for Jesus Munoz / Drill Tech found no public figure or channel by that name."
+ },
+ {
+  "title": "Miles Spiel",
+  "ids": [
+   551
+  ],
+  "kind": "person",
+  "known_as": "1900Rugrat",
+  "summary": "American rapper from Florida whose 2024 'One Take Freestyle' went viral; named to the 2025 XXL Freshman class.",
+  "fields": [
+   "rapper",
+   "music"
+  ],
+  "roles": [
+   "rapper"
+  ],
+  "country": "US",
+  "born": "2003-08-08",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2024,
+    "what": "'One Take Freestyle' reached No. 1 on Spotify's US Viral chart, later certified gold"
+   },
+   {
+    "year": 2025,
+    "what": "Released the mixtape Porch 2 the Pent"
+   },
+   {
+    "year": 2025,
+    "what": "Named to the XXL Freshman class"
+   },
+   {
+    "year": 2025,
+    "what": "Released the album Big Ah Kidz"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/1900Rugrat"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Manish Panchal",
+  "ids": [
+   533,
+   172
+  ],
+  "kind": "unknown",
+  "checked": true,
+  "sources": [],
+  "note": "Checked 2026-11-20: one search found no public figure with this name and birth date."
+ },
+ {
+  "title": "Sena Unsal",
+  "ids": [
+   529
+  ],
+  "kind": "unknown",
+  "checked": true,
+  "sources": [],
+  "note": "Checked 2026-11-20: one search found no public figure with this name and birth date."
+ },
+ {
+  "title": "Jason Scoop",
+  "ids": [
+   528
+  ],
+  "kind": "person",
+  "known_as": "Jason Scoop",
+  "summary": "American comedian and impressionist who won the impressions competition on Dana Carvey's First Impressions.",
+  "fields": [
+   "comedy"
+  ],
+  "roles": [
+   "comedian",
+   "impressionist"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2016,
+    "what": "Appeared on Dana Carvey's First Impressions and won its impressions competition"
+   }
+  ],
+  "flags": [],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://atlanticcitynj.com/events/event-list/jason-scoop-and-special-guests",
+   "https://www.tvmaze.com/people/131664/jason-scoop"
+  ],
+  "note": "The comedian Jason Scoop matches the owner's tag, but no source found gives his real name (Szkup) or his birth date, so the date could not be checked."
+ },
+ {
+  "title": "Brian Shapiro",
+  "ids": [
+   525
+  ],
+  "kind": "unknown",
+  "checked": true,
+  "sources": [],
+  "note": "Checked 2026-11-20: no politician or public figure named Brian Shapiro born 1980-04-13 was found."
+ },
+ {
+  "title": "Murat Serbetci · Muro",
+  "ids": [
+   518
+  ],
+  "kind": "unknown",
+  "checked": true,
+  "sources": [],
+  "note": "Checked 2026-11-20: no source links Murat Serbetci to the name Muro."
+ },
+ {
+  "title": "Kristina Patrick",
+  "ids": [
+   511
+  ],
+  "kind": "unknown",
+  "checked": false,
+  "sources": [],
+  "note": "Appears to be a private person (tagged with another private name); not searched."
+ },
+ {
+  "title": "Lourdes Garcia",
+  "ids": [
+   495
+  ],
+  "kind": "unknown",
+  "checked": false,
+  "sources": [],
+  "note": "Appears to be a private person; not searched."
+ },
+ {
+  "title": "Kailey McCullough",
+  "ids": [
+   405
+  ],
+  "kind": "unknown",
+  "checked": false,
+  "sources": [],
+  "note": "Not identified as a public figure (and a child by the date given); the search limit ran out before a search could run."
+ },
+ {
+  "title": "Nicholas Campana · Gobcast",
+  "ids": [
+   377
+  ],
+  "kind": "unknown",
+  "checked": true,
+  "sources": [],
+  "note": "Checked 2026-11-20: two searches found no podcast called Gobcast and nothing on a Nicholas Campana."
+ },
+ {
+  "title": "Russell Jones",
+  "ids": [
+   353
+  ],
+  "kind": "unknown",
+  "checked": true,
+  "sources": [],
+  "note": "Checked 2026-11-20: one search found no public figure with this name and birth date."
+ },
+ {
+  "title": "Doenut",
+  "ids": [
+   347,
+   320,
+   319,
+   318
+  ],
+  "kind": "unknown",
+  "checked": true,
+  "sources": [],
+  "note": "Checked 2026-11-20: a Rumble channel called DOENUT FACTORY exists (about 18K followers), but nothing found links it to Alex Mathew Bleecker or this birth date."
+ },
+ {
+  "title": "Ash Alk",
+  "ids": [
+   310,
+   309
+  ],
+  "kind": "person",
+  "known_as": "Ash Alk",
+  "summary": "American TikTok and YouTube creator known for prank and challenge videos, with about a million YouTube subscribers.",
+  "fields": [
+   "youtube",
+   "influencer",
+   "comedy"
+  ],
+  "roles": [
+   "youtuber",
+   "tiktok creator",
+   "prankster"
+  ],
+  "country": "US",
+  "born": "2002-08-28",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://vidiq.com/youtube-stats/channel/UCrDfOGBF5MkNVFnd7Bu3REA",
+   "https://www.favikon.com/blog/who-is-ash-alk",
+   "https://www.thefamouspeople.com/profiles/ash-alk-147507.php"
+  ],
+  "note": "Birth date comes from a fan biography site only."
+ },
+ {
+  "title": "Michael Hammonds · Drill Tech",
+  "ids": [
+   207
+  ],
+  "kind": "unknown",
+  "checked": true,
+  "sources": [],
+  "note": "Checked 2026-11-20: two searches (Michael Hammonds / Drill Tech) found no public figure or channel by that name."
+ },
+ {
+  "title": "Wally Pulliam",
+  "ids": [
+   192
+  ],
+  "kind": "unknown",
+  "checked": true,
+  "sources": [],
+  "note": "Checked 2026-11-20: one search found no public figure with this name and birth date."
+ },
+ {
+  "title": "Thurl",
+  "ids": [
+   185
+  ],
+  "kind": "person",
+  "known_as": "Thurl Des",
+  "summary": "Florida comedy creator on YouTube and Snapchat (@thurldes) with about 330K Snapchat followers.",
+  "fields": [
+   "youtube",
+   "comedy",
+   "influencer"
+  ],
+  "roles": [
+   "youtuber",
+   "snapchat creator"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [],
+  "flags": [],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://www.snapchat.com/add/youngnutt"
+  ],
+  "note": "Identified by the handle in the owner's tags; no name on the chart and no birth date found to check against."
+ },
+ {
+  "title": "Gabriella Smith",
+  "ids": [
+   178
+  ],
+  "kind": "unknown",
+  "note": "Not searched: the web search allowance ran out. No public figure known to me with this name and birth date (the composer Gabriella Smith was born in 1991, not a match)."
+ },
+ {
+  "title": "Daniel Adams",
+  "ids": [
+   168
+  ],
+  "kind": "unknown",
+  "note": "Not searched: the web search allowance ran out. A common name; nobody public with this birth date is known to me."
+ },
+ {
+  "title": "Tyler Phouthavong",
+  "ids": [
+   102
+  ],
+  "kind": "unknown",
+  "checked": false,
+  "sources": [],
+  "note": "Web search budget ran out before this one could be searched; not known to me as a public figure. The batch date 2004-01-01 looks like a placeholder."
+ },
+ {
+  "title": "Joe Dinas",
+  "ids": [
+   87
+  ],
+  "kind": "unknown",
+  "checked": true,
+  "sources": [],
+  "note": "Checked 2026-11-20: no public figure named Joe Dinas found (typed birth name Joseph Clyde Kennedy)."
+ },
+ {
+  "title": "Victor Cipriano Dominguez",
+  "ids": [
+   78
+  ],
+  "kind": "unknown",
+  "checked": false,
+  "sources": [],
+  "note": "Web search budget ran out before this one could be searched; not known to me as a public figure."
+ },
+ {
+  "title": "Richard Kaler",
+  "ids": [
+   77
+  ],
+  "kind": "unknown",
+  "checked": false,
+  "sources": [],
+  "note": "Web search budget ran out before this one could be searched; not known to me as a public figure."
+ },
+ {
+  "title": "Robert Swonger · Sharp",
+  "ids": [
+   76
+  ],
+  "kind": "unknown",
+  "checked": true,
+  "sources": [],
+  "note": "Checked 2026-11-20: no public figure named Robert Swonger or Sharp with this date found."
+ },
+ {
+  "title": "Zain Hafeez",
+  "ids": [
+   75
+  ],
+  "kind": "unknown",
+  "checked": false,
+  "sources": [],
+  "note": "Web search budget ran out before this one could be searched; not known to me as a public figure."
+ },
+ {
+  "title": "Jianfeng Zhao",
+  "ids": [
+   28
+  ],
+  "kind": "unknown",
+  "checked": false,
+  "sources": [],
+  "note": "Could not be searched (search limit reached); not a name I know as a public figure."
+ },
+ {
+  "title": "John Jones",
+  "ids": [
+   751
+  ],
+  "kind": "person",
+  "known_as": "John Edward Jones",
+  "summary": "Medical student who died in 2009 after being trapped upside down for over a day in Utah's Nutty Putty Cave.",
+  "fields": [
+   "other"
+  ],
+  "roles": [
+   "medical student",
+   "caver"
+  ],
+  "country": "US",
+  "born": "1983-01-21",
+  "date_matches": true,
+  "died": "2009-11-25",
+  "death_cause": "accident",
+  "age_at_death": 26,
+  "events": [
+   {
+    "year": 2009,
+    "what": "Became stuck in a narrow passage of Nutty Putty Cave and died after a failed rescue"
+   },
+   {
+    "year": 2009,
+    "what": "The cave was sealed permanently with his body inside"
+   },
+   {
+    "year": 2016,
+    "what": "The film The Last Descent told his story"
+   }
+  ],
+  "flags": [
+   "died_young"
+  ],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Nutty_Putty_Cave",
+   "https://science.howstuffworks.com/environmental/earth/geology/nutty-putty-cave.htm"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Paris Bennett",
+  "ids": [
+   743
+  ],
+  "kind": "person",
+  "known_as": "Paris Bennett",
+  "summary": "Texas man who at 13 killed his four-year-old sister Ella in Abilene in 2007; serving a 40-year sentence.",
+  "fields": [
+   "crime"
+  ],
+  "roles": [
+   "convicted murderer"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2007,
+    "what": "Killed his four-year-old sister Ella at home in Abilene, Texas, aged 13"
+   },
+   {
+    "year": 2007,
+    "what": "Pleaded guilty to capital murder in juvenile court; sentenced to 40 years"
+   }
+  ],
+  "flags": [
+   "convicted_crime",
+   "violent_crime",
+   "killed_someone",
+   "prison"
+  ],
+  "fame": 2,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Murder_of_Ella_Bennett",
+   "https://www.sacurrent.com/news/murder-destroyed-charity-lees-family-forever-altered-her-concept-of-justice-2246452/"
+  ],
+  "note": "Exact birth date not found; sources give his age (13 in February 2007, 53 in February 2047), which fits 1993-10-10. Parole eligibility February 2027."
+ },
+ {
+  "title": "Andrew Gold",
+  "ids": [
+   640
+  ],
+  "kind": "person",
+  "known_as": "Andrew Gold",
+  "summary": "British journalist, documentary maker and host of the interview podcast Heretics (formerly On the Edge with Andrew Gold).",
+  "fields": [
+   "podcast",
+   "journalism",
+   "youtube"
+  ],
+  "roles": [
+   "journalist",
+   "podcaster",
+   "documentary maker",
+   "author"
+  ],
+  "country": "GB",
+  "born": "1989-03-21",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2018,
+    "what": "Made the BBC documentary Exorcism: The Battle for Young Minds"
+   },
+   {
+    "year": 2020,
+    "what": "Launched the podcast On the Edge, later renamed Heretics"
+   },
+   {
+    "year": 2024,
+    "what": "Published the book The Psychology of Secrets"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Andrew_Gold_(journalist)",
+   "https://podcasts.apple.com/us/podcast/heretics-andrew-gold/id1515932214"
+  ],
+  "note": "Birth date from Wikipedia, where it is marked 'citation needed'."
+ },
+ {
+  "title": "Handsome Truth",
+  "ids": [
+   635,
+   631
+  ],
+  "kind": "person",
+  "known_as": "Jon Minadeo II (\"Handsome Truth\")",
+  "summary": "American founder of the antisemitic hate group Goyim Defense League and its video site GoyimTV.",
+  "fields": [
+   "activism",
+   "streaming",
+   "conspiracy"
+  ],
+  "roles": [
+   "hate group leader",
+   "streamer"
+  ],
+  "country": "US",
+  "born": "1982-12-15",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2022,
+    "what": "Arrested in Poland under hate speech laws after a protest outside Auschwitz"
+   },
+   {
+    "year": 2022,
+    "what": "Moved from California to Florida"
+   },
+   {
+    "year": 2023,
+    "what": "Arrested in Macon, Georgia, for disorderly conduct at a protest outside a synagogue"
+   },
+   {
+    "year": 2023,
+    "what": "Convicted by a jury of littering over antisemitic flyers in Palm Beach County; sentenced to 30 days in jail"
+   },
+   {
+    "year": 2024,
+    "what": "Moved to Arkansas"
+   },
+   {
+    "year": 2025,
+    "what": "Sued in federal civil court over an alleged 2024 assault in Nashville; case ongoing in 2026"
+   }
+  ],
+  "flags": [
+   "convicted_crime",
+   "founder"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Jon_Minadeo_II",
+   "https://forward.com/fast-forward/568041/goyim-defense-league-founder-jon-minadeo-sentenced-to-30-days-jail-for-antisemitic-littering/"
+  ],
+  "note": ""
+ },
+ {
+  "title": "Elizabeth April",
+  "ids": [
+   564
+  ],
+  "kind": "person",
+  "known_as": "Elizabeth April",
+  "summary": "Self-described psychic, remote viewer and channeler with a large YouTube following, author of You're Not Dying, You're Just Waking Up.",
+  "fields": [
+   "spirituality",
+   "youtube",
+   "writing"
+  ],
+  "roles": [
+   "psychic",
+   "channeler",
+   "author"
+  ],
+  "country": "US",
+  "born": "1992-07-08",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2021,
+    "what": "Appeared in the Peacock docuseries Unidentified with Demi Lovato"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://www.famousbirthdays.com/people/elizabeth-april.html",
+   "https://www.yahoo.com/lifestyle/demi-lovatos-docuseries-psychic-message-200041308.html",
+   "https://www.simonandschuster.ca/authors/Elizabeth-April/238606379"
+  ],
+  "note": "Birth date and US birthplace from Famous Birthdays only; the first pass said Canadian, which no source confirmed."
+ },
+ {
+  "title": "Sam Tripoli",
+  "ids": [
+   537
+  ],
+  "kind": "person",
+  "known_as": "Sam Tripoli",
+  "summary": "American stand-up comedian and host of the conspiracy-themed podcast Tin Foil Hat with Sam Tripoli.",
+  "fields": [
+   "comedy",
+   "podcast",
+   "conspiracy"
+  ],
+  "roles": [
+   "stand-up comedian",
+   "podcast host"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2000,
+    "what": "Moved to Los Angeles and began working at The Comedy Store"
+   },
+   {
+    "year": 2006,
+    "what": "Co-host of Spike TV's Wild World of Spike"
+   },
+   {
+    "year": 2017,
+    "what": "Released the comedy album The Diabolical"
+   },
+   {
+    "year": 2018,
+    "what": "Began co-hosting the Tin Foil Hat podcast and YouTube show"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Sam_Tripoli"
+  ],
+  "note": "Wikipedia gives only the birth year 1973, which fits; the day (28 October) was found only on an unreliable site."
+ },
+ {
+  "title": "Dakota Wint · Dakota of Earth",
+  "ids": [
+   534
+  ],
+  "kind": "person",
+  "known_as": "Dakota Wint (Dakota of Earth)",
+  "summary": "American YouTuber, documentary maker and podcast host (A Place for Humans) covering spiritual traditions and holy men around the world.",
+  "fields": [
+   "youtube",
+   "spirituality",
+   "podcast"
+  ],
+  "roles": [
+   "youtuber",
+   "documentary maker",
+   "podcast host"
+  ],
+  "country": "US",
+  "born": "1992-06-13",
+  "date_matches": true,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2021,
+    "what": "Released the documentary Aghori: Holy Men of the Dead"
+   }
+  ],
+  "flags": [],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://en.wikipedia.org/wiki/Dakota_Wint",
+   "https://dailycaller.com/2021/08/23/meet-dakota-wint-a-passionate-traveler-shining-light-on-different-cultures",
+   "https://www.sunsigns.org/june-13-famous-birthdays/"
+  ],
+  "note": "Birth date from a horoscope birthday list only."
+ },
+ {
+  "title": "Crip Mac",
+  "ids": [
+   527,
+   216
+  ],
+  "kind": "person",
+  "known_as": "Crip Mac (Trevor Hurd)",
+  "summary": "Los Angeles rapper and internet personality known for viral interviews, a self-described member of the 55th Street Neighborhood Crips.",
+  "fields": [
+   "rapper",
+   "youtube",
+   "influencer"
+  ],
+  "roles": [
+   "rapper",
+   "youtuber",
+   "internet personality"
+  ],
+  "country": "US",
+  "born": null,
+  "date_matches": null,
+  "died": null,
+  "death_cause": null,
+  "age_at_death": null,
+  "events": [
+   {
+    "year": 2023,
+    "what": "Arrested on a federal case after being found with a ghost gun and ammunition"
+   },
+   {
+    "year": 2024,
+    "what": "Pleaded guilty to being a felon in possession of ammunition"
+   },
+   {
+    "year": 2024,
+    "what": "Sentenced to two years and nine months in federal prison"
+   },
+   {
+    "year": 2026,
+    "what": "Released from federal prison in late January"
+   }
+  ],
+  "flags": [
+   "convicted_crime",
+   "prison"
+  ],
+  "fame": 3,
+  "checked": true,
+  "sources": [
+   "https://foxla.com/news/youtuber-crip-mac-sentenced-prison-after-felony-conviction",
+   "https://www.complex.com/pop-culture/a/maggie-ekberg/crip-mac-adam22-prison-commissary-money"
+  ],
+  "note": "Exact birth date not found; his reported ages (31 in August 2024, 33 in March 2026) fit 1993-02-20. Sources differ on the arrest year (2022 or 2023)."
+ }
 ]

@@ -82,15 +82,21 @@ as above; skip what does not apply.
 When done, reply with only: the batch number, how many of each `kind`, and the titles you marked
 `unknown` or left a `note` on. Make sure the file parses as JSON (`node -e "JSON.parse(require('fs').readFileSync(...))"`).
 
+## Owner's rules for any re-check (2026-11-20, after a re-check removed things)
+- A re-check ADDS, it never takes away. Never remove a flag, a field, an event, a birth date or a death cause; never turn
+  a person into unknown. tools/people/merge.mjs joins old and new anyway; write a doubt in `note`, nothing else.
+- A flag says what the person did or is known for, not how a court case ended. Charges dropped, an acquittal or dying
+  before trial never removes `violent_crime`, `killed_someone` or any other flag; put the outcome in `events`.
+- The chart's birth date is the owner's own find, often from a source the web search cannot see. "Not confirmed online"
+  is never a reason to blank or change anything.
+
 ## Second pass: checking (batches 21 and up)
 Each entry also carries `first_pass`: what an earlier session wrote, often from memory (`checked: false`) or `unknown`
 because it could not search. Your job is to CHECK it with web search, not to rewrite it from memory again.
 - Hard cap: 40 WebSearch calls for your whole batch (the allowance is shared with other sessions). Count them.
   Spend them in the order given (the list is sorted most-needed first). One search per entry is usually enough.
-- Confirm or correct: who they are, the birth date (and `date_matches`), anything from 2025-2026 (arrests, verdicts,
-  deaths, elections), and every flag. Drop a flag no source supports. Set `checked: true` and fill `sources` only for
-  entries you actually searched.
+- Confirm and ADD: sources, anything from 2025-2026 (arrests, verdicts, deaths, elections), flags the person clearly
+  earned. Never drop anything (rules above). Set `checked: true` and fill `sources` only for entries you actually searched.
 - An entry you did not get to: copy `first_pass` unchanged. Never mark something unknown just because you ran out.
-- An entry first marked `person` that turns out to be the wrong person or nobody public: `kind: "unknown"` (this
-  REMOVES the earlier record, so be sure).
+- Never mark an entry `unknown` that the first pass identified; if you think it is the wrong person, say so in `note`.
 - Output: same object shape as above, without `first_pass`.

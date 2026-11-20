@@ -999,3 +999,13 @@ called 5 of 8 school shooters with 10/1 in the Vocation Lower Right Aura "Strong
 of 8 from the same vault, 17 in 100 random groups have a find that strong, so it is "Worth a Look". The label now
 comes from the random groups only. Lesson: a verify piped through `tail` hides its failure from `&&`; one push went
 out with a failing new test (the test was too strict, the app was right) before it was caught and fixed.
+
+## 2026-11-20: The re-check took things away, the owner said no
+The second pass (web-checking 160 records) followed a brief that said "drop a flag no source supports". It removed
+Violent Crime from Pazuzu Algarad (died before trial), the ban flag from Fousey and Handsome Truth, Military Service from
+Russ McKamey, an event from Allie Sherlock, and blanked several birth dates it could not confirm. Owner: "I don't like
+how you were wiping charts out because you couldn't confirm it online... some of these are edge cases where I found
+their date of birth in a particular way". Fix: merge.mjs now JOINS a re-check with the first pass (flags, fields,
+events, sources added together; born, died, death cause, country kept unless a real value was found; unknown never
+wipes a record). The brief says a re-check only adds. The About card's date note now says the chart keeps the owner's date.
+Nothing on the charts themselves (names, dates, tags) was ever touched; only the About cards.

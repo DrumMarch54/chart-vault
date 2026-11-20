@@ -51,7 +51,7 @@
           p.roles.length ? h('div', { class: 'muted small' }, p.roles.join(' · ')) : null,
           p.field_names.length || p.flag_names.length ? h('div', { class: 'apills' }, ...p.field_names.map((f) => pill(`field:${f.value}`, 'field')), ...p.flag_names.map((f) => pill(`flag:${f.value}`, 'flag'))) : null,
           $more, $events,
-          p.date_matches === false ? h('div', { class: 'anote warn' }, 'The birth date on this chart differs from the one the sources give. ', p.note || '') : p.note ? h('div', { class: 'anote' }, p.note) : null,
+          p.date_matches === false ? h('div', { class: 'anote warn' }, 'Online sources give a different birth date. The chart keeps the date you entered. ', p.note || '') : p.note ? h('div', { class: 'anote' }, p.note) : null,
           h('div', { class: 'muted small asrc' }, p.checked && p.sources.length ? 'Read from: ' : 'From general knowledge, not looked up online yet.',
             ...p.sources.map((u, i) => h('a', { href: u, target: '_blank', rel: 'noopener noreferrer', onclick: () => count('people.source') }, (i ? ', ' : '') + host(u)))));
         $root.classList.remove('hidden');

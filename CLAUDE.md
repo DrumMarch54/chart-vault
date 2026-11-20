@@ -240,6 +240,9 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - `server/people.js`: `FIELDS` / `FLAGS` are the ONE list of kinds and their screen words (a word not on them is dropped);
   `people` + `person_marks` (migration 10); `person_charts` is a VIEW joined by the chart's name (`images.title`, any case),
   so a renamed chart follows its name and a new chart of a known person joins by itself. Friends and family have no record.
+- A re-check only ADDS (owner 2026-11-20): merge.mjs joins old and new, never removes a flag, date, death or person. A flag
+  is what the person did, not how a trial ended (Pazuzu keeps Violent Crime though he died before trial). The chart's
+  birth date is the owner's find; "not confirmed online" never blanks or changes anything.
 - Screens (`public/people.js`): the chart sheet's "About" card (pills open that kind's charts), Kinds of People (`#/people`,
   home Tools, Settings), the list narrowed to a kind (`#/?who=field:music`, `whoSql`), and "What This Group Shares" takes a
   kind as the group (`/api/group?who=`). `checked: false` = from memory, shown as "not looked up online yet"; a web search
