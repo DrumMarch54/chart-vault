@@ -53,7 +53,7 @@
     'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart', 'viewer.year_rows': 'Year Rows from a chart',
     'position.search_more': 'Narrow a position search by another number', 'position.add_more': 'Tap + Another number', 'position.combo': 'Open the combination screen from Search by Position', 'position.hsd': 'Higher Self Diamond charts from Search by Position', 'position.plain': 'Plain number only, in a two-number position search', 'position.making': 'Pick the number two parts make (Making 35/8)', 'combo.search': 'Show Charts on the combination screen', 'reading.show_number': 'Most Often → ring a number on the chart', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'viewer.share': 'Share Picture from a chart', 'quick.share': 'Share Picture from the Quick Chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
     'grid.size': 'Chart size on the grid (− / +)', 'similar.size': 'Chart size on Similar Charts (− / +)', 'duplicates.size': 'Chart size on Possible Duplicates (− / +)',
-    'viewer.similar': 'Similar Charts from a chart', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
+    'viewer.similar': 'Similar Charts from a chart', 'screen.group': 'What This Group Shares', 'grid.group': 'Tag results → What This Group Shares', 'group.open_search': 'What This Group Shares: open a find', 'group.open_chart': 'What This Group Shares: open a chart', 'group.show_weak': 'What This Group Shares: show the weaker finds', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
     'viewer.delete': 'Delete a chart from the chart page', 'duplicates.delete': 'Delete a chart from Possible Duplicates', 'duplicates.keep': 'Keep a duplicate group', 'deleted.restore': 'Put a deleted chart back',
     'screen.duplicates': 'Possible Duplicates', 'screen.deleted': 'Deleted Charts', 'search.position': 'Search box → a position',
     'viewer.meaning': 'Tap a number on a chart for its meaning', 'quick.meaning': 'Tap a number on the Quick Chart for its meaning', 'meaning.show_charts': 'Meaning → show the charts with that number there', 'meaning.course_words': 'Meaning → open the full course words', 'meaning.open_doc': 'Meaning → Open the Document', 'meaning.ask': 'Meaning → Ask About This (paid)',
@@ -526,6 +526,8 @@
     const size = sizeControl('gridCols', { min: 2, max: [5, 7, 9][wide], def: [3, 5, 6][wide], countName: 'grid.size', apply: (c) => { document.documentElement.style.setProperty('--grid-cols', c); if (onCols) onCols(c); } });
     const $bar = h('div', { class: 'gridbar' }, $summary, size.node);
     const $sentinel = h('div', { class: 'sentinel' });
+    // A tag's charts against the rest of the vault (owner 2026-11-20); shown once the tag has three charts or more.
+    const $group = tag && kind === 'chart' ? h('a', { class: 'btn btn-block groupbtn hidden', href: '#/group?' + new URLSearchParams({ tag }), onclick: () => count('grid.group') }, 'What This Group Shares') : null;
     const $recent = h('div', { class: 'recent hidden' });
     // The home screen is the search box and the way into the quick chart; the recently opened charts sit
     // below. The recent searches and the way to every tag drop down from the search box when it is tapped.
@@ -545,7 +547,7 @@
       h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), home ? null : $quickIcon, home ? null : $gear), $filters),
       home && readingUi ? readingUi.homeBanner() : null,
       home ? $acts : null, $recent, home && toolsUi ? toolsUi.homeButtons() : null,
-      home ? null : $bar, home ? null : $grid, home ? null : $sentinel));
+      home ? null : $bar, home ? null : $group, home ? null : $grid, home ? null : $sentinel));
     // Recently Opened charts (this phone remembers the last 48), a grid like a search result, only on the home screen.
     if (home && recentIds().length) {
       api('/api/images?ids=' + recentIds().join(',') + '&limit=50').then((r) => {
@@ -578,6 +580,7 @@
       try {
         const r = await api('/api/images?' + params());
         total = r.total; offset += r.items.length;
+        if ($group) $group.classList.toggle('hidden', total < 3);
         for (const img of r.items) $grid.append(cell(img));
         done = offset >= total || r.items.length === 0;
         const noun = kind === 'archetype' ? 'archetype pic' : 'chart';
@@ -1374,6 +1377,45 @@
         it.inputs ? h('div', { class: 'muted small' }, `${it.inputs.name || ''}${it.inputs.day ? ` · ${it.inputs.day}.${it.inputs.month}.${it.inputs.year}` : ''}`) : null,
         h('div', { class: 'simpills' }, ...(it.alike && it.alike.length ? it.alike : ['A few scattered numbers']).map((t) => h('span', { class: `simpill ${/^Same |Nearly the Same$/.test(t) ? 'whole' : ''}` }, t))),
         h('div', { class: 'simscore muted' }, by === 'all' ? `${it.total} of ${d.totalOf} positions alike` : `${it.per[by] || 0} of ${d.of[by] || 0} positions alike`)))));
+  };
+
+  // ---------- what this group shares ----------
+  // The charts carrying one tag against every other chart (server/group.js): which number sits in which position
+  // far more often in the group. A card = the charts that share it, what they share (tap = the position search),
+  // how sure it is, and who. Counting only: no meanings, no AI.
+  routes.group = async function groupView(_, query) {
+    const tag = query.get('tag') || '';
+    if (!tag) return swap('#/');
+    const $body = h('div', { class: 'stack' }, h('p', { class: 'muted' }, 'Counting every position…'));
+    render(h('div', { class: 'screen stack qscreen' }, pageTop('What This Group Shares', '#/?' + new URLSearchParams({ tag })), $body));
+    let d;
+    try { d = await api('/api/group?' + new URLSearchParams({ tag })); } catch (err) { fill($body, h('p', { class: 'err' }, err.message)); return; }
+    const pct = (a, of) => (of ? Math.round((a / of) * 100) : 0);
+    const bars = (x) => h('div', { class: 'gbars' },
+      h('div', { class: 'gline' }, h('span', { class: 'gbar' }, h('i', { style: `width:${Math.max(pct(x.in_group, x.group_of), 2)}%` })), h('span', { class: 'gnum' }, `${x.in_group} of ${x.group_of} here`)),
+      h('div', { class: 'gline rest' }, h('span', { class: 'gbar' }, h('i', { style: `width:${Math.max(pct(x.in_rest, x.rest_of), x.in_rest ? 2 : 0)}%` })), h('span', { class: 'gnum' }, `${fmtN(x.in_rest)} of ${fmtN(x.rest_of)} others`)));
+    const who = (charts) => h('div', { class: 'simpills' }, ...charts.map((c) => h('a', { class: 'simpill', href: `#/chart/${c.id}`, onclick: () => count('group.open_chart') }, c.title || 'No name')));
+    const find = (title, x, pos) => h('button', { type: 'button', class: 'gfind', onclick: () => { count('group.open_search'); go(positionHash([{ pos, num: x.num }])); } },
+      h('span', { class: 'ghead' }, h('b', { class: 'gn' }, x.number), h('span', { class: 'gt' }, title), h('span', { class: 'gchev' }, '›')), bars(x));
+    const pill = (strength) => h('span', { class: `gstrength ${strength === 'Strong' ? 'strong' : strength === 'Worth a Look' ? 'look' : ''}` }, strength);
+    // What luck alone would give stays folded away: one tap shows it, so the page is the real finds first.
+    let weak = false;
+    const shown = (list) => (weak ? list : list.filter((c) => c.strength !== 'Could Be Chance'));
+    const weakOnes = (list) => { const n = list.filter((c) => c.strength === 'Could Be Chance').length; return n && !weak ? h('button', { type: 'button', class: 'btn btn-block showall', onclick: () => { weak = true; count('group.show_weak'); draw(); } }, `Show ${n} More That Could Be Chance`) : null; };
+    const left = d.tagged - d.size;
+    const lead = h('div', { class: 'card stack' },
+      h('div', { class: 'simname' }, d.display || d.tag),
+      h('p', { class: 'muted', style: 'margin:0' }, `${fmtN(d.size)} ${d.size === 1 ? 'person' : 'people'} in this group, compared with the ${fmtN(d.rest)} others in the vault.${left > 0 ? ` ${left} chart${left === 1 ? ' is' : 's are'} left out: no name and date read yet, or the same person twice.` : ''}`));
+    if (d.size < 3) { fill($body, lead, h('p', { class: 'muted' }, 'A group needs at least three people whose name and date have been read before anything can be said about it.')); return; }
+    const draw = () => fill($body, lead,
+      h('p', { class: 'muted small', style: 'margin:0' }, 'A small group finds patterns by luck. Each card says how sure it is: Strong is very unlikely to be luck, Worth a Look is a maybe, Could Be Chance is what luck alone gives. Tap a number to see every chart with it.'),
+      h('div', { class: 'summary rhead' }, 'Same Number in the Same Position'),
+      shown(d.cards).length ? null : h('p', { class: 'muted' }, 'Nothing stands out beyond what luck alone gives.'),
+      ...shown(d.cards).map((c) => h('div', { class: 'card gcard' }, pill(c.strength), ...c.items.map((i) => find(i.name, i, i.pos)), c.more ? h('div', { class: 'muted small' }, `and ${c.more} more position${c.more === 1 ? '' : 's'} these same charts share`) : null, who(c.charts))),
+      weakOnes(d.cards),
+      shown(d.anywhere).length ? h('div', { class: 'summary rhead' }, 'A Number Anywhere in the Chart') : null,
+      ...shown(d.anywhere).map((a) => h('div', { class: 'card gcard' }, pill(a.strength), find('Anywhere in the Chart', a, '*.*'), who(a.charts))));
+    draw();
   };
 
   // ---------- possible duplicates ----------

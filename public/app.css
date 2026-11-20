@@ -809,6 +809,26 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .simpill { display: inline-flex; align-items: center; min-height: 30px; padding: 4px 12px; border-radius: 15px; background: var(--panel2); font-size: 14px; line-height: 1.25; }
 .simpill.whole { background: var(--accent); color: var(--accent-text); font-weight: 600; }
 .simscore { font-size: 12px; margin-top: 2px; }
+/* What This Group Shares */
+.groupbtn { margin: 8px 0 10px; }
+.gcard { display: flex; flex-direction: column; gap: 10px; margin: 0; }
+.gstrength { align-self: flex-start; padding: 3px 10px; border-radius: 12px; background: var(--panel2); color: var(--muted); font-size: 12.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
+.gstrength.strong { background: var(--accent); color: var(--accent-text); }
+.gstrength.look { color: var(--text); }
+.gcard a.simpill { color: var(--text); text-decoration: none; }
+.gfind { display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 6px; width: 100%; margin: 0; padding: 10px 12px; border: 0; border-radius: 12px; background: var(--panel2); color: var(--text); text-align: left; font: inherit; min-height: 0; }
+.gfind:active { opacity: .7; }
+.ghead { display: flex; align-items: baseline; gap: 10px; }
+.gn { font-size: 22px; font-weight: 700; white-space: nowrap; }
+.gt { flex: 1; min-width: 0; font-size: 16px; font-weight: 600; line-height: 1.2; }
+.gchev { color: var(--muted); font-size: 20px; }
+.gbars { display: flex; flex-direction: column; gap: 4px; }
+.gline { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.gline.rest { color: var(--muted); }
+.gbar { flex: 0 0 38%; height: 8px; border-radius: 4px; background: var(--panel); overflow: hidden; }
+.gbar i { display: block; height: 100%; border-radius: 4px; background: var(--accent); }
+.gline.rest .gbar i { background: var(--muted); }
+.gnum { flex: 1; min-width: 0; }
 
 .nfmini .bigd { border-radius: 4px; }
 .nftable .nfc { padding: 3px; }

@@ -7,6 +7,7 @@ import { parseUserTagBackup, importTags, addTagToImage, removeTagFromImage, mark
 import { receiveUpload, createQuickChart, UploadError, fullPathFor, thumbPathFor, makeThumb, findLostFiles } from './storage.js';
 import { deleteImage, restoreImage, listDeleted, trashFilePath, findDuplicates, keepDuplicates, TrashError } from './trash.js';
 import { similarCharts } from './similar.js';
+import { groupShares } from './group.js';
 import { listImages, getImage, imageContext, suggestTags, allTags, tagNames, statusReport, exportTags, bumpUsage, usageReport } from './queries.js';
 import { runBackup, streamZip, isBackupRunning } from './backup.js';
 import { setTitle, acceptTitle, titlesToCheck, titleStats, suggestNames, MAX_TITLE } from './titles.js';
@@ -217,6 +218,12 @@ export function createApp(db, { log = console.log } = {}) {
     if (!img) return res.status(404).json({ error: 'No such chart.' });
     if (!getInputs(db, img.id)) return res.status(400).json({ error: 'This chart has no name and date read yet, so nothing can be compared. Swipe up and tap "Type them".' });
     res.json(similarCharts(db, img.id, { by: String(req.query.by || 'all'), limit: Math.min(Math.max(Number(req.query.limit) || 60, 1), 200) }));
+  });
+  // What the charts carrying one tag share, against every other chart (server/group.js). Counting only.
+  app.get('/api/group', (req, res) => {
+    const tag = String(req.query.tag || '');
+    if (!tag) return res.status(400).json({ error: 'Pick a tag first.' });
+    res.json(groupShares(db, tag));
   });
   app.get('/api/images/:id/numbers', (req, res) => {
     const img = getImage(db, Number(req.params.id));
