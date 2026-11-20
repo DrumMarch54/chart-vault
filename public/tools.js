@@ -1246,6 +1246,8 @@
     show();
     return h('div', { class: 'tools' }, h('div', { class: 'summary rhead' }, 'Tools'),
       h('div', { class: 'toolgrid' },
+        btn('#/position', '⌖', 'By Position', 'search a number', 'home.position'),
+        btn('#/ask', '?', 'Ask the Vault', 'plain words', 'home.ask'),
         btn('#/coming', '▦', 'Coming Days', 'next 31 days', 'home.coming'),
         btn('#/numberfun', '◇', 'Number Fun', '1 to 99', 'home.numberfun'),
         btn('#/price', '$', 'Price Tool', '', 'home.price'),

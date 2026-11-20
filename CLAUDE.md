@@ -144,9 +144,12 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   "My Chart" overwrites it.
 
 ## Home and What This Group Shares (2026-11-20)
-- Home order follows the owner's tap counts: search, the four top tiles (Quick Chart first; Ask the Vault stays, the
-  owner uses it), Recently Opened (two rows, "Show All"), then Tools as small tiles, the rarely opened ones behind
+- Home order follows the owner's tap counts: search, two top tiles, Quick Chart and Look Up (the owner's word: "the main buttons I use"; By Position
+  and Ask the Vault are the first Tools tiles), Recently Opened (two rows, "Show All"), then Tools as small tiles, the rarely opened ones behind
   "More Tools" (`homeButtons` in tools.js). Move a tile only on the counts or the owner's word.
+- Back after a while (owner 2026-11-20, "backing out a million times"): every Back-history step carries its depth
+  (`history.state.d`); away over 15 min (`AWAY_MS`, `lastSeen`), `backToStart` rewinds to the first step and opens
+  home. A new `pushState` must carry `d: depth + 1`; a `replaceState` keeps `history.state`.
 - What This Group Shares (`server/group.js`, `GET /api/group?tag=`, `#/group?tag=`, the button on a tag's results):
   a tag's people against the rest of the vault, per position and number. One person counts once; copies of a
   position (`NOT_A_REPEAT`) never count. The label on a card (Strong / Worth a Look / Could Be Chance) comes from 300
