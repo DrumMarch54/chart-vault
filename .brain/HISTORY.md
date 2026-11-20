@@ -981,3 +981,21 @@ sources (Whitney Houston 1973 for 1963, George Soros 1910 for 1930, David Blaine
 Briscoe, Kaitlin Bennett, Greg Doucette): shown on the chart's About card, never changed for the owner.
 Design choice: the chart-to-person link is the chart's NAME (a view), not the filename: a second chart of a person
 saved later joins by itself, and a renamed chart cannot keep another person's facts.
+
+## 2026-11-20: meaning page laid out again (Look A)
+The owner: the page a tapped number opens was hard to scan; bullet text too long, section titles meshed with the text, colors odd; wants the quick gist first and depth below. Could not say which layout, so three samples were published as an artifact (A bands, B tabs, C folding bars); the owner picked A. First sample was blank: `const top` at script top level clashes with `window.top`. The first gist box had its In Balance / Out of Balance labels in the same weight and color as the words; the owner's rule: a label must look different from the points (filled badge, words as chips). Built in public/meaning.js (`gist`, `part`, `point`), theme variables in app.css.
+
+
+## 2026-11-20: home screen by tap counts; What This Group Shares
+The owner asked whether the layout could be better given the tap counts, and what to build. Counts (live snapshot):
+screen.chart 476, screen.quick 172, screen.lookup 144, home.quick 70, home.lookup 41, home.position 31, home.coming 27;
+seven tools almost never opened. Recently Opened sat under 14 full-width tool rows. Built: Recently Opened right under
+the top tiles (two rows, Show All), tools as 3-across tiles ordered by use, eight rare ones behind More Tools. The
+counter showed Ask the Vault opened 18 times (home.ask 5); the owner said they use it a lot, so its top tile stayed
+(the counter itself works: a test visit counted at once). Then What This Group Shares: the owner tags charts by kind
+of person (schoolshooter, rapper, youtube) right after saving them, so a tag's group is compared with the rest of
+the vault. First version labelled finds by raw chance times the pairs that passed the filter: on the live vault it
+called 5 of 8 school shooters with 10/1 in the Vocation Lower Right Aura "Strong". Checked against 300 random groups
+of 8 from the same vault, 17 in 100 random groups have a find that strong, so it is "Worth a Look". The label now
+comes from the random groups only. Lesson: a verify piped through `tail` hides its failure from `&&`; one push went
+out with a failing new test (the test was too strict, the app was right) before it was caught and fixed.

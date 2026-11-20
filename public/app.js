@@ -56,7 +56,7 @@
     'viewer.similar': 'Similar Charts from a chart', 'screen.group': 'What This Group Shares', 'grid.group': 'Tag results → What This Group Shares', 'group.open_search': 'What This Group Shares: open a find', 'group.open_chart': 'What This Group Shares: open a chart', 'group.show_weak': 'What This Group Shares: show the weaker finds', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
     'viewer.delete': 'Delete a chart from the chart page', 'duplicates.delete': 'Delete a chart from Possible Duplicates', 'duplicates.keep': 'Keep a duplicate group', 'deleted.restore': 'Put a deleted chart back',
     'screen.duplicates': 'Possible Duplicates', 'screen.deleted': 'Deleted Charts', 'search.position': 'Search box → a position',
-    'viewer.meaning': 'Tap a number on a chart for its meaning', 'quick.meaning': 'Tap a number on the Quick Chart for its meaning', 'meaning.show_charts': 'Meaning → show the charts with that number there', 'meaning.course_words': 'Meaning → open the full course words', 'meaning.open_doc': 'Meaning → Open the Document', 'meaning.ask': 'Meaning → Ask About This (paid)',
+    'viewer.meaning': 'Tap a number on a chart for its meaning', 'quick.meaning': 'Tap a number on the Quick Chart for its meaning', 'meaning.jump': 'Meaning → jump to a part of the page', 'meaning.show_charts': 'Meaning → show the charts with that number there', 'meaning.course_words': 'Meaning → open the full course words', 'meaning.open_doc': 'Meaning → Open the Document', 'meaning.ask': 'Meaning → Ask About This (paid)',
   };
   const count = (name) => { try { fetch('/api/usage', { method: 'POST', credentials: 'same-origin', keepalive: true, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name }) }).catch(() => {}); } catch { /* counting never breaks a tap */ } };
 
@@ -1404,7 +1404,8 @@
     const who = (charts) => h('div', { class: 'simpills' }, ...charts.map((c) => h('a', { class: 'simpill', href: `#/chart/${c.id}`, onclick: () => count('group.open_chart') }, c.title || 'No name')));
     const find = (title, x, pos) => h('button', { type: 'button', class: 'gfind', onclick: () => { count('group.open_search'); go(positionHash([{ pos, num: x.num }])); } },
       h('span', { class: 'ghead' }, h('b', { class: 'gn' }, x.number), h('span', { class: 'gt' }, title), h('span', { class: 'gchev' }, '›')), bars(x));
-    const pill = (strength) => h('span', { class: `gstrength ${strength === 'Strong' ? 'strong' : strength === 'Worth a Look' ? 'look' : ''}` }, strength);
+    const pill = (strength, luck) => h('div', { class: 'gtop' }, h('span', { class: `gstrength ${strength === 'Strong' ? 'strong' : strength === 'Worth a Look' ? 'look' : ''}` }, strength),
+      h('span', { class: 'muted small' }, luck === 0 ? 'no random group did this well' : `${Math.max(1, Math.round(luck * 100))} in 100 random groups do this well`));
     // What luck alone would give stays folded away: one tap shows it, so the page is the real finds first.
     let weak = false;
     const shown = (list) => (weak ? list : list.filter((c) => c.strength !== 'Could Be Chance'));
@@ -1415,13 +1416,13 @@
       h('p', { class: 'muted', style: 'margin:0' }, `${fmtN(d.size)} ${d.size === 1 ? 'person' : 'people'} in this group, compared with the ${fmtN(d.rest)} others in the vault.${left > 0 ? ` ${left} chart${left === 1 ? ' is' : 's are'} left out: no name and date read yet, or the same person twice.` : ''}`));
     if (d.size < 3) { fill($body, lead, h('p', { class: 'muted' }, 'A group needs at least three people whose name and date have been read before anything can be said about it.')); return; }
     const draw = () => fill($body, lead,
-      h('p', { class: 'muted small', style: 'margin:0' }, 'A small group finds patterns by luck. Each card says how sure it is: Strong is very unlikely to be luck, Worth a Look is a maybe, Could Be Chance is what luck alone gives. Tap a number to see every chart with it.'),
+      h('p', { class: 'muted small', style: 'margin:0' }, `A small group finds patterns by luck, so every find is checked against ${fmtN(d.random_groups)} random groups of the same size. Strong: fewer than 1 random group in 20 does this well. Worth a Look: fewer than half. Could Be Chance: most do. Tap a number to see every chart with it.`),
       h('div', { class: 'summary rhead' }, 'Same Number in the Same Position'),
       shown(d.cards).length ? null : h('p', { class: 'muted' }, 'Nothing stands out beyond what luck alone gives.'),
-      ...shown(d.cards).map((c) => h('div', { class: 'card gcard' }, pill(c.strength), ...c.items.map((i) => find(i.name, i, i.pos)), c.more ? h('div', { class: 'muted small' }, `and ${c.more} more position${c.more === 1 ? '' : 's'} these same charts share`) : null, who(c.charts))),
+      ...shown(d.cards).map((c) => h('div', { class: 'card gcard' }, pill(c.strength, c.luck), ...c.items.map((i) => find(i.name, i, i.pos)), c.more ? h('div', { class: 'muted small' }, `and ${c.more} more position${c.more === 1 ? '' : 's'} these same charts share`) : null, who(c.charts))),
       weakOnes(d.cards),
       shown(d.anywhere).length ? h('div', { class: 'summary rhead' }, 'A Number Anywhere in the Chart') : null,
-      ...shown(d.anywhere).map((a) => h('div', { class: 'card gcard' }, pill(a.strength), find('Anywhere in the Chart', a, '*.*'), who(a.charts))));
+      ...shown(d.anywhere).map((a) => h('div', { class: 'card gcard' }, pill(a.strength, a.luck), find('Anywhere in the Chart', a, '*.*'), who(a.charts))));
     draw();
   };
 

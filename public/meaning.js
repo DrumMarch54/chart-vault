@@ -80,7 +80,6 @@
         }
       }).catch((err) => fill($body, h('p', { class: 'err' }, err.message)));
     }
-    const label = (text) => h('div', { class: 'wlabel tl' }, text);
     // A section: the short points first (knowledge/bits.json, the course's words shortened), the full course words
     // folded under "Course Words" (owner 2026-10-19). With no points yet, the course words show open.
     // "**words**" in a point = words that should stand out: shown bold (text nodes only, never HTML).
@@ -98,25 +97,56 @@
       }
       return [...[...by].map(([book, r]) => `${book} ${r.a === r.b ? `p. ${r.a}` : `pp. ${r.a}–${r.b}`}`), ...docs];
     };
-    const pointsCard = (bits, passages = []) => {
-      const own = bits.groups.some((g) => g.cites && g.cites.some(Boolean));
-      const from = own ? [] : bookPages(passages);
-      return h('div', { class: 'mbits' }, ...bits.groups.map((g) => h('div', { class: 'mbits-g' },
-        g.title ? h('div', { class: `mbits-t ${/out of balance|imbalance|unbalanced/i.test(g.title) ? 'err' : /in balance|balanced/i.test(g.title) ? 'ok' : /^Only With/.test(g.title) ? 'other' : ''}` }, g.title) : null,
-        g.note ? h('div', { class: 'mbits-note' }, g.note) : null,
-        h('ul', {}, ...g.points.map((t, i) => h('li', {}, ...boldParts(t), cite(g.cites && g.cites[i])))))),
-      from.length ? h('div', { class: 'mbits-from' }, `From ${from.join(' · ')}`) : null);
+    // The page's look (owner 2026-11-20, pick A of three samples): a Quick Gist on top, then one PART per subject
+    // (this spot, the name chart's same spot, the circle's pair, each diamond behind it), each under a dark title band
+    // so parts never blend; In Balance on green, Out of Balance on red; a point is a bold headline with the rest
+    // smaller under it. Nothing is reworded: the headline is the point's own leading bold words.
+    const kindOf = (title) => (/out of balance|imbalance|unbalanced/i.test(title || '') ? 'err' : /in balance|balanced/i.test(title || '') ? 'ok' : /^Only With/.test(title || '') ? 'other' : '');
+    const capFirst = (t) => t.replace(/^([^A-Za-z0-9]*)([a-z])/, (m, pre, c) => pre + c.toUpperCase());
+    const point = (t, c) => {
+      const m = /^\*\*([^*]+)\*\*\s*[;:,.–—-]?\s*([\s\S]*)$/.exec(String(t).trim());
+      if (!m) return h('div', { class: 'mpt' }, h('span', { class: 'mpt-s whole' }, ...boldParts(t), cite(c)));
+      const rest = capFirst(m[2].trim());
+      return h('div', { class: 'mpt' }, h('b', { class: 'mpt-h' }, capFirst(m[1].trim().replace(/[;:,.]+$/, ''))),
+        rest || c ? h('span', { class: 'mpt-s' }, ...boldParts(rest), cite(c)) : null);
     };
-    const section = (bits, passages) => {
-      if (!bits) return passages.map(card);
-      if (!passages.length) return [pointsCard(bits)];
-      const $words = h('div', { class: 'mwords', hidden: true }, ...passages.map(card));
-      const $btn = h('button', { type: 'button', class: 'mmore', 'aria-expanded': 'false', onclick: () => {
-        $words.hidden = !$words.hidden; $btn.setAttribute('aria-expanded', String(!$words.hidden));
-        $btn.textContent = `${$words.hidden ? '▸' : '▾'} Course Words (${passages.length})`;
-        if (!$words.hidden) count('meaning.course_words');
-      } }, `▸ Course Words (${passages.length})`);
-      return [pointsCard(bits, passages), $btn, $words];
+    // Quick Gist: the first bold words of the first points of each group, the label a filled badge so it never
+    // reads as one of the points (owner 2026-11-20).
+    const gist = (bits) => {
+      if (!bits) return null;
+      const rows = bits.groups.map((g) => {
+        const k = kindOf(g.title);
+        if (k === 'other') return null;
+        const words = g.points.map((t) => (/\*\*([^*]+)\*\*/.exec(String(t)) || [])[1]).filter(Boolean).slice(0, 4).map((w) => capFirst(w.trim().replace(/[;:,.]+$/, '')));
+        return words.length ? h('div', { class: 'mgist-r' }, h('span', { class: `mbadge ${k}` }, k === 'ok' ? 'In Balance' : k === 'err' ? 'Out of Balance' : g.title || 'Key Points'),
+          h('ul', { class: 'mgist-w' }, ...words.map((w) => h('li', {}, w)))) : null;
+      }).filter(Boolean);
+      return rows.length ? h('div', { class: 'mgist' }, h('div', { class: 'mgist-t' }, 'Quick Gist'), ...rows) : null;
+    };
+    const part = ({ id, title, sub, bits, passages = [], pre = [], empty }) => {
+      const own = bits && bits.groups.some((g) => g.cites && g.cites.some(Boolean));
+      const from = bits && !own ? bookPages(passages) : [];
+      const foot = [];
+      if (from.length) foot.push(h('div', { class: 'mfoot-from' }, `From ${from.join(' · ')}`));
+      if (bits && passages.length) {
+        const $words = h('div', { class: 'mwords', hidden: true }, ...passages.map(card));
+        const $btn = h('button', { type: 'button', class: 'mmore', 'aria-expanded': 'false', onclick: () => {
+          $words.hidden = !$words.hidden; $btn.setAttribute('aria-expanded', String(!$words.hidden));
+          $btn.textContent = `Course Words (${passages.length}) ${$words.hidden ? '›' : '⌄'}`;
+          if (!$words.hidden) count('meaning.course_words');
+        } }, `Course Words (${passages.length}) ›`);
+        foot.push($btn, $words);
+      } else if (passages.length) foot.push(...passages.map(card));
+      if (!bits && !passages.length && empty) foot.push(h('p', { class: 'muted small' }, empty));
+      const extra = pre.filter(Boolean);
+      return h('section', { class: 'mpart', id },
+        h('div', { class: 'mband' }, h('div', { class: 'mband-t' }, title), sub ? h('div', { class: 'mband-s' }, sub) : null),
+        extra.length ? h('div', { class: 'mblk' }, ...extra) : null,
+        ...(bits ? bits.groups.map((g) => h('div', { class: `mblk ${kindOf(g.title)}` },
+          g.title ? h('div', { class: 'mblk-t' }, g.title) : null,
+          g.note ? h('div', { class: 'mblk-note' }, g.note) : null,
+          ...g.points.map((t, i) => point(t, g.cites && g.cites[i])))) : []),
+        foot.length ? h('div', { class: 'mblk mfoot' }, ...foot) : null);
     };
     const where = (m) => titleCase(m.label);
     // A combination's points (owner 2026-11-07): the course writes "3 + 6 Combinations (and 12/3 + 6, 3 + 15/6, etc.)" as
@@ -204,23 +234,20 @@
         $sub.textContent = [m.chartLabel, m.name].filter(Boolean).join(' · ');
         const p = m.pair, nc = m.nameChart;
         const others = p ? p.with.map((x) => x.text).join(' and ') : '';
-        fill($body, top(m),
-          label(`${m.text} in the ${m.chartLabel.replace(/ chart$/i, ' Chart')}'s ${where(m)}`),
-          ...section(m.bits, m.passages),
-          !m.passages.length && !m.bits ? h('p', { class: 'muted' }, `The course has no words yet for ${m.text} in this position.`) : null,
-          nc ? label(`${nc.text} in the Name Chart's ${where(nc)}`) : null,
-          ...(nc ? section(nc.bits, nc.passages) : []),
-          p ? label(`${m.text} with ${others} in the ${where(m).replace(/ Extra Vibration$/, '')}`) : null,
-          p && !p.passages.length && !p.bits ? h('p', { class: 'muted small' }, `The course has nothing yet on ${m.text} together with ${others}.`) : null,
-          p ? h('div', { class: 'muted small mpairnote' }, `Exactly ${m.text} with ${others} on this chart. Points about another form of these numbers${pairExample(m, p) === `${m.text} with ${others}` ? '' : ` (like ${pairExample(m, p)})`} are set apart and named.`) : null,
-          ...(p ? section(pairSplit(p.bits, [m.text, ...p.with.map((x) => x.text)]), p.passages) : []),
-          ...m.related.flatMap((r) => [
-            h('div', { class: 'mrel' }, h('div', { class: 'mrel-t' }, `${titleCase(r.label)} ${r.text}`), h('div', { class: 'muted small' }, [r.name, 'the diamond behind this number'].filter(Boolean).join(' · '))),
-            top(r),
-            ...section(r.bits, r.passages),
-            !r.passages.length && !r.bits ? h('p', { class: 'muted small' }, `The course has no words yet for ${r.text} here.`) : null,
-          ]),
-          askBox(m, { chart, position, sum, pair: pair || [], rel: rel || [] }));
+        const center = where(m).replace(/ Extra Vibration$/, '');
+        const parts = [{ jump: 'This Spot', id: 'mp-spot', title: `${m.text} in the ${where(m)}`, sub: m.chartLabel.replace(/ chart$/i, ' Chart'), bits: m.bits, passages: m.passages,
+          empty: `The course has no words yet for ${m.text} in this position.` }];
+        if (nc) parts.push({ jump: 'Name Chart', id: 'mp-name', title: `${nc.text} in the ${where(nc)}`, sub: 'Name Chart · the same spot there', bits: nc.bits, passages: nc.passages });
+        if (p) parts.push({ jump: `With ${others}`, id: 'mp-pair', title: `${m.text} with ${others}`, sub: `Together in the ${center}`,
+          bits: pairSplit(p.bits, [m.text, ...p.with.map((x) => x.text)]), passages: p.passages, empty: `The course has nothing yet on ${m.text} together with ${others}.`,
+          pre: [h('div', { class: 'muted small' }, `Exactly ${m.text} with ${others} on this chart. Points about another form of these numbers${pairExample(m, p) === `${m.text} with ${others}` ? '' : ` (like ${pairExample(m, p)})`} are set apart and named.`)] });
+        m.related.forEach((r, i) => parts.push({ jump: `${titleCase(r.label)} ${r.text}`, id: `mp-rel${i}`, title: `${titleCase(r.label)} ${r.text}`,
+          sub: [r.name, 'the diamond behind this number'].filter(Boolean).join(' · '), bits: r.bits, passages: r.passages, pre: [top(r)], empty: `The course has no words yet for ${r.text} here.` }));
+        const jumpTo = (id) => () => { count('meaning.jump'); const el = $pop.querySelector('#' + id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+        const $ask = askBox(m, { chart, position, sum, pair: pair || [], rel: rel || [] }); $ask.id = 'mp-ask';
+        fill($body, top(m), gist(m.bits),
+          h('div', { class: 'mjump' }, ...parts.map((x) => h('button', { type: 'button', onclick: jumpTo(x.id) }, x.jump)), h('button', { type: 'button', onclick: jumpTo('mp-ask') }, 'Ask')),
+          ...parts.map(part), $ask);
       }).catch((err) => fill($body, h('p', { class: 'err' }, err.message)));
     }
     // What a tapped number carries (data- attributes set by numeroscopeSvg in app.js).

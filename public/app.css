@@ -6,6 +6,8 @@
   --danger-bg: #5a2a2a; --danger-text: #ffd3d3; --who: #2f5a45; --warn-bg: #4a3d1f; --pain-bg: #4a2626;
   --toast: #2b3140; --chip-add: #9fb6d0; --shadow: rgba(0,0,0,.5);
   --nav-h: 64px; --tap: 48px; --radius: 14px;
+  /* meaning page (2026-11-20) */
+  --ok-bg: #173123; --ok-ink: #6fd596; --bad-bg: #3a1c1a; --bad-ink: #ff9088; --other-bg: #3a3017; --other-ink: #f0c869; --band: #2c3346; --band-text: #ffffff; --ok-solid: #1d7a43; --bad-solid: #b3261e; --solid-text: #ffffff;
   color-scheme: dark;
 }
 /* Light look (owner 2026-10-19): the app follows the phone's own light / dark setting; Settings -> Look can
@@ -16,6 +18,7 @@
   --chip-pos: #d7e4f3; --chip-num: #f6e9c4; --chip-name: #e6e8f0;
   --danger-bg: #fbe3e3; --danger-text: #8a1f1f; --who: #d9f3e1; --warn-bg: #fff3d6; --pain-bg: #fbe3e3;
   --toast: #2b3140; --chip-add: #2e4a6b; --shadow: rgba(0,0,0,.18);
+  --ok-bg: #e4f4ea; --ok-ink: #1d7a43; --bad-bg: #fbe9e7; --bad-ink: #b3261e; --other-bg: #fdf3d9; --other-ink: #8a5f00; --band: #1f2533; --band-text: #ffffff; --ok-solid: #1d7a43; --bad-solid: #b3261e; --solid-text: #ffffff;
   color-scheme: light;
 } }
 :root[data-theme="light"] {
@@ -24,6 +27,7 @@
   --chip-pos: #d7e4f3; --chip-num: #f6e9c4; --chip-name: #e6e8f0;
   --danger-bg: #fbe3e3; --danger-text: #8a1f1f; --who: #d9f3e1; --warn-bg: #fff3d6; --pain-bg: #fbe3e3;
   --toast: #2b3140; --chip-add: #2e4a6b; --shadow: rgba(0,0,0,.18);
+  --ok-bg: #e4f4ea; --ok-ink: #1d7a43; --bad-bg: #fbe9e7; --bad-ink: #b3261e; --other-bg: #fdf3d9; --other-ink: #8a5f00; --band: #1f2533; --band-text: #ffffff; --ok-solid: #1d7a43; --bad-solid: #b3261e; --solid-text: #ffffff;
   color-scheme: light;
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -755,6 +759,35 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .mbits-from { font-size: 12px; color: #8a8f9c; letter-spacing: .02em; padding: 4px 0 6px; border-top: 1px solid #eceef2; margin-top: 6px; }
 .mmore { background: none; color: var(--muted); min-height: 40px; padding: 0 4px; font-size: 15px; margin: 0 0 8px; }
 .mwords[hidden] { display: none; }
+/* Meaning page look A (owner 2026-11-20): Quick Gist, jump buttons, one part per subject under a dark band. */
+.mgist { background: var(--panel); border-radius: var(--radius); padding: 12px 14px 14px; margin-bottom: 10px; }
+.mgist-t { font: 700 13px/1.2 system-ui, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.mgist-r + .mgist-r { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--panel2); }
+.mbadge { display: inline-block; font: 800 12px/1 system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; padding: 6px 10px; border-radius: 6px; background: var(--panel2); color: var(--text); }
+.mbadge.ok { background: var(--ok-solid); color: var(--solid-text); } .mbadge.err { background: var(--bad-solid); color: var(--solid-text); }
+.mgist-w { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.mgist-w li { font-size: 16px; line-height: 1.25; padding: 6px 10px; border-radius: 10px; background: var(--panel2); color: var(--text); }
+.mjump { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.mjump button { min-height: 40px; padding: 0 14px; border-radius: 20px; font-size: 15px; font-weight: 600; }
+.mpart { margin-bottom: 18px; border-radius: var(--radius); overflow: hidden; scroll-margin-top: 8px; }
+.mband { background: var(--band); color: var(--band-text); padding: 12px 14px; }
+.mband-t { font-size: 20px; font-weight: 800; line-height: 1.2; } .mband-s { font-size: 14px; opacity: .8; margin-top: 2px; }
+.mblk { background: var(--panel); color: var(--text); padding: 12px 14px; }
+.mblk + .mblk { border-top: 1px solid var(--panel2); }
+.mblk.ok { background: var(--ok-bg); } .mblk.err { background: var(--bad-bg); } .mblk.other { background: var(--other-bg); }
+.mblk-t { font: 800 14px/1.2 system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.mblk.ok .mblk-t { color: var(--ok-ink); } .mblk.err .mblk-t { color: var(--bad-ink); } .mblk.other .mblk-t { color: var(--other-ink); }
+.mblk-note { font-size: 13px; line-height: 1.35; color: var(--muted); margin: -4px 0 10px; }
+.mpt + .mpt { margin-top: 12px; }
+.mpt-h { display: block; font-size: 17px; line-height: 1.3; }
+.mpt-s { display: block; font-size: 15px; line-height: 1.4; color: var(--muted); }
+.mpt-s.whole { font-size: 16px; color: var(--text); } .mpt-s b { color: var(--text); }
+.mblk .mtop { margin: 0; }
+.mfoot-from { font-size: 12px; color: var(--muted); letter-spacing: .02em; margin-bottom: 8px; }
+.mfoot .mmore { width: 100%; justify-content: flex-start; background: none; border: 1px solid var(--panel2); color: var(--text); min-height: 44px; padding: 0 14px; font-weight: 600; margin: 0; }
+.mfoot .mwords { margin-top: 10px; } .mfoot .mcard:last-child { margin-bottom: 0; }
+.mfoot .mcard { border: 1px solid var(--panel2); }
+#mp-ask { scroll-margin-top: 8px; }
 .mask .maskq { width: 100%; box-sizing: border-box; font-size: 16px; padding: 10px 12px; border-radius: 12px; margin-bottom: 8px; resize: vertical; }
 .mask .btn-block { margin-bottom: 10px; }
 .manswer p { font-size: 16px; line-height: 1.45; margin: 0 0 8px; }
@@ -812,7 +845,8 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 /* What This Group Shares */
 .groupbtn { margin: 8px 0 10px; }
 .gcard { display: flex; flex-direction: column; gap: 10px; margin: 0; }
-.gstrength { align-self: flex-start; padding: 3px 10px; border-radius: 12px; background: var(--panel2); color: var(--muted); font-size: 12.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
+.gtop { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.gstrength { padding: 3px 10px; border-radius: 12px; background: var(--panel2); color: var(--muted); font-size: 12.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
 .gstrength.strong { background: var(--accent); color: var(--accent-text); }
 .gstrength.look { color: var(--text); }
 .gcard a.simpill { color: var(--text); text-decoration: none; }
