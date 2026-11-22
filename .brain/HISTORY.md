@@ -1009,3 +1009,6 @@ their date of birth in a particular way". Fix: merge.mjs now JOINS a re-check wi
 events, sources added together; born, died, death cause, country kept unless a real value was found; unknown never
 wipes a record). The brief says a re-check only adds. The About card's date note now says the chart keeps the owner's date.
 Nothing on the charts themselves (names, dates, tags) was ever touched; only the About cards.
+
+## 2026-11-22: meaning page round two
+Round one (Look A) went live and the owner said it still read as "one massive blob": nothing color coded, fonts out of place, things not matching. Measured on their own chart: points came in two shapes (bold headline + gray line, or a whole sentence) so the type looked mixed; an untitled group showed a gray "KEY POINTS" badge; one jump button wrapped to four lines; empty diamonds took big cards; the verdict pill kept light colors in dark mode. Round two gave each part its own color matched everywhere, one point shape, solid balance strips, colored gist chips, a one-row jump strip, one-line empty parts. Screenshots were sent to the owner BEFORE going live (two-tries rule); owner said push it.
