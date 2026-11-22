@@ -21,7 +21,8 @@ For a business or organization: the name the public knows (the brand), its REGIS
 Full transparency (owner 2026-11-14): the owner picks, so never hide a doubt. For a business always give BOTH dates when the sources have them: the founding date and the date of incorporation or registration, each saying what it is. Say where the registered name and date are recorded (register, state or country) in register, and what the main date is in date_what. A founding date known only to the year or month still goes in other_dates as YYYY or YYYY-MM.
 Lay out every real alternative, because the owner picks the right one: in other_names, the brand name if it differs, earlier registered names (say the years), and the parent or another entity of the same name; in other_dates, the founding date when it differs from the incorporation date, a re-incorporation, a date under an earlier name, or a date another source gives, each saying what it is. For a person: other spellings of the birth name and other birth dates the sources give. Nothing goes in them that no source says.
 Prefer reliable sources (official registers, encyclopedias, official biographies, major news). If sources disagree, give the most supported one as the main answer, the rest in other_names or other_dates, and say so in note.
-Give one result when the words clearly mean one. Give up to three when the words fit several, best match first. If nothing fits, give an empty list and say why in note.
+Be discerning (owner 2026-11-22): many people share a name. Every detail the owner adds after the name ("shooter", "the rapper", "from Texas", "died in 2019") says WHO is meant. Check each result against every detail said and set match: "fits" = the name and every detail said fit, confirmed by a source; "maybe" = it could be them but the words do not settle it (no detail given and several notable people share the name, or a detail is not confirmed); "same_name" = shares the name but does NOT fit a detail said (the owner said shooter, this one is a football player). In match_why say in a few words which detail fits or does not. Never blend two people: a name and a date in one result come from the same person in the sources.
+Give one result when the words clearly mean one. Give up to five when several share the name: the ones that fit first, then the maybes, then same-name others last (they are shown folded away, so still list them). If nothing fits, give an empty list and say why in note.
 Never guess a name or date that no source gives; leave it empty instead.
 Anyone in the news counts, including people known for a crime or a tragedy: the app only draws a chart from a name and a date.
 Every person or business you name goes in people, never only in note. An empty list means nothing fits at all.
@@ -29,7 +30,7 @@ Write in plain American English, short.`;
 
 const ANSWER_TOOL = {
   name: 'give_answer',
-  description: 'The people or businesses found, best match first (at most three, each with at most four sources). Call exactly once, after searching.',
+  description: 'The people or businesses found, best match first (at most five, each with at most four sources). Call exactly once, after searching.',
   strict: true,
   input_schema: {
     type: 'object', additionalProperties: false, required: ['people', 'note'],
@@ -37,9 +38,11 @@ const ANSWER_TOOL = {
       note: { type: 'string', description: 'One short sentence for the owner: doubts, disagreements between sources, or why nobody was found. Empty if nothing to say.' },
       people: { type: 'array', items: {
         type: 'object', additionalProperties: false,
-        required: ['kind', 'known_as', 'birth_name', 'birth_date', 'date_what', 'register', 'other_names', 'other_dates', 'who', 'sure', 'note', 'sources'],
+        required: ['kind', 'match', 'match_why', 'known_as', 'birth_name', 'birth_date', 'date_what', 'register', 'other_names', 'other_dates', 'who', 'sure', 'note', 'sources'],
         properties: {
           kind: { type: 'string', enum: ['person', 'business'], description: 'person, or business for any business, company, brand or organization.' },
+          match: { type: 'string', enum: ['fits', 'maybe', 'same_name'], description: 'fits = the name and every detail the owner said fit; maybe = could be, the words do not settle it; same_name = same name but a detail said does not fit.' },
+          match_why: { type: 'string', description: 'A few words: which detail the owner said fits or does not, like "Is the Aurora theater shooter" or "A football player, not a shooter".' },
           known_as: { type: 'string', description: 'The name the public knows, like "50 Cent" or "Nivea".' },
           birth_name: { type: 'string', description: 'A person: full birth name, every given name, like "Curtis James Jackson III". A business: the registered name exactly as the register writes it, legal ending included, like "Apple Inc.". Empty if no source gives it.' },
           birth_date: { type: 'string', description: 'YYYY-MM-DD. A person: the birth date. A business: the date of incorporation or registration. Empty if no source gives the full date.' },
@@ -150,10 +153,11 @@ export async function lookupPerson(db, query) {
     messages.push({ role: 'user', content: 'Now call give_answer with what you found.' });
   }
   if (!answer) throw new AiError(errors.length ? `The web search failed (${[...new Set(errors)].join(', ')}). Try again in a minute.` : 'No answer came back. Try saying it another way.');
-  const people = (Array.isArray(answer.people) ? answer.people : []).slice(0, 3).map((p) => {
+  const RANK = { fits: 0, maybe: 1, same_name: 2 };
+  const people = (Array.isArray(answer.people) ? answer.people : []).slice(0, 5).map((p) => {
     const kind = p.kind === 'business' ? 'business' : 'person';
     const person = {
-      kind, known_as: clean(p.known_as, 120), birth_name: clean(p.birth_name, 160), birth_date: validDate(p.birth_date),
+      kind, match: RANK[p.match] !== undefined ? p.match : 'fits', match_why: clean(p.match_why, 160), known_as: clean(p.known_as, 120), birth_name: clean(p.birth_name, 160), birth_date: validDate(p.birth_date),
       who: clean(p.who, 160), sure: !!p.sure, note: clean(p.note, 300), register: kind === 'business' ? clean(p.register, 120) : '',
       sources: (Array.isArray(p.sources) ? p.sources : []).filter((u) => found.has(u)).slice(0, 4).map((url) => ({ url, site: hostOf(url), title: found.get(url) })),
     };
@@ -183,10 +187,11 @@ export async function lookupPerson(db, query) {
     for (const o of Array.isArray(p.other_dates) ? p.other_dates.slice(0, 5) : []) addDate(o && o.date, o && o.what);
     person.names = names; person.dates = dates;
     const drawable = dates.filter((d) => !d.partial).length, realNames = names.filter((n) => !n.with).length;
-    if (!person.sources.length || realNames > 1 || drawable > 1 || dates.length > drawable) person.sure = false; // more than one to choose from = check it
+    if (person.match !== 'fits' || !person.sources.length || realNames > 1 || drawable > 1 || dates.length > drawable) person.sure = false; // more than one to choose from = check it
     person.vault = inVault(db, person).map((i) => ({ id: i.id, title: i.title || i.filename, has_file: !!i.has_file }));
     return person;
-  }).filter((p) => p.known_as || p.birth_name);
+  }).filter((p) => p.known_as || p.birth_name)
+    .map((p, i) => [p, i]).sort((a, b) => RANK[a[0].match] - RANK[b[0].match] || a[1] - b[1]).map(([p]) => p); // fits first, same-name others last
   return { query: q, people, note: clean(answer.note, 300), usd: Math.round(usd * 10000) / 10000, seconds, calls, searches };
 }
 
@@ -215,7 +220,7 @@ export function rememberLookup(entry) { RECENT.push({ at: new Date().toISOString
 export function lookupReport(db) {
   const kept = db ? db.prepare('SELECT count(*) n, max(created_at) last FROM lookups').get() : null;
   const lines = [`LOOK UP SOMEONE: last ${RECENT.length} this process${kept ? ` · ${kept.n} past searches kept (Past Searches on the Look Up screen)${kept.last ? `, newest ${kept.last}` : ''}` : ''}`];
-  for (const e of RECENT.slice().reverse()) lines.push(`  ${e.at} "${e.query}" → ${e.error ? `FAILED ${e.error}` : `${e.people.map((p) => `${p.kind === 'business' ? '[business] ' : ''}${p.known_as || '?'} = ${p.birth_name || '(no birth name)'} ${p.birth_date || '(no date)'}${p.sure ? '' : ' UNSURE'}${p.register ? ` · register: ${p.register}` : ''}${(p.names || []).length > 1 ? ` · names: ${p.names.map((n) => `${n.chart} (${n.what}${n.ending ? `, ${n.with ? 'with' : 'without'} ${n.ending}` : ''})`).join(', ')}` : ''}${(p.dates || []).length > 1 ? ` · dates: ${p.dates.map((d) => `${d.date} (${d.what}${d.partial ? ', not a full date' : ''})`).join(', ')}` : ''}`).join('; ') || 'nobody'}${e.note ? ` · note: ${e.note}` : ''} · ${e.searches} searches · $${e.usd}`}`);
+  for (const e of RECENT.slice().reverse()) lines.push(`  ${e.at} "${e.query}" → ${e.error ? `FAILED ${e.error}` : `${e.people.map((p) => `${p.kind === 'business' ? '[business] ' : ''}${p.known_as || '?'} = ${p.birth_name || '(no birth name)'} ${p.birth_date || '(no date)'}${p.sure ? '' : ' UNSURE'}${p.match && p.match !== 'fits' ? ` · ${p.match === 'same_name' ? 'OTHER PERSON, same name' : 'maybe'}${p.match_why ? ` (${p.match_why})` : ''}` : ''}${p.register ? ` · register: ${p.register}` : ''}${(p.names || []).length > 1 ? ` · names: ${p.names.map((n) => `${n.chart} (${n.what}${n.ending ? `, ${n.with ? 'with' : 'without'} ${n.ending}` : ''})`).join(', ')}` : ''}${(p.dates || []).length > 1 ? ` · dates: ${p.dates.map((d) => `${d.date} (${d.what}${d.partial ? ', not a full date' : ''})`).join(', ')}` : ''}`).join('; ') || 'nobody'}${e.note ? ` · note: ${e.note}` : ''} · ${e.searches} searches · $${e.usd}`}`);
   if (!RECENT.length) lines.push('  none');
   return lines;
 }

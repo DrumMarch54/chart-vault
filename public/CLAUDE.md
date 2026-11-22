@@ -24,6 +24,6 @@
   enough to read, then the name as a title, a muted secondary line, then facts as pills or a short list,
   the least important number last and small. Position names in Title Case, course words (lingo.md).
 - Every grid of charts has the − / + size control (`sizeControl` in app.js; owner 2026-10-19, like Coming
-  Days): the list and search results and Recently Opened share one setting (`gridCols`), Similar Charts
+  Days): the list and search results share one setting (`gridCols`), which Recently Opened on home follows without buttons of its own, Similar Charts
   (`simCols`) and Possible Duplicates (`dupCols`) have their own; remembered per device. A new grid of
   charts gets one too, in the page's top row.

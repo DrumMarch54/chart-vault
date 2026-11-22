@@ -145,7 +145,7 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 
 ## Home and What This Group Shares (2026-11-20)
 - Home order follows the owner's tap counts: search, two top tiles, Quick Chart and Look Up (the owner's word: "the main buttons I use"; By Position
-  and Ask the Vault are the first Tools tiles), Recently Opened (two rows, "Show All"), then Tools as small tiles, the rarely opened ones behind
+  and Ask the Vault are the first Tools tiles), Recently Opened (two rows, "Show All", no size buttons: owner 2026-11-20), then Tools as small tiles, the rarely opened ones behind
   "More Tools" (`homeButtons` in tools.js). Move a tile only on the counts or the owner's word.
 - Back after a while (owner 2026-11-20, "backing out a million times"): every Back-history step carries its depth
   (`history.state.d`); away over 15 min (`AWAY_MS`, `lastSeen`), `backToStart` rewinds to the first step and opens
@@ -228,6 +228,9 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   sources give is laid out as tap-to-pick buttons (`names`/`dates`), never decided for the owner: a name with a legal ending
   both ways (`ending`, `with`), the founding AND registration dates, a year-only date listed (`partial`), where it is recorded
   (`register`). "Not right? Tell it more" re-searches.
+- Same name, other person (owner 2026-11-22, "James Holmes shooter" ≠ a football player): every result carries `match`
+  (fits / maybe / same_name) + `match_why` against every detail said; only `fits` can be sure; same_name results sit folded
+  under "Others With This Name", never mixed with the ones that fit.
 - Past Searches (owner 2026-11-16): every web search's whole answer is kept in `lookups` (migration 9, `storeLookup`);
   the Look Up screen lists them under the box, a tap opens one free (`#/lookup?past=<id>`, vault matches redone), hold to remove.
 
