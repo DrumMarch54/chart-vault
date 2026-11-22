@@ -231,6 +231,9 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - Same name, other person (owner 2026-11-22, "James Holmes shooter" ≠ a football player): every result carries `match`
   (fits / maybe / same_name) + `match_why` against every detail said; only `fits` can be sure; same_name results sit folded
   under "Others With This Name", never mixed with the ones that fit.
+- Digging (owner 2026-11-22, "be clever"): up to 8 searches; past encyclopedias to social birthday posts ("bday",
+  "happy birthday"), Find a Grave, obituaries, genealogy and court records. Every name and date lists where it was
+  found (`from`, only a page the search returned); a person's lists always show, even with one choice.
 - Past Searches (owner 2026-11-16): every web search's whole answer is kept in `lookups` (migration 9, `storeLookup`);
   the Look Up screen lists them under the box, a tap opens one free (`#/lookup?past=<id>`, vault matches redone), hold to remove.
 

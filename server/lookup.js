@@ -11,7 +11,7 @@ import { listImages } from './queries.js';
 
 const MAX_QUERY = 200;
 const MAX_CALLS = 4; // a pause_turn resume is a call too
-const MAX_SEARCHES = 4;
+const MAX_SEARCHES = 8; // owner 2026-11-22: dig past Wikipedia (social posts, grave and genealogy records) when it has to
 
 const SYSTEM = `You find famous or public people, businesses and organizations for a numerology app. The owner says a name, a nickname, a stage name, a company or brand, or only describes someone or something ("the rapper who got shot nine times"). The words may come from voice-to-text, so a name can be misheard ("fifty cent" = 50 Cent).
 Search the web, then call give_answer exactly once.
@@ -20,6 +20,12 @@ For a person: the name they are known by, their FULL BIRTH NAME (every first, mi
 For a business or organization: the name the public knows (the brand), its REGISTERED NAME exactly as the official business register writes it, legal ending included ("Apple Inc.", "Beiersdorf AG"), and its DATE OF INCORPORATION or registration as the register gives it (that is its birth date). Look for the official register first (a US Secretary of State registry, Companies House, OpenCorporates, a national company register, SEC filings), then the company's own site and encyclopedias. An organization that was never registered: its founding date.
 Full transparency (owner 2026-11-14): the owner picks, so never hide a doubt. For a business always give BOTH dates when the sources have them: the founding date and the date of incorporation or registration, each saying what it is. Say where the registered name and date are recorded (register, state or country) in register, and what the main date is in date_what. A founding date known only to the year or month still goes in other_dates as YYYY or YYYY-MM.
 Lay out every real alternative, because the owner picks the right one: in other_names, the brand name if it differs, earlier registered names (say the years), and the parent or another entity of the same name; in other_dates, the founding date when it differs from the incorporation date, a re-incorporation, a date under an earlier name, or a date another source gives, each saying what it is. For a person: other spellings of the birth name and other birth dates the sources give. Nothing goes in them that no source says.
+Dig for the FULL LEGAL BIRTH NAME and the EXACT BIRTH DATE (owner 2026-11-22: "be clever"). Start with encyclopedias and official bios. When the date or the full name is missing there, keep searching other ways:
+- the person's own Instagram, Facebook, X/Twitter or TikTok: search their name or handle with "birthday", "bday", "b-day", "born on", "happy birthday"; posts of their own birthday, and friends', family's or fans' "happy birthday" posts, give the day; an age said in a dated post gives the year;
+- death and grave records for anyone who has died: Find a Grave, obituaries, funeral home pages, death indexes;
+- genealogy and public records: FamilySearch, Ancestry, court and arrest records, news of a trial (they often give the full name and age), marriage records, school or sports rosters, IMDb, official team or league pages, a music label's bio;
+- for the full name: court records, obituaries of a parent (they list children), news reports, IMDb's "born as".
+A day and month from a birthday post plus a year from an age is fine; say in the date's "what" exactly how it was put together. Put every date and name you found in the lists with WHERE it was found, so the owner can confirm it; the source URL must be a page the search returned.
 Prefer reliable sources (official registers, encyclopedias, official biographies, major news). If sources disagree, give the most supported one as the main answer, the rest in other_names or other_dates, and say so in note.
 Be discerning (owner 2026-11-22): many people share a name. Every detail the owner adds after the name ("shooter", "the rapper", "from Texas", "died in 2019") says WHO is meant. Check each result against every detail said and set match: "fits" = the name and every detail said fit, confirmed by a source; "maybe" = it could be them but the words do not settle it (no detail given and several notable people share the name, or a detail is not confirmed); "same_name" = shares the name but does NOT fit a detail said (the owner said shooter, this one is a football player). In match_why say in a few words which detail fits or does not. Never blend two people: a name and a date in one result come from the same person in the sources.
 Give one result when the words clearly mean one. Give up to five when several share the name: the ones that fit first, then the maybes, then same-name others last (they are shown folded away, so still list them). If nothing fits, give an empty list and say why in note.
@@ -38,7 +44,7 @@ const ANSWER_TOOL = {
       note: { type: 'string', description: 'One short sentence for the owner: doubts, disagreements between sources, or why nobody was found. Empty if nothing to say.' },
       people: { type: 'array', items: {
         type: 'object', additionalProperties: false,
-        required: ['kind', 'match', 'match_why', 'known_as', 'birth_name', 'birth_date', 'date_what', 'register', 'other_names', 'other_dates', 'who', 'sure', 'note', 'sources'],
+        required: ['kind', 'match', 'match_why', 'known_as', 'birth_name', 'name_source', 'birth_date', 'date_what', 'date_source', 'register', 'other_names', 'other_dates', 'who', 'sure', 'note', 'sources'],
         properties: {
           kind: { type: 'string', enum: ['person', 'business'], description: 'person, or business for any business, company, brand or organization.' },
           match: { type: 'string', enum: ['fits', 'maybe', 'same_name'], description: 'fits = the name and every detail the owner said fit; maybe = could be, the words do not settle it; same_name = same name but a detail said does not fit.' },
@@ -46,14 +52,16 @@ const ANSWER_TOOL = {
           known_as: { type: 'string', description: 'The name the public knows, like "50 Cent" or "Nivea".' },
           birth_name: { type: 'string', description: 'A person: full birth name, every given name, like "Curtis James Jackson III". A business: the registered name exactly as the register writes it, legal ending included, like "Apple Inc.". Empty if no source gives it.' },
           birth_date: { type: 'string', description: 'YYYY-MM-DD. A person: the birth date. A business: the date of incorporation or registration. Empty if no source gives the full date.' },
-          date_what: { type: 'string', description: 'A few words: what birth_date is, like "Incorporated in California" or "Born". Empty if no date.' },
+          name_source: { type: 'string', description: 'The URL (from the search results) that gives birth_name. Empty if none.' },
+          date_source: { type: 'string', description: 'The URL (from the search results) that gives birth_date. Empty if none.' },
+          date_what: { type: 'string', description: 'A few words: what birth_date is and how it was found, like "Incorporated in California", "Born" or "Find a Grave memorial". Empty if no date.' },
           register: { type: 'string', description: 'A business: where the registered name and date are recorded, like "California Secretary of State" or "Companies House (UK)". Empty if not found or a person.' },
           other_names: { type: 'array', description: 'Other names the owner may mean (brand name, earlier registered names, other spellings). Empty if none.', items: {
-            type: 'object', additionalProperties: false, required: ['name', 'what'],
-            properties: { name: { type: 'string' }, what: { type: 'string', description: 'A few words: what this name is, like "Brand name" or "Registered name 1977-2007".' } } } },
+            type: 'object', additionalProperties: false, required: ['name', 'what', 'source'],
+            properties: { name: { type: 'string' }, source: { type: 'string', description: 'The URL (from the search results) that gives it. Empty if none.' }, what: { type: 'string', description: 'A few words: what this name is, like "Brand name" or "Registered name 1977-2007".' } } } },
           other_dates: { type: 'array', description: 'Other dates the owner may mean (founding date, earlier incorporation, a date another source gives). Empty if none.', items: {
-            type: 'object', additionalProperties: false, required: ['date', 'what'],
-            properties: { date: { type: 'string', description: 'YYYY-MM-DD, or YYYY-MM or YYYY when only that much is known' }, what: { type: 'string', description: 'A few words: what this date is, like "Founded as a partnership".' } } } },
+            type: 'object', additionalProperties: false, required: ['date', 'what', 'source'],
+            properties: { source: { type: 'string', description: 'The URL (from the search results) that gives it. Empty if none.' }, date: { type: 'string', description: 'YYYY-MM-DD, or YYYY-MM or YYYY when only that much is known' }, what: { type: 'string', description: 'A few words: what this date is and how it was found, like "Founded as a partnership" or "Day from a 2019 Instagram birthday post, year from his age in it".' } } } },
           who: { type: 'string', description: 'A few words: what they are known for, like "American rapper from Queens" or "American maker of phones and computers".' },
           sure: { type: 'boolean', description: 'true when the sources agree on both the name and the date and there is no other name or date to choose from.' },
           note: { type: 'string', description: 'What disagrees or is uncertain for this result. Empty if nothing.' },
@@ -122,7 +130,7 @@ export async function lookupPerson(db, query) {
   while (calls < MAX_CALLS && !answer) {
     calls++;
     const r = await callModel('lookup', {
-      max_tokens: 4000, output_config: { effort: 'low' }, system: SYSTEM,
+      max_tokens: 4000, output_config: { effort: 'medium' }, system: SYSTEM,
       tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: MAX_SEARCHES }, ANSWER_TOOL],
       messages,
     }, { estimateUsd: calls === 1 ? est : 0, what: `lookup "${q.slice(0, 40)}" call ${calls}` });
@@ -166,25 +174,26 @@ export async function lookupPerson(db, query) {
     // A business name with a legal ending is offered both ways (owner 2026-11-14: "tell me, and let me see it
     // with and without it"): without first (the course leaves it out), then with. `ending` names what comes off.
     const names = [], dates = [];
+    const siteOf = (u) => (u && found.has(u) ? { url: u, site: hostOf(u) } : null); // where it was found: only a page the search returned
     const same = (x, y) => x.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '') === y.toLowerCase().replace(/[^\p{L}\p{N}]/gu, ''); // "Apple, Inc" = "Apple Inc."
-    const pushName = (o) => { if (o.chart && !names.some((x) => same(x.chart, o.chart))) names.push({ ...o, long: kind === 'business' && letters(o.chart) > 34 }); };
-    const addName = (name, what) => {
-      const n = clean(name, 160), c = chartName(n, kind), w = clean(what, 80);
-      if (c === n) return pushName({ name: n, chart: n, what: w, ending: '' });
+    const pushName = (o) => { if (!o.from) delete o.from; if (o.chart && !names.some((x) => same(x.chart, o.chart))) names.push({ ...o, long: kind === 'business' && letters(o.chart) > 34 }); };
+    const addName = (name, what, src) => {
+      const n = clean(name, 160), c = chartName(n, kind), w = clean(what, 80), from = siteOf(src);
+      if (c === n) return pushName({ name: n, chart: n, what: w, ending: '', from });
       const ending = n.slice(c.length).replace(/^[\s,]+/, '');
-      pushName({ name: n, chart: c, what: w, ending, with: false });
-      pushName({ name: n, chart: n, what: w, ending, with: true });
+      pushName({ name: n, chart: c, what: w, ending, with: false, from });
+      pushName({ name: n, chart: n, what: w, ending, with: true, from });
     };
     // A date known only to the year or month is shown too (it cannot be drawn): `partial`.
-    const addDate = (date, what) => {
+    const addDate = (date, what, src) => {
       const raw = clean(date, 10), d = validDate(raw), part = !d && /^\d{4}(-(0[1-9]|1[0-2]))?$/.test(raw) ? raw : '';
       const key = d || part;
-      if (key && !dates.some((x) => x.date === key)) dates.push({ date: key, what: clean(what, 80), ...(part ? { partial: true } : {}) });
+      if (key && !dates.some((x) => x.date === key)) dates.push({ date: key, what: clean(what, 120), ...(part ? { partial: true } : {}), ...(siteOf(src) ? { from: siteOf(src) } : {}) });
     };
-    addName(person.birth_name, kind === 'business' ? 'Registered name' : 'Birth name');
-    for (const o of Array.isArray(p.other_names) ? p.other_names.slice(0, 5) : []) addName(o && o.name, o && o.what);
-    addDate(person.birth_date, clean(p.date_what, 80) || (kind === 'business' ? 'Registered (incorporated)' : 'Birth date'));
-    for (const o of Array.isArray(p.other_dates) ? p.other_dates.slice(0, 5) : []) addDate(o && o.date, o && o.what);
+    addName(person.birth_name, kind === 'business' ? 'Registered name' : 'Birth name', p.name_source);
+    for (const o of Array.isArray(p.other_names) ? p.other_names.slice(0, 5) : []) addName(o && o.name, o && o.what, o && o.source);
+    addDate(person.birth_date, clean(p.date_what, 120) || (kind === 'business' ? 'Registered (incorporated)' : 'Birth date'), p.date_source);
+    for (const o of Array.isArray(p.other_dates) ? p.other_dates.slice(0, 5) : []) addDate(o && o.date, o && o.what, o && o.source);
     person.names = names; person.dates = dates;
     const drawable = dates.filter((d) => !d.partial).length, realNames = names.filter((n) => !n.with).length;
     if (person.match !== 'fits' || !person.sources.length || realNames > 1 || drawable > 1 || dates.length > drawable) person.sure = false; // more than one to choose from = check it

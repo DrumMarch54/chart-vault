@@ -121,6 +121,20 @@ test('same name, other person: what the owner said decides; a same-name other go
   assert.match(snap, /OTHER PERSON, same name \(A football player, not a shooter\)/);
 });
 
+test('a hard-to-find date: every date says where it was found, only from pages the search returned', async () => {
+  const IG = 'https://www.instagram.com/p/abc/', GRAVE = 'https://www.findagrave.com/memorial/1';
+  const p0 = { ...fifty, known_as: 'Small Star', birth_name: 'Jane Ann Doe', name_source: GRAVE, birth_date: '1980-03-04', date_what: 'Find a Grave memorial', date_source: GRAVE,
+    other_dates: [{ date: '1981-03-04', what: 'Day from an Instagram birthday post, year from her age in it', source: IG }, { date: '1979-03-04', what: 'a fan page', source: 'https://made-up.example/x' }], sources: [GRAVE] };
+  script.push({ content: [...searched([IG, GRAVE]), answer([p0])], stop_reason: 'tool_use', usage: { input_tokens: 100, output_tokens: 10 } });
+  const r = await post('/api/lookup', { query: 'small star singer', web: true });
+  const p = r.body.people[0];
+  assert.deepEqual(p.dates.map((d) => [d.date, d.from && d.from.site]), [['1980-03-04', 'findagrave.com'], ['1981-03-04', 'instagram.com'], ['1979-03-04', undefined]]);
+  assert.equal(p.names[0].from.site, 'findagrave.com');
+  assert.equal(p.sure, false); // three dates to choose from
+  assert.match(requests.at(-1).system, /happy birthday/);
+  assert.match(requests.at(-1).system, /Find a Grave/);
+});
+
 test('a business: the registered name without its legal ending, every name and date laid out to pick', async () => {
   const APPLE = 'https://en.wikipedia.org/wiki/Apple_Inc.';
   const apple = { kind: 'business', known_as: 'Apple', birth_name: 'Apple Inc.', birth_date: '1977-01-03', date_what: 'Incorporated in California', register: 'California Secretary of State', who: 'American maker of phones',

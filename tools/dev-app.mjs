@@ -100,7 +100,7 @@ useClientFactory(() => ({ messages: { create: async (params) => {
         { type: 'web_search_tool_result', tool_use_id: 'srv1', content: [{ type: 'web_search_result', url: u1, title: 'James Eagan Holmes - Wikipedia' }, { type: 'web_search_result', url: u2, title: 'James Holmes (footballer) - Wikipedia' }] },
         { type: 'tool_use', id: 'a1', name: 'give_answer', input: { note: '', people: [
           { kind: 'person', match: 'same_name', match_why: 'A football player, not a shooter', known_as: 'James Holmes', birth_name: 'James Holmes', birth_date: '1953-11-11', date_what: 'Born', register: '', other_names: [], other_dates: [], who: 'Former football player', sure: true, note: '', sources: [u2] },
-          { kind: 'person', match: 'fits', match_why: 'He is the Aurora theater shooter', known_as: 'James Holmes', birth_name: 'James Eagan Holmes', birth_date: '1987-12-13', date_what: 'Born', register: '', other_names: [], other_dates: [], who: 'Aurora, Colorado theater shooter', sure: true, note: '', sources: [u1] }] } },
+          { kind: 'person', match: 'fits', match_why: 'He is the Aurora theater shooter', known_as: 'James Holmes', birth_name: 'James Eagan Holmes', birth_date: '1987-12-13', date_what: 'Born', date_source: u1, name_source: u1, register: '', other_names: [], other_dates: [], who: 'Aurora, Colorado theater shooter', sure: true, note: '', sources: [u1] }] } },
       ], stop_reason: 'tool_use', usage: { input_tokens: 9000, output_tokens: 300, server_tool_use: { web_search_requests: 1 } } };
     }
     // A business (say "apple"): two names and two dates to pick from, as the real search lays them out.

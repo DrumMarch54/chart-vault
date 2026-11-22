@@ -1,6 +1,6 @@
 /* Look Up (owner's ask 2026-11-01; businesses and organizations 2026-11-14): tap the microphone and say a name ("Fifty Cent") or describe
    someone ("the rapper who got shot nine times"). The vault is checked first, for free; then the AI searches
-   the web for the birth name and birth date (about 2 to 4 cents) and each person found is drawn as a chart,
+   the web for the birth name and birth date (about 3 to 10 cents) and each person found is drawn as a chart,
    with the name and date in boxes to fix and a Save to Vault button. Nothing is saved until that tap.
    Also opened from the phone's app icon: press and hold it, "Look Up Someone" (manifest shortcut, ?listen=1).
    app.js hands over its plumbing through Lookup.install, like reading.js. */
@@ -43,7 +43,7 @@
       // A business always shows its lists, even with one answer (owner 2026-11-14: "full transparency").
       // A date known only to the year or month is listed but cannot be picked (it cannot be drawn).
       const optList = (title, items, label, sub, onPick) => {
-        if (items.length < (biz ? 1 : 2)) return { el: null, clear() {} };
+        if (!items.length) return { el: null, clear() {} }; // always shown, with where each was found (owner 2026-11-22: "so I can confirm")
         const first = items.findIndex((it) => !it.partial);
         const btns = items.map((it, i) => it.partial
           ? h('div', { class: 'lookup-opt off' }, h('b', {}, label(it)), h('span', { class: 'muted small' }, [sub(it), 'not a full date, so it cannot be drawn'].filter(Boolean).join(' · ')))
@@ -51,10 +51,11 @@
             h('b', {}, label(it)), sub(it) ? h('span', { class: 'muted small' }, sub(it)) : null));
         return { el: h('div', { class: 'stack lookup-opts' }, h('div', { class: 'small' }, h('b', {}, title)), ...btns), clear() { for (const b of btns) b.classList.remove('on'); } };
       };
-      const nameSub = (n) => [n.what, n.ending ? (n.with ? `with “${n.ending}”, as registered` : `without “${n.ending}”, the course leaves it out`) : '',
+      const where = (it) => (it.from ? `found on ${it.from.site}` : 'no page given for it');
+      const nameSub = (n) => [n.what, where(n), n.ending ? (n.with ? `with “${n.ending}”, as registered` : `without “${n.ending}”, the course leaves it out`) : '',
         n.long ? 'over 34 letters: the course uses the shorter name it goes by' : ''].filter(Boolean).join(' · ');
       const nameOpts = optList(biz ? 'Which name goes on the chart? Tap one.' : 'Which birth name? Tap the right one.', names, (n) => n.chart, nameSub, (n) => { count('lookup.pick_name'); $name.value = n.chart; });
-      const dateOpts = optList(biz ? 'Which date goes on the chart? Tap one.' : 'Which birth date? Tap the right one.', dates, (d) => longDate(d.date) || partialDate(d.date), (d) => d.what, (d) => {
+      const dateOpts = optList(biz ? 'Which date goes on the chart? Tap one.' : 'Which birth date? Tap the right one.', dates, (d) => longDate(d.date) || partialDate(d.date), (d) => [d.what, where(d)].filter(Boolean).join(' · '), (d) => {
         count('lookup.pick_date'); const [y, mo, dd] = d.date.split('-'); $day.value = String(+dd); $month.value = String(+mo); $year.value = y;
       });
       $name.addEventListener('input', () => nameOpts.clear());
@@ -150,7 +151,7 @@
         };
         $more.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); again(); } });
         return h('div', { class: 'card stack' }, h('b', {}, 'Not right? Tell it more'),
-          h('div', { class: 'muted small' }, 'Add a detail and it searches again: about 3 cents.'),
+          h('div', { class: 'muted small' }, 'Add a detail and it searches again: about 3 to 10 cents.'),
           $more, h('button', { type: 'button', class: 'btn btn-block', onclick: again }, 'Search Again'));
       };
       // The people found, laid out the same way for a new search and for a past one opened again.
@@ -186,7 +187,7 @@
           if (r.vault) {
             fill($out, h('div', { class: 'card stack' }, h('b', {}, 'Already in your vault'),
               h('div', { class: 'grid' }, ...r.vault.map(cell)),
-              h('button', { type: 'button', class: 'btn btn-block', onclick: () => send(true) }, 'Search the Web Anyway (about 3 cents)')));
+              h('button', { type: 'button', class: 'btn btn-block', onclick: () => send(true) }, 'Search the Web Anyway (about 3 to 10 cents)')));
           } else showResult(r);
         } catch (err) { fill($out, h('p', { class: 'err' }, err.message)); }
         $go.disabled = false; $go.textContent = 'Search';
@@ -210,7 +211,7 @@
       render(h('div', { class: 'screen stack' }, pageTop('Look Up', '#/'),
         h('div', { class: 'lookup-top' }, $mic, $hint),
         h('div', { class: 'row', style: 'flex-wrap:nowrap' }, $q, $go),
-        h('p', { class: 'muted small', style: 'margin:0' }, 'Your vault is checked first, for free. A web search finds a person\'s birth name and birth date, or a business\'s registered name and founding date: about 2 to 4 cents. Nothing is saved until you tap Save to Vault.'),
+        h('p', { class: 'muted small', style: 'margin:0' }, 'Your vault is checked first, for free. A web search finds a person\'s birth name and birth date, or a business\'s registered name and founding date: about 3 to 10 cents (it digs further when the date is hard to find). Nothing is saved until you tap Save to Vault.'),
         $out, $past));
       api('/api/ai/settings').then((s) => { if (!s.key_set) fill($out, h('div', { class: 'card stack' }, h('p', { class: 'muted', style: 'margin:0' }, 'Add the AI key first.'), h('a', { class: 'btn btn-block', href: '#/ai' }, 'AI Reading Settings'))); }).catch(() => {});
       if (query && query.get('past')) openPast(query.get('past'));
