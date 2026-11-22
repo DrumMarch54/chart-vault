@@ -10,7 +10,7 @@
     'screen.lookup': 'Look Up', 'home.lookup': 'Look Up (home)', 'lookup.mic': 'Look Up: speak a name',
     'lookup.search': 'Look Up: search the web', 'lookup.web_anyway': 'Look Up: search the web anyway', 'lookup.save': 'Look Up: Save to Vault',
     'lookup.quick': 'Look Up: open in Quick Chart', 'lookup.pick_name': 'Look Up: pick a name', 'lookup.pick_date': 'Look Up: pick a date',
-    'lookup.clarify': 'Look Up: add a detail and search again', 'lookup.past_open': 'Look Up: open a past search',
+    'lookup.clarify': 'Look Up: add a detail and search again', 'lookup.others': 'Look Up: open Others With This Name', 'lookup.past_open': 'Look Up: open a past search',
     'lookup.past_remove': 'Look Up: remove a past search',
   };
 
@@ -100,7 +100,10 @@
         biz && names[0] && names[0].ending ? h('p', { class: 'lookup-warn small' }, `The registered name ends in “${names[0].ending}”. The course leaves that out of the chart. Both ways are below: tap the one you want.`) : null,
         biz && dates.length > 1 ? h('p', { class: 'lookup-warn small' }, 'More than one date came back (for example founded and registered). Each one is below with what it is: tap the one you want.') : null,
         biz && names[0] && names[0].long ? h('p', { class: 'lookup-warn small' }, 'This name is over 34 letters. The course uses the shorter name the business goes by: fix it in the box.') : null,
-        p.sure ? null : h('p', { class: 'lookup-warn small' }, p.note || (names.length > 1 || dates.length > 1 ? 'More than one answer came back. Tap the right name and date below.' : 'The sources do not agree, or none were found. Check before saving.')),
+        p.match === 'maybe' ? h('p', { class: 'lookup-warn small' }, `Could be the one you mean${p.match_why ? `: ${p.match_why}` : ''}. Check it is the right person before saving.`) : null,
+        p.match === 'same_name' ? h('p', { class: 'lookup-warn small' }, `Same name, probably someone else${p.match_why ? `: ${p.match_why}` : ''}.`) : null,
+        p.match === 'fits' && p.match_why ? h('div', { class: 'muted small' }, `Matches what you said: ${p.match_why}`) : null,
+        p.sure || (p.match !== 'fits' && !p.note && names.length < 2 && dates.length < 2) ? null : h('p', { class: 'lookup-warn small' }, p.note || (names.length > 1 || dates.length > 1 ? 'More than one answer came back. Tap the right name and date below.' : 'The sources do not agree, or none were found. Check before saving.')),
         p.sure && p.note ? h('p', { class: 'muted small', style: 'margin:0' }, p.note) : null,
         p.sources && p.sources.length ? h('div', { class: 'muted small' }, 'Found on ', ...p.sources.flatMap((s, i) => [i ? ' · ' : '', h('a', { href: s.url, target: '_blank', rel: 'noopener noreferrer' }, s.site)])) : null,
         nameOpts.el, dateOpts.el,
@@ -152,10 +155,16 @@
       };
       // The people found, laid out the same way for a new search and for a past one opened again.
       const showResult = (r) => {
-        const head = r.people.length ? null : h('div', { class: 'card' }, h('p', { style: 'margin:0' }, r.note || 'Nobody found. Try saying it another way.'));
+        // Same name, other person (owner 2026-11-22: "show it on the bottom part"): folded under the ones that fit.
+        const main = r.people.filter((p) => p.match !== 'same_name'), others = r.people.filter((p) => p.match === 'same_name');
+        const head = main.length ? null : h('div', { class: 'card' }, h('p', { style: 'margin:0' }, others.length ? 'Nobody matched everything you said. Others with that name are below; tap to see them.' : r.note || 'Nobody found. Try saying it another way.'));
+        const $others = others.length ? h('details', { class: 'card lookup-others', ontoggle: (e) => { if (e.target.open) count('lookup.others'); } },
+          h('summary', {}, h('b', {}, `Others With This Name (${others.length})`), h('div', { class: 'muted small' }, 'Probably not who you mean. Tap to see them.')),
+          h('div', { class: 'stack' }, ...others.map(personCard))) : null;
         const past = r.past ? h('p', { class: 'lookup-past-head small' }, `Past search from ${whenOf(r.past.at)}. Opening it again is free; tap Search to look it up fresh.`) : null;
-        fill($out, past, head, ...r.people.map(personCard),
-          r.people.length > 1 ? h('p', { class: 'muted small' }, 'More than one fits. The best match is first.') : null,
+        fill($out, past, head, ...main.map(personCard),
+          main.length > 1 ? h('p', { class: 'muted small' }, 'More than one could be them. The best match is first.') : null,
+          $others,
           r.people.length && r.note ? h('p', { class: 'muted small' }, r.note) : null,
           h('div', { class: 'muted small' }, `${r.past ? 'It cost ' : ''}${money(r.usd)} · ${r.searches} web search${r.searches === 1 ? '' : 'es'} · ${Math.round(r.seconds)} s${r.spend ? ` · $${r.spend.spent.toFixed(2)} of $${r.spend.cap.toFixed(2)} this month` : ''}`),
           r.warning ? h('p', { class: 'lookup-warn small' }, r.warning.text) : null,

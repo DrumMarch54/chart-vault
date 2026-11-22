@@ -107,6 +107,20 @@ test('a person named only in the note is asked for once more and comes back as a
   assert.equal(last.content[0].type, 'tool_result');
 });
 
+test('same name, other person: what the owner said decides; a same-name other goes last and is never sure', async () => {
+  const U2 = 'https://en.wikipedia.org/wiki/James_Holmes_(footballer)';
+  const football = { ...fifty, match: 'same_name', match_why: 'A football player, not a shooter', known_as: 'James Holmes', birth_name: 'James Holmes', birth_date: '1953-11-11', sources: [U2] };
+  const shooter = { ...fifty, match: 'fits', match_why: 'Aurora theater shooter', known_as: 'James Holmes', birth_name: 'James Eagan Holmes', birth_date: '1987-12-13', sources: [URL1] };
+  const maybe = { ...fifty, match: 'maybe', match_why: 'Not confirmed', known_as: 'James Holmes', birth_name: 'James Q Holmes', birth_date: '1990-01-01', sources: [URL1] };
+  script.push({ content: [...searched([URL1, U2]), answer([football, maybe, shooter])], stop_reason: 'tool_use', usage: { input_tokens: 100, output_tokens: 10 } });
+  const r = await post('/api/lookup', { query: 'james holmes shooter', web: true });
+  assert.equal(r.status, 200, JSON.stringify(r.body));
+  assert.deepEqual(r.body.people.map((p) => [p.birth_name, p.match, p.sure]), [['James Eagan Holmes', 'fits', true], ['James Q Holmes', 'maybe', false], ['James Holmes', 'same_name', false]]);
+  assert.match(requests.at(-1).system, /Be discerning/);
+  const snap = await (await fetch(base + '/api/debug/snapshot', { headers: { cookie } })).text();
+  assert.match(snap, /OTHER PERSON, same name \(A football player, not a shooter\)/);
+});
+
 test('a business: the registered name without its legal ending, every name and date laid out to pick', async () => {
   const APPLE = 'https://en.wikipedia.org/wiki/Apple_Inc.';
   const apple = { kind: 'business', known_as: 'Apple', birth_name: 'Apple Inc.', birth_date: '1977-01-03', date_what: 'Incorporated in California', register: 'California Secretary of State', who: 'American maker of phones',
