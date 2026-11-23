@@ -319,7 +319,17 @@ export function summaryEstimate(db) {
 }
 
 // Writes (or returns) the summary for the group as it is ticked now. The same group again = the stored one, free.
-export async function writeSummary(db, id, { again = false } = {}) {
+// A second ask while one is being written waits for that one (2026-11-23: the phone lost the answer, Try Again
+// paid a second time while the first was still running).
+const writing = new Map();
+export function writeSummary(db, id, opts = {}) {
+  const busy = writing.get(id);
+  if (busy) return busy;
+  const job = writeSummaryNow(db, id, opts).finally(() => writing.delete(id));
+  writing.set(id, job);
+  return job;
+}
+async function writeSummaryNow(db, id, { again = false } = {}) {
   const g = getResearch(db, id);
   if (!g) throw new AiError('That research is gone.');
   const s = researchShares(db, id);

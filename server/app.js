@@ -542,7 +542,7 @@ export function createApp(db, { log = console.log } = {}) {
   // Research a Group (server/research.js): a category searched on the web (paid), kept, and counted against the
   // vault (free). Nothing is saved to the vault here; the screen draws the charts and the owner taps Save to Vault.
   const aiFail = (res, next) => (err) => { if (err instanceof AiError) return res.status(400).json({ error: err.message }); next(err); };
-  app.get('/api/research', (req, res) => res.json({ items: pastResearch(db), costs: researchCosts(db), summary_cost: summaryEstimate(db), spend: spendState() }));
+  app.get('/api/research', (req, res) => res.json({ running: researchRunning(), items: pastResearch(db), costs: researchCosts(db), summary_cost: summaryEstimate(db), spend: spendState() }));
   app.post('/api/research', express.json({ limit: '4kb' }), async (req, res, next) => {
     const body = req.body || {};
     const size = SIZES.includes(Number(body.size)) ? Number(body.size) : 20;
@@ -551,6 +551,8 @@ export function createApp(db, { log = console.log } = {}) {
       const id = storeResearch(db, r, COMMIT);
       rememberResearch({ id, query: r.query, size, category: r.category, personal: r.personal, found: r.people.length, dropped: r.dropped, unchecked: r.people.filter((p) => !p.checked).length, kinds: r.vault_kinds.join(', '), searches: r.searches, usd: r.usd, note: r.note });
       log(`research #${id} "${r.category}": ${r.people.length} found, ${r.searches} searches, $${r.usd}`);
+      // The summary is written on the server straight away, so a phone that drops the connection still finds it ready.
+      writeSummary(db, id).then((sm) => { if (sm.usd) log(`research #${id} summary: $${sm.usd}`); }).catch((err) => log(`research #${id} summary FAILED: ${err.message}`));
       res.json({ id, found: r.people.length, spend: spendState(), warning: pendingWarning() });
     } catch (err) {
       if (err instanceof AiError) rememberResearch({ query: String(body.query || '').slice(0, 200), size, error: err.message });

@@ -86,12 +86,34 @@
         fill($past);
         fill($out, h('p', { class: 'muted' }, `Searching the web for ${size}… this takes one to three minutes. Keep this screen open.`));
         try { const r = await send('/api/research', 'POST', { query: q, size }); go(`#/research?id=${r.id}&view=who`); }
-        catch (err) { fail($out, err); busy = false; $go.disabled = false; drawSizes(); pastList(); }
+        catch (err) {
+          // A dropped connection (the phone left the app, or the network blinked) does not stop the search on the
+          // server: wait for it to land in Past Research and open it (owner 2026-11-23, "Failed to fetch").
+          const found = err instanceof TypeError ? await waitForNew(q) : null;
+          if (found) { go(`#/research?id=${found}&view=who`); return; }
+          fail($out, err instanceof TypeError ? new Error('The connection dropped and the search did not come back. Look in Past Research below; if it is not there, search again.') : err);
+          busy = false; $go.disabled = false; drawSizes(); pastList();
+        }
       };
       $go.onclick = run;
       $q.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $q.blur(); } });
+      let lastId = 0;
+      const waitForNew = async (q) => {
+        fill($out, h('p', { class: 'muted' }, 'The connection dropped, but the search keeps going. Waiting for it… keep this screen open.'));
+        for (let i = 0; i < 60; i++) {
+          await new Promise((r) => setTimeout(r, 5000));
+          try {
+            const d = await api('/api/research');
+            const hit = d.items.find((it) => it.id > lastId && it.query.toLowerCase() === q.toLowerCase());
+            if (hit) return hit.id;
+            if (!d.running && i > 2) return null;
+          } catch {}
+        }
+        return null;
+      };
       const pastList = () => api('/api/research').then((d) => {
         costs = d.costs || []; drawSizes();
+        lastId = d.items.reduce((m, it) => Math.max(m, it.id), 0);
         if (!d.items.length || busy) return;
         fill($past, h('h3', { class: 'lookup-past-title' }, 'Past Research'),
           h('div', { class: 'card lookup-past' }, ...d.items.map((it) => h('a', { class: 'lookup-past-row', href: `#/research?id=${it.id}`, onclick: () => count('research.past_open') },
@@ -207,8 +229,14 @@
         const write = (again) => async () => {
           if (again) count('research.summary_again');
           drawSummary(sm, true);
-          try { const r = await send(`/api/research/${id}/summary`, 'POST', { again }); drawSummary(r.summary, false); if (r.warning) toast(r.warning.text, true); }
-          catch (err) { fill($sum, h('b', {}, 'What Stands Out'), h('p', { class: 'err', style: 'margin:0' }, err.message), h('button', { type: 'button', class: 'btn btn-block', onclick: write(again) }, `Try Again (${cost})`)); }
+          // A dropped connection asks again by itself: free, the server hands back the one being written or stored.
+          let r = null, err = null;
+          for (let tries = 0; tries < 4 && !r; tries++) {
+            try { r = await send(`/api/research/${id}/summary`, 'POST', { again: again && tries === 0 }); err = null; }
+            catch (e) { err = e; if (!(e instanceof TypeError)) break; await new Promise((ok) => setTimeout(ok, 4000)); }
+          }
+          if (r) { drawSummary(r.summary, false); if (r.warning) toast(r.warning.text, true); }
+          else { fill($sum, h('b', {}, 'What Stands Out'), h('p', { class: 'err', style: 'margin:0' }, err instanceof TypeError ? 'The connection dropped. Tap Try Again: if the summary was already written, it is free.' : err.message), h('button', { type: 'button', class: 'btn btn-block', onclick: write(again) }, `Try Again (${cost})`)); }
         };
         fill($sum, h('b', {}, 'What Stands Out'),
           pending ? h('p', { class: 'muted', style: 'margin:0' }, 'Writing the summary from the finds and the course… about 20 seconds.') : null,

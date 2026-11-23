@@ -81,7 +81,7 @@ test('a search keeps the people, only the sources the search returned, and saves
   const r = await call('POST', '/api/research', { query: 'computer coders', size: 10 });
   assert.equal(r.status, 200);
   id = r.body.id;
-  assert.equal(requests.at(-1).tools[0].max_uses, 6);
+  assert.equal(requests.find((r) => r.tools && r.tools.some((t) => t.name === 'give_group')).tools[0].max_uses, 6);
   const g = (await call('GET', `/api/research/${id}`)).body;
   assert.equal(g.category, 'Computer Coders');
   assert.deepEqual(g.people.map((p) => p.known_as), ['Linus Torvalds', 'Bill Gates', 'Grace Hopper', 'Guido van Rossum', 'Nobody Knows']);
@@ -164,6 +164,18 @@ test('the summary costs nothing when nothing stands out, and is not written twic
   const again = await call('POST', `/api/research/${id}/summary`, {});
   assert.equal(again.status, 200);
   assert.equal(requests.length <= n + 1, true, 'the same group again is the stored one');
+});
+
+test('two asks for the same summary at once pay once', async () => {
+  await call('PUT', `/api/research/${id}/person/4`, { birth_date: '1970-02-04' }); // a new group: no stored summary for it
+  const n = requests.length;
+  const ctx = summaryContext(getResearch(db, id), researchShares(db, id));
+  if (!ctx) return; // nothing stands out: no call at all, proven above
+  script.push({ content: [{ type: 'text', text: 'Once.' }], stop_reason: 'end_turn', usage: { input_tokens: 2000, output_tokens: 100 } });
+  const [a, b] = await Promise.all([call('POST', `/api/research/${id}/summary`, {}), call('POST', `/api/research/${id}/summary`, {})]);
+  assert.equal(a.body.summary.text, 'Once.');
+  assert.equal(b.body.summary.text, 'Once.');
+  assert.equal(requests.length, n + 1);
 });
 
 test('a find in a group of strangers is written up from the counted finds only', () => {

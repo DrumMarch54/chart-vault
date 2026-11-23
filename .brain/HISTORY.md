@@ -1024,3 +1024,6 @@ every search would shift the yardstick; the summary is written only from counted
 did not understand "compared against the vault" until it was one example with numbers (5 of 8 against 1 in 10).
 Costs on the screen are guesses (10 / 15 / 25 cents) until real searches run; then the average of the real ones.
 Not built on purpose: comparing two researched groups; a tag for the category on saved charts.
+
+## 2026-11-23: Research a Group, first real search
+"Transsexual people", 30: 20 found, 14 searches, $0.17, 78 s. The phone showed "Failed to fetch" for the search and for the summary, though both finished on the server (the owner had left the app while waiting). Try Again paid for a second summary while the first was still running (3.6 + 2.7 cents). Fix: the server writes the summary itself right after the search; a second ask waits for the one in flight (pays once); a dropped search waits for Past Research and opens it; a dropped summary asks again by itself, free.
