@@ -29,7 +29,13 @@ const { sharesOf } = await import('../server/group.js');
 let server, base, cookie, db;
 const script = [];
 const requests = [];
-useClientFactory(() => ({ messages: { create: async (params) => { requests.push(params); const next = script.shift(); if (!next) throw new Error('no scripted answer'); return next; } } }));
+useClientFactory(() => ({ messages: { create: async (params) => {
+  requests.push(params);
+  const next = script.shift(); if (!next) throw new Error('no scripted answer');
+  if (next.__reading === undefined) return next;
+  const keys = [...String(params.messages[0].content).matchAll(/^- key (\S+):/gm)].map((m) => m[1]);
+  return { content: [{ type: 'tool_use', id: 'r1', name: 'give_reading', input: { notes: [...keys.map((key) => ({ key, line: next.__reading, source: 'x' })), { key: 'made-up', line: 'dropped', source: 'x' }] } }], stop_reason: 'tool_use', usage: { input_tokens: 2000, output_tokens: 100 } };
+} } }));
 
 const U = (n) => `https://en.wikipedia.org/wiki/${n}`;
 const searched = (urls) => [
@@ -59,7 +65,7 @@ after(() => { server.close(); fs.rmSync(tmp, { recursive: true, force: true }); 
 
 // The search runs on the server after the POST answers: wait until nothing is running.
 const settle = async () => { for (let i = 0; i < 200; i++) { const r = await call('GET', '/api/research'); if (!r.body.running) return; await new Promise((ok) => setTimeout(ok, 20)); } throw new Error('the search never finished'); };
-const READING = (line) => ({ content: [{ type: 'tool_use', id: 'r1', name: 'give_reading', input: { lines: [line], notes: [{ key: 'made-up', line: 'dropped', source: 'x' }] } }], stop_reason: 'tool_use', usage: { input_tokens: 2000, output_tokens: 100 } });
+const READING = (line) => ({ __reading: line }); // answered by the fake model below: one note per key it was sent
 const none = () => reply([group({ people: [] })], 1); // a round that finds nobody new: the search stops
 const call = async (method, p, d) => { const r = await fetch(base + p, { method, headers: { cookie, 'content-type': 'application/json' }, ...(d ? { body: JSON.stringify(d) } : {}) }); return { status: r.status, body: await r.json() }; };
 
@@ -285,12 +291,12 @@ test('the reading costs nothing when nothing leads, and is not written twice', a
   if (!ctx) {
     const r = await call('POST', `/api/research/${id}/summary`, {});
     assert.equal(r.body.summary.none, 'nothing');
-    assert.deepEqual(r.body.summary.lines, []);
+    assert.deepEqual(r.body.summary.notes, []);
     assert.equal(requests.length, n, 'no model call');
   } else {
     script.push(READING('The group leans on 19/1.'));
     const r = await call('POST', `/api/research/${id}/summary`, {});
-    assert.deepEqual(r.body.summary.lines, ['The group leans on 19/1.']);
+    assert.equal(r.body.summary.notes.every((x) => x.line === 'The group leans on 19/1.'), true);
     assert.equal(requests.length, n + 1);
   }
   const again = await call('POST', `/api/research/${id}/summary`, {});
@@ -310,8 +316,8 @@ test('collapse and expand: a number that fills a group shows up, with a short re
   assert.equal(day.people.length, 6);
   assert.equal(typeof day.usual, 'number');
   const g = (await call('GET', `/api/research/${r.body.id}`)).body;
-  assert.deepEqual(g.summary.lines, ['Nineteens carry these charts.']);
-  assert.deepEqual(g.summary.notes, [], 'a note for a key the app did not send is dropped');
+  assert.equal(g.summary.notes.length >= 1, true, 'every card is explained');
+  assert.equal(g.summary.notes.some((x) => x.key === 'made-up'), false, 'a note for a key the app did not send is dropped');
   const sent = requests.at(-1);
   assert.equal(sent.tool_choice, undefined, 'Opus 5.5 refuses a forced tool choice');
   assert.equal(sent.tools[0].name, 'give_reading');
@@ -328,8 +334,8 @@ test('two asks for the same reading at once pay once', async () => {
   if (!ctx) return; // nothing leads: no call at all, proven above
   script.push(READING('Once.'));
   const [a, b] = await Promise.all([call('POST', `/api/research/${id}/summary`, {}), call('POST', `/api/research/${id}/summary`, {})]);
-  assert.deepEqual(a.body.summary.lines, ['Once.']);
-  assert.deepEqual(b.body.summary.lines, ['Once.']);
+  assert.equal(a.body.summary.notes[0].line, 'Once.');
+  assert.equal(b.body.summary.notes[0].line, 'Once.');
   assert.equal(requests.length, n + 1);
 });
 

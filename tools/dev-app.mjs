@@ -125,8 +125,7 @@ useClientFactory(() => ({ messages: { create: async (params) => {
   if (params.tools && params.tools.some((t) => t.name === 'give_reading')) {
     const keys = [...String(params.messages[0].content).matchAll(/^- key (\S+):/gm)].map((m) => m[1]);
     return { content: [{ type: 'tool_use', id: 'r1', name: 'give_reading', input: {
-      lines: ['Radiant self-starters (19/1) carry these charts: the will to shine and to lead.', 'In the emotion center the same drive turns inward: pride that needs to be seen.', 'The pillar under it is restless, so the shine looks for new ground again and again.'],
-      notes: keys.map((key) => ({ key, line: 'The Prince of Heaven: radiant and enthusiastic in balance, self-centered and proud out of it.', source: 'Main Combo Guide' })),
+      notes: keys.map((key) => ({ key, line: 'The Prince of Heaven: radiant and enthusiastic in balance, self-centered and proud out of it. For computer coders: a drive to shine through what they build.', source: 'Main Combo Guide' })),
     } }], stop_reason: 'tool_use', usage: { input_tokens: 22000, output_tokens: 300 } };
   }
   // Look Up Someone: a fake web search and answer (the dev app never searches the real web).

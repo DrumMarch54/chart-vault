@@ -481,16 +481,15 @@ export function researchShares(db, id) {
 // and the same thing twice). The counter (insight.js) says what fills the group's charts and where a number leads;
 // the model, with the reading guide every chart Reading gets, writes ONE short line of the course's meaning per
 // insight and three to five lines that weave them, the way the owner reads a single chart. No statistics words.
-const READING_V = 3;
-const READING_SYSTEM = `You read a GROUP of charts for a trained numerologist the way they read one chart: "collapse and expand" (see the COURSE REFERENCE below: expand = the big picture across the chart, collapse = one center or position as a talking point). The app counted the group's Chaldean numeroscopes and hands you the INSIGHTS: EXPAND (a number, or a family of numbers, that fills the strong positions of many of the group's charts) and COLLAPSE (one part of the chart where a number leads, like the nines in the name chart's emotion center). Each has a key, its counts and course passages. Call give_reading exactly once.
-- notes: one entry per insight key. line: ONE line, at most 18 words, saying what the course says this number is about (in that place, when the insight has a place), in the course's own vocabulary: the archetype name, what it does balanced, what it does unbalanced. No counts, no "the group", no "may", no hedging. source: the name of the source you took it from, as given in brackets.
-- lines: three to five lines, each at most 22 words: the reading of the group. A combination is read the way the owner reads two neighbors in a chart. Weave the insights the way the owner weaves two neighbors ("enthusiastic (19/1) magnetism (15/6)"). Start wide (expand), then the specific place (collapse), and say what that part of the chart governs (the solar plexus is the emotion center and the sexual center: emotional life, sex and love life; the mind center: communication and thought; the pillar: the ground a person stands on). Numbers as the course writes them: 18/9, one-digit numbers plain.
-- Each insight is marked SOLID, a strong lean, or a lean. Build the reading on the solid ones and the strong leans; a plain lean gets a few words at most ("a touch of ..."). When nothing is solid, the first line opens with "So far:".
-- Never use statistics words (percent, chance, luck, random, sample, significant, likely) or disclaimers. No preamble.
-- Every meaning comes from the course reference or the passages given. Nothing is invented: an insight with no words given gets a line naming only its archetype title.
-- Read the group as a whole, never a named person, and say what shows up in the charts, never that the numbers cause or explain who someone is.`;
-const READING_TOOL = { name: 'give_reading', description: 'The reading of the group: one line per insight, and the lines that weave them.', strict: true, input_schema: { type: 'object', additionalProperties: false, required: ['lines', 'notes'], properties: {
-  lines: { type: 'array', items: { type: 'string' }, description: 'Three to five lines, each at most 22 words.' },
+// One explanation per card, in the group's context (owner 2026-11-23: "13/4 in a mind center for mass shooters,
+// what does that mean? You need to explain it right there"; the separate reading only repeated the cards).
+const READING_V = 4;
+const READING_SYSTEM = `You explain the findings of a numerology research on a GROUP of people (or businesses) for a trained numerologist. The app counted the group's Chaldean numeroscopes against the owner's vault and hands you the FINDINGS, each with a key, what it is, its counts, and course passages. The COURSE REFERENCE below is how this system reads a chart: what each position governs (the mind center: thought, communication, values; the emotion center or solar plexus: inner emotional life, self-esteem, sex and love life, also called the sexual center; the day: who you are; the life path: the road; the life expression: what you express; the names: how you meet the world; the pillar: the ground you stand on). Call give_reading exactly once, straight away, with no text before it.
+- notes: one entry per finding key. line: TWO short sentences, at most 40 words in all, that explain the finding FOR THIS GROUP: first what this number means in that place (in the course's own vocabulary: the archetype, its balanced and unbalanced sides, what that part of the chart governs), then what that says about the group, named by the group's name ("For mass shooters: ..."). A combination is read as the two numbers acting on each other (the owner weaves neighbors: "enthusiastic (19/1) magnetism (15/6)"). A strong influence of a number is read across the whole chart.
+- source: the name of the source the meaning came from, as given in brackets.
+- Every meaning comes from the course reference or the passages given; nothing invented. When nothing given covers it, give its archetype title and what that part of the chart governs, nothing more.
+- Speak of the group as a whole, never a named person, and of what shows up in their charts, never that the numbers cause anything. Never use statistics words (percent, chance, luck, random, sample, significant, likely), never hedge, no preamble. Numbers as the course writes them: 18/9, one-digit numbers plain.`;
+const READING_TOOL = { name: 'give_reading', description: 'One explanation per finding, in the group\'s context.', strict: true, input_schema: { type: 'object', additionalProperties: false, required: ['notes'], properties: {
   notes: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['key', 'line', 'source'], properties: { key: { type: 'string' }, line: { type: 'string' }, source: { type: 'string' } } } },
 } } };
 
@@ -500,7 +499,7 @@ const block = (p) => `[${p.book || p.title}${p.heading ? ` > ${String(p.heading)
 export function summaryContext(g, s) {
   const ins = { expand: [], combos: [], collapse: [], ...(s.insights || {}) };
   if (!ins.expand.length && !ins.combos.length && !ins.collapse.length) return null;
-  const lines = [`THE GROUP: ${g.category}. ${ins.size} charts read.`];
+  const lines = [`THE GROUP: ${g.category}. ${ins.size} charts read.`, 'THE FINDINGS']; // one list: the screen shows them in this order
   const words = [];
   const seen = new Set();
   const addWords = (title, bits, passages) => {
@@ -581,10 +580,9 @@ async function writeSummaryNow(db, id, { again = false } = {}) {
     if (message.stop_reason === 'max_tokens') throw new AiError('The reading was cut off before it was finished. Try again.');
     const use = (message.content || []).find((b) => b.type === 'tool_use' && b.name === 'give_reading');
     const input = use && use.input ? use.input : null;
-    const lines = (input && Array.isArray(input.lines) ? input.lines : []).map((l) => clean(l, 220)).filter(Boolean).slice(0, 5);
-    if (!lines.length) throw new AiError('The AI sent back an empty reading. Try again.');
-    const notes = (Array.isArray(input.notes) ? input.notes : []).filter((x) => x && ctx.keys.includes(x.key)).map((x) => ({ key: x.key, line: clean(x.line, 200), source: clean(x.source, 80) })).filter((x) => x.line);
-    return save({ ...base, lines, notes, usd: round(usd), seconds, finds: ctx.finds });
+    const notes = (input && Array.isArray(input.notes) ? input.notes : []).filter((x) => x && ctx.keys.includes(x.key)).map((x) => ({ key: x.key, line: clean(x.line, 200), source: clean(x.source, 80) })).filter((x) => x.line);
+    if (!notes.length) throw new AiError('The explanations came back empty. Try again.');
+    return save({ ...base, lines: [], notes, usd: round(usd), seconds, finds: ctx.finds });
   } finally { running--; }
 }
 
