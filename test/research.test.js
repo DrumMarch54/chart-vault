@@ -227,6 +227,45 @@ test('Check the Dates confirms, corrects with the old date kept, and leaves no-p
   await call('DELETE', `/api/research/${r.body.id}`);
 });
 
+test('Search Everything moves from angle to angle by itself and stops after three dry ways', async () => {
+  const five = (tag, y) => Array.from({ length: 5 }, (_, i) => person(`${tag} ${i}`, `${tag} ${i}`, `19${y}-0${i + 1}-1${i}`, U('Linus')));
+  script.push(reply([...searched([U('Linus')]), group({ angles: ['Angle A', 'Angle B', 'Angle C', 'Angle D'], people: [person('First One', 'First One', '1960-03-03', U('Linus'))] })]));
+  const r = await call('POST', '/api/research', { query: 'everything group' });
+  await settle();
+  // plain (dry) -> Angle A (5 new, then dry) -> Angle B (dry) -> Angle C (dry): three dry ways in a row, stop.
+  script.push(reply([...searched([U('Linus')]), group({ people: [] })]),
+    reply([...searched([U('Linus')]), group({ people: five('Alpha', 61) })]), reply([...searched([U('Linus')]), group({ people: [] })]),
+    reply([...searched([U('Linus')]), group({ people: [] })]), reply([...searched([U('Linus')]), group({ people: [] })]));
+  assert.equal((await call('POST', `/api/research/${r.body.id}/more`, { auto: true })).status, 200);
+  await settle();
+  const g = (await call('GET', `/api/research/${r.body.id}`)).body;
+  assert.equal(g.status, 'done');
+  assert.equal(g.auto, false);
+  assert.equal(g.people.length, 6);
+  assert.deepEqual(g.tried, ['Angle A', 'Angle B', 'Angle C']);
+  assert.match(g.stop, /3 ways of searching in a row found nobody new/);
+  const asked = requests.filter((q) => q.tools && q.tools.some((t) => t.name === 'give_group')).slice(-5).map((q) => (/ANGLE: (.*)/.exec(q.messages[0].content) || [])[1] || 'plain');
+  assert.deepEqual(asked, ['plain', 'Angle A', 'Angle A', 'Angle B', 'Angle C']);
+  await call('DELETE', `/api/research/${r.body.id}`);
+});
+
+test('the same category typed again opens the research that exists; a person can be added by hand', async () => {
+  const before = (await call('GET', '/api/research')).body.items.length;
+  const again = await call('POST', '/api/research', { query: 'Computer Coders' });
+  assert.equal(again.body.id, id, 'the category name finds it');
+  assert.equal(again.body.existing, true);
+  assert.equal((await call('POST', '/api/research', { query: 'computer coders' })).body.id, id, 'the words first typed find it');
+  assert.equal((await call('GET', '/api/research')).body.items.length, before, 'no twin was started');
+  const n = (await call('GET', `/api/research/${id}`)).body.people.length;
+  const add = await call('POST', `/api/research/${id}/person`, { known_as: 'Hand Added', birth_name: 'Hand Added', birth_date: '1977-07-07' });
+  assert.equal(add.body.ref, n);
+  const g = (await call('GET', `/api/research/${id}`)).body;
+  assert.equal(g.people[n].added, true);
+  assert.equal(g.people[n].drawable, true);
+  assert.equal((await call('POST', `/api/research/${id}/person`, { known_as: 'Hand Added', birth_date: '1977-07-07' })).status, 400, 'not twice');
+  assert.equal((await call('POST', `/api/research/${id}/person`, { known_as: 'Bad Date', birth_date: '1977-02-31' })).status, 400);
+});
+
 test('a search cut short by a restart keeps what it found', async () => {
   const rid = Number(db.prepare("INSERT INTO research (query, category, size, result, off, usd) VALUES ('x', 'X', 1, ?, '{}', 0.1)").run(JSON.stringify({ query: 'x', category: 'X', people: [CODERS[0]], usd: 0.1, rounds: 1, limit: 1, status: 'running' })).lastInsertRowid);
   assert.equal(recoverResearch(db), 1);

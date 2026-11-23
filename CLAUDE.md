@@ -256,6 +256,11 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - Public figures only. A PERSONAL category (gender identity, sexual orientation, health, religion ...; the model's flag OR
   the `PERSONAL` words) lists only people who said it themselves, each with a page the search returned; the rest are
   dropped and counted. A date with no such page stays but is marked Not Checked Online. Never loosen either.
+- Growing a group (owner 2026-11-23: "we need a much bigger database ... tie up all the loose ends"): What Next? always
+  offers Search Everything (`auto`: the plain search, then angle after angle by itself, until 3 ways in a row find
+  nobody new; asks at every $1), One More Plain Search, one angle, Add Someone Yourself (`addPerson`, free) and Check
+  the Dates. A category typed again OPENS the research that holds it (`findResearch`), never a twin. Up to 1,500
+  people. An old research (no angles stored) gets every option too: test a new option on research #1's shape.
 - What Next? (owner 2026-11-23: "give me a pop-up ... and just give me the options"): when a search stops, a card says
   why and offers every choice with its cost: Search From Another Angle (three the AI suggests each round, or the
   owner's own; `ANGLE:` in the round, `tried` kept), Check the Dates (`checkDates`: every date with no page from the
@@ -269,6 +274,12 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   center): EXPAND = a number in a strong position in many charts ("18/9 · 16 of 20"), a chart heavy with one family or
   with numbers holding a digit ("a 4 in it": 4, 40/4, 44/8); COLLAPSE = the themes, then one strong position where a
   family leads. The vault is only a small "usually 46 in 100". Counting every position (all ~120) drowned everything.
+- SOLID OR LEAN (owner 2026-11-23: "I want the insights to be solid"): every card is measured against 200 RANDOM
+  groups of the same size put through the same search (`luck`), and cut in two (`halves`). Solid = fewer than 5 in
+  100 random groups AND both halves; Strong Lean = under 20; Lean = under 50; past that it is not a card. The first
+  build called a card clear by its own rarity: 38 of 40 random groups got one. `test/insight.test.js` holds this.
+  Never loosen a limit to fill an empty screen. The birth year is a position like any other: never corrected away
+  (owner: "maybe a certain type of people were born in a certain year").
 - The Reading (`writeSummary`, Claude Opus 5.5, the reading guide `coreText()` in hand, tool `give_reading`): ONE line
   of the course's meaning per insight and three to five lines that weave them like one chart is read. No statistics
   words, no hedging, no long text (the owner called the first summaries "pointless ... way too wordy"). Nothing
