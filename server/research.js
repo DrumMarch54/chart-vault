@@ -182,7 +182,7 @@ const isSame = (a, b) => sameName(a.known_as, b.known_as) || (!!a.birth_date && 
 // Starts a search and returns its id at once. `limit` is the dollars this research may spend before it asks.
 export function startResearch(db, query, { build = null, log = () => {} } = {}) {
   const q = clean(query, MAX_QUERY);
-  if (!q) throw new AiError('Say or type a category first.');
+  if (!q) throw new AiError('Type a category first.');
   const r = { query: q, category: q, personal: PERSONAL.test(q), dropped: 0, note: '', vault_kinds: [], people: [], usd: 0, seconds: 0, calls: 0, searches: 0, rounds: 0, limit: LIMIT_USD, status: 'running', stop: '' };
   const id = Number(db.prepare('INSERT INTO research (query, category, size, result, off, usd, build) VALUES (?, ?, 0, ?, ?, 0, ?)').run(q, q, JSON.stringify(r), JSON.stringify({ p: [], v: [] }), build).lastInsertRowid);
   runRounds(db, id, log);

@@ -1,4 +1,4 @@
-/* Research a Group (owner's ask 2026-11-23): say a category ("computer coders", "trans people", "coffee chains"),
+/* Research a Group (owner's ask 2026-11-23): type a category ("computer coders", "trans people", "coffee chains"),
    and the AI searches the web in rounds for as many well-known examples as it can find with the name and date a chart needs.
    Four screens on one route:
      #/research                 ask (the box, the size, Past Research)
@@ -10,7 +10,7 @@
 (function (root) {
   'use strict';
   const USAGE_LABELS = {
-    'screen.research': 'Research a Group', 'home.research': 'Research a Group (home)', 'research.mic': 'Research: speak a category',
+    'screen.research': 'Research a Group', 'home.research': 'Research a Group (home)', 
     'research.search': 'Research: search the web', 'research.more': 'Research: keep going or search for more', 'research.past_open': 'Research: open a past research',
     'research.past_remove': 'Research: remove a past research', 'research.tick': 'Research: tick or untick someone', 'research.show': 'Research: Show Charts and Patterns',
     'research.change_who': 'Research: Change Who Is In', 'research.open_person': 'Research: open a person', 'research.name_now': 'Research: Birth Name or Name Now',
@@ -20,7 +20,6 @@
 
   function install(A) {
     const { routes, h, fill, api, toast, count, go, swap, render, pageTop, drawnChart, chartPng, holdButton, sizeControl, groupFinds, fmtN } = A;
-    const SR = root.SpeechRecognition || root.webkitSpeechRecognition;
     const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const money = (usd) => { const c = Math.round(usd * 100); return usd < 0.005 ? 'under a cent' : c === 1 ? '1 cent' : usd < 1 ? `${c} cents` : `$${usd.toFixed(2)}`; };
     const longDate = (iso) => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ''); return m ? `${MON[+m[2] - 1]} ${+m[3]}, ${m[1]}` : ''; };
@@ -54,27 +53,12 @@
       const $go = h('button', { type: 'button', class: 'btn-primary btn-block' }, 'Search');
       const $out = h('div', { class: 'stack' }), $past = h('div', { class: 'stack' });
       const $cost = h('p', { class: 'muted small', style: 'margin:0' }, 'It keeps searching until no new ones turn up, and asks you before spending more than $1.');
-      const $hint = h('div', { class: 'muted small lookup-hint' }, SR ? 'Tap the microphone and say a kind of person or business: "computer coders", "coffee chains".' : 'Type a kind of person or business: "computer coders", "coffee chains".');
-      let busy = false, rec = null, listening = false;
-      const $mic = h('button', { type: 'button', class: 'lookup-mic', 'aria-label': 'Speak a category' }, '🎙');
-      const stopMic = () => { listening = false; $mic.classList.remove('on'); try { rec && rec.stop(); } catch {} };
-      $mic.onclick = () => {
-        if (!SR) { $q.focus(); return; }
-        if (listening) { stopMic(); return; }
-        count('research.mic');
-        rec = new SR(); rec.lang = 'en-US'; rec.interimResults = true; rec.maxAlternatives = 1; rec.continuous = false;
-        rec.onresult = (e) => { $q.value = Array.from(e.results).map((r) => r[0].transcript).join(' ').trim(); };
-        rec.onerror = (e) => { listening = false; $mic.classList.remove('on'); $hint.textContent = e.error === 'not-allowed' || e.error === 'service-not-allowed' ? 'The microphone is blocked for this app. Allow it in the phone\'s settings for this site, or type instead.' : e.error === 'no-speech' ? 'Nothing heard. Tap the microphone and try again.' : `The microphone stopped (${e.error}). Tap it to try again, or type instead.`; };
-        // A paid search never starts by itself: the words land in the box and the owner taps Search.
-        rec.onend = () => { const was = listening; listening = false; $mic.classList.remove('on'); if (was && $q.value) $hint.textContent = 'Check the words, then tap Search.'; };
-        try { rec.start(); listening = true; $mic.classList.add('on'); $hint.textContent = 'Listening… say the category.'; } catch { $hint.textContent = 'The microphone could not start. Tap it again, or type instead.'; }
-      };
+      let busy = false;
       // The search runs on the server; this only starts it and opens the screen that watches it.
       const run = async () => {
         const q = $q.value.trim();
-        if (!q) { toast('Say or type a category first.', true); $q.focus(); return; }
+        if (!q) { toast('Type a category first.', true); $q.focus(); return; }
         if (busy) return;
-        if (listening) stopMic();
         count('research.search');
         busy = true; $go.disabled = true; $go.textContent = 'Starting…';
         try { const r = await send('/api/research', 'POST', { query: q }); go(`#/research?id=${r.id}&view=who`); }
@@ -94,12 +78,12 @@
             h('span', { class: 'muted small' }, `${whenOf(it.created_at)} · ${money(it.usd || 0)}`)))));
       }).catch((err) => fail($past, new Error(`Past Research could not load: ${err.message}`)));
       render(h('div', { class: 'screen stack' }, pageTop('Research a Group', '#/'),
-        h('div', { class: 'lookup-top' }, $mic, $hint),
         $q, $go, $cost,
         h('p', { class: 'muted small', style: 'margin:0' }, 'It finds as many well-known examples as it can, with their birth name and birth date (a business: its registered name and start date), draws every chart and counts what the group shares against your whole vault. Only public figures; nothing is saved until you tap Save to Vault.'),
         $out, $past));
       api('/api/ai/settings').then((s) => { if (!s.key_set) fill($out, h('div', { class: 'card stack' }, h('p', { class: 'muted', style: 'margin:0' }, 'Add the AI key first.'), h('a', { class: 'btn btn-block', href: '#/ai' }, 'AI Reading Settings'))); }).catch(() => {});
       pastList();
+      if (!$q.value) $q.focus(); // the keyboard comes up at once (owner 2026-11-23: its own microphone does the talking)
     }
 
     // How the search is going (it runs on the server): shown on top of Who It Found and of the results. While it

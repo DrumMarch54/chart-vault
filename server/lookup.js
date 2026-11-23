@@ -121,7 +121,7 @@ export function vaultMatches(db, query) {
 
 export async function lookupPerson(db, query) {
   const q = clean(query, MAX_QUERY);
-  if (!q) throw new AiError('Say or type a name first.');
+  if (!q) throw new AiError('Type a name first.');
   const messages = [{ role: 'user', content: q }];
   const found = new Map();
   let usd = 0, seconds = 0, calls = 0, searches = 0, answer = null, nudged = false;

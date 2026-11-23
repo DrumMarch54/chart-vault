@@ -217,8 +217,8 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   mostly course passages); a question about a chart about 3 cents while cached; a vault question about a cent. Never call the model from a test or a tool.
 
 ## Look Up Someone (built 2026-11-01)
-- Home "Look Up" tile, or press and hold the app icon (manifest shortcut, `#/lookup?listen=1`): tap the microphone
-  (the browser's speech recognition) and say a name or describe someone. `server/lookup.js`: the vault first, free
+- Home "Look Up" tile, or press and hold the app icon (manifest shortcut, `#/lookup`): type a name or describe someone.
+  No microphone button anywhere (owner 2026-11-23: the keyboard's own speech-to-text does it); the box takes the cursor at once. `server/lookup.js`: the vault first, free
   (`vaultMatches`); then Claude Haiku 5.5 with the web search tool finds the birth name and date (`give_answer`, up to
   three people). Searches cost $0.01 each on top of tokens (`WEB_SEARCH_USD` in ai.js). A source is shown only if the
   search returned it; no source = "unsure". Nothing is saved until Save to Vault (`/api/quick/save` with `title` = the

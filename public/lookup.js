@@ -1,13 +1,14 @@
-/* Look Up (owner's ask 2026-11-01; businesses and organizations 2026-11-14): tap the microphone and say a name ("Fifty Cent") or describe
+/* Look Up (owner's ask 2026-11-01; businesses and organizations 2026-11-14): type a name ("Fifty Cent") or describe
    someone ("the rapper who got shot nine times"). The vault is checked first, for free; then the AI searches
    the web for the birth name and birth date (about 3 to 10 cents) and each person found is drawn as a chart,
    with the name and date in boxes to fix and a Save to Vault button. Nothing is saved until that tap.
-   Also opened from the phone's app icon: press and hold it, "Look Up Someone" (manifest shortcut, ?listen=1).
+   Also opened from the phone's app icon: press and hold it, "Look Up" (manifest shortcut). No microphone button
+   (owner 2026-11-23: the keyboard's own speech-to-text does that); the box takes the cursor at once.
    app.js hands over its plumbing through Lookup.install, like reading.js. */
 (function (root) {
   'use strict';
   const USAGE_LABELS = {
-    'screen.lookup': 'Look Up', 'home.lookup': 'Look Up (home)', 'lookup.mic': 'Look Up: speak a name',
+    'screen.lookup': 'Look Up', 'home.lookup': 'Look Up (home)', 
     'lookup.search': 'Look Up: search the web', 'lookup.web_anyway': 'Look Up: search the web anyway', 'lookup.save': 'Look Up: Save to Vault',
     'lookup.quick': 'Look Up: open in Quick Chart', 'lookup.pick_name': 'Look Up: pick a name', 'lookup.pick_date': 'Look Up: pick a date',
     'lookup.clarify': 'Look Up: add a detail and search again', 'lookup.others': 'Look Up: open Others With This Name', 'lookup.past_open': 'Look Up: open a past search',
@@ -17,7 +18,6 @@
   function install(A) {
     const { routes, h, fill, api, toast, count, go, render, pageTop, drawnChart, chartPng, holdButton } = A;
     const whenOf = (iso) => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ', ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); };
-    const SR = root.SpeechRecognition || root.webkitSpeechRecognition;
     const money = (usd) => { const c = Math.round(usd * 100); return usd < 0.005 ? 'under a cent' : c === 1 ? '1 cent' : usd < 1 ? `${c} cents` : `$${usd.toFixed(2)}`; };
     const postJson = (url, body) => api(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
     const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -117,28 +117,10 @@
 
     routes.lookup = function lookupView(_, query) {
       count('screen.lookup');
-      const $q = h('input', { type: 'text', placeholder: 'A person, a business, or describe them…', autocomplete: 'off', enterkeyhint: 'search', maxlength: 200, value: query && query.get('q') ? query.get('q') : '' });
+      const $q = h('input', { type: 'text', placeholder: 'A person or a business…', autocomplete: 'off', enterkeyhint: 'search', maxlength: 200, value: query && query.get('q') ? query.get('q') : '' });
       const $go = h('button', { type: 'button', class: 'btn-primary', onclick: () => send(false) }, 'Search');
       const $out = h('div', { class: 'stack' });
-      const $hint = h('div', { class: 'muted small lookup-hint' }, SR ? 'Tap the microphone and say a name, a business or an organization, or describe them.' : 'Type a name or a business, or use the microphone on your keyboard.');
-      let rec = null, listening = false, searched = false;
-      const $mic = h('button', { type: 'button', class: 'lookup-mic', 'aria-label': 'Speak a name' }, '🎙');
-      const stopMic = () => { listening = false; $mic.classList.remove('on'); try { rec && rec.stop(); } catch {} };
-      $mic.onclick = () => {
-        if (!SR) { $q.focus(); return; }
-        if (listening) { stopMic(); return; }
-        count('lookup.mic');
-        rec = new SR();
-        rec.lang = 'en-US'; rec.interimResults = true; rec.maxAlternatives = 1; rec.continuous = false;
-        let heard = '';
-        rec.onresult = (e) => { heard = Array.from(e.results).map((r) => r[0].transcript).join(' ').trim(); $q.value = heard; };
-        rec.onerror = (e) => {
-          listening = false; $mic.classList.remove('on');
-          $hint.textContent = e.error === 'not-allowed' || e.error === 'service-not-allowed' ? 'The microphone is blocked for this app. Allow it in the phone\'s settings for this site, or type instead.' : e.error === 'no-speech' ? 'Nothing heard. Tap the microphone and try again.' : `The microphone stopped (${e.error}). Tap it to try again, or type instead.`;
-        };
-        rec.onend = () => { const was = listening; listening = false; $mic.classList.remove('on'); if (was && heard) send(false); };
-        try { rec.start(); listening = true; $mic.classList.add('on'); $hint.textContent = 'Listening… say the name.'; } catch (err) { $hint.textContent = 'The microphone could not start. Tap it again, or type instead.'; }
-      };
+      let searched = false;
       // "Not right?" (owner 2026-11-14: "I will click what's correct or clarify"): a detail added to the
       // same words, searched again (paid, like any web search).
       const clarifyBox = (q) => {
@@ -176,8 +158,7 @@
       };
       const send = async (web, quiet) => {
         const q = $q.value.trim();
-        if (!q) { toast('Say or type a name first.', true); return; }
-        if (listening) stopMic();
+        if (!q) { toast('Type a name first.', true); return; }
         if (!quiet) count(web ? 'lookup.web_anyway' : 'lookup.search');
         $go.disabled = true; $go.textContent = 'Searching…';
         searched = true; fill($past);
@@ -209,18 +190,17 @@
       };
       $q.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); send(false); } });
       render(h('div', { class: 'screen stack' }, pageTop('Look Up', '#/'),
-        h('div', { class: 'lookup-top' }, $mic, $hint),
         h('div', { class: 'row', style: 'flex-wrap:nowrap' }, $q, $go),
         h('p', { class: 'muted small', style: 'margin:0' }, 'Your vault is checked first, for free. A web search finds a person\'s birth name and birth date, or a business\'s registered name and founding date: about 3 to 10 cents (it digs further when the date is hard to find). Nothing is saved until you tap Save to Vault.'),
         $out, $past));
       api('/api/ai/settings').then((s) => { if (!s.key_set) fill($out, h('div', { class: 'card stack' }, h('p', { class: 'muted', style: 'margin:0' }, 'Add the AI key first.'), h('a', { class: 'btn btn-block', href: '#/ai' }, 'AI Reading Settings'))); }).catch(() => {});
       if (query && query.get('past')) openPast(query.get('past'));
       else if ($q.value) send(false);
-      else if (query && query.get('listen') && SR) setTimeout(() => $mic.click(), 300);
+      else if (!(query && query.get('past'))) $q.focus(); // the keyboard comes up at once: its own microphone does the talking (owner 2026-11-23)
       if (!(query && query.get('past')) && !$q.value) pastList();
     };
 
-    const homeButton = () => h('a', { class: 'act', href: '#/lookup', onclick: () => count('home.lookup') }, h('span', { class: 'qicon' }, '🎙'), h('span', { class: 'al' }, 'Look Up'));
+    const homeButton = () => h('a', { class: 'act', href: '#/lookup', onclick: () => count('home.lookup') }, h('span', { class: 'qicon' }, '⌕'), h('span', { class: 'al' }, 'Look Up'));
     return { homeButton, USAGE_LABELS };
   }
   root.Lookup = { install };
