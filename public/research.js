@@ -233,17 +233,18 @@
       const $expand = h('div', { class: 'stack' }), $collapse = h('div', { class: 'stack' }), $read = h('div', { class: 'card stack rs-read' });
       const card = (i, note) => h('div', { class: 'card ins' },
         h('div', { class: 'ins-top' }, h('span', { class: 'ins-big' }, i.big),
-          h('div', { class: 'ins-headbox' }, h('div', { class: 'ins-head' }, i.head), i.lean ? h('span', { class: 'ins-lean' }, 'Slight Lean') : null,
+          h('div', { class: 'ins-headbox' }, h('div', { class: 'ins-head' }, i.head), h('span', { class: `ins-lean ${i.level || ''}` }, i.level === 'solid' ? 'Solid' : i.level === 'strong' ? 'Strong Lean' : 'Lean'),
             h('div', { class: 'ins-count' }, h('b', {}, i.count), i.usual !== null && i.usual !== undefined ? h('span', { class: 'muted' }, ` · usually ${i.usual} in 100`) : null))),
         note ? h('p', { class: 'ins-note' }, note.line) : null,
         ...String(i.detail || '').split(' · ').filter(Boolean).map((d) => h('div', { class: 'muted small' }, d)),
-        h('details', { class: 'ins-who', ontoggle: (e) => { if (e.target.open) count('research.insight_who'); } }, h('summary', {}, `Who (${i.people.length})`),
+        h('details', { class: 'ins-who', ontoggle: (e) => { if (e.target.open) count('research.insight_who'); } }, h('summary', {}, `Who (${i.people.length}) and How Solid`),
+          h('div', { class: 'muted small' }, `${i.luck === 0 ? 'No random group of this size' : `${Math.max(1, Math.round(i.luck * 100))} in 100 random groups of this size`} found something this strong.${i.halves === true ? ' It shows in both halves of the group.' : i.halves === false ? ' It shows in only one half of the group.' : ''} Solid = fewer than 5 in 100, and both halves.`),
           h('div', { class: 'simpills' }, ...i.people.map((c) => h('a', { class: 'simpill', href: hrefOf(c) }, c.title || 'No name')))));
       const drawReading = (sm, pending) => {
         const stale = sm && sm.key !== s.key;
         const notes = new Map(((sm && !stale && sm.notes) || []).map((x) => [x.key, x]));
-        fill($expand, ...ins.expand.map((i) => card(i, notes.get(i.key))), ins.expand.length ? null : h('p', { class: 'muted', style: 'margin:0' }, 'No number fills these charts more than usual yet.'));
-        fill($collapse, ...ins.collapse.map((i) => card(i, notes.get(i.key))), ins.collapse.length ? null : h('p', { class: 'muted', style: 'margin:0' }, 'No single place in the chart stands out yet.'));
+        fill($expand, ...ins.expand.map((i) => card(i, notes.get(i.key))), ins.expand.length ? null : h('p', { class: 'muted', style: 'margin:0' }, 'No number fills these charts more than a random group would show.'));
+        fill($collapse, ...ins.collapse.map((i) => card(i, notes.get(i.key))), ins.collapse.length ? null : h('p', { class: 'muted', style: 'margin:0' }, 'No single place in the chart stands out more than a random group would show.'));
         const write = (again) => async () => {
           if (again) count('research.summary_again');
           drawReading(sm, true);
@@ -276,6 +277,7 @@
           h('p', { class: 'muted', style: 'margin:0' }, `${plural(s.size, one, many)} read: ${fmtN(s.online)} found online${s.from_vault ? `, ${fmtN(s.size - s.online)} from your vault` : ''}.${left ? ` ${left[0].toUpperCase()}${left.slice(1)}.` : ''}`),
           g.personal ? h('p', { class: 'muted small', style: 'margin:0' }, 'A personal category: only people who said it about themselves in public, each with the page that says so.') : null,
           h('a', { class: 'btn btn-block', href: `#/research?id=${id}&view=who`, onclick: () => count('research.change_who') }, `Change Who Is In (${on.length + vaultOn.length} of ${g.people.length + g.vault.length})`)),
+        s.size >= 3 && !ins.solid ? h('p', { class: 'muted small rs-size-note' }, `Nothing is solid yet with ${fmtN(s.size)} charts. Leans firm up or fade as the group grows: tap Find More.`) : null,
         s.size >= 3 ? h('div', { class: 'summary rhead' }, 'Expand: The Whole Chart') : null,
         s.size >= 3 ? $expand : null,
         s.size >= 3 ? h('div', { class: 'summary rhead' }, 'Collapse: One Place in the Chart') : null,

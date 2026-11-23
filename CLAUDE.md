@@ -269,6 +269,12 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   center): EXPAND = a number in a strong position in many charts ("18/9 · 16 of 20"), a chart heavy with one family or
   with numbers holding a digit ("a 4 in it": 4, 40/4, 44/8); COLLAPSE = the themes, then one strong position where a
   family leads. The vault is only a small "usually 46 in 100". Counting every position (all ~120) drowned everything.
+- SOLID OR LEAN (owner 2026-11-23: "I want the insights to be solid"): every card is measured against 200 RANDOM
+  groups of the same size put through the same search (`luck`), and cut in two (`halves`). Solid = fewer than 5 in
+  100 random groups AND both halves; Strong Lean = under 20; Lean = under 50; past that it is not a card. The first
+  build called a card clear by its own rarity: 38 of 40 random groups got one. `test/insight.test.js` holds this.
+  Never loosen a limit to fill an empty screen. The birth year is a position like any other: never corrected away
+  (owner: "maybe a certain type of people were born in a certain year").
 - The Reading (`writeSummary`, Claude Opus 5.5, the reading guide `coreText()` in hand, tool `give_reading`): ONE line
   of the course's meaning per insight and three to five lines that weave them like one chart is read. No statistics
   words, no hedging, no long text (the owner called the first summaries "pointless ... way too wordy"). Nothing

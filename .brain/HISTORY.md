@@ -1055,3 +1055,15 @@ and threes as the name pillar; no lean to 44/8 or 40/4 in that tech group. Built
 strong positions), cards with one course line each, a reading of three to five lines, one layout; the old list folded.
 Lesson: three rounds of redesign came from building a statistics tool for someone who reads charts. Ask "what would a
 good answer say, in your words" before the first build, not after the third.
+
+## 2026-11-23: "Are you sure we're doing this in the correct way?" No.
+The owner asked whether the insights were solid. Tested instead of answering: 40 groups of RANDOM vault people, 38
+got at least one "clear" card, about three cards each. The limits had been loosened one build earlier so that the
+tech group's screen would not be empty; with about a hundred numbers tried per group something always looks rare.
+Fix: each card is now measured against 200 random groups of the same size run through the same search, and against
+both halves of the group. After: 5 of 40 random groups get a Solid card. On the owner's groups nothing is Solid yet:
+trans people (20) keep two Strong Leans, 18/9 in 16 of 20 (6 in 100 random groups) and nines in the name chart's
+emotion center (15 in 100); tech people (60) keep two Leans. I also proposed correcting for birth years; the owner
+refused it flatly ("that's another insight ... I don't understand why you even brought that up") and he is right for
+his purpose: the year is a position he reads. Lesson: when a screen looks empty, the answer is more charts, never a
+looser limit; and test a pattern finder on random groups BEFORE showing its output to the owner.

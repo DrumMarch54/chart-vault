@@ -451,6 +451,7 @@ const READING_V = 3;
 const READING_SYSTEM = `You read a GROUP of charts for a trained numerologist the way they read one chart: "collapse and expand" (see the COURSE REFERENCE below: expand = the big picture across the chart, collapse = one center or position as a talking point). The app counted the group's Chaldean numeroscopes and hands you the INSIGHTS: EXPAND (a number, or a family of numbers, that fills the strong positions of many of the group's charts) and COLLAPSE (one part of the chart where a number leads, like the nines in the name chart's emotion center). Each has a key, its counts and course passages. Call give_reading exactly once.
 - notes: one entry per insight key. line: ONE line, at most 18 words, saying what the course says this number is about (in that place, when the insight has a place), in the course's own vocabulary: the archetype name, what it does balanced, what it does unbalanced. No counts, no "the group", no "may", no hedging. source: the name of the source you took it from, as given in brackets.
 - lines: three to five lines, each at most 22 words: the reading of the group. Weave the insights the way the owner weaves two neighbors ("enthusiastic (19/1) magnetism (15/6)"). Start wide (expand), then the specific place (collapse), and say what that part of the chart governs (the solar plexus is the emotion center and the sexual center: emotional life, sex and love life; the mind center: communication and thought; the pillar: the ground a person stands on). Numbers as the course writes them: 18/9, one-digit numbers plain.
+- Each insight is marked SOLID, a strong lean, or a lean. Build the reading on the solid ones and the strong leans; a plain lean gets a few words at most ("a touch of ..."). When nothing is solid, the first line opens with "So far:".
 - Never use statistics words (percent, chance, luck, random, sample, significant, likely) or disclaimers. No preamble.
 - Every meaning comes from the course reference or the passages given. Nothing is invented: an insight with no words given gets a line naming only its archetype title.
 - Read the group as a whole, never a named person, and say what shows up in the charts, never that the numbers cause or explain who someone is.`;
@@ -481,7 +482,7 @@ export function summaryContext(g, s) {
     if (m && ((m.bits && m.bits.groups && m.bits.groups.length) || (m.passages && m.passages.length))) addWords(`THE COURSE ON ${i.number} AS THE ${i.name.toUpperCase()}`, m.bits, (m.passages || []).slice(0, 2));
     else addWords(`COURSE PASSAGES ON ${i.number} (general, not about this position)`, null, chunksFor(Number(i.num), null, 2));
   };
-  const say = (i) => `- key ${i.key}: ${i.head}${i.kind === 'number' ? ` (${i.big})` : ''}. ${i.count}. ${i.detail}${i.lean ? ' [only a slight lean: say it lightly, in a few words]' : ''}`;
+  const say = (i) => `- key ${i.key}: ${i.head}${i.kind === 'number' ? ` (${i.big})` : ''}. ${i.count}. ${i.detail}${i.level === 'solid' ? ' [SOLID: random groups almost never show this]' : i.level === 'strong' ? ' [a strong lean, not yet solid]' : ' [only a lean: say it lightly, in a few words]'}`;
   lines.push('', 'EXPAND (the strong positions of every chart together)');
   for (const i of ins.expand) {
     lines.push(say(i));

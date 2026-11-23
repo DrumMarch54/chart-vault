@@ -1104,3 +1104,6 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .rs-every > summary::-webkit-details-marker { display: none; }
 .rs-every[open] > summary { margin-bottom: 10px; }
 .ins-lean { display: inline-block; margin: 3px 0 1px; padding: 1px 8px; border-radius: 9px; background: var(--panel2); color: var(--muted); font-size: 12px; font-weight: 600; }
+.ins-lean.solid { background: var(--green); color: #fff; }
+.ins-lean.strong { background: var(--warn-bg); color: var(--text); }
+.rs-size-note { margin: 0; }
