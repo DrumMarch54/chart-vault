@@ -1409,11 +1409,23 @@
     render(h('div', { class: 'screen stack qscreen' }, pageTop('What This Group Shares', '#/?' + groupQ), $body));
     let d;
     try { d = await api('/api/group?' + groupQ); } catch (err) { fill($body, h('p', { class: 'err' }, err.message)); return; }
+    const left = d.tagged - d.size;
+    const lead = h('div', { class: 'card stack' },
+      h('div', { class: 'simname' }, d.display || d.tag),
+      h('p', { class: 'muted', style: 'margin:0' }, `${fmtN(d.size)} ${d.size === 1 ? 'person' : 'people'} in this group, compared with the ${fmtN(d.rest)} others in the vault.${left > 0 ? ` ${left} chart${left === 1 ? ' is' : 's are'} left out: no name and date read yet, or the same person twice.` : ''}`));
+    if (d.size < 3) { fill($body, lead, h('p', { class: 'muted' }, 'A group needs at least three people whose name and date have been read before anything can be said about it.')); return; }
+    fill($body, lead, groupFinds(d));
+  };
+
+  // The finds of a group, drawn: What This Group Shares and Research a Group (research.js) show the same cards.
+  // `chartHref(c)` is where a person's pill goes (a researched person who is not in the vault has no chart id).
+  function groupFinds(d, { chartHref = (c) => `#/chart/${c.id}` } = {}) {
+    const $el = h('div', { class: 'stack' });
     const pct = (a, of) => (of ? Math.round((a / of) * 100) : 0);
     const bars = (x) => h('div', { class: 'gbars' },
       h('div', { class: 'gline' }, h('span', { class: 'gbar' }, h('i', { style: `width:${Math.max(pct(x.in_group, x.group_of), 2)}%` })), h('span', { class: 'gnum' }, `${x.in_group} of ${x.group_of} here`)),
       h('div', { class: 'gline rest' }, h('span', { class: 'gbar' }, h('i', { style: `width:${Math.max(pct(x.in_rest, x.rest_of), x.in_rest ? 2 : 0)}%` })), h('span', { class: 'gnum' }, `${fmtN(x.in_rest)} of ${fmtN(x.rest_of)} others`)));
-    const who = (charts) => h('div', { class: 'simpills' }, ...charts.map((c) => h('a', { class: 'simpill', href: `#/chart/${c.id}`, onclick: () => count('group.open_chart') }, c.title || 'No name')));
+    const who = (charts) => h('div', { class: 'simpills' }, ...charts.map((c) => h('a', { class: 'simpill', href: chartHref(c), onclick: () => count('group.open_chart') }, c.title || 'No name')));
     const find = (title, x, pos) => h('button', { type: 'button', class: 'gfind', onclick: () => { count('group.open_search'); go(positionHash([{ pos, num: x.num }])); } },
       h('span', { class: 'ghead' }, h('b', { class: 'gn' }, x.number), h('span', { class: 'gt' }, title), h('span', { class: 'gchev' }, '›')), bars(x));
     const pill = (strength, luck) => h('div', { class: 'gtop' }, h('span', { class: `gstrength ${strength === 'Strong' ? 'strong' : strength === 'Worth a Look' ? 'look' : ''}` }, strength),
@@ -1422,12 +1434,7 @@
     let weak = false;
     const shown = (list) => (weak ? list : list.filter((c) => c.strength !== 'Could Be Chance'));
     const weakOnes = (list) => { const n = list.filter((c) => c.strength === 'Could Be Chance').length; return n && !weak ? h('button', { type: 'button', class: 'btn btn-block showall', onclick: () => { weak = true; count('group.show_weak'); draw(); } }, `Show ${n} More That Could Be Chance`) : null; };
-    const left = d.tagged - d.size;
-    const lead = h('div', { class: 'card stack' },
-      h('div', { class: 'simname' }, d.display || d.tag),
-      h('p', { class: 'muted', style: 'margin:0' }, `${fmtN(d.size)} ${d.size === 1 ? 'person' : 'people'} in this group, compared with the ${fmtN(d.rest)} others in the vault.${left > 0 ? ` ${left} chart${left === 1 ? ' is' : 's are'} left out: no name and date read yet, or the same person twice.` : ''}`));
-    if (d.size < 3) { fill($body, lead, h('p', { class: 'muted' }, 'A group needs at least three people whose name and date have been read before anything can be said about it.')); return; }
-    const draw = () => fill($body, lead,
+    const draw = () => fill($el,
       h('p', { class: 'muted small', style: 'margin:0' }, `A small group finds patterns by luck, so every find is checked against ${fmtN(d.random_groups)} random groups of the same size. Strong: fewer than 1 random group in 20 does this well. Worth a Look: fewer than half. Could Be Chance: most do. Tap a number to see every chart with it.`),
       h('div', { class: 'summary rhead' }, 'Same Number in the Same Position'),
       shown(d.cards).length ? null : h('p', { class: 'muted' }, 'Nothing stands out beyond what luck alone gives.'),
@@ -1436,7 +1443,8 @@
       shown(d.anywhere).length ? h('div', { class: 'summary rhead' }, 'A Number Anywhere in the Chart') : null,
       ...shown(d.anywhere).map((a) => h('div', { class: 'card gcard' }, pill(a.strength, a.luck), find('Anywhere in the Chart', a, '*.*'), who(a.charts))));
     draw();
-  };
+    return $el;
+  }
 
   // ---------- possible duplicates ----------
   // Groups of charts that look like the same chart twice: the very same picture, or the same typed name and
@@ -2513,6 +2521,9 @@
   // Look Up Someone (say a name, the web finds the birth name and date, the chart is drawn): lookup.js.
   lookupUi = window.Lookup ? window.Lookup.install({ routes, h, fill, api, toast, count, go, render, pageTop, drawnChart, chartPng, holdButton }) : null;
   if (lookupUi) Object.assign(USAGE_LABELS, lookupUi.USAGE_LABELS);
+  // Research a Group (a category searched on the web, the charts drawn, what the group shares): research.js.
+  const researchUi = window.Research ? window.Research.install({ routes, h, fill, api, toast, count, go, swap, render, pageTop, drawnChart, chartPng, holdButton, sizeControl, groupFinds, fmtN }) : null;
+  if (researchUi) Object.assign(USAGE_LABELS, researchUi.USAGE_LABELS);
   peopleUi = window.People ? window.People.install({ routes, h, fill, api, count, go, render, pageTop, fmtN }) : null;
   if (peopleUi) Object.assign(USAGE_LABELS, peopleUi.USAGE_LABELS);
   meaningUi = window.Meaning ? window.Meaning.install({ h, fill, api, count, go, positionHash, overlay: trackOverlay, overlayGone: untrackOverlay }) : null;

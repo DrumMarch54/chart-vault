@@ -90,6 +90,32 @@ const FAKE_READING = '## Nexus\nThe 19/1 day vibration with the 6/6 life path ma
 useClientFactory(() => ({ messages: { create: async (params) => {
   await new Promise((r) => setTimeout(r, 1000));
   const usage = { input_tokens: 42000, output_tokens: 700 };
+  // Research a Group: a fake group of coders (one with a changed name, one without a date, some not checked online).
+  if (params.tools && params.tools.some((t) => t.name === 'give_group')) {
+    const w = (n) => `https://en.wikipedia.org/wiki/${n}`;
+    const P = (known_as, birth_name, birth_date, why, page, extra = {}) => ({ kind: 'person', known_as, birth_name, name_now: '', birth_date, who: 'Programmer', why, member_source: page ? w(page) : '', name_source: page ? w(page) : '', date_source: page ? w(page) : '', sure: !!page, ...extra });
+    const people = [
+      P('Linus Torvalds', 'Linus Benedict Torvalds', '1969-12-28', 'Created Linux', 'Linus_Torvalds'),
+      P('Bill Gates', 'William Henry Gates III', '1955-10-28', 'Wrote the first Microsoft BASIC', 'Bill_Gates'),
+      P('Mark Zuckerberg', 'Mark Elliot Zuckerberg', '1984-05-14', 'Wrote the first Facebook', 'Mark_Zuckerberg'),
+      P('Dennis Ritchie', 'Dennis MacAlistair Ritchie', '1941-09-09', 'Created the C language', 'Dennis_Ritchie'),
+      P('Grace Hopper', 'Grace Brewster Murray', '1906-12-09', 'Wrote the first compiler', 'Grace_Hopper', { name_now: 'Grace Brewster Murray Hopper' }),
+      P('Guido van Rossum', 'Guido van Rossum', '1956-01-31', 'Created Python', ''),
+      P('Ada Lovelace', 'Augusta Ada Byron', '1815-12-10', 'Wrote the first published program', 'Ada_Lovelace'),
+      P('John Carmack', 'John D. Carmack II', '1970-08-20', 'Wrote the Doom engine', ''),
+      P('Margaret Hamilton', 'Margaret Elaine Heafield', '1936-08-17', 'Led the Apollo flight software', 'Margaret_Hamilton_(software_engineer)'),
+      P('Steve Wozniak', 'Stephen Gary Wozniak', '1950-08-11', 'Wrote the Apple I and II software', 'Steve_Wozniak'),
+      P('Satoshi Nakamoto', '', '', 'Wrote Bitcoin; the real name and date are not known', 'Satoshi_Nakamoto'),
+    ];
+    return { content: [
+      { type: 'server_tool_use', id: 'srv1', name: 'web_search', input: { query: 'famous programmers list' } },
+      { type: 'web_search_tool_result', tool_use_id: 'srv1', content: people.filter((p) => p.member_source).map((p) => ({ type: 'web_search_result', url: p.member_source, title: `${p.known_as} - Wikipedia` })) },
+      { type: 'tool_use', id: 'g1', name: 'give_group', input: { category: 'Computer Coders', personal: false, note: '', vault_kinds: ['field:tech'], people } },
+    ], stop_reason: 'tool_use', usage: { input_tokens: 90000, output_tokens: 1800, server_tool_use: { web_search_requests: 6 } } };
+  }
+  if (typeof params.messages[0].content === 'string' && params.messages[0].content.startsWith('THE GROUP:')) {
+    return { content: [{ type: 'text', text: 'The group leans on **19/1**: it shows up more often here than in the rest of the vault, the Prince of Heaven, a number of radiant self-expression [Main Combo Guide].\n\n- **Day 28/1** is shared by two of the group; Worth a Look, so it may well be luck.\n- The course words given do not cover the 10/1 in that position.\n\nA group this size shows a lean, not a proof.' }], stop_reason: 'end_turn', usage: { input_tokens: 6000, output_tokens: 250 } };
+  }
   // Look Up Someone: a fake web search and answer (the dev app never searches the real web).
   if (params.tools && params.tools.some((t) => t.type && t.type.startsWith('web_search'))) {
     // Same name, two people (say "james holmes shooter"): the one that fits, and a same-name other folded below.
