@@ -23,6 +23,24 @@ const NOT_COUNTED = new Set(NOT_A_REPEAT.spots);
 const SKIP_ANYWHERE = new Set(NOT_A_REPEAT.positions);
 const RANDOM_GROUPS = 300;
 
+// THEMES (owner 2026-11-23: "so many nines in the solar plexus centers"): finds are not read one by one. Several
+// finds of the same number family (9, 18/9, 27/9, 81/9 ...) sitting in the same part of a numeroscope are ONE theme:
+// "Nines in the Name Chart's Emotion Center". The parts follow the course: a center is its main and sub vibration,
+// its sub diamond and the diamond behind it. The same part in several charts (the sexual centers of the name,
+// vocation, personality and psyche charts) is one theme too.
+const AREA = {
+  heart: 'mind', heartExtra: 'mind', heartSubDiamond: 'mind', mindDiamond: 'mind',
+  solar: 'emotion', solarExtra: 'emotion', solarSubDiamond: 'emotion', emotionDiamond: 'emotion',
+  first: 'line', middle: 'line', last: 'line', leDiamond: 'line',
+  le: 'le', big: 'le', pillar: 'le', spine: 'le', spineDiamond: 'le',
+  upperLeft: 'auras', upperRight: 'auras', lowerLeft: 'auras', lowerRight: 'auras',
+};
+const AREA_NAME = { mind: ['Mind Center', 'Mind Centers'], emotion: ['Emotion Center (Solar Plexus)', 'Emotion Centers (Solar Plexus)'], line: ['Name Line', 'Name Lines'], le: ['Life Expression and Pillar', 'Life Expression and Pillar'], auras: ['Auras', 'Auras'] };
+const CHART_NAME = { name: 'Name Chart', vocation: 'Vocation Chart', personality: 'Personality Chart', outer: 'Outer Psyche Chart', inner: 'Inner Psyche Chart' };
+const PLURAL = ['', 'Ones', 'Twos', 'Threes', 'Fours', 'Fives', 'Sixes', 'Sevens', 'Eights', 'Nines'];
+const THEME_P = 0.02; // a find must be at least this unusual by itself to join a theme
+
+
 const logFacts = (N) => { const lf = new Float64Array(N + 1); for (let i = 1; i <= N; i++) lf[i] = lf[i - 1] + Math.log(i); return lf; };
 // P(X >= a) when `n` charts are drawn from `N` of which `K` hold the number (hypergeometric upper tail).
 function tail(lf, a, n, K, N) {
@@ -41,7 +59,7 @@ function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>>
 // The group is a tag's charts, or (who: [{ type, value, label }], server/people.js) a kind of person: "Rappers",
 // "Went to Prison".
 export function groupShares(db, tag, { limit = 12, anywhereLimit = 8, randomGroups = RANDOM_GROUPS, who = [] } = {}) {
-  const blank = { tagged: 0, size: 0, rest: 0, random_groups: randomGroups, cards: [], anywhere: [] };
+  const blank = { tagged: 0, size: 0, rest: 0, random_groups: randomGroups, cards: [], anywhere: [], themes: [] };
   if (who.length) {
     const params = [], sql = whoSql(who, params);
     const ids = new Set(db.prepare(`SELECT i.id FROM images i WHERE i.kind = 'chart' ${sql}`).all(...params).map((r) => r.id));
@@ -59,7 +77,7 @@ export function groupShares(db, tag, { limit = 12, anywhereLimit = 8, randomGrou
 // directly; they are only ever IN the group, never among "the others", so strangers never shift the yardstick.
 // A find's charts carry `ref` for such a person (no chart id to open).
 export function sharesOf(db, { ids = [], extra = [], display = '', limit = 12, anywhereLimit = 8, randomGroups = RANDOM_GROUPS } = {}) {
-  return shares(db, { tag: '', display, tagged: 0, size: 0, rest: 0, random_groups: randomGroups, cards: [], anywhere: [] }, new Set(ids), { limit, anywhereLimit, randomGroups, extra });
+  return shares(db, { tag: '', display, tagged: 0, size: 0, rest: 0, random_groups: randomGroups, cards: [], anywhere: [], themes: [] }, new Set(ids), { limit, anywhereLimit, randomGroups, extra });
 }
 
 const personKey = (r) => `${String(r.name || '').trim().toLowerCase().replace(/\s+/g, ' ')}|${r.day || ''}.${r.month || ''}.${r.year || ''}`;
@@ -104,7 +122,7 @@ function shares(db, out, tagged, { limit, anywhereLimit, randomGroups, extra = [
     if (!VISIBLE.has(spot) || NOT_COUNTED.has(spot)) return;   // a copy of another position is not a second find
     put(has, spot, i);
     put(holds, `${spot}|${v.sum}`, i);
-    if (v.sum > 9) put(holds, `${spot}|/${v.ds}`, i);         // any number with this digit sum (12/3, 21/3, 30/3 ...)
+    put(holds, `${spot}|/${v.ds}`, i);                        // the number family: 9, 18/9, 27/9 ... (2026-11-23: the plain 9 was left out, so a group's nines were split in two)
     if (!SKIP_ANYWHERE.has(v.position)) put(any, String(v.sum), i);
   };
   for (const v of db.prepare('SELECT image_id AS id, chart, position, sum, ds FROM chart_values').iterate()) {
@@ -114,7 +132,13 @@ function shares(db, out, tagged, { limit, anywhereLimit, randomGroups, extra = [
   const spots = [...has.keys()];
   const spotIdx = new Map(spots.map((s, i) => [s, i]));
   const hasArr = spots.map((s) => Uint32Array.from(has.get(s)));
-  const rows = [...holds].map(([key, set]) => { const [spot, num] = key.split('|'); return { spot, num, s: spotIdx.get(spot), who: Uint32Array.from(set) }; });
+  const rows = [...holds].map(([key, set]) => {
+    const [spot, num] = key.split('|');
+    const [chart, position] = spot.split('.');
+    const d = num.startsWith('/') ? Number(num.slice(1)) : digitSum(Number(num));
+    const area = CHART_NAME[chart] ? AREA[position] : null; // the higher self triangle has no centers: no themes there
+    return { spot, num, s: spotIdx.get(spot), who: Uint32Array.from(set), theme: area ? `${area}|${d}` : null };
+  });
   const anyRows = [...any].map(([num, set]) => ({ num, who: Uint32Array.from(set) }));
 
   const lf = logFacts(people.length);
@@ -125,6 +149,7 @@ function shares(db, out, tagged, { limit, anywhereLimit, randomGroups, extra = [
     const gOf = hasArr.map((arr) => hit(arr, flags));
     let best = 1, bestAny = 1;
     const list = [], anyList = [];
+    const themes = new Map(); // "emotion|9" -> position -> its strongest find
     for (const r of rows) {
       if (r.who.length < floor) continue;
       const a = hit(r.who, flags); if (a < floor) continue;
@@ -132,7 +157,22 @@ function shares(db, out, tagged, { limit, anywhereLimit, randomGroups, extra = [
       if (!of || a / of <= (K - a) / Math.max(N - of, 1)) continue;
       const p = tail(lf, a, of, K, N);
       if (p < best) best = p;
-      if (keep) list.push({ ...r, p, in_group: a, group_of: of, in_rest: K - a, rest_of: N - of });
+      const row = keep ? { ...r, p, in_group: a, group_of: of, in_rest: K - a, rest_of: N - of } : null;
+      if (keep) list.push(row);
+      if (r.theme && p < THEME_P) {
+        let t = themes.get(r.theme); if (!t) themes.set(r.theme, t = new Map());
+        const had = t.get(r.spot);
+        if (!had || p < had.p) t.set(r.spot, keep ? row : { p });
+      }
+    }
+    // A theme is two or more positions of one part holding the same family; its weight adds up how unusual each is.
+    let bestTheme = 0;
+    const themeList = [];
+    for (const [key, t] of themes) {
+      if (t.size < 2) continue;
+      let score = 0; for (const f of t.values()) score -= Math.log10(Math.max(f.p, 1e-12));
+      if (score > bestTheme) bestTheme = score;
+      if (keep) themeList.push({ key, score, finds: [...t.values()].sort((x, y) => x.p - y.p) });
     }
     for (const r of anyRows) {
       const a = hit(r.who, flags); if (a < floor) continue;
@@ -142,7 +182,7 @@ function shares(db, out, tagged, { limit, anywhereLimit, randomGroups, extra = [
       if (p < bestAny) bestAny = p;
       if (keep) anyList.push({ ...r, p, in_group: a, group_of: n, in_rest: K - a, rest_of: N - n });
     }
-    return { best, bestAny, list, anyList };
+    return { best, bestAny, list, anyList, bestTheme, themeList };
   }
   const mine = finds(real, true);
 
@@ -150,12 +190,12 @@ function shares(db, out, tagged, { limit, anywhereLimit, randomGroups, extra = [
   let seed = n; for (let i = 0; i < real.length; i++) if (real[i]) seed = (Math.imul(seed, 31) + people[i].id) >>> 0;
   const rand = rng(seed);
   const order = Uint32Array.from(people, (_, i) => i);
-  const luck = [], luckAny = [];
+  const luck = [], luckAny = [], luckTheme = [];
   for (let t = 0; t < randomGroups; t++) {
     const flags = new Uint8Array(people.length);
     for (let k = 0; k < n; k++) { const j = k + Math.floor(rand() * (order.length - k)); const x = order[k]; order[k] = order[j]; order[j] = x; flags[order[k]] = 1; }
     const f = finds(flags, false);
-    luck.push(f.best); luckAny.push(f.bestAny);
+    luck.push(f.best); luckAny.push(f.bestAny); luckTheme.push(f.bestTheme);
   }
   const share = (dist, p) => dist.reduce((c, x) => c + (x <= p ? 1 : 0), 0) / Math.max(dist.length, 1); // random groups with a find this strong
 
@@ -172,7 +212,7 @@ function shares(db, out, tagged, { limit, anywhereLimit, randomGroups, extra = [
     const idx = names(f.who), who = idx.join(',');
     const [chart, position] = f.spot.split('.');
     const family = f.num.startsWith('/');
-    const item = { pos: f.spot, num: f.num, name: positionName(chart, position), number: family ? `Digit Sum ${f.num.slice(1)}` : fmt(Number(f.num), digitSum(Number(f.num))), family, in_group: f.in_group, group_of: f.group_of, in_rest: f.in_rest, rest_of: f.rest_of };
+    const item = { pos: f.spot, num: f.num, name: positionName(chart, position), number: family ? `Any ${f.num.slice(1)}` : fmt(Number(f.num), digitSum(Number(f.num))), family, in_group: f.in_group, group_of: f.group_of, in_rest: f.in_rest, rest_of: f.rest_of };
     const c = cards.get(who);
     if (c) { if (c.items.some((i) => i.pos === item.pos)) continue; if (c.items.length < 3) c.items.push(item); else c.more += 1; continue; }
     if (cards.size >= limit) continue;
@@ -180,6 +220,17 @@ function shares(db, out, tagged, { limit, anywhereLimit, randomGroups, extra = [
     cards.set(who, { strength: strengthOf(luckShare), luck: luckShare, chance: f.p, items: [item], more: 0, charts: titles(idx) });
   }
   out.cards = [...cards.values()];
+
+  // The themes, heaviest first; the label says how many random groups have a theme at least this heavy.
+  const itemOf = (f) => { const [chart, position] = f.spot.split('.'); const family = f.num.startsWith('/'); return { pos: f.spot, num: f.num, name: positionName(chart, position), number: family ? `Any ${f.num.slice(1)}` : fmt(Number(f.num), digitSum(Number(f.num))), family, in_group: f.in_group, group_of: f.group_of, in_rest: f.in_rest, rest_of: f.rest_of }; };
+  out.themes = mine.themeList.sort((x, y) => y.score - x.score).slice(0, 6).map((t) => {
+    const [area, d] = t.key.split('|');
+    const charts = [...new Set(t.finds.map((f) => f.spot.split('.')[0]))].sort((x, y) => Object.keys(CHART_NAME).indexOf(x) - Object.keys(CHART_NAME).indexOf(y));
+    const title = charts.length === 1 ? `${PLURAL[d]} in the ${CHART_NAME[charts[0]]}'s ${AREA_NAME[area][0]}` : `${PLURAL[d]} in the ${AREA_NAME[area][1]}: ${charts.map((c) => CHART_NAME[c]).join(', ')}`;
+    const who = new Set(); for (const f of t.finds) for (const i of names(f.who)) who.add(i);
+    const luckShare = luckTheme.reduce((c, x) => c + (x >= t.score ? 1 : 0), 0) / Math.max(luckTheme.length, 1);
+    return { title, family: Number(d), area, charts, strength: strengthOf(luckShare), luck: luckShare, items: t.finds.slice(0, 6).map(itemOf), more: Math.max(0, t.finds.length - 6), people: who.size, charts_of: titles([...who].sort((x, y) => x - y)) };
+  });
 
   mine.anyList.sort((x, y) => x.p - y.p || y.in_group - x.in_group);
   out.anywhere = mine.anyList.slice(0, anywhereLimit).map((f) => { const luckShare = share(luckAny, f.p); return { num: f.num, number: fmt(Number(f.num), digitSum(Number(f.num))), strength: strengthOf(luckShare), luck: luckShare, chance: f.p, in_group: f.in_group, group_of: f.group_of, in_rest: f.in_rest, rest_of: f.rest_of, charts: titles(names(f.who)) }; });

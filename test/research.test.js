@@ -23,7 +23,7 @@ const { createApp } = await import('../server/app.js');
 const { useClientFactory, setAiSettings } = await import('../server/ai.js');
 const { parseUserTagBackup, importTags } = await import('../server/import.js');
 const { setInputs } = await import('../server/positions.js');
-const { summaryContext, researchShares, getResearch } = await import('../server/research.js');
+const { summaryContext, researchShares, getResearch, recoverResearch } = await import('../server/research.js');
 const { sharesOf } = await import('../server/group.js');
 
 let server, base, cookie, db;
@@ -57,6 +57,9 @@ before(async () => {
 });
 after(() => { server.close(); fs.rmSync(tmp, { recursive: true, force: true }); });
 
+// The search runs on the server after the POST answers: wait until nothing is running.
+const settle = async () => { for (let i = 0; i < 200; i++) { const r = await call('GET', '/api/research'); if (!r.body.running) return; await new Promise((ok) => setTimeout(ok, 20)); } throw new Error('the search never finished'); };
+const none = () => reply([group({ people: [] })], 1); // a round that finds nobody new: the search stops
 const call = async (method, p, d) => { const r = await fetch(base + p, { method, headers: { cookie, 'content-type': 'application/json' }, ...(d ? { body: JSON.stringify(d) } : {}) }); return { status: r.status, body: await r.json() }; };
 
 const CODERS = [
@@ -71,19 +74,26 @@ let id;
 
 test('the costs are a guess until a real search has run', async () => {
   const r = await call('GET', '/api/research');
-  assert.deepEqual(r.body.costs.map((c) => [c.size, c.measured]), [[10, false], [20, false], [30, false]]);
+  assert.equal(r.body.cost.measured, false);
+  assert.equal(r.body.cost.limit_usd, 1);
   assert.equal(r.body.items.length, 0);
 });
 
 test('a search keeps the people, only the sources the search returned, and saves nothing to the vault', async () => {
   const before = db.prepare('SELECT count(*) n FROM images').get().n;
-  script.push(reply([...searched([U('Linus'), U('Bill'), U('Grace'), U('Nobody')]), group({ category: 'Computer Coders', people: CODERS })], 3));
-  const r = await call('POST', '/api/research', { query: 'computer coders', size: 10 });
+  script.push(reply([...searched([U('Linus'), U('Bill'), U('Grace'), U('Nobody')]), group({ category: 'Computer Coders', people: CODERS })], 3), none());
+  const r = await call('POST', '/api/research', { query: 'computer coders' });
   assert.equal(r.status, 200);
   id = r.body.id;
-  assert.equal(requests.find((r) => r.tools && r.tools.some((t) => t.name === 'give_group')).tools[0].max_uses, 6);
+  await settle();
+  const rounds = requests.filter((q) => q.tools && q.tools.some((t) => t.name === 'give_group'));
+  assert.equal(rounds.length, 2, 'it searched again until a round brought nobody new');
+  assert.equal(rounds[0].tools[0].max_uses, 14);
+  assert.match(rounds[1].messages[0].content, /ALREADY FOUND \(find others\): Linus Torvalds; Bill Gates/);
   const g = (await call('GET', `/api/research/${id}`)).body;
   assert.equal(g.category, 'Computer Coders');
+  assert.equal(g.status, 'done');
+  assert.equal(g.rounds, 2);
   assert.deepEqual(g.people.map((p) => p.known_as), ['Linus Torvalds', 'Bill Gates', 'Grace Hopper', 'Guido van Rossum', 'Nobody Knows']);
   const guido = g.people[3], grace = g.people[2], nobody = g.people[4];
   assert.equal(guido.date_source, null, 'a made-up page is never shown');
@@ -98,7 +108,7 @@ test('a search keeps the people, only the sources the search returned, and saves
   assert.equal(db.prepare('SELECT count(*) n FROM images').get().n, before, 'nothing is saved to the vault');
   const list = (await call('GET', '/api/research')).body;
   assert.equal(list.items[0].found, 5);
-  assert.equal(list.costs[0].measured, true);
+  assert.equal(list.cost.measured, true);
 });
 
 test('people found online are counted in the group, never among the others', async () => {
@@ -137,13 +147,53 @@ test('someone the vault already has is that vault chart, counted once', async ()
 
 test('a personal category lists only people with a page for it', async () => {
   script.push(reply([...searched([U('A')]), group({ category: 'Trans People', personal: false, vault_kinds: ['field:tech'], people: [person('With Page', 'With Page', '1980-01-01', U('A')), person('No Page', 'No Page', '1981-01-01', '')] })]));
-  const r = await call('POST', '/api/research', { query: 'trans people', size: 10 });
+  const r = await call('POST', '/api/research', { query: 'trans people' });
+  await settle();
   const g = (await call('GET', `/api/research/${r.body.id}`)).body;
   assert.equal(g.personal, true, 'the words decide, whatever the model says');
   assert.deepEqual(g.people.map((p) => p.known_as), ['With Page']);
   assert.equal(g.dropped, 1);
   assert.deepEqual(g.vault_kinds, [], 'no vault kind is attached to a personal category');
   await call('DELETE', `/api/research/${r.body.id}`);
+});
+
+test('it stops and asks before passing the money limit, and Keep Going carries on', async () => {
+  const many = (from) => Array.from({ length: 6 }, (_, i) => person(`Round ${from} Person ${i}`, `Round ${from} Person ${i}`, `19${50 + from}-0${i + 1}-1${i}`, U('Linus')));
+  script.push(reply([...searched([U('Linus')]), group({ people: many(1) })], 70)); // one round: 70 searches = 70 cents
+  const r = await call('POST', '/api/research', { query: 'costly group' });
+  await settle();
+  let g = (await call('GET', `/api/research/${r.body.id}`)).body;
+  assert.equal(g.status, 'paused', 'a second round would pass $1');
+  assert.equal(g.rounds, 1);
+  assert.equal(g.people.length, 6);
+  script.push(reply([...searched([U('Linus')]), group({ people: many(2).slice(0, 2) })], 1));
+  assert.equal((await call('POST', `/api/research/${r.body.id}/more`)).status, 200);
+  await settle();
+  g = (await call('GET', `/api/research/${r.body.id}`)).body;
+  assert.equal(g.status, 'done');
+  assert.equal(g.people.length, 8);
+  assert.equal(g.limit > 1, true);
+  await call('DELETE', `/api/research/${r.body.id}`);
+});
+
+test('a search cut short by a restart keeps what it found', async () => {
+  const rid = Number(db.prepare("INSERT INTO research (query, category, size, result, off, usd) VALUES ('x', 'X', 1, ?, '{}', 0.1)").run(JSON.stringify({ query: 'x', category: 'X', people: [CODERS[0]], usd: 0.1, rounds: 1, limit: 1, status: 'running' })).lastInsertRowid);
+  assert.equal(recoverResearch(db), 1);
+  const g = (await call('GET', `/api/research/${rid}`)).body;
+  assert.equal(g.status, 'interrupted');
+  assert.equal(g.people.length, 1);
+  await call('DELETE', `/api/research/${rid}`);
+});
+
+test('nines in several positions of one center are one theme, the plain 9 and 18/9 together', () => {
+  // Eight strangers whose name chart emotion center holds a 9 in one form or another would be hard to make up by
+  // hand; the families are proven on the engine's own numbers instead: every chart's values go into its family.
+  const extra = ['Ann Lee', 'Bob Ray', 'Cy Dunn', 'Di Moss', 'Ed Hale', 'Flo Pike'].map((name, ref) => ({ name, day: 19, month: 7, year: 1990, title: name, ref }));
+  const s = sharesOf(db, { extra, display: 'Same Day' });
+  const families = s.cards.flatMap((c) => c.items).filter((i) => i.family);
+  assert.equal(families.every((i) => /^Any [1-9]$/.test(i.number)), true);
+  assert.equal(Array.isArray(s.themes), true);
+  for (const t of s.themes) { assert.equal(t.items.length >= 2, true); assert.match(t.title, /^(Ones|Twos|Threes|Fours|Fives|Sixes|Sevens|Eights|Nines) in the /); assert.equal(new Set(t.items.map((i) => i.pos)).size, t.items.length); }
 });
 
 test('the summary costs nothing when nothing stands out, and is not written twice', async () => {
@@ -187,7 +237,7 @@ test('a find in a group of strangers is written up from the counted finds only',
   assert.equal(s.cards[0].charts.length, 6);
   assert.equal(s.cards[0].charts.every((c) => c.id === null), true);
   const ctx = summaryContext({ category: 'Same Day' }, { ...s, online: 6 });
-  assert.match(ctx.text, /THE FINDS\n- Strong: /);
+  assert.match(ctx.text, /THE FINDS \(single positions\)\n- Strong: /);
   assert.match(ctx.text, /6 of 6 in the group/);
 });
 

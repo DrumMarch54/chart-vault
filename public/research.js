@@ -1,5 +1,5 @@
 /* Research a Group (owner's ask 2026-11-23): say a category ("computer coders", "trans people", "coffee chains"),
-   pick 10, 20 or 30, and the AI searches the web for well-known examples with the name and date a chart needs.
+   and the AI searches the web in rounds for as many well-known examples as it can find with the name and date a chart needs.
    Four screens on one route:
      #/research                 ask (the box, the size, Past Research)
      #/research?id=N&view=who   who it found, each with a tick (and the vault's own people of that kind)
@@ -11,7 +11,7 @@
   'use strict';
   const USAGE_LABELS = {
     'screen.research': 'Research a Group', 'home.research': 'Research a Group (home)', 'research.mic': 'Research: speak a category',
-    'research.search': 'Research: search the web', 'research.size': 'Research: pick how many', 'research.past_open': 'Research: open a past research',
+    'research.search': 'Research: search the web', 'research.more': 'Research: keep going or search for more', 'research.past_open': 'Research: open a past research',
     'research.past_remove': 'Research: remove a past research', 'research.tick': 'Research: tick or untick someone', 'research.show': 'Research: Show Charts and Patterns',
     'research.change_who': 'Research: Change Who Is In', 'research.open_person': 'Research: open a person', 'research.name_now': 'Research: Birth Name or Name Now',
     'research.fix': 'Research: keep a fixed name or date', 'research.save': 'Research: Save to Vault', 'research.save_all': 'Research: Save All to Vault',
@@ -52,17 +52,10 @@
     function askView(query) {
       const $q = h('input', { type: 'text', placeholder: 'A kind of person or business…', autocomplete: 'off', enterkeyhint: 'search', maxlength: 200, value: query.get('q') || '' });
       const $go = h('button', { type: 'button', class: 'btn-primary btn-block' }, 'Search');
-      const $out = h('div', { class: 'stack' }), $past = h('div', { class: 'stack' }), $sizes = h('div', { class: 'rs-sizes' });
+      const $out = h('div', { class: 'stack' }), $past = h('div', { class: 'stack' });
+      const $cost = h('p', { class: 'muted small', style: 'margin:0' }, 'It keeps searching until no new ones turn up, and asks you before spending more than $1.');
       const $hint = h('div', { class: 'muted small lookup-hint' }, SR ? 'Tap the microphone and say a kind of person or business: "computer coders", "coffee chains".' : 'Type a kind of person or business: "computer coders", "coffee chains".');
-      let size = 20, costs = [], busy = false, rec = null, listening = false;
-      try { const s = Number(localStorage.getItem('researchSize')); if ([10, 20, 30].includes(s)) size = s; } catch {}
-      const costOf = (n) => costs.find((c) => c.size === n);
-      const drawSizes = () => {
-        fill($sizes, ...[10, 20, 30].map((n) => { const c = costOf(n); return h('button', { type: 'button', class: 'rs-size' + (n === size ? ' on' : ''), onclick: () => { size = n; try { localStorage.setItem('researchSize', String(n)); } catch {} count('research.size'); drawSizes(); } },
-          h('b', {}, String(n)), h('span', { class: 'small' }, c ? `about ${money(c.usd)}` : '')); }));
-        const c = costOf(size);
-        $go.textContent = busy ? 'Searching…' : c ? `Search (about ${money(c.usd)})` : 'Search';
-      };
+      let busy = false, rec = null, listening = false;
       const $mic = h('button', { type: 'button', class: 'lookup-mic', 'aria-label': 'Speak a category' }, '🎙');
       const stopMic = () => { listening = false; $mic.classList.remove('on'); try { rec && rec.stop(); } catch {} };
       $mic.onclick = () => {
@@ -76,69 +69,73 @@
         rec.onend = () => { const was = listening; listening = false; $mic.classList.remove('on'); if (was && $q.value) $hint.textContent = 'Check the words, then tap Search.'; };
         try { rec.start(); listening = true; $mic.classList.add('on'); $hint.textContent = 'Listening… say the category.'; } catch { $hint.textContent = 'The microphone could not start. Tap it again, or type instead.'; }
       };
+      // The search runs on the server; this only starts it and opens the screen that watches it.
       const run = async () => {
         const q = $q.value.trim();
         if (!q) { toast('Say or type a category first.', true); $q.focus(); return; }
         if (busy) return;
         if (listening) stopMic();
         count('research.search');
-        busy = true; $go.disabled = true; drawSizes();
-        fill($past);
-        fill($out, h('p', { class: 'muted' }, `Searching the web for ${size}… this takes one to three minutes. Keep this screen open.`));
-        try { const r = await send('/api/research', 'POST', { query: q, size }); go(`#/research?id=${r.id}&view=who`); }
-        catch (err) {
-          // A dropped connection (the phone left the app, or the network blinked) does not stop the search on the
-          // server: wait for it to land in Past Research and open it (owner 2026-11-23, "Failed to fetch").
-          const found = err instanceof TypeError ? await waitForNew(q) : null;
-          if (found) { go(`#/research?id=${found}&view=who`); return; }
-          fail($out, err instanceof TypeError ? new Error('The connection dropped and the search did not come back. Look in Past Research below; if it is not there, search again.') : err);
-          busy = false; $go.disabled = false; drawSizes(); pastList();
-        }
+        busy = true; $go.disabled = true; $go.textContent = 'Starting…';
+        try { const r = await send('/api/research', 'POST', { query: q }); go(`#/research?id=${r.id}&view=who`); }
+        catch (err) { fail($out, err instanceof TypeError ? new Error('The connection dropped. Look in Past Research below: if the search is there, it started; if not, tap Search again.') : err); pastList(); }
+        busy = false; $go.disabled = false; $go.textContent = 'Search';
       };
       $go.onclick = run;
       $q.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $q.blur(); } });
-      let lastId = 0;
-      const waitForNew = async (q) => {
-        fill($out, h('p', { class: 'muted' }, 'The connection dropped, but the search keeps going. Waiting for it… keep this screen open.'));
-        for (let i = 0; i < 60; i++) {
-          await new Promise((r) => setTimeout(r, 5000));
-          try {
-            const d = await api('/api/research');
-            const hit = d.items.find((it) => it.id > lastId && it.query.toLowerCase() === q.toLowerCase());
-            if (hit) return hit.id;
-            if (!d.running && i > 2) return null;
-          } catch {}
-        }
-        return null;
-      };
+      const STATUS = { running: 'Searching now…', paused: 'Waiting for you: keep going?', interrupted: 'Cut short by a restart', failed: 'Failed' };
       const pastList = () => api('/api/research').then((d) => {
-        costs = d.costs || []; drawSizes();
-        lastId = d.items.reduce((m, it) => Math.max(m, it.id), 0);
-        if (!d.items.length || busy) return;
+        if (d.cost) $cost.textContent = `It searches in rounds of 30 (about ${money(d.cost.round_usd)} each) until no new ones turn up, and asks you before spending more than $${d.cost.limit_usd.toFixed(0)}.`;
+        if (!d.items.length) return;
         fill($past, h('h3', { class: 'lookup-past-title' }, 'Past Research'),
-          h('div', { class: 'card lookup-past' }, ...d.items.map((it) => h('a', { class: 'lookup-past-row', href: `#/research?id=${it.id}`, onclick: () => count('research.past_open') },
+          h('div', { class: 'card lookup-past' }, ...d.items.map((it) => h('a', { class: 'lookup-past-row', href: it.status === 'running' ? `#/research?id=${it.id}&view=who` : `#/research?id=${it.id}`, onclick: () => count('research.past_open') },
             h('b', {}, it.category || it.query),
-            h('span', { class: 'muted small' }, `${it.found} found · “${it.query}”`),
-            h('span', { class: 'muted small' }, whenOf(it.created_at))))));
+            h('span', { class: 'muted small' }, `${it.found} found · “${it.query}”${STATUS[it.status] ? ` · ${STATUS[it.status]}` : ''}`),
+            h('span', { class: 'muted small' }, `${whenOf(it.created_at)} · ${money(it.usd || 0)}`)))));
       }).catch((err) => fail($past, new Error(`Past Research could not load: ${err.message}`)));
       render(h('div', { class: 'screen stack' }, pageTop('Research a Group', '#/'),
         h('div', { class: 'lookup-top' }, $mic, $hint),
-        $q,
-        h('div', { class: 'small' }, h('b', {}, 'How many to find?')),
-        $sizes, $go,
-        h('p', { class: 'muted small', style: 'margin:0' }, 'It finds well-known examples with their birth name and birth date (a business: its registered name and start date), draws every chart and counts what the group shares against your whole vault. More people give truer patterns. Only public figures; nothing is saved until you tap Save to Vault.'),
+        $q, $go, $cost,
+        h('p', { class: 'muted small', style: 'margin:0' }, 'It finds as many well-known examples as it can, with their birth name and birth date (a business: its registered name and start date), draws every chart and counts what the group shares against your whole vault. Only public figures; nothing is saved until you tap Save to Vault.'),
         $out, $past));
-      drawSizes();
       api('/api/ai/settings').then((s) => { if (!s.key_set) fill($out, h('div', { class: 'card stack' }, h('p', { class: 'muted', style: 'margin:0' }, 'Add the AI key first.'), h('a', { class: 'btn btn-block', href: '#/ai' }, 'AI Reading Settings'))); }).catch(() => {});
       pastList();
     }
 
+    // How the search is going (it runs on the server): shown on top of Who It Found and of the results. While it
+    // runs the screen asks again every few seconds; `redraw` is called when the state changes. Paused = it would
+    // pass the money limit: the owner taps Keep Going or leaves it there.
+    let watch = 0;
+    function statusCard(g, id, redraw) {
+      const each = g.cost ? money(g.cost.round_usd) : 'a few cents';
+      const more = async () => {
+        count('research.more');
+        try { await send(`/api/research/${id}/more`, 'POST'); redraw(); } catch (err) { toast(err.message, true); }
+      };
+      const moreBtn = (label) => h('button', { type: 'button', class: 'btn btn-block', onclick: more }, label);
+      if (g.status === 'running') {
+        const mine = ++watch;
+        setTimeout(() => { if (mine === watch && location.hash.includes(`id=${id}`)) redraw(); }, 4000);
+        return h('div', { class: 'card stack rs-status' }, h('b', {}, `Searching… round ${g.rounds + 1}`),
+          h('div', { class: 'muted' }, `${g.people.length} found so far · ${money(g.usd)} spent. A round takes a minute or two. You can leave: it keeps going, and it is kept in Past Research.`));
+      }
+      watch++;
+      if (g.status === 'paused') return h('div', { class: 'card stack rs-status' }, h('b', {}, `Stopped to ask: ${g.people.length} found for ${money(g.usd)}`),
+        h('div', { class: 'muted' }, `Another round would pass your $${g.limit.toFixed(0)} limit. Each round is about ${each} and brings up to 30 more.`),
+        moreBtn('Keep Going (up to $1 More)'));
+      if (g.status === 'interrupted') return h('div', { class: 'card stack rs-status' }, h('b', {}, 'The search was cut short'), h('div', { class: 'muted' }, `${g.stop} ${g.people.length} found for ${money(g.usd)}.`), moreBtn(`Keep Searching (about ${each} a round)`));
+      if (g.status === 'failed') return h('div', { class: 'card stack rs-status' }, h('b', {}, 'The search failed'), h('p', { class: 'err', style: 'margin:0' }, g.stop || 'Nothing came back.'), moreBtn(`Try Again (about ${each})`));
+      return null;
+    }
+
     // ---------- screen 2: who it found ----------
-    async function whoView(id) {
-      const $body = h('div', { class: 'stack' }, h('p', { class: 'muted' }, 'Opening…'));
-      render(h('div', { class: 'screen stack qscreen rs-screen' }, pageTop('Who It Found', '#/research'), $body));
+    // `$old` = the screen is already up and only refreshes itself (while the search runs): no blank flash.
+    async function whoView(id, $old) {
+      const $body = $old || h('div', { class: 'stack' }, h('p', { class: 'muted' }, 'Opening…'));
+      if (!$old) render(h('div', { class: 'screen stack qscreen rs-screen' }, pageTop('Who It Found', '#/research'), $body));
       let g;
       try { g = await api(`/api/research/${id}`); } catch (err) { fail($body, err); return; }
+      const again = () => { if (location.hash === `#/research?id=${id}&view=who` && $body.isConnected) whoView(id, $body); };
       const [one, many] = noun(g);
       const $show = h('button', { type: 'button', class: 'btn-primary btn-block' });
       const onCount = () => g.people.filter((p) => p.on).length + g.vault.filter((v) => v.on).length;
@@ -167,25 +164,27 @@
       label();
       $show.onclick = async () => { count('research.show'); $show.disabled = true; await store(); swap(`#/research?id=${id}`); };
       const unchecked = g.people.filter((p) => p.drawable && !p.checked && !p.fixed).length;
-      fill($body,
-        h('div', { class: 'card stack' }, h('div', { class: 'simname' }, g.category),
+      const top = window.scrollY;
+      fill($body, statusCard(g, id, again),
+        g.status === 'running' && !g.people.length ? null : h('div', { class: 'card stack' }, h('div', { class: 'simname' }, g.category),
           h('p', { class: 'muted', style: 'margin:0' }, `${plural(g.people.length, one, many)} found online${g.vault.length ? `, ${fmtN(g.vault.length)} more from your vault` : ''}. Untick anyone who does not belong, then show the charts.`),
           g.note ? h('p', { class: 'muted small', style: 'margin:0' }, g.note) : null,
           g.personal ? h('p', { class: 'lookup-warn small' }, `A personal category: only people who said it about themselves in public are listed, each with the page that says so.${g.dropped ? ` ${g.dropped} left out: no such page was found.` : ''}`) : null,
           unchecked ? h('p', { class: 'lookup-warn small' }, `${unchecked} marked Not Checked Online: the date came from the AI's memory, not from a page it found. Tap the name on the next screen to check or fix it.`) : null),
-        g.people.length ? h('div', { class: 'summary rhead' }, 'Found Online') : h('p', { class: 'muted' }, 'Nobody was found. Go back and say it another way.'),
+        g.people.length ? h('div', { class: 'summary rhead' }, 'Found Online') : g.status === 'running' ? null : h('p', { class: 'muted' }, 'Nobody was found. Go back and say it another way.'),
         g.people.length ? h('div', { class: 'card rs-list' }, ...g.people.map(personRow)) : null,
         g.vault.length ? h('div', { class: 'summary rhead' }, `From Your Vault: ${g.vault_kinds.join(', ')}`) : null,
         g.vault.length ? h('div', { class: 'card rs-list' }, ...g.vault.map((v) => row(v, v.title, [v.inputs ? '' : 'No name and date read yet: cannot be counted'], []))) : null,
-        h('div', { class: 'rs-foot' }, $show));
+        g.people.length ? h('div', { class: 'rs-foot' }, $show) : null);
+      if (top) window.scrollTo(0, top); // a refresh while it searches keeps the place
     }
 
     // ---------- screen 3: the results ----------
-    async function resultsView(id) {
-      const $body = h('div', { class: 'stack' }, h('p', { class: 'muted' }, 'Counting every position…'));
+    async function resultsView(id, $old) {
+      const $body = $old || h('div', { class: 'stack' }, h('p', { class: 'muted' }, 'Counting every position…'));
       const $grid = h('div', { class: 'grid rs-grid' });
       const size = sizeControl('researchCols', { min: 1, max: window.innerWidth >= 700 ? 6 : 4, def: window.innerWidth >= 700 ? 5 : 3, countName: 'research.grid_size', apply: (c) => $grid.style.setProperty('--grid-cols', c) });
-      render(h('div', { class: 'screen stack rs-screen' }, pageTop('Research a Group', '#/research'), $body));
+      if (!$old) render(h('div', { class: 'screen stack rs-screen' }, pageTop('Research a Group', '#/research'), $body));
       let g, s;
       try { [g, s] = await Promise.all([api(`/api/research/${id}`), api(`/api/research/${id}/shares`)]); } catch (err) { fail($body, err); return; }
       const [one, many] = noun(g);
@@ -252,10 +251,10 @@
       // The first time a group is shown, the summary is written by itself (it is what was asked for, and its cost
       // was on the Search button's screen); after that, only a tap writes one.
       const write = drawSummary(g.summary, false);
-      if (!g.summary && s.size >= 3) write(false)();
+      if (!g.summary && s.size >= 3 && g.status !== 'running') write(false)(); // free while the server is already writing it: the same one comes back
 
       const left = [s.undated ? `${plural(s.undated, one, many)} without a full date cannot be counted` : '', s.tagged - s.size - s.undated > 0 ? `${s.tagged - s.size - s.undated} left out: no name and date read yet, or the same person twice` : ''].filter(Boolean).join('; ');
-      fill($body,
+      fill($body, statusCard(g, id, () => { if (location.hash === `#/research?id=${id}` && $body.isConnected) resultsView(id, $body); }),
         h('div', { class: 'card stack' }, h('div', { class: 'simname' }, g.category),
           h('p', { class: 'muted', style: 'margin:0' }, `${plural(s.size, one, many)} counted: ${fmtN(s.online)} found online${s.from_vault ? `, ${fmtN(s.size - s.online)} from your vault` : ''}. Compared with the ${fmtN(s.rest)} others in your vault.${left ? ` ${left[0].toUpperCase()}${left.slice(1)}.` : ''}`),
           g.personal ? h('p', { class: 'muted small', style: 'margin:0' }, 'A personal category: only people who said it about themselves in public, each with the page that says so.') : null,
@@ -265,7 +264,8 @@
         on.length + vaultOn.length ? $grid : h('p', { class: 'muted' }, 'Nobody is ticked. Tap Change Who Is In.'),
         on.length ? $saveAll : null,
         s.size >= 3 ? h('div', { class: 'qscreen rs-finds' }, groupFinds(s, { chartHref: hrefOf })) : h('p', { class: 'muted' }, 'A group needs at least three with a name and a full date before anything can be said about it.'),
-        h('div', { class: 'muted small' }, `The search cost ${money(g.usd)} · ${g.searches} web search${g.searches === 1 ? '' : 'es'} · ${whenOf(g.at)}`),
+        h('div', { class: 'muted small' }, `The search cost ${money(g.usd)} · ${g.rounds} round${g.rounds === 1 ? '' : 's'}, ${g.searches} web search${g.searches === 1 ? '' : 'es'} · ${whenOf(g.at)}${g.stop && g.status === 'done' ? ` · ${g.stop}` : ''}`),
+        g.status === 'done' ? h('button', { type: 'button', class: 'btn btn-block', onclick: async () => { count('research.more'); try { await send(`/api/research/${id}/more`, 'POST'); go(`#/research?id=${id}&view=who`); } catch (err) { toast(err.message, true); } } }, `Search for More (about ${g.cost ? money(g.cost.round_usd) : 'a few cents'} a round)`) : null,
         holdButton('Hold to Remove From Past Research', async () => {
           try { await api(`/api/research/${id}`, { method: 'DELETE' }); count('research.past_remove'); toast('Removed from Past Research'); swap('#/research'); } catch (err) { toast(err.message, true); }
         }));

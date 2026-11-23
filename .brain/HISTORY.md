@@ -1027,3 +1027,18 @@ Not built on purpose: comparing two researched groups; a tag for the category on
 
 ## 2026-11-23: Research a Group, first real search
 "Transsexual people", 30: 20 found, 14 searches, $0.17, 78 s. The phone showed "Failed to fetch" for the search and for the summary, though both finished on the server (the owner had left the app while waiting). Try Again paid for a second summary while the first was still running (3.6 + 2.7 cents). Fix: the server writes the summary itself right after the search; a second ask waits for the one in flight (pays once); a dropped search waits for Past Research and opens it; a dropped summary asks again by itself, free.
+
+## 2026-11-23: Research a Group missed the nines; themes, rounds, the guide
+The owner looked at the 20 trans people's charts and saw it at once: "so many nines in the solar plexus centers ...
+some the 18 version, some the pure nine ... do you really know how to do this or what?" Counted against the vault:
+name chart emotion center main vibration 9 or 18/9 in 8 of 19 (42%) against 16%. The app had not shown it. Two causes:
+the family key left the plain number out (9 and 18/9 were two finds), and finds were listed one by one, so four finds
+in the same center (sub vibration 18/9, sub diamond 99, emotional diamond 81/9, main 9 family) never read as one thing.
+My first fix proposal was overbuilt (the AI picks positions per category, a focus picker, a per-position table); the
+owner: "am I overcomplicating this or are you?" Plain counting with the bug fixed already ranked it 12th of 465 with 4
+of the top 12 in that one center. Built: families include the plain number; THEMES = one family across one part of a
+chart, shown first; the summary gets the reading guide (which already existed and was never handed to this feature);
+the owner's points on the sexual centers and the triangle went into positions.md. Also the owner's: no 10/20/30
+buttons, search in rounds for as many as it can find, ask before passing $1. The search became a server job, which
+also ends the "Failed to fetch" of a phone leaving the app. Lesson: the owner's eye reads a chart by its parts and by
+number families; a counter that tests single position-number pairs does not see what he sees.

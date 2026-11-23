@@ -238,10 +238,18 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   the Look Up screen lists them under the box, a tap opens one free (`#/lookup?past=<id>`, vault matches redone), hold to remove.
 
 ## Research a Group (built 2026-11-23)
-- Home Tools "Research a Group" (`#/research`): the owner says a category ("computer coders", "trans people", "coffee chains"),
-  picks 10, 20 or 30 (cost on each, the average of real searches once there are any). `server/research.js`: Claude Haiku 5.5 +
-  web search finds well-known examples (`give_group`); kept in `research` (migration 11, Past Research, opens free). Screens
-  (`public/research.js`, one route): ask, Who It Found (ticks, `?view=who`), results (`?id=`), one person (`&p=`).
+- Home Tools "Research a Group" (`#/research`): the owner says a category ("computer coders", "trans people", "coffee chains").
+  `server/research.js`: a JOB on the server (`startResearch`, the phone only watches it): Claude Haiku 5.5 + web search in
+  ROUNDS of 30 (`give_group`, each round told who is already found) until a round brings fewer than 5 new ones. It never
+  passes $1 (`LIMIT_USD`) by itself: status `paused`, "Keep Going" allows another dollar (owner 2026-11-23: "the more data
+  the better ... prevent it from racking up a huge bill"). A restart mid-search = `interrupted`, what was found is kept.
+  Kept in `research` (migration 11, Past Research, opens free). Screens (`public/research.js`, one route): ask, Who It
+  Found (ticks, `?view=who`), results (`?id=`), one person (`&p=`).
+- THEMES (owner 2026-11-23, "so many nines in the solar plexus centers ... isn't it obvious?"; the first build missed it):
+  group.js counts a number FAMILY (9, 18/9, 27/9: "Any 9", the plain number included) beside each exact number, and
+  several finds of one family in one part of a numeroscope (`AREA`: a center = main and sub vibration, sub diamond, its
+  diamond) are ONE theme, "Nines in the Name Chart's Emotion Center (Solar Plexus)", shown first whatever its label and
+  measured against random groups like every find. The same on a tag's What This Group Shares. Never read finds one by one.
 - Nothing is saved to the vault until Save to Vault / Save All. People found online are counted IN the group only
   (`sharesOf` in group.js, `extra`), never among "the others": strangers never shift the yardstick. The vault's own people
   of the same kind join (`vault_kinds` = FIELDS / FLAGS); someone the vault already has is that vault chart.
@@ -250,8 +258,8 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   dropped and counted. A date with no such page stays but is marked Not Checked Online. Never loosen either.
 - A changed name (owner 2026-11-23): the chart and every count use the BIRTH name; `name_now` is a second chart behind the
   "Name Now" chip on the person's page.
-- What Stands Out: Claude Opus 5.5 writes it from the counted finds (Strong / Worth a Look only) and the course's words
-  for those numbers; nothing stands out = no call, nothing spent. Stored with the group it was written for; a changed
+- What Stands Out: Claude Opus 5.5 writes it with the reading guide in hand (`coreText()`, the same one a Reading gets),
+  the themes first, then the finds, each with its honest label; no theme and nothing above chance = no call, nothing spent. Stored with the group it was written for; a changed
   group offers Write It Again. A search in flight counts as busy, so a deploy waits. Snapshot: RESEARCH A GROUP.
 
 ## Who each person is (built 2026-11-20)

@@ -1082,3 +1082,6 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .rs-summary .rd-text p:first-child { margin-top: 0; }
 .rs-finds { padding: 0; max-width: none; }
 .rs-offscreen { position: fixed; left: -9999px; top: 0; width: 400px; }
+.gtitle { font-size: 18px; font-weight: 700; line-height: 1.25; }
+.gtheme { border: 2px solid var(--accent); }
+.rs-status { border: 2px solid var(--accent); }

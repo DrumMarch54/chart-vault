@@ -1435,7 +1435,13 @@
     const shown = (list) => (weak ? list : list.filter((c) => c.strength !== 'Could Be Chance'));
     const weakOnes = (list) => { const n = list.filter((c) => c.strength === 'Could Be Chance').length; return n && !weak ? h('button', { type: 'button', class: 'btn btn-block showall', onclick: () => { weak = true; count('group.show_weak'); draw(); } }, `Show ${n} More That Could Be Chance`) : null; };
     const draw = () => fill($el,
-      h('p', { class: 'muted small', style: 'margin:0' }, `A small group finds patterns by luck, so every find is checked against ${fmtN(d.random_groups)} random groups of the same size. Strong: fewer than 1 random group in 20 does this well. Worth a Look: fewer than half. Could Be Chance: most do. Tap a number to see every chart with it.`),
+      h('p', { class: 'muted small', style: 'margin:0' }, `A small group finds patterns by luck, so every find is checked against ${fmtN(d.random_groups)} random groups of the same size. Strong: fewer than 1 random group in 20 does this well. Worth a Look: fewer than half. Could Be Chance: most do. "Any 9" means 9 and its forms: 18/9, 27/9, 36/9. Tap a number to see every chart with it.`),
+      // Themes (owner 2026-11-23): one number family in several positions of one part of the chart, shown whole and
+      // first, whatever its label; the label still says how often luck does as well.
+      (d.themes || []).length ? h('div', { class: 'summary rhead' }, 'Themes') : null,
+      ...(d.themes || []).map((t) => h('div', { class: 'card gcard gtheme' }, h('div', { class: 'gtitle' }, t.title), pill(t.strength, t.luck),
+        h('div', { class: 'muted small' }, `${t.people} here hold at least one of these.`),
+        ...t.items.map((i) => find(i.name, i, i.pos)), t.more ? h('div', { class: 'muted small' }, `and ${t.more} more position${t.more === 1 ? '' : 's'} in this part of the chart`) : null, who(t.charts_of))),
       h('div', { class: 'summary rhead' }, 'Same Number in the Same Position'),
       shown(d.cards).length ? null : h('p', { class: 'muted' }, 'Nothing stands out beyond what luck alone gives.'),
       ...shown(d.cards).map((c) => h('div', { class: 'card gcard' }, pill(c.strength, c.luck), ...c.items.map((i) => find(i.name, i, i.pos)), c.more ? h('div', { class: 'muted small' }, `and ${c.more} more position${c.more === 1 ? '' : 's'} these same charts share`) : null, who(c.charts))),

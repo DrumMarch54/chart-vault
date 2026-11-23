@@ -56,6 +56,15 @@ course manual.
   heart chakra. Sub-vibrations show the middle names' influence.
 - Solar plexus/emotion center (bottom circle): inner emotional life, self
   esteem, sex and love life, lower body health, gut. The subconscious engine.
+- The solar plexus center is the SEXUAL CENTER (owner 2026-11-23; the Name Numeroscopes book: "Solar Plexus center
+  in the middle - our inner life, emotional life, sex and love life, family"). Every numeroscope has one: the name
+  chart, the vocation chart, the personality chart and both psyche charts (outer and inner), so a chart has several
+  sexual centers. Reading a group or a person on sex, gender or love: look at the solar plexus centers first, in the
+  name chart above all, then the sub-charts and the psyche charts.
+- A numeroscope is the rhombus-shaped chart; there are several (name, vocation, personality, outer and inner psyche).
+  The higher self chart (the essence, from the birth date) is the TRIANGLE: it is not a numeroscope and has no centers.
+- A compound is a form of its digit sum and also its own number: 18/9 and 27/9 are 9s, and 18 is not 27. Count them
+  together as nines, and still say which form it is.
 - Spine: inner strength, how your archetype deals with what life brings.
 - Pillar: the ground you stand on; strong pillar compensates for weak numbers;
   a weak one topples the chart. Root chakra.

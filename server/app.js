@@ -22,7 +22,7 @@ import { aiSettings, setAiSettings, spendState, pendingWarning, markWarningSeen,
 import { readingFor, writeReading, answerQuestion, deleteReadings, readingEstimate, readingChoices } from './reading.js';
 import { askVault } from './ask.js';
 import { lookupPerson, vaultMatches, rememberLookup, storeLookup, pastLookups, pastLookup, deleteLookup } from './lookup.js';
-import { findGroup, storeResearch, pastResearch, getResearch, deleteResearch, setOff, fixPerson, researchShares, writeSummary, researchCosts, summaryEstimate, rememberResearch, researchRunning, SIZES } from './research.js';
+import { startResearch, moreResearch, recoverResearch, pastResearch, getResearch, deleteResearch, setOff, fixPerson, researchShares, writeSummary, researchCost, summaryEstimate, researchRunning } from './research.js';
 import { factsFor } from './facts.js';
 import { meaningFor, countWith } from './meaning.js';
 import { findInDoc, docWindow, findNumberSection, findPhrase } from './doc.js';
@@ -542,25 +542,20 @@ export function createApp(db, { log = console.log } = {}) {
   // Research a Group (server/research.js): a category searched on the web (paid), kept, and counted against the
   // vault (free). Nothing is saved to the vault here; the screen draws the charts and the owner taps Save to Vault.
   const aiFail = (res, next) => (err) => { if (err instanceof AiError) return res.status(400).json({ error: err.message }); next(err); };
-  app.get('/api/research', (req, res) => res.json({ running: researchRunning(), items: pastResearch(db), costs: researchCosts(db), summary_cost: summaryEstimate(db), spend: spendState() }));
-  app.post('/api/research', express.json({ limit: '4kb' }), async (req, res, next) => {
-    const body = req.body || {};
-    const size = SIZES.includes(Number(body.size)) ? Number(body.size) : 20;
-    try {
-      const r = await findGroup(body.query, size);
-      const id = storeResearch(db, r, COMMIT);
-      rememberResearch({ id, query: r.query, size, category: r.category, personal: r.personal, found: r.people.length, dropped: r.dropped, unchecked: r.people.filter((p) => !p.checked).length, kinds: r.vault_kinds.join(', '), searches: r.searches, usd: r.usd, note: r.note });
-      log(`research #${id} "${r.category}": ${r.people.length} found, ${r.searches} searches, $${r.usd}`);
-      // The summary is written on the server straight away, so a phone that drops the connection still finds it ready.
-      writeSummary(db, id).then((sm) => { if (sm.usd) log(`research #${id} summary: $${sm.usd}`); }).catch((err) => log(`research #${id} summary FAILED: ${err.message}`));
-      res.json({ id, found: r.people.length, spend: spendState(), warning: pendingWarning() });
-    } catch (err) {
-      if (err instanceof AiError) rememberResearch({ query: String(body.query || '').slice(0, 200), size, error: err.message });
-      aiFail(res, next)(err);
-    }
+  const interrupted = recoverResearch(db);
+  if (interrupted) log(`research: ${interrupted} search(es) were running at the restart; what they found is kept`);
+  app.get('/api/research', (req, res) => res.json({ running: researchRunning(), items: pastResearch(db), cost: researchCost(db), summary_cost: summaryEstimate(db), spend: spendState() }));
+  // Starts the search on the server and answers at once: the phone watches it (GET /api/research/:id), so leaving
+  // the app or a dropped connection loses nothing.
+  app.post('/api/research', express.json({ limit: '4kb' }), (req, res, next) => {
+    try { res.json({ id: startResearch(db, (req.body || {}).query, { build: COMMIT, log }), spend: spendState() }); } catch (err) { aiFail(res, next)(err); }
+  });
+  app.post('/api/research/:id/more', (req, res, next) => {
+    const id = researchId(req, res); if (id === null) return;
+    try { moreResearch(db, id, { log }); res.json({ ok: true }); } catch (err) { aiFail(res, next)(err); }
   });
   const researchId = (req, res) => { const id = Number(req.params.id); if (!Number.isInteger(id) || !getResearch(db, id)) { res.status(404).json({ error: 'That research is gone.' }); return null; } return id; };
-  app.get('/api/research/:id', (req, res) => { const id = researchId(req, res); if (id !== null) res.json({ ...getResearch(db, id), summary_cost: summaryEstimate(db) }); });
+  app.get('/api/research/:id', (req, res) => { const id = researchId(req, res); if (id !== null) res.json({ ...getResearch(db, id), cost: researchCost(db), summary_cost: summaryEstimate(db), spend: spendState() }); });
   app.get('/api/research/:id/shares', (req, res) => { const id = researchId(req, res); if (id !== null) res.json(researchShares(db, id)); });
   app.put('/api/research/:id/off', express.json({ limit: '20kb' }), (req, res) => { const id = researchId(req, res); if (id === null) return; setOff(db, id, req.body || {}); res.json({ ok: true }); });
   app.put('/api/research/:id/person/:ref', express.json({ limit: '4kb' }), (req, res, next) => {
