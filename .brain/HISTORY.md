@@ -1042,3 +1042,16 @@ the owner's points on the sexual centers and the triangle went into positions.md
 buttons, search in rounds for as many as it can find, ask before passing $1. The search became a server job, which
 also ends the "Failed to fetch" of a phone leaving the app. Lesson: the owner's eye reads a chart by its parts and by
 number families; a counter that tests single position-number pairs does not see what he sees.
+
+## 2026-11-23: Research a Group, the owner's "collapse and expand"
+The owner on the themes build: "pretty much pointless and useless ... way too wordy ... then you scroll all the way
+down and you have this other layout that's the same thing ... overly focusing on [comparing specific position numbers
+to the vault] ... it doesn't seem like you're actually interpreting". Asked what a good answer looks like, he gave his
+own saying, "collapse and expand": zoom out and see generalities ("tech people might just have a lot of numbers with
+four in it, whether 4 or 40/4 or 44/8"), then zoom in on one specific thing. It was already in interpretation.md.
+Measured before building: over ALL ~120 numbers of a chart nothing shows (everything within 5% of the vault); over the
+strong positions only it does: trans people 18/9 in 16 of 20 (usually 46%), tech people 30/3 in 19 of 60 (usually 18%)
+and threes as the name pillar; no lean to 44/8 or 40/4 in that tech group. Built: insight.js (expand and collapse over
+strong positions), cards with one course line each, a reading of three to five lines, one layout; the old list folded.
+Lesson: three rounds of redesign came from building a statistics tool for someone who reads charts. Ask "what would a
+good answer say, in your words" before the first build, not after the third.

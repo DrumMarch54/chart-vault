@@ -17,6 +17,7 @@ import crypto from 'node:crypto';
 import { callModel, AiError, estimate, textOf, WEB_SEARCH_USD } from './ai.js';
 import { chartName } from './lookup.js';
 import { sharesOf } from './group.js';
+import { groupInsights } from './insight.js';
 import { FIELDS, FLAGS, parseWho, whoSql } from './people.js';
 import { meaningFor } from './meaning.js';
 import { chunksFor, coreText } from './knowledge.js';
@@ -396,7 +397,8 @@ export function getResearch(db, id) {
   const people = (r.people || []).map((p, i) => ({ ...p, ref: i, on: !offP.has(i), vault: vaultChart(db, p), drawable: !!(p.chart_name && dateParts(p.birth_date)) }));
   const taken = new Set(people.filter((p) => p.vault).map((p) => p.vault.id));
   const vault = vaultMembers(db, r.vault_kinds || []).filter((v) => !taken.has(v.id)).map((v) => ({ ...v, on: !offV.has(v.id) }));
-  const summary = parse(row.summary, null);
+  const stored = parse(row.summary, null);
+  const summary = stored && stored.v === READING_V ? stored : null; // an older kind of summary is not shown: the reading is written anew
   return { id: row.id, query: r.query, category: r.category, status: r.status || 'done', stop: r.stop || '', closed: !!r.closed, angles: r.angles || [], tried: r.tried || [], angle: r.angle || '', checking: r.checking || null, rounds: r.rounds ?? 1, limit: r.limit || LIMIT_USD, personal: !!r.personal, dropped: r.dropped || 0, note: r.note || '',
     vault_kinds: parseWho(r.vault_kinds || []).map((k) => k.label), people, vault, summary,
     usd: r.usd || 0, seconds: r.seconds || 0, searches: r.searches || 0, at: row.created_at, build: row.build };
@@ -436,36 +438,34 @@ export function researchShares(db, id) {
   const ids = g.vault.filter((v) => v.on).map((v) => v.id);
   const shares = sharesOf(db, { ids, extra, display: g.category });
   const key = crypto.createHash('sha1').update(JSON.stringify([extra.map((e) => `${e.name}|${e.day}.${e.month}.${e.year}`).sort(), ids.slice().sort((a, b) => a - b)])).digest('hex').slice(0, 16);
-  return { ...shares, key, undated: on.length - extra.length, online: extra.length, from_vault: ids.length };
+  const insights = groupInsights(db, { ids, extra, themes: shares.themes });
+  return { ...shares, insights, key, undated: on.length - extra.length, online: extra.length, from_vault: ids.length };
 }
 
-// ---------- the summary (paid, Opus) ----------
-// The model reads like the owner does (owner 2026-11-23: "so many nines in the solar plexus centers ... isn't it
-// obvious?"): it gets the reading guide every chart Reading gets (coreText: what each position governs, the owner's
-// own notes for AIs), the THEMES the counter found (one number family across one part of the chart), then the
-// single finds, each with its counts and its honest label, and the course's words on those numbers there.
-const SUMMARY_SYSTEM = `You write a short "What Stands Out" note for a numerologist's research group: a category of people or businesses whose Chaldean five-chart numeroscopes the app counted against every other chart in the owner's vault. The COURSE REFERENCE below is how this system reads a chart: use it to say what a part of the chart governs (the emotion center is the solar plexus: inner emotional life, sex and love life; it is called the sexual center too). You get THE THEMES (one number family, like 9, 18/9, 27/9, 81/9, sitting in one part of the chart in several positions), THE FINDS (single positions) and COURSE PASSAGES on those numbers. Every count was made by the app; every label was measured against random groups of the same size.
-- Lead with the themes: a theme is the main thing to report, the way a numerologist sees it at a glance ("nines in the name chart's emotion center"). Give its counts. Then the single finds worth a word. Skip finds that add nothing.
-- Report only what is listed. Never invent a pattern, a count or a person. Keep every label honest, in plain words: Strong = unlikely to be luck; Worth a Look = may be luck; Could Be Chance = random groups do this well most of the time, so say it is only a hint.
-- A number family is one vibration in several forms: 18/9 and 27/9 are 9s and are also their own numbers. Say which forms show up when the counts give them.
-- Meanings come only from the course reference and the course passages given; cite the source in brackets after the claim, like [Main Combo Guide] or [Positions]. When nothing given covers a number in that position, give the count and say so. A passage about another position or another compound is not about this find; say so if you use it.
-- Describe the group, never a person: do not characterize anyone individually, and never say the numbers cause or explain who someone is. Use "the group leans on", "shows up more often than in the vault".
-- Numbers as the course writes them (15/6; one-digit numbers plain). Position names exactly as given. Plain American English.
-- 150 to 280 words: the strongest theme first, short paragraphs or bullets, one closing line that a group this size shows a lean, not a proof. No preamble, no heading.`;
+// ---------- the reading (paid, Opus) ----------
+// Collapse and expand (owner 2026-11-23: the first summaries were "pointless ... way too wordy", statistics talk
+// and the same thing twice). The counter (insight.js) says what fills the group's charts and where a number leads;
+// the model, with the reading guide every chart Reading gets, writes ONE short line of the course's meaning per
+// insight and three to five lines that weave them, the way the owner reads a single chart. No statistics words.
+const READING_V = 3;
+const READING_SYSTEM = `You read a GROUP of charts for a trained numerologist the way they read one chart: "collapse and expand" (see the COURSE REFERENCE below: expand = the big picture across the chart, collapse = one center or position as a talking point). The app counted the group's Chaldean numeroscopes and hands you the INSIGHTS: EXPAND (a number, or a family of numbers, that fills the strong positions of many of the group's charts) and COLLAPSE (one part of the chart where a number leads, like the nines in the name chart's emotion center). Each has a key, its counts and course passages. Call give_reading exactly once.
+- notes: one entry per insight key. line: ONE line, at most 18 words, saying what the course says this number is about (in that place, when the insight has a place), in the course's own vocabulary: the archetype name, what it does balanced, what it does unbalanced. No counts, no "the group", no "may", no hedging. source: the name of the source you took it from, as given in brackets.
+- lines: three to five lines, each at most 22 words: the reading of the group. Weave the insights the way the owner weaves two neighbors ("enthusiastic (19/1) magnetism (15/6)"). Start wide (expand), then the specific place (collapse), and say what that part of the chart governs (the solar plexus is the emotion center and the sexual center: emotional life, sex and love life; the mind center: communication and thought; the pillar: the ground a person stands on). Numbers as the course writes them: 18/9, one-digit numbers plain.
+- Never use statistics words (percent, chance, luck, random, sample, significant, likely) or disclaimers. No preamble.
+- Every meaning comes from the course reference or the passages given. Nothing is invented: an insight with no words given gets a line naming only its archetype title.
+- Read the group as a whole, never a named person, and say what shows up in the charts, never that the numbers cause or explain who someone is.`;
+const READING_TOOL = { name: 'give_reading', description: 'The reading of the group: one line per insight, and the lines that weave them.', strict: true, input_schema: { type: 'object', additionalProperties: false, required: ['lines', 'notes'], properties: {
+  lines: { type: 'array', items: { type: 'string' }, description: 'Three to five lines, each at most 22 words.' },
+  notes: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['key', 'line', 'source'], properties: { key: { type: 'string' }, line: { type: 'string' }, source: { type: 'string' } } } },
+} } };
 
-const pctOf = (a, of) => (of ? Math.round((a / of) * 100) : 0);
 const block = (p) => `[${p.book || p.title}${p.heading ? ` > ${String(p.heading).split(' > ').pop()}` : ''}${p.page ? `, p. ${p.page}` : ''}]\n${p.text}`;
 
-// What the model gets: the themes, the finds, and the course's words on those numbers. null = nothing to report.
+// What the model gets: the insights with their counts and the course's words on those numbers. null = nothing leads.
 export function summaryContext(g, s) {
-  const themes = (s.themes || []).slice(0, 4);
-  const worth = (s.cards || []).filter((c) => c.strength !== 'Could Be Chance');
-  const cards = (worth.length >= 3 ? worth : (s.cards || [])).slice(0, 6);
-  const anywhere = (s.anywhere || []).filter((a) => a.strength !== 'Could Be Chance').slice(0, 4);
-  if (!themes.length && !worth.length && !anywhere.length) return null;
-  const count = (x) => `${x.in_group} of ${x.group_of} in the group (${pctOf(x.in_group, x.group_of)}%), ${x.in_rest} of ${x.rest_of} others in the vault (${pctOf(x.in_rest, x.rest_of)}%)`;
-  const luck = (x) => `${x.strength}: ${x.luck === 0 ? 'no random group did this well' : `${Math.max(1, Math.round(x.luck * 100))} in 100 random groups do this well`}`;
-  const lines = [`THE GROUP: ${g.category}. ${s.size} counted (${s.online} found online, ${s.size - s.online} from the vault), against ${s.rest} others in the vault.`];
+  const ins = s.insights || { expand: [], collapse: [] };
+  if (!ins.expand.length && !ins.collapse.length) return null;
+  const lines = [`THE GROUP: ${g.category}. ${ins.size} charts read.`];
   const words = [];
   const seen = new Set();
   const addWords = (title, bits, passages) => {
@@ -473,29 +473,28 @@ export function summaryContext(g, s) {
     const pts = bits && bits.groups ? bits.groups.map((x) => x.points.map((t) => `- ${t.replace(/\*\*/g, '')}`).join('\n')).join('\n') : '';
     if (pts || ps.length) words.push(`\n${title}`, pts, ...ps.map(block));
   };
-  const wordsFor = (i) => {
+  const spotWords = (i) => {
     const [chart, position] = i.pos.split('.');
-    if (i.family) { const n = Number(i.num.slice(1)); addWords(`COURSE PASSAGES ON ${n} (the family: may be about other positions; say so if you use them)`, null, chunksFor(n, null, 2)); return; }
+    if (i.num.startsWith('/')) { const n = Number(i.num.slice(1)); addWords(`COURSE PASSAGES ON ${n} (general, may be about other positions)`, null, chunksFor(n, null, 2)); return; }
     let m = null;
     try { m = meaningFor({ chart, position, sum: Number(i.num), pair: [], rel: [] }); } catch { m = null; }
     if (m && ((m.bits && m.bits.groups && m.bits.groups.length) || (m.passages && m.passages.length))) addWords(`THE COURSE ON ${i.number} AS THE ${i.name.toUpperCase()}`, m.bits, (m.passages || []).slice(0, 2));
-    else addWords(`COURSE PASSAGES ON ${i.number} (not about this position; say so if you use them)`, null, chunksFor(Number(i.num), null, 2));
+    else addWords(`COURSE PASSAGES ON ${i.number} (general, not about this position)`, null, chunksFor(Number(i.num), null, 2));
   };
-  if (themes.length) lines.push('', 'THE THEMES');
-  for (const t of themes) {
-    lines.push(`- ${t.title}. ${t.people} of the group hold at least one of these. ${luck(t)}.`);
-    for (const i of t.items) { lines.push(`    ${i.number} as the ${i.name}: ${count(i)}`); wordsFor(i); }
-    addWords(`COURSE PASSAGES ON ${t.family} (the family itself)`, null, chunksFor(t.family, null, 2));
+  const say = (i) => `- key ${i.key}: ${i.head}${i.kind === 'number' ? ` (${i.big})` : ''}. ${i.count}. ${i.detail}`;
+  lines.push('', 'EXPAND (the strong positions of every chart together)');
+  for (const i of ins.expand) {
+    lines.push(say(i));
+    if (i.kind === 'number') addWords(`COURSE PASSAGES ON ${i.big} (general)`, null, chunksFor(i.sum, null, 3));
+    else addWords(`COURSE PASSAGES ON ${i.d} (general)`, null, chunksFor(i.d, null, 3));
   }
-  if (cards.length || anywhere.length) lines.push('', 'THE FINDS (single positions)');
-  for (const c of cards) for (const i of c.items) { lines.push(`- ${luck(c)}. ${i.number} as the ${i.name}: ${count(i)}. Held by: ${c.charts.map((x) => x.title).join(', ')}.`); wordsFor(i); }
-  for (const a of anywhere) {
-    lines.push(`- ${luck(a)}. ${a.number} anywhere in the chart: ${count(a)}.`);
-    addWords(`COURSE PASSAGES ON ${a.number} (general: may be about one position; say so if you use them)`, null, chunksFor(Number(a.num), null, 2));
-  }
+  if (!ins.expand.length) lines.push('- nothing fills the charts as a whole');
+  lines.push('', 'COLLAPSE (one part of the chart)');
+  for (const i of ins.collapse) { lines.push(say(i)); for (const it of (i.items || []).slice(0, 4)) spotWords(it); }
+  if (!ins.collapse.length) lines.push('- no single place stands out');
   let text = [...lines, '', 'COURSE PASSAGES', ...words.filter(Boolean)].join('\n');
   if (text.length > MAX_CONTEXT) text = text.slice(0, MAX_CONTEXT);
-  return { text, finds: themes.length + cards.length + anywhere.length, themes: themes.length };
+  return { text, finds: ins.expand.length + ins.collapse.length, keys: [...ins.expand, ...ins.collapse].map((i) => i.key) };
 }
 
 export function summaryEstimate(db) {
@@ -520,22 +519,27 @@ async function writeSummaryNow(db, id, { again = false } = {}) {
   const s = researchShares(db, id);
   if (g.summary && g.summary.key === s.key && !again) return g.summary;
   const save = (summary) => { db.prepare('UPDATE research SET summary = ? WHERE id = ?').run(JSON.stringify(summary), id); return summary; };
-  if (s.size < 3) return save({ key: s.key, text: '', none: 'small', usd: 0, size: s.size, at: new Date().toISOString() });
+  if (s.size < 3) return save({ v: READING_V, key: s.key, lines: [], notes: [], none: 'small', usd: 0, size: s.size, at: new Date().toISOString() });
   const ctx = summaryContext(g, s);
-  if (!ctx) return save({ key: s.key, text: '', none: 'luck', usd: 0, size: s.size, at: new Date().toISOString() });
+  const base = { v: READING_V, key: s.key, size: s.size, at: new Date().toISOString() };
+  if (!ctx) return save({ ...base, lines: [], notes: [], none: 'nothing', usd: 0 });
   const core = coreText();
-  const est = estimate('reading', { inputChars: SUMMARY_SYSTEM.length + core.length + ctx.text.length, outputTokens: 800 });
+  const est = estimate('reading', { inputChars: READING_SYSTEM.length + core.length + ctx.text.length, outputTokens: 700 });
   running++;
   try {
     const { message, usd, seconds } = await callModel('reading', {
       max_tokens: 3000, output_config: { effort: 'medium' },
-      system: [{ type: 'text', text: SUMMARY_SYSTEM }, ...(core ? [{ type: 'text', text: core, cache_control: { type: 'ephemeral' } }] : [])],
+      system: [{ type: 'text', text: READING_SYSTEM }, ...(core ? [{ type: 'text', text: core, cache_control: { type: 'ephemeral' } }] : [])],
+      tools: [READING_TOOL], tool_choice: { type: 'tool', name: 'give_reading' },
       messages: [{ role: 'user', content: ctx.text }],
-    }, { estimateUsd: est, what: `research summary #${id} (${ctx.themes} themes, ${ctx.finds} finds)` });
-    if (message.stop_reason === 'refusal') throw new AiError('The AI declined to write this summary.');
-    const text = textOf(message);
-    if (!text) throw new AiError('The AI sent back an empty summary. Try again.');
-    return save({ key: s.key, text, usd: round(usd), seconds, size: s.size, finds: ctx.finds, at: new Date().toISOString() });
+    }, { estimateUsd: est, what: `research reading #${id} (${ctx.finds} insights)` });
+    if (message.stop_reason === 'refusal') throw new AiError('The AI declined to write this reading.');
+    const use = (message.content || []).find((b) => b.type === 'tool_use' && b.name === 'give_reading');
+    const input = use && use.input ? use.input : null;
+    const lines = (input && Array.isArray(input.lines) ? input.lines : []).map((l) => clean(l, 220)).filter(Boolean).slice(0, 5);
+    if (!lines.length) throw new AiError('The AI sent back an empty reading. Try again.');
+    const notes = (Array.isArray(input.notes) ? input.notes : []).filter((x) => x && ctx.keys.includes(x.key)).map((x) => ({ key: x.key, line: clean(x.line, 200), source: clean(x.source, 80) })).filter((x) => x.line);
+    return save({ ...base, lines, notes, usd: round(usd), seconds, finds: ctx.finds });
   } finally { running--; }
 }
 
@@ -547,7 +551,7 @@ export function researchReport(db) {
   const lines = [`RESEARCH A GROUP: ${running} running now · last ${RECENT.length} this process${kept ? ` · ${kept.n} kept (Past Research)${kept.last ? `, newest ${kept.last}` : ''}, $${round(kept.usd)} spent on searches in all` : ''}`];
   if (db) { const c = researchCost(db); lines.push(`  one round of 30: about $${c.round_usd.toFixed(2)} (${c.measured ? `average of ${c.rounds} real` : 'a guess, none run yet'}); a search asks before passing $${LIMIT_USD.toFixed(2)}`); }
   for (const e of RECENT.slice().reverse()) lines.push(`  ${e.at} "${e.query}" → ${e.error ? `#${e.id ?? '-'} FAILED ${e.error}` : `#${e.id} ${e.category} round ${e.round}${e.personal ? ' [personal: only self-stated, sourced]' : ''}: ${e.fresh} new, ${e.found} in all${e.dropped ? `, ${e.dropped} dropped (no page for it)` : ''}, ${e.unchecked} not checked online, vault kinds ${e.kinds || 'none'} · ${e.searches} searches · $${e.usd}${e.note ? ` · note: ${e.note}` : ''}`}`);
-  if (db) for (const row of db.prepare('SELECT id, query, category, result, summary, usd, created_at FROM research ORDER BY id DESC LIMIT 10').all()) { const r = parse(row.result, {}), sm = parse(row.summary, null); lines.push(`  kept #${row.id} ${row.created_at} "${row.query}" → ${row.category}: ${(r.people || []).length} found in ${r.rounds || 1} round(s), ${r.status || 'done'}${r.stop ? ` (${r.stop})` : ''}, $${round(row.usd)} of limit $${(r.limit || LIMIT_USD).toFixed(2)}; summary ${sm ? (sm.text ? `written $${sm.usd}` : `none (${sm.none})`) : 'not written'}`); }
+  if (db) for (const row of db.prepare('SELECT id, query, category, result, summary, usd, created_at FROM research ORDER BY id DESC LIMIT 10').all()) { const r = parse(row.result, {}), sm = parse(row.summary, null); lines.push(`  kept #${row.id} ${row.created_at} "${row.query}" → ${row.category}: ${(r.people || []).length} found in ${r.rounds || 1} round(s), ${r.status || 'done'}${r.stop ? ` (${r.stop})` : ''}, $${round(row.usd)} of limit $${(r.limit || LIMIT_USD).toFixed(2)}; reading ${sm ? (sm.v !== READING_V ? 'an older kind, to be rewritten' : sm.lines && sm.lines.length ? `written $${sm.usd}` : `none (${sm.none})`) : 'not written'}`); }
   return lines;
 }
 export const RESEARCH_TOOLS = [GROUP_TOOL];

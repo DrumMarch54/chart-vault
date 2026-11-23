@@ -2,7 +2,7 @@
 // Proves: the people come back with only the sources the search returned; a date without such a page is kept
 // but marked not checked; a PERSONAL category drops anyone without a page for it; people found online are counted
 // IN the group and never among "the others"; nothing is saved to the vault; unticking changes the count; a fix is
-// kept; the summary is only written when something stands out, stored, and not paid for twice.
+// kept; the reading is only written when something leads, stored, and not paid for twice.
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -59,6 +59,7 @@ after(() => { server.close(); fs.rmSync(tmp, { recursive: true, force: true }); 
 
 // The search runs on the server after the POST answers: wait until nothing is running.
 const settle = async () => { for (let i = 0; i < 200; i++) { const r = await call('GET', '/api/research'); if (!r.body.running) return; await new Promise((ok) => setTimeout(ok, 20)); } throw new Error('the search never finished'); };
+const READING = (line) => ({ content: [{ type: 'tool_use', id: 'r1', name: 'give_reading', input: { lines: [line], notes: [{ key: 'made-up', line: 'dropped', source: 'x' }] } }], stop_reason: 'tool_use', usage: { input_tokens: 2000, output_tokens: 100 } });
 const none = () => reply([group({ people: [] })], 1); // a round that finds nobody new: the search stops
 const call = async (method, p, d) => { const r = await fetch(base + p, { method, headers: { cookie, 'content-type': 'application/json' }, ...(d ? { body: JSON.stringify(d) } : {}) }); return { status: r.status, body: await r.json() }; };
 
@@ -246,39 +247,61 @@ test('nines in several positions of one center are one theme, the plain 9 and 18
   for (const t of s.themes) { assert.equal(t.items.length >= 2, true); assert.match(t.title, /^(Ones|Twos|Threes|Fours|Fives|Sixes|Sevens|Eights|Nines) in the /); assert.equal(new Set(t.items.map((i) => i.pos)).size, t.items.length); }
 });
 
-test('the summary costs nothing when nothing stands out, and is not written twice', async () => {
+test('the reading costs nothing when nothing leads, and is not written twice', async () => {
   const n = requests.length;
   const s = researchShares(db, id);
   const ctx = summaryContext(getResearch(db, id), s);
   if (!ctx) {
     const r = await call('POST', `/api/research/${id}/summary`, {});
-    assert.equal(r.body.summary.none, 'luck');
+    assert.equal(r.body.summary.none, 'nothing');
+    assert.deepEqual(r.body.summary.lines, []);
     assert.equal(requests.length, n, 'no model call');
   } else {
-    script.push({ content: [{ type: 'text', text: 'The group leans on 19/1.' }], stop_reason: 'end_turn', usage: { input_tokens: 2000, output_tokens: 100 } });
+    script.push(READING('The group leans on 19/1.'));
     const r = await call('POST', `/api/research/${id}/summary`, {});
-    assert.equal(r.body.summary.text, 'The group leans on 19/1.');
+    assert.deepEqual(r.body.summary.lines, ['The group leans on 19/1.']);
     assert.equal(requests.length, n + 1);
-    assert.match(requests.at(-1).messages[0].content, /^THE GROUP: Computer Coders/);
   }
   const again = await call('POST', `/api/research/${id}/summary`, {});
   assert.equal(again.status, 200);
   assert.equal(requests.length <= n + 1, true, 'the same group again is the stored one');
 });
 
-test('two asks for the same summary at once pay once', async () => {
-  await call('PUT', `/api/research/${id}/person/4`, { birth_date: '1970-02-04' }); // a new group: no stored summary for it
+test('collapse and expand: a number that fills a group shows up, with a short reading and no made-up note', async () => {
+  // Six strangers born the same day share every number of the higher self chart: the day is in a strong position.
+  script.push(reply([...searched([U('Linus')]), group({ category: 'Same Day', people: ['Ann Lee', 'Bob Ray', 'Cy Dunn', 'Di Moss', 'Ed Hale', 'Flo Pike'].map((n) => person(n, n, '1990-07-19', U('Linus'))) })]), none(), READING('Nineteens carry these charts.'));
+  const r = await call('POST', '/api/research', { query: 'same day people' });
+  await settle();
+  const s = (await call('GET', `/api/research/${r.body.id}/shares`)).body;
+  const day = s.insights.expand.find((i) => i.key === 'number:19');
+  assert.ok(day, '19/1 (the day) fills the group');
+  assert.equal(day.count, '6 of 6 charts');
+  assert.equal(day.people.length, 6);
+  assert.equal(typeof day.usual, 'number');
+  const g = (await call('GET', `/api/research/${r.body.id}`)).body;
+  assert.deepEqual(g.summary.lines, ['Nineteens carry these charts.']);
+  assert.deepEqual(g.summary.notes, [], 'a note for a key the app did not send is dropped');
+  const sent = requests.at(-1);
+  assert.equal(sent.tool_choice.name, 'give_reading');
+  assert.match(sent.messages[0].content, /^THE GROUP: Same Day\. 6 charts read\./);
+  assert.match(sent.messages[0].content, /EXPAND \(the strong positions of every chart together\)\n- key number:/);
+  assert.match(sent.system[1].text, /COURSE REFERENCE/);
+  await call('DELETE', `/api/research/${r.body.id}`);
+});
+
+test('two asks for the same reading at once pay once', async () => {
+  await call('PUT', `/api/research/${id}/person/4`, { birth_date: '1970-02-04' }); // a new group: no stored reading for it
   const n = requests.length;
   const ctx = summaryContext(getResearch(db, id), researchShares(db, id));
-  if (!ctx) return; // nothing stands out: no call at all, proven above
-  script.push({ content: [{ type: 'text', text: 'Once.' }], stop_reason: 'end_turn', usage: { input_tokens: 2000, output_tokens: 100 } });
+  if (!ctx) return; // nothing leads: no call at all, proven above
+  script.push(READING('Once.'));
   const [a, b] = await Promise.all([call('POST', `/api/research/${id}/summary`, {}), call('POST', `/api/research/${id}/summary`, {})]);
-  assert.equal(a.body.summary.text, 'Once.');
-  assert.equal(b.body.summary.text, 'Once.');
+  assert.deepEqual(a.body.summary.lines, ['Once.']);
+  assert.deepEqual(b.body.summary.lines, ['Once.']);
   assert.equal(requests.length, n + 1);
 });
 
-test('a find in a group of strangers is written up from the counted finds only', () => {
+test('a find in a group of strangers is counted in the group only', () => {
   // Six strangers born the same day share the whole essence chart: a find no random group has.
   const extra = ['Ann Lee', 'Bob Ray', 'Cy Dunn', 'Di Moss', 'Ed Hale', 'Flo Pike'].map((name, ref) => ({ name, day: 19, month: 7, year: 1990, title: name, ref }));
   const s = sharesOf(db, { extra, display: 'Same Day' });
@@ -286,9 +309,6 @@ test('a find in a group of strangers is written up from the counted finds only',
   assert.equal(s.cards[0].strength, 'Strong');
   assert.equal(s.cards[0].charts.length, 6);
   assert.equal(s.cards[0].charts.every((c) => c.id === null), true);
-  const ctx = summaryContext({ category: 'Same Day' }, { ...s, online: 6 });
-  assert.match(ctx.text, /THE FINDS \(single positions\)\n- Strong: /);
-  assert.match(ctx.text, /6 of 6 in the group/);
 });
 
 test('removing a research, and the snapshot never shows a secret', async () => {

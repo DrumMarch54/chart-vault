@@ -1085,3 +1085,21 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .rs-next-title { font-weight: 700; margin-top: 14px; }
 .rs-angle { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; min-height: 52px; padding: 8px 12px; border-radius: 12px; border: 0; background: var(--panel2); color: var(--text); font: inherit; text-align: left; }
 .rs-next input { min-width: 0; flex: 1; }
+/* Research a Group: collapse and expand. An insight card: the number big, what it is, how many, one line of the course. */
+.ins { display: flex; flex-direction: column; gap: 8px; margin: 0; }
+.ins-top { display: flex; align-items: center; gap: 12px; }
+.ins-big { flex: none; min-width: 64px; padding: 6px 8px; border-radius: 12px; background: var(--accent); color: var(--accent-text); font-size: 22px; font-weight: 800; text-align: center; line-height: 1.1; }
+.ins-headbox { min-width: 0; flex: 1; }
+.ins-head { font-size: 17px; font-weight: 700; line-height: 1.2; }
+.ins-count { font-size: 15px; margin-top: 2px; }
+.ins-note { margin: 0; font-size: 16px; line-height: 1.4; }
+.ins-who summary { cursor: pointer; color: var(--muted); font-size: 14px; list-style: none; min-height: 32px; display: flex; align-items: center; }
+.ins-who summary::-webkit-details-marker { display: none; }
+.ins-who summary::after { content: " ›"; }
+.ins-who[open] summary::after { content: " ⌄"; }
+.rs-lines { margin: 0; padding-left: 20px; font-size: 16.5px; line-height: 1.45; }
+.rs-lines li + li { margin-top: 8px; }
+.rs-again { background: transparent; color: var(--muted); min-height: 36px; font-size: 14px; }
+.rs-every > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.rs-every > summary::-webkit-details-marker { display: none; }
+.rs-every[open] > summary { margin-bottom: 10px; }

@@ -28,7 +28,7 @@ const RANDOM_GROUPS = 300;
 // "Nines in the Name Chart's Emotion Center". The parts follow the course: a center is its main and sub vibration,
 // its sub diamond and the diamond behind it. The same part in several charts (the sexual centers of the name,
 // vocation, personality and psyche charts) is one theme too.
-const AREA = {
+export const AREA = {
   heart: 'mind', heartExtra: 'mind', heartSubDiamond: 'mind', mindDiamond: 'mind',
   solar: 'emotion', solarExtra: 'emotion', solarSubDiamond: 'emotion', emotionDiamond: 'emotion',
   first: 'line', middle: 'line', last: 'line', leDiamond: 'line',
@@ -78,6 +78,29 @@ export function groupShares(db, tag, { limit = 12, anywhereLimit = 8, randomGrou
 // A find's charts carry `ref` for such a person (no chart id to open).
 export function sharesOf(db, { ids = [], extra = [], display = '', limit = 12, anywhereLimit = 8, randomGroups = RANDOM_GROUPS } = {}) {
   return shares(db, { tag: '', display, tagged: 0, size: 0, rest: 0, random_groups: randomGroups, cards: [], anywhere: [], themes: [] }, new Set(ids), { limit, anywhereLimit, randomGroups, extra });
+}
+
+// Everyone whose name and date are known, one entry per person, each with the numbers of every position
+// (server/insight.js reads a group the way one chart is read). `ids` are the vault charts in the group; `extra`
+// are people found online who are not saved: in the group only, their numbers straight from the engine.
+export function peopleValues(db, ids = [], extra = []) {
+  const inIds = new Set(ids);
+  const byKey = new Map();
+  for (const r of db.prepare("SELECT i.id, i.title, ci.name, ci.day, ci.month, ci.year FROM images i JOIN chart_inputs ci ON ci.image_id = i.id WHERE i.kind = 'chart' ORDER BY i.id").all()) {
+    const key = personKey(r), p = byKey.get(key), inGroup = inIds.has(r.id);
+    if (!p) byKey.set(key, { id: r.id, title: r.title || r.name || '', inGroup, values: [] });
+    else if (inGroup && !p.inGroup) { p.id = r.id; p.title = r.title || r.name || p.title; p.inGroup = true; }
+  }
+  const byId = new Map([...byKey.values()].map((p) => [p.id, p]));
+  for (const v of db.prepare('SELECT image_id AS id, chart, position, sum, ds FROM chart_values').iterate()) { const p = byId.get(v.id); if (p) p.values.push(v); }
+  extra.forEach((e, n) => {
+    const p = byKey.get(personKey(e));
+    if (p) { p.inGroup = true; if (p.ref === undefined) p.ref = e.ref; return; }
+    let values = [];
+    try { values = computeValues({ day: e.day, month: e.month, year: e.year, name: e.name }); } catch { values = []; }
+    if (values.length) byKey.set(personKey(e), { id: -(n + 1), title: e.title || e.name || '', inGroup: true, ref: e.ref, virtual: true, values });
+  });
+  return [...byKey.values()].filter((p) => p.values.length);
 }
 
 const personKey = (r) => `${String(r.name || '').trim().toLowerCase().replace(/\s+/g, ' ')}|${r.day || ''}.${r.month || ''}.${r.year || ''}`;

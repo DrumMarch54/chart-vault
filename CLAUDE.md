@@ -263,9 +263,18 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   "Date Not Confirmed" = the AI wrote it from what it already knew, without opening a web page this time.
 - A changed name (owner 2026-11-23): the chart and every count use the BIRTH name; `name_now` is a second chart behind the
   "Name Now" chip on the person's page.
-- What Stands Out: Claude Opus 5.5 writes it with the reading guide in hand (`coreText()`, the same one a Reading gets),
-  the themes first, then the finds, each with its honest label; no theme and nothing above chance = no call, nothing spent. Stored with the group it was written for; a changed
-  group offers Write It Again. A search in flight counts as busy, so a deploy waits. Snapshot: RESEARCH A GROUP.
+- COLLAPSE AND EXPAND (owner 2026-11-23; the owner's own way of reading, interpretation.md): the results are ONE layout,
+  short, no repeat: Expand cards, Collapse cards, Reading, the charts. `server/insight.js` counts over the STRONG
+  positions only (`isStrong`: day, month, year, names, life expression, life paths, pillar, every mind and emotion
+  center): EXPAND = a number in a strong position in many charts ("18/9 · 16 of 20"), a chart heavy with one family or
+  with numbers holding a digit ("a 4 in it": 4, 40/4, 44/8); COLLAPSE = the themes, then one strong position where a
+  family leads. The vault is only a small "usually 46 in 100". Counting every position (all ~120) drowned everything.
+- The Reading (`writeSummary`, Claude Opus 5.5, the reading guide `coreText()` in hand, tool `give_reading`): ONE line
+  of the course's meaning per insight and three to five lines that weave them like one chart is read. No statistics
+  words, no hedging, no long text (the owner called the first summaries "pointless ... way too wordy"). Nothing
+  leads = no call, nothing spent. Stored with the group it was written for (`v: 3`); a changed group offers it again.
+  The old position-by-position list is folded under "Every Position Counted". A search in flight counts as busy, so a
+  deploy waits. Snapshot: RESEARCH A GROUP.
 
 ## Who each person is (built 2026-11-20)
 - Researched facts about the person behind a chart: one sentence, fields (what they do), flags (what happened in their

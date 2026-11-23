@@ -122,8 +122,12 @@ useClientFactory(() => ({ messages: { create: async (params) => {
       { type: 'tool_use', id: 'g1', name: 'give_group', input: { category: 'Computer Coders', personal: false, note: '', vault_kinds: ['field:tech'], angles: ['Video Game Makers', 'Women in Tech', 'Coders Outside the US'], people: /ALREADY FOUND/.test(params.messages[0].content) ? [] : people } },
     ], stop_reason: 'tool_use', usage: { input_tokens: 90000, output_tokens: 1800, server_tool_use: { web_search_requests: 6 } } };
   }
-  if (typeof params.messages[0].content === 'string' && params.messages[0].content.startsWith('THE GROUP:')) {
-    return { content: [{ type: 'text', text: 'The group leans on **19/1**: it shows up more often here than in the rest of the vault, the Prince of Heaven, a number of radiant self-expression [Main Combo Guide].\n\n- **Day 28/1** is shared by two of the group; Worth a Look, so it may well be luck.\n- The course words given do not cover the 10/1 in that position.\n\nA group this size shows a lean, not a proof.' }], stop_reason: 'end_turn', usage: { input_tokens: 6000, output_tokens: 250 } };
+  if (params.tools && params.tools.some((t) => t.name === 'give_reading')) {
+    const keys = [...String(params.messages[0].content).matchAll(/^- key (\S+):/gm)].map((m) => m[1]);
+    return { content: [{ type: 'tool_use', id: 'r1', name: 'give_reading', input: {
+      lines: ['Radiant self-starters (19/1) carry these charts: the will to shine and to lead.', 'In the emotion center the same drive turns inward: pride that needs to be seen.', 'The pillar under it is restless, so the shine looks for new ground again and again.'],
+      notes: keys.map((key) => ({ key, line: 'The Prince of Heaven: radiant and enthusiastic in balance, self-centered and proud out of it.', source: 'Main Combo Guide' })),
+    } }], stop_reason: 'tool_use', usage: { input_tokens: 22000, output_tokens: 300 } };
   }
   // Look Up Someone: a fake web search and answer (the dev app never searches the real web).
   if (params.tools && params.tools.some((t) => t.type && t.type.startsWith('web_search'))) {

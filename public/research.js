@@ -15,7 +15,7 @@
     'research.past_remove': 'Research: remove a past research', 'research.tick': 'Research: tick or untick someone', 'research.show': 'Research: Show Charts and Patterns',
     'research.change_who': 'Research: Change Who Is In', 'research.open_person': 'Research: open a person', 'research.name_now': 'Research: Birth Name or Name Now',
     'research.fix': 'Research: keep a fixed name or date', 'research.save': 'Research: Save to Vault', 'research.save_all': 'Research: Save All to Vault',
-    'research.summary_again': 'Research: write the summary again', 'research.quick': 'Research: open in Quick Chart', 'research.grid_size': 'Research: chart size',
+    'research.summary_again': 'Research: write the reading again', 'research.insight_who': 'Research: open Who on an insight', 'research.every_position': 'Research: open Every Position Counted', 'research.quick': 'Research: open in Quick Chart', 'research.grid_size': 'Research: chart size',
   };
 
   function install(A) {
@@ -28,19 +28,6 @@
     const inputsOf = (p, name) => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(p.birth_date || ''); return { name: name || p.chart_name || '', day: m ? +m[3] : '', month: m ? +m[2] : '', year: m ? +m[1] : '' }; };
     const plural = (n, one, many) => `${fmtN(n)} ${n === 1 ? one : many}`;
     const noun = (g) => (g.people.length && g.people.every((p) => p.kind === 'business') ? ['business', 'businesses'] : ['person', 'people']);
-    // The summary as it comes from the model: paragraphs, bullets, **bold**. Built as elements, never as HTML.
-    const inline = (s) => s.split(/(\*\*[^*]+\*\*)/g).filter(Boolean).map((part) => (part.startsWith('**') && part.endsWith('**') ? h('b', {}, part.slice(2, -2)) : document.createTextNode(part)));
-    function richText(text) {
-      const out = []; let list = null;
-      for (const raw of String(text || '').split('\n')) {
-        const line = raw.trim();
-        const b = /^[-*•]\s+(.*)$/.exec(line);
-        if (b) { if (!list) { list = h('ul', { class: 'rd-list' }); out.push(list); } list.append(h('li', {}, ...inline(b[1]))); continue; }
-        list = null;
-        if (line) out.push(h('p', {}, ...inline(line.replace(/^#+\s*/, ''))));
-      }
-      return h('div', { class: 'rd-text' }, ...out);
-    }
     const saveChart = async (name, date, title, svg) => {
       const png = await chartPng(svg);
       return api(`/api/quick/save?name=${encodeURIComponent(name)}&date=${date}${title && title !== name ? `&title=${encodeURIComponent(title)}` : ''}`, { method: 'PUT', headers: { 'content-type': 'image/png' }, body: png });
@@ -90,7 +77,7 @@
     // runs the screen asks again every few seconds; `redraw` is called when the state changes. Paused = it would
     // pass the money limit: the owner taps Keep Going or leaves it there.
     let watch = 0;
-    function statusCard(g, id, redraw) {
+    function statusCard(g, id, redraw, compact) {
       const each = g.cost ? money(g.cost.round_usd) : 'a few cents';
       const more = async () => {
         count('research.more');
@@ -115,6 +102,8 @@
         return h('div', { class: 'card stack rs-status' }, h('b', {}, `Checking the dates… ${c.done} of ${c.total}`),
           h('div', { class: 'muted' }, `Each one is looked up on a web page. ${c.confirmed || 0} confirmed${c.changed ? `, ${c.changed} corrected` : ''} so far · ${money(c.usd || 0)} spent. You can leave: it keeps going.`));
       }
+      // On the results the choices are one tap away, never a tall card above the reading.
+      if (g.status === 'done' && !g.closed && compact) return h('a', { class: 'btn btn-block', href: `#/research?id=${id}&view=who`, onclick: () => count('research.more') }, 'What Next? Find More or Check the Dates');
       if (g.status === 'done' && !g.closed) return whatNext(g, id, redraw);
       return null;
     }
@@ -236,52 +225,69 @@
       };
       saveLabel();
 
-      // The summary: written once for this group (paid), kept; a changed group offers Write Again.
-      const $sum = h('div', { class: 'card stack rs-summary' });
+      // Collapse and expand (owner 2026-11-23: one layout, short, no repeat): the counted insights are cards; the
+      // reading (paid, written once for this group, kept) puts one line of the course's words on each card and
+      // three to five lines that weave them. A changed group offers Write It Again.
+      const ins = s.insights || { expand: [], collapse: [] };
       const cost = g.summary_cost ? `about ${money(g.summary_cost.usd)}` : 'a few cents';
-      const drawSummary = (sm, pending) => {
+      const $expand = h('div', { class: 'stack' }), $collapse = h('div', { class: 'stack' }), $read = h('div', { class: 'card stack rs-read' });
+      const card = (i, note) => h('div', { class: 'card ins' },
+        h('div', { class: 'ins-top' }, h('span', { class: 'ins-big' }, i.big),
+          h('div', { class: 'ins-headbox' }, h('div', { class: 'ins-head' }, i.head),
+            h('div', { class: 'ins-count' }, h('b', {}, i.count), i.usual !== null && i.usual !== undefined ? h('span', { class: 'muted' }, ` · usually ${i.usual} in 100`) : null))),
+        note ? h('p', { class: 'ins-note' }, note.line) : null,
+        ...String(i.detail || '').split(' · ').filter(Boolean).map((d) => h('div', { class: 'muted small' }, d)),
+        h('details', { class: 'ins-who', ontoggle: (e) => { if (e.target.open) count('research.insight_who'); } }, h('summary', {}, `Who (${i.people.length})`),
+          h('div', { class: 'simpills' }, ...i.people.map((c) => h('a', { class: 'simpill', href: hrefOf(c) }, c.title || 'No name')))));
+      const drawReading = (sm, pending) => {
         const stale = sm && sm.key !== s.key;
+        const notes = new Map(((sm && !stale && sm.notes) || []).map((x) => [x.key, x]));
+        fill($expand, ...ins.expand.map((i) => card(i, notes.get(i.key))), ins.expand.length ? null : h('p', { class: 'muted', style: 'margin:0' }, 'No number fills these charts more than usual yet.'));
+        fill($collapse, ...ins.collapse.map((i) => card(i, notes.get(i.key))), ins.collapse.length ? null : h('p', { class: 'muted', style: 'margin:0' }, 'No single place in the chart stands out yet.'));
         const write = (again) => async () => {
           if (again) count('research.summary_again');
-          drawSummary(sm, true);
+          drawReading(sm, true);
           // A dropped connection asks again by itself: free, the server hands back the one being written or stored.
           let r = null, err = null;
           for (let tries = 0; tries < 4 && !r; tries++) {
             try { r = await send(`/api/research/${id}/summary`, 'POST', { again: again && tries === 0 }); err = null; }
             catch (e) { err = e; if (!(e instanceof TypeError)) break; await new Promise((ok) => setTimeout(ok, 4000)); }
           }
-          if (r) { drawSummary(r.summary, false); if (r.warning) toast(r.warning.text, true); }
-          else { fill($sum, h('b', {}, 'What Stands Out'), h('p', { class: 'err', style: 'margin:0' }, err instanceof TypeError ? 'The connection dropped. Tap Try Again: if the summary was already written, it is free.' : err.message), h('button', { type: 'button', class: 'btn btn-block', onclick: write(again) }, `Try Again (${cost})`)); }
+          if (r) { drawReading(r.summary, false); if (r.warning) toast(r.warning.text, true); }
+          else fill($read, h('b', {}, 'Reading'), h('p', { class: 'err', style: 'margin:0' }, err instanceof TypeError ? 'The connection dropped. Tap Try Again: if the reading was already written, it is free.' : err.message), h('button', { type: 'button', class: 'btn btn-block', onclick: write(again) }, `Try Again (${cost})`));
         };
-        fill($sum, h('b', {}, 'What Stands Out'),
-          pending ? h('p', { class: 'muted', style: 'margin:0' }, 'Writing the summary from the finds and the course… about 20 seconds.') : null,
-          !pending && !sm ? h('button', { type: 'button', class: 'btn btn-block', onclick: write(false) }, `Write the Summary (${cost})`) : null,
-          !pending && sm && sm.none === 'luck' ? h('p', { class: 'muted', style: 'margin:0' }, 'Nothing in this group stands out beyond what luck alone gives, so there is nothing to write about. Nothing was spent. A bigger group may show more.') : null,
-          !pending && sm && sm.none === 'small' ? h('p', { class: 'muted', style: 'margin:0' }, 'Fewer than three could be counted, so nothing can be said yet.') : null,
-          !pending && sm && sm.text ? richText(sm.text) : null,
-          !pending && sm && sm.text ? h('div', { class: 'muted small' }, `Written from the counted finds and the course's words only · it cost ${money(sm.usd || 0)}`) : null,
-          !pending && stale ? h('p', { class: 'lookup-warn small' }, `This was written for a group of ${sm.size}. The group has changed since.`) : null,
-          !pending && sm && (stale || sm.text) ? h('button', { type: 'button', class: 'btn btn-block', onclick: write(true) }, `Write It Again (${cost})`) : null);
+        const any = ins.expand.length + ins.collapse.length > 0;
+        fill($read, h('b', {}, 'Reading'),
+          pending ? h('p', { class: 'muted', style: 'margin:0' }, 'Writing the reading… about 20 seconds.') : null,
+          !pending && !any ? h('p', { class: 'muted', style: 'margin:0' }, 'Nothing leads in this group yet, so there is nothing to read. Nothing was spent. More charts will show more.') : null,
+          !pending && any && !sm ? h('button', { type: 'button', class: 'btn btn-block', onclick: write(false) }, `Write the Reading (${cost})`) : null,
+          !pending && sm && !stale && sm.lines && sm.lines.length ? h('ul', { class: 'rs-lines' }, ...sm.lines.map((l) => h('li', {}, l))) : null,
+          !pending && stale && any ? h('p', { class: 'muted small', style: 'margin:0' }, 'The group has changed since the reading was written.') : null,
+          !pending && sm && any && (stale || (sm.lines && sm.lines.length)) ? h('button', { type: 'button', class: 'btn btn-block rs-again', onclick: write(true) }, stale ? `Write the Reading for This Group (${cost})` : `Write It Again (${cost})`) : null);
         return write;
       };
-      // The first time a group is shown, the summary is written by itself (it is what was asked for, and its cost
-      // was on the Search button's screen); after that, only a tap writes one.
-      const write = drawSummary(g.summary, false);
-      if (!g.summary && s.size >= 3 && g.status !== 'running') write(false)(); // free while the server is already writing it: the same one comes back
+      // The first time a group is shown the reading is written by itself (free while the server is already writing it).
+      const write = drawReading(g.summary, false);
+      if (!g.summary && s.size >= 3 && g.status !== 'running' && g.status !== 'checking' && ins.expand.length + ins.collapse.length) write(false)();
 
       const left = [s.undated ? `${plural(s.undated, one, many)} without a full date cannot be counted` : '', s.tagged - s.size - s.undated > 0 ? `${s.tagged - s.size - s.undated} left out: no name and date read yet, or the same person twice` : ''].filter(Boolean).join('; ');
-      fill($body, statusCard(g, id, () => { if (location.hash === `#/research?id=${id}` && $body.isConnected) resultsView(id, $body); }),
+      fill($body, statusCard(g, id, () => { if (location.hash === `#/research?id=${id}` && $body.isConnected) resultsView(id, $body); }, true),
         h('div', { class: 'card stack' }, h('div', { class: 'simname' }, g.category),
-          h('p', { class: 'muted', style: 'margin:0' }, `${plural(s.size, one, many)} counted: ${fmtN(s.online)} found online${s.from_vault ? `, ${fmtN(s.size - s.online)} from your vault` : ''}. Compared with the ${fmtN(s.rest)} others in your vault.${left ? ` ${left[0].toUpperCase()}${left.slice(1)}.` : ''}`),
+          h('p', { class: 'muted', style: 'margin:0' }, `${plural(s.size, one, many)} read: ${fmtN(s.online)} found online${s.from_vault ? `, ${fmtN(s.size - s.online)} from your vault` : ''}.${left ? ` ${left[0].toUpperCase()}${left.slice(1)}.` : ''}`),
           g.personal ? h('p', { class: 'muted small', style: 'margin:0' }, 'A personal category: only people who said it about themselves in public, each with the page that says so.') : null,
           h('a', { class: 'btn btn-block', href: `#/research?id=${id}&view=who`, onclick: () => count('research.change_who') }, `Change Who Is In (${on.length + vaultOn.length} of ${g.people.length + g.vault.length})`)),
-        $sum,
+        s.size >= 3 ? h('div', { class: 'summary rhead' }, 'Expand: The Whole Chart') : null,
+        s.size >= 3 ? $expand : null,
+        s.size >= 3 ? h('div', { class: 'summary rhead' }, 'Collapse: One Place in the Chart') : null,
+        s.size >= 3 ? $collapse : null,
+        s.size >= 3 ? $read : h('p', { class: 'muted' }, 'A group needs at least three with a name and a full date before anything can be said about it.'),
         h('div', { class: 'gridbar' }, h('div', { class: 'summary rhead' }, 'The Charts'), size.node), // the size control sits with its grid: the title fills the top row
         on.length + vaultOn.length ? $grid : h('p', { class: 'muted' }, 'Nobody is ticked. Tap Change Who Is In.'),
         on.length ? $saveAll : null,
-        s.size >= 3 ? h('div', { class: 'qscreen rs-finds' }, groupFinds(s, { chartHref: hrefOf })) : h('p', { class: 'muted' }, 'A group needs at least three with a name and a full date before anything can be said about it.'),
+        // Every position counted one by one against the vault: kept, folded away (owner 2026-11-23: "maybe that's useful in some cases").
+        s.size >= 3 ? h('details', { class: 'rs-every', ontoggle: (e) => { if (e.target.open) count('research.every_position'); } }, h('summary', { class: 'btn btn-block' }, 'Every Position Counted'), h('div', { class: 'qscreen rs-finds' }, groupFinds(s, { chartHref: hrefOf }))) : null,
         h('div', { class: 'muted small' }, `The search cost ${money(g.usd)} · ${g.rounds} round${g.rounds === 1 ? '' : 's'}, ${g.searches} web search${g.searches === 1 ? '' : 'es'} · ${whenOf(g.at)}${g.stop && g.status === 'done' ? ` · ${g.stop}` : ''}`),
-        g.status === 'done' && g.closed ? h('button', { type: 'button', class: 'btn btn-block', onclick: async () => { count('research.more'); try { await send(`/api/research/${id}/more`, 'POST', { reopen: true }); window.scrollTo(0, 0); resultsView(id, $body); } catch (err) { toast(err.message, true); } } }, 'Find More or Check the Dates') : null,
+        g.status === 'done' && g.closed ? h('button', { type: 'button', class: 'btn btn-block', onclick: async () => { count('research.more'); try { await send(`/api/research/${id}/more`, 'POST', { reopen: true }); go(`#/research?id=${id}&view=who`); } catch (err) { toast(err.message, true); } } }, 'Find More or Check the Dates') : null,
         holdButton('Hold to Remove From Past Research', async () => {
           try { await api(`/api/research/${id}`, { method: 'DELETE' }); count('research.past_remove'); toast('Removed from Past Research'); swap('#/research'); } catch (err) { toast(err.message, true); }
         }));
