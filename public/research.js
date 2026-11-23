@@ -11,7 +11,7 @@
   'use strict';
   const USAGE_LABELS = {
     'screen.research': 'Research a Group', 'home.research': 'Research a Group (home)', 
-    'research.search': 'Research: search the web', 'research.more': 'Research: keep going or search for more', 'research.angle': 'Research: search from a suggested angle', 'research.angle_own': 'Research: search from my own angle', 'research.check': 'Research: Check the Dates', 'research.done': 'Research: What Next? Done', 'research.auto': 'Research: Search Everything', 'research.past_open': 'Research: open a past research',
+    'research.search': 'Research: search the web', 'research.more': 'Research: keep going or search for more', 'research.angle': 'Research: search from a suggested angle', 'research.angle_own': 'Research: search from my own angle', 'research.check': 'Research: Check the Dates', 'research.done': 'Research: What Next? Done', 'research.auto': 'Research: Search Everything', 'research.hunch': 'Research: Test a Hunch', 'research.past_open': 'Research: open a past research',
     'research.past_remove': 'Research: remove a past research', 'research.tick': 'Research: tick or untick someone', 'research.show': 'Research: Show Charts and Patterns',
     'research.change_who': 'Research: Change Who Is In', 'research.open_person': 'Research: open a person', 'research.name_now': 'Research: Birth Name or Name Now',
     'research.fix': 'Research: keep a fixed name or date', 'research.save': 'Research: Save to Vault', 'research.save_all': 'Research: Save All to Vault',
@@ -244,8 +244,32 @@
         note ? h('p', { class: 'ins-note' }, note.line) : null,
         ...String(i.detail || '').split(' · ').filter(Boolean).map((d) => h('div', { class: 'muted small' }, d)),
         h('details', { class: 'ins-who', ontoggle: (e) => { if (e.target.open) count('research.insight_who'); } }, h('summary', {}, `Who (${i.people.length}) and How Solid`),
-          h('div', { class: 'muted small' }, `${i.luck === 0 ? 'No random group of this size' : `${Math.max(1, Math.round(i.luck * 100))} in 100 random groups of this size`} found something this strong.${i.halves === true ? ' It shows in both halves of the group.' : i.halves === false ? ' It shows in only one half of the group.' : ''} Solid = fewer than 1 in 80, and both halves.`),
+          h('div', { class: 'muted small' }, `${i.luck === 0 ? 'No random group of this size' : `${Math.max(1, Math.round(i.luck * 100))} in 100 random groups of this size`} found something this strong.${i.halves === true ? ' It shows in both halves of the group.' : i.halves === false ? ' It shows in only one half of the group.' : ''} Solid = fewer than 1 in 100, and both halves.`),
           h('div', { class: 'simpills' }, ...i.people.map((c) => h('a', { class: 'simpill', href: hrefOf(c) }, c.title || 'No name')))));
+      // Test a Hunch (owner 2026-11-23, on mass shooters: "I've seen 13/4 ... some sort of 4 combined with 9 ... it
+      // doesn't appear like you even mentioned any of that"): the owner names a number or a pair and the group is
+      // counted for exactly that. Free, instant, and judged as the one question it is.
+      const $hq = h('input', { type: 'text', placeholder: '13   or   4 + 9', autocomplete: 'off', inputmode: 'text', enterkeyhint: 'search', maxlength: 60 });
+      const $hout = h('div', { class: 'stack' });
+      const LEVEL = { solid: 'Solid', strong: 'Strong Lean', lean: 'Lean', same: 'Same as Usual' };
+      const hunch = async () => {
+        const q = $hq.value.trim();
+        if (!q) { toast('Type a number, like 13, or two, like 4 + 9.', true); $hq.focus(); return; }
+        count('research.hunch');
+        fill($hout, h('p', { class: 'muted', style: 'margin:0' }, 'Counting…'));
+        try {
+          const r = await api(`/api/research/${id}/hunch?q=${encodeURIComponent(q)}`);
+          fill($hout, h('div', { class: 'hunch-head' }, r.text), ...r.rows.map((x) => h('div', { class: 'hunch-row' },
+            h('div', { class: 'hunch-top' }, h('span', { class: `ins-lean ${x.level}` }, LEVEL[x.level] || x.level), h('span', { class: 'hunch-label' }, x.label)),
+            h('div', { class: 'hunch-count' }, h('b', {}, `${x.in_group} of ${x.group_of}`), h('span', { class: 'muted' }, ` (${x.here} in 100) · usually ${x.usual} in 100`)),
+            x.note ? h('div', { class: 'muted small' }, x.note) : null)),
+            r.rows.length ? null : h('p', { class: 'muted', style: 'margin:0' }, 'This group is too small to count yet.'));
+        } catch (err) { fill($hout, h('p', { class: 'err', style: 'margin:0' }, err.message)); }
+      };
+      $hq.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $hq.blur(); hunch(); } });
+      const $hunch = h('div', { class: 'card stack rs-hunch' }, h('b', {}, 'Test a Hunch'),
+        h('div', { class: 'muted small' }, 'Seen a number or a pair in this kind of chart? Type it and the app counts exactly that: one number (13), or two (4 + 9). A single digit means the whole family: 4 is 4, 13/4, 22/4.'),
+        h('div', { class: 'row', style: 'flex-wrap:nowrap' }, $hq, h('button', { type: 'button', class: 'btn', onclick: hunch }, 'Count')), $hout);
       const drawReading = (sm, pending) => {
         const stale = sm && sm.key !== s.key;
         const notes = new Map(((sm && !stale && sm.notes) || []).map((x) => [x.key, x]));
@@ -284,6 +308,7 @@
           h('p', { class: 'muted', style: 'margin:0' }, `${plural(s.size, one, many)} read: ${fmtN(s.online)} found online${s.from_vault ? `, ${fmtN(s.size - s.online)} from your vault` : ''}.${left ? ` ${left[0].toUpperCase()}${left.slice(1)}.` : ''}`),
           g.personal ? h('p', { class: 'muted small', style: 'margin:0' }, 'A personal category: only people who said it about themselves in public, each with the page that says so.') : null,
           h('a', { class: 'btn btn-block', href: `#/research?id=${id}&view=who`, onclick: () => count('research.change_who') }, `Change Who Is In (${on.length + vaultOn.length} of ${g.people.length + g.vault.length})`)),
+        s.size >= 3 ? $hunch : null,
         s.size >= 3 && !ins.solid ? h('p', { class: 'muted small rs-size-note' }, `Nothing is solid yet with ${fmtN(s.size)} charts. Leans firm up or fade as the group grows: tap Find More.`) : null,
         s.size >= 3 ? h('div', { class: 'summary rhead' }, 'Expand: The Whole Chart') : null,
         s.size >= 3 ? $expand : null,

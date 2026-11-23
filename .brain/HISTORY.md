@@ -1067,3 +1067,14 @@ emotion center (15 in 100); tech people (60) keep two Leans. I also proposed cor
 refused it flatly ("that's another insight ... I don't understand why you even brought that up") and he is right for
 his purpose: the year is a position he reads. Lesson: when a screen looks empty, the answer is more charts, never a
 looser limit; and test a pattern finder on random groups BEFORE showing its output to the owner.
+
+## 2026-11-23: mass shooters, and what the owner already sees
+The owner ran 141 mass shooters ($2) and the cards said nothing of what he has seen for years: 13/4, a 4 with a 9,
+16/7, 18/9. "Are you sure you're doing this properly or what?" Counted his claims directly on the 122 dated charts
+against 663 vault charts. 13/4 is somewhere in 97 of 100 shooter charts, and in 95 of 100 of ALL charts: true, and
+tells nothing. But 13/4 as a name chart center: 17 against 9 in 100. 13/4 beside any 9 in a diamond or center: 32
+against 20. 13/4 and 16/7 both in the chart: 93 against 84. 18/9: no difference anywhere. The blind search missed the
+4-with-9 because it only read exact pairs (13 + 9 and 13 + 18 as two things) and never looked outside the strong
+positions. Built: combinations at three depths, numbers anywhere and many times, two numbers together, and Test a
+Hunch, where he types what he sees and it is counted as the one question it is. Lesson: a blind search pays a luck
+penalty for everything it tries; a reader's stated observation does not. Give the reader a way to state it.

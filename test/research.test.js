@@ -304,7 +304,7 @@ test('collapse and expand: a number that fills a group shows up, with a short re
   const r = await call('POST', '/api/research', { query: 'same day people' });
   await settle();
   const s = (await call('GET', `/api/research/${r.body.id}/shares`)).body;
-  const day = s.insights.expand.find((i) => i.key === 'number:19');
+  const day = s.insights.expand.find((i) => i.sum === 19);
   assert.ok(day, '19/1 (the day) fills the group');
   assert.equal(day.count, '6 of 6 charts');
   assert.equal(day.people.length, 6);
@@ -316,7 +316,7 @@ test('collapse and expand: a number that fills a group shows up, with a short re
   assert.equal(sent.tool_choice, undefined, 'Opus 5.5 refuses a forced tool choice');
   assert.equal(sent.tools[0].name, 'give_reading');
   assert.match(sent.messages[0].content, /^THE GROUP: Same Day\. 6 charts read\./);
-  assert.match(sent.messages[0].content, /EXPAND \(the strong positions of every chart together\)\n- key number:/);
+  assert.match(sent.messages[0].content, /EXPAND \(the strong positions of every chart together\)\n- key /);
   assert.match(sent.system[1].text, /COURSE REFERENCE/);
   await call('DELETE', `/api/research/${r.body.id}`);
 });

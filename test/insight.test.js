@@ -17,7 +17,7 @@ const { ensureDirs } = await import('../server/config.js');
 const { openDb } = await import('../server/db.js');
 const { parseUserTagBackup, importTags } = await import('../server/import.js');
 const { setInputs } = await import('../server/positions.js');
-const { groupInsights, isStrong } = await import('../server/insight.js');
+const { groupInsights, checkHunch, isStrong } = await import('../server/insight.js');
 
 // A made-up vault of 240 people: names put together from syllables, birthdays spread over sixty years.
 let seed = 7; const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
@@ -64,7 +64,7 @@ test('people who really share a number get it as a Solid card, with who holds it
   const ins = groupInsights(db, { extra, randomGroups: 120 });
   assert.equal(ins.size, 12);
   assert.equal(ins.rest, 240, 'people found online never join the others');
-  const day = ins.expand.find((i) => i.key === 'number:19');
+  const day = ins.expand.find((i) => i.sum === 19);
   assert.ok(day, '19/1 fills the group');
   assert.equal(day.level, 'solid');
   assert.equal(day.halves, true);
@@ -73,7 +73,7 @@ test('people who really share a number get it as a Solid card, with who holds it
   assert.equal(ins.solid >= 1, true);
   // Same day and month: every one of them has the same pairs in the essence diamonds (day 19/1 + month 7, ...).
   assert.equal(ins.combos.length >= 1, true, 'a combination they all share');
-  for (const c of ins.combos) { assert.match(c.big, /^\d+(\/\d)? \+ \d+(\/\d)?$/); assert.equal(c.a <= c.b, true); assert.equal(c.a <= 18 && c.b <= 18, true, 'above 18 counts as its digit'); }
+  for (const c of ins.combos) assert.match(c.big, /^(Any \d|\d+(\/\d)?) (\+|&) (Any \d|\d+(\/\d)?)$/);
   assert.equal(ins.combos[0].level, 'solid');
   assert.equal(ins.combos[0].count, '12 of 12 charts');
 });
@@ -81,4 +81,23 @@ test('people who really share a number get it as a Solid card, with who holds it
 test('too few people: nothing is said', () => {
   const ins = groupInsights(db, { ids: ids.slice(0, 2) });
   assert.deepEqual([ins.expand, ins.collapse], [[], []]);
+});
+
+test('a hunch is counted as the one question it is: a number, a family, a pair', () => {
+  const extra = Array.from({ length: 12 }, (_, ref) => ({ name: name(), day: 19, month: 7, year: 1990, title: `Stranger ${ref}`, ref }));
+  const one = checkHunch(db, { extra }, '19');
+  assert.equal(one.text, '19/1');
+  const day = one.rows.find((r) => r.label === '19/1 as the Day Vibration');
+  assert.deepEqual([day.in_group, day.group_of, day.level], [12, 12, 'solid']);
+  const pair = checkHunch(db, { extra }, 'a 19 with 7');
+  assert.equal(pair.text, '19/1 + 7');
+  const beside = pair.rows.find((r) => r.label === '19/1 beside Any 7 in a diamond or center');
+  assert.equal(beside.in_group, 12, 'day 19/1 beside month 7 in the outer diamond');
+  assert.equal(beside.level, 'solid');
+  // A single digit is the whole family, and a number nearly every chart has says so.
+  const fam = checkHunch(db, { extra }, '1');
+  assert.match(fam.rows[0].label, /^Any 1 somewhere in the chart$/);
+  assert.match(fam.rows[0].note, /In nearly every chart anyway/);
+  assert.equal(fam.rows[0].level, 'same');
+  assert.equal(checkHunch(db, { extra }, 'no numbers here'), null);
 });

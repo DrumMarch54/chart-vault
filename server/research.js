@@ -17,7 +17,7 @@ import crypto from 'node:crypto';
 import { callModel, AiError, estimate, textOf, WEB_SEARCH_USD } from './ai.js';
 import { chartName } from './lookup.js';
 import { sharesOf } from './group.js';
-import { groupInsights } from './insight.js';
+import { groupInsights, checkHunch } from './insight.js';
 import { FIELDS, FLAGS, parseWho, whoSql } from './people.js';
 import { meaningFor } from './meaning.js';
 import { chunksFor, coreText } from './knowledge.js';
@@ -468,6 +468,14 @@ export function researchShares(db, id) {
   return { ...shares, insights, key, undated: on.length - extra.length, online: extra.length, from_vault: ids.length };
 }
 
+// A hunch the owner names first ("13", "4 + 9"): counted on the same people as the cards. Free. null = no number in it.
+export function researchHunch(db, id, words) {
+  const g = getResearch(db, id);
+  if (!g) return null;
+  const extra = g.people.filter((p) => p.on && p.drawable).map((p) => ({ name: p.chart_name, ...dateParts(p.birth_date), title: p.known_as, ref: p.ref }));
+  return checkHunch(db, { ids: g.vault.filter((v) => v.on).map((v) => v.id), extra }, words);
+}
+
 // ---------- the reading (paid, Opus) ----------
 // Collapse and expand (owner 2026-11-23: the first summaries were "pointless ... way too wordy", statistics talk
 // and the same thing twice). The counter (insight.js) says what fills the group's charts and where a number leads;
@@ -520,7 +528,7 @@ export function summaryContext(g, s) {
   for (const i of ins.combos) {
     lines.push(say(i));
     // The course on the pair: passages on the one number that also name the other.
-    const other = new RegExp(`(^|[^0-9/])${i.b}(?![0-9])`);
+    const other = new RegExp(`(^|[^0-9/])${i.b}(?![0-9])`); // a = the first side's number, b = the second's (a family side is its digit)
     addWords(`COURSE PASSAGES ON ${i.big}`, null, chunksFor(i.a, null, 40).filter((c) => other.test(c.text)).slice(0, 2));
   }
   if (!ins.combos.length) lines.push('- no combination stands out');
