@@ -212,22 +212,6 @@ export function moreResearch(db, id, { log = () => {}, angle = '', auto = false,
   saveResult(db, id, r);
   runRounds(db, id, log);
 }
-// The owner adds someone the search missed (name and date typed by hand): in the group like anyone found online.
-export function addPerson(db, id, body) {
-  const r = loadResult(db, id);
-  if (!r) throw new AiError('That research is gone.');
-  const b = body || {};
-  const known = clean(b.known_as, 120), birth = clean(b.birth_name, 160) || known;
-  if (!known && !birth) throw new AiError('Type a name first.');
-  const date = b.birth_date ? validDate(b.birth_date) : '';
-  if (b.birth_date && !date) throw new AiError('That is not a whole date. Fill in the day, the month and a four-digit year.');
-  const kind = b.kind === 'business' ? 'business' : 'person';
-  const p = { kind, known_as: known || birth, birth_name: birth, chart_name: chartName(birth, kind), birth_date: date, name_now: '', who: '', why: 'Added by you', member_source: null, name_source: null, date_source: null, checked: false, sure: true, fixed: true, added: true };
-  if (r.people.some((x) => isSame(x, p))) throw new AiError(`${p.known_as} is already in this group.`);
-  r.people.push(p);
-  saveResult(db, id, r);
-  return r.people.length - 1;
-}
 // The same category asked again: the research that already holds it (so the owner adds to it, never starts a twin).
 export function findResearch(db, query) {
   const q = clean(query, MAX_QUERY);

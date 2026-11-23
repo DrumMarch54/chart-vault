@@ -11,7 +11,7 @@
   'use strict';
   const USAGE_LABELS = {
     'screen.research': 'Research a Group', 'home.research': 'Research a Group (home)', 
-    'research.search': 'Research: search the web', 'research.more': 'Research: keep going or search for more', 'research.angle': 'Research: search from a suggested angle', 'research.angle_own': 'Research: search from my own angle', 'research.check': 'Research: Check the Dates', 'research.done': 'Research: What Next? Done', 'research.auto': 'Research: Search Everything', 'research.add_person': 'Research: add someone yourself', 'research.past_open': 'Research: open a past research',
+    'research.search': 'Research: search the web', 'research.more': 'Research: keep going or search for more', 'research.angle': 'Research: search from a suggested angle', 'research.angle_own': 'Research: search from my own angle', 'research.check': 'Research: Check the Dates', 'research.done': 'Research: What Next? Done', 'research.auto': 'Research: Search Everything', 'research.past_open': 'Research: open a past research',
     'research.past_remove': 'Research: remove a past research', 'research.tick': 'Research: tick or untick someone', 'research.show': 'Research: Show Charts and Patterns',
     'research.change_who': 'Research: Change Who Is In', 'research.open_person': 'Research: open a person', 'research.name_now': 'Research: Birth Name or Name Now',
     'research.fix': 'Research: keep a fixed name or date', 'research.save': 'Research: Save to Vault', 'research.save_all': 'Research: Save All to Vault',
@@ -119,16 +119,6 @@
       const $own = h('input', { type: 'text', placeholder: 'Or type your own angle…', autocomplete: 'off', enterkeyhint: 'search', maxlength: 60 });
       const ownGo = () => { const a = $own.value.trim(); if (!a) { toast('Type an angle first.', true); $own.focus(); return; } post('more', { angle: a }, 'research.angle_own'); };
       $own.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); ownGo(); } });
-      // Add someone the search missed, by hand: the name and the date, like on a chart.
-      const box = (ph, attrs = {}) => h('input', { type: 'text', placeholder: ph, autocomplete: 'off', ...attrs });
-      const $name = box('Full birth name', { autocapitalize: 'words', spellcheck: 'false', maxlength: 160 });
-      const $d = box('day', { inputmode: 'numeric', maxlength: 2 }), $m = box('month', { inputmode: 'numeric', maxlength: 2 }), $y = box('year', { inputmode: 'numeric', maxlength: 4 });
-      const addOne = () => {
-        const name = $name.value.trim(), d = Number($d.value), m = Number($m.value), y = Number($y.value);
-        if (!name) { toast('Type the name first.', true); $name.focus(); return; }
-        if (!(d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 1000)) { toast('Fill in the whole birth date: day, month, four-digit year.', true); return; }
-        post('person', { known_as: name, birth_name: name, birth_date: `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}` }, 'research.add_person');
-      };
       let n = 0;
       const title = (t) => h('div', { class: 'rs-next-title' }, `${++n}. ${t}`);
       return h('div', { class: 'card stack rs-status rs-next' },
@@ -145,10 +135,6 @@
         open ? title('Check the Dates') : null,
         open ? h('div', { class: 'muted small' }, `${open} ${open === 1 ? 'person has a' : 'people have a'} birth date not confirmed on a web page: the AI wrote it from what it already knew, or found none. It looks each one up on a page, fills in missing ones and corrects any that are wrong.`) : null,
         open ? h('button', { type: 'button', class: 'btn btn-block', onclick: () => post('check', {}, 'research.check') }, `Check ${open} Date${open === 1 ? '' : 's'} (about ${money(open * (g.check_each || 0.012))})`) : null,
-        title('Add Someone Yourself'),
-        h('div', { class: 'muted small' }, 'Someone the search missed: type the birth name and birth date. Free.'),
-        $name, h('div', { class: 'row lookup-fields' }, $d, $m, $y),
-        h('button', { type: 'button', class: 'btn btn-block', onclick: addOne }, 'Add to This Group'),
         title('Done'),
         h('button', { type: 'button', class: 'btn btn-block', onclick: () => post('close', {}, 'research.done') }, 'Done: Hide These Choices'));
     }
@@ -184,7 +170,7 @@
       ], [
         p.vault ? mark('In Your Vault', 'ok') : null,
         !p.drawable ? mark('No Date: Cannot Be Counted', 'warn') : !p.checked && !p.fixed ? mark(p.check_failed ? 'No Page Found for the Date' : 'Date Not Confirmed', 'warn') : p.was ? mark('Date Corrected', 'ok') : p.confirmed_later ? mark('Date Confirmed', 'ok') : null,
-        p.added ? mark('Added by You') : p.fixed ? mark('Fixed by You') : null,
+        p.fixed ? mark('Fixed by You') : null,
       ].filter(Boolean));
       label();
       $show.onclick = async () => { count('research.show'); $show.disabled = true; await store(); swap(`#/research?id=${id}`); };

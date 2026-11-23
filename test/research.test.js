@@ -249,21 +249,13 @@ test('Search Everything moves from angle to angle by itself and stops after thre
   await call('DELETE', `/api/research/${r.body.id}`);
 });
 
-test('the same category typed again opens the research that exists; a person can be added by hand', async () => {
+test('the same category typed again opens the research that exists', async () => {
   const before = (await call('GET', '/api/research')).body.items.length;
   const again = await call('POST', '/api/research', { query: 'Computer Coders' });
   assert.equal(again.body.id, id, 'the category name finds it');
   assert.equal(again.body.existing, true);
   assert.equal((await call('POST', '/api/research', { query: 'computer coders' })).body.id, id, 'the words first typed find it');
   assert.equal((await call('GET', '/api/research')).body.items.length, before, 'no twin was started');
-  const n = (await call('GET', `/api/research/${id}`)).body.people.length;
-  const add = await call('POST', `/api/research/${id}/person`, { known_as: 'Hand Added', birth_name: 'Hand Added', birth_date: '1977-07-07' });
-  assert.equal(add.body.ref, n);
-  const g = (await call('GET', `/api/research/${id}`)).body;
-  assert.equal(g.people[n].added, true);
-  assert.equal(g.people[n].drawable, true);
-  assert.equal((await call('POST', `/api/research/${id}/person`, { known_as: 'Hand Added', birth_date: '1977-07-07' })).status, 400, 'not twice');
-  assert.equal((await call('POST', `/api/research/${id}/person`, { known_as: 'Bad Date', birth_date: '1977-02-31' })).status, 400);
 });
 
 test('a search cut short by a restart keeps what it found', async () => {
