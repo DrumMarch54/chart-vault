@@ -1185,3 +1185,15 @@ html[data-style="blueprint"] .hometop::after { content: ""; position: absolute; 
 html[data-style]:not([data-style="classic"]) .cell { border: 1px solid var(--line); }
 html[data-style]:not([data-style="classic"]) input::placeholder { color: var(--muted); opacity: 1; }
 .ins-big:has(+ .ins-headbox) { white-space: nowrap; }
+
+/* The day pages (Today, Coming Days) keep their own light page in every look: the light colors come back with it,
+   or a dark look's pale text vanishes on the light page (seen 2026-11-23: "Today in Arizona" unreadable). */
+html.day[data-style] {
+  --bg: #f3f4f8; --panel: #ffffff; --panel2: #e6e8f0; --text: #1d2130; --muted: #5f6475;
+  --accent: #f0b64a; --accent-text: #1b1f2a; --blue: #2e6fd0; --green: #1f7a38; --red: #c43c3c;
+  --chip-pos: #d7e4f3; --chip-num: #f6e9c4; --chip-name: #e6e8f0;
+  --danger-bg: #fbe3e3; --danger-text: #8a1f1f; --who: #d9f3e1; --warn-bg: #fff3d6; --pain-bg: #fbe3e3;
+  --toast: #2b3140; --chip-add: #2e4a6b; --shadow: rgba(0,0,0,.18);
+  --ok-bg: #e4f4ea; --ok-ink: #1d7a43; --bad-bg: #fbe9e7; --bad-ink: #b3261e; --other-bg: #fdf3d9; --other-ink: #8a5f00; --band: #1f2533; --band-text: #ffffff; --ok-solid: #1d7a43; --bad-solid: #b3261e; --solid-text: #ffffff;
+  color-scheme: light;
+  --line: rgba(26,18,64,.09); --sheet: #ffffff; }
