@@ -282,7 +282,7 @@
       if (!g.summary && s.size >= 3 && g.status !== 'running' && g.status !== 'checking' && all.length) explain(false)();
 
       const left = [s.undated ? `${plural(s.undated, one, many)} without a full date cannot be counted` : '', s.tagged - s.size - s.undated > 0 ? `${s.tagged - s.size - s.undated} left out: no name and date read yet, or the same person twice` : ''].filter(Boolean).join('; ');
-      const live = g.status === 'running' || g.status === 'checking' || g.status === 'paused';
+      const live = g.status === 'running' || g.status === 'checking'; // a search at work shows on top; a stopped one (paused too) waits at the bottom
       fill($body,
         live ? statusCard(g, id, () => { if (location.hash === `#/research?id=${id}` && $body.isConnected) resultsView(id, $body); }, true) : null,
         h('div', { class: 'rs-title' }, h('div', { class: 'simname' }, g.category), h('div', { class: 'muted small' }, `${plural(s.size, one, many)} counted, against ${fmtN(s.rest)} others in your vault.`)),

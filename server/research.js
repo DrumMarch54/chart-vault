@@ -580,7 +580,7 @@ async function writeSummaryNow(db, id, { again = false } = {}) {
     if (message.stop_reason === 'max_tokens') throw new AiError('The reading was cut off before it was finished. Try again.');
     const use = (message.content || []).find((b) => b.type === 'tool_use' && b.name === 'give_reading');
     const input = use && use.input ? use.input : null;
-    const notes = (input && Array.isArray(input.notes) ? input.notes : []).filter((x) => x && ctx.keys.includes(x.key)).map((x) => ({ key: x.key, line: clean(x.line, 200), source: clean(x.source, 80) })).filter((x) => x.line);
+    const notes = (input && Array.isArray(input.notes) ? input.notes : []).filter((x) => x && ctx.keys.includes(x.key)).map((x) => ({ key: x.key, line: clean(x.line, 600), source: clean(x.source, 80) })).filter((x) => x.line);
     if (!notes.length) throw new AiError('The explanations came back empty. Try again.');
     return save({ ...base, lines: [], notes, usd: round(usd), seconds, finds: ctx.finds });
   } finally { running--; }
