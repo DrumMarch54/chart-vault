@@ -1012,3 +1012,15 @@ Nothing on the charts themselves (names, dates, tags) was ever touched; only the
 
 ## 2026-11-22: meaning page round two
 Round one (Look A) went live and the owner said it still read as "one massive blob": nothing color coded, fonts out of place, things not matching. Measured on their own chart: points came in two shapes (bold headline + gray line, or a whole sentence) so the type looked mixed; an untitled group showed a gray "KEY POINTS" badge; one jump button wrapped to four lines; empty diamonds took big cards; the verdict pill kept light colors in dark mode. Round two gave each part its own color matched everywhere, one point shape, solid balance strips, colored gist chips, a one-row jump strip, one-line empty parts. Screenshots were sent to the owner BEFORE going live (two-tries rule); owner said push it.
+
+## 2026-11-23: Research a Group
+Owner: "go into the app and say trans people and it goes and searches on the internet for a handful of trans people,
+reports back their charts and finds patterns... anybody or even businesses". Designed by questions first. Decisions,
+all the owner's: the birth name is the chart that counts and the changed name is a second chart ("less important but
+still something I want to see"); pick 10, 20 or 30 each time with the cost shown; nothing saved unless tapped, the
+research kept in Past Research. Mine, stated to the owner in the design and approved: public figures only; a personal
+category lists only people who said it themselves, with the page; people found online never join "the others", or
+every search would shift the yardstick; the summary is written only from counted finds and course words. The owner
+did not understand "compared against the vault" until it was one example with numbers (5 of 8 against 1 in 10).
+Costs on the screen are guesses (10 / 15 / 25 cents) until real searches run; then the average of the real ones.
+Not built on purpose: comparing two researched groups; a tag for the category on saved charts.

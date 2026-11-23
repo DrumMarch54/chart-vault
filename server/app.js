@@ -22,6 +22,7 @@ import { aiSettings, setAiSettings, spendState, pendingWarning, markWarningSeen,
 import { readingFor, writeReading, answerQuestion, deleteReadings, readingEstimate, readingChoices } from './reading.js';
 import { askVault } from './ask.js';
 import { lookupPerson, vaultMatches, rememberLookup, storeLookup, pastLookups, pastLookup, deleteLookup } from './lookup.js';
+import { findGroup, storeResearch, pastResearch, getResearch, deleteResearch, setOff, fixPerson, researchShares, writeSummary, researchCosts, summaryEstimate, rememberResearch, researchRunning, SIZES } from './research.js';
 import { factsFor } from './facts.js';
 import { meaningFor, countWith } from './meaning.js';
 import { findInDoc, docWindow, findNumberSection, findPhrase } from './doc.js';
@@ -538,6 +539,38 @@ export function createApp(db, { log = console.log } = {}) {
     res.json({ ok: true });
   });
 
+  // Research a Group (server/research.js): a category searched on the web (paid), kept, and counted against the
+  // vault (free). Nothing is saved to the vault here; the screen draws the charts and the owner taps Save to Vault.
+  const aiFail = (res, next) => (err) => { if (err instanceof AiError) return res.status(400).json({ error: err.message }); next(err); };
+  app.get('/api/research', (req, res) => res.json({ items: pastResearch(db), costs: researchCosts(db), summary_cost: summaryEstimate(db), spend: spendState() }));
+  app.post('/api/research', express.json({ limit: '4kb' }), async (req, res, next) => {
+    const body = req.body || {};
+    const size = SIZES.includes(Number(body.size)) ? Number(body.size) : 20;
+    try {
+      const r = await findGroup(body.query, size);
+      const id = storeResearch(db, r, COMMIT);
+      rememberResearch({ id, query: r.query, size, category: r.category, personal: r.personal, found: r.people.length, dropped: r.dropped, unchecked: r.people.filter((p) => !p.checked).length, kinds: r.vault_kinds.join(', '), searches: r.searches, usd: r.usd, note: r.note });
+      log(`research #${id} "${r.category}": ${r.people.length} found, ${r.searches} searches, $${r.usd}`);
+      res.json({ id, found: r.people.length, spend: spendState(), warning: pendingWarning() });
+    } catch (err) {
+      if (err instanceof AiError) rememberResearch({ query: String(body.query || '').slice(0, 200), size, error: err.message });
+      aiFail(res, next)(err);
+    }
+  });
+  const researchId = (req, res) => { const id = Number(req.params.id); if (!Number.isInteger(id) || !getResearch(db, id)) { res.status(404).json({ error: 'That research is gone.' }); return null; } return id; };
+  app.get('/api/research/:id', (req, res) => { const id = researchId(req, res); if (id !== null) res.json({ ...getResearch(db, id), summary_cost: summaryEstimate(db) }); });
+  app.get('/api/research/:id/shares', (req, res) => { const id = researchId(req, res); if (id !== null) res.json(researchShares(db, id)); });
+  app.put('/api/research/:id/off', express.json({ limit: '20kb' }), (req, res) => { const id = researchId(req, res); if (id === null) return; setOff(db, id, req.body || {}); res.json({ ok: true }); });
+  app.put('/api/research/:id/person/:ref', express.json({ limit: '4kb' }), (req, res, next) => {
+    const id = researchId(req, res); if (id === null) return;
+    try { const r = fixPerson(db, id, Number(req.params.ref), req.body || {}); if (!r) return res.status(404).json({ error: 'That person is not in this research.' }); res.json(r); } catch (err) { aiFail(res, next)(err); }
+  });
+  app.post('/api/research/:id/summary', express.json({ limit: '1kb' }), async (req, res, next) => {
+    const id = researchId(req, res); if (id === null) return;
+    try { const summary = await writeSummary(db, id, { again: !!(req.body && req.body.again) }); if (summary.usd) log(`research #${id} summary: $${summary.usd}`); res.json({ summary, spend: spendState(), warning: pendingWarning() }); } catch (err) { aiFail(res, next)(err); }
+  });
+  app.delete('/api/research/:id', (req, res) => { const id = researchId(req, res); if (id === null) return; deleteResearch(db, id); res.json({ ok: true }); });
+
   // Status, export, backup
   app.get('/api/status', (req, res) => {
     const report = statusReport(db);
@@ -585,7 +618,7 @@ export function createApp(db, { log = console.log } = {}) {
 
 let lastUpload = 0;
 // Busy while a backup runs or a file arrived in the last 20 seconds.
-function isBusy() { return isBackupRunning() || Date.now() - lastUpload < 20_000; }
+function isBusy() { return isBackupRunning() || Date.now() - lastUpload < 20_000 || researchRunning() > 0; } // a paid web search in flight is never thrown away by a deploy
 function appVersion() {
   try { return JSON.parse(fs.readFileSync(path.join(config.root, 'package.json'), 'utf8')).version; } catch { return '?'; }
 }

@@ -185,6 +185,23 @@ export const MIGRATIONS = [
     CREATE VIEW IF NOT EXISTS person_charts AS
       SELECT i.id AS image_id, p.id AS person_id FROM images i JOIN people p ON p.key = lower(trim(i.title)) WHERE i.kind = 'chart';
   `),
+  // 11: Research a Group (server/research.js, owner 2026-11-23). One row per web search for a category: the whole
+  //     answer as JSON (the people found, sources, cost), who the owner unticked (off), and the written summary
+  //     with the group it was written for. Opening one again is free. Nothing here is a vault chart.
+  (db) => db.exec(`
+    CREATE TABLE IF NOT EXISTS research (
+      id INTEGER PRIMARY KEY,
+      query TEXT NOT NULL,
+      category TEXT,
+      size INTEGER,
+      result TEXT NOT NULL,
+      off TEXT,
+      summary TEXT,
+      usd REAL,
+      build TEXT,
+      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+    );
+  `),
 ];
 
 export function migrate(db) {
