@@ -66,7 +66,7 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   snapshot's DRAWN CHARTS line); remind them at the start of a session until that list is empty.
 - **Open item (owner 2026-11-23): remind the owner to fix how the charts look in the new looks** (the white ground
   "glaring" on Glass on Color; see-through grounds shown in https://claude.ai/artifact/8jxLVKyac8MUnCkfP1bt2w).
-  Also open: Today / Coming Days keep the light day look in every style; the owner may want them restyled.
+  Owner 2026-11-23: leave the charts WHITE until then (a dark chart ground was wrong); the fix will be see-through.
 - Never lose or mix up a chart or a tag. Filename = identity. Tags are kept
   exactly as written, never renamed or "fixed". How a tag READS is separate:
   `server/tagnames.js` splits run-together names ("alexjones" → "Alex Jones");
@@ -423,7 +423,9 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   device; `applyTheme` and index.html set `data-style` + `data-theme`). Each style is a block of `:root` variables at the
   end of app.css plus a `body::before` backdrop; a new color is a variable, never a hex in a rule. Button symbols get a
   line drawing from `LINE_ICONS` (keyed by the symbol, added in `render`); a new symbol needs an entry. Charts stay on
-  white in every look. Check a changed screen in every look.
+  white in every look. Check a changed screen in every look. Fixed colors in app.css (a #fff card, #303030 text) get
+  their dark-look color from a GENERATED section at its end: re-run `node tools/make-look-colors.mjs` after editing
+  app.css (`test/looks.test.js` fails otherwise); a box holding a drawn chart goes in its `KEEP` list.
 - Short screens (owner 2026-10-19): a Coming Days card is date, rating, chart. The chart sheet shows no list of
   position numbers (the drawing does that); position/number tags and file details fold; repeats are
   "Most Often" pills, top five, no positions (reading.js); a tap rings every spot with that number on the drawn chart
