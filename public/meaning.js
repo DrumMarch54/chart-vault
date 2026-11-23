@@ -120,12 +120,34 @@
       }).filter(Boolean);
       return rows.length ? h('div', { class: 'mgist' }, h('div', { class: 'mgist-t' }, 'Quick Gist'), ...rows) : null;
     };
-    const part = ({ id, color, title, sub, bits, passages = [], pre = [], note }) => {
+    // About This Number (owner 2026-11-23): the owner's own guide and Number Notes for the number, wherever it sits.
+    // Folded: its title and the guide's opening lines. "Show More" opens every section of the guide as written, then
+    // the owner's notes. It comes after the spot's own words and never mixes with them.
+    const guideBlock = (text, g) => {
+      if (!g) return null;
+      const groups = [...(g.groups || []).map((x) => ({ ...x, title: /^(?:Balanced|Unbalanced) Manifestation$/.test(x.title) ? x.title.replace(' Manifestation', '') : x.title })),
+        ...(g.notes || []).map((x) => ({ title: x.title ? `Your Notes on ${x.title}` : 'Your Number Notes', points: x.points, notes: true }))];
+      const $more = h('div', { class: 'mguide-more', hidden: true }, ...groups.map((x) => {
+        const k = x.notes ? 'topic' : kindOf(x.title);
+        return h('div', { class: `mgrp ${k}` }, h('div', { class: 'mgrp-h' }, k === 'ok' ? 'In Balance' : k === 'err' ? 'Out of Balance' : titleCase(x.title)),
+          h('div', { class: 'mblk mpts' }, ...x.points.map((t) => point(t))));
+      }), h('div', { class: 'mblk mfoot-from' }, `From ${[g.book ? `your ${g.book}` : null, g.notes ? 'your Number Notes' : null].filter(Boolean).join(' and ')}`));
+      const $btn = groups.length ? h('button', { type: 'button', class: 'mmore', 'aria-expanded': 'false', onclick: () => {
+        $more.hidden = !$more.hidden; $btn.setAttribute('aria-expanded', String(!$more.hidden));
+        $btn.textContent = $more.hidden ? `Show More About ${text}` : `Show Less About ${text}`;
+        if (!$more.hidden) count('meaning.number_guide');
+      } }, `Show More About ${text}`) : null;
+      return h('div', { class: 'mguide' },
+        h('div', { class: 'mguide-h' }, h('div', { class: 'mguide-t' }, `About ${text}${g.name ? ` · ${g.name}` : ''}`), g.alt ? h('div', { class: 'mguide-s' }, g.alt) : null),
+        g.intro ? h('div', { class: 'mblk mguide-i' }, ...boldParts(g.intro)) : null,
+        h('div', { class: 'mblk mguide-b' }, $btn), $more);
+    };
+    const part = ({ id, color, title, sub, bits, passages = [], pre = [], note, guide }) => {
       const band = h('div', { class: 'mband' }, h('div', { class: 'mband-t' }, title), sub ? h('div', { class: 'mband-s' }, sub) : null);
       const extra = pre.filter(Boolean);
       if (!bits && !passages.length) {
         return h('section', { class: `mpart c-${color}`, id }, band,
-          h('div', { class: 'mblk mempty' }, h('span', { class: 'muted' }, 'No course words yet.'), ...extra));
+          h('div', { class: 'mblk mempty' }, h('span', { class: 'muted' }, guide ? 'No course words for this spot yet.' : 'No course words yet.'), ...extra), guide || null);
       }
       const own = bits && bits.groups.some((g) => g.cites && g.cites.some(Boolean));
       const from = bits && !own ? bookPages(passages) : [];
@@ -150,7 +172,7 @@
             g.note ? h('div', { class: 'mblk mnote' }, g.note) : null,
             h('div', { class: 'mblk mpts' }, ...g.points.map((t, i) => point(t, g.cites && g.cites[i]))));
         }) : []),
-        foot.length ? h('div', { class: 'mblk mfoot' }, ...foot) : null);
+        foot.length ? h('div', { class: 'mblk mfoot' }, ...foot) : null, guide || null);
     };
     const where = (m) => titleCase(m.label);
     // A combination's points (owner 2026-11-07): the course writes "3 + 6 Combinations (and 12/3 + 6, 3 + 15/6, etc.)" as
@@ -239,7 +261,7 @@
         const p = m.pair, nc = m.nameChart;
         const others = p ? p.with.map((x) => x.text).join(' and ') : '';
         const center = where(m).replace(/ (Main|Extra) Vibration$/, '');
-        const parts = [{ jump: 'This Spot', color: 'spot', id: 'mp-spot', title: `${m.text} in the ${where(m)}`, sub: m.chartLabel.replace(/ chart$/i, ' Chart'), bits: m.bits, passages: m.passages }];
+        const parts = [{ jump: 'This Spot', color: 'spot', id: 'mp-spot', title: `${m.text} in the ${where(m)}`, sub: m.chartLabel.replace(/ chart$/i, ' Chart'), bits: m.bits, passages: m.passages, guide: guideBlock(m.text, m.guide) }];
         if (nc) parts.push({ jump: 'Name Chart', color: 'name', id: 'mp-name', title: `${nc.text} in the ${where(nc)}`, sub: 'Name Chart · the same spot there', bits: nc.bits, passages: nc.passages });
         if (p) {
           const ex = pairExample(m, p);
@@ -252,7 +274,7 @@
           const full = titleCase(r.label), inParens = (/\(([^)]*)\)/.exec(full) || [])[1];
           const name = full.replace(/\s*\([^)]*\)/g, '').replace(/^(Mind|Emotion) Center (?=Sub Diamond)/, '');
           parts.push({ jump: `${name.replace(/^Mental |^Emotional /, '')} ${r.text}`, color: /Sub Diamond/.test(name) ? 'sub' : 'dia', id: `mp-rel${i}`, title: `${name} ${r.text}`,
-            sub: [inParens, r.name, 'the diamond behind this number'].filter(Boolean).join(' · '), bits: r.bits, passages: r.passages, pre: [top(r)] });
+            sub: [inParens, r.name, 'the diamond behind this number'].filter(Boolean).join(' · '), bits: r.bits, passages: r.passages, pre: [top(r)], guide: r.sum === m.sum ? null : guideBlock(r.text, r.guide) });
         });
         const jumpTo = (id) => () => { count('meaning.jump'); const el = $pop.querySelector('#' + id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
         const $ask = askBox(m, { chart, position, sum, pair: pair || [], rel: rel || [] }); $ask.id = 'mp-ask';
