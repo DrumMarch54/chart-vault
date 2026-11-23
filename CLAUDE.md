@@ -383,9 +383,12 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   step in the phone's Back history each, so Back closes one thing (owner 2026-10-19). A screen
   change right after an overlay's own Close must go through `go`/`swap` (they wait for the step).
 - Destructive taps: `holdButton` / `confirmSheet`, never a second dialog.
-- Light and dark (owner 2026-10-19): the app follows the phone (`prefers-color-scheme` swaps the `:root`
-  variables at the top of app.css); Settings → Look pins one (`theme` on the device, `applyTheme`). A new color
-  on a dark screen is a variable with a light value, never a hex in a rule; check a changed screen in both looks.
+- Looks (owner 2026-10-19 light/dark; 2026-11-23 styles to match the icon): Settings -> Look picks Follows the Phone
+  (Blueprint Night dark / Light light), Glass on Color, Blueprint Night, Light, Classic Dark, Classic Light (`look` on the
+  device; `applyTheme` and index.html set `data-style` + `data-theme`). Each style is a block of `:root` variables at the
+  end of app.css plus a `body::before` backdrop; a new color is a variable, never a hex in a rule. Button symbols get a
+  line drawing from `LINE_ICONS` (keyed by the symbol, added in `render`); a new symbol needs an entry. Charts stay on
+  white in every look. Check a changed screen in every look.
 - Short screens (owner 2026-10-19): a Coming Days card is date, rating, chart. The chart sheet shows no list of
   position numbers (the drawing does that); position/number tags and file details fold; repeats are
   "Most Often" pills, top five, no positions (reading.js); a tap rings every spot with that number on the drawn chart

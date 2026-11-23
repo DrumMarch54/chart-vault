@@ -45,7 +45,7 @@
   // Whole-chart shapes searched by name (?pattern=), the SQL in server/queries.js PATTERNS.
   const PATTERN_NAMES = { hsd: 'Higher Self Diamond' };
   const USAGE_LABELS = {
-    'screen.home': 'Home Screen', 'screen.chart': 'Chart Viewer', 'screen.settings': 'Settings', 'settings.search': 'Settings: search', 'settings.look': 'Settings: light or dark look', 'screen.quick': 'Quick Chart',
+    'screen.home': 'Home Screen', 'screen.chart': 'Chart Viewer', 'screen.settings': 'Settings', 'settings.search': 'Settings: search', 'settings.look': 'Settings: change the look', 'screen.quick': 'Quick Chart',
     'screen.tags': 'All Tags', 'screen.upload': 'Upload Screenshots', 'screen.import': 'Import Tags', 'screen.status': 'Status and backup',
     'viewer.add_tag': 'Add a tag to a chart', 'quick.save': 'Save a quick chart', 'quick.full_screen': 'Quick Chart full screen',
     'quick.year_rows': 'Year Rows and Day Vibrations', 'rows.on_date': 'Year Rows: pick a date', 'rows.meaning': 'Year Rows: tap a number for its meaning', 'quick.show_parts': 'Show and Hide Parts', 'quick.augment': 'Augmentation On or Off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
@@ -158,7 +158,42 @@
   const swap = (hash) => afterOverlayClosed(() => { if ((location.hash || '#/') !== hash) replacing = true; location.replace(hash); });
   // Like replaceChildren, but skips null/false so a conditional part never shows as the word "null".
   const fill = (el, ...nodes) => el.replaceChildren(...nodes.filter((n) => n !== null && n !== undefined && n !== false));
-  const render = (...nodes) => { fill($app, ...nodes); window.scrollTo(0, 0); };
+  // Line drawings for the button symbols (owner 2026-11-23): the new looks show these, the classic looks keep the
+  // old symbol. Keyed by the symbol the button was built with, so a button needs nothing new; upgradeIcons runs on render.
+  const LINE_ICONS = {
+    '◈': '<path d="M12 2.5L20 12L12 21.5L4 12Z"/><path d="M4 12h16"/><circle cx="12" cy="8.5" r="2"/><circle cx="12" cy="15.5" r="2"/>',
+    '⚙': '<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
+    '⌕': '<circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/>',
+    '⌖': '<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.5"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>',
+    '?': '<path d="M4 5h16v11H9l-5 4z"/><path d="M10 9a2 2 0 1 1 2.5 2c-.5.2-.5.6-.5 1"/><circle cx="12" cy="13.8" r=".5"/>',
+    '❖': '<circle cx="12" cy="8" r="3"/><circle cx="6" cy="15" r="3"/><circle cx="18" cy="15" r="3"/>',
+    '▦': '<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4M8 13h.01M12 13h.01M16 13h.01M8 16.5h.01M12 16.5h.01"/>',
+    '◇': '<path d="M12 3l8 9-8 9-8-9z"/><path d="M8 12h8"/>',
+    '$': '<path d="M3.5 12.5V4.5h8l9 9-8 8z"/><circle cx="8" cy="9" r="1.4"/>',
+    '☀': '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/>',
+    '☰': '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-5.5 7-5.5s6 1.5 7 5.5"/>',
+    '✦': '<path d="M12 3l1.8 6.2L20 11l-6.2 1.8L12 19l-1.8-6.2L4 11l6.2-1.8z"/>',
+    '☺': '<circle cx="9" cy="9" r="3"/><circle cx="16.5" cy="10" r="2.5"/><path d="M3.5 19c.8-3.4 3-4.8 5.5-4.8s4.7 1.4 5.5 4.8M14.5 15c2.6-.4 4.8.8 5.8 4"/>',
+    '⧫': '<path d="M8 4l5 8-5 8-5-8z"/><path d="M16 4l5 8-5 8-5-8z"/>',
+    '★': '<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z"/>',
+    '◎': '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".8"/>',
+    '∞': '<path d="M12 12c-2-2.8-3.6-4-5.5-4a4 4 0 0 0 0 8c1.9 0 3.5-1.2 5.5-4s3.6-4 5.5-4a4 4 0 0 1 0 8c-1.9 0-3.5-1.2-5.5-4z"/>',
+    '≡': '<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="12" r="1.4"/>',
+    '⌂': '<path d="M4 11l8-7 8 7"/><path d="M6 9.5V20h12V9.5"/><path d="M10 20v-5h4v5"/>',
+    '☎': '<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>',
+    'Aa': '<path d="M3 19l5-14 5 14M5 14h6"/><path d="M15 14.5a3 3 0 1 0 6 0v-1a3 3 0 1 0-6 0M21 11v8"/>',
+  };
+  const upgradeIcons = (root) => {
+    root.querySelectorAll('.qicon, .iconbtn.gear').forEach((el) => {
+      if (el.querySelector('.li')) return;
+      const g = el.textContent.trim(), d = LINE_ICONS[g];
+      if (!d) return;
+      el.textContent = '';
+      el.append(h('span', { class: 'g' }, g));
+      el.insertAdjacentHTML('beforeend', `<svg class="li" viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`);
+    });
+  };
+  const render = (...nodes) => { fill($app, ...nodes); upgradeIcons($app); window.scrollTo(0, 0); };
 
   // ---------- login ----------
   function showLogin() {
@@ -373,14 +408,24 @@
   const PICK_KEY = 'comparePick', CMPVIEW_KEY = 'compareView';
   const readStore = (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
   const writeStore = (k, v) => { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch {} };
-  // Light or dark (owner 2026-10-19): the app follows the phone's own setting unless Settings -> Look pins one.
-  // The choice is on this device only (`theme`: 'light' | 'dark' | nothing). index.html applies it before the first
-  // paint; this keeps the browser's bar color in step with the page.
-  const THEME_KEY = 'theme';
-  const LOOKS = [[null, 'Follows the Phone'], ['light', 'Light'], ['dark', 'Dark']];
+  // Look (owner 2026-10-19 light/dark; 2026-11-23 styles to match the new icon): Settings -> Look, on this device only.
+  // `look`: 'glass' | 'blueprint' | 'light' | 'classic-dark' | 'classic-light' | nothing (follows the phone:
+  // Blueprint Night when the phone is dark, Light when it is light). An older pinned `theme` ('light' | 'dark') reads as
+  // the classic look of that color. index.html applies the same rule before the first paint; this keeps the browser's
+  // bar color in step with the page.
+  const THEME_KEY = 'theme', LOOK_KEY = 'look';
+  const LOOKS = [[null, 'Follows the Phone'], ['glass', 'Glass on Color'], ['blueprint', 'Blueprint Night'], ['light', 'Light'], ['classic-dark', 'Classic Dark'], ['classic-light', 'Classic Light']];
+  const currentLook = () => {
+    let v = readStore(LOOK_KEY);
+    if (!v) { const old = readStore(THEME_KEY); if (old === 'light' || old === 'dark') v = 'classic-' + old; }
+    return LOOKS.some(([k]) => k && k === v) ? v : null;
+  };
   const applyTheme = () => {
-    const pref = readStore(THEME_KEY);
-    if (pref === 'light' || pref === 'dark') document.documentElement.dataset.theme = pref; else delete document.documentElement.dataset.theme;
+    const look = currentLook(), el = document.documentElement;
+    let phoneLight = false; try { phoneLight = matchMedia('(prefers-color-scheme: light)').matches; } catch {}
+    const style = look ? look.replace(/-.*/, '') : phoneLight ? 'light' : 'blueprint';
+    el.dataset.style = style;
+    el.dataset.theme = look === 'classic-light' || style === 'light' ? 'light' : 'dark';
     const meta = document.querySelector('meta[name=theme-color]');
     if (meta) meta.content = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#1b1f2a';
   };
@@ -1344,12 +1389,13 @@
     const $none = h('p', { class: 'muted hidden' }, 'Nothing in Settings matches that.');
     const row = ([label, href]) => h('a', { class: 'btn btn-block', href, style: 'justify-content:space-between' }, label, h('span', { class: 'muted' }, '›'));
     // Look: light, dark, or whatever the phone is set to. A card of its own, found by the search too.
-    const LOOK_KEYS = 'look theme light dark appearance night day mode colors follows the phone system';
+    const LOOK_KEYS = 'look theme style light dark appearance night day mode colors follows the phone system glass color blueprint classic icon';
+    const LOOK_NOTES = { null: 'Blueprint Night when the phone is dark, Light when it is light.', glass: 'The icon\'s colors fill the screen, with frosted glass buttons.', blueprint: 'Deep navy with a faint grid; the colors glow in from the top.', light: 'Soft white with the icon\'s colors as a gentle glow.', 'classic-dark': 'The look the app had before, dark.', 'classic-light': 'The look the app had before, light.' };
     const $look = h('div', { class: 'card stack' });
     const drawLook = () => {
-      const cur = readStore(THEME_KEY);
-      fill($look, h('div', { class: 'row', style: 'justify-content:space-between' }, h('b', {}, 'Look'), h('span', { class: 'muted small' }, cur ? `Always ${cur}` : 'Light or dark, like the phone')),
-        h('div', { class: 'chips' }, ...LOOKS.map(([v, label]) => h('button', { type: 'button', class: `chip ${(cur || null) === v ? 'active' : 'off'}`, onclick: () => { writeStore(THEME_KEY, v); applyTheme(); count('settings.look'); drawLook(); } }, label))));
+      const cur = currentLook();
+      fill($look, h('div', { class: 'row', style: 'justify-content:space-between' }, h('b', {}, 'Look'), h('span', { class: 'muted small' }, LOOK_NOTES[cur])),
+        h('div', { class: 'chips' }, ...LOOKS.map(([v, label]) => h('button', { type: 'button', class: `chip ${cur === v ? 'active' : 'off'}`, onclick: () => { writeStore(LOOK_KEY, v); writeStore(THEME_KEY, null); applyTheme(); count('settings.look'); drawLook(); } }, label))));
     };
     const draw = () => {
       const words = $q.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
