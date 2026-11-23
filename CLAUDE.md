@@ -64,6 +64,9 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   name and date still show the screenshot: Settings -> "Charts Still Showing the Screenshot"
   (`#/?drawn=0`). **Open item: the owner asked to be reminded to go through those** (count in the
   snapshot's DRAWN CHARTS line); remind them at the start of a session until that list is empty.
+- **Open item (owner 2026-11-23): remind the owner to fix how the charts look in the new looks** (the white ground
+  "glaring" on Glass on Color; see-through grounds shown in https://claude.ai/artifact/8jxLVKyac8MUnCkfP1bt2w).
+  Also open: Today / Coming Days keep the light day look in every style; the owner may want them restyled.
 - Never lose or mix up a chart or a tag. Filename = identity. Tags are kept
   exactly as written, never renamed or "fixed". How a tag READS is separate:
   `server/tagnames.js` splits run-together names ("alexjones" → "Alex Jones");
