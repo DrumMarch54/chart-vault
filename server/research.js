@@ -17,7 +17,7 @@ import crypto from 'node:crypto';
 import { callModel, AiError, estimate, textOf, WEB_SEARCH_USD } from './ai.js';
 import { chartName } from './lookup.js';
 import { sharesOf } from './group.js';
-import { groupInsights, checkHunch } from './insight.js';
+import { groupInsights } from './insight.js';
 import { FIELDS, FLAGS, parseWho, whoSql } from './people.js';
 import { meaningFor } from './meaning.js';
 import { chunksFor, coreText } from './knowledge.js';
@@ -466,14 +466,6 @@ export function researchShares(db, id) {
   const key = crypto.createHash('sha1').update(JSON.stringify([extra.map((e) => `${e.name}|${e.day}.${e.month}.${e.year}`).sort(), ids.slice().sort((a, b) => a - b)])).digest('hex').slice(0, 16);
   const insights = groupInsights(db, { ids, extra, themes: shares.themes });
   return { ...shares, insights, key, undated: on.length - extra.length, online: extra.length, from_vault: ids.length };
-}
-
-// A hunch the owner names first ("13", "4 + 9"): counted on the same people as the cards. Free. null = no number in it.
-export function researchHunch(db, id, words) {
-  const g = getResearch(db, id);
-  if (!g) return null;
-  const extra = g.people.filter((p) => p.on && p.drawable).map((p) => ({ name: p.chart_name, ...dateParts(p.birth_date), title: p.known_as, ref: p.ref }));
-  return checkHunch(db, { ids: g.vault.filter((v) => v.on).map((v) => v.id), extra }, words);
 }
 
 // ---------- the reading (paid, Opus) ----------

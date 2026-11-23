@@ -281,13 +281,12 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   groups of the same size put through the same search (`luck`), and cut in two (`halves`). Solid = see below, AND both
   halves; Strong Lean = under 20 in 100; Lean = under 50; past that it is not a card. The first
   build called a card clear by its own rarity: 38 of 40 random groups got one. `test/insight.test.js` holds this.
-- TEST A HUNCH (owner 2026-11-23, on 141 mass shooters: "13/4 ... some sort of 4 combined with 9 ... 16/7 ... you
-  didn't even mention any of that"): the results screen has a box; the owner types a number or a pair and `checkHunch`
-  (insight.js, `GET /api/research/:id/hunch?q=`) counts exactly that: anywhere, strong positions, day, life path, life
-  expression, first name, name chart centers, many times; a pair beside each other in a diamond or center, or both in
-  the chart. A single digit = the family. Judged by its OWN chance (one question named beforehand, no search to
-  discount), and it says when a number is in nearly every chart anyway (13/4: 95 in 100, so "has a 13/4" tells nothing).
-  The blind search cannot replace this: what the owner already sees is tested there, never argued with.
+- What the owner SEES must come out of the search (owner 2026-11-23, 141 mass shooters: "13/4 ... some sort of 4
+  combined with 9 ... 16/7 ... you didn't even mention any of that ... fix it so that it actually gathers real
+  insights"). Measured: all three were in the charts and the search hid them. Fixes that hold: a combination is read
+  WHEREVER it sits (per-spot reading tried twenty times more things and its luck buried the real pairs); a number in a
+  center (`center`: name chart centers, any chart's centers); up to four cards a part. No "Test a Hunch" box: built
+  unasked and removed the same hour ("I did not ask you to build this"). Fix the thing asked; do not add a tool.
 - The blind search also reads a number ANYWHERE in the chart and MANY TIMES in one chart, two numbers BOTH in a chart
   ("13/4 & 16/7"), and each combination at three depths: exact (13/4 + 18/9), one side a family (13/4 + Any 9), both
   families (Any 4 + Any 9). Five kinds of search: Solid = fewer than 1 in 100 random groups (`SOLID` 0.01).

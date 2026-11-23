@@ -1078,3 +1078,13 @@ against 20. 13/4 and 16/7 both in the chart: 93 against 84. 18/9: no difference 
 positions. Built: combinations at three depths, numbers anywhere and many times, two numbers together, and Test a
 Hunch, where he types what he sees and it is counted as the one question it is. Lesson: a blind search pays a luck
 penalty for everything it tries; a reader's stated observation does not. Give the reader a way to state it.
+
+## 2026-11-23: the owner stopped me mid-deploy
+After measuring that the owner's shooter observations were real, I built "Test a Hunch", a box where he types a number
+and the app counts it, and pushed it. He interrupted: "I did not ask you to build this ... I was asking you to fix
+the shit so that it actually gathers real insights about the group." He was right: the measurement had already shown
+WHY the search missed them (pairs read once per spot, twenty times more tries, the luck penalty buried them; nothing
+read a number in a center). The fix was to narrow the search to what a reader reads. Done: on the 122 dated shooters
+the cards are now 13/4 beside any 9 (39 of 122, usually 20 in 100), 13/4 and 16/7 in the same chart (113, usually 84),
+13/4 in a center (75, usually 46), charts heavy with sevens. The box is gone. Lesson: when the diagnosis shows the
+flaw, fix the flaw. A new tool that lets the owner do the app's job is not the fix he asked for.

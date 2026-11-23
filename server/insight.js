@@ -24,9 +24,6 @@
 // both halves of the group. The birth year is a position like any other (owner: "maybe a certain type of people
 // were born in a certain year"); it is never corrected away.
 //
-// A HUNCH (checkHunch) is different: the owner names the number or the pair BEFORE looking ("13/4", "4 + 9"). That is
-// ONE question, not a search through hundreds, so it is judged by its own chance alone and can be solid where the
-// blind search cannot. It also says plainly when a number is in nearly every chart anyway (13/4: 95 in 100).
 import { peopleValues, AREA } from './group.js';
 import { weightOf } from './facts.js';
 import { PARTS, POSITIONS, NOT_A_REPEAT } from './positions.js';
@@ -131,11 +128,17 @@ export function groupInsights(db, { ids = [], extra = [], themes = [], randomGro
   }
   const universes = new Map([...hasSpot].map(([spot, set]) => [spot, Uint32Array.from(set)]));
   for (const [key, set] of bySpot) { const [spot, d] = key.split('|'); add({ kind: 'spot', t: 'spot', spot, d: Number(d), universe: universes.get(spot) }, set); }
+  // A number (1 to 18 as written) sitting in a center: the name chart's two centers, or any numeroscope's.
+  const nameCenter = new Map(), anyCenter = new Map();
+  people.forEach((p, i) => { for (const v of p.values) { if (!/^(heart|solar|heartExtra|solarExtra)$/.test(v.position) || v.sum > 18) continue; put(anyCenter, v.sum, i); if (v.chart === 'name') put(nameCenter, v.sum, i); } });
+  for (const [sum, set] of nameCenter) add({ kind: 'spot', t: 'center', sum, where: 'name', universe: null }, set);
+  for (const [sum, set] of anyCenter) add({ kind: 'spot', t: 'center', sum, where: 'any', universe: null }, set);
   // Combinations: each pair at every depth, in its spot (among those who have that diamond) and anywhere.
-  const comboSpot = new Map(), comboAny = new Map(), hasDiamond = new Map();
-  people.forEach((p, i) => { for (const c of p.diamonds) { put(hasDiamond, c.spot, i); for (const key of pairKeys(c.x, c.y)) { put(comboSpot, `${c.spot}#${key}`, i); put(comboAny, key, i); } } });
-  const diamondUniverse = new Map([...hasDiamond].map(([spot, set]) => [spot, Uint32Array.from(set)]));
-  for (const [k, set] of comboSpot) { const [spot, key] = k.split('#'); add({ kind: 'combo', t: 'comboSpot', spot, pair: key, universe: diamondUniverse.get(spot) }, set); }
+  const comboAny = new Map();
+  people.forEach((p, i) => { for (const c of p.diamonds) for (const key of pairKeys(c.x, c.y)) put(comboAny, key, i); });
+  // A pair is read wherever it sits, not once per spot: reading every pair in each of the 46 diamonds tried about
+  // twenty times more things, and the luck that comes with trying buried the pairs the owner sees (mass shooters,
+  // 13/4 beside a 9: 39 of 122 against 20 in 100 usually).
   for (const [key, set] of comboAny) add({ kind: 'combo', t: 'comboAny', pair: key, universe: null }, set);
   // Two numbers (1 to 18) that are both somewhere in the same chart.
   const small = [...anywhere].filter(([sum]) => sum <= 18).sort((a, b) => a[0] - b[0]);
@@ -190,9 +193,8 @@ export function groupInsights(db, { ids = [], extra = [], themes = [], randomGro
   const pct = (a, of) => (of ? Math.round((a / of) * 100) : 0);
   const stamp = (f) => { const l = luckOf(f.r.kind, f.p), halves = bothHalves(f); return { luck: l, halves, solid: l < SOLID && halves }; };
   const base = (f) => ({ p: f.p, in_group: f.a, group_of: f.of, usual: pct(f.k, f.restOf), people: who(inGroup(f.r)), ...stamp(f) });
-  // Cards of one part: every solid one (up to `most`), then leans (fewer than half the random groups match them)
-  // up to two cards in all. What most random groups also show is never a card: a part may honestly be empty.
-  const choose = (list, most) => { const solid = list.filter((x) => x.solid).slice(0, most); return solid.length >= 2 ? solid : [...solid, ...list.filter((x) => !x.solid && x.luck < LEAN).slice(0, 2 - solid.length)]; };
+  // Cards of one part, up to `most`: the solid ones first, then leans (fewer than half the random groups match them). What most random groups also show is never a card: a part may honestly be empty.
+  const choose = (list, most) => { const solid = list.filter((x) => x.solid).slice(0, most); return [...solid, ...list.filter((x) => !x.solid && x.luck < LEAN).slice(0, most - solid.length)]; };
   const shown = (t) => mine.found.filter((x) => x.r.t === t && x.p < SHOWN);
 
   // ---- EXPAND ----
@@ -220,13 +222,10 @@ export function groupInsights(db, { ids = [], extra = [], themes = [], randomGro
 
   // ---- COMBINATIONS ----
   const combos = [];
-  for (const f of [...shown('comboSpot'), ...shown('comboAny')]) {
+  for (const f of shown('comboAny')) {
     const r = f.r, [sa, sb] = r.pair.split('|');
     const card = { kind: 'combo', pair: r.pair, a: sideNum(sa), b: sideNum(sb), fam: `${sideFam(sa)}|${sideFam(sb)}`, big: pairText(r.pair), ...base(f) };
-    if (r.t === 'comboSpot') {
-      const [chart, position] = r.spot.split('.'), parts = PARTS[position];
-      combos.push({ ...card, key: `combo:${r.spot}:${r.pair}`, pos: r.spot, head: `As ${partName(chart, parts[0])} + ${partName(chart, parts[1])}`, count: `${f.a} of ${f.of} charts`, detail: `The two numbers of the ${positionName(chart, position)}.` });
-    } else {
+    {
       const where = new Map(); for (const i of inGroup(r)) for (const c of people[i].diamonds) if (pairKeys(c.x, c.y).includes(r.pair)) where.set(c.spot, (where.get(c.spot) || 0) + 1);
       const top = [...where].sort((x, y) => y[1] - x[1]).slice(0, 2).map(([spot]) => positionName(...spot.split('.')));
       combos.push({ ...card, key: `comboAny:${r.pair}`, head: 'Beside Each Other in a Diamond or Center', count: `${f.a} of ${n} charts`, detail: `Mostly the ${top.join(' and the ')}.` });
@@ -253,51 +252,13 @@ export function groupInsights(db, { ids = [], extra = [], themes = [], randomGro
     leaders.push({ key: `spot:${f.r.spot}:${f.r.d}`, kind: 'spot', big: `${f.r.d}s`, head: `${PLURAL[f.r.d]} as the ${positionName(chart, position)}`, count: `${f.a} of ${f.of} charts`,
       detail: `${[...forms].sort((a, b) => b[1] - a[1]).slice(0, 4).map(([sum, c]) => `${fmt(sum)} in ${c}`).join(', ')}.`, items: [{ pos: f.r.spot, num: `/${f.r.d}`, name: positionName(chart, position), number: `Any ${f.r.d}` }], ...base(f) });
   }
+  for (const f of shown('center')) leaders.push({ key: `center:${f.r.where}:${f.r.sum}`, kind: 'center', sum: f.r.sum, big: fmt(f.r.sum), head: f.r.where === 'name' ? 'In a Name Chart Center' : 'In a Center of Any Chart', count: `${f.a} of ${n} charts`,
+    detail: f.r.where === 'name' ? 'The mind or emotion center of the name chart, main or sub vibration.' : 'A mind or emotion center of any numeroscope, main or sub vibration.', items: [], ...base(f) });
   leaders.sort((a, b) => a.p - b.p);
-  out.collapse = [...themeCards, ...choose(leaders, 3)].sort((a, b) => Number(b.solid) - Number(a.solid)).slice(0, 3);
+  const leadersKept = []; for (const l of leaders) if (!(l.kind === 'center' && leadersKept.some((x) => x.kind === 'center' && x.sum === l.sum))) leadersKept.push(l);
+  out.collapse = [...themeCards, ...choose(leadersKept, 4)].sort((a, b) => Number(b.solid) - Number(a.solid)).slice(0, 4);
   for (const list of [out.expand, out.combos, out.collapse]) for (const i of list) { delete i.p; delete i.fam; i.lean = !i.solid; i.level = i.solid ? 'solid' : i.luck < STRONG_LEAN ? 'strong' : 'lean'; }
   out.solid = [...out.expand, ...out.combos, ...out.collapse].filter((i) => i.solid).length;
   return out;
 }
 
-// ---- a hunch: the owner names it first ("13", "13/4", "4 + 9", "13 and 16") ----
-// Returns { text, rows: [{ label, in_group, group_of, usual, level, note }] } or null when the words hold no number.
-export function checkHunch(db, { ids = [], extra = [] } = {}, words) {
-  const nums = (String(words || '').match(/\d+(\s*\/\s*\d)?/g) || []).map((t) => Number(t.split('/')[0])).filter((x) => x >= 1 && x <= 99).slice(0, 2);
-  if (!nums.length) return null;
-  const people = prepare(db, ids, extra);
-  const group = people.filter((p) => p.inGroup), rest = people.filter((p) => !p.inGroup);
-  const out = { text: nums.map(fmt).join(' + '), size: group.length, rest: rest.length, rows: [] };
-  if (group.length < 3 || rest.length < 3) return out;
-  const tail = tailMaker(people.length);
-  const row = (label, test) => {
-    const a = group.filter(test).length, k = rest.filter(test).length;
-    const usual = Math.round((k / rest.length) * 100), here = Math.round((a / group.length) * 100);
-    const p = a / group.length > k / rest.length ? tail(a, group.length, a + k, people.length) : 1;
-    // One question asked beforehand is judged by its own chance: no search, so no luck to subtract.
-    const level = p < 0.01 ? 'solid' : p < 0.05 ? 'strong' : p < 0.2 ? 'lean' : 'same';
-    const note = usual >= 90 ? `In nearly every chart anyway (${usual} in 100): it cannot tell this group apart.` : level === 'same' ? (here < usual ? 'Not more than usual here: a little less.' : 'About the same as usual.') : '';
-    out.rows.push({ label, in_group: a, group_of: group.length, here, usual, level, note });
-  };
-  const fam = (n) => (n < 10 ? (v) => v.ds === n : (v) => v.sum === n);       // a one-digit number means the family: 4 = 4, 13/4, 22/4 ...
-  const name = (n) => (n < 10 ? `Any ${n}` : fmt(n));
-  if (nums.length === 1) {
-    const n = nums[0], is = fam(n);
-    row(`${name(n)} somewhere in the chart`, (p) => p.all.some(is));
-    row(`${name(n)} in a strong position`, (p) => p.strong.some(is));
-    for (const [label, spot] of [['the Day Vibration', 'essence.day'], ['the Life Path', 'essence.littleLp'], ['the Life Expression', 'name.le'], ['the First Name', 'name.first'], ['a Name Chart center', 'name.heart|name.solar']])
-      row(`${name(n)} as ${label}`, (p) => p.strong.some((v) => is(v) && spot.split('|').includes(`${v.chart}.${v.position}`)));
-    const cnt = people.map((p) => p.all.filter(is).length), k = oftenLine(cnt, people.length);
-    row(`${name(n)} ${k} or more times in one chart`, (p) => p.all.filter(is).length >= k);
-    if (n < 10) row(`A plain ${n} (not a compound) in a strong position`, (p) => p.strong.some((v) => v.sum === n));
-  } else {
-    const [a, b] = nums, sa = a < 10 ? `f${a}` : String(comboNum(a)), sb = b < 10 ? `f${b}` : String(comboNum(b));
-    const beside = (c) => (sideHolds(sa, c.x) && sideHolds(sb, c.y)) || (sideHolds(sb, c.x) && sideHolds(sa, c.y));
-    row(`${name(a)} beside ${name(b)} in a diamond or center`, (p) => p.diamonds.some(beside));
-    row(`${name(a)} beside ${name(b)} in a center (main and sub vibration)`, (p) => p.diamonds.some((c) => /\.(heart|solar)$/.test(c.spot) && beside(c)));
-    row(`${name(a)} beside ${name(b)} in the Name Chart`, (p) => p.diamonds.some((c) => c.spot.startsWith('name.') && beside(c)));
-    row(`${name(a)} and ${name(b)} both in strong positions`, (p) => p.strong.some(fam(a)) && p.strong.some(fam(b)));
-    row(`${name(a)} and ${name(b)} both somewhere in the chart`, (p) => p.all.some(fam(a)) && p.all.some(fam(b)));
-  }
-  return out;
-}
