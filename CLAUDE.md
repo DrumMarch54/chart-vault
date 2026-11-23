@@ -285,8 +285,10 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   (`knowledge/bits.json`, GENERATED 2026-10-19 for every page with course words by Claude sessions following
   `tools/bits/BRIEF.md`; pipeline and how to redo it in `tools/bits/README.md`; the course's words shortened, nothing added, sources listed;
   `**words**` = bold, for what should stand out, owner's ask)
-  and the full course words under "Course Words"; a long heading is one card. NO general number descriptions (owner: a separate
-  layer, later). The many names for one position: `.brain/numerology/lingo.md`; read it before matching text.
+  and the full course words under "Course Words"; a long heading is one card. The general layer (owner 2026-11-23): "About 35/8"
+  under the spot's words AND under each diamond behind it, folded to the guide's title and opening lines, "Show More" = every
+  section of the owner's 1-9 / 10-45 / 46-99 Guide as written + Number Notes word for word (`server/number-guide.json`, GENERATED
+  by `node tools/make-number-guide.mjs`, no AI). Never mixed into a spot's own words. The many names for one position: `.brain/numerology/lingo.md`; read it before matching text.
 - `server/meaning.js` ranks per position and keeps context: a passage about another chart (vocation heart diamond on
   the name chart, a name chart aura on the essence), about a pair that is not this circle, about a NUMBER'S OWN
   diamond (Diamond Method, "small diamond of the number 7"), or a point-scoring table is never shown. Business

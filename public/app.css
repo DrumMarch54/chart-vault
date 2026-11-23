@@ -798,6 +798,15 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .mfoot .mmore { width: 100%; justify-content: center; background: var(--panel2); color: var(--text); min-height: 44px; padding: 0 14px; font-weight: 700; margin: 0; border-radius: 12px; }
 .mfoot .mwords:not([hidden]) { display: flex; flex-direction: column; gap: 10px; }
 .mfoot .mcard { border: 1px solid var(--panel2); margin: 0; }
+/* About This Number (owner 2026-11-23): the owner's guide for the number, under the spot's own words, folded. */
+.mguide { border-top: 1.5px solid var(--pc); }
+.mguide-h { padding: 10px 14px 0; }
+.mguide-t { font-size: 17px; font-weight: 800; color: var(--pc); line-height: 1.25; }
+.mguide-s { font-size: 14px; color: var(--muted); font-style: italic; margin-top: 2px; }
+.mguide-i { font-size: 16px; line-height: 1.45; padding-bottom: 4px; }
+.mguide-b { padding-top: 4px; }
+.mguide-b .mmore { width: 100%; justify-content: center; background: var(--panel2); color: var(--text); min-height: 44px; padding: 0 14px; font-weight: 700; margin: 0; border-radius: 12px; }
+.mguide-more[hidden] { display: none; }
 .mask .maskq { margin-bottom: 10px; }
 .mask .maskq { width: 100%; box-sizing: border-box; font-size: 16px; padding: 10px 12px; border-radius: 12px; margin-bottom: 8px; resize: vertical; }
 .mask .btn-block { margin-bottom: 10px; }
