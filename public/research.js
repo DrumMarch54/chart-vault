@@ -231,74 +231,75 @@
       };
       saveLabel();
 
-      // Collapse and expand (owner 2026-11-23: one layout, short, no repeat): the counted insights are cards; the
-      // reading (paid, written once for this group, kept) puts one line of the course's words on each card and
-      // three to five lines that weave them. A changed group offers Write It Again.
+      // The findings (owner 2026-11-23): ONE list, the most solid first, then by how big; each card says in plain words
+      // how many of the group have it and how common it is in everyone else, and explains itself FOR THIS GROUP (the
+      // explanations are written once per group, paid, kept). The search's housekeeping sits at the bottom.
       const ins = { expand: [], combos: [], collapse: [], ...(s.insights || {}) };
+      const RANK = { solid: 0, strong: 1, lean: 2 };
+      const all = [...ins.expand, ...ins.combos, ...ins.collapse].sort((a, b) => (RANK[a.level] ?? 3) - (RANK[b.level] ?? 3));
       const cost = g.summary_cost ? `about ${money(g.summary_cost.usd)}` : 'a few cents';
-      const $expand = h('div', { class: 'stack' }), $collapse = h('div', { class: 'stack' }), $combos = h('div', { class: 'stack' }), $read = h('div', { class: 'card stack rs-read' });
-      const card = (i, note) => h('div', { class: 'card ins' },
-        h('div', { class: 'ins-top' }, h('span', { class: 'ins-big' }, i.big),
-          h('div', { class: 'ins-headbox' }, h('div', { class: 'ins-head' }, i.head), i.sub ? h('div', { class: 'muted small' }, i.sub) : null, h('span', { class: `ins-lean ${i.level || ''}` }, i.level === 'solid' ? 'Solid' : i.level === 'strong' ? 'Strong Lean' : 'Lean: Could Be Chance'),
-            h('div', { class: 'ins-count' }, h('b', {}, i.count), i.usual !== null && i.usual !== undefined ? h('span', { class: 'muted' }, ` · usually ${i.usual} in 100`) : null))),
-        note ? h('p', { class: 'ins-note' }, note.line) : null,
-        ...String(i.detail || '').split(' · ').filter(Boolean).map((d) => h('div', { class: 'muted small' }, d)),
-        h('details', { class: 'ins-who', ontoggle: (e) => { if (e.target.open) count('research.insight_who'); } }, h('summary', {}, `Who (${i.people.length}) and How Solid`),
-          h('div', { class: 'muted small' }, `${i.luck === 0 ? 'No random group of this size' : `${Math.max(1, Math.round(i.luck * 100))} in 100 random groups of this size`} found something this strong.${i.halves === true ? ' It shows in both halves of the group.' : i.halves === false ? ' It shows in only one half of the group.' : ''} Solid = fewer than 1 in 100, and both halves.`),
-          h('div', { class: 'simpills' }, ...i.people.map((c) => h('a', { class: 'simpill', href: hrefOf(c) }, c.title || 'No name')))));
-      const drawReading = (sm, pending) => {
+      const groupWord = g.category || 'this group';
+      const pctOf = (a, of) => (of ? Math.round((a / of) * 100) : 0);
+      const $list = h('div', { class: 'stack' }), $explain = h('div', { class: 'stack' });
+      const LEVEL = { solid: ['Solid', 'Random groups of this size almost never show this.'], strong: ['Strong Lean', 'Probably real; more charts will tell.'], lean: ['Lean', 'Worth a look, could be chance.'] };
+      const kindWord = (i) => (i.kind === 'combo' ? 'Combination' : i.kind === 'spot' || i.kind === 'center' || i.kind === 'theme' ? 'In a Specific Spot' : 'Across the Whole Chart');
+      const card = (i, note) => {
+        const of = i.group_of || s.size, here = pctOf(i.in_group, of);
+        return h('div', { class: `card ins ins-lvl-${i.level}` },
+          h('div', { class: 'ins-top' }, h('span', { class: 'ins-big' }, i.big),
+            h('div', { class: 'ins-headbox' }, h('div', { class: 'ins-head' }, i.head), i.sub ? h('div', { class: 'muted small' }, i.sub) : null,
+              h('div', { class: 'ins-tags' }, h('span', { class: `ins-lean ${i.level || ''}` }, LEVEL[i.level] ? LEVEL[i.level][0] : 'Lean'), h('span', { class: 'muted small' }, kindWord(i))))),
+          h('div', { class: 'ins-plain' }, h('b', {}, `${fmtN(i.in_group)} of the ${fmtN(of)} ${groupWord}`), ` have this (${here}%).`,
+            i.usual !== null && i.usual !== undefined ? h('span', {}, ` In everyone else in your vault: ${i.usual}%.`) : null),
+          note ? h('p', { class: 'ins-note' }, note.line) : pendingNote ? h('p', { class: 'muted small', style: 'margin:0' }, 'Writing what this means for the group…') : null,
+          ...String(i.detail || '').split(' · ').filter(Boolean).map((d) => h('div', { class: 'muted small' }, d)),
+          h('details', { class: 'ins-who', ontoggle: (e) => { if (e.target.open) count('research.insight_who'); } }, h('summary', {}, `Who (${i.people.length}) and How Solid`),
+            h('div', { class: 'muted small' }, `${LEVEL[i.level] ? LEVEL[i.level][1] : ''} ${i.luck === 0 ? 'No random group of this size' : `${Math.max(1, Math.round(i.luck * 100))} in 100 random groups of this size`} found something this strong.${i.halves === true ? ' It shows in both halves of the group.' : ''}`),
+            h('div', { class: 'simpills' }, ...i.people.map((c) => h('a', { class: 'simpill', href: hrefOf(c) }, c.title || 'No name')))));
+      };
+      let pendingNote = false;
+      const draw = (sm) => {
         const stale = sm && sm.key !== s.key;
         const notes = new Map(((sm && !stale && sm.notes) || []).map((x) => [x.key, x]));
-        fill($expand, ...ins.expand.map((i) => card(i, notes.get(i.key))), ins.expand.length ? null : h('p', { class: 'muted', style: 'margin:0' }, 'No number stands out across these charts yet.'));
-        fill($combos, ...ins.combos.map((i) => card(i, notes.get(i.key))), ins.combos.length ? null : h('p', { class: 'muted', style: 'margin:0' }, 'No pair of numbers stands out yet.'));
-        fill($collapse, ...ins.collapse.map((i) => card(i, notes.get(i.key))), ins.collapse.length ? null : h('p', { class: 'muted', style: 'margin:0' }, 'No single spot stands out yetshow.'));
-        const write = (again) => async () => {
-          if (again) count('research.summary_again');
-          drawReading(sm, true);
-          // A dropped connection asks again by itself: free, the server hands back the one being written or stored.
-          let r = null, err = null;
-          for (let tries = 0; tries < 4 && !r; tries++) {
-            try { r = await send(`/api/research/${id}/summary`, 'POST', { again: again && tries === 0 }); err = null; }
-            catch (e) { err = e; if (!(e instanceof TypeError)) break; await new Promise((ok) => setTimeout(ok, 4000)); }
-          }
-          if (r) { drawReading(r.summary, false); if (r.warning) toast(r.warning.text, true); }
-          else fill($read, h('b', {}, 'Reading'), h('p', { class: 'err', style: 'margin:0' }, err instanceof TypeError ? 'The connection dropped. Tap Try Again: if the reading was already written, it is free.' : err.message), h('button', { type: 'button', class: 'btn btn-block', onclick: write(again) }, `Try Again (${cost})`));
-        };
-        const any = ins.expand.length + ins.combos.length + ins.collapse.length > 0;
-        fill($read, h('b', {}, 'Reading'),
-          pending ? h('p', { class: 'muted', style: 'margin:0' }, 'Writing the reading… about 20 seconds.') : null,
-          !pending && !any ? h('p', { class: 'muted', style: 'margin:0' }, 'Nothing leads in this group yet, so there is nothing to read. Nothing was spent. More charts will show more.') : null,
-          !pending && any && (!sm || (!stale && !(sm.lines || []).length)) ? h('button', { type: 'button', class: 'btn btn-block', onclick: write(!!sm) }, `Write the Reading (${cost})`) : null,
-          !pending && sm && !stale && sm.lines && sm.lines.length ? h('ul', { class: 'rs-lines' }, ...sm.lines.map((l) => h('li', {}, l))) : null,
-          !pending && stale && any ? h('p', { class: 'muted small', style: 'margin:0' }, 'The group has changed since the reading was written.') : null,
-          !pending && sm && any && (stale || (sm.lines && sm.lines.length)) ? h('button', { type: 'button', class: 'btn btn-block rs-again', onclick: write(true) }, stale ? `Write the Reading for This Group (${cost})` : `Write It Again (${cost})`) : null);
-        return write;
+        fill($list, ...all.map((i) => card(i, notes.get(i.key))), all.length ? null : h('p', { class: 'muted', style: 'margin:0' }, 'Nothing stands out in this group yet. More charts will show more: Find More, at the bottom.'));
+        fill($explain, !pendingNote && all.length && (!sm || stale || !(sm.notes || []).length) ? h('button', { type: 'button', class: 'btn btn-block', onclick: explain(!!sm) }, `Explain What These Mean for ${groupWord} (${cost})`) : null,
+          !pendingNote && sm && !stale && (sm.notes || []).length ? h('button', { type: 'button', class: 'btn btn-block rs-again', onclick: explain(true) }, `Write the Explanations Again (${cost})`) : null);
       };
-      // The first time a group is shown the reading is written by itself (free while the server is already writing it).
-      const write = drawReading(g.summary, false);
-      if (!g.summary && s.size >= 3 && g.status !== 'running' && g.status !== 'checking' && ins.expand.length + ins.combos.length + ins.collapse.length) write(false)();
+      const explain = (again) => async () => {
+        if (again) count('research.summary_again');
+        pendingNote = true; draw(g.summary);
+        let r = null, err = null;
+        for (let tries = 0; tries < 4 && !r; tries++) {
+          try { r = await send(`/api/research/${id}/summary`, 'POST', { again: again && tries === 0 }); err = null; }
+          catch (e) { err = e; if (!(e instanceof TypeError)) break; await new Promise((ok) => setTimeout(ok, 4000)); }
+        }
+        pendingNote = false;
+        if (r) { g.summary = r.summary; draw(r.summary); if (r.warning) toast(r.warning.text, true); }
+        else { draw(g.summary); toast(err instanceof TypeError ? 'The connection dropped. Tap the button again: if it was already written, it is free.' : err.message, true); }
+      };
+      draw(g.summary);
+      // The first time a group is shown its explanations are written by themselves (free while the server is already at it).
+      if (!g.summary && s.size >= 3 && g.status !== 'running' && g.status !== 'checking' && all.length) explain(false)();
 
       const left = [s.undated ? `${plural(s.undated, one, many)} without a full date cannot be counted` : '', s.tagged - s.size - s.undated > 0 ? `${s.tagged - s.size - s.undated} left out: no name and date read yet, or the same person twice` : ''].filter(Boolean).join('; ');
-      fill($body, statusCard(g, id, () => { if (location.hash === `#/research?id=${id}` && $body.isConnected) resultsView(id, $body); }, true),
-        h('div', { class: 'card stack' }, h('div', { class: 'simname' }, g.category),
-          h('p', { class: 'muted', style: 'margin:0' }, `${plural(s.size, one, many)} read: ${fmtN(s.online)} found online${s.from_vault ? `, ${fmtN(s.size - s.online)} from your vault` : ''}.${left ? ` ${left[0].toUpperCase()}${left.slice(1)}.` : ''}`),
-          g.personal ? h('p', { class: 'muted small', style: 'margin:0' }, 'A personal category: only people who said it about themselves in public, each with the page that says so.') : null,
-          h('a', { class: 'btn btn-block', href: `#/research?id=${id}&view=who`, onclick: () => count('research.change_who') }, `Change Who Is In (${on.length + vaultOn.length} of ${g.people.length + g.vault.length})`)),
-        s.size >= 3 && !ins.solid ? h('p', { class: 'muted small rs-size-note' }, `Nothing is Solid yet with ${fmtN(s.size)} charts. Solid = grounded. Lean = worth a look, could be chance; leans firm up or fade as the group grows (Find More).`) : null,
-        s.size >= 3 ? h('div', { class: 'summary rhead' }, 'Big Picture: What Shapes These Charts') : null,
-        s.size >= 3 ? $expand : null,
-        s.size >= 3 ? h('div', { class: 'summary rhead' }, 'Combinations: Two Numbers Side by Side') : null,
-        s.size >= 3 ? $combos : null,
-        s.size >= 3 ? h('div', { class: 'summary rhead' }, 'Specific Spots') : null,
-        s.size >= 3 ? $collapse : null,
-        s.size >= 3 ? $read : h('p', { class: 'muted' }, 'A group needs at least three with a name and a full date before anything can be said about it.'),
+      const live = g.status === 'running' || g.status === 'checking'; // a search at work shows on top; a stopped one (paused too) waits at the bottom
+      fill($body,
+        live ? statusCard(g, id, () => { if (location.hash === `#/research?id=${id}` && $body.isConnected) resultsView(id, $body); }, true) : null,
+        h('div', { class: 'rs-title' }, h('div', { class: 'simname' }, g.category), h('div', { class: 'muted small' }, `${plural(s.size, one, many)} counted, against ${fmtN(s.rest)} others in your vault.`)),
+        s.size >= 3 ? $list : h('p', { class: 'muted' }, 'A group needs at least three with a name and a full date before anything can be said about it.'),
+        s.size >= 3 ? $explain : null,
         h('div', { class: 'gridbar' }, h('div', { class: 'summary rhead' }, 'The Charts'), size.node), // the size control sits with its grid: the title fills the top row
         on.length + vaultOn.length ? $grid : h('p', { class: 'muted' }, 'Nobody is ticked. Tap Change Who Is In.'),
         on.length ? $saveAll : null,
+        // The search's housekeeping, out of the way (owner 2026-11-23: "that stuff at the top seems out of place").
+        h('div', { class: 'summary rhead' }, 'This Search'),
+        !live ? statusCard(g, id, () => { if (location.hash === `#/research?id=${id}` && $body.isConnected) resultsView(id, $body); }, true) : null,
+        g.status === 'done' && g.closed ? h('button', { type: 'button', class: 'btn btn-block', onclick: async () => { count('research.more'); try { await send(`/api/research/${id}/more`, 'POST', { reopen: true }); go(`#/research?id=${id}&view=who`); } catch (err) { toast(err.message, true); } } }, 'Find More or Check the Dates') : null,
+        h('a', { class: 'btn btn-block', href: `#/research?id=${id}&view=who`, onclick: () => count('research.change_who') }, `Change Who Is In (${on.length + vaultOn.length} of ${g.people.length + g.vault.length})`),
+        h('div', { class: 'muted small' }, `${fmtN(s.online)} found online${s.from_vault ? `, ${fmtN(s.size - s.online)} from your vault` : ''}.${left ? ` ${left[0].toUpperCase()}${left.slice(1)}.` : ''}${g.personal ? ' A personal category: only people who said it about themselves in public.' : ''}`),
         // Every position counted one by one against the vault: kept, folded away (owner 2026-11-23: "maybe that's useful in some cases").
         s.size >= 3 ? h('details', { class: 'rs-every', ontoggle: (e) => { if (e.target.open) count('research.every_position'); } }, h('summary', { class: 'btn btn-block' }, 'Every Position Counted'), h('div', { class: 'qscreen rs-finds' }, groupFinds(s, { chartHref: hrefOf }))) : null,
         h('div', { class: 'muted small' }, `The search cost ${money(g.usd)} · ${g.rounds} round${g.rounds === 1 ? '' : 's'}, ${g.searches} web search${g.searches === 1 ? '' : 'es'} · ${whenOf(g.at)}${g.stop && g.status === 'done' ? ` · ${g.stop}` : ''}`),
-        g.status === 'done' && g.closed ? h('button', { type: 'button', class: 'btn btn-block', onclick: async () => { count('research.more'); try { await send(`/api/research/${id}/more`, 'POST', { reopen: true }); go(`#/research?id=${id}&view=who`); } catch (err) { toast(err.message, true); } } }, 'Find More or Check the Dates') : null,
         holdButton('Hold to Remove From Past Research', async () => {
           try { await api(`/api/research/${id}`, { method: 'DELETE' }); count('research.past_remove'); toast('Removed from Past Research'); swap('#/research'); } catch (err) { toast(err.message, true); }
         }));
