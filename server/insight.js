@@ -7,7 +7,9 @@
 //         life paths, pillar, the mind and emotion centers of every numeroscope), anywhere in the chart, or many
 //         times in one chart; a chart heavy with one family ("9s": 9, 18/9, 27/9 ...) or with numbers that have a
 //         digit in them ("a 4 in it": 4, 40/4, 44/8, 14/5).
-// COMBINATIONS (owner 2026-11-23: "a certain number combination in the center, or numbers nearby each other ...
+// COMBINATIONS: two numbers CLOSE TOGETHER (a diamond's two parts, a center's main and sub vibration, a center and
+//         the auras beside it) or BOTH PRIMARY (day, life path, life expression, the names); never two far apart.
+//         (owner 2026-11-23: "a certain number combination in the center, or numbers nearby each other ...
 //         day and first name 8 and 15/6"; then, on mass shooters, "some sort of 4 combined with 9"): the two numbers
 //         that make each diamond or center (`PARTS`), in every chart. 1 to 18 stay as they are, above counts as its
 //         digit (26/8 -> 8), either way round. Read at three depths, because the owner sees "some sort of 4": the
@@ -51,6 +53,9 @@ const sideNum = (s) => Number(s[0] === 'f' ? s.slice(1) : s);
 const sideFam = (s) => ds(sideNum(s));
 const order = (x, y) => (sideFam(x) - sideFam(y) || sideNum(x) - sideNum(y) || (x[0] === 'f') - (y[0] === 'f')) <= 0 ? [x, y] : [y, x];
 const sideHolds = (s, n) => (s[0] === 'f' ? ds(n) === Number(s.slice(1)) : comboNum(n) === Number(s));
+const NUMEROSCOPES = ['name', 'vocation', 'personality', 'outer', 'inner'];
+const CHART_WORD = { name: 'Name Chart', vocation: 'Vocation Chart', personality: 'Personality Chart', outer: 'Outer Psyche', inner: 'Inner Psyche' };
+const PRIMARY = ['essence.day', 'essence.littleLp', 'name.le', 'name.first', 'name.middle', 'name.last'];
 // Every diamond or center of one person: [{ spot, x, y }] with the two parts as the chart holds them.
 function diamondsOf(values) {
   const at = new Map();
@@ -64,6 +69,17 @@ function diamondsOf(values) {
     const side = (p) => at.get(p.includes('.') ? p : `${v.chart}.${p}`) || [];
     for (const x of side(parts[0])) for (const y of side(parts[1])) out.push({ spot, x, y });
   }
+  // The owner's rule (2026-11-23, Brenton Tarrant's chart: the public aura 12/3 beside the mind center 4 "could be
+  // considered a 12/3 combined with a 4 ... because they're right next to each other"): two numbers are a
+  // combination when they sit CLOSE TOGETHER, or when both are PRIMARY positions. Never two that are far apart
+  // (a mind center with the personality number is no combination).
+  // Close together: a center and each aura beside it, in every numeroscope.
+  for (const chart of NUMEROSCOPES) for (const [center, auras, label] of [['heart', ['upperLeft', 'upperRight'], 'Mind Center and the Auras Beside It'], ['solar', ['lowerLeft', 'lowerRight'], 'Emotion Center and the Auras Beside It']]) {
+    for (const x of at.get(`${chart}.${center}`) || []) for (const aura of auras) for (const y of at.get(`${chart}.${aura}`) || []) out.push({ spot: `${chart}.${center}`, x, y, label: `${CHART_WORD[chart]} ${label}` });
+  }
+  // Primary positions, any two of them: the day, the life path, the life expression and the names.
+  const primary = PRIMARY.map((k) => [k, at.get(k) || []]);
+  for (let i = 0; i < primary.length; i++) for (let j = i + 1; j < primary.length; j++) for (const x of primary[i][1]) for (const y of primary[j][1]) out.push({ spot: primary[i][0], x, y, label: 'Primary Positions (Day, Life Path, Life Expression, Names)' });
   return out;
 }
 // The readings of one pair, from exact to loose: "13|18", "13|f9", "f4|18", "f4|f9".
@@ -218,7 +234,10 @@ export function groupInsights(db, { ids = [], extra = [], themes = [], randomGro
   }
   heavy.sort((a, b) => a.p - b.p);
   const heavyKept = []; for (const h of heavy) if (!heavyKept.some((x) => x.d === h.d)) heavyKept.push(h); // the same digit as a family and as "in it" is one card
-  out.expand = choose([...numbersKept, ...heavyKept].sort((a, b) => Number(b.solid) - Number(a.solid) || a.p - b.p), 4);
+  // Two numbers that are both somewhere in a chart are NOT a combination (the owner's rule: a combination is close
+  // together or both primary). It is a fact about the whole chart, so it sits here: at most two such cards.
+  const together = shown('together').map((f) => ({ key: `together:${f.r.a}+${f.r.b}`, kind: 'together', a: f.r.a, b: f.r.b, big: `${fmt(f.r.a)} & ${fmt(f.r.b)}`, head: 'Both Somewhere in the Chart', count: `${f.a} of ${n} charts`, detail: 'Each in the chart, not side by side: not a combination.', ...base(f) })).sort((a, b) => a.p - b.p).slice(0, 2);
+  out.expand = choose([...numbersKept, ...heavyKept, ...together].sort((a, b) => Number(b.solid) - Number(a.solid) || a.p - b.p), 4);
 
   // ---- COMBINATIONS ----
   const combos = [];
@@ -226,12 +245,11 @@ export function groupInsights(db, { ids = [], extra = [], themes = [], randomGro
     const r = f.r, [sa, sb] = r.pair.split('|');
     const card = { kind: 'combo', pair: r.pair, a: sideNum(sa), b: sideNum(sb), fam: `${sideFam(sa)}|${sideFam(sb)}`, big: pairText(r.pair), ...base(f) };
     {
-      const where = new Map(); for (const i of inGroup(r)) for (const c of people[i].diamonds) if (pairKeys(c.x, c.y).includes(r.pair)) where.set(c.spot, (where.get(c.spot) || 0) + 1);
-      const top = [...where].sort((x, y) => y[1] - x[1]).slice(0, 2).map(([spot]) => positionName(...spot.split('.')));
-      combos.push({ ...card, key: `comboAny:${r.pair}`, head: 'Beside Each Other in a Diamond or Center', count: `${f.a} of ${n} charts`, detail: `Mostly the ${top.join(' and the ')}.` });
+      const where = new Map(); for (const i of inGroup(r)) for (const c of people[i].diamonds) if (pairKeys(c.x, c.y).includes(r.pair)) { const w = c.label || positionName(...c.spot.split('.')); where.set(w, (where.get(w) || 0) + 1); }
+      const top = [...where].sort((x, y) => y[1] - x[1]).slice(0, 2).map(([w]) => w);
+      combos.push({ ...card, key: `comboAny:${r.pair}`, head: 'Close Together or Both Primary', count: `${f.a} of ${n} charts`, detail: `Mostly the ${top.join(' and the ')}.` });
     }
   }
-  for (const f of shown('together')) combos.push({ key: `together:${f.r.a}+${f.r.b}`, kind: 'together', a: f.r.a, b: f.r.b, fam: `t${f.r.a}|${f.r.b}`, big: `${fmt(f.r.a)} & ${fmt(f.r.b)}`, head: 'Both in the Same Chart', count: `${f.a} of ${n} charts`, detail: 'Each somewhere in the chart, not necessarily side by side.', ...base(f) });
   combos.sort((x, y) => Number(y.solid) - Number(x.solid) || x.p - y.p);
   const combosKept = []; for (const c of combos) if (!combosKept.some((x) => x.fam === c.fam)) combosKept.push(c); // one card per pair of families: its strongest reading
   out.combos = choose(combosKept, 4);

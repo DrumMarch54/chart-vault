@@ -290,6 +290,13 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - The blind search also reads a number ANYWHERE in the chart and MANY TIMES in one chart, two numbers BOTH in a chart
   ("13/4 & 16/7"), and each combination at three depths: exact (13/4 + 18/9), one side a family (13/4 + Any 9), both
   families (Any 4 + Any 9). Five kinds of search: Solid = fewer than 1 in 100 random groups (`SOLID` 0.01).
+- WHAT A COMBINATION IS (the owner's rule, 2026-11-23, on Brenton Tarrant's chart: public aura 12/3 beside mind center
+  4 "could be considered a 12/3 combined with a 4 ... they're right next to each other"; a mind center with the
+  personality number is NOT one, "those are distant apart"): two numbers CLOSE TOGETHER (a diamond's two parts, a
+  center's main and sub vibration, a center and each aura beside it) or BOTH PRIMARY (day, life path, life expression,
+  the names: `PRIMARY`). `diamondsOf` in insight.js is the one list. Two numbers merely both in a chart are an Expand
+  card ("Both Somewhere in the Chart"), never a combination. The search knows nothing of what the owner says in chat:
+  the same rules run on every group.
 - COMBINATIONS (owner 2026-11-23): the two numbers of every diamond and center (`PARTS`), every chart; 1 to 18 stay
   as they are, above counts as its digit (26/8 -> 8), either way round: "8 + 15/6". In one spot ("As Day + First
   Name") or anywhere; the pair in a spot and anywhere is ONE test against luck, never two.
