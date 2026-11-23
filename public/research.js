@@ -11,7 +11,7 @@
   'use strict';
   const USAGE_LABELS = {
     'screen.research': 'Research a Group', 'home.research': 'Research a Group (home)', 
-    'research.search': 'Research: search the web', 'research.more': 'Research: keep going or search for more', 'research.angle': 'Research: search from a suggested angle', 'research.angle_own': 'Research: search from my own angle', 'research.check': 'Research: Check the Dates', 'research.done': 'Research: What Next? Done', 'research.past_open': 'Research: open a past research',
+    'research.search': 'Research: search the web', 'research.more': 'Research: keep going or search for more', 'research.angle': 'Research: search from a suggested angle', 'research.angle_own': 'Research: search from my own angle', 'research.check': 'Research: Check the Dates', 'research.done': 'Research: What Next? Done', 'research.auto': 'Research: Search Everything', 'research.add_person': 'Research: add someone yourself', 'research.past_open': 'Research: open a past research',
     'research.past_remove': 'Research: remove a past research', 'research.tick': 'Research: tick or untick someone', 'research.show': 'Research: Show Charts and Patterns',
     'research.change_who': 'Research: Change Who Is In', 'research.open_person': 'Research: open a person', 'research.name_now': 'Research: Birth Name or Name Now',
     'research.fix': 'Research: keep a fixed name or date', 'research.save': 'Research: Save to Vault', 'research.save_all': 'Research: Save All to Vault',
@@ -48,7 +48,7 @@
         if (busy) return;
         count('research.search');
         busy = true; $go.disabled = true; $go.textContent = 'Starting…';
-        try { const r = await send('/api/research', 'POST', { query: q }); go(`#/research?id=${r.id}&view=who`); }
+        try { const r = await send('/api/research', 'POST', { query: q }); if (r.existing) toast('You already have this group. Opening it: What Next? finds more.'); go(`#/research?id=${r.id}&view=who`); }
         catch (err) { fail($out, err instanceof TypeError ? new Error('The connection dropped. Look in Past Research below: if the search is there, it started; if not, tap Search again.') : err); pastList(); }
         busy = false; $go.disabled = false; $go.textContent = 'Search';
       };
@@ -81,13 +81,14 @@
       const each = g.cost ? money(g.cost.round_usd) : 'a few cents';
       const more = async () => {
         count('research.more');
-        try { await send(`/api/research/${id}/more`, 'POST'); redraw(); } catch (err) { toast(err.message, true); }
+        try { await send(`/api/research/${id}/more`, 'POST', { keep: g.status !== 'failed' }); redraw(); } catch (err) { toast(err.message, true); }
       };
       const moreBtn = (label) => h('button', { type: 'button', class: 'btn btn-block', onclick: more }, label);
       if (g.status === 'running') {
         const mine = ++watch;
         setTimeout(() => { if (mine === watch && location.hash.includes(`id=${id}`)) redraw(); }, 4000);
         return h('div', { class: 'card stack rs-status' }, h('b', {}, `Searching… round ${g.rounds + 1}`),
+          g.angle || g.auto ? h('div', { class: 'small' }, `${g.auto ? 'Searching everything' : 'One angle'}${g.angle ? `: now “${g.angle}”` : ': the plain search first'}`) : null,
           h('div', { class: 'muted' }, `${g.people.length} found so far · ${money(g.usd)} spent. A round takes a minute or two. You can leave: it keeps going, and it is kept in Past Research.`));
       }
       watch++;
@@ -118,19 +119,38 @@
       const $own = h('input', { type: 'text', placeholder: 'Or type your own angle…', autocomplete: 'off', enterkeyhint: 'search', maxlength: 60 });
       const ownGo = () => { const a = $own.value.trim(); if (!a) { toast('Type an angle first.', true); $own.focus(); return; } post('more', { angle: a }, 'research.angle_own'); };
       $own.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); ownGo(); } });
+      // Add someone the search missed, by hand: the name and the date, like on a chart.
+      const box = (ph, attrs = {}) => h('input', { type: 'text', placeholder: ph, autocomplete: 'off', ...attrs });
+      const $name = box('Full birth name', { autocapitalize: 'words', spellcheck: 'false', maxlength: 160 });
+      const $d = box('day', { inputmode: 'numeric', maxlength: 2 }), $m = box('month', { inputmode: 'numeric', maxlength: 2 }), $y = box('year', { inputmode: 'numeric', maxlength: 4 });
+      const addOne = () => {
+        const name = $name.value.trim(), d = Number($d.value), m = Number($m.value), y = Number($y.value);
+        if (!name) { toast('Type the name first.', true); $name.focus(); return; }
+        if (!(d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 1000)) { toast('Fill in the whole birth date: day, month, four-digit year.', true); return; }
+        post('person', { known_as: name, birth_name: name, birth_date: `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}` }, 'research.add_person');
+      };
+      let n = 0;
+      const title = (t) => h('div', { class: 'rs-next-title' }, `${++n}. ${t}`);
       return h('div', { class: 'card stack rs-status rs-next' },
         h('div', { class: 'rs-next-head' }, 'What Next?'),
-        h('div', { class: 'muted' }, `${g.stop || 'The search stopped.'} ${plural(g.people.length, 'found', 'found')} in ${g.rounds} round${g.rounds === 1 ? '' : 's'} for ${money(g.usd)}.`.replace(/(\d[\d,]*) found found/, '$1 found')),
-        h('div', { class: 'rs-next-title' }, '1. Search From Another Angle'),
-        h('div', { class: 'muted small' }, 'A narrower slice of the same group often turns up people the plain search missed.'),
+        h('div', { class: 'muted' }, `${g.stop || 'The search stopped.'} ${fmtN(g.people.length)} found in ${g.rounds} round${g.rounds === 1 ? '' : 's'} for ${money(g.usd)}.`),
+        title('Find More'),
+        h('button', { type: 'button', class: 'btn-primary btn-block', onclick: () => post('more', { auto: true }, 'research.auto') }, 'Search Everything'),
+        h('div', { class: 'muted small' }, `Keeps going by itself: the plain search, then one angle after another, until three ways in a row find nobody new. About ${each} a round. It stops and asks you at every $1.`),
+        h('button', { type: 'button', class: 'btn btn-block', onclick: () => post('more', {}, 'research.more') }, 'One More Plain Search'),
+        (g.angles || []).length ? h('div', { class: 'muted small' }, 'Or one angle only:') : null,
         ...(g.angles || []).map(angle),
         h('div', { class: 'row', style: 'flex-wrap:nowrap' }, $own, h('button', { type: 'button', class: 'btn', onclick: ownGo }, 'Go')),
         (g.tried || []).length ? h('div', { class: 'muted small' }, `Already tried: ${g.tried.join(', ')}`) : null,
-        open ? h('div', { class: 'rs-next-title' }, '2. Check the Dates') : null,
+        open ? title('Check the Dates') : null,
         open ? h('div', { class: 'muted small' }, `${open} ${open === 1 ? 'person has a' : 'people have a'} birth date not confirmed on a web page: the AI wrote it from what it already knew, or found none. It looks each one up on a page, fills in missing ones and corrects any that are wrong.`) : null,
         open ? h('button', { type: 'button', class: 'btn btn-block', onclick: () => post('check', {}, 'research.check') }, `Check ${open} Date${open === 1 ? '' : 's'} (about ${money(open * (g.check_each || 0.012))})`) : null,
-        h('div', { class: 'rs-next-title' }, `${open ? 3 : 2}. Done`),
-        h('button', { type: 'button', class: 'btn-primary btn-block', onclick: () => post('close', {}, 'research.done') }, 'Done: Show What I Have'));
+        title('Add Someone Yourself'),
+        h('div', { class: 'muted small' }, 'Someone the search missed: type the birth name and birth date. Free.'),
+        $name, h('div', { class: 'row lookup-fields' }, $d, $m, $y),
+        h('button', { type: 'button', class: 'btn btn-block', onclick: addOne }, 'Add to This Group'),
+        title('Done'),
+        h('button', { type: 'button', class: 'btn btn-block', onclick: () => post('close', {}, 'research.done') }, 'Done: Hide These Choices'));
     }
 
     // ---------- screen 2: who it found ----------
@@ -164,7 +184,7 @@
       ], [
         p.vault ? mark('In Your Vault', 'ok') : null,
         !p.drawable ? mark('No Date: Cannot Be Counted', 'warn') : !p.checked && !p.fixed ? mark(p.check_failed ? 'No Page Found for the Date' : 'Date Not Confirmed', 'warn') : p.was ? mark('Date Corrected', 'ok') : p.confirmed_later ? mark('Date Confirmed', 'ok') : null,
-        p.fixed ? mark('Fixed by You') : null,
+        p.added ? mark('Added by You') : p.fixed ? mark('Fixed by You') : null,
       ].filter(Boolean));
       label();
       $show.onclick = async () => { count('research.show'); $show.disabled = true; await store(); swap(`#/research?id=${id}`); };

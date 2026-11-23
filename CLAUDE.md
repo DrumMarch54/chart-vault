@@ -256,6 +256,11 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - Public figures only. A PERSONAL category (gender identity, sexual orientation, health, religion ...; the model's flag OR
   the `PERSONAL` words) lists only people who said it themselves, each with a page the search returned; the rest are
   dropped and counted. A date with no such page stays but is marked Not Checked Online. Never loosen either.
+- Growing a group (owner 2026-11-23: "we need a much bigger database ... tie up all the loose ends"): What Next? always
+  offers Search Everything (`auto`: the plain search, then angle after angle by itself, until 3 ways in a row find
+  nobody new; asks at every $1), One More Plain Search, one angle, Add Someone Yourself (`addPerson`, free) and Check
+  the Dates. A category typed again OPENS the research that holds it (`findResearch`), never a twin. Up to 1,500
+  people. An old research (no angles stored) gets every option too: test a new option on research #1's shape.
 - What Next? (owner 2026-11-23: "give me a pop-up ... and just give me the options"): when a search stops, a card says
   why and offers every choice with its cost: Search From Another Angle (three the AI suggests each round, or the
   owner's own; `ANGLE:` in the round, `tried` kept), Check the Dates (`checkDates`: every date with no page from the

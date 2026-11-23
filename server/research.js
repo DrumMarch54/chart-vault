@@ -29,8 +29,9 @@ const ROUND = 30;
 const ROUND_SEARCHES = 14;
 const ROUND_GUESS_USD = 0.17; // the first real round, 2026-11-23: 14 searches, $0.17
 const DRY = 5;
-const MAX_ROUNDS = 12;
-const MAX_PEOPLE = 300;
+const MAX_ROUNDS = 80;     // the money limit is the real brake: it asks at every dollar
+const MAX_PEOPLE = 1500;   // owner 2026-11-23: "we need a much bigger database"
+const DRY_WAYS = 3;        // Search Everything stops after this many ways in a row found nobody new
 export const LIMIT_USD = 1;
 const SUMMARY_GUESS_USD = 0.12;
 const MAX_QUERY = 200;
@@ -194,17 +195,49 @@ export function startResearch(db, query, { build = null, log = () => {} } = {}) 
   return id;
 }
 // "Keep Going": the owner allows another dollar (or resumes a search the restart cut short).
-export function moreResearch(db, id, { log = () => {}, angle = '' } = {}) {
+// More of a group that already exists. `angle` = one narrower slice; `auto` = Search Everything: the plain search, then
+// every suggested angle in turn, until DRY_WAYS ways in a row find nobody new; `keep` = carry on exactly as it was
+// (after the money stop, or a restart); none of them = the plain search once more. Each call allows one more dollar.
+export function moreResearch(db, id, { log = () => {}, angle = '', auto = false, keep = false } = {}) {
   const r = loadResult(db, id);
   if (!r) throw new AiError('That research is gone.');
   if (r.status === 'running' || r.status === 'checking') return;
   const a = clean(angle, 60);
-  if (a) { r.angle = a; r.tried = [...new Set([...(r.tried || []), a])]; r.angles = (r.angles || []).filter((x) => !sameName(x, a)); }
+  if (a) { r.angle = a; r.auto = false; r.tried = [...new Set([...(r.tried || []), a])]; r.angles = (r.angles || []).filter((x) => !sameName(x, a)); }
+  else if (auto) { r.auto = true; r.angle = ''; r.dry_ways = 0; }
+  else if (!keep) { r.angle = ''; r.auto = false; }
   r.closed = false;
   r.limit = round(Math.max(r.limit || LIMIT_USD, r.usd) + LIMIT_USD);
   r.status = 'running'; r.stop = '';
   saveResult(db, id, r);
   runRounds(db, id, log);
+}
+// The owner adds someone the search missed (name and date typed by hand): in the group like anyone found online.
+export function addPerson(db, id, body) {
+  const r = loadResult(db, id);
+  if (!r) throw new AiError('That research is gone.');
+  const b = body || {};
+  const known = clean(b.known_as, 120), birth = clean(b.birth_name, 160) || known;
+  if (!known && !birth) throw new AiError('Type a name first.');
+  const date = b.birth_date ? validDate(b.birth_date) : '';
+  if (b.birth_date && !date) throw new AiError('That is not a whole date. Fill in the day, the month and a four-digit year.');
+  const kind = b.kind === 'business' ? 'business' : 'person';
+  const p = { kind, known_as: known || birth, birth_name: birth, chart_name: chartName(birth, kind), birth_date: date, name_now: '', who: '', why: 'Added by you', member_source: null, name_source: null, date_source: null, checked: false, sure: true, fixed: true, added: true };
+  if (r.people.some((x) => isSame(x, p))) throw new AiError(`${p.known_as} is already in this group.`);
+  r.people.push(p);
+  saveResult(db, id, r);
+  return r.people.length - 1;
+}
+// The same category asked again: the research that already holds it (so the owner adds to it, never starts a twin).
+export function findResearch(db, query) {
+  const q = clean(query, MAX_QUERY);
+  if (!q) return null;
+  for (const row of db.prepare('SELECT id, query, category, result FROM research ORDER BY id DESC').all()) {
+    const r = parse(row.result, {});
+    if (r.status === 'failed') continue;
+    if (sameName(row.query, q) || sameName(row.category, q)) return row.id;
+  }
+  return null;
 }
 async function runRounds(db, id, log) {
   running++;
@@ -240,11 +273,20 @@ async function runRounds(db, id, log) {
       if (got.angles.length) now.angles = got.angles.filter((a) => !(now.tried || []).some((t) => sameName(t, a)));
       now.dropped += got.dropped; now.usd = round(now.usd + got.usd); now.seconds = round(now.seconds + got.seconds); now.calls += got.calls; now.searches += got.searches; now.rounds += 1;
       const dry = unique.length < DRY;
-      if (dry) { now.status = 'done'; now.stop = now.rounds === 1 && !unique.length ? 'Nobody was found.' : now.angle ? `No more new ones turned up for “${now.angle}”.` : 'No more new ones turned up from this angle.'; }
+      // Search Everything: a dry way moves on to the next suggested angle by itself, until several in a row are dry.
+      let moved = false;
+      if (!dry) now.dry_ways = 0;
+      if (dry && now.auto) {
+        now.dry_ways = (now.dry_ways || 0) + 1;
+        const next = (now.angles || []).find((a) => !(now.tried || []).some((t) => sameName(t, a)));
+        if (now.dry_ways >= DRY_WAYS) { now.status = 'done'; now.auto = false; now.stop = `${DRY_WAYS} ways of searching in a row found nobody new.`; }
+        else if (!next) { now.status = 'done'; now.auto = false; now.stop = 'Every suggested angle has been tried.'; }
+        else { now.angle = next; now.tried = [...(now.tried || []), next]; moved = true; }
+      } else if (dry) { now.status = 'done'; now.stop = now.rounds === 1 && !unique.length ? 'Nobody was found.' : now.angle ? `No more new ones turned up for “${now.angle}”.` : 'No more new ones turned up searching the plain way.'; }
       saveResult(db, id, now);
       log(`research #${id} "${now.category}" round ${now.rounds}: ${unique.length} new, ${now.people.length} in all, $${now.usd}`);
       rememberResearch({ id, query: now.query, round: now.rounds, category: now.category, personal: now.personal, fresh: unique.length, found: now.people.length, dropped: now.dropped, unchecked: now.people.filter((p) => !p.checked).length, kinds: now.vault_kinds.join(', '), searches: got.searches, usd: got.usd, note: got.note });
-      if (dry) break;
+      if (dry && !moved) break;
     }
     // The summary is written on the server straight away, so a phone that was away still finds it ready.
     const end = loadResult(db, id);
@@ -399,7 +441,7 @@ export function getResearch(db, id) {
   const vault = vaultMembers(db, r.vault_kinds || []).filter((v) => !taken.has(v.id)).map((v) => ({ ...v, on: !offV.has(v.id) }));
   const stored = parse(row.summary, null);
   const summary = stored && stored.v === READING_V ? stored : null; // an older kind of summary is not shown: the reading is written anew
-  return { id: row.id, query: r.query, category: r.category, status: r.status || 'done', stop: r.stop || '', closed: !!r.closed, angles: r.angles || [], tried: r.tried || [], angle: r.angle || '', checking: r.checking || null, rounds: r.rounds ?? 1, limit: r.limit || LIMIT_USD, personal: !!r.personal, dropped: r.dropped || 0, note: r.note || '',
+  return { id: row.id, query: r.query, category: r.category, status: r.status || 'done', stop: r.stop || '', closed: !!r.closed, auto: !!r.auto, angles: r.angles || [], tried: r.tried || [], angle: r.angle || '', checking: r.checking || null, rounds: r.rounds ?? 1, limit: r.limit || LIMIT_USD, personal: !!r.personal, dropped: r.dropped || 0, note: r.note || '',
     vault_kinds: parseWho(r.vault_kinds || []).map((k) => k.label), people, vault, summary,
     usd: r.usd || 0, seconds: r.seconds || 0, searches: r.searches || 0, at: row.created_at, build: row.build };
 }

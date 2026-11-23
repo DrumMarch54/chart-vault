@@ -22,7 +22,7 @@ import { aiSettings, setAiSettings, spendState, pendingWarning, markWarningSeen,
 import { readingFor, writeReading, answerQuestion, deleteReadings, readingEstimate, readingChoices } from './reading.js';
 import { askVault } from './ask.js';
 import { lookupPerson, vaultMatches, rememberLookup, storeLookup, pastLookups, pastLookup, deleteLookup } from './lookup.js';
-import { startResearch, moreResearch, checkDates, closeResearch, reopenResearch, CHECK_USD_EACH, recoverResearch, pastResearch, getResearch, deleteResearch, setOff, fixPerson, researchShares, writeSummary, researchCost, summaryEstimate, researchRunning } from './research.js';
+import { startResearch, moreResearch, checkDates, closeResearch, reopenResearch, addPerson, findResearch, CHECK_USD_EACH, recoverResearch, pastResearch, getResearch, deleteResearch, setOff, fixPerson, researchShares, writeSummary, researchCost, summaryEstimate, researchRunning } from './research.js';
 import { factsFor } from './facts.js';
 import { meaningFor, countWith } from './meaning.js';
 import { findInDoc, docWindow, findNumberSection, findPhrase } from './doc.js';
@@ -548,12 +548,19 @@ export function createApp(db, { log = console.log } = {}) {
   // Starts the search on the server and answers at once: the phone watches it (GET /api/research/:id), so leaving
   // the app or a dropped connection loses nothing.
   app.post('/api/research', express.json({ limit: '4kb' }), (req, res, next) => {
+    // A category the owner already researched opens that research (to add to it) instead of starting a twin.
+    const have = (req.body || {}).fresh ? null : findResearch(db, (req.body || {}).query);
+    if (have) return res.json({ id: have, existing: true, spend: spendState() });
     try { res.json({ id: startResearch(db, (req.body || {}).query, { build: COMMIT, log }), spend: spendState() }); } catch (err) { aiFail(res, next)(err); }
   });
   app.post('/api/research/:id/more', express.json({ limit: '2kb' }), (req, res, next) => {
     const id = researchId(req, res); if (id === null) return;
     const b = req.body || {};
-    try { if (b.reopen) reopenResearch(db, id); else moreResearch(db, id, { log, angle: String(b.angle || '') }); res.json({ ok: true }); } catch (err) { aiFail(res, next)(err); }
+    try { if (b.reopen) reopenResearch(db, id); else moreResearch(db, id, { log, angle: String(b.angle || ''), auto: !!b.auto, keep: !!b.keep }); res.json({ ok: true }); } catch (err) { aiFail(res, next)(err); }
+  });
+  app.post('/api/research/:id/person', express.json({ limit: '4kb' }), (req, res, next) => {
+    const id = researchId(req, res); if (id === null) return;
+    try { res.json({ ref: addPerson(db, id, req.body || {}) }); } catch (err) { aiFail(res, next)(err); }
   });
   app.post('/api/research/:id/check', (req, res, next) => {
     const id = researchId(req, res); if (id === null) return;
