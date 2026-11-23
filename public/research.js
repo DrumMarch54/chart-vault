@@ -103,7 +103,7 @@
           h('div', { class: 'muted' }, `Each one is looked up on a web page. ${c.confirmed || 0} confirmed${c.changed ? `, ${c.changed} corrected` : ''} so far · ${money(c.usd || 0)} spent. You can leave: it keeps going.`));
       }
       // On the results the choices are one tap away, never a tall card above the reading.
-      if (g.status === 'done' && !g.closed && compact) return h('a', { class: 'btn btn-block', href: `#/research?id=${id}&view=who`, onclick: () => count('research.more') }, 'What Next? Find More or Check the Dates');
+      if (g.status === 'done' && !g.closed && compact) return h('a', { class: 'btn btn-block', href: `#/research?id=${id}&view=who`, onclick: () => count('research.more') }, 'Find More or Check the Dates');
       if (g.status === 'done' && !g.closed) return whatNext(g, id, redraw);
       return null;
     }
@@ -260,7 +260,7 @@
         fill($read, h('b', {}, 'Reading'),
           pending ? h('p', { class: 'muted', style: 'margin:0' }, 'Writing the reading… about 20 seconds.') : null,
           !pending && !any ? h('p', { class: 'muted', style: 'margin:0' }, 'Nothing leads in this group yet, so there is nothing to read. Nothing was spent. More charts will show more.') : null,
-          !pending && any && !sm ? h('button', { type: 'button', class: 'btn btn-block', onclick: write(false) }, `Write the Reading (${cost})`) : null,
+          !pending && any && (!sm || (!stale && !(sm.lines || []).length)) ? h('button', { type: 'button', class: 'btn btn-block', onclick: write(!!sm) }, `Write the Reading (${cost})`) : null,
           !pending && sm && !stale && sm.lines && sm.lines.length ? h('ul', { class: 'rs-lines' }, ...sm.lines.map((l) => h('li', {}, l))) : null,
           !pending && stale && any ? h('p', { class: 'muted small', style: 'margin:0' }, 'The group has changed since the reading was written.') : null,
           !pending && sm && any && (stale || (sm.lines && sm.lines.length)) ? h('button', { type: 'button', class: 'btn btn-block rs-again', onclick: write(true) }, stale ? `Write the Reading for This Group (${cost})` : `Write It Again (${cost})`) : null);
