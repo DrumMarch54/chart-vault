@@ -37,7 +37,7 @@ const searched = (urls) => [
   { type: 'web_search_tool_result', tool_use_id: 's1', content: urls.map((url) => ({ type: 'web_search_result', url, title: 'Page' })) },
 ];
 const person = (known_as, birth_name, birth_date, page, extra = {}) => ({ kind: 'person', known_as, birth_name, name_now: '', birth_date, who: 'Known', why: 'Belongs', member_source: page, name_source: page, date_source: page, sure: true, ...extra });
-const group = (input) => ({ type: 'tool_use', id: 'g1', name: 'give_group', input: { category: 'Test Group', personal: false, note: '', vault_kinds: [], ...input } });
+const group = (input) => ({ type: 'tool_use', id: 'g1', name: 'give_group', input: { category: 'Test Group', personal: false, note: '', vault_kinds: [], angles: [], ...input } });
 const reply = (content, searches = 2) => ({ content, stop_reason: 'tool_use', usage: { input_tokens: 1000, output_tokens: 100, server_tool_use: { web_search_requests: searches } } });
 
 // A vault of 12 charts with different names and dates: "the others".
@@ -173,6 +173,56 @@ test('it stops and asks before passing the money limit, and Keep Going carries o
   assert.equal(g.status, 'done');
   assert.equal(g.people.length, 8);
   assert.equal(g.limit > 1, true);
+  await call('DELETE', `/api/research/${r.body.id}`);
+});
+
+test('a search from another angle sends the angle and keeps the next suggestions', async () => {
+  script.push(reply([...searched([U('Linus')]), group({ angles: ['Video Game Makers', 'Women in Tech', 'Startup Founders'], people: [person('Ada Coder', 'Ada Coder', '1960-03-03', U('Linus'))] })]));
+  const r = await call('POST', '/api/research', { query: 'angle group' });
+  await settle();
+  let g = (await call('GET', `/api/research/${r.body.id}`)).body;
+  assert.equal(g.status, 'done');
+  assert.equal(g.closed, false, 'the What Next? card is up');
+  assert.deepEqual(g.angles, ['Video Game Makers', 'Women in Tech', 'Startup Founders']);
+  script.push(reply([...searched([U('Linus')]), group({ angles: ['Women in Tech', 'Arcade Pioneers'], people: [person('Game Maker', 'Game Maker', '1961-04-04', U('Linus'))] })]));
+  await call('POST', `/api/research/${r.body.id}/more`, { angle: 'Video Game Makers' });
+  await settle();
+  const last = requests.filter((q) => q.tools && q.tools.some((t) => t.name === 'give_group')).at(-1);
+  assert.match(last.messages[0].content, /ANGLE: Video Game Makers/);
+  assert.match(last.messages[0].content, /ANGLES ALREADY TRIED: Video Game Makers/);
+  g = (await call('GET', `/api/research/${r.body.id}`)).body;
+  assert.equal(g.people.at(-1).angle, 'Video Game Makers');
+  assert.deepEqual(g.tried, ['Video Game Makers']);
+  assert.deepEqual(g.angles, ['Women in Tech', 'Arcade Pioneers']);
+  assert.match(g.stop, /Video Game Makers/);
+  await call('POST', `/api/research/${r.body.id}/close`);
+  assert.equal((await call('GET', `/api/research/${r.body.id}`)).body.closed, true);
+  await call('DELETE', `/api/research/${r.body.id}`);
+});
+
+test('Check the Dates confirms, corrects with the old date kept, and leaves no-page ones marked', async () => {
+  const P = (n, d) => ({ ...person(n, n, d, ''), date_source: '', sure: false });
+  script.push(reply([...searched([U('Linus')]), group({ people: [P('Al One', '1950-01-01'), P('Bo Two', '1951-02-02'), P('Cy Three', '1952-03-03')] })]));
+  const r = await call('POST', '/api/research', { query: 'unchecked group' });
+  await settle();
+  let g = (await call('GET', `/api/research/${r.body.id}`)).body;
+  assert.equal(g.people.filter((p) => !p.checked).length, 3);
+  script.push({ content: [...searched([U('Al'), U('Bo')]), { type: 'tool_use', id: 'k', name: 'give_checks', input: { people: [
+    { ref: 0, date: '1950-01-01', date_source: U('Al'), birth_name: '', name_source: '' },
+    { ref: 1, date: '1951-02-09', date_source: U('Bo'), birth_name: '', name_source: '' },
+    { ref: 2, date: '1952-03-03', date_source: 'https://made-up.example/x', birth_name: '', name_source: '' },
+  ] } }], stop_reason: 'tool_use', usage: { input_tokens: 3000, output_tokens: 200, server_tool_use: { web_search_requests: 3 } } });
+  assert.equal((await call('POST', `/api/research/${r.body.id}/check`)).status, 200);
+  await settle();
+  g = (await call('GET', `/api/research/${r.body.id}`)).body;
+  assert.equal(g.status, 'done');
+  assert.equal(g.people[0].checked, true);
+  assert.equal(g.people[1].birth_date, '1951-02-09');
+  assert.equal(g.people[1].was.birth_date, '1951-02-02');
+  assert.equal(g.people[2].checked, false, 'a page the search never returned does not count');
+  assert.equal(g.people[2].check_failed, true);
+  assert.match(g.stop, /Checked 3 dates: 2 confirmed on a web page, 1 of them corrected, 1 with no page found/);
+  assert.equal((await call('POST', `/api/research/${r.body.id}/check`)).status, 400, 'nothing left to check');
   await call('DELETE', `/api/research/${r.body.id}`);
 });
 

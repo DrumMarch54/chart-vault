@@ -1080,3 +1080,8 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .gtitle { font-size: 18px; font-weight: 700; line-height: 1.25; }
 .gtheme { border: 2px solid var(--accent); }
 .rs-status { border: 2px solid var(--accent); }
+.rs-next { gap: 0; }
+.rs-next-head { font-size: 20px; font-weight: 700; }
+.rs-next-title { font-weight: 700; margin-top: 14px; }
+.rs-angle { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; min-height: 52px; padding: 8px 12px; border-radius: 12px; border: 0; background: var(--panel2); color: var(--text); font: inherit; text-align: left; }
+.rs-next input { min-width: 0; flex: 1; }

@@ -11,7 +11,7 @@
   'use strict';
   const USAGE_LABELS = {
     'screen.research': 'Research a Group', 'home.research': 'Research a Group (home)', 
-    'research.search': 'Research: search the web', 'research.more': 'Research: keep going or search for more', 'research.past_open': 'Research: open a past research',
+    'research.search': 'Research: search the web', 'research.more': 'Research: keep going or search for more', 'research.angle': 'Research: search from a suggested angle', 'research.angle_own': 'Research: search from my own angle', 'research.check': 'Research: Check the Dates', 'research.done': 'Research: What Next? Done', 'research.past_open': 'Research: open a past research',
     'research.past_remove': 'Research: remove a past research', 'research.tick': 'Research: tick or untick someone', 'research.show': 'Research: Show Charts and Patterns',
     'research.change_who': 'Research: Change Who Is In', 'research.open_person': 'Research: open a person', 'research.name_now': 'Research: Birth Name or Name Now',
     'research.fix': 'Research: keep a fixed name or date', 'research.save': 'Research: Save to Vault', 'research.save_all': 'Research: Save All to Vault',
@@ -109,7 +109,39 @@
         moreBtn('Keep Going (up to $1 More)'));
       if (g.status === 'interrupted') return h('div', { class: 'card stack rs-status' }, h('b', {}, 'The search was cut short'), h('div', { class: 'muted' }, `${g.stop} ${g.people.length} found for ${money(g.usd)}.`), moreBtn(`Keep Searching (about ${each} a round)`));
       if (g.status === 'failed') return h('div', { class: 'card stack rs-status' }, h('b', {}, 'The search failed'), h('p', { class: 'err', style: 'margin:0' }, g.stop || 'Nothing came back.'), moreBtn(`Try Again (about ${each})`));
+      if (g.status === 'checking') {
+        const mine = ++watch, c = g.checking || { total: 0, done: 0 };
+        setTimeout(() => { if (mine === watch && location.hash.includes(`id=${id}`)) redraw(); }, 4000);
+        return h('div', { class: 'card stack rs-status' }, h('b', {}, `Checking the dates… ${c.done} of ${c.total}`),
+          h('div', { class: 'muted' }, `Each one is looked up on a web page. ${c.confirmed || 0} confirmed${c.changed ? `, ${c.changed} corrected` : ''} so far · ${money(c.usd || 0)} spent. You can leave: it keeps going.`));
+      }
+      if (g.status === 'done' && !g.closed) return whatNext(g, id, redraw);
       return null;
+    }
+
+    // What Next? (owner 2026-11-23: "give me a pop-up stating what you want to do or what we could do, and just give me
+    // the options"): when a search stops, what happened and every choice with its cost; it stays until Done.
+    function whatNext(g, id, redraw) {
+      const each = g.cost ? money(g.cost.round_usd) : 'a few cents';
+      const open = g.people.filter((p) => !p.checked && !p.fixed && !p.check_failed).length;
+      const post = async (path, body, name) => { count(name); try { await send(`/api/research/${id}/${path}`, 'POST', body); redraw(); } catch (err) { toast(err.message, true); } };
+      const angle = (a) => h('button', { type: 'button', class: 'rs-angle', onclick: () => post('more', { angle: a }, 'research.angle') }, h('b', {}, a), h('span', { class: 'muted small' }, `about ${each} a round`));
+      const $own = h('input', { type: 'text', placeholder: 'Or type your own angle…', autocomplete: 'off', enterkeyhint: 'search', maxlength: 60 });
+      const ownGo = () => { const a = $own.value.trim(); if (!a) { toast('Type an angle first.', true); $own.focus(); return; } post('more', { angle: a }, 'research.angle_own'); };
+      $own.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); ownGo(); } });
+      return h('div', { class: 'card stack rs-status rs-next' },
+        h('div', { class: 'rs-next-head' }, 'What Next?'),
+        h('div', { class: 'muted' }, `${g.stop || 'The search stopped.'} ${plural(g.people.length, 'found', 'found')} in ${g.rounds} round${g.rounds === 1 ? '' : 's'} for ${money(g.usd)}.`.replace(/(\d[\d,]*) found found/, '$1 found')),
+        h('div', { class: 'rs-next-title' }, '1. Search From Another Angle'),
+        h('div', { class: 'muted small' }, 'A narrower slice of the same group often turns up people the plain search missed.'),
+        ...(g.angles || []).map(angle),
+        h('div', { class: 'row', style: 'flex-wrap:nowrap' }, $own, h('button', { type: 'button', class: 'btn', onclick: ownGo }, 'Go')),
+        (g.tried || []).length ? h('div', { class: 'muted small' }, `Already tried: ${g.tried.join(', ')}`) : null,
+        open ? h('div', { class: 'rs-next-title' }, '2. Check the Dates') : null,
+        open ? h('div', { class: 'muted small' }, `${open} ${open === 1 ? 'person has a' : 'people have a'} birth date not confirmed on a web page: the AI wrote it from what it already knew, or found none. It looks each one up on a page, fills in missing ones and corrects any that are wrong.`) : null,
+        open ? h('button', { type: 'button', class: 'btn btn-block', onclick: () => post('check', {}, 'research.check') }, `Check ${open} Date${open === 1 ? '' : 's'} (about ${money(open * (g.check_each || 0.012))})`) : null,
+        h('div', { class: 'rs-next-title' }, `${open ? 3 : 2}. Done`),
+        h('button', { type: 'button', class: 'btn-primary btn-block', onclick: () => post('close', {}, 'research.done') }, 'Done: Show What I Have'));
     }
 
     // ---------- screen 2: who it found ----------
@@ -142,7 +174,7 @@
         p.member_source ? `Found on ${p.member_source.site}` : p.date_source ? `Found on ${p.date_source.site}` : '',
       ], [
         p.vault ? mark('In Your Vault', 'ok') : null,
-        !p.drawable ? mark('No Date: Cannot Be Counted', 'warn') : !p.checked && !p.fixed ? mark('Not Checked Online', 'warn') : null,
+        !p.drawable ? mark('No Date: Cannot Be Counted', 'warn') : !p.checked && !p.fixed ? mark(p.check_failed ? 'No Page Found for the Date' : 'Date Not Confirmed', 'warn') : p.was ? mark('Date Corrected', 'ok') : p.confirmed_later ? mark('Date Confirmed', 'ok') : null,
         p.fixed ? mark('Fixed by You') : null,
       ].filter(Boolean));
       label();
@@ -154,7 +186,7 @@
           h('p', { class: 'muted', style: 'margin:0' }, `${plural(g.people.length, one, many)} found online${g.vault.length ? `, ${fmtN(g.vault.length)} more from your vault` : ''}. Untick anyone who does not belong, then show the charts.`),
           g.note ? h('p', { class: 'muted small', style: 'margin:0' }, g.note) : null,
           g.personal ? h('p', { class: 'lookup-warn small' }, `A personal category: only people who said it about themselves in public are listed, each with the page that says so.${g.dropped ? ` ${g.dropped} left out: no such page was found.` : ''}`) : null,
-          unchecked ? h('p', { class: 'lookup-warn small' }, `${unchecked} marked Not Checked Online: the date came from the AI's memory, not from a page it found. Tap the name on the next screen to check or fix it.`) : null),
+          unchecked ? h('p', { class: 'lookup-warn small' }, `${unchecked} marked Date Not Confirmed: the AI wrote the date from what it already knew, without opening a web page this time. Tap Check the Dates above, or tap a name on the next screen to fix it yourself.`) : null),
         g.people.length ? h('div', { class: 'summary rhead' }, 'Found Online') : g.status === 'running' ? null : h('p', { class: 'muted' }, 'Nobody was found. Go back and say it another way.'),
         g.people.length ? h('div', { class: 'card rs-list' }, ...g.people.map(personRow)) : null,
         g.vault.length ? h('div', { class: 'summary rhead' }, `From Your Vault: ${g.vault_kinds.join(', ')}`) : null,
@@ -181,7 +213,7 @@
           badge ? h('span', { class: `rs-badge ${badge[1]}` }, badge[0]) : null),
         h('div', { class: 'label' }, label));
       fill($grid,
-        ...on.map((p) => cell(p.known_as, `#/research?id=${id}&p=${p.ref}`, p.chart_name ? inputsOf(p) : null, p.vault ? ['In Vault', 'ok'] : !p.drawable ? ['No Date', 'warn'] : !p.checked && !p.fixed ? ['Not Checked', 'warn'] : null, () => count('research.open_person'))),
+        ...on.map((p) => cell(p.known_as, `#/research?id=${id}&p=${p.ref}`, p.chart_name ? inputsOf(p) : null, p.vault ? ['In Vault', 'ok'] : !p.drawable ? ['No Date', 'warn'] : !p.checked && !p.fixed ? ['Not Confirmed', 'warn'] : null, () => count('research.open_person'))),
         ...vaultOn.map((v) => cell(v.title, `#/chart/${v.id}`, v.inputs, ['In Vault', 'ok'], () => count('group.open_chart'))));
 
       // Save All: every ticked person found online that the vault does not have yet, one after the other.
@@ -249,7 +281,7 @@
         on.length ? $saveAll : null,
         s.size >= 3 ? h('div', { class: 'qscreen rs-finds' }, groupFinds(s, { chartHref: hrefOf })) : h('p', { class: 'muted' }, 'A group needs at least three with a name and a full date before anything can be said about it.'),
         h('div', { class: 'muted small' }, `The search cost ${money(g.usd)} · ${g.rounds} round${g.rounds === 1 ? '' : 's'}, ${g.searches} web search${g.searches === 1 ? '' : 'es'} · ${whenOf(g.at)}${g.stop && g.status === 'done' ? ` · ${g.stop}` : ''}`),
-        g.status === 'done' ? h('button', { type: 'button', class: 'btn btn-block', onclick: async () => { count('research.more'); try { await send(`/api/research/${id}/more`, 'POST'); go(`#/research?id=${id}&view=who`); } catch (err) { toast(err.message, true); } } }, `Search for More (about ${g.cost ? money(g.cost.round_usd) : 'a few cents'} a round)`) : null,
+        g.status === 'done' && g.closed ? h('button', { type: 'button', class: 'btn btn-block', onclick: async () => { count('research.more'); try { await send(`/api/research/${id}/more`, 'POST', { reopen: true }); window.scrollTo(0, 0); resultsView(id, $body); } catch (err) { toast(err.message, true); } } }, 'Find More or Check the Dates') : null,
         holdButton('Hold to Remove From Past Research', async () => {
           try { await api(`/api/research/${id}`, { method: 'DELETE' }); count('research.past_remove'); toast('Removed from Past Research'); swap('#/research'); } catch (err) { toast(err.message, true); }
         }));
@@ -323,7 +355,8 @@
             p.why ? h('div', {}, h('span', { class: 'muted small' }, `In ${g.category} because `), h('b', {}, p.why)) : null),
           p.name_now ? h('p', { class: 'muted small', style: 'margin:0' }, 'The patterns count the birth name. Name Now shows the chart of the name used today.') : null,
           !p.on ? h('p', { class: 'lookup-warn small' }, 'Taken out of this group: not counted in the patterns.') : null,
-          !p.drawable ? h('p', { class: 'lookup-warn small' }, 'No full date was found, so this chart cannot be counted in the patterns. Type the date below if you know it.') : !p.checked && !p.fixed ? h('p', { class: 'lookup-warn small' }, 'Not checked online: the date came from the AI\'s memory, not from a page it found. Check it before you rely on it.') : null,
+          !p.drawable ? h('p', { class: 'lookup-warn small' }, 'No full date was found, so this chart cannot be counted in the patterns. Type the date below if you know it.') : !p.checked && !p.fixed ? h('p', { class: 'lookup-warn small' }, p.check_failed ? 'No web page was found that gives this date. It is what the AI already knew. Check it before you rely on it, or fix it below.' : 'Date not confirmed: the AI wrote it from what it already knew, without opening a web page this time. Check the Dates (on the list screen) looks it up.') : null,
+          p.was ? h('p', { class: 'muted small', style: 'margin:0' }, `Corrected by Check the Dates.${p.was.birth_date ? ` The search first said ${longDate(p.was.birth_date) || p.was.birth_date}.` : ''}${p.was.birth_name ? ` The birth name was first given as ${p.was.birth_name}.` : ''}`) : null,
           p.fixed ? h('div', { class: 'muted small' }, 'The name or date was fixed by you.') : null,
           src('They belong, found on', p.member_source), src('Name found on', p.name_source), src('Date found on', p.date_source),
           h('div', { class: 'muted small' }, 'Wrong? Fix the name or date here; the chart redraws.'),

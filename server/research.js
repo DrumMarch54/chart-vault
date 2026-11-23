@@ -52,6 +52,8 @@ Sources: member_source, name_source and date_source are URLs taken from the sear
 why: a few words on why they belong ("Created Linux", "Came out as transgender in 2020").
 vault_kinds: the owner's vault already sorts its charts into these kinds: ${KINDS_LIST}. List the kinds that mean the SAME as the category (computer coders = field:tech). Only a kind that is the same group; otherwise an empty list. Never one for a personal category.
 category: the category as a short title in Title Case ("Computer Coders").
+angles: three short ways to find MORE members of this category after this round, each a narrower slice with plenty of public examples not yet found ("Startup founders", "Video game makers", "Tech people outside the US", "Women in tech", "Tech people born before 1950"). Title Case, a few words each. Never one already tried.
+When the message gives an ANGLE, every person you find must belong to the category AND fit that angle.
 When the message lists people ALREADY FOUND, find ${n} MORE who are not on that list: the next best known, then lesser known but still clearly public ones. Never repeat a listed one. If no more clear, public examples exist, give fewer or an empty list.
 Write in plain American English, short.`;
 
@@ -60,12 +62,13 @@ const GROUP_TOOL = {
   description: 'The group found: the examples of the category, the best known first. Call exactly once, after searching.',
   strict: true,
   input_schema: {
-    type: 'object', additionalProperties: false, required: ['category', 'personal', 'note', 'vault_kinds', 'people'],
+    type: 'object', additionalProperties: false, required: ['category', 'personal', 'note', 'vault_kinds', 'angles', 'people'],
     properties: {
       category: { type: 'string', description: 'The category as a short title in Title Case, like "Computer Coders".' },
       personal: { type: 'boolean', description: 'true when the category is about gender identity, sexual orientation, health, disability, religion, immigration status or being a victim.' },
       note: { type: 'string', description: 'One short sentence for the owner: a doubt about what was meant, or why fewer were found. Empty if nothing to say.' },
       vault_kinds: { type: 'array', items: { type: 'string' }, description: 'Kinds from the list that mean the same as the category, like "field:tech". Empty if none.' },
+      angles: { type: 'array', items: { type: 'string' }, description: 'Three narrower ways to find more members next time, like "Startup Founders".' },
       people: { type: 'array', items: {
         type: 'object', additionalProperties: false,
         required: ['kind', 'known_as', 'birth_name', 'name_now', 'birth_date', 'who', 'why', 'member_source', 'name_source', 'date_source', 'sure'],
@@ -118,9 +121,9 @@ export function researchCost(db) {
 }
 
 // One paid round: the web search for up to ROUND people, not repeating `known`. Returns what it found, cleaned.
-async function findRound(q, { known = [], personal = false, roundNo = 1 } = {}) {
+async function findRound(q, { known = [], personal = false, roundNo = 1, angle = '', tried = [] } = {}) {
   const n = ROUND;
-  const messages = [{ role: 'user', content: `The category: ${q}\nHow many to find: ${n}${known.length ? `\nALREADY FOUND (find others): ${known.join('; ')}` : ''}` }];
+  const messages = [{ role: 'user', content: `The category: ${q}${angle ? `\nANGLE: ${angle}` : ''}\nHow many to find: ${n}${known.length ? `\nALREADY FOUND (find others): ${known.join('; ')}` : ''}${tried.length ? `\nANGLES ALREADY TRIED: ${tried.join('; ')}` : ''}` }];
   const found = new Map();
   let usd = 0, seconds = 0, calls = 0, searches = 0, answer = null, nudged = false;
   const errors = [];
@@ -131,7 +134,7 @@ async function findRound(q, { known = [], personal = false, roundNo = 1 } = {}) 
       max_tokens: 2000 + n * 300, output_config: { effort: 'medium' }, system: systemFor(n),
       tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: ROUND_SEARCHES }, GROUP_TOOL],
       messages,
-    }, { estimateUsd: calls === 1 ? est : 0, what: `research "${q.slice(0, 40)}" round ${roundNo} call ${calls}` });
+    }, { estimateUsd: calls === 1 ? est : 0, what: `research "${q.slice(0, 40)}"${angle ? ` [${angle.slice(0, 30)}]` : ''} round ${roundNo} call ${calls}` });
     usd += r.usd; seconds += r.seconds;
     const msg = r.message;
     searches += (msg.usage && msg.usage.server_tool_use && msg.usage.server_tool_use.web_search_requests) || 0;
@@ -169,7 +172,8 @@ async function findRound(q, { known = [], personal = false, roundNo = 1 } = {}) 
     });
   }
   const kinds = isPersonal ? [] : parseWho(Array.isArray(answer.vault_kinds) ? answer.vault_kinds.slice(0, 3) : []);
-  return { category: clean(answer.category, 60) || q, personal: isPersonal, dropped, note: clean(answer.note, 300), vault_kinds: kinds.map((k) => `${k.type}:${k.value}`), people, usd: round(usd), seconds: round(seconds), calls, searches };
+  const angles = (Array.isArray(answer.angles) ? answer.angles : []).map((a) => clean(a, 60)).filter(Boolean).filter((a) => !tried.some((t) => sameName(t, a))).slice(0, 3);
+  return { angles, category: clean(answer.category, 60) || q, personal: isPersonal, dropped, note: clean(answer.note, 300), vault_kinds: kinds.map((k) => `${k.type}:${k.value}`), people, usd: round(usd), seconds: round(seconds), calls, searches };
 }
 
 // ---------- the search job (runs on the server; the phone only watches it) ----------
@@ -189,10 +193,13 @@ export function startResearch(db, query, { build = null, log = () => {} } = {}) 
   return id;
 }
 // "Keep Going": the owner allows another dollar (or resumes a search the restart cut short).
-export function moreResearch(db, id, { log = () => {} } = {}) {
+export function moreResearch(db, id, { log = () => {}, angle = '' } = {}) {
   const r = loadResult(db, id);
   if (!r) throw new AiError('That research is gone.');
-  if (r.status === 'running') return;
+  if (r.status === 'running' || r.status === 'checking') return;
+  const a = clean(angle, 60);
+  if (a) { r.angle = a; r.tried = [...new Set([...(r.tried || []), a])]; r.angles = (r.angles || []).filter((x) => !sameName(x, a)); }
+  r.closed = false;
   r.limit = round(Math.max(r.limit || LIMIT_USD, r.usd) + LIMIT_USD);
   r.status = 'running'; r.stop = '';
   saveResult(db, id, r);
@@ -210,7 +217,7 @@ async function runRounds(db, id, log) {
       const each = r.rounds ? r.usd / r.rounds : ROUND_GUESS_USD;
       if (r.rounds && r.usd + each > r.limit) { stopWith('paused', `Another round would pass $${r.limit.toFixed(2)}.`); break; }
       let got;
-      try { got = await findRound(r.query, { known: r.people.map((p) => p.known_as), personal: r.personal, roundNo: r.rounds + 1 }); }
+      try { got = await findRound(r.query, { known: r.people.map((p) => p.known_as), personal: r.personal, roundNo: r.rounds + 1, angle: r.angle || '', tried: r.tried || [] }); }
       catch (err) {
         const now = loadResult(db, id); if (!now) return;
         now.usd = round(now.usd + (err.usd || 0));
@@ -228,9 +235,11 @@ async function runRounds(db, id, log) {
       if (!now.rounds) { now.category = got.category; now.vault_kinds = got.vault_kinds; now.note = got.note; }
       now.personal = now.personal || got.personal;
       if (now.personal) now.vault_kinds = [];
+      for (const p of unique) if (now.angle) p.angle = now.angle;
+      if (got.angles.length) now.angles = got.angles.filter((a) => !(now.tried || []).some((t) => sameName(t, a)));
       now.dropped += got.dropped; now.usd = round(now.usd + got.usd); now.seconds = round(now.seconds + got.seconds); now.calls += got.calls; now.searches += got.searches; now.rounds += 1;
       const dry = unique.length < DRY;
-      if (dry) { now.status = 'done'; now.stop = now.rounds === 1 && !unique.length ? 'Nobody was found.' : 'No more new ones turned up.'; }
+      if (dry) { now.status = 'done'; now.stop = now.rounds === 1 && !unique.length ? 'Nobody was found.' : now.angle ? `No more new ones turned up for “${now.angle}”.` : 'No more new ones turned up from this angle.'; }
       saveResult(db, id, now);
       log(`research #${id} "${now.category}" round ${now.rounds}: ${unique.length} new, ${now.people.length} in all, $${now.usd}`);
       rememberResearch({ id, query: now.query, round: now.rounds, category: now.category, personal: now.personal, fresh: unique.length, found: now.people.length, dropped: now.dropped, unchecked: now.people.filter((p) => !p.checked).length, kinds: now.vault_kinds.join(', '), searches: got.searches, usd: got.usd, note: got.note });
@@ -242,11 +251,101 @@ async function runRounds(db, id, log) {
   } catch (err) { log(`research #${id} FAILED: ${err && err.message}`); }
   finally { running--; }
 }
+// ---------- Check the Dates (owner 2026-11-23: "full clarity as to ... how we're doing our research") ----------
+// A person whose date came with no web page from the search ("Not Confirmed") is looked up again, in batches:
+// the AI must find a page for the name and the date. A date that disagrees is changed and the old one kept
+// (`was`); a person with no page found stays Not Confirmed. Through the one paid door, like every search.
+const CHECK_BATCH = 10;
+export const CHECK_USD_EACH = 0.012;
+const CHECK_SYSTEM = `You confirm birth names and birth dates for a numerology app. For EACH person listed, search the web for a reliable page (an encyclopedia, an official biography, major news; a business: its official register) that gives their full birth name and exact birth date (a business: registered name and date of incorporation). Then call give_checks once with one entry per person, in the same order.
+- date: YYYY-MM-DD as the page gives it; empty if no page gives the full date. date_source: the URL of that page, from the search results.
+- birth_name: the full birth name as the page gives it; empty if not given. name_source: its URL.
+- Never fill a date or a name from memory: only from a page the search returned. A page about someone else with the same name does not count.`;
+const CHECK_TOOL = { name: 'give_checks', description: 'What the pages say, one entry per person, in order.', strict: true, input_schema: { type: 'object', additionalProperties: false, required: ['people'], properties: { people: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['ref', 'date', 'date_source', 'birth_name', 'name_source'], properties: { ref: { type: 'integer' }, date: { type: 'string' }, date_source: { type: 'string' }, birth_name: { type: 'string' }, name_source: { type: 'string' } } } } } } };
+const toCheck = (r) => r.people.map((p, ref) => ({ p, ref })).filter(({ p }) => !p.checked && !p.fixed && !p.check_failed);
+
+export function checkDates(db, id, { log = () => {} } = {}) {
+  const r = loadResult(db, id);
+  if (!r) throw new AiError('That research is gone.');
+  if (r.status === 'running' || r.status === 'checking') return;
+  const list = toCheck(r);
+  if (!list.length) throw new AiError('Every date here is already confirmed on a web page.');
+  r.status = 'checking'; r.checking = { total: list.length, done: 0, changed: 0, confirmed: 0, usd: 0 };
+  saveResult(db, id, r);
+  runChecks(db, id, log);
+}
+async function runChecks(db, id, log) {
+  running++;
+  try {
+    for (;;) {
+      const r = loadResult(db, id);
+      if (!r || r.status !== 'checking') return;
+      const batch = toCheck(r).slice(0, CHECK_BATCH);
+      if (!batch.length) break;
+      const found = new Map();
+      let answer = null, usd = 0, err = null;
+      const messages = [{ role: 'user', content: batch.map(({ p, ref }) => `ref ${ref}: ${p.known_as}${p.birth_name && p.birth_name !== p.known_as ? ` (birth name given as ${p.birth_name})` : ''}${p.birth_date ? `, date given as ${p.birth_date}` : ''}${p.who ? `, ${p.who}` : ''}${p.kind === 'business' ? ' [a business]' : ''}`).join('\n') }];
+      try {
+        for (let calls = 1; calls <= 4 && !answer; calls++) {
+          const res = await callModel('lookup', { max_tokens: 4000, output_config: { effort: 'low' }, system: CHECK_SYSTEM, tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: batch.length + 4 }, CHECK_TOOL], messages },
+            { estimateUsd: calls === 1 ? batch.length * CHECK_USD_EACH : 0, what: `research #${id} check ${batch.length} dates call ${calls}` });
+          usd += res.usd;
+          searchResults(res.message.content, found);
+          const use = (res.message.content || []).find((b) => b.type === 'tool_use' && b.name === 'give_checks');
+          if (use) { answer = use.input || {}; break; }
+          messages.push({ role: 'assistant', content: res.message.content });
+          if (res.message.stop_reason !== 'pause_turn') messages.push({ role: 'user', content: 'Now call give_checks.' });
+        }
+      } catch (e) { err = e; }
+      const now = loadResult(db, id); if (!now) return;
+      const c = now.checking || { total: batch.length, done: 0, changed: 0, confirmed: 0, usd: 0 };
+      c.usd = round(c.usd + usd + ((err && err.usd) || 0)); now.usd = round(now.usd + usd);
+      if (err || !answer) {
+        now.status = 'done'; now.stop = `Checking the dates stopped: ${err instanceof AiError ? err.message : 'no answer came back'}. Tap Check the Dates to try the rest.`;
+        now.checking = c; saveResult(db, id, now);
+        log(`research #${id} date check FAILED: ${err ? err.message : 'no answer'}`);
+        if (err && !(err instanceof AiError)) throw err;
+        return;
+      }
+      const src = (u) => (u && found.has(u) ? { url: u, site: hostOf(u), title: found.get(u) } : null);
+      const byRef = new Map((Array.isArray(answer.people) ? answer.people : []).map((x) => [Number(x.ref), x]));
+      for (const { ref } of batch) {
+        const p = now.people[ref]; const a = byRef.get(ref);
+        const date = a ? validDate(a.date) : '', ds = a && src(a.date_source), name = a ? clean(a.birth_name, 160) : '', ns = a && src(a.name_source);
+        c.done++;
+        if (!date || !ds) { p.check_failed = true; continue; } // no page for it: stays Not Confirmed, never asked twice
+        if (date !== p.birth_date) { p.was = { birth_date: p.birth_date }; p.birth_date = date; c.changed++; }
+        if (name && ns && !sameName(name, p.birth_name)) { p.was = { ...(p.was || {}), birth_name: p.birth_name }; p.birth_name = name; p.chart_name = chartName(name, p.kind); }
+        p.date_source = ds; if (ns) p.name_source = ns;
+        p.checked = true; p.confirmed_later = true; c.confirmed++;
+      }
+      now.checking = c; saveResult(db, id, now);
+      log(`research #${id} checked ${c.done} of ${c.total} dates: ${c.confirmed} confirmed, ${c.changed} changed, $${c.usd}`);
+    }
+    const end = loadResult(db, id);
+    if (end && end.status === 'checking') { const c = end.checking; end.status = 'done'; end.stop = `Checked ${c.total} dates: ${c.confirmed} confirmed on a web page${c.changed ? `, ${c.changed} of them corrected` : ''}${c.total - c.confirmed ? `, ${c.total - c.confirmed} with no page found` : ''}.`; saveResult(db, id, end); }
+  } catch (e) { log(`research #${id} date check FAILED: ${e && e.message}`); }
+  finally { running--; }
+}
+// "Done": the What Next? card folds away until the next search or check.
+export function closeResearch(db, id) {
+  const r = loadResult(db, id);
+  if (!r) return false;
+  r.closed = true; saveResult(db, id, r); return true;
+}
+
+export function reopenResearch(db, id) {
+  const r = loadResult(db, id);
+  if (!r) return false;
+  r.closed = false; saveResult(db, id, r); return true;
+}
+
 // At startup: a search that was running when the app restarted is marked interrupted; what it found is kept.
 export function recoverResearch(db) {
   let n = 0;
   for (const row of db.prepare('SELECT id, result FROM research').all()) {
     const r = parse(row.result, null);
+    if (r && r.status === 'checking') { r.status = 'done'; r.stop = 'The app restarted while checking the dates. Tap Check the Dates again for the rest.'; saveResult(db, row.id, r); n++; }
     if (r && r.status === 'running') { r.status = 'interrupted'; r.stop = 'The app restarted during the search. What was found is kept.'; saveResult(db, row.id, r); n++; }
   }
   return n;
@@ -298,7 +397,7 @@ export function getResearch(db, id) {
   const taken = new Set(people.filter((p) => p.vault).map((p) => p.vault.id));
   const vault = vaultMembers(db, r.vault_kinds || []).filter((v) => !taken.has(v.id)).map((v) => ({ ...v, on: !offV.has(v.id) }));
   const summary = parse(row.summary, null);
-  return { id: row.id, query: r.query, category: r.category, status: r.status || 'done', stop: r.stop || '', rounds: r.rounds ?? 1, limit: r.limit || LIMIT_USD, personal: !!r.personal, dropped: r.dropped || 0, note: r.note || '',
+  return { id: row.id, query: r.query, category: r.category, status: r.status || 'done', stop: r.stop || '', closed: !!r.closed, angles: r.angles || [], tried: r.tried || [], angle: r.angle || '', checking: r.checking || null, rounds: r.rounds ?? 1, limit: r.limit || LIMIT_USD, personal: !!r.personal, dropped: r.dropped || 0, note: r.note || '',
     vault_kinds: parseWho(r.vault_kinds || []).map((k) => k.label), people, vault, summary,
     usd: r.usd || 0, seconds: r.seconds || 0, searches: r.searches || 0, at: row.created_at, build: row.build };
 }

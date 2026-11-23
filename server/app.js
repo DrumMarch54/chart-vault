@@ -22,7 +22,7 @@ import { aiSettings, setAiSettings, spendState, pendingWarning, markWarningSeen,
 import { readingFor, writeReading, answerQuestion, deleteReadings, readingEstimate, readingChoices } from './reading.js';
 import { askVault } from './ask.js';
 import { lookupPerson, vaultMatches, rememberLookup, storeLookup, pastLookups, pastLookup, deleteLookup } from './lookup.js';
-import { startResearch, moreResearch, recoverResearch, pastResearch, getResearch, deleteResearch, setOff, fixPerson, researchShares, writeSummary, researchCost, summaryEstimate, researchRunning } from './research.js';
+import { startResearch, moreResearch, checkDates, closeResearch, reopenResearch, CHECK_USD_EACH, recoverResearch, pastResearch, getResearch, deleteResearch, setOff, fixPerson, researchShares, writeSummary, researchCost, summaryEstimate, researchRunning } from './research.js';
 import { factsFor } from './facts.js';
 import { meaningFor, countWith } from './meaning.js';
 import { findInDoc, docWindow, findNumberSection, findPhrase } from './doc.js';
@@ -550,12 +550,18 @@ export function createApp(db, { log = console.log } = {}) {
   app.post('/api/research', express.json({ limit: '4kb' }), (req, res, next) => {
     try { res.json({ id: startResearch(db, (req.body || {}).query, { build: COMMIT, log }), spend: spendState() }); } catch (err) { aiFail(res, next)(err); }
   });
-  app.post('/api/research/:id/more', (req, res, next) => {
+  app.post('/api/research/:id/more', express.json({ limit: '2kb' }), (req, res, next) => {
     const id = researchId(req, res); if (id === null) return;
-    try { moreResearch(db, id, { log }); res.json({ ok: true }); } catch (err) { aiFail(res, next)(err); }
+    const b = req.body || {};
+    try { if (b.reopen) reopenResearch(db, id); else moreResearch(db, id, { log, angle: String(b.angle || '') }); res.json({ ok: true }); } catch (err) { aiFail(res, next)(err); }
   });
+  app.post('/api/research/:id/check', (req, res, next) => {
+    const id = researchId(req, res); if (id === null) return;
+    try { checkDates(db, id, { log }); res.json({ ok: true }); } catch (err) { aiFail(res, next)(err); }
+  });
+  app.post('/api/research/:id/close', (req, res) => { const id = researchId(req, res); if (id === null) return; closeResearch(db, id); res.json({ ok: true }); });
   const researchId = (req, res) => { const id = Number(req.params.id); if (!Number.isInteger(id) || !getResearch(db, id)) { res.status(404).json({ error: 'That research is gone.' }); return null; } return id; };
-  app.get('/api/research/:id', (req, res) => { const id = researchId(req, res); if (id !== null) res.json({ ...getResearch(db, id), cost: researchCost(db), summary_cost: summaryEstimate(db), spend: spendState() }); });
+  app.get('/api/research/:id', (req, res) => { const id = researchId(req, res); if (id !== null) res.json({ ...getResearch(db, id), cost: researchCost(db), check_each: CHECK_USD_EACH, summary_cost: summaryEstimate(db), spend: spendState() }); });
   app.get('/api/research/:id/shares', (req, res) => { const id = researchId(req, res); if (id !== null) res.json(researchShares(db, id)); });
   app.put('/api/research/:id/off', express.json({ limit: '20kb' }), (req, res) => { const id = researchId(req, res); if (id === null) return; setOff(db, id, req.body || {}); res.json({ ok: true }); });
   app.put('/api/research/:id/person/:ref', express.json({ limit: '4kb' }), (req, res, next) => {

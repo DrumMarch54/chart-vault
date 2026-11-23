@@ -90,6 +90,15 @@ const FAKE_READING = '## Nexus\nThe 19/1 day vibration with the 6/6 life path ma
 useClientFactory(() => ({ messages: { create: async (params) => {
   await new Promise((r) => setTimeout(r, 1000));
   const usage = { input_tokens: 42000, output_tokens: 700 };
+  // Check the Dates: every date confirmed on a page, Carmack's corrected by a day.
+  if (params.tools && params.tools.some((t) => t.name === 'give_checks')) {
+    const refs = [...String(params.messages[0].content).matchAll(/^ref (\d+): ([^,(\n]+).*?date given as (\d{4}-\d{2}-\d{2})/gm)];
+    const url = 'https://en.wikipedia.org/wiki/Check';
+    return { content: [
+      { type: 'web_search_tool_result', tool_use_id: 'c1', content: [{ type: 'web_search_result', url, title: 'Check' }] },
+      { type: 'tool_use', id: 'c2', name: 'give_checks', input: { people: refs.map((m) => ({ ref: +m[1], date: /Carmack/.test(m[2]) ? '1970-08-21' : m[3], date_source: url, birth_name: '', name_source: '' })) } },
+    ], stop_reason: 'tool_use', usage: { input_tokens: 5000, output_tokens: 300, server_tool_use: { web_search_requests: refs.length } } };
+  }
   // Research a Group: a fake group of coders (one with a changed name, one without a date, some not checked online).
   if (params.tools && params.tools.some((t) => t.name === 'give_group')) {
     const w = (n) => `https://en.wikipedia.org/wiki/${n}`;
@@ -110,7 +119,7 @@ useClientFactory(() => ({ messages: { create: async (params) => {
     return { content: [
       { type: 'server_tool_use', id: 'srv1', name: 'web_search', input: { query: 'famous programmers list' } },
       { type: 'web_search_tool_result', tool_use_id: 'srv1', content: people.filter((p) => p.member_source).map((p) => ({ type: 'web_search_result', url: p.member_source, title: `${p.known_as} - Wikipedia` })) },
-      { type: 'tool_use', id: 'g1', name: 'give_group', input: { category: 'Computer Coders', personal: false, note: '', vault_kinds: ['field:tech'], people } },
+      { type: 'tool_use', id: 'g1', name: 'give_group', input: { category: 'Computer Coders', personal: false, note: '', vault_kinds: ['field:tech'], angles: ['Video Game Makers', 'Women in Tech', 'Coders Outside the US'], people: /ALREADY FOUND/.test(params.messages[0].content) ? [] : people } },
     ], stop_reason: 'tool_use', usage: { input_tokens: 90000, output_tokens: 1800, server_tool_use: { web_search_requests: 6 } } };
   }
   if (typeof params.messages[0].content === 'string' && params.messages[0].content.startsWith('THE GROUP:')) {
