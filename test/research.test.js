@@ -282,7 +282,8 @@ test('collapse and expand: a number that fills a group shows up, with a short re
   assert.deepEqual(g.summary.lines, ['Nineteens carry these charts.']);
   assert.deepEqual(g.summary.notes, [], 'a note for a key the app did not send is dropped');
   const sent = requests.at(-1);
-  assert.equal(sent.tool_choice.name, 'give_reading');
+  assert.equal(sent.tool_choice, undefined, 'Opus 5.5 refuses a forced tool choice');
+  assert.equal(sent.tools[0].name, 'give_reading');
   assert.match(sent.messages[0].content, /^THE GROUP: Same Day\. 6 charts read\./);
   assert.match(sent.messages[0].content, /EXPAND \(the strong positions of every chart together\)\n- key number:/);
   assert.match(sent.system[1].text, /COURSE REFERENCE/);

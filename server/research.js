@@ -530,7 +530,7 @@ async function writeSummaryNow(db, id, { again = false } = {}) {
     const { message, usd, seconds } = await callModel('reading', {
       max_tokens: 3000, output_config: { effort: 'medium' },
       system: [{ type: 'text', text: READING_SYSTEM }, ...(core ? [{ type: 'text', text: core, cache_control: { type: 'ephemeral' } }] : [])],
-      tools: [READING_TOOL], tool_choice: { type: 'tool', name: 'give_reading' },
+      tools: [READING_TOOL], // no forced tool_choice: Opus 5.5 refuses it (400, 2026-11-23); the prompt says call it once
       messages: [{ role: 'user', content: ctx.text }],
     }, { estimateUsd: est, what: `research reading #${id} (${ctx.finds} insights)` });
     if (message.stop_reason === 'refusal') throw new AiError('The AI declined to write this reading.');
