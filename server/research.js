@@ -476,7 +476,7 @@ export function researchShares(db, id) {
 const READING_V = 3;
 const READING_SYSTEM = `You read a GROUP of charts for a trained numerologist the way they read one chart: "collapse and expand" (see the COURSE REFERENCE below: expand = the big picture across the chart, collapse = one center or position as a talking point). The app counted the group's Chaldean numeroscopes and hands you the INSIGHTS: EXPAND (a number, or a family of numbers, that fills the strong positions of many of the group's charts) and COLLAPSE (one part of the chart where a number leads, like the nines in the name chart's emotion center). Each has a key, its counts and course passages. Call give_reading exactly once.
 - notes: one entry per insight key. line: ONE line, at most 18 words, saying what the course says this number is about (in that place, when the insight has a place), in the course's own vocabulary: the archetype name, what it does balanced, what it does unbalanced. No counts, no "the group", no "may", no hedging. source: the name of the source you took it from, as given in brackets.
-- lines: three to five lines, each at most 22 words: the reading of the group. Weave the insights the way the owner weaves two neighbors ("enthusiastic (19/1) magnetism (15/6)"). Start wide (expand), then the specific place (collapse), and say what that part of the chart governs (the solar plexus is the emotion center and the sexual center: emotional life, sex and love life; the mind center: communication and thought; the pillar: the ground a person stands on). Numbers as the course writes them: 18/9, one-digit numbers plain.
+- lines: three to five lines, each at most 22 words: the reading of the group. A combination is read the way the owner reads two neighbors in a chart. Weave the insights the way the owner weaves two neighbors ("enthusiastic (19/1) magnetism (15/6)"). Start wide (expand), then the specific place (collapse), and say what that part of the chart governs (the solar plexus is the emotion center and the sexual center: emotional life, sex and love life; the mind center: communication and thought; the pillar: the ground a person stands on). Numbers as the course writes them: 18/9, one-digit numbers plain.
 - Each insight is marked SOLID, a strong lean, or a lean. Build the reading on the solid ones and the strong leans; a plain lean gets a few words at most ("a touch of ..."). When nothing is solid, the first line opens with "So far:".
 - Never use statistics words (percent, chance, luck, random, sample, significant, likely) or disclaimers. No preamble.
 - Every meaning comes from the course reference or the passages given. Nothing is invented: an insight with no words given gets a line naming only its archetype title.
@@ -490,8 +490,8 @@ const block = (p) => `[${p.book || p.title}${p.heading ? ` > ${String(p.heading)
 
 // What the model gets: the insights with their counts and the course's words on those numbers. null = nothing leads.
 export function summaryContext(g, s) {
-  const ins = s.insights || { expand: [], collapse: [] };
-  if (!ins.expand.length && !ins.collapse.length) return null;
+  const ins = { expand: [], combos: [], collapse: [], ...(s.insights || {}) };
+  if (!ins.expand.length && !ins.combos.length && !ins.collapse.length) return null;
   const lines = [`THE GROUP: ${g.category}. ${ins.size} charts read.`];
   const words = [];
   const seen = new Set();
@@ -516,12 +516,20 @@ export function summaryContext(g, s) {
     else addWords(`COURSE PASSAGES ON ${i.d} (general)`, null, chunksFor(i.d, null, 3));
   }
   if (!ins.expand.length) lines.push('- nothing fills the charts as a whole');
+  lines.push('', 'COMBINATIONS (the two numbers that make a diamond or center, read together: "8 + 15/6")');
+  for (const i of ins.combos) {
+    lines.push(say(i));
+    // The course on the pair: passages on the one number that also name the other.
+    const other = new RegExp(`(^|[^0-9/])${i.b}(?![0-9])`);
+    addWords(`COURSE PASSAGES ON ${i.big}`, null, chunksFor(i.a, null, 40).filter((c) => other.test(c.text)).slice(0, 2));
+  }
+  if (!ins.combos.length) lines.push('- no combination stands out');
   lines.push('', 'COLLAPSE (one part of the chart)');
   for (const i of ins.collapse) { lines.push(say(i)); for (const it of (i.items || []).slice(0, 4)) spotWords(it); }
   if (!ins.collapse.length) lines.push('- no single place stands out');
   let text = [...lines, '', 'COURSE PASSAGES', ...words.filter(Boolean)].join('\n');
   if (text.length > MAX_CONTEXT) text = text.slice(0, MAX_CONTEXT);
-  return { text, finds: ins.expand.length + ins.collapse.length, keys: [...ins.expand, ...ins.collapse].map((i) => i.key) };
+  return { text, finds: ins.expand.length + ins.combos.length + ins.collapse.length, keys: [...ins.expand, ...ins.combos, ...ins.collapse].map((i) => i.key) };
 }
 
 export function summaryEstimate(db) {

@@ -275,9 +275,14 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   with numbers holding a digit ("a 4 in it": 4, 40/4, 44/8); COLLAPSE = the themes, then one strong position where a
   family leads. The vault is only a small "usually 46 in 100". Counting every position (all ~120) drowned everything.
 - SOLID OR LEAN (owner 2026-11-23: "I want the insights to be solid"): every card is measured against 200 RANDOM
-  groups of the same size put through the same search (`luck`), and cut in two (`halves`). Solid = fewer than 5 in
-  100 random groups AND both halves; Strong Lean = under 20; Lean = under 50; past that it is not a card. The first
+  groups of the same size put through the same search (`luck`), and cut in two (`halves`). Solid = see below, AND both
+  halves; Strong Lean = under 20 in 100; Lean = under 50; past that it is not a card. The first
   build called a card clear by its own rarity: 38 of 40 random groups got one. `test/insight.test.js` holds this.
+  Four kinds of search run on every group (numbers, heavy charts, places, combinations), so Solid = fewer than 1 in 80
+  random groups (`SOLID` 0.0125): a group of random people then gets a Solid card about 1 time in 40.
+- COMBINATIONS (owner 2026-11-23): the two numbers of every diamond and center (`PARTS`), every chart; 1 to 18 stay
+  as they are, above counts as its digit (26/8 -> 8), either way round: "8 + 15/6". In one spot ("As Day + First
+  Name") or anywhere; the pair in a spot and anywhere is ONE test against luck, never two.
   Never loosen a limit to fill an empty screen. The birth year is a position like any other: never corrected away
   (owner: "maybe a certain type of people were born in a certain year").
 - The Reading (`writeSummary`, Claude Opus 5.5, the reading guide `coreText()` in hand, tool `give_reading`): ONE line

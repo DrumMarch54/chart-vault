@@ -234,9 +234,9 @@
       // Collapse and expand (owner 2026-11-23: one layout, short, no repeat): the counted insights are cards; the
       // reading (paid, written once for this group, kept) puts one line of the course's words on each card and
       // three to five lines that weave them. A changed group offers Write It Again.
-      const ins = s.insights || { expand: [], collapse: [] };
+      const ins = { expand: [], combos: [], collapse: [], ...(s.insights || {}) };
       const cost = g.summary_cost ? `about ${money(g.summary_cost.usd)}` : 'a few cents';
-      const $expand = h('div', { class: 'stack' }), $collapse = h('div', { class: 'stack' }), $read = h('div', { class: 'card stack rs-read' });
+      const $expand = h('div', { class: 'stack' }), $collapse = h('div', { class: 'stack' }), $combos = h('div', { class: 'stack' }), $read = h('div', { class: 'card stack rs-read' });
       const card = (i, note) => h('div', { class: 'card ins' },
         h('div', { class: 'ins-top' }, h('span', { class: 'ins-big' }, i.big),
           h('div', { class: 'ins-headbox' }, h('div', { class: 'ins-head' }, i.head), h('span', { class: `ins-lean ${i.level || ''}` }, i.level === 'solid' ? 'Solid' : i.level === 'strong' ? 'Strong Lean' : 'Lean'),
@@ -244,12 +244,13 @@
         note ? h('p', { class: 'ins-note' }, note.line) : null,
         ...String(i.detail || '').split(' · ').filter(Boolean).map((d) => h('div', { class: 'muted small' }, d)),
         h('details', { class: 'ins-who', ontoggle: (e) => { if (e.target.open) count('research.insight_who'); } }, h('summary', {}, `Who (${i.people.length}) and How Solid`),
-          h('div', { class: 'muted small' }, `${i.luck === 0 ? 'No random group of this size' : `${Math.max(1, Math.round(i.luck * 100))} in 100 random groups of this size`} found something this strong.${i.halves === true ? ' It shows in both halves of the group.' : i.halves === false ? ' It shows in only one half of the group.' : ''} Solid = fewer than 5 in 100, and both halves.`),
+          h('div', { class: 'muted small' }, `${i.luck === 0 ? 'No random group of this size' : `${Math.max(1, Math.round(i.luck * 100))} in 100 random groups of this size`} found something this strong.${i.halves === true ? ' It shows in both halves of the group.' : i.halves === false ? ' It shows in only one half of the group.' : ''} Solid = fewer than 1 in 80, and both halves.`),
           h('div', { class: 'simpills' }, ...i.people.map((c) => h('a', { class: 'simpill', href: hrefOf(c) }, c.title || 'No name')))));
       const drawReading = (sm, pending) => {
         const stale = sm && sm.key !== s.key;
         const notes = new Map(((sm && !stale && sm.notes) || []).map((x) => [x.key, x]));
         fill($expand, ...ins.expand.map((i) => card(i, notes.get(i.key))), ins.expand.length ? null : h('p', { class: 'muted', style: 'margin:0' }, 'No number fills these charts more than a random group would show.'));
+        fill($combos, ...ins.combos.map((i) => card(i, notes.get(i.key))), ins.combos.length ? null : h('p', { class: 'muted', style: 'margin:0' }, 'No pair of numbers shows up more than a random group would show.'));
         fill($collapse, ...ins.collapse.map((i) => card(i, notes.get(i.key))), ins.collapse.length ? null : h('p', { class: 'muted', style: 'margin:0' }, 'No single place in the chart stands out more than a random group would show.'));
         const write = (again) => async () => {
           if (again) count('research.summary_again');
@@ -263,7 +264,7 @@
           if (r) { drawReading(r.summary, false); if (r.warning) toast(r.warning.text, true); }
           else fill($read, h('b', {}, 'Reading'), h('p', { class: 'err', style: 'margin:0' }, err instanceof TypeError ? 'The connection dropped. Tap Try Again: if the reading was already written, it is free.' : err.message), h('button', { type: 'button', class: 'btn btn-block', onclick: write(again) }, `Try Again (${cost})`));
         };
-        const any = ins.expand.length + ins.collapse.length > 0;
+        const any = ins.expand.length + ins.combos.length + ins.collapse.length > 0;
         fill($read, h('b', {}, 'Reading'),
           pending ? h('p', { class: 'muted', style: 'margin:0' }, 'Writing the reading… about 20 seconds.') : null,
           !pending && !any ? h('p', { class: 'muted', style: 'margin:0' }, 'Nothing leads in this group yet, so there is nothing to read. Nothing was spent. More charts will show more.') : null,
@@ -275,7 +276,7 @@
       };
       // The first time a group is shown the reading is written by itself (free while the server is already writing it).
       const write = drawReading(g.summary, false);
-      if (!g.summary && s.size >= 3 && g.status !== 'running' && g.status !== 'checking' && ins.expand.length + ins.collapse.length) write(false)();
+      if (!g.summary && s.size >= 3 && g.status !== 'running' && g.status !== 'checking' && ins.expand.length + ins.combos.length + ins.collapse.length) write(false)();
 
       const left = [s.undated ? `${plural(s.undated, one, many)} without a full date cannot be counted` : '', s.tagged - s.size - s.undated > 0 ? `${s.tagged - s.size - s.undated} left out: no name and date read yet, or the same person twice` : ''].filter(Boolean).join('; ');
       fill($body, statusCard(g, id, () => { if (location.hash === `#/research?id=${id}` && $body.isConnected) resultsView(id, $body); }, true),
@@ -286,6 +287,8 @@
         s.size >= 3 && !ins.solid ? h('p', { class: 'muted small rs-size-note' }, `Nothing is solid yet with ${fmtN(s.size)} charts. Leans firm up or fade as the group grows: tap Find More.`) : null,
         s.size >= 3 ? h('div', { class: 'summary rhead' }, 'Expand: The Whole Chart') : null,
         s.size >= 3 ? $expand : null,
+        s.size >= 3 ? h('div', { class: 'summary rhead' }, 'Combinations: Two Numbers Together') : null,
+        s.size >= 3 ? $combos : null,
         s.size >= 3 ? h('div', { class: 'summary rhead' }, 'Collapse: One Place in the Chart') : null,
         s.size >= 3 ? $collapse : null,
         s.size >= 3 ? $read : h('p', { class: 'muted' }, 'A group needs at least three with a name and a full date before anything can be said about it.'),

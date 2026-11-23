@@ -123,7 +123,7 @@ const DIAMONDS = new Set(['mindDiamond', 'emotionDiamond', 'heartSubDiamond', 's
 // A CENTER's combination is the two numbers in its circle: the main vibration and an extra vibration ("12/3 and 8
 // in the mind center"). The owner's combo tags say so: 37 of 38 name the circle, none only the auras (live vault,
 // 2026-10-19). The auras around a center make its DIAMOND (mindDiamond, emotionDiamond).
-const PARTS = {
+export const PARTS = {
   heart: ['heart', 'heartExtra'], heartExtra: ['heart', 'middle'], mindDiamond: ['upperLeft', 'upperRight'], heartSubDiamond: ['heart', 'middle'],
   solar: ['solar', 'solarExtra'], solarExtra: ['solar', 'middle'], emotionDiamond: ['lowerLeft', 'lowerRight'], solarSubDiamond: ['solar', 'middle'],
   leDiamond: ['first', 'last'], publicDiamond: ['essence.day', 'first'], spineDiamond: ['essence.day', 'le'],

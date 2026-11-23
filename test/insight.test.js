@@ -47,13 +47,13 @@ test('groups of random people almost never get a Solid card, and never a card mo
     const pool = ids.slice(), group = [];
     for (let k = 0; k < 24; k++) group.push(pool.splice(Math.floor(rnd() * pool.length), 1)[0]);
     const ins = groupInsights(db, { ids: group, randomGroups: 120 });
-    for (const i of [...ins.expand, ...ins.collapse]) {
+    for (const i of [...ins.expand, ...ins.combos, ...ins.collapse]) {
       cards++; if (i.solid) solid++;
       assert.equal(i.solid || i.luck < 0.5, true, 'a card is solid, or fewer than half the random groups match it');
       assert.ok(['solid', 'strong', 'lean'].includes(i.level));
       assert.equal(i.solid, i.level === 'solid');
     }
-    assert.equal(ins.solid, [...ins.expand, ...ins.collapse].filter((i) => i.solid).length);
+    assert.equal(ins.solid, [...ins.expand, ...ins.combos, ...ins.collapse].filter((i) => i.solid).length);
   }
   assert.equal(solid <= 2, true, `${solid} solid cards in 10 random groups (${cards} cards in all)`);
 });
@@ -71,6 +71,11 @@ test('people who really share a number get it as a Solid card, with who holds it
   assert.equal(day.count, '12 of 12 charts');
   assert.equal(day.people.every((p) => p.id === null && Number.isInteger(p.ref)), true);
   assert.equal(ins.solid >= 1, true);
+  // Same day and month: every one of them has the same pairs in the essence diamonds (day 19/1 + month 7, ...).
+  assert.equal(ins.combos.length >= 1, true, 'a combination they all share');
+  for (const c of ins.combos) { assert.match(c.big, /^\d+(\/\d)? \+ \d+(\/\d)?$/); assert.equal(c.a <= c.b, true); assert.equal(c.a <= 18 && c.b <= 18, true, 'above 18 counts as its digit'); }
+  assert.equal(ins.combos[0].level, 'solid');
+  assert.equal(ins.combos[0].count, '12 of 12 charts');
 });
 
 test('too few people: nothing is said', () => {

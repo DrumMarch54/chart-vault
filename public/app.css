@@ -1184,3 +1184,4 @@ html[data-style="blueprint"] .hometop { position: relative; }
 html[data-style="blueprint"] .hometop::after { content: ""; position: absolute; left: 0; bottom: 4px; width: 54px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, #ff6a3d, #ff3d9a, #8a4dff, #2fb8ff); }
 html[data-style]:not([data-style="classic"]) .cell { border: 1px solid var(--line); }
 html[data-style]:not([data-style="classic"]) input::placeholder { color: var(--muted); opacity: 1; }
+.ins-big:has(+ .ins-headbox) { white-space: nowrap; }
