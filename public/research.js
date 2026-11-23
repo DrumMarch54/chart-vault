@@ -239,7 +239,7 @@
       const $expand = h('div', { class: 'stack' }), $collapse = h('div', { class: 'stack' }), $combos = h('div', { class: 'stack' }), $read = h('div', { class: 'card stack rs-read' });
       const card = (i, note) => h('div', { class: 'card ins' },
         h('div', { class: 'ins-top' }, h('span', { class: 'ins-big' }, i.big),
-          h('div', { class: 'ins-headbox' }, h('div', { class: 'ins-head' }, i.head), h('span', { class: `ins-lean ${i.level || ''}` }, i.level === 'solid' ? 'Solid' : i.level === 'strong' ? 'Strong Lean' : 'Lean'),
+          h('div', { class: 'ins-headbox' }, h('div', { class: 'ins-head' }, i.head), i.sub ? h('div', { class: 'muted small' }, i.sub) : null, h('span', { class: `ins-lean ${i.level || ''}` }, i.level === 'solid' ? 'Solid' : i.level === 'strong' ? 'Strong Lean' : 'Lean: Could Be Chance'),
             h('div', { class: 'ins-count' }, h('b', {}, i.count), i.usual !== null && i.usual !== undefined ? h('span', { class: 'muted' }, ` · usually ${i.usual} in 100`) : null))),
         note ? h('p', { class: 'ins-note' }, note.line) : null,
         ...String(i.detail || '').split(' · ').filter(Boolean).map((d) => h('div', { class: 'muted small' }, d)),
@@ -249,9 +249,9 @@
       const drawReading = (sm, pending) => {
         const stale = sm && sm.key !== s.key;
         const notes = new Map(((sm && !stale && sm.notes) || []).map((x) => [x.key, x]));
-        fill($expand, ...ins.expand.map((i) => card(i, notes.get(i.key))), ins.expand.length ? null : h('p', { class: 'muted', style: 'margin:0' }, 'No number fills these charts more than a random group would show.'));
-        fill($combos, ...ins.combos.map((i) => card(i, notes.get(i.key))), ins.combos.length ? null : h('p', { class: 'muted', style: 'margin:0' }, 'No pair of numbers shows up more than a random group would show.'));
-        fill($collapse, ...ins.collapse.map((i) => card(i, notes.get(i.key))), ins.collapse.length ? null : h('p', { class: 'muted', style: 'margin:0' }, 'No single place in the chart stands out more than a random group would show.'));
+        fill($expand, ...ins.expand.map((i) => card(i, notes.get(i.key))), ins.expand.length ? null : h('p', { class: 'muted', style: 'margin:0' }, 'No number stands out across these charts yet.'));
+        fill($combos, ...ins.combos.map((i) => card(i, notes.get(i.key))), ins.combos.length ? null : h('p', { class: 'muted', style: 'margin:0' }, 'No pair of numbers stands out yet.'));
+        fill($collapse, ...ins.collapse.map((i) => card(i, notes.get(i.key))), ins.collapse.length ? null : h('p', { class: 'muted', style: 'margin:0' }, 'No single spot stands out yetshow.'));
         const write = (again) => async () => {
           if (again) count('research.summary_again');
           drawReading(sm, true);
@@ -284,12 +284,12 @@
           h('p', { class: 'muted', style: 'margin:0' }, `${plural(s.size, one, many)} read: ${fmtN(s.online)} found online${s.from_vault ? `, ${fmtN(s.size - s.online)} from your vault` : ''}.${left ? ` ${left[0].toUpperCase()}${left.slice(1)}.` : ''}`),
           g.personal ? h('p', { class: 'muted small', style: 'margin:0' }, 'A personal category: only people who said it about themselves in public, each with the page that says so.') : null,
           h('a', { class: 'btn btn-block', href: `#/research?id=${id}&view=who`, onclick: () => count('research.change_who') }, `Change Who Is In (${on.length + vaultOn.length} of ${g.people.length + g.vault.length})`)),
-        s.size >= 3 && !ins.solid ? h('p', { class: 'muted small rs-size-note' }, `Nothing is solid yet with ${fmtN(s.size)} charts. Leans firm up or fade as the group grows: tap Find More.`) : null,
-        s.size >= 3 ? h('div', { class: 'summary rhead' }, 'Expand: The Whole Chart') : null,
+        s.size >= 3 && !ins.solid ? h('p', { class: 'muted small rs-size-note' }, `Nothing is Solid yet with ${fmtN(s.size)} charts. Solid = grounded. Lean = worth a look, could be chance; leans firm up or fade as the group grows (Find More).`) : null,
+        s.size >= 3 ? h('div', { class: 'summary rhead' }, 'Big Picture: What Shapes These Charts') : null,
         s.size >= 3 ? $expand : null,
-        s.size >= 3 ? h('div', { class: 'summary rhead' }, 'Combinations: Two Numbers Together') : null,
+        s.size >= 3 ? h('div', { class: 'summary rhead' }, 'Combinations: Two Numbers Side by Side') : null,
         s.size >= 3 ? $combos : null,
-        s.size >= 3 ? h('div', { class: 'summary rhead' }, 'Collapse: One Place in the Chart') : null,
+        s.size >= 3 ? h('div', { class: 'summary rhead' }, 'Specific Spots') : null,
         s.size >= 3 ? $collapse : null,
         s.size >= 3 ? $read : h('p', { class: 'muted' }, 'A group needs at least three with a name and a full date before anything can be said about it.'),
         h('div', { class: 'gridbar' }, h('div', { class: 'summary rhead' }, 'The Charts'), size.node), // the size control sits with its grid: the title fills the top row

@@ -304,9 +304,9 @@ test('collapse and expand: a number that fills a group shows up, with a short re
   const r = await call('POST', '/api/research', { query: 'same day people' });
   await settle();
   const s = (await call('GET', `/api/research/${r.body.id}/shares`)).body;
-  const day = s.insights.expand.find((i) => i.sum === 19);
-  assert.ok(day, '19/1 (the day) fills the group');
-  assert.equal(day.count, '6 of 6 charts');
+  const all = [...s.insights.expand, ...s.insights.combos, ...s.insights.collapse];
+  const day = all.find((i) => i.count === '6 of 6 charts');
+  assert.ok(day, 'what all six share (the day 19/1 and what it makes) is a card');
   assert.equal(day.people.length, 6);
   assert.equal(typeof day.usual, 'number');
   const g = (await call('GET', `/api/research/${r.body.id}`)).body;

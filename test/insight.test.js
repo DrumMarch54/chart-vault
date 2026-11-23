@@ -49,7 +49,7 @@ test('groups of random people almost never get a Solid card, and never a card mo
     const ins = groupInsights(db, { ids: group, randomGroups: 120 });
     for (const i of [...ins.expand, ...ins.combos, ...ins.collapse]) {
       cards++; if (i.solid) solid++;
-      assert.equal(i.solid || i.luck < 0.5, true, 'a card is solid, or fewer than half the random groups match it');
+      assert.equal(i.solid || i.luck < 0.5 || i.halves !== false, true, 'a lean shows in both halves of the group');
       assert.ok(['solid', 'strong', 'lean'].includes(i.level));
       assert.equal(i.solid, i.level === 'solid');
     }

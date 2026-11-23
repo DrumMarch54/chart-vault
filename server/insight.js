@@ -3,10 +3,13 @@
 // on one specific thing"). A group's charts read the way one chart is read. Counting only; the words come later
 // (research.js hands these to the reading).
 //
-// EXPAND  a number that keeps turning up: in a strong position (day, month, year, the names, life expression, the
-//         life paths, pillar, the mind and emotion centers of every numeroscope), anywhere in the chart, or many
-//         times in one chart; a chart heavy with one family ("9s": 9, 18/9, 27/9 ...) or with numbers that have a
-//         digit in them ("a 4 in it": 4, 40/4, 44/8, 14/5).
+// BIG PICTURE (the owner, 2026-11-23: "mass shooters, there's a strong influence of 4 ... or maybe more accurately
+//         specifically 13/4 ... that would be the top result"; "a mix: the position hierarchy, sheer quantity, centers
+//         over auras"). Each chart gets an INFLUENCE score per number and per family: every position holding it adds
+//         its weight (`weightOf` in facts.js, the one hierarchy the Reading uses: day, month, year, names and life
+//         expression 3; life paths, big life expression, the six centers and pillar 2; the rest 1; psyche centers 2).
+//         "Strongly influenced" = more than 7 charts in 10 have. A family card ("a strong 4 influence") yields to one
+//         exact form ("specifically 13/4") when that form alone is as strong.
 // COMBINATIONS: two numbers CLOSE TOGETHER (a diamond's two parts, a center's main and sub vibration, a center and
 //         the auras beside it) or BOTH PRIMARY (day, life path, life expression, the names); never two far apart.
 //         (owner 2026-11-23: "a certain number combination in the center, or numbers nearby each other ...
@@ -15,8 +18,8 @@
 //         digit (26/8 -> 8), either way round. Read at three depths, because the owner sees "some sort of 4": the
 //         exact pair (13/4 + 18/9), one side as a family (13/4 + Any 9) and both as families (Any 4 + Any 9); in one
 //         spot or anywhere. And two numbers that are both in the same chart, wherever they sit (13/4 and 16/7).
-// COLLAPSE one part of the chart where one family leads: the themes group.js finds (a family across a center's
-//         positions), then single strong positions ("Sixes as the Name Emotion Center Main Vibration").
+// SPECIFIC SPOTS one part of the chart where one family leads: the themes group.js finds (a family across a center's
+//         positions), single strong positions ("Sixes as the Name Emotion Center Main Vibration"), a number in a center.
 //
 // SOLID OR LEAN (owner 2026-11-23: "I want the insights to be solid"). The first build called a card clear when its
 // own gap was rare. Tested on 40 groups of RANDOM vault people, 38 got a "clear" card: with hundreds of things tried,
@@ -80,6 +83,22 @@ function diamondsOf(values) {
   // Primary positions, any two of them: the day, the life path, the life expression and the names.
   const primary = PRIMARY.map((k) => [k, at.get(k) || []]);
   for (let i = 0; i < primary.length; i++) for (let j = i + 1; j < primary.length; j++) for (const x of primary[i][1]) for (const y of primary[j][1]) out.push({ spot: primary[i][0], x, y, label: 'Primary Positions (Day, Life Path, Life Expression, Names)' });
+  // The owner's other examples (2026-11-23): an aura with the name at its side ("the associates aura and the first
+  // name, those are close together"); names next to each other on the line ("the first name and the middle name");
+  // the little personality number with the little heart's desire; a psyche chart's mental strategies (its mind
+  // diamond) with the life expression diamond it sits on; the two psyche charts' mind centers, emotion centers and
+  // mental strategies side by side.
+  const pairsOf = (a, b, label) => { for (const x of at.get(a) || []) for (const y of at.get(b) || []) out.push({ spot: a, x, y, label }); };
+  for (const chart of ['name', 'vocation', 'personality']) {
+    for (const [aura, name] of [['upperLeft', 'first'], ['lowerLeft', 'first'], ['upperRight', 'last'], ['lowerRight', 'last']]) pairsOf(`${chart}.${aura}`, `${chart}.${name}`, `${CHART_WORD[chart]} Aura and the Name Beside It`);
+    const line = [...(at.get(`${chart}.first`) || []).map((x) => [x]), ...(at.get(`${chart}.middle`) || []).map((x) => [x]), ...(at.get(`${chart}.last`) || []).map((x) => [x])];
+    for (let i = 0; i + 1 < line.length; i++) out.push({ spot: `${chart}.first`, x: line[i][0], y: line[i + 1][0], label: `${CHART_WORD[chart]} Names Next to Each Other` });
+  }
+  pairsOf('personality.le', 'vocation.le', "Personality Number and Heart's Desire");
+  for (const chart of ['outer', 'inner']) pairsOf(`${chart}.mindDiamond`, `${chart}.leDiamond`, `${CHART_WORD[chart]} Mental Strategies and the Life Expression Diamond`);
+  pairsOf('outer.heart', 'inner.heart', 'The Two Psyche Mind Centers');
+  pairsOf('outer.solar', 'inner.solar', 'The Two Psyche Emotion Centers');
+  pairsOf('outer.mindDiamond', 'inner.mindDiamond', 'The Two Psyche Mental Strategies');
   return out;
 }
 // The readings of one pair, from exact to loose: "13|18", "13|f9", "f4|18", "f4|f9".
@@ -112,8 +131,9 @@ function tailMaker(N) {
   // P(X >= a) when `of` charts are drawn from `Nu` of which `K` hold it (hypergeometric upper tail).
   return (a, of, K, Nu) => { const all = lc(Nu, of); let p = 0; for (let k = a; k <= Math.min(of, K); k++) p += Math.exp(lc(K, k) + lc(Nu - K, of - k) - all); return Math.min(1, p); };
 }
-// "Often" = more of it than 7 charts in 10 have (the line is drawn over everyone, once).
-const oftenLine = (cnt, N) => { let k = 2; while (k < 40 && cnt.filter((c) => c >= k).length / N > 0.3) k++; return k; };
+// "Strongly influenced" = a score more than 7 charts in 10 have (the line is drawn over everyone, once; at least one
+// strong position's worth).
+const strongLine = (arr) => { const sorted = Float64Array.from(arr).sort(); return Math.max(3, sorted[Math.floor(sorted.length * 0.7)] + 0.5); };
 
 export function groupInsights(db, { ids = [], extra = [], themes = [], randomGroups = RANDOM_GROUPS } = {}) {
   const people = prepare(db, ids, extra);
@@ -129,19 +149,15 @@ export function groupInsights(db, { ids = [], extra = [], themes = [], randomGro
   const rows = []; // { kind (which luck it is measured against), t (what it is), holders, universe | null, ... }
   const add = (row, set) => { if (set.size >= least) rows.push({ ...row, holders: Uint32Array.from(set) }); };
   const put = (map, key, i) => { let s = map.get(key); if (!s) map.set(key, s = new Set()); s.add(i); };
-  const inStrong = new Map(), anywhere = new Map(), times = new Map(), bySpot = new Map(), hasSpot = new Map();
-  people.forEach((p, i) => {
-    for (const v of p.strong) { put(inStrong, v.sum, i); const spot = `${v.chart}.${v.position}`; put(hasSpot, spot, i); put(bySpot, `${spot}|${v.ds}`, i); }
-    for (const v of p.all) { put(anywhere, v.sum, i); let t = times.get(v.sum); if (!t) times.set(v.sum, t = new Map()); t.set(i, (t.get(i) || 0) + 1); }
-  });
-  for (const [sum, set] of inStrong) add({ kind: 'number', t: 'strong', sum, universe: null }, set);
-  for (const [sum, set] of anywhere) add({ kind: 'number', t: 'any', sum, universe: null }, set);
-  for (const [sum, t] of times) { const cnt = people.map((_, i) => t.get(i) || 0), k = oftenLine(cnt, N); const set = new Set(); cnt.forEach((c, i) => { if (c >= k) set.add(i); }); add({ kind: 'number', t: 'often', sum, k, universe: null }, set); }
-  for (let d = 1; d <= 9; d++) for (const [type, test] of [['family', (v) => v.ds === d], ['digit', (v) => String(v.sum).includes(String(d))]]) {
-    const cnt = people.map((p) => p.strong.filter(test).length), k = oftenLine(cnt, N);
-    const set = new Set(); cnt.forEach((c, i) => { if (c >= k) set.add(i); });
-    add({ kind: 'heavy', t: 'heavy', type, d, k, test, universe: null }, set);
-  }
+  const bySpot = new Map(), hasSpot = new Map();
+  people.forEach((p, i) => { for (const v of p.strong) { const spot = `${v.chart}.${v.position}`; put(hasSpot, spot, i); put(bySpot, `${spot}|${v.ds}`, i); } });
+  // Influence: per person, the weight of every position holding the number (exact) or its family.
+  const exactScore = new Map(), famScore = new Map(); // number -> Float64Array over people
+  const score = (map, key, i, w) => { let a = map.get(key); if (!a) map.set(key, a = new Float64Array(N)); a[i] += w; };
+  people.forEach((p, i) => { for (const v of p.all) { const w = Math.max(1, weightOf(v.chart, v.position)) + (PSYCHE_CENTERS.has(`${v.chart}.${v.position}`) ? 1 : 0); score(exactScore, v.sum, i, w); score(famScore, v.ds, i, w); } });
+  const influence = (arr, row) => { const k = strongLine(arr); const set = new Set(); arr.forEach((x, i) => { if (x >= k) set.add(i); }); add({ ...row, k }, set); };
+  for (const [sum, arr] of exactScore) influence(arr, { kind: 'number', t: 'exact', sum, universe: null });
+  for (const [d, arr] of famScore) influence(arr, { kind: 'number', t: 'family', d, universe: null });
   const universes = new Map([...hasSpot].map(([spot, set]) => [spot, Uint32Array.from(set)]));
   for (const [key, set] of bySpot) { const [spot, d] = key.split('|'); add({ kind: 'spot', t: 'spot', spot, d: Number(d), universe: universes.get(spot) }, set); }
   // A number (1 to 18 as written) sitting in a center: the name chart's two centers, or any numeroscope's.
@@ -156,19 +172,11 @@ export function groupInsights(db, { ids = [], extra = [], themes = [], randomGro
   // twenty times more things, and the luck that comes with trying buried the pairs the owner sees (mass shooters,
   // 13/4 beside a 9: 39 of 122 against 20 in 100 usually).
   for (const [key, set] of comboAny) add({ kind: 'combo', t: 'comboAny', pair: key, universe: null }, set);
-  // Two numbers (1 to 18) that are both somewhere in the same chart.
-  const small = [...anywhere].filter(([sum]) => sum <= 18).sort((a, b) => a[0] - b[0]);
-  for (let x = 0; x < small.length; x++) for (let y = x + 1; y < small.length; y++) {
-    const [a, sa] = small[x], [b, sb] = small[y];
-    const set = new Set(); for (const i of sa) if (sb.has(i)) set.add(i);
-    if (set.size < N * 0.9) add({ kind: 'together', t: 'together', a, b, universe: null }, set); // a pair nearly every chart has says nothing
-  }
-
   const hit = (list, flags) => { let a = 0; for (let k = 0; k < list.length; k++) a += flags[list[k]]; return a; };
-  const KINDS = ['number', 'heavy', 'spot', 'combo', 'together'];
+  const KINDS = ['number', 'spot', 'combo'];
   // The search itself, on any group (the real one, or a random one): each row's gap and how rare it is.
   function search(flags, size, keep) {
-    const best = { number: 1, heavy: 1, spot: 1, combo: 1, together: 1 };
+    const best = { number: 1, spot: 1, combo: 1 };
     const found = [];
     const ofCache = new Map();
     for (const r of rows) {
@@ -208,36 +216,39 @@ export function groupInsights(db, { ids = [], extra = [], themes = [], randomGro
   const inGroup = (r) => Array.from(r.holders).filter((i) => real[i]);
   const pct = (a, of) => (of ? Math.round((a / of) * 100) : 0);
   const stamp = (f) => { const l = luckOf(f.r.kind, f.p), halves = bothHalves(f); return { luck: l, halves, solid: l < SOLID && halves }; };
-  const base = (f) => ({ p: f.p, in_group: f.a, group_of: f.of, usual: pct(f.k, f.restOf), people: who(inGroup(f.r)), ...stamp(f) });
+  // How many more charts hold it than usual: the size of a theme. Cards are ordered by it (solid first), so a big
+  // theme of a common number (13/4 in 43 of 122, usually 26 in 100) leads a rare number's small one (72/9 in 13).
+  const base = (f) => ({ p: f.p, excess: f.a - f.of * (f.k / Math.max(f.restOf, 1)), in_group: f.a, group_of: f.of, usual: pct(f.k, f.restOf), people: who(inGroup(f.r)), ...stamp(f) });
   // Cards of one part, up to `most`: the solid ones first, then leans (fewer than half the random groups match them). What most random groups also show is never a card: a part may honestly be empty.
-  const choose = (list, most) => { const solid = list.filter((x) => x.solid).slice(0, most); return [...solid, ...list.filter((x) => !x.solid && x.luck < LEAN).slice(0, most - solid.length)]; };
+  // A Lean is either close to solid (fewer than half the random groups beat it), or, judged on its own, rarer than 1
+  // in 20 AND in both halves of the group: a real-looking theme that the whole search cannot vouch for yet. Leans
+  // are ordered by size and say plainly they could be chance; only Solid is grounded.
+  const isLean = (x) => !x.solid && (x.luck < LEAN || (x.p < 0.05 && x.halves !== false));
+  const choose = (list, most) => { const solid = list.filter((x) => x.solid).slice(0, most); return [...solid, ...list.filter(isLean).slice(0, most - solid.length)]; };
   const shown = (t) => mine.found.filter((x) => x.r.t === t && x.p < SHOWN);
 
-  // ---- EXPAND ----
-  const numbers = [];
-  for (const f of shown('strong')) {
-    const spots = new Map(); for (const i of inGroup(f.r)) for (const v of people[i].strong) if (v.sum === f.r.sum) spots.set(`${v.chart}.${v.position}`, (spots.get(`${v.chart}.${v.position}`) || 0) + 1);
-    const where = [...spots].sort((a, b) => b[1] - a[1]).slice(0, 2).map(([spot]) => positionName(...spot.split('.')));
-    numbers.push({ key: `number:${f.r.sum}`, kind: 'number', sum: f.r.sum, big: fmt(f.r.sum), head: titleOf(f.r.sum) || `${fmt(f.r.sum)} in a Strong Position`, count: `${f.a} of ${n} charts`, detail: `In a strong position${where.length ? `, mostly the ${where.join(' and the ')}` : ''}.`, ...base(f) });
+  // ---- BIG PICTURE: influence, at the most accurate level ----
+  const where = (holders, test) => { const spots = new Map(); for (const i of holders) for (const v of people[i].all) if (test(v)) { const w = positionName(v.chart, v.position); spots.set(w, (spots.get(w) || 0) + Math.max(1, weightOf(v.chart, v.position))); } return [...spots].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([w]) => w); };
+  const exact = shown('exact').map((f) => {
+    const g = inGroup(f.r);
+    return { key: `influence:${f.r.sum}`, kind: 'number', sum: f.r.sum, d: ds(f.r.sum), big: fmt(f.r.sum), head: `A Strong ${fmt(f.r.sum)} Influence`, sub: titleOf(f.r.sum), count: `${f.a} of ${n} charts`,
+      detail: `Mostly as the ${where(g, (v) => v.sum === f.r.sum).join(', the ')}.`, ...base(f) };
+  });
+  const fams = shown('family').map((f) => {
+    const g = inGroup(f.r), forms = new Map();
+    for (const i of g) for (const v of people[i].all) if (v.ds === f.r.d) forms.set(v.sum, (forms.get(v.sum) || 0) + Math.max(1, weightOf(v.chart, v.position)));
+    const top = [...forms].sort((a, b) => b[1] - a[1]).slice(0, 4).map(([x]) => fmt(x));
+    return { key: `family:${f.r.d}`, kind: 'family', d: f.r.d, big: `${f.r.d}s`, head: `A Strong ${f.r.d} Influence`, sub: 'In one form or another', count: `${f.a} of ${n} charts`, detail: `Mostly as ${top.join(', ')}.`, ...base(f) };
+  });
+  // The most accurate level: when one form of a family is at least as strong as the family, it speaks for it.
+  const big = [];
+  for (const c of [...fams, ...exact].sort((a, b) => b.excess - a.excess)) {
+    if (big.some((x) => x.d === c.d)) continue;
+    const form = c.kind === 'family' ? exact.filter((e) => e.d === c.d).sort((a, b) => a.p - b.p)[0] : null;
+    big.push(form && form.excess >= c.excess * 0.8 ? { ...form, head: `Specifically ${fmt(form.sum)}`, sub: `${titleOf(form.sum) ? `${titleOf(form.sum)} · ` : ''}a strong ${c.d} influence, mostly this form` } : c);
   }
-  for (const f of shown('any')) numbers.push({ key: `anywhere:${f.r.sum}`, kind: 'number', sum: f.r.sum, big: fmt(f.r.sum), head: titleOf(f.r.sum) || `${fmt(f.r.sum)} in the Chart`, count: `${f.a} of ${n} charts`, detail: 'Somewhere in the chart, any position.', ...base(f) });
-  for (const f of shown('often')) numbers.push({ key: `often:${f.r.sum}`, kind: 'number', sum: f.r.sum, big: fmt(f.r.sum), head: titleOf(f.r.sum) || `${fmt(f.r.sum)} Many Times`, count: `${f.a} of ${n} charts`, detail: `${f.r.k} or more times in one chart.`, ...base(f) });
-  numbers.sort((a, b) => a.p - b.p);
-  const numbersKept = []; for (const x of numbers) if (!numbersKept.some((y) => y.sum === x.sum)) numbersKept.push(x); // one card per number: its strongest reading
-  const heavy = [];
-  for (const f of shown('heavy')) {
-    const r = f.r;
-    const forms = new Map(); for (const i of inGroup(r)) for (const v of people[i].strong.filter(r.test)) forms.set(v.sum, (forms.get(v.sum) || 0) + 1);
-    const top = [...forms].sort((a, b) => b[1] - a[1]).slice(0, 4).map(([s]) => fmt(s));
-    heavy.push({ key: `${r.type}:${r.d}`, kind: r.type, d: r.d, big: r.type === 'family' ? `${r.d}s` : `${r.d}`, head: r.type === 'family' ? `Charts Heavy With ${PLURAL[r.d]}` : `Numbers With a ${r.d} in Them`, count: `${f.a} of ${n} charts`,
-      detail: `${r.k} or more of the strong positions${r.type === 'family' ? ` are a ${r.d} in one form or another` : ` hold a number with a ${r.d} in it`}: ${top.join(', ')}.`, ...base(f) });
-  }
-  heavy.sort((a, b) => a.p - b.p);
-  const heavyKept = []; for (const h of heavy) if (!heavyKept.some((x) => x.d === h.d)) heavyKept.push(h); // the same digit as a family and as "in it" is one card
-  // Two numbers that are both somewhere in a chart are NOT a combination (the owner's rule: a combination is close
-  // together or both primary). It is a fact about the whole chart, so it sits here: at most two such cards.
-  const together = shown('together').map((f) => ({ key: `together:${f.r.a}+${f.r.b}`, kind: 'together', a: f.r.a, b: f.r.b, big: `${fmt(f.r.a)} & ${fmt(f.r.b)}`, head: 'Both Somewhere in the Chart', count: `${f.a} of ${n} charts`, detail: 'Each in the chart, not side by side: not a combination.', ...base(f) })).sort((a, b) => a.p - b.p).slice(0, 2);
-  out.expand = choose([...numbersKept, ...heavyKept, ...together].sort((a, b) => Number(b.solid) - Number(a.solid) || a.p - b.p), 4);
+  const bySize = (a, b) => Number(b.solid) - Number(a.solid) || b.excess - a.excess;
+  out.expand = choose(big.sort(bySize), 4);
 
   // ---- COMBINATIONS ----
   const combos = [];
@@ -247,14 +258,14 @@ export function groupInsights(db, { ids = [], extra = [], themes = [], randomGro
     {
       const where = new Map(); for (const i of inGroup(r)) for (const c of people[i].diamonds) if (pairKeys(c.x, c.y).includes(r.pair)) { const w = c.label || positionName(...c.spot.split('.')); where.set(w, (where.get(w) || 0) + 1); }
       const top = [...where].sort((x, y) => y[1] - x[1]).slice(0, 2).map(([w]) => w);
-      combos.push({ ...card, key: `comboAny:${r.pair}`, head: 'Close Together or Both Primary', count: `${f.a} of ${n} charts`, detail: `Mostly the ${top.join(' and the ')}.` });
+      combos.push({ ...card, key: `comboAny:${r.pair}`, head: 'Two Numbers Together', count: `${f.a} of ${n} charts`, detail: `Mostly the ${top.join(' and the ')}.` });
     }
   }
-  combos.sort((x, y) => Number(y.solid) - Number(x.solid) || x.p - y.p);
+  combos.sort(bySize);
   const combosKept = []; for (const c of combos) if (!combosKept.some((x) => x.fam === c.fam)) combosKept.push(c); // one card per pair of families: its strongest reading
   out.combos = choose(combosKept, 4);
 
-  // ---- COLLAPSE: the themes first (a family across one part of a chart), then single strong positions ----
+  // ---- SPECIFIC SPOTS: the themes first (a family across one part of a chart), then single strong positions ----
   const covered = new Set();
   const themeCards = (themes || []).filter((x) => x.luck < 0.5).slice(0, 2).map((t) => {
     for (const c of t.charts || []) covered.add(`${c}|${t.area}|${t.family}`);
@@ -272,10 +283,10 @@ export function groupInsights(db, { ids = [], extra = [], themes = [], randomGro
   }
   for (const f of shown('center')) leaders.push({ key: `center:${f.r.where}:${f.r.sum}`, kind: 'center', sum: f.r.sum, big: fmt(f.r.sum), head: f.r.where === 'name' ? 'In a Name Chart Center' : 'In a Center of Any Chart', count: `${f.a} of ${n} charts`,
     detail: f.r.where === 'name' ? 'The mind or emotion center of the name chart, main or sub vibration.' : 'A mind or emotion center of any numeroscope, main or sub vibration.', items: [], ...base(f) });
-  leaders.sort((a, b) => a.p - b.p);
+  leaders.sort(bySize);
   const leadersKept = []; for (const l of leaders) if (!(l.kind === 'center' && leadersKept.some((x) => x.kind === 'center' && x.sum === l.sum))) leadersKept.push(l);
   out.collapse = [...themeCards, ...choose(leadersKept, 4)].sort((a, b) => Number(b.solid) - Number(a.solid)).slice(0, 4);
-  for (const list of [out.expand, out.combos, out.collapse]) for (const i of list) { delete i.p; delete i.fam; i.lean = !i.solid; i.level = i.solid ? 'solid' : i.luck < STRONG_LEAN ? 'strong' : 'lean'; }
+  for (const list of [out.expand, out.combos, out.collapse]) for (const i of list) { delete i.p; delete i.fam; delete i.excess; i.lean = !i.solid; i.level = i.solid ? 'solid' : i.luck < STRONG_LEAN ? 'strong' : 'lean'; }
   out.solid = [...out.expand, ...out.combos, ...out.collapse].filter((i) => i.solid).length;
   return out;
 }

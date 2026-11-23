@@ -271,15 +271,17 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   "Date Not Confirmed" = the AI wrote it from what it already knew, without opening a web page this time.
 - A changed name (owner 2026-11-23): the chart and every count use the BIRTH name; `name_now` is a second chart behind the
   "Name Now" chip on the person's page.
-- COLLAPSE AND EXPAND (owner 2026-11-23; the owner's own way of reading, interpretation.md): the results are ONE layout,
-  short, no repeat: Expand cards, Collapse cards, Reading, the charts. `server/insight.js` counts over the STRONG
-  positions only (`isStrong`: day, month, year, names, life expression, life paths, pillar, every mind and emotion
-  center): EXPAND = a number in a strong position in many charts ("18/9 · 16 of 20"), a chart heavy with one family or
-  with numbers holding a digit ("a 4 in it": 4, 40/4, 44/8); COLLAPSE = the themes, then one strong position where a
-  family leads. The vault is only a small "usually 46 in 100". Counting every position (all ~120) drowned everything.
+- THE RESULTS (owner's interview 2026-11-23): sections "Big Picture", "Combinations", "Specific Spots"; never the words
+  expand/collapse on screen. BIG PICTURE = INFLUENCE: each chart's score per number and per family = the weights of
+  the positions holding it (`weightOf`: day, month, year, names, life expression 3; life paths, centers, pillar 2;
+  the rest 1), quantity adding up ("a mix: the hierarchy, sheer quantity, centers over auras"). Strongly influenced =
+  above 7 charts in 10. Said at the most accurate level: "A Strong 4 Influence", or "Specifically 13/4" when one form
+  carries it. No digit cards ("numbers with a 1 in them": "way too anal"). Cards are ordered by SIZE (how many more
+  charts than usual), solid first. The count is kept per research (`COUNTED`): going back is instant.
 - SOLID OR LEAN (owner 2026-11-23: "I want the insights to be solid"): every card is measured against 200 RANDOM
   groups of the same size put through the same search (`luck`), and cut in two (`halves`). Solid = see below, AND both
-  halves; Strong Lean = under 20 in 100; Lean = under 50; past that it is not a card. The first
+  halves; Strong Lean = under 20 in 100; Lean = under 50, or rarer than 1 in 20 on its own and in both halves,
+  labeled "Could Be Chance". Only Solid is grounded; random groups get a Solid card about 1 time in 40. The first
   build called a card clear by its own rarity: 38 of 40 random groups got one. `test/insight.test.js` holds this.
 - What the owner SEES must come out of the search (owner 2026-11-23, 141 mass shooters: "13/4 ... some sort of 4
   combined with 9 ... 16/7 ... you didn't even mention any of that ... fix it so that it actually gathers real
@@ -290,13 +292,13 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - The blind search also reads a number ANYWHERE in the chart and MANY TIMES in one chart, two numbers BOTH in a chart
   ("13/4 & 16/7"), and each combination at three depths: exact (13/4 + 18/9), one side a family (13/4 + Any 9), both
   families (Any 4 + Any 9). Five kinds of search: Solid = fewer than 1 in 100 random groups (`SOLID` 0.01).
-- WHAT A COMBINATION IS (the owner's rule, 2026-11-23, on Brenton Tarrant's chart: public aura 12/3 beside mind center
-  4 "could be considered a 12/3 combined with a 4 ... they're right next to each other"; a mind center with the
-  personality number is NOT one, "those are distant apart"): two numbers CLOSE TOGETHER (a diamond's two parts, a
-  center's main and sub vibration, a center and each aura beside it) or BOTH PRIMARY (day, life path, life expression,
-  the names: `PRIMARY`). `diamondsOf` in insight.js is the one list. Two numbers merely both in a chart are an Expand
-  card ("Both Somewhere in the Chart"), never a combination. The search knows nothing of what the owner says in chat:
-  the same rules run on every group.
+- WHAT A COMBINATION IS (the owner's rule and examples, 2026-11-23): two numbers CLOSE TOGETHER or two PRIMARY
+  positions, never two far apart. Close: a diamond's two parts, a center's main + sub vibration, a center and each
+  aura beside it (public aura 12/3 beside mind center 4), an aura and the name at its side (associates aura and first
+  name), names next to each other, little personality number + little heart's desire, a psyche chart's mental
+  strategies + the life expression diamond under it, the two psyche charts' mind centers / emotion centers / mental
+  strategies. Primary: any two of day, life path, life expression, names. `diamondsOf` in insight.js is the one list;
+  a new example from the owner goes there.
 - COMBINATIONS (owner 2026-11-23): the two numbers of every diamond and center (`PARTS`), every chart; 1 to 18 stay
   as they are, above counts as its digit (26/8 -> 8), either way round: "8 + 15/6". In one spot ("As Day + First
   Name") or anywhere; the pair in a spot and anywhere is ONE test against luck, never two.

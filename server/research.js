@@ -456,16 +456,24 @@ export function fixPerson(db, id, ref, body) {
 
 // ---------- the patterns (free) ----------
 // Everyone ticked, counted against the rest of the vault. People found online whose date is missing cannot be counted.
+const COUNTED = new Map(); // research id -> { key, vault, result }
 export function researchShares(db, id) {
   const g = getResearch(db, id);
   if (!g) return null;
   const on = g.people.filter((p) => p.on);
   const extra = on.filter((p) => p.drawable).map((p) => ({ name: p.chart_name, ...dateParts(p.birth_date), title: p.known_as, ref: p.ref }));
   const ids = g.vault.filter((v) => v.on).map((v) => v.id);
-  const shares = sharesOf(db, { ids, extra, display: g.category });
   const key = crypto.createHash('sha1').update(JSON.stringify([extra.map((e) => `${e.name}|${e.day}.${e.month}.${e.year}`).sort(), ids.slice().sort((a, b) => a - b)])).digest('hex').slice(0, 16);
+  // The count takes a second or two (hundreds of random groups): kept per research while the group and the vault's
+  // charts stay the same, so going back to the screen is instant (owner 2026-11-23: "it sits and loads ... Counting").
+  const vaultMark = JSON.stringify(db.prepare('SELECT count(*) n, max(updated_at) t FROM chart_inputs').get());
+  const kept = COUNTED.get(id);
+  if (kept && kept.key === key && kept.vault === vaultMark) return kept.result;
+  const shares = sharesOf(db, { ids, extra, display: g.category });
   const insights = groupInsights(db, { ids, extra, themes: shares.themes });
-  return { ...shares, insights, key, undated: on.length - extra.length, online: extra.length, from_vault: ids.length };
+  const result = { ...shares, insights, key, undated: on.length - extra.length, online: extra.length, from_vault: ids.length };
+  COUNTED.set(id, { key, vault: vaultMark, result });
+  return result;
 }
 
 // ---------- the reading (paid, Opus) ----------
