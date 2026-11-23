@@ -571,12 +571,14 @@ async function writeSummaryNow(db, id, { again = false } = {}) {
   running++;
   try {
     const { message, usd, seconds } = await callModel('reading', {
-      max_tokens: 3000, output_config: { effort: 'medium' },
+      // 3000 was too few for twelve cards: the answer was cut off before the reading (2026-11-23, 24 cents lost).
+      max_tokens: 10000, output_config: { effort: 'medium' },
       system: [{ type: 'text', text: READING_SYSTEM }, ...(core ? [{ type: 'text', text: core, cache_control: { type: 'ephemeral' } }] : [])],
       tools: [READING_TOOL], // no forced tool_choice: Opus 5.5 refuses it (400, 2026-11-23); the prompt says call it once
       messages: [{ role: 'user', content: ctx.text }],
     }, { estimateUsd: est, what: `research reading #${id} (${ctx.finds} insights)` });
     if (message.stop_reason === 'refusal') throw new AiError('The AI declined to write this reading.');
+    if (message.stop_reason === 'max_tokens') throw new AiError('The reading was cut off before it was finished. Try again.');
     const use = (message.content || []).find((b) => b.type === 'tool_use' && b.name === 'give_reading');
     const input = use && use.input ? use.input : null;
     const lines = (input && Array.isArray(input.lines) ? input.lines : []).map((l) => clean(l, 220)).filter(Boolean).slice(0, 5);
