@@ -233,7 +233,7 @@
       const $expand = h('div', { class: 'stack' }), $collapse = h('div', { class: 'stack' }), $read = h('div', { class: 'card stack rs-read' });
       const card = (i, note) => h('div', { class: 'card ins' },
         h('div', { class: 'ins-top' }, h('span', { class: 'ins-big' }, i.big),
-          h('div', { class: 'ins-headbox' }, h('div', { class: 'ins-head' }, i.head),
+          h('div', { class: 'ins-headbox' }, h('div', { class: 'ins-head' }, i.head), i.lean ? h('span', { class: 'ins-lean' }, 'Slight Lean') : null,
             h('div', { class: 'ins-count' }, h('b', {}, i.count), i.usual !== null && i.usual !== undefined ? h('span', { class: 'muted' }, ` · usually ${i.usual} in 100`) : null))),
         note ? h('p', { class: 'ins-note' }, note.line) : null,
         ...String(i.detail || '').split(' · ').filter(Boolean).map((d) => h('div', { class: 'muted small' }, d)),

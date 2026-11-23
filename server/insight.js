@@ -26,6 +26,9 @@ export const isStrong = (chart, position) => position !== 'anyName' && (weightOf
 
 // How rare a gap must be by luck to count as an insight. Looser where few things are tried, tighter where many are.
 const P_NUMBER = 0.03, P_HEAVY = 0.03, P_SPOT = 0.01;
+// A big group with nothing that clear would show an empty screen (the tech people, 81 charts, 2026-11-23): what comes
+// closest is still shown, marked `lean: true` ("Slight Lean" on the card), at most two per part.
+const P_LEAN = 0.15;
 const titleOf = (n) => (WORDS[n] && WORDS[n].title) || '';
 
 export function groupInsights(db, { ids = [], extra = [], themes = [] } = {}) {
@@ -41,7 +44,7 @@ export function groupInsights(db, { ids = [], extra = [], themes = [] } = {}) {
   const gap = (a, of, k, restOf, limit) => {
     if (a < least || !of || !restOf || a / of <= k / restOf) return null;
     const p = chanceOf(a, of, a + k, of + restOf);
-    return p < limit ? p : null;
+    return p < Math.max(limit, P_LEAN) ? p : null;
   };
 
   // ---- EXPAND: one number in a strong position ----
@@ -85,7 +88,9 @@ export function groupInsights(db, { ids = [], extra = [], themes = [] } = {}) {
   heavy.sort((a, b) => a.p - b.p);
   // The same digit as a family and as "in it" is one insight: the stronger stays.
   const heavyKept = []; for (const h of heavy) if (!heavyKept.some((x) => x.d === h.d)) heavyKept.push(h);
-  out.expand = [...numbers.slice(0, 4), ...heavyKept.slice(0, 2)].sort((a, b) => a.p - b.p).slice(0, 5);
+  const pick = (list, limit, most) => { const clear = list.filter((x) => x.p < limit); return clear.length ? clear.slice(0, most) : list.slice(0, 2).map((x) => ({ ...x, lean: true })); };
+  const clearExpand = [...numbers.filter((x) => x.p < P_NUMBER).slice(0, 4), ...heavyKept.filter((x) => x.p < P_HEAVY).slice(0, 2)].sort((a, b) => a.p - b.p).slice(0, 5);
+  out.expand = clearExpand.length ? clearExpand : [...numbers, ...heavyKept].sort((a, b) => a.p - b.p).slice(0, 2).map((x) => ({ ...x, lean: true }));
 
   // ---- COLLAPSE: the themes first (a family across one part of a chart), then single strong positions ----
   const covered = new Set();
@@ -119,7 +124,8 @@ export function groupInsights(db, { ids = [], extra = [], themes = [] } = {}) {
       detail: `${forms.slice(0, 4).join(', ')}.`, items: [{ pos: spot, num: `/${d}`, name: positionName(chart, position), number: `Any ${d}` }], people: who(s.g) });
   }
   leaders.sort((a, b) => a.p - b.p);
-  out.collapse.push(...leaders.slice(0, Math.max(0, 3 - out.collapse.length)));
+  const room = Math.max(0, 3 - out.collapse.length);
+  out.collapse.push(...(out.collapse.length ? leaders.filter((x) => x.p < P_SPOT).slice(0, room) : pick(leaders, P_SPOT, room)));
   for (const list of [out.expand, out.collapse]) for (const i of list) delete i.p;
   return out;
 }

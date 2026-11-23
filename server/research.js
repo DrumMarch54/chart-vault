@@ -481,7 +481,7 @@ export function summaryContext(g, s) {
     if (m && ((m.bits && m.bits.groups && m.bits.groups.length) || (m.passages && m.passages.length))) addWords(`THE COURSE ON ${i.number} AS THE ${i.name.toUpperCase()}`, m.bits, (m.passages || []).slice(0, 2));
     else addWords(`COURSE PASSAGES ON ${i.number} (general, not about this position)`, null, chunksFor(Number(i.num), null, 2));
   };
-  const say = (i) => `- key ${i.key}: ${i.head}${i.kind === 'number' ? ` (${i.big})` : ''}. ${i.count}. ${i.detail}`;
+  const say = (i) => `- key ${i.key}: ${i.head}${i.kind === 'number' ? ` (${i.big})` : ''}. ${i.count}. ${i.detail}${i.lean ? ' [only a slight lean: say it lightly, in a few words]' : ''}`;
   lines.push('', 'EXPAND (the strong positions of every chart together)');
   for (const i of ins.expand) {
     lines.push(say(i));
