@@ -201,7 +201,7 @@
         p.fixed ? mark('Fixed by You') : null,
         p.from_db ? mark('From Wikidata') : null,
         /Wikipedia/.test(p.name_from || '') ? mark('Full Name From Wikipedia', 'ok') : null,
-        p.name_from && !/^(Birth name|Full name)/.test(p.name_from) && !p.fixed ? mark('Middle Names Not Confirmed', 'warn') : null,
+        p.middle_unsure ? mark('Middle Names Not Confirmed', 'warn') : null,
         p.unfit ? mark(`Does Not Fit: ${p.unfit}`, 'warn') : null,
       ].filter(Boolean));
       label();

@@ -612,7 +612,9 @@ export function getResearch(db, id) {
   if (!r) return null;
   const off = parse(row.off, {});
   const offP = new Set(Array.isArray(off.p) ? off.p : []), offV = new Set(Array.isArray(off.v) ? off.v : []);
-  const people = (r.people || []).map((p, i) => ({ ...p, ref: i, on: !offP.has(i), vault: vaultChart(db, p), drawable: !!(p.chart_name && dateParts(p.birth_date)) }));
+  const people = (r.people || []).map((p, i) => ({ ...p, ref: i, on: !offP.has(i), vault: vaultChart(db, p), drawable: !!(p.chart_name && dateParts(p.birth_date)),
+    // Middle names may be missing: not read as a whole birth name, and only a first and last name held.
+    middle_unsure: !p.fixed && !fullName(p.name_from) && String(p.birth_name || '').trim().split(/\s+/).filter(Boolean).length < 3 }));
   const taken = new Set(people.filter((p) => p.vault).map((p) => p.vault.id));
   const vault = vaultMembers(db, r.vault_kinds || []).filter((v) => !taken.has(v.id)).map((v) => ({ ...v, on: !offV.has(v.id) }));
   const stored = parse(row.summary, null);
