@@ -236,7 +236,9 @@
       // explanations are written once per group, paid, kept). The search's housekeeping sits at the bottom.
       const ins = { expand: [], combos: [], collapse: [], ...(s.insights || {}) };
       const RANK = { solid: 0, strong: 1, lean: 2 };
-      const all = [...ins.expand, ...ins.combos, ...ins.collapse].sort((a, b) => (RANK[a.level] ?? 3) - (RANK[b.level] ?? 3));
+      // Most solid first; inside a level, what is the most times as common as in ordinary people (owner 2026-11-23: "wouldn't
+      // the highest be at the top?": the top is what is most special to this group, and the card says how many times).
+      const all = [...ins.expand, ...ins.combos, ...ins.collapse].sort((a, b) => (RANK[a.level] ?? 3) - (RANK[b.level] ?? 3) || (b.times || 0) - (a.times || 0));
       const cost = g.summary_cost ? `about ${money(g.summary_cost.usd)}` : 'a few cents';
       const groupWord = g.category || 'this group';
       const pctOf = (a, of) => (of ? Math.round((a / of) * 100) : 0);
@@ -250,7 +252,8 @@
             h('div', { class: 'ins-headbox' }, h('div', { class: 'ins-head' }, i.head), i.sub ? h('div', { class: 'muted small' }, i.sub) : null,
               h('div', { class: 'ins-tags' }, h('span', { class: `ins-lean ${i.level || ''}` }, LEVEL[i.level] ? LEVEL[i.level][0] : 'Lean'), h('span', { class: 'muted small' }, kindWord(i))))),
           h('div', { class: 'ins-plain' }, h('b', {}, `${fmtN(i.in_group)} of the ${fmtN(of)} ${groupWord}`), ` have this (${here}%).`,
-            i.usual !== null && i.usual !== undefined ? h('span', {}, ` In everyone else in your vault: ${i.usual}%.`) : null),
+            i.usual !== null && i.usual !== undefined ? h('span', {}, ` In ordinary people: ${i.usual}%.`) : null,
+            i.times ? h('div', { class: 'ins-times' }, `${i.times >= 10 ? Math.round(i.times) : i.times}× as common as in ordinary people`) : null),
           note ? h('p', { class: 'ins-note' }, note.line) : pendingNote ? h('p', { class: 'muted small', style: 'margin:0' }, 'Writing what this means for the group…') : null,
           ...String(i.detail || '').split(' · ').filter(Boolean).map((d) => h('div', { class: 'muted small' }, d)),
           h('details', { class: 'ins-who', ontoggle: (e) => { if (e.target.open) count('research.insight_who'); } }, h('summary', {}, `Who (${i.people.length}) and How Solid`),
@@ -285,7 +288,7 @@
       const live = g.status === 'running' || g.status === 'checking'; // a search at work shows on top; a stopped one (paused too) waits at the bottom
       fill($body,
         live ? statusCard(g, id, () => { if (location.hash === `#/research?id=${id}` && $body.isConnected) resultsView(id, $body); }, true) : null,
-        h('div', { class: 'rs-title' }, h('div', { class: 'simname' }, g.category), h('div', { class: 'muted small' }, `${plural(s.size, one, many)} counted, against ${fmtN(s.rest)} others in your vault.`)),
+        h('div', { class: 'rs-title' }, h('div', { class: 'simname' }, g.category), h('div', { class: 'muted small' }, `${plural(s.size, one, many)} counted, against ${fmtN(s.rest)} charts of ordinary people (made-up birth dates and names, so numbers everyone has drop out).`)),
         s.size >= 3 ? $list : h('p', { class: 'muted' }, 'A group needs at least three with a name and a full date before anything can be said about it.'),
         s.size >= 3 ? $explain : null,
         h('div', { class: 'gridbar' }, h('div', { class: 'summary rhead' }, 'The Charts'), size.node), // the size control sits with its grid: the title fills the top row
@@ -297,8 +300,6 @@
         g.status === 'done' && g.closed ? h('button', { type: 'button', class: 'btn btn-block', onclick: async () => { count('research.more'); try { await send(`/api/research/${id}/more`, 'POST', { reopen: true }); go(`#/research?id=${id}&view=who`); } catch (err) { toast(err.message, true); } } }, 'Find More or Check the Dates') : null,
         h('a', { class: 'btn btn-block', href: `#/research?id=${id}&view=who`, onclick: () => count('research.change_who') }, `Change Who Is In (${on.length + vaultOn.length} of ${g.people.length + g.vault.length})`),
         h('div', { class: 'muted small' }, `${fmtN(s.online)} found online${s.from_vault ? `, ${fmtN(s.size - s.online)} from your vault` : ''}.${left ? ` ${left[0].toUpperCase()}${left.slice(1)}.` : ''}${g.personal ? ' A personal category: only people who said it about themselves in public.' : ''}`),
-        // Every position counted one by one against the vault: kept, folded away (owner 2026-11-23: "maybe that's useful in some cases").
-        s.size >= 3 ? h('details', { class: 'rs-every', ontoggle: (e) => { if (e.target.open) count('research.every_position'); } }, h('summary', { class: 'btn btn-block' }, 'Every Position Counted'), h('div', { class: 'qscreen rs-finds' }, groupFinds(s, { chartHref: hrefOf }))) : null,
         h('div', { class: 'muted small' }, `The search cost ${money(g.usd)} · ${g.rounds} round${g.rounds === 1 ? '' : 's'}, ${g.searches} web search${g.searches === 1 ? '' : 'es'} · ${whenOf(g.at)}${g.stop && g.status === 'done' ? ` · ${g.stop}` : ''}`),
         holdButton('Hold to Remove From Past Research', async () => {
           try { await api(`/api/research/${id}`, { method: 'DELETE' }); count('research.past_remove'); toast('Removed from Past Research'); swap('#/research'); } catch (err) { toast(err.message, true); }

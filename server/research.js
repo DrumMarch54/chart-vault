@@ -16,7 +16,6 @@
 import crypto from 'node:crypto';
 import { callModel, AiError, estimate, textOf, WEB_SEARCH_USD } from './ai.js';
 import { chartName } from './lookup.js';
-import { sharesOf } from './group.js';
 import { groupInsights } from './insight.js';
 import { FIELDS, FLAGS, parseWho, whoSql } from './people.js';
 import { meaningFor } from './meaning.js';
@@ -469,9 +468,9 @@ export function researchShares(db, id) {
   const vaultMark = JSON.stringify(db.prepare('SELECT count(*) n, max(updated_at) t FROM chart_inputs').get());
   const kept = COUNTED.get(id);
   if (kept && kept.key === key && kept.vault === vaultMark) return kept.result;
-  const shares = sharesOf(db, { ids, extra, display: g.category });
-  const insights = groupInsights(db, { ids, extra, themes: shares.themes });
-  const result = { ...shares, insights, key, undated: on.length - extra.length, online: extra.length, from_vault: ids.length };
+  // Measured against ordinary people (server/baseline.js), never the rest of the vault (owner 2026-11-24).
+  const insights = groupInsights(db, { ids, extra });
+  const result = { size: insights.size, rest: insights.rest, tagged: on.length + ids.length, insights, key, undated: on.length - extra.length, online: extra.length, from_vault: ids.length };
   COUNTED.set(id, { key, vault: vaultMark, result });
   return result;
 }

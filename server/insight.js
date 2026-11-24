@@ -30,6 +30,7 @@
 // were born in a certain year"); it is never corrected away.
 //
 import { peopleValues, AREA } from './group.js';
+import { baselinePeople } from './baseline.js';
 import { weightOf } from './facts.js';
 import { PARTS, POSITIONS, NOT_A_REPEAT } from './positions.js';
 import { positionName } from './similar.js';
@@ -122,8 +123,14 @@ const SHOWN = 0.2;       // a gap must at least be this rare by itself to be a c
 function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 
 // Everyone with a name and a date, each with the three ways a chart is read here.
+// The group (its vault charts and the people found online) against ORDINARY PEOPLE (server/baseline.js), never the rest
+// of the vault (owner 2026-11-24: "the vault is biased"). The ordinary people are read once and kept.
+const shape = (p) => ({ ...p, strong: p.values.filter((v) => isStrong(v.chart, v.position)), all: p.values.filter(counts), diamonds: diamondsOf(p.values) });
+let baseShaped = null;
 function prepare(db, ids, extra) {
-  return peopleValues(db, ids, extra).map((p) => ({ ...p, strong: p.values.filter((v) => isStrong(v.chart, v.position)), all: p.values.filter(counts), diamonds: diamondsOf(p.values) })).filter((p) => p.strong.length);
+  if (!baseShaped) baseShaped = baselinePeople().map(shape).filter((p) => p.strong.length);
+  const group = peopleValues(db, ids, extra).filter((p) => p.inGroup).map(shape).filter((p) => p.strong.length);
+  return [...group, ...baseShaped];
 }
 function tailMaker(N) {
   const lf = new Float64Array(N + 1); for (let i = 1; i <= N; i++) lf[i] = lf[i - 1] + Math.log(i);
@@ -218,7 +225,7 @@ export function groupInsights(db, { ids = [], extra = [], themes = [], randomGro
   const stamp = (f) => { const l = luckOf(f.r.kind, f.p), halves = bothHalves(f); return { luck: l, halves, solid: l < SOLID && halves }; };
   // How many more charts hold it than usual: the size of a theme. Cards are ordered by it (solid first), so a big
   // theme of a common number (13/4 in 43 of 122, usually 26 in 100) leads a rare number's small one (72/9 in 13).
-  const base = (f) => ({ p: f.p, excess: f.a - f.of * (f.k / Math.max(f.restOf, 1)), in_group: f.a, group_of: f.of, usual: pct(f.k, f.restOf), people: who(inGroup(f.r)), ...stamp(f) });
+  const base = (f) => ({ p: f.p, times: f.k ? Math.round(((f.a / f.of) / (f.k / f.restOf)) * 10) / 10 : null, excess: f.a - f.of * (f.k / Math.max(f.restOf, 1)), in_group: f.a, group_of: f.of, usual: pct(f.k, f.restOf), people: who(inGroup(f.r)), ...stamp(f) });
   // Cards of one part, up to `most`: the solid ones first, then leans (fewer than half the random groups match them). What most random groups also show is never a card: a part may honestly be empty.
   // A Lean is either close to solid (fewer than half the random groups beat it), or, judged on its own, rarer than 1
   // in 20 AND in both halves of the group: a real-looking theme that the whole search cannot vouch for yet. Leans

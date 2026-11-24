@@ -12,6 +12,7 @@ const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'chart-vault-insight-'));
 process.env.DATA_DIR = path.join(tmp, 'data');
 process.env.BACKUP_DIR = path.join(tmp, 'backups');
 process.env.WEB_TOKEN = 'test-password-long';
+process.env.BASELINE_SIZE = '600'; // ordinary people: fewer in tests, for speed
 
 const { ensureDirs } = await import('../server/config.js');
 const { openDb } = await import('../server/db.js');
@@ -63,7 +64,7 @@ test('people who really share a number get it as a Solid card, with who holds it
   const extra = Array.from({ length: 12 }, (_, ref) => ({ name: name(), day: 19, month: 7, year: 1990, title: `Stranger ${ref}`, ref }));
   const ins = groupInsights(db, { extra, randomGroups: 120 });
   assert.equal(ins.size, 12);
-  assert.equal(ins.rest, 240, 'people found online never join the others');
+  assert.equal(ins.rest, 600, 'measured against ordinary people, never the vault');
   const day = ins.expand.find((i) => i.sum === 19);
   assert.ok(day, '19/1 fills the group');
   assert.equal(day.level, 'solid');

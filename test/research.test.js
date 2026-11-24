@@ -13,6 +13,8 @@ const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'chart-vault-research-'));
 process.env.DATA_DIR = path.join(tmp, 'data');
 process.env.BACKUP_DIR = path.join(tmp, 'backups');
 process.env.WEB_TOKEN = 'test-password-long';
+process.env.BASELINE_SIZE = '600'; // ordinary people: fewer in tests, for speed
+const BASELINE_SIZE = 600;
 process.env.BUILD_COMMIT = 'researchtest';
 process.env.AUTODEPLOY_SCRIPT = path.join(tmp, 'installed-autodeploy.sh');
 process.env.AUTODEPLOY_LOG = path.join(tmp, 'autodeploy.log');
@@ -122,8 +124,8 @@ test('people found online are counted in the group, never among the others', asy
   const s = (await call('GET', `/api/research/${id}/shares`)).body;
   assert.equal(s.size, 4, 'four have a full date');
   assert.equal(s.undated, 1);
-  assert.equal(s.rest, 12, 'the vault is the yardstick, unchanged');
-  assert.equal(s.members.every((m) => m.id === null && Number.isInteger(m.ref)), true);
+  assert.equal(s.rest, BASELINE_SIZE, 'ordinary people are the yardstick, never the vault');
+  for (const c of [...s.insights.expand, ...s.insights.combos, ...s.insights.collapse]) for (const m of c.people) assert.equal(m.id === null && Number.isInteger(m.ref), true, 'people found online carry their place in the research');
 });
 
 test('unticking someone takes them out of the count, and a fix is kept', async () => {
@@ -147,8 +149,7 @@ test('someone the vault already has is that vault chart, counted once', async ()
   assert.equal(g.people[0].vault.id, 1);
   const s = (await call('GET', `/api/research/${id}/shares`)).body;
   assert.equal(s.size, 5);
-  assert.equal(s.rest, 11, 'the vault chart moved into the group');
-  assert.equal(s.members.find((m) => m.title && m.id === 1).ref, 0);
+  assert.equal(s.rest, BASELINE_SIZE, 'the vault never joins the yardstick');
   setInputs(db, 1, VAULT[0], { source: 'owner' });
 });
 

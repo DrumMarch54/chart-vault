@@ -278,6 +278,13 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   above 7 charts in 10. Said at the most accurate level: "A Strong 4 Influence", or "Specifically 13/4" when one form
   carries it. No digit cards ("numbers with a 1 in them": "way too anal"). Cards are ordered by SIZE (how many more
   charts than usual), solid first. The count is kept per research (`COUNTED`): going back is instant.
+- THE YARDSTICK IS ORDINARY PEOPLE, never the vault (owner 2026-11-24: "the vault's not that big ... and biased, a lot
+  of them are bad people"). `server/baseline.js`: 4,000 made-up charts (`BASELINE_SIZE`), birth dates even over
+  1940-2005, names from `names.txt.gz`, seeded; plain math, no AI, built once per process (under a second). A group's
+  vault charts and people found online are the group; nobody else from the vault counts. Why a yardstick at all
+  (measured 2026-11-24): with none, the top numbers were the same for YouTubers, mass shooters and tech people
+  (12/3, 9, 15/6), common in everyone by construction. Each card says "N× as common as in ordinary people", and
+  inside a level the list is ordered by that.
 - SOLID OR LEAN (owner 2026-11-23: "I want the insights to be solid"): every card is measured against 200 RANDOM
   groups of the same size put through the same search (`luck`), and cut in two (`halves`). Solid = see below, AND both
   halves; Strong Lean = under 20 in 100; Lean = under 50, or rarer than 1 in 20 on its own and in both halves,
