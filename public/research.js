@@ -147,7 +147,7 @@
         title('What Counts'),
         h('div', { class: 'muted small' }, 'Who belongs in this group. Every search follows it.'),
         $counts, h('button', { type: 'button', class: 'btn btn-block', onclick: saveCounts }, 'Keep This Definition'),
-        g.what_counts ? h('button', { type: 'button', class: 'btn btn-block', onclick: () => post('fits', {}, 'research.fits') }, `Check Who Fits (about ${money(Math.max(0.01, Math.ceil(g.people.length / 60) * 0.012))})`) : null,
+        g.what_counts ? h('button', { type: 'button', class: 'btn btn-block', onclick: () => post('fits', {}, 'research.fits') }, `Check Who Fits (about ${money(Math.max(0.02, Math.ceil(g.people.length / 60) * 0.04))})`) : null,
         g.what_counts ? h('div', { class: 'muted small' }, 'Reads everyone against What Counts and unticks whoever does not fit. Nobody is deleted.') : null,
         title('Find More'),
         !g.personal && !g.wikidata_done ? h('button', { type: 'button', class: 'btn-primary btn-block', onclick: () => post('database', {}, 'research.database') }, 'Add From the Free Database (Free)') : null,

@@ -301,13 +301,14 @@ export function addFromDatabase(db, id, { log = () => {} } = {}) {
 }
 
 // ---------- Check Who Fits: every person against What Counts (no web search, about a cent per 60 people) ----------
-const FIT_SYSTEM = `You check who belongs to a research group. You get WHAT COUNTS (the owner's definition) and a numbered list of people, each with what they are known for. Call give_fit once with every person who does NOT fit, each with a few words why ("knife and truck attack, no shooting"). Judge only from what is listed and what is widely known about them; when unsure, leave the person in.`;
+const FIT_SYSTEM = `You check who belongs to a research group. You get WHAT COUNTS (the owner's definition) and a numbered list of people, each with what they are known for. Call give_fit once with every person who does NOT fit, each with a few words why ("knife and truck attack, no shooting"). Be strict: a person whose listed facts, or what is widely known about them, fall under anything What Counts excludes, or who does not meet what it requires, does NOT fit. Leave a person in only when they plainly fit, or when nothing is known that decides it.`;
 const FIT_TOOL = { name: 'give_fit', description: 'The people who do not fit.', strict: true, input_schema: { type: 'object', additionalProperties: false, required: ['misfits'], properties: { misfits: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['ref', 'why'], properties: { ref: { type: 'integer' }, why: { type: 'string' } } } } } } };
 export function checkFits(db, id, { log = () => {} } = {}) {
   const r = loadResult(db, id);
   if (!r) throw new AiError('That research is gone.');
   if (r.status === 'running' || r.status === 'checking') return;
   if (!r.what_counts) throw new AiError('Write What Counts first.');
+  for (const p of r.people) delete p.unfit; // every check reads everyone afresh
   r.status = 'checking'; r.checking = { fits: true, total: r.people.length, done: 0, unfit: 0, usd: 0 };
   saveResult(db, id, r);
   (async () => {
@@ -317,7 +318,8 @@ export function checkFits(db, id, { log = () => {} } = {}) {
         const now = loadResult(db, id); if (!now || now.status !== 'checking') return;
         const batch = now.people.map((p, ref) => ({ p, ref })).slice(start, start + 60);
         if (!batch.length) break;
-        const res = await callModel('lookup', { max_tokens: 3000, system: FIT_SYSTEM, tools: [FIT_TOOL], messages: [{ role: 'user', content: `WHAT COUNTS: ${now.what_counts}\n\n${batch.map(({ p, ref }) => `${ref}: ${p.known_as} (${p.birth_date || 'no date'}): ${p.why || p.who || ''}`).join('\n')}` }] }, { estimateUsd: 0.01, what: `research #${id} who fits ${start + 1}-${start + batch.length}` });
+        // Opus, not Haiku: the first run with Haiku let a truck-and-knife attack and two sniper sprees through (2026-11-24).
+        const res = await callModel('reading', { max_tokens: 4000, output_config: { effort: 'low' }, system: FIT_SYSTEM, tools: [FIT_TOOL], messages: [{ role: 'user', content: `WHAT COUNTS: ${now.what_counts}\n\n${batch.map(({ p, ref }) => `${ref}: ${p.known_as} (${p.birth_date || 'no date'}): ${p.why || p.who || ''}`).join('\n')}` }] }, { estimateUsd: 0.01, what: `research #${id} who fits ${start + 1}-${start + batch.length}` });
         const use = (res.message.content || []).find((b) => b.type === 'tool_use' && b.name === 'give_fit');
         const cur = loadResult(db, id); if (!cur) return;
         const refs = new Set(batch.map((b) => b.ref));
