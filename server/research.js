@@ -17,7 +17,7 @@ import crypto from 'node:crypto';
 import { callModel, AiError, estimate, textOf, WEB_SEARCH_USD } from './ai.js';
 import { chartName } from './lookup.js';
 import { groupInsights } from './insight.js';
-import { findItem, membersOf, LINK_KINDS } from './wikidata.js';
+import { findItem, membersOf, fillFromWikipedia, LINK_KINDS } from './wikidata.js';
 import { FIELDS, FLAGS, parseWho, whoSql } from './people.js';
 import { meaningFor } from './meaning.js';
 import { chunksFor, coreText } from './knowledge.js';
@@ -230,22 +230,58 @@ async function fromWikidata(db, id, log) {
     try { item = await findItem(w.words); if (item) got = await membersOf(w.link, item); }
     catch (err) { log(`research #${id} free database FAILED: ${err.message}`); used.push({ ...w, error: err.message }); continue; }
     if (!item || !got) { used.push({ ...w, error: 'not found in the free database' }); continue; }
+    // The full legal birth name (owner 2026-11-24: "we absolutely need the middle name"): every member's Wikipedia
+    // article's first line, free; a missing birth date comes from there too.
+    // Only as many as can join (a big group reads 20 articles a second or two): people already found first, then dated.
+    const before = loadResult(db, id); if (!before) return added;
+    const known = (m) => before.people.some((x) => sameName(x.known_as, m.known_as));
+    const order = [...got.people.filter(known), ...got.people.filter((m) => !known(m) && m.birth_date), ...got.people.filter((m) => !known(m) && !m.birth_date)];
+    const room = Math.max(0, MAX_PEOPLE - before.people.length);
+    got.people = order.slice(0, order.filter(known).length + room + 200);
+    const filled = await fillFromWikipedia(got.people, { onProgress: (done, total) => { const n = loadResult(db, id); if (n) { n.filling = { done, total }; saveResult(db, id, n); } } });
     const now = loadResult(db, id); if (!now) return added;
-    let here = 0;
+    delete now.filling;
+    let here = 0, fuller = 0, undated = 0;
     for (const m of got.people) {
       if (now.people.length >= MAX_PEOPLE) break;
+      if (!m.birth_date) { undated++; continue; }
+      const wiki = m.wiki ? `https://en.wikipedia.org/wiki/${encodeURIComponent(m.wiki.replace(/ /g, '_'))}` : '';
       const p = { kind: 'person', known_as: m.known_as, birth_name: m.birth_name, chart_name: chartName(m.birth_name, 'person'), birth_date: m.birth_date, name_now: '', who: clean(m.who, 160), why: clean(m.who, 160),
-        member_source: { url: `https://www.wikidata.org/wiki/${m.qid}`, site: 'wikidata.org', title: 'Wikidata' }, name_source: { url: `https://www.wikidata.org/wiki/${m.qid}`, site: 'wikidata.org', title: m.name_from }, date_source: { url: `https://www.wikidata.org/wiki/${m.qid}`, site: 'wikidata.org', title: 'Wikidata' },
-        checked: true, sure: !/Common name only|First and family/.test(m.name_from), name_from: m.name_from, from_db: true, ...(m.other_dates.length ? { other_dates: m.other_dates } : {}) };
+        member_source: { url: `https://www.wikidata.org/wiki/${m.qid}`, site: 'wikidata.org', title: 'Wikidata' },
+        name_source: wiki && /Wikipedia/.test(m.name_from) ? { url: wiki, site: 'en.wikipedia.org', title: m.name_from } : { url: `https://www.wikidata.org/wiki/${m.qid}`, site: 'wikidata.org', title: m.name_from },
+        date_source: m.date_from && wiki ? { url: wiki, site: 'en.wikipedia.org', title: 'Wikipedia' } : { url: `https://www.wikidata.org/wiki/${m.qid}`, site: 'wikidata.org', title: 'Wikidata' },
+        checked: true, sure: fullName(m.name_from), name_from: m.name_from, from_db: true, ...(m.other_dates && m.other_dates.length ? { other_dates: m.other_dates } : {}) };
       const same = now.people.find((x) => isSame(x, p) || (x.birth_date === p.birth_date && sameName(String(x.known_as).split(' ').pop(), String(p.known_as).split(' ').pop())));
-      if (same) { if (!same.from_db && same.birth_name && (same.birth_name.split(' ').length >= p.birth_name.split(' ').length)) continue; continue; }
+      if (same) {
+        // Kept as found; a fuller name from the article replaces a shorter one (never a name the owner fixed).
+        if (!same.fixed && fullName(p.name_from) && !fullName(same.name_from) && p.birth_name.split(' ').length >= String(same.birth_name || '').split(' ').length) {
+          same.birth_name = p.birth_name; same.chart_name = p.chart_name; same.name_from = p.name_from; same.name_source = p.name_source; same.sure = true; fuller++;
+        }
+        continue;
+      }
       now.people.push(p); here++;
     }
-    used.push({ ...w, id: item.id, label: item.label, description: item.description, total: got.total, dated: got.people.length, added: here });
+    used.push({ ...w, id: item.id, label: item.label, description: item.description, total: got.total, dated: got.people.length - undated, added: here, full_names: filled.names, fuller });
     now.wikidata_used = used;
     saveResult(db, id, now);
     added += here;
-    log(`research #${id} free database ${w.link} ${item.id} (${item.label}): ${got.people.length} dated, ${here} new`);
+    log(`research #${id} free database ${w.link} ${item.id} (${item.label}): ${got.people.length - undated} dated, ${here} new, ${filled.names} full names from Wikipedia (${filled.dates} dates), ${fuller} names made fuller`);
+  }
+  // People the web search found: their Wikipedia article by the public name, taken only when its birth date is theirs.
+  const web = loadResult(db, id);
+  if (web) {
+    const want = web.people.map((x, i) => ({ ...x, at: i })).filter((x) => !x.from_db && !x.fixed && x.birth_date && !fullName(x.name_from));
+    if (want.length) {
+      const copy = want.map((x) => ({ known_as: x.known_as, birth_name: x.birth_name, birth_date: x.birth_date, name_from: x.name_from || '' }));
+      const got = await fillFromWikipedia(copy);
+      const back = loadResult(db, id);
+      if (back) {
+        want.forEach((x, i) => { const c = copy[i]; if (!c.wiki) return; const y = back.people[x.at] && back.people[x.at].known_as === x.known_as ? back.people[x.at] : back.people.find((q) => q.known_as === x.known_as && q.birth_date === x.birth_date); if (!y || y.fixed) return;
+          y.name_from = c.name_from; if (c.birth_name !== y.birth_name) { y.birth_name = c.birth_name; y.chart_name = chartName(c.birth_name, 'person'); } y.name_source = { url: `https://en.wikipedia.org/wiki/${encodeURIComponent(c.wiki.replace(/ /g, '_'))}`, site: 'en.wikipedia.org', title: c.name_from }; });
+        saveResult(db, id, back);
+        log(`research #${id} web-found people: ${got.names} full names from Wikipedia of ${want.length}`);
+      }
+    }
   }
   const end = loadResult(db, id); if (end) { end.wikidata_used = used; end.wikidata_done = true; saveResult(db, id, end); }
   return added;
@@ -277,6 +313,9 @@ async function runPlan(db, id, log) {
   }
 }
 const fmtCount = (n) => n.toLocaleString('en-US');
+// A name read as the person's whole legal birth name (a birth name, or Wikipedia's full first line); else middle names
+// may be missing.
+const fullName = (from) => /^(Birth name|Full name)/.test(from || '');
 
 // The owner answers the plan's question (or writes What Counts in their own words): the plan is made again with it.
 export function answerResearch(db, id, { answer = '', what_counts = '' } = {}, { log = () => {} } = {}) {
@@ -578,7 +617,7 @@ export function getResearch(db, id) {
   const vault = vaultMembers(db, r.vault_kinds || []).filter((v) => !taken.has(v.id)).map((v) => ({ ...v, on: !offV.has(v.id) }));
   const stored = parse(row.summary, null);
   const summary = stored && stored.v === READING_V ? stored : null; // an older kind of summary is not shown: the reading is written anew
-  return { id: row.id, query: r.query, category: r.category, status: r.status || 'done', stop: r.stop || '', closed: !!r.closed, auto: !!r.auto, what_counts: r.what_counts || '', question: r.question || '', planned: !!r.planned, wikidata_used: r.wikidata_used || [], wikidata_done: !!r.wikidata_done, angles: r.angles || [], tried: r.tried || [], angle: r.angle || '', checking: r.checking || null, rounds: r.rounds ?? 1, limit: r.limit || LIMIT_USD, personal: !!r.personal, dropped: r.dropped || 0, note: r.note || '',
+  return { id: row.id, query: r.query, category: r.category, status: r.status || 'done', stop: r.stop || '', closed: !!r.closed, auto: !!r.auto, what_counts: r.what_counts || '', question: r.question || '', planned: !!r.planned, wikidata_used: r.wikidata_used || [], wikidata_done: !!r.wikidata_done, filling: r.filling || null, angles: r.angles || [], tried: r.tried || [], angle: r.angle || '', checking: r.checking || null, rounds: r.rounds ?? 1, limit: r.limit || LIMIT_USD, personal: !!r.personal, dropped: r.dropped || 0, note: r.note || '',
     vault_kinds: parseWho(r.vault_kinds || []).map((k) => k.label), people, vault, summary,
     usd: r.usd || 0, seconds: r.seconds || 0, searches: r.searches || 0, at: row.created_at, build: row.build };
 }

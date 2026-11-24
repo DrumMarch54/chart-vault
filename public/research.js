@@ -87,7 +87,7 @@
       if (g.status === 'running') {
         const mine = ++watch;
         setTimeout(() => { if (mine === watch && location.hash.includes(`id=${id}`)) redraw(); }, 4000);
-        if (!g.planned || (g.planned && !g.wikidata_done && !g.rounds)) return h('div', { class: 'card stack rs-status' }, h('b', {}, g.planned ? 'Looking in the free database (Wikidata)…' : 'Working out what counts…'), h('div', { class: 'muted' }, `${g.people.length} found so far. This takes a few seconds to a minute.`));
+        if (!g.planned || (g.planned && !g.wikidata_done && !g.rounds)) return h('div', { class: 'card stack rs-status' }, h('b', {}, !g.planned ? 'Working out what counts…' : g.filling ? 'Reading Full Birth Names From Wikipedia…' : 'Looking in the free database (Wikidata)…'), h('div', { class: 'muted' }, g.filling ? `${g.filling.done.toLocaleString('en-US')} of ${g.filling.total.toLocaleString('en-US')} people read. Free; a few minutes for a big group.` : `${g.people.length} found so far. This takes a few seconds to a minute.`));
         return h('div', { class: 'card stack rs-status' }, h('b', {}, `Searching the web… round ${g.rounds + 1}`),
           g.angle || g.auto ? h('div', { class: 'small' }, `${g.auto ? 'Searching everything' : 'One angle'}${g.angle ? `: now “${g.angle}”` : ': the plain search first'}`) : null,
           h('div', { class: 'muted' }, `${g.people.length} found so far · ${money(g.usd)} spent. A round takes a minute or two. You can leave: it keeps going, and it is kept in Past Research.`));
@@ -200,7 +200,8 @@
         !p.drawable ? mark('No Date: Cannot Be Counted', 'warn') : !p.checked && !p.fixed ? mark(p.check_failed ? 'No Page Found for the Date' : 'Date Not Confirmed', 'warn') : p.was ? mark('Date Corrected', 'ok') : p.confirmed_later ? mark('Date Confirmed', 'ok') : null,
         p.fixed ? mark('Fixed by You') : null,
         p.from_db ? mark('From Wikidata') : null,
-        p.name_from && !/^Birth name/.test(p.name_from) && !p.fixed ? mark('Middle Names Not Confirmed', 'warn') : null,
+        /Wikipedia/.test(p.name_from || '') ? mark('Full Name From Wikipedia', 'ok') : null,
+        p.name_from && !/^(Birth name|Full name)/.test(p.name_from) && !p.fixed ? mark('Middle Names Not Confirmed', 'warn') : null,
         p.unfit ? mark(`Does Not Fit: ${p.unfit}`, 'warn') : null,
       ].filter(Boolean));
       label();
