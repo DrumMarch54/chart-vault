@@ -17,6 +17,7 @@ import crypto from 'node:crypto';
 import { callModel, AiError, estimate, textOf, WEB_SEARCH_USD } from './ai.js';
 import { chartName } from './lookup.js';
 import { groupInsights } from './insight.js';
+import { findItem, membersOf, LINK_KINDS } from './wikidata.js';
 import { FIELDS, FLAGS, parseWho, whoSql } from './people.js';
 import { meaningFor } from './meaning.js';
 import { chunksFor, coreText } from './knowledge.js';
@@ -122,9 +123,9 @@ export function researchCost(db) {
 }
 
 // One paid round: the web search for up to ROUND people, not repeating `known`. Returns what it found, cleaned.
-async function findRound(q, { known = [], personal = false, roundNo = 1, angle = '', tried = [] } = {}) {
+async function findRound(q, { known = [], personal = false, roundNo = 1, angle = '', tried = [], counts = '' } = {}) {
   const n = ROUND;
-  const messages = [{ role: 'user', content: `The category: ${q}${angle ? `\nANGLE: ${angle}` : ''}\nHow many to find: ${n}${known.length ? `\nALREADY FOUND (find others): ${known.join('; ')}` : ''}${tried.length ? `\nANGLES ALREADY TRIED: ${tried.join('; ')}` : ''}` }];
+  const messages = [{ role: 'user', content: `The category: ${q}${counts ? `\nWHAT COUNTS (the owner's definition; nobody who does not fit it): ${counts}` : ''}${angle ? `\nANGLE: ${angle}` : ''}\nHow many to find: ${n}${known.length ? `\nALREADY FOUND (find others): ${known.join('; ')}` : ''}${tried.length ? `\nANGLES ALREADY TRIED: ${tried.join('; ')}` : ''}` }];
   const found = new Map();
   let usd = 0, seconds = 0, calls = 0, searches = 0, answer = null, nudged = false;
   const errors = [];
@@ -190,9 +191,159 @@ export function startResearch(db, query, { build = null, log = () => {} } = {}) 
   if (!q) throw new AiError('Type a category first.');
   const r = { query: q, category: q, personal: PERSONAL.test(q), dropped: 0, note: '', vault_kinds: [], people: [], usd: 0, seconds: 0, calls: 0, searches: 0, rounds: 0, limit: LIMIT_USD, status: 'running', stop: '' };
   const id = Number(db.prepare('INSERT INTO research (query, category, size, result, off, usd, build) VALUES (?, ?, 0, ?, ?, 0, ?)').run(q, q, JSON.stringify(r), JSON.stringify({ p: [], v: [] }), build).lastInsertRowid);
-  runRounds(db, id, log);
+  runPlan(db, id, log);
   return id;
 }
+// ---------- the plan: what counts, a question when unclear, where the free database keeps them ----------
+// (owner 2026-11-24: "they all have to actually be relevant ... there may be cases where you need to ask for the
+// clarification ... so we get the best data"; Wikidata first, the paid search only for what it misses.)
+const PLAN_SYSTEM = `You prepare a research for a numerology app. The owner names a category of people or businesses; the app will collect members with their full birth name and birth date, from the free database Wikidata first, then a web search. Call give_plan exactly once, straight away.
+- category: the category as a short title in Title Case.
+- what_counts: one or two plain sentences that decide who belongs and who does not, as the owner most likely means it ("Mass shooters: a person who opened fire on people in a public place, killing or trying to kill several at once. Not snipers over days, not police ambushes, not attacks with other weapons."). Use the owner's own words when given.
+- question: ONLY when the words could clearly mean two different groups and the difference would change who is collected, one short question to the owner with the choices ("Do you mean people who stream on YouTube as their main work, or anyone with a YouTube channel?"). Otherwise empty. Never ask when the owner already answered.
+- personal: true for gender identity, sexual orientation, health, disability, religion, immigration status or being a victim.
+- wikidata: up to two ways Wikidata ties people to this category, each { link, words }. link is one of: occupation (their job: "YouTuber", "rapper", "computer programmer"), position (an office held: "President of the United States"), perpetrator (they carried out an event of a type: "mass shooting"), member (member of an organization), award (an award received). words: the plain English name of that occupation, office, event type, organization or award as Wikidata would title it. Empty list when Wikidata has no clean way (personal categories, businesses, loose groups).`;
+const PLAN_TOOL = { name: 'give_plan', description: 'The research plan.', strict: true, input_schema: { type: 'object', additionalProperties: false, required: ['category', 'what_counts', 'question', 'personal', 'wikidata'], properties: {
+  category: { type: 'string' }, what_counts: { type: 'string' }, question: { type: 'string' }, personal: { type: 'boolean' },
+  wikidata: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['link', 'words'], properties: { link: { type: 'string', enum: LINK_KINDS }, words: { type: 'string' } } } },
+} } };
+
+async function makePlan(r) {
+  const said = [`The category: ${r.query}`, r.answer ? `The owner's answer to your question "${r.asked || ''}": ${r.answer}` : '', r.what_counts_owner ? `The owner's own definition: ${r.what_counts_owner}` : ''].filter(Boolean).join('\n');
+  const res = await callModel('lookup', { max_tokens: 1500, system: PLAN_SYSTEM, tools: [PLAN_TOOL], messages: [{ role: 'user', content: said }] }, { estimateUsd: 0.01, what: `research plan "${r.query.slice(0, 40)}"` });
+  const use = (res.message.content || []).find((b) => b.type === 'tool_use' && b.name === 'give_plan');
+  if (!use) throw Object.assign(new AiError('The plan came back empty. Try again.'), { usd: res.usd });
+  const p = use.input || {};
+  return { usd: res.usd, category: clean(p.category, 60) || r.query, what_counts: clean(p.what_counts, 500), question: r.answer || r.what_counts_owner ? '' : clean(p.question, 300), personal: !!p.personal || PERSONAL.test(r.query),
+    wikidata: (Array.isArray(p.wikidata) ? p.wikidata : []).filter((w) => w && LINK_KINDS.includes(w.link) && clean(w.words, 80)).slice(0, 2).map((w) => ({ link: w.link, words: clean(w.words, 80) })) };
+}
+
+// The free database: everyone it ties to the category, added to the people (a person already found is kept, with the
+// fuller birth name of the two). Personal categories never come from here: only people who said it themselves.
+async function fromWikidata(db, id, log) {
+  const r = loadResult(db, id);
+  if (!r || r.personal || !(r.wikidata || []).length) return 0;
+  let added = 0;
+  const used = [];
+  for (const w of r.wikidata) {
+    let item = null, got = null;
+    try { item = await findItem(w.words); if (item) got = await membersOf(w.link, item); }
+    catch (err) { log(`research #${id} free database FAILED: ${err.message}`); used.push({ ...w, error: err.message }); continue; }
+    if (!item || !got) { used.push({ ...w, error: 'not found in the free database' }); continue; }
+    const now = loadResult(db, id); if (!now) return added;
+    let here = 0;
+    for (const m of got.people) {
+      if (now.people.length >= MAX_PEOPLE) break;
+      const p = { kind: 'person', known_as: m.known_as, birth_name: m.birth_name, chart_name: chartName(m.birth_name, 'person'), birth_date: m.birth_date, name_now: '', who: clean(m.who, 160), why: clean(m.who, 160),
+        member_source: { url: `https://www.wikidata.org/wiki/${m.qid}`, site: 'wikidata.org', title: 'Wikidata' }, name_source: { url: `https://www.wikidata.org/wiki/${m.qid}`, site: 'wikidata.org', title: m.name_from }, date_source: { url: `https://www.wikidata.org/wiki/${m.qid}`, site: 'wikidata.org', title: 'Wikidata' },
+        checked: true, sure: !/Common name only|First and family/.test(m.name_from), name_from: m.name_from, from_db: true, ...(m.other_dates.length ? { other_dates: m.other_dates } : {}) };
+      const same = now.people.find((x) => isSame(x, p) || (x.birth_date === p.birth_date && sameName(String(x.known_as).split(' ').pop(), String(p.known_as).split(' ').pop())));
+      if (same) { if (!same.from_db && same.birth_name && (same.birth_name.split(' ').length >= p.birth_name.split(' ').length)) continue; continue; }
+      now.people.push(p); here++;
+    }
+    used.push({ ...w, id: item.id, label: item.label, description: item.description, total: got.total, dated: got.people.length, added: here });
+    now.wikidata_used = used;
+    saveResult(db, id, now);
+    added += here;
+    log(`research #${id} free database ${w.link} ${item.id} (${item.label}): ${got.people.length} dated, ${here} new`);
+  }
+  const end = loadResult(db, id); if (end) { end.wikidata_used = used; end.wikidata_done = true; saveResult(db, id, end); }
+  return added;
+}
+
+// The whole start: plan (one small paid call), then the free database, then the paid web search when the database
+// gave few. A question from the plan stops it at status `asking` until the owner answers.
+async function runPlan(db, id, log) {
+  running++;
+  let next = null;
+  try {
+    const r = loadResult(db, id); if (!r) return;
+    let plan;
+    try { plan = await makePlan(r); }
+    catch (err) { const now = loadResult(db, id); if (now) { now.usd = round(now.usd + (err.usd || 0)); now.wikidata = []; now.planned = true; saveResult(db, id, now); } log(`research #${id} plan FAILED: ${err.message}`); next = 'rounds'; return; }
+    const now = loadResult(db, id); if (!now) return;
+    now.usd = round(now.usd + plan.usd); now.category = plan.category; now.what_counts = now.what_counts_owner || plan.what_counts; now.personal = now.personal || plan.personal;
+    now.wikidata = plan.personal ? [] : plan.wikidata; now.planned = true;
+    if (plan.question) { now.status = 'asking'; now.question = plan.question; saveResult(db, id, now); log(`research #${id} asks: ${plan.question}`); return; }
+    saveResult(db, id, now);
+    const added = await fromWikidata(db, id, log);
+    const after = loadResult(db, id); if (!after) return;
+    if (after.people.length >= 40) { after.status = 'done'; after.stop = `Found ${fmtCount(added)} in the free database (Wikidata).`; saveResult(db, id, after); next = 'summary'; }
+    else next = 'rounds';
+  } finally {
+    running--;
+    if (next === 'rounds') runRounds(db, id, log);
+    else if (next === 'summary') { const end = loadResult(db, id); if (end && end.people.length >= 3) writeSummary(db, id).catch((err) => log(`research #${id} summary FAILED: ${err.message}`)); }
+  }
+}
+const fmtCount = (n) => n.toLocaleString('en-US');
+
+// The owner answers the plan's question (or writes What Counts in their own words): the plan is made again with it.
+export function answerResearch(db, id, { answer = '', what_counts = '' } = {}, { log = () => {} } = {}) {
+  const r = loadResult(db, id);
+  if (!r) throw new AiError('That research is gone.');
+  if (r.status === 'running' || r.status === 'checking') throw new AiError('The search is still running. Try again when it stops.');
+  const a = clean(answer, 300), w = clean(what_counts, 500);
+  if (!a && !w) throw new AiError('Type an answer first.');
+  if (a) r.answer = a;
+  if (w) { r.what_counts_owner = w; r.what_counts = w; }
+  if (r.status === 'asking' || !r.planned) { r.status = 'running'; r.stop = ''; if (r.question) r.asked = r.question; r.question = ''; saveResult(db, id, r); runPlan(db, id, log); }
+  else saveResult(db, id, r);
+}
+// An older research (no plan yet): make the plan and add the free database's members.
+export function addFromDatabase(db, id, { log = () => {} } = {}) {
+  const r = loadResult(db, id);
+  if (!r) throw new AiError('That research is gone.');
+  if (r.status === 'running' || r.status === 'checking') return;
+  r.status = 'running'; r.stop = ''; r.closed = false; r.wikidata_done = false;
+  saveResult(db, id, r);
+  runPlan(db, id, log);
+}
+
+// ---------- Check Who Fits: every person against What Counts (no web search, about a cent per 60 people) ----------
+const FIT_SYSTEM = `You check who belongs to a research group. You get WHAT COUNTS (the owner's definition) and a numbered list of people, each with what they are known for. Call give_fit once with every person who does NOT fit, each with a few words why ("knife and truck attack, no shooting"). Judge only from what is listed and what is widely known about them; when unsure, leave the person in.`;
+const FIT_TOOL = { name: 'give_fit', description: 'The people who do not fit.', strict: true, input_schema: { type: 'object', additionalProperties: false, required: ['misfits'], properties: { misfits: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['ref', 'why'], properties: { ref: { type: 'integer' }, why: { type: 'string' } } } } } } };
+export function checkFits(db, id, { log = () => {} } = {}) {
+  const r = loadResult(db, id);
+  if (!r) throw new AiError('That research is gone.');
+  if (r.status === 'running' || r.status === 'checking') return;
+  if (!r.what_counts) throw new AiError('Write What Counts first.');
+  r.status = 'checking'; r.checking = { fits: true, total: r.people.length, done: 0, unfit: 0, usd: 0 };
+  saveResult(db, id, r);
+  (async () => {
+    running++;
+    try {
+      for (let start = 0; ; start += 60) {
+        const now = loadResult(db, id); if (!now || now.status !== 'checking') return;
+        const batch = now.people.map((p, ref) => ({ p, ref })).slice(start, start + 60);
+        if (!batch.length) break;
+        const res = await callModel('lookup', { max_tokens: 3000, system: FIT_SYSTEM, tools: [FIT_TOOL], messages: [{ role: 'user', content: `WHAT COUNTS: ${now.what_counts}\n\n${batch.map(({ p, ref }) => `${ref}: ${p.known_as} (${p.birth_date || 'no date'}): ${p.why || p.who || ''}`).join('\n')}` }] }, { estimateUsd: 0.01, what: `research #${id} who fits ${start + 1}-${start + batch.length}` });
+        const use = (res.message.content || []).find((b) => b.type === 'tool_use' && b.name === 'give_fit');
+        const cur = loadResult(db, id); if (!cur) return;
+        const refs = new Set(batch.map((b) => b.ref));
+        for (const m of (use && use.input && Array.isArray(use.input.misfits) ? use.input.misfits : [])) if (refs.has(Number(m.ref)) && cur.people[m.ref]) { cur.people[m.ref].unfit = clean(m.why, 160); cur.checking.unfit++; }
+        cur.checking.done += batch.length; cur.checking.usd = round(cur.checking.usd + res.usd); cur.usd = round(cur.usd + res.usd);
+        saveResult(db, id, cur);
+      }
+      const end = loadResult(db, id);
+      if (end && end.status === 'checking') {
+        // Who does not fit is taken out of the group (unticked), never deleted: one tap puts them back.
+        const row = db.prepare('SELECT off FROM research WHERE id = ?').get(id);
+        const off = parse(row && row.off, { p: [], v: [] });
+        const offP = new Set(off.p || []); end.people.forEach((p, i) => { if (p.unfit) offP.add(i); });
+        db.prepare('UPDATE research SET off = ? WHERE id = ?').run(JSON.stringify({ p: [...offP], v: off.v || [] }), id);
+        end.status = 'done'; end.stop = `Checked ${end.checking.total} against What Counts: ${end.checking.unfit} did not fit and were taken out (they stay on the list, unticked).`;
+        saveResult(db, id, end);
+        log(`research #${id} who fits: ${end.checking.unfit} of ${end.checking.total} taken out, $${end.checking.usd}`);
+      }
+    } catch (err) {
+      const now = loadResult(db, id); if (now) { now.status = 'done'; now.stop = `Checking who fits stopped: ${err.message}`; saveResult(db, id, now); }
+      log(`research #${id} who fits FAILED: ${err.message}`);
+    } finally { running--; }
+  })();
+}
+
+
 // "Keep Going": the owner allows another dollar (or resumes a search the restart cut short).
 // More of a group that already exists. `angle` = one narrower slice; `auto` = Search Everything: the plain search, then
 // every suggested angle in turn, until DRY_WAYS ways in a row find nobody new; `keep` = carry on exactly as it was
@@ -234,7 +385,7 @@ async function runRounds(db, id, log) {
       const each = r.rounds ? r.usd / r.rounds : ROUND_GUESS_USD;
       if (r.rounds && r.usd + each > r.limit) { stopWith('paused', `Another round would pass $${r.limit.toFixed(2)}.`); break; }
       let got;
-      try { got = await findRound(r.query, { known: r.people.map((p) => p.known_as), personal: r.personal, roundNo: r.rounds + 1, angle: r.angle || '', tried: r.tried || [] }); }
+      try { got = await findRound(r.query, { known: r.people.slice(-600).map((p) => p.known_as), personal: r.personal, roundNo: r.rounds + 1, angle: r.angle || '', tried: r.tried || [], counts: r.what_counts || '' }); }
       catch (err) {
         const now = loadResult(db, id); if (!now) return;
         now.usd = round(now.usd + (err.usd || 0));
@@ -372,6 +523,7 @@ export function recoverResearch(db) {
   for (const row of db.prepare('SELECT id, result FROM research').all()) {
     const r = parse(row.result, null);
     if (r && r.status === 'checking') { r.status = 'done'; r.stop = 'The app restarted while checking the dates. Tap Check the Dates again for the rest.'; saveResult(db, row.id, r); n++; }
+    if (r && r.status === 'checking' && r.checking && r.checking.fits) { r.status = 'done'; r.stop = 'The app restarted while checking who fits. Tap Check Who Fits again.'; saveResult(db, row.id, r); n++; continue; }
     if (r && r.status === 'running') { r.status = 'interrupted'; r.stop = 'The app restarted during the search. What was found is kept.'; saveResult(db, row.id, r); n++; }
   }
   return n;
@@ -424,7 +576,7 @@ export function getResearch(db, id) {
   const vault = vaultMembers(db, r.vault_kinds || []).filter((v) => !taken.has(v.id)).map((v) => ({ ...v, on: !offV.has(v.id) }));
   const stored = parse(row.summary, null);
   const summary = stored && stored.v === READING_V ? stored : null; // an older kind of summary is not shown: the reading is written anew
-  return { id: row.id, query: r.query, category: r.category, status: r.status || 'done', stop: r.stop || '', closed: !!r.closed, auto: !!r.auto, angles: r.angles || [], tried: r.tried || [], angle: r.angle || '', checking: r.checking || null, rounds: r.rounds ?? 1, limit: r.limit || LIMIT_USD, personal: !!r.personal, dropped: r.dropped || 0, note: r.note || '',
+  return { id: row.id, query: r.query, category: r.category, status: r.status || 'done', stop: r.stop || '', closed: !!r.closed, auto: !!r.auto, what_counts: r.what_counts || '', question: r.question || '', planned: !!r.planned, wikidata_used: r.wikidata_used || [], wikidata_done: !!r.wikidata_done, angles: r.angles || [], tried: r.tried || [], angle: r.angle || '', checking: r.checking || null, rounds: r.rounds ?? 1, limit: r.limit || LIMIT_USD, personal: !!r.personal, dropped: r.dropped || 0, note: r.note || '',
     vault_kinds: parseWho(r.vault_kinds || []).map((k) => k.label), people, vault, summary,
     usd: r.usd || 0, seconds: r.seconds || 0, searches: r.searches || 0, at: row.created_at, build: row.build };
 }
@@ -460,7 +612,9 @@ export function researchShares(db, id) {
   const g = getResearch(db, id);
   if (!g) return null;
   const on = g.people.filter((p) => p.on);
-  const extra = on.filter((p) => p.drawable).map((p) => ({ name: p.chart_name, ...dateParts(p.birth_date), title: p.known_as, ref: p.ref }));
+  // A name without a date still counts for what a name alone makes (names, life expression, name chart centers ...;
+  // owner 2026-11-24: "edge cases where there will only be a person's full legal name").
+  const extra = on.filter((p) => p.chart_name).map((p) => ({ name: p.chart_name, ...(dateParts(p.birth_date) || {}), title: p.known_as, ref: p.ref }));
   const ids = g.vault.filter((v) => v.on).map((v) => v.id);
   const key = crypto.createHash('sha1').update(JSON.stringify([extra.map((e) => `${e.name}|${e.day}.${e.month}.${e.year}`).sort(), ids.slice().sort((a, b) => a - b)])).digest('hex').slice(0, 16);
   // The count takes a second or two (hundreds of random groups): kept per research while the group and the vault's
@@ -470,7 +624,7 @@ export function researchShares(db, id) {
   if (kept && kept.key === key && kept.vault === vaultMark) return kept.result;
   // Measured against ordinary people (server/baseline.js), never the rest of the vault (owner 2026-11-24).
   const insights = groupInsights(db, { ids, extra });
-  const result = { size: insights.size, rest: insights.rest, tagged: on.length + ids.length, insights, key, undated: on.length - extra.length, online: extra.length, from_vault: ids.length };
+  const result = { size: insights.size, rest: insights.rest, tagged: on.length + ids.length, insights, key, undated: on.filter((p) => !p.drawable).length, online: extra.length, from_vault: ids.length };
   COUNTED.set(id, { key, vault: vaultMark, result });
   return result;
 }

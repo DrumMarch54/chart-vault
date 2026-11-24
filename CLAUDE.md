@@ -16,7 +16,7 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - Status screen and `GET /api/deploy-guard` say whether the installed copy is
   `current` / `stale` / `missing` and when it last ran.
 - Live at https://charts.tiktok-automation.com (Cloudflare Tunnel → 127.0.0.1:8090).
-  Down = Cloudflare 502. See SETUP.md. No GitHub Actions, no outside services.
+  Down = Cloudflare 502. See SETUP.md. No GitHub Actions. Outside calls: the AI (server/ai.js) and Wikidata (free).
 - A reply that changed code ends with `Build: <short commit>`; the phone shows
   "Updated to build <commit>, tap to reload" within 15 s of the deploy.
 
@@ -278,6 +278,16 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   above 7 charts in 10. Said at the most accurate level: "A Strong 4 Influence", or "Specifically 13/4" when one form
   carries it. No digit cards ("numbers with a 1 in them": "way too anal"). Cards are ordered by SIZE (how many more
   charts than usual), solid first. The count is kept per research (`COUNTED`): going back is instant.
+- WHERE PEOPLE COME FROM (owner 2026-11-24: "is there a better way to find the date of birth and names?"): a research
+  starts with a PLAN (`makePlan`, Haiku, about a cent: category, WHAT COUNTS, a question only when the words could mean
+  two groups, and how Wikidata ties people to it), then WIKIDATA (`server/wikidata.js`, free, no key, the only outside
+  call besides server/ai.js; measured: 4,473 YouTubers with a birth date in 12 s), then the paid web rounds only when
+  the database gave fewer than 40. A personal category never uses Wikidata (self-stated only). Names from Wikidata say
+  where they came from (`name_from`); "Middle Names Not Confirmed" when it held no birth name. What Counts goes into
+  every paid round, and Check Who Fits unticks (never deletes) whoever does not fit. A name with no date counts for what
+  a name alone makes. Big groups page their lists (150 rows, 60 charts) and use 120 random groups.
+- The yardstick matches the group's share of middle names (`baselineFor`): measured on 4,470 YouTubers, a yardstick with
+  more middle names than the group made four false Solid name chart cards.
 - THE YARDSTICK IS ORDINARY PEOPLE, never the vault (owner 2026-11-24: "the vault's not that big ... and biased, a lot
   of them are bad people"). `server/baseline.js`: 4,000 made-up charts (`BASELINE_SIZE`), birth dates even over
   1940-2005, names from `names.txt.gz`, seeded; plain math, no AI, built once per process (under a second). A group's

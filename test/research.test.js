@@ -33,6 +33,9 @@ const script = [];
 const requests = [];
 useClientFactory(() => ({ messages: { create: async (params) => {
   requests.push(params);
+  // The plan before every search: no free-database lookup in tests (never the network), a question only when set.
+  if (params.tools && params.tools.some((t) => t.name === 'give_plan')) return { content: [{ type: 'tool_use', id: 'p1', name: 'give_plan', input: { category: '', what_counts: PLAN.counts, question: String(params.messages[0].content).includes("answer to your question") ? '' : PLAN.question, personal: false, wikidata: [] } }], stop_reason: 'tool_use', usage: { input_tokens: 500, output_tokens: 80 } };
+  if (params.tools && params.tools.some((t) => t.name === 'give_fit')) { const refs = [...String(params.messages[0].content).matchAll(/^(\d+): ([^(]+)/gm)]; return { content: [{ type: 'tool_use', id: 'f1', name: 'give_fit', input: { misfits: refs.filter((m) => /Nobody Knows/.test(m[2])).map((m) => ({ ref: +m[1], why: 'no shooting' })) } }], stop_reason: 'tool_use', usage: { input_tokens: 500, output_tokens: 40 } }; }
   const next = script.shift(); if (!next) throw new Error('no scripted answer');
   if (next.__reading === undefined) return next;
   const keys = [...String(params.messages[0].content).matchAll(/^- key (\S+):/gm)].map((m) => m[1]);
@@ -67,6 +70,7 @@ after(() => { server.close(); fs.rmSync(tmp, { recursive: true, force: true }); 
 
 // The search runs on the server after the POST answers: wait until nothing is running.
 const settle = async () => { for (let i = 0; i < 200; i++) { const r = await call('GET', '/api/research'); if (!r.body.running) return; await new Promise((ok) => setTimeout(ok, 20)); } throw new Error('the search never finished'); };
+const PLAN = { counts: 'People who write code for a living.', question: '' };
 const READING = (line) => ({ __reading: line }); // answered by the fake model below: one note per key it was sent
 const none = () => reply([group({ people: [] })], 1); // a round that finds nobody new: the search stops
 const call = async (method, p, d) => { const r = await fetch(base + p, { method, headers: { cookie, 'content-type': 'application/json' }, ...(d ? { body: JSON.stringify(d) } : {}) }); return { status: r.status, body: await r.json() }; };
@@ -122,7 +126,7 @@ test('a search keeps the people, only the sources the search returned, and saves
 
 test('people found online are counted in the group, never among the others', async () => {
   const s = (await call('GET', `/api/research/${id}/shares`)).body;
-  assert.equal(s.size, 4, 'four have a full date');
+  assert.equal(s.size, 5, 'four with a full date, and one with a name only (counted for what a name alone makes)');
   assert.equal(s.undated, 1);
   assert.equal(s.rest, BASELINE_SIZE, 'ordinary people are the yardstick, never the vault');
   for (const c of [...s.insights.expand, ...s.insights.combos, ...s.insights.collapse]) for (const m of c.people) assert.equal(m.id === null && Number.isInteger(m.ref), true, 'people found online carry their place in the research');
@@ -132,7 +136,7 @@ test('unticking someone takes them out of the count, and a fix is kept', async (
   const s0 = (await call('GET', `/api/research/${id}/shares`)).body;
   await call('PUT', `/api/research/${id}/off`, { p: [0], v: [] });
   const s1 = (await call('GET', `/api/research/${id}/shares`)).body;
-  assert.equal(s1.size, 3);
+  assert.equal(s1.size, 4);
   assert.notEqual(s1.key, s0.key);
   await call('PUT', `/api/research/${id}/off`, { p: [], v: [] });
   const bad = await call('PUT', `/api/research/${id}/person/4`, { birth_date: '1970-02-31' });
@@ -263,6 +267,41 @@ test('the same category typed again opens the research that exists', async () =>
   assert.equal(again.body.existing, true);
   assert.equal((await call('POST', '/api/research', { query: 'computer coders' })).body.id, id, 'the words first typed find it');
   assert.equal((await call('GET', '/api/research')).body.items.length, before, 'no twin was started');
+});
+
+test('an unclear category asks one question first; the answer and What Counts reach every round', async () => {
+  PLAN.question = 'Do you mean A or B?';
+  const r = await call('POST', '/api/research', { query: 'unclear group' });
+  await settle();
+  let g = (await call('GET', `/api/research/${r.body.id}`)).body;
+  assert.equal(g.status, 'asking');
+  assert.equal(g.question, 'Do you mean A or B?');
+  assert.equal(g.people.length, 0, 'nothing searched before the answer');
+  PLAN.question = '';
+  script.push(reply([...searched([U('Linus')]), group({ people: [person('Some One', 'Some One', '1970-01-01', U('Linus'))] })]));
+  assert.equal((await call('POST', `/api/research/${r.body.id}/answer`, { answer: 'A, the ones who do it for a living' })).status, 200);
+  await settle();
+  g = (await call('GET', `/api/research/${r.body.id}`)).body;
+  assert.equal(g.people.length, 1);
+  const round = requests.filter((q) => q.tools && q.tools.some((t) => t.name === 'give_group')).at(-1);
+  assert.match(round.messages[0].content, /WHAT COUNTS \(the owner's definition; nobody who does not fit it\): People who write code for a living\./);
+  assert.match(requests.filter((q) => q.tools && q.tools.some((t) => t.name === 'give_plan')).at(-1).messages[0].content, /answer to your question "Do you mean A or B\?": A, the ones who do it for a living/);
+  await call('POST', `/api/research/${r.body.id}/answer`, { what_counts: 'Only full-time coders.' });
+  assert.equal((await call('GET', `/api/research/${r.body.id}`)).body.what_counts, 'Only full-time coders.');
+  await call('DELETE', `/api/research/${r.body.id}`);
+});
+
+test('Check Who Fits unticks whoever does not fit, and deletes nobody', async () => {
+  const before = (await call('GET', `/api/research/${id}`)).body;
+  assert.equal((await call('POST', `/api/research/${id}/fits`)).status, 200);
+  await settle();
+  const g = (await call('GET', `/api/research/${id}`)).body;
+  assert.equal(g.people.length, before.people.length, 'nobody deleted');
+  const nobody = g.people.find((p) => p.known_as === 'Nobody Knows');
+  assert.equal(nobody.unfit, 'no shooting');
+  assert.equal(nobody.on, false);
+  assert.match(g.stop, /did not fit and were taken out/);
+  await call('PUT', `/api/research/${id}/off`, { p: [], v: [] });
 });
 
 test('a search cut short by a restart keeps what it found', async () => {

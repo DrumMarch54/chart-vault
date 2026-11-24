@@ -22,7 +22,7 @@ import { aiSettings, setAiSettings, spendState, pendingWarning, markWarningSeen,
 import { readingFor, writeReading, answerQuestion, deleteReadings, readingEstimate, readingChoices } from './reading.js';
 import { askVault } from './ask.js';
 import { lookupPerson, vaultMatches, rememberLookup, storeLookup, pastLookups, pastLookup, deleteLookup } from './lookup.js';
-import { startResearch, moreResearch, checkDates, closeResearch, reopenResearch, findResearch, CHECK_USD_EACH, recoverResearch, pastResearch, getResearch, deleteResearch, setOff, fixPerson, researchShares, writeSummary, researchCost, summaryEstimate, researchRunning } from './research.js';
+import { startResearch, moreResearch, checkDates, closeResearch, reopenResearch, findResearch, answerResearch, addFromDatabase, checkFits, CHECK_USD_EACH, recoverResearch, pastResearch, getResearch, deleteResearch, setOff, fixPerson, researchShares, writeSummary, researchCost, summaryEstimate, researchRunning } from './research.js';
 import { factsFor } from './facts.js';
 import { meaningFor, countWith } from './meaning.js';
 import { findInDoc, docWindow, findNumberSection, findPhrase } from './doc.js';
@@ -558,6 +558,13 @@ export function createApp(db, { log = console.log } = {}) {
     const b = req.body || {};
     try { if (b.reopen) reopenResearch(db, id); else moreResearch(db, id, { log, angle: String(b.angle || ''), auto: !!b.auto, keep: !!b.keep }); res.json({ ok: true }); } catch (err) { aiFail(res, next)(err); }
   });
+  // The plan's question answered, or What Counts written in the owner's words.
+  app.post('/api/research/:id/answer', express.json({ limit: '4kb' }), (req, res, next) => {
+    const id = researchId(req, res); if (id === null) return;
+    try { answerResearch(db, id, req.body || {}, { log }); res.json({ ok: true }); } catch (err) { aiFail(res, next)(err); }
+  });
+  app.post('/api/research/:id/database', (req, res, next) => { const id = researchId(req, res); if (id === null) return; try { addFromDatabase(db, id, { log }); res.json({ ok: true }); } catch (err) { aiFail(res, next)(err); } });
+  app.post('/api/research/:id/fits', (req, res, next) => { const id = researchId(req, res); if (id === null) return; try { checkFits(db, id, { log }); res.json({ ok: true }); } catch (err) { aiFail(res, next)(err); } });
   app.post('/api/research/:id/check', (req, res, next) => {
     const id = researchId(req, res); if (id === null) return;
     try { checkDates(db, id, { log }); res.json({ ok: true }); } catch (err) { aiFail(res, next)(err); }

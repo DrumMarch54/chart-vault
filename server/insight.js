@@ -30,7 +30,7 @@
 // were born in a certain year"); it is never corrected away.
 //
 import { peopleValues, AREA } from './group.js';
-import { baselinePeople } from './baseline.js';
+import { baselineFor } from './baseline.js';
 import { weightOf } from './facts.js';
 import { PARTS, POSITIONS, NOT_A_REPEAT } from './positions.js';
 import { positionName } from './similar.js';
@@ -126,23 +126,27 @@ function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>>
 // The group (its vault charts and the people found online) against ORDINARY PEOPLE (server/baseline.js), never the rest
 // of the vault (owner 2026-11-24: "the vault is biased"). The ordinary people are read once and kept.
 const shape = (p) => ({ ...p, strong: p.values.filter((v) => isStrong(v.chart, v.position)), all: p.values.filter(counts), diamonds: diamondsOf(p.values) });
-let baseShaped = null;
+const shaped = new Map(); // baseline person -> its shaped form, made once
 function prepare(db, ids, extra) {
-  if (!baseShaped) baseShaped = baselinePeople().map(shape).filter((p) => p.strong.length);
   const group = peopleValues(db, ids, extra).filter((p) => p.inGroup).map(shape).filter((p) => p.strong.length);
-  return [...group, ...baseShaped];
+  const middle = group.length ? group.filter((p) => p.values.some((v) => v.chart === 'name' && v.position === 'middle')).length / group.length : 0.6;
+  const base = baselineFor(middle).map((p) => { let x = shaped.get(p); if (!x) { x = shape(p); shaped.set(p, x); } return x; }).filter((p) => p.strong.length);
+  return [...group, ...base];
 }
 function tailMaker(N) {
   const lf = new Float64Array(N + 1); for (let i = 1; i <= N; i++) lf[i] = lf[i - 1] + Math.log(i);
   const lc = (x, y) => (y < 0 || y > x ? -Infinity : lf[x] - lf[y] - lf[x - y]);
   // P(X >= a) when `of` charts are drawn from `Nu` of which `K` hold it (hypergeometric upper tail).
-  return (a, of, K, Nu) => { const all = lc(Nu, of); let p = 0; for (let k = a; k <= Math.min(of, K); k++) p += Math.exp(lc(K, k) + lc(Nu - K, of - k) - all); return Math.min(1, p); };
+  // The terms shrink fast past the first few: stop once they no longer matter (a group of thousands would else sum thousands).
+  return (a, of, K, Nu) => { const all = lc(Nu, of); let p = 0; for (let k = a; k <= Math.min(of, K); k++) { const t = Math.exp(lc(K, k) + lc(Nu - K, of - k) - all); p += t; if (t < p * 1e-9 && k > a + 2) break; } return Math.min(1, p); };
 }
 // "Strongly influenced" = a score more than 7 charts in 10 have (the line is drawn over everyone, once; at least one
 // strong position's worth).
 const strongLine = (arr) => { const sorted = Float64Array.from(arr).sort(); return Math.max(3, sorted[Math.floor(sorted.length * 0.7)] + 0.5); };
 
 export function groupInsights(db, { ids = [], extra = [], themes = [], randomGroups = RANDOM_GROUPS } = {}) {
+  // A big group needs fewer random groups to know its luck, and each costs more: 120 past 400 people.
+  if (extra.length + ids.length > 400 && randomGroups === RANDOM_GROUPS) randomGroups = 120;
   const people = prepare(db, ids, extra);
   const N = people.length;
   const real = Uint8Array.from(people, (p) => (p.inGroup ? 1 : 0));

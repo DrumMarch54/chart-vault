@@ -90,6 +90,8 @@ const FAKE_READING = '## Nexus\nThe 19/1 day vibration with the 6/6 life path ma
 useClientFactory(() => ({ messages: { create: async (params) => {
   await new Promise((r) => setTimeout(r, 1000));
   const usage = { input_tokens: 42000, output_tokens: 700 };
+  // The plan before a research: the dev app never reaches the free database (no network), and asks nothing.
+  if (params.tools && params.tools.some((t) => t.name === 'give_plan')) return { content: [{ type: 'tool_use', id: 'p1', name: 'give_plan', input: { category: 'Computer Coders', what_counts: 'People known for writing software.', question: '', personal: false, wikidata: [] } }], stop_reason: 'tool_use', usage: { input_tokens: 600, output_tokens: 90 } };
   // Check the Dates: every date confirmed on a page, Carmack's corrected by a day.
   if (params.tools && params.tools.some((t) => t.name === 'give_checks')) {
     const refs = [...String(params.messages[0].content).matchAll(/^ref (\d+): ([^,(\n]+).*?date given as (\d{4}-\d{2}-\d{2})/gm)];

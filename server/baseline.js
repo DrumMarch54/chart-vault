@@ -18,20 +18,32 @@ let cached = null;
 function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 const cap = (w) => w.charAt(0).toUpperCase() + w.slice(1);
 
-// [{ id, title, inGroup: false, values }] — built once per process, about a second.
-export function baselinePeople() {
+// Two pools of the same made-up people: with a middle name and without. A group whose names mostly lack middle names
+// (the free database often holds only first and family name) must be measured against people whose names lack them
+// too, or the name chart differences would come from the missing middle names (found 2026-11-24 on 4,470 YouTubers).
+// [{ id, title, inGroup: false, values }] x2, built once per process, about two seconds.
+export function baselinePools() {
   if (cached) return cached;
   const names = zlib.gunzipSync(fs.readFileSync(new URL('./names.txt.gz', import.meta.url))).toString('utf8').split('\n').map((s) => s.trim()).filter((s) => /^[a-z]{2,}$/.test(s));
   const rand = rng(20261124);
   const pick = () => cap(names[Math.floor(rand() * names.length)]);
-  const out = [];
-  for (let i = 0; out.length < BASELINE_SIZE && i < BASELINE_SIZE * 2; i++) {
+  const withMiddle = [], without = [];
+  for (let i = 0; withMiddle.length < BASELINE_SIZE && i < BASELINE_SIZE * 2; i++) {
     const d = new Date(FROM + Math.floor(rand() * ((TO - FROM) / 86400000 + 1)) * 86400000);
-    const name = [pick(), ...(rand() < 0.6 ? [pick()] : []), pick()].join(' ');
-    let values = [];
-    try { values = computeValues({ name, day: d.getUTCDate(), month: d.getUTCMonth() + 1, year: d.getUTCFullYear() }); } catch { values = []; }
-    if (values.length) out.push({ id: -1000000 - out.length, title: '', inGroup: false, baseline: true, values });
+    const first = pick(), middle = pick(), last = pick();
+    const date = { day: d.getUTCDate(), month: d.getUTCMonth() + 1, year: d.getUTCFullYear() };
+    let a = [], b = [];
+    try { a = computeValues({ name: `${first} ${middle} ${last}`, ...date }); b = computeValues({ name: `${first} ${last}`, ...date }); } catch { continue; }
+    if (!a.length || !b.length) continue;
+    withMiddle.push({ id: -1000000 - withMiddle.length, title: '', inGroup: false, baseline: true, values: a });
+    without.push({ id: -2000000 - without.length, title: '', inGroup: false, baseline: true, values: b });
   }
-  cached = out;
-  return out;
+  cached = { withMiddle, without };
+  return cached;
+}
+// The yardstick for a group: BASELINE_SIZE ordinary people, the same share with a middle name as the group has.
+export function baselineFor(middleShare) {
+  const { withMiddle, without } = baselinePools();
+  const k = Math.round(Math.max(0, Math.min(1, middleShare)) * withMiddle.length);
+  return [...withMiddle.slice(0, k), ...without.slice(k)];
 }

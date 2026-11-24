@@ -11,7 +11,7 @@
   'use strict';
   const USAGE_LABELS = {
     'screen.research': 'Research a Group', 'home.research': 'Research a Group (home)', 
-    'research.search': 'Research: search the web', 'research.more': 'Research: keep going or search for more', 'research.angle': 'Research: search from a suggested angle', 'research.angle_own': 'Research: search from my own angle', 'research.check': 'Research: Check the Dates', 'research.done': 'Research: What Next? Done', 'research.auto': 'Research: Search Everything', 'research.past_open': 'Research: open a past research',
+    'research.search': 'Research: search the web', 'research.more': 'Research: keep going or search for more', 'research.angle': 'Research: search from a suggested angle', 'research.angle_own': 'Research: search from my own angle', 'research.check': 'Research: Check the Dates', 'research.done': 'Research: What Next? Done', 'research.auto': 'Research: Search Everything', 'research.answer': 'Research: answer the question', 'research.what_counts': 'Research: keep What Counts', 'research.fits': 'Research: Check Who Fits', 'research.database': 'Research: Add From the Free Database', 'research.past_open': 'Research: open a past research',
     'research.past_remove': 'Research: remove a past research', 'research.tick': 'Research: tick or untick someone', 'research.show': 'Research: Show Charts and Patterns',
     'research.change_who': 'Research: Change Who Is In', 'research.open_person': 'Research: open a person', 'research.name_now': 'Research: Birth Name or Name Now',
     'research.fix': 'Research: keep a fixed name or date', 'research.save': 'Research: Save to Vault', 'research.save_all': 'Research: Save All to Vault',
@@ -87,7 +87,8 @@
       if (g.status === 'running') {
         const mine = ++watch;
         setTimeout(() => { if (mine === watch && location.hash.includes(`id=${id}`)) redraw(); }, 4000);
-        return h('div', { class: 'card stack rs-status' }, h('b', {}, `Searching… round ${g.rounds + 1}`),
+        if (!g.planned || (g.planned && !g.wikidata_done && !g.rounds)) return h('div', { class: 'card stack rs-status' }, h('b', {}, g.planned ? 'Looking in the free database (Wikidata)…' : 'Working out what counts…'), h('div', { class: 'muted' }, `${g.people.length} found so far. This takes a few seconds to a minute.`));
+        return h('div', { class: 'card stack rs-status' }, h('b', {}, `Searching the web… round ${g.rounds + 1}`),
           g.angle || g.auto ? h('div', { class: 'small' }, `${g.auto ? 'Searching everything' : 'One angle'}${g.angle ? `: now “${g.angle}”` : ': the plain search first'}`) : null,
           h('div', { class: 'muted' }, `${g.people.length} found so far · ${money(g.usd)} spent. A round takes a minute or two. You can leave: it keeps going, and it is kept in Past Research.`));
       }
@@ -97,6 +98,22 @@
         moreBtn('Keep Going (up to $1 More)'));
       if (g.status === 'interrupted') return h('div', { class: 'card stack rs-status' }, h('b', {}, 'The search was cut short'), h('div', { class: 'muted' }, `${g.stop} ${g.people.length} found for ${money(g.usd)}.`), moreBtn(`Keep Searching (about ${each} a round)`));
       if (g.status === 'failed') return h('div', { class: 'card stack rs-status' }, h('b', {}, 'The search failed'), h('p', { class: 'err', style: 'margin:0' }, g.stop || 'Nothing came back.'), moreBtn(`Try Again (about ${each})`));
+      if (g.status === 'asking') {
+        // The plan's question (owner 2026-11-24: "cases where you need to ask for the clarification").
+        watch++;
+        const $a = h('input', { type: 'text', placeholder: 'Your answer…', autocomplete: 'off', enterkeyhint: 'send', maxlength: 300 });
+        const send2 = async (answer) => { count('research.answer'); try { await send(`/api/research/${id}/answer`, 'POST', { answer }); redraw(); } catch (err) { toast(err.message, true); } };
+        const go2 = () => { const a = $a.value.trim(); if (!a) { toast('Type your answer first.', true); $a.focus(); return; } send2(a); };
+        $a.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); go2(); } });
+        return h('div', { class: 'card stack rs-status rs-next' }, h('div', { class: 'rs-next-head' }, 'One Question First'),
+          h('p', { style: 'margin:0' }, g.question), h('div', { class: 'row', style: 'flex-wrap:nowrap' }, $a, h('button', { type: 'button', class: 'btn-primary', onclick: go2 }, 'Send')),
+          h('button', { type: 'button', class: 'btn btn-block', onclick: () => send2('Search it the way you think best.') }, 'Search It Your Way'));
+      }
+      if (g.status === 'checking' && g.checking && g.checking.fits) {
+        const mine = ++watch, c = g.checking;
+        setTimeout(() => { if (mine === watch && location.hash.includes(`id=${id}`)) redraw(); }, 4000);
+        return h('div', { class: 'card stack rs-status' }, h('b', {}, `Checking who fits… ${c.done} of ${c.total}`), h('div', { class: 'muted' }, `${c.unfit} do not fit so far · ${money(c.usd || 0)} spent. You can leave: it keeps going.`));
+      }
       if (g.status === 'checking') {
         const mine = ++watch, c = g.checking || { total: 0, done: 0 };
         setTimeout(() => { if (mine === watch && location.hash.includes(`id=${id}`)) redraw(); }, 4000);
@@ -119,13 +136,24 @@
       const $own = h('input', { type: 'text', placeholder: 'Or type your own angle…', autocomplete: 'off', enterkeyhint: 'search', maxlength: 60 });
       const ownGo = () => { const a = $own.value.trim(); if (!a) { toast('Type an angle first.', true); $own.focus(); return; } post('more', { angle: a }, 'research.angle_own'); };
       $own.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); ownGo(); } });
+      const $counts = h('textarea', { rows: 3, placeholder: 'Who belongs, in your words…', maxlength: 500, class: 'rs-counts' });
+      $counts.value = g.what_counts || '';
+      const saveCounts = () => { const w = $counts.value.trim(); if (!w) { toast('Type who belongs first.', true); return; } post('answer', { what_counts: w }, 'research.what_counts'); };
       let n = 0;
       const title = (t) => h('div', { class: 'rs-next-title' }, `${++n}. ${t}`);
       return h('div', { class: 'card stack rs-status rs-next' },
         h('div', { class: 'rs-next-head' }, 'What Next?'),
         h('div', { class: 'muted' }, `${g.stop || 'The search stopped.'} ${fmtN(g.people.length)} found in ${g.rounds} round${g.rounds === 1 ? '' : 's'} for ${money(g.usd)}.`),
+        title('What Counts'),
+        h('div', { class: 'muted small' }, 'Who belongs in this group. Every search follows it.'),
+        $counts, h('button', { type: 'button', class: 'btn btn-block', onclick: saveCounts }, 'Keep This Definition'),
+        g.what_counts ? h('button', { type: 'button', class: 'btn btn-block', onclick: () => post('fits', {}, 'research.fits') }, `Check Who Fits (about ${money(Math.max(0.01, Math.ceil(g.people.length / 60) * 0.012))})`) : null,
+        g.what_counts ? h('div', { class: 'muted small' }, 'Reads everyone against What Counts and unticks whoever does not fit. Nobody is deleted.') : null,
         title('Find More'),
-        h('button', { type: 'button', class: 'btn-primary btn-block', onclick: () => post('more', { auto: true }, 'research.auto') }, 'Search Everything'),
+        !g.personal && !g.wikidata_done ? h('button', { type: 'button', class: 'btn-primary btn-block', onclick: () => post('database', {}, 'research.database') }, 'Add From the Free Database (Free)') : null,
+        !g.personal && !g.wikidata_done ? h('div', { class: 'muted small' }, 'Wikidata, the database behind Wikipedia: often hundreds or thousands more, with birth dates, at no cost.') : null,
+        (g.wikidata_used || []).length ? h('div', { class: 'muted small' }, `Free database used: ${g.wikidata_used.map((w) => (w.error ? `${w.words} (${w.error})` : `${w.label}: ${fmtN(w.dated)} with a birth date, ${fmtN(w.added)} new`)).join(' · ')}.`) : null,
+        h('button', { type: 'button', class: 'btn-primary btn-block', onclick: () => post('more', { auto: true }, 'research.auto') }, 'Search the Web for Everything'),
         h('div', { class: 'muted small' }, `Keeps going by itself: the plain search, then one angle after another, until three ways in a row find nobody new. About ${each} a round. It stops and asks you at every $1.`),
         h('button', { type: 'button', class: 'btn btn-block', onclick: () => post('more', {}, 'research.more') }, 'One More Plain Search'),
         (g.angles || []).length ? h('div', { class: 'muted small' }, 'Or one angle only:') : null,
@@ -171,10 +199,18 @@
         p.vault ? mark('In Your Vault', 'ok') : null,
         !p.drawable ? mark('No Date: Cannot Be Counted', 'warn') : !p.checked && !p.fixed ? mark(p.check_failed ? 'No Page Found for the Date' : 'Date Not Confirmed', 'warn') : p.was ? mark('Date Corrected', 'ok') : p.confirmed_later ? mark('Date Confirmed', 'ok') : null,
         p.fixed ? mark('Fixed by You') : null,
+        p.from_db ? mark('From Wikidata') : null,
+        p.name_from && !/^Birth name/.test(p.name_from) && !p.fixed ? mark('Middle Names Not Confirmed', 'warn') : null,
+        p.unfit ? mark(`Does Not Fit: ${p.unfit}`, 'warn') : null,
       ].filter(Boolean));
       label();
       $show.onclick = async () => { count('research.show'); $show.disabled = true; await store(); swap(`#/research?id=${id}`); };
       const unchecked = g.people.filter((p) => p.drawable && !p.checked && !p.fixed).length;
+      // A big group is shown 150 at a time: thousands of rows at once freeze a phone.
+      const $plist = h('div', { class: 'card rs-list' });
+      let shownP = 0;
+      const moreP = () => { const next = g.people.slice(shownP, shownP + 150); shownP += next.length; $plist.querySelector('.rs-morep') && $plist.querySelector('.rs-morep').remove(); $plist.append(...next.map(personRow)); if (shownP < g.people.length) $plist.append(h('button', { type: 'button', class: 'btn btn-block rs-morep', onclick: moreP }, `Show ${Math.min(150, g.people.length - shownP)} More of ${fmtN(g.people.length - shownP)}`)); };
+      moreP();
       const top = window.scrollY;
       fill($body, statusCard(g, id, again),
         g.status === 'running' && !g.people.length ? null : h('div', { class: 'card stack' }, h('div', { class: 'simname' }, g.category),
@@ -183,7 +219,7 @@
           g.personal ? h('p', { class: 'lookup-warn small' }, `A personal category: only people who said it about themselves in public are listed, each with the page that says so.${g.dropped ? ` ${g.dropped} left out: no such page was found.` : ''}`) : null,
           unchecked ? h('p', { class: 'lookup-warn small' }, `${unchecked} marked Date Not Confirmed: the AI wrote the date from what it already knew, without opening a web page this time. Tap Check the Dates above, or tap a name on the next screen to fix it yourself.`) : null),
         g.people.length ? h('div', { class: 'summary rhead' }, 'Found Online') : g.status === 'running' ? null : h('p', { class: 'muted' }, 'Nobody was found. Go back and say it another way.'),
-        g.people.length ? h('div', { class: 'card rs-list' }, ...g.people.map(personRow)) : null,
+        g.people.length ? $plist : null,
         g.vault.length ? h('div', { class: 'summary rhead' }, `From Your Vault: ${g.vault_kinds.join(', ')}`) : null,
         g.vault.length ? h('div', { class: 'card rs-list' }, ...g.vault.map((v) => row(v, v.title, [v.inputs ? '' : 'No name and date read yet: cannot be counted'], []))) : null,
         g.people.length ? h('div', { class: 'rs-foot' }, $show) : null);
@@ -207,9 +243,15 @@
         h('div', { class: 'thumbwrap' }, inputs ? h('div', { class: 'thumb drawn', role: 'img', 'aria-label': label }, drawnChart(inputs)) : h('div', { class: 'nofile' }, 'no date found'),
           badge ? h('span', { class: `rs-badge ${badge[1]}` }, badge[0]) : null),
         h('div', { class: 'label' }, label));
-      fill($grid,
-        ...on.map((p) => cell(p.known_as, `#/research?id=${id}&p=${p.ref}`, p.chart_name ? inputsOf(p) : null, p.vault ? ['In Vault', 'ok'] : !p.drawable ? ['No Date', 'warn'] : !p.checked && !p.fixed ? ['Not Confirmed', 'warn'] : null, () => count('research.open_person'))),
-        ...vaultOn.map((v) => cell(v.title, `#/chart/${v.id}`, v.inputs, ['In Vault', 'ok'], () => count('group.open_chart'))));
+      // The charts, 60 at a time: every drawn chart costs the phone work.
+      const cells = [
+        ...on.map((p) => () => cell(p.known_as, `#/research?id=${id}&p=${p.ref}`, p.chart_name ? inputsOf(p) : null, p.vault ? ['In Vault', 'ok'] : !p.drawable ? ['No Date', 'warn'] : !p.checked && !p.fixed ? ['Not Confirmed', 'warn'] : null, () => count('research.open_person'))),
+        ...vaultOn.map((v) => () => cell(v.title, `#/chart/${v.id}`, v.inputs, ['In Vault', 'ok'], () => count('group.open_chart')))];
+      let shownC = 0;
+      const $moreC = h('button', { type: 'button', class: 'btn btn-block' });
+      const moreC = () => { const next = cells.slice(shownC, shownC + 60); shownC += next.length; $grid.append(...next.map((f) => f())); $moreC.textContent = `Show ${Math.min(60, cells.length - shownC)} More Charts of ${fmtN(cells.length - shownC)}`; $moreC.hidden = shownC >= cells.length; };
+      $moreC.onclick = moreC;
+      moreC();
 
       // Save All: every ticked person found online that the vault does not have yet, one after the other.
       const unsaved = () => on.filter((p) => p.drawable && !p.vault);
@@ -293,6 +335,7 @@
         s.size >= 3 ? $explain : null,
         h('div', { class: 'gridbar' }, h('div', { class: 'summary rhead' }, 'The Charts'), size.node), // the size control sits with its grid: the title fills the top row
         on.length + vaultOn.length ? $grid : h('p', { class: 'muted' }, 'Nobody is ticked. Tap Change Who Is In.'),
+        $moreC,
         on.length ? $saveAll : null,
         // The search's housekeeping, out of the way (owner 2026-11-23: "that stuff at the top seems out of place").
         h('div', { class: 'summary rhead' }, 'This Search'),
