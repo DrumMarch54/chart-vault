@@ -253,7 +253,7 @@
           } catch (err) { if (my === seqC) $count.textContent = err.message; }
         };
         const draw = () => {
-          fill($modes, ...(canPair ? [['one', spot.made ? 'The Diamond Itself' : 'One Number'], ['pair', spot.made ? 'Its Two Numbers' : spot.any ? 'Two Numbers Together' : 'Both Numbers in the Circle']]
+          fill($modes, ...(canPair ? [['one', spot.made ? 'The Diamond Itself' : 'One Number'], ['pair', spot.made ? 'Its Two Numbers' : spot.any ? 'Two Together' : 'Both in the Circle']]
             .map(([k, label]) => h('button', { type: 'button', class: `chip ${mode === k ? 'active' : 'off'}`, onclick: () => { mode = k; draw(); } }, label)) : []));
           if (mode === 'one') {
             const v = $n.value.trim(), d = isNum(v) ? dsOf(v) : 0, big = isNum(v) && Number(v) > 9;

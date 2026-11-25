@@ -123,15 +123,17 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - Higher Self Diamond (owner 2026-11-07, the owner's own name): the day's digit sum = the dharma diamond's digit sum
   (dharma 78 = 15/6, day 6/15/24), so the higher self chart reads like one number's diamond. Search by Position's
   "Higher Self Diamond" row → `#/?pattern=hsd`; whole-chart shapes live in `PATTERNS` (server/queries.js).
-- Combination screen (owner 2026-10-21, `#/combo`, `routes.combo`): one row per position (tap it for a sheet of the
-  same rows as the picker, `posRows`; type the number beside it), "+ Add Another Position", the foot counts the charts
-  with everything and "Show Charts" lists them. "+ Another number" and a condition chip on the results open it with the
-  conditions kept. The address carries the rows (`replaceState`, no history step). Labels: a center's two numbers are
-  "Mind center main vibration" and "Mind center sub vibration" (same for the emotion center); the owner's words.
+- Search by Position SCREEN (owner 2026-11-25, "almost unusable" before): `public/positionmap.js`, one screen (`#/position`,
+  `#/combo` is the same route) replacing the old picker and Combination screen. A BLANK numeroscope (the app's own drawing,
+  numbers taken off): tap a small chart to zoom in, tap a spot, a sheet asks the number (Exactly 12/3 / Any 3 / A Plain 3
+  Only; a center or diamond also takes its two numbers). "Looking For" lists the conditions (tap = change, × = drop), the
+  foot shows "Show N Charts". Diamonds, Anywhere and the Higher Self Diamond (under Essence) are in "Pick From a List".
+  Settings -> Search by Position Chart: Names on the Spots (default) or Clean Chart. The psyche charts' line reads Month and
+  Year. No owner's chart on it (owner: "not someone specific's chart").
 - A number searched ANYWHERE (`*.*` or `chart.*`, one condition, no combo) lists the charts holding it the most first,
   the count (`hits`) on each thumbnail, counted like the Reading's repeats (`NOT_A_REPEAT` in positions.js, one list
   with facts.js); `hitsOf` in queries.js orders the list and the viewer's prev/next alike.
-- The position search is ONE stop in the phone's Back history (owner 2026-10-21): picker, combination screen and
+- The position search is ONE stop in the phone's Back history (owner 2026-10-21): the search screen and
   results move between each other with `swap`, never `go`; `inFlow`/`flowFromApp`/`leaveFlow` in route(); Back from any
   of them goes to the screen the search was opened from. A new screen inside the search must use `swap` too.
 - Similar Charts (owner 2026-10-19): viewer ⋮ → "Similar Charts" (`#/similar/<id>?by=`), `server/similar.js`
