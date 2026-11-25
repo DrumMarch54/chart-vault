@@ -156,6 +156,8 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   and in the Quick Chart's ⋮ menu.
 - The Quick Chart keeps what was typed on the device (`quickDraft`) and brings it back on the next visit;
   "My Chart" overwrites it.
+- Open in Quick Chart (owner 2026-11-25): chart sheet "Quick Chart" button and viewer ⋮ hand the chart's name and date
+  over through `quickDraft` (as Look Up and Research do); the vault's chart is never changed.
 
 ## Home and What This Group Shares (2026-11-20)
 - Home order follows the owner's tap counts: search, two top tiles, Quick Chart and Look Up (the owner's word: "the main buttons I use"; By Position
