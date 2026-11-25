@@ -1098,3 +1098,12 @@ this so that we can save usage." The pattern they want: ideas and design on Fabl
 once the design is approved. Written into `.claude/response-style.txt` (WHICH MODEL AND EFFORT), which the hook
 injects on every message, so every future chat follows it. The two sibling apps' response-style files still
 carry the older rule; update them from a chat in those repos (never push to a sibling from here).
+
+## 2026-11-25 Freud "typo" that was his birth name; one-word + number names are deliberate
+- The owner thought Freud's chart was typed wrong ("Sigismund Schlomo"). It is his birth name (changed to Sigmund in 1878).
+  The sheet now says "Drawn from the birth name. Known as …" when the known name has a word the birth name lacks
+  (about 260 charts). The owner asked for the known name's chart too: #775 "Sigmund Freud", tagged Freud.
+- Checked all 43 owner-fixed charts against their screenshots: 5 screenshots were typed wrong (Elvis 8.4.2026,
+  Caleb Hammer 19956, Bob Marley 6.1.1990, Tommy Robinson month 2, "Keven" Hodge); the app draws the fixed ones.
+  Kevin Hodge's "9mc" tag came from the "Keven" screenshot. Real typos still in the vault: "Gandh" (#137), "cylde" (#87).
+- Owner: a one-word name + a number ("Asmondgold 11", "N3on 0") is a way of studying one name with the date. Never flag it.
