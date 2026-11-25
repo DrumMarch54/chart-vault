@@ -953,6 +953,16 @@
     const $numbers = h('div', { class: 'numbers stack' });
     let numbers = null, fixing = false;
     const loadNumbers = async () => { try { numbers = await api(`/api/images/${img.id}/numbers`); } catch (err) { numbers = { error: err.message }; } drawNumbers(); };
+    // Birth name vs the name they are known by (owner 2026-11-25, Freud: "Sigismund Schlomo" looked like a typo):
+    // the chart is drawn from the birth name; when the known name has a word the birth name lacks, say so.
+    const knownAsNote = (birth, title) => {
+      const known = String(title || '').split(' · ')[0].trim();
+      if (!birth || !known || /^me$/i.test(known)) return null;
+      const words = (t) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter(Boolean);
+      const has = new Set(words(birth));
+      if (words(known).every((w) => has.has(w))) return null;
+      return h('div', { class: 'muted small' }, `Drawn from the birth name. Known as ${known}.`);
+    };
     const drawNumbers = () => {
       if (img.kind !== 'chart') { fill($numbers); return; }
       if (!numbers) { fill($numbers, h('p', { class: 'muted small' }, 'Loading the numbers…')); return; }
@@ -990,7 +1000,7 @@
       // Only the name and date here (owner 2026-10-19): the lists of every position's number are gone; the
       // drawing shows them, and a tap on a number there opens its meaning and "N charts with it here".
       fill($numbers,
-        h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('div', { style: 'min-width:0' }, h('b', {}, inp.name || '(no name)'), h('div', { class: 'muted small' }, when ? `Born ${when}` : 'No date: name chart only')),
+        h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('div', { style: 'min-width:0' }, h('b', {}, inp.name || '(no name)'), h('div', { class: 'muted small' }, when ? `Born ${when}` : 'No date: name chart only'), knownAsNote(inp.name, imgName(img))),
           h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:6px' }, inp.name ? h('button', { type: 'button', onclick: wholePyramid }, 'Pyramid') : null, h('button', { type: 'button', onclick: () => { fixing = true; drawNumbers(); } }, 'Wrong? Fix'))), $google);
     };
     if (img.kind === 'chart') loadNumbers();
