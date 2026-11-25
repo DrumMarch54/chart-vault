@@ -37,6 +37,7 @@ export const paths = {
   thumbs: path.join(config.dataDir, 'thumbs'),
   secret: path.join(config.dataDir, 'cookie-secret'),
   trash: path.join(config.dataDir, 'trash'),      // pictures of deleted charts, until restored
+  photos: path.join(config.dataDir, 'photos'),    // photos of the people behind charts, from Commons (server/photos.js)
 };
 
 export function ensureDirs() {

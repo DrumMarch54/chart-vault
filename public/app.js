@@ -1023,10 +1023,14 @@
           return;
         }
         const ok = async () => { try { count('viewer.name_ok'); const r = await postJson(`/api/images/${img.id}/title/ok`, {}); img = r.image; toast('Name confirmed'); drawWho(); } catch (err) { toast(err.message, true); } };
+        // The person's photo beside the name (people.js `photo`): nothing at all when there is none.
+        const [$ph, $phBig] = peopleUi && img.title && !img.title_check ? peopleUi.photo(img) : [null, null];
         fill($who,
           h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' },
-            h('div', { style: 'min-width:0' }, h('b', {}, img.title || 'No name yet'), img.title_check ? h('div', { class: 'muted small' }, 'A guess. Is it right?') : null),
-            h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:6px' }, img.title_check ? h('button', { type: 'button', onclick: ok }, 'Yes') : null, h('button', { type: 'button', onclick: () => { fixingName = true; drawWho(); } }, img.title ? 'Fix' : 'Name it'))));
+            $ph,
+            h('div', { style: 'min-width:0;flex:1' }, h('b', {}, img.title || 'No name yet'), img.title_check ? h('div', { class: 'muted small' }, 'A guess. Is it right?') : null),
+            h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:6px' }, img.title_check ? h('button', { type: 'button', onclick: ok }, 'Yes') : null, h('button', { type: 'button', onclick: () => { fixingName = true; drawWho(); } }, img.title ? 'Fix' : 'Name it'))),
+          $phBig);
       };
       drawWho();
       // A folded row: tap to show what is under it (the position and number tags, the file details). The

@@ -29,6 +29,7 @@ import { findInDoc, docWindow, findNumberSection, findPhrase } from './doc.js';
 import { askAboutSpot, spotContext } from './spot-ask.js';
 import { wordsFor, wordInfo } from './words.js';
 import { personFor, peopleKinds, parseWho, peopleToCheck } from './people.js';
+import { photoFor, photoFile } from './photos.js';
 
 const MAX_IMPORT = 50 * 1024 * 1024;
 
@@ -178,7 +179,17 @@ export function createApp(db, { log = console.log } = {}) {
   app.get('/api/images/:id/person', (req, res) => {
     const img = getImage(db, Number(req.params.id));
     if (!img) return res.status(404).json({ error: 'No such chart.' });
-    res.json({ person: personFor(db, img.id) });
+    const p = personFor(db, img.id);
+    res.json({ person: p && p.kind === 'person' ? { ...p, photo: photoFor(p.title) } : p });
+  });
+  // The person's photo (server/photos.js): fetched from Commons once, then served from this server's disk.
+  app.get('/api/photos/:id.jpg', async (req, res) => {
+    try {
+      const file = await photoFile(paths.photos, String(req.params.id));
+      if (!file) return res.status(404).json({ error: 'No such photo.' });
+      res.setHeader('Cache-Control', 'private, max-age=31536000, immutable');
+      res.type('jpeg').sendFile(file);
+    } catch (err) { res.status(502).json({ error: `The photo could not be fetched: ${err.message}` }); }
   });
   app.get('/api/people/kinds', (req, res) => res.json(peopleKinds(db)));
   app.get('/api/people/check', (req, res) => res.json(peopleToCheck(db)));

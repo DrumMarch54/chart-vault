@@ -9,7 +9,7 @@
   'use strict';
   const USAGE_LABELS = {
     'screen.people': 'Kinds of People', 'people.kind': 'Kinds of People: a kind opened', 'people.pill': 'Chart sheet → About: a kind opened',
-    'people.events': 'Chart sheet → About: life events opened', 'people.to_check': 'Kinds of People → About Cards to Check', 'people.source': 'Chart sheet → About: a source opened',
+    'people.events': 'Chart sheet → About: life events opened', 'people.photo': 'Chart sheet: the photo opened or closed', 'people.to_check': 'Kinds of People → About Cards to Check', 'people.source': 'Chart sheet → About: a source opened',
   };
 
   function install(A) {
@@ -38,10 +38,46 @@
       return $f;
     }
 
+    // One request per chart for the person, shared by the photo beside the name and the About card.
+    const personP = new Map();
+    const personOf = (img) => {
+      const key = `${img.id}:${img.title || ''}`;
+      if (!personP.has(key)) personP.set(key, api(`/api/images/${img.id}/person`).then((r) => r.person).catch((e) => { personP.delete(key); throw e; }));
+      return personP.get(key);
+    };
+    const creditLine = (ph) => h('div', { class: 'muted small pcredit' }, 'Photo: ', ph.credit ? `${ph.credit} · ` : '',
+      ph.license_url ? h('a', { href: ph.license_url, target: '_blank', rel: 'noopener noreferrer' }, ph.license) : ph.license, ' · ',
+      h('a', { href: ph.page, target: '_blank', rel: 'noopener noreferrer' }, 'Wikimedia Commons'));
+
+    // The person's photo at the top of the chart sheet (owner 2026-11-25): a small square beside the name, tap it for
+    // the whole picture with who took it under it, tap again to close. Returns [thumb slot, big view]; both stay empty
+    // for a chart with no photo, and a photo that fails to load takes itself away.
+    function photo(img) {
+      const $thumb = h('button', { type: 'button', class: 'pthumb hidden', 'aria-label': 'Show the photo' });
+      const $big = h('div', { class: 'pbig hidden' });
+      personOf(img).then((p) => {
+        const ph = p && p.photo;
+        if (!ph) return;
+        const gone = () => { $thumb.remove(); $big.remove(); };
+        const $img = h('img', { src: ph.url, alt: p.title || 'Photo', decoding: 'async' }); // never lazy: it loads while hidden
+        $img.onerror = gone;
+        $img.onload = () => $thumb.classList.remove('hidden');
+        fill($thumb, $img);
+        let drawn = false;
+        $thumb.onclick = () => {
+          count('people.photo');
+          if (!drawn) { fill($big, h('img', { src: ph.url, alt: p.title || 'Photo', onclick: () => $thumb.click() }), creditLine(ph)); drawn = true; }
+          const open = $big.classList.toggle('hidden') === false;
+          $thumb.classList.toggle('on', open); $thumb.setAttribute('aria-label', open ? 'Hide the photo' : 'Show the photo');
+        };
+      }).catch(() => {});
+      return [$thumb, $big];
+    }
+
     // The chart sheet's card. Draws nothing at all for a chart with no researched person (friends, family, unknowns).
     function section(img) {
       const $root = h('div', { class: 'about stack hidden' });
-      api(`/api/images/${img.id}/person`).then(({ person: p }) => {
+      personOf(img).then((p) => {
         if (!p) return;
         learn(p.field_names.map((f) => ({ who: `field:${f.value}`, label: f.label }))); learn(p.flag_names.map((f) => ({ who: `flag:${f.value}`, label: f.label })));
         const pill = (who, cls) => h('a', { class: `apill ${cls}`, href: listHash(who), onclick: () => count('people.pill') }, label(who));
@@ -61,6 +97,7 @@
           p.note ? h('div', { class: 'anote' }, h('b', {}, 'Worth checking: '), p.note) : null,
           h('div', { class: `abadge ${p.checked ? 'ok' : 'mem'}` }, p.checked ? 'Looked up online' : 'From memory: not looked up online yet, may be out of date'),
           p.sources.length ? h('div', { class: 'muted small asrc' }, 'Read from: ', ...p.sources.map((u, i) => h('a', { href: u, target: '_blank', rel: 'noopener noreferrer', onclick: () => count('people.source') }, (i ? ', ' : '') + host(u)))) : null,
+          p.photo ? creditLine(p.photo) : null,
           h('div', { class: 'muted small' }, 'These facts are the app\'s research, kept apart from your chart. Your names, dates and tags are never changed by it.'));
         $root.classList.remove('hidden');
       }).catch(() => {});
@@ -108,7 +145,7 @@
 
     const homeButton = () => h('a', { class: 'btn', href: '#/people', onclick: () => count('home.people') }, h('span', { class: 'qicon' }, '☺'), 'Kinds of People', h('span', { class: 'sub' }, 'by career and life'));
     USAGE_LABELS['home.people'] = 'Home → Kinds of People';
-    return { section, filters, label, homeButton, USAGE_LABELS };
+    return { section, photo, filters, label, homeButton, USAGE_LABELS };
   }
   root.People = { install };
 })(typeof globalThis !== 'undefined' ? globalThis : this);
