@@ -15,6 +15,7 @@ import { lookupReport } from './lookup.js';
 import { researchReport } from './research.js';
 import { listDeleted, findDuplicates } from './trash.js';
 import { peopleReport, personFor } from './people.js';
+import { photosReport } from './photos.js';
 
 const started = Date.now();
 const fmtB = (b) => (b >= 1e9 ? (b / 1e9).toFixed(2) + ' GB' : b >= 1e6 ? (b / 1e6).toFixed(1) + ' MB' : Math.round((b || 0) / 1e3) + ' KB');
@@ -111,6 +112,7 @@ export function snapshot(db, { scope = 'full', id = null, commit = 'unknown', bu
   }
   line('');
   for (const l of peopleReport(db)) line(l);
+  for (const l of photosReport(paths.photos)) line(l);
   line('');
   for (const l of aiReport()) line(l);
   for (const l of lookupReport(db)) line(redact(l));

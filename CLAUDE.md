@@ -16,7 +16,7 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - Status screen and `GET /api/deploy-guard` say whether the installed copy is
   `current` / `stale` / `missing` and when it last ran.
 - Live at https://charts.tiktok-automation.com (Cloudflare Tunnel → 127.0.0.1:8090).
-  Down = Cloudflare 502. See SETUP.md. No GitHub Actions. Outside calls: the AI (server/ai.js) and Wikidata (free).
+  Down = Cloudflare 502. See SETUP.md. No GitHub Actions. Outside calls: the AI (server/ai.js), Wikidata (free) and Commons photos (server/photos.js, free).
 - A reply that changed code ends with `Build: <short commit>`; the phone shows
   "Updated to build <commit>, tap to reload" within 15 s of the deploy.
 
@@ -124,18 +124,22 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   (dharma 78 = 15/6, day 6/15/24), so the higher self chart reads like one number's diamond. Search by Position's
   "Higher Self Diamond" row → `#/?pattern=hsd`; whole-chart shapes live in `PATTERNS` (server/queries.js).
 - Search by Position SCREEN (owner 2026-11-25, "almost unusable" before): `public/positionmap.js`, one screen (`#/position`,
-  `#/combo` is the same route) replacing the old picker and Combination screen. A BLANK numeroscope (the app's own drawing,
-  numbers taken off): tap a small chart to zoom in, tap a spot, a sheet asks the number (Exactly 12/3 / Any 3 / A Plain 3
-  Only; a center or diamond also takes its two numbers). "Looking For" lists the conditions (tap = change, × = drop), the
-  foot shows "Show N Charts". Diamonds, Anywhere and the Higher Self Diamond (under Essence) are in "Pick From a List".
-  Settings -> Search by Position Chart: Names on the Spots (default) or Clean Chart. The psyche charts' line reads Month and
-  Year. No owner's chart on it (owner: "not someone specific's chart").
+  `#/combo` is the same route). A BLANK numeroscope (the app's own drawing, numbers off): tap a small chart to zoom, tap a
+  spot, a sheet asks the number (Exactly 12/3 or Any 3; Any 4 or A Plain 4 Only). A picked number sits on its spot at the
+  chart's own size and ink on a gold mark. A spot already searched opens to change it (Change It / Remove), never twice.
+  A CENTER with sub vibrations is ONE sheet whichever number is tapped: Main Vibration + Sub Vibration, one or both;
+  both = Exactly Like This (two conditions) or Either Way Round (the combination). Any one of several subs counts.
+  "Pick From a List": six chart buttons, spots grouped two to a row, Diamonds last with what makes them, Higher Self
+  Diamond under Essence. Settings -> Search by Position Chart: Names on the Spots (default) or Clean Chart.
+- Position RESULTS (owner 2026-11-25: the search was said three times): "‹ N Charts", one row per spot (tap = change on
+  the search screen, × = drop), "+ Add Another Spot"; no search box, no size buttons, two across on a phone. Numbers read
+  "Any 4", "Plain 4", never "digit sum". Back: results -> search screen (spots kept) -> where it was opened from
+  (`showPositionResults` pushes, `editPositionSearch` steps back, `fromPos` in history.state).
 - A number searched ANYWHERE (`*.*` or `chart.*`, one condition, no combo) lists the charts holding it the most first,
   the count (`hits`) on each thumbnail, counted like the Reading's repeats (`NOT_A_REPEAT` in positions.js, one list
   with facts.js); `hitsOf` in queries.js orders the list and the viewer's prev/next alike.
-- The position search is ONE stop in the phone's Back history (owner 2026-10-21): the search screen and
-  results move between each other with `swap`, never `go`; `inFlow`/`flowFromApp`/`leaveFlow` in route(); Back from any
-  of them goes to the screen the search was opened from. A new screen inside the search must use `swap` too.
+- The position search in the phone's Back history (owner 2026-10-21, 2026-11-25): search screen, then results one step
+  further; every other move inside uses `swap`; `inFlow`/`flowFromApp`/`leaveFlow` in route().
 - Similar Charts (owner 2026-10-19): viewer ⋮ → "Similar Charts" (`#/similar/<id>?by=`), `server/similar.js`
   scores every other chart by positions holding the same number (same position, repeat and sum; hidden helper
   positions excluded), per chart; chips rank by every chart or one; a row opens Compare. No AI, no guesswork.
@@ -335,6 +339,10 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   `tools/people/out/batch-NN.json`, written by Claude sessions following `tools/people/BRIEF.md` (facts only, sourced,
   private people = `unknown` and never dug into; never sexual orientation, gender identity, health). Never hand-edit the seed;
   fix the batch file (or add a later batch: a later one replaces an earlier one) and re-run merge. The app makes no paid call for it.
+- Photos (owner 2026-11-25): the person's picture sits beside the name at the top of the chart sheet; tap = the whole
+  picture with its credit (also in the About card). `server/chart-photos.json` is GENERATED by `node tools/people/photos.mjs`
+  (Wikidata P18; kept only when exactly ONE Wikidata human with the name was born on the record's or the chart's date: a wrong
+  face is worse than none). `server/photos.js` fetches each from Commons once, 480 px JPEG in data/photos/. Re-run after merge.mjs.
 - `server/people.js`: `FIELDS` / `FLAGS` are the ONE list of kinds and their screen words (a word not on them is dropped);
   `people` + `person_marks` (migration 10); `person_charts` is a VIEW joined by the chart's name (`images.title`, any case),
   so a renamed chart follows its name and a new chart of a known person joins by itself. Friends and family have no record.
