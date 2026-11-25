@@ -88,7 +88,7 @@ let id;
 test('the costs are a guess until a real search has run', async () => {
   const r = await call('GET', '/api/research');
   assert.equal(r.body.cost.measured, false);
-  assert.equal(r.body.cost.limit_usd, 1);
+  assert.equal(r.body.cost.limit_usd, 2);
   assert.equal(r.body.items.length, 0);
 });
 
@@ -171,11 +171,11 @@ test('a personal category lists only people with a page for it', async () => {
 
 test('it stops and asks before passing the money limit, and Keep Going carries on', async () => {
   const many = (from) => Array.from({ length: 6 }, (_, i) => person(`Round ${from} Person ${i}`, `Round ${from} Person ${i}`, `19${50 + from}-0${i + 1}-1${i}`, U('Linus')));
-  script.push(reply([...searched([U('Linus')]), group({ people: many(1) })], 70)); // one round: 70 searches = 70 cents
+  script.push(reply([...searched([U('Linus')]), group({ people: many(1) })], 140)); // one round: 140 searches = $1.40
   const r = await call('POST', '/api/research', { query: 'costly group' });
   await settle();
   let g = (await call('GET', `/api/research/${r.body.id}`)).body;
-  assert.equal(g.status, 'paused', 'a second round would pass $1');
+  assert.equal(g.status, 'paused', 'a second round would pass $2');
   assert.equal(g.rounds, 1);
   assert.equal(g.people.length, 6);
   script.push(reply([...searched([U('Linus')]), group({ people: many(2).slice(0, 2) })], 1));
@@ -184,7 +184,7 @@ test('it stops and asks before passing the money limit, and Keep Going carries o
   g = (await call('GET', `/api/research/${r.body.id}`)).body;
   assert.equal(g.status, 'done');
   assert.equal(g.people.length, 8);
-  assert.equal(g.limit > 1, true);
+  assert.equal(g.limit > 2, true);
   await call('DELETE', `/api/research/${r.body.id}`);
 });
 

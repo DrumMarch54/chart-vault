@@ -255,7 +255,7 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - Home Tools "Research a Group" (`#/research`): the owner says a category ("computer coders", "trans people", "coffee chains").
   `server/research.js`: a JOB on the server (`startResearch`, the phone only watches it): Claude Haiku 5.5 + web search in
   ROUNDS of 30 (`give_group`, each round told who is already found) until a round brings fewer than 5 new ones. It never
-  passes $1 (`LIMIT_USD`) by itself: status `paused`, "Keep Going" allows another dollar (owner 2026-11-23: "the more data
+  passes $2 (`LIMIT_USD`, owner 2026-11-25; was $1) by itself: status `paused`, "Keep Going" allows another $2 (owner 2026-11-23: "the more data
   the better ... prevent it from racking up a huge bill"). A restart mid-search = `interrupted`, what was found is kept.
   Kept in `research` (migration 11, Past Research, opens free). Screens (`public/research.js`, one route): ask, Who It
   Found (ticks, `?view=who`), results (`?id=`), one person (`&p=`).
@@ -272,7 +272,7 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   dropped and counted. A date with no such page stays but is marked Not Checked Online. Never loosen either.
 - Growing a group (owner 2026-11-23: "we need a much bigger database ... tie up all the loose ends"): What Next? always
   offers Search Everything (`auto`: the plain search, then angle after angle by itself, until 3 ways in a row find
-  nobody new; asks at every $1), One More Plain Search, one angle and Check the Dates (no adding by hand: owner
+  nobody new; asks at every $2), One More Plain Search, one angle and Check the Dates (no adding by hand: owner
   2026-11-23, "I'm not going to use that"). A category typed again OPENS the research that holds it (`findResearch`), never a twin. Up to 1,500
   people. An old research (no angles stored) gets every option too: test a new option on research #1's shape.
 - What Next? (owner 2026-11-23: "give me a pop-up ... and just give me the options"): when a search stops, a card says

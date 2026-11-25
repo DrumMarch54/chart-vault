@@ -32,7 +32,7 @@ const DRY = 5;
 const MAX_ROUNDS = 80;     // the money limit is the real brake: it asks at every dollar
 const MAX_PEOPLE = 1500;   // owner 2026-11-23: "we need a much bigger database"
 const DRY_WAYS = 3;        // Search Everything stops after this many ways in a row found nobody new
-export const LIMIT_USD = 1;
+export const LIMIT_USD = 2; // owner 2026-11-25: up to $2 before it asks (was $1)
 const SUMMARY_GUESS_USD = 0.12;
 const MAX_QUERY = 200;
 const MAX_CALLS = 6; // a pause_turn resume is a call too
@@ -385,7 +385,7 @@ export function checkFits(db, id, { log = () => {} } = {}) {
 }
 
 
-// "Keep Going": the owner allows another dollar (or resumes a search the restart cut short).
+// "Keep Going": the owner allows another $2 (or resumes a search the restart cut short).
 // More of a group that already exists. `angle` = one narrower slice; `auto` = Search Everything: the plain search, then
 // every suggested angle in turn, until DRY_WAYS ways in a row find nobody new; `keep` = carry on exactly as it was
 // (after the money stop, or a restart); none of them = the plain search once more. Each call allows one more dollar.

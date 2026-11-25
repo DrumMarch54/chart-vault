@@ -39,7 +39,7 @@
       const $q = h('input', { type: 'text', placeholder: 'A kind of person or business…', autocomplete: 'off', enterkeyhint: 'search', maxlength: 200, value: query.get('q') || '' });
       const $go = h('button', { type: 'button', class: 'btn-primary btn-block' }, 'Search');
       const $out = h('div', { class: 'stack' }), $past = h('div', { class: 'stack' });
-      const $cost = h('p', { class: 'muted small', style: 'margin:0' }, 'It keeps searching until no new ones turn up, and asks you before spending more than $1.');
+      const $cost = h('p', { class: 'muted small', style: 'margin:0' }, 'It keeps searching until no new ones turn up, and asks you before spending more than $2.');
       let busy = false;
       // The search runs on the server; this only starts it and opens the screen that watches it.
       const run = async () => {
@@ -95,7 +95,7 @@
       watch++;
       if (g.status === 'paused') return h('div', { class: 'card stack rs-status' }, h('b', {}, `Stopped to ask: ${g.people.length} found for ${money(g.usd)}`),
         h('div', { class: 'muted' }, `Another round would pass your $${g.limit.toFixed(0)} limit. Each round is about ${each} and brings up to 30 more.`),
-        moreBtn('Keep Going (up to $1 More)'));
+        moreBtn('Keep Going (up to $2 More)'));
       if (g.status === 'interrupted') return h('div', { class: 'card stack rs-status' }, h('b', {}, 'The search was cut short'), h('div', { class: 'muted' }, `${g.stop} ${g.people.length} found for ${money(g.usd)}.`), moreBtn(`Keep Searching (about ${each} a round)`));
       if (g.status === 'failed') return h('div', { class: 'card stack rs-status' }, h('b', {}, 'The search failed'), h('p', { class: 'err', style: 'margin:0' }, g.stop || 'Nothing came back.'), moreBtn(`Try Again (about ${each})`));
       if (g.status === 'asking') {
@@ -154,7 +154,7 @@
         !g.personal && !g.wikidata_done ? h('div', { class: 'muted small' }, 'Wikidata, the database behind Wikipedia: often hundreds or thousands more, with birth dates, at no cost.') : null,
         (g.wikidata_used || []).length ? h('div', { class: 'muted small' }, `Free database used: ${g.wikidata_used.map((w) => (w.error ? `${w.words} (${w.error})` : `${w.label}: ${fmtN(w.dated)} with a birth date, ${fmtN(w.added)} new`)).join(' · ')}.`) : null,
         h('button', { type: 'button', class: 'btn-primary btn-block', onclick: () => post('more', { auto: true }, 'research.auto') }, 'Search the Web for Everything'),
-        h('div', { class: 'muted small' }, `Keeps going by itself: the plain search, then one angle after another, until three ways in a row find nobody new. About ${each} a round. It stops and asks you at every $1.`),
+        h('div', { class: 'muted small' }, `Keeps going by itself: the plain search, then one angle after another, until three ways in a row find nobody new. About ${each} a round. It stops and asks you at every $2.`),
         h('button', { type: 'button', class: 'btn btn-block', onclick: () => post('more', {}, 'research.more') }, 'One More Plain Search'),
         (g.angles || []).length ? h('div', { class: 'muted small' }, 'Or one angle only:') : null,
         ...(g.angles || []).map(angle),
