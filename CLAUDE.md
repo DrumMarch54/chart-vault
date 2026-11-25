@@ -123,17 +123,23 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - Higher Self Diamond (owner 2026-11-07, the owner's own name): the day's digit sum = the dharma diamond's digit sum
   (dharma 78 = 15/6, day 6/15/24), so the higher self chart reads like one number's diamond. Search by Position's
   "Higher Self Diamond" row → `#/?pattern=hsd`; whole-chart shapes live in `PATTERNS` (server/queries.js).
-- Combination screen (owner 2026-10-21, `#/combo`, `routes.combo`): one row per position (tap it for a sheet of the
-  same rows as the picker, `posRows`; type the number beside it), "+ Add Another Position", the foot counts the charts
-  with everything and "Show Charts" lists them. "+ Another number" and a condition chip on the results open it with the
-  conditions kept. The address carries the rows (`replaceState`, no history step). Labels: a center's two numbers are
-  "Mind center main vibration" and "Mind center sub vibration" (same for the emotion center); the owner's words.
+- Search by Position SCREEN (owner 2026-11-25, "almost unusable" before): `public/positionmap.js`, one screen (`#/position`,
+  `#/combo` is the same route). A BLANK numeroscope (the app's own drawing, numbers off): tap a small chart to zoom, tap a
+  spot, a sheet asks the number (Exactly 12/3 or Any 3; Any 4 or A Plain 4 Only). A picked number sits on its spot at the
+  chart's own size and ink on a gold mark. A spot already searched opens to change it (Change It / Remove), never twice.
+  A CENTER with sub vibrations is ONE sheet whichever number is tapped: Main Vibration + Sub Vibration, one or both;
+  both = Exactly Like This (two conditions) or Either Way Round (the combination). Any one of several subs counts.
+  "Pick From a List": six chart buttons, spots grouped two to a row, Diamonds last with what makes them, Higher Self
+  Diamond under Essence. Settings -> Search by Position Chart: Names on the Spots (default) or Clean Chart.
+- Position RESULTS (owner 2026-11-25: the search was said three times): "‹ N Charts", one row per spot (tap = change on
+  the search screen, × = drop), "+ Add Another Spot"; no search box, no size buttons, two across on a phone. Numbers read
+  "Any 4", "Plain 4", never "digit sum". Back: results -> search screen (spots kept) -> where it was opened from
+  (`showPositionResults` pushes, `editPositionSearch` steps back, `fromPos` in history.state).
 - A number searched ANYWHERE (`*.*` or `chart.*`, one condition, no combo) lists the charts holding it the most first,
   the count (`hits`) on each thumbnail, counted like the Reading's repeats (`NOT_A_REPEAT` in positions.js, one list
   with facts.js); `hitsOf` in queries.js orders the list and the viewer's prev/next alike.
-- The position search is ONE stop in the phone's Back history (owner 2026-10-21): picker, combination screen and
-  results move between each other with `swap`, never `go`; `inFlow`/`flowFromApp`/`leaveFlow` in route(); Back from any
-  of them goes to the screen the search was opened from. A new screen inside the search must use `swap` too.
+- The position search in the phone's Back history (owner 2026-10-21, 2026-11-25): search screen, then results one step
+  further; every other move inside uses `swap`; `inFlow`/`flowFromApp`/`leaveFlow` in route().
 - Similar Charts (owner 2026-10-19): viewer ⋮ → "Similar Charts" (`#/similar/<id>?by=`), `server/similar.js`
   scores every other chart by positions holding the same number (same position, repeat and sum; hidden helper
   positions excluded), per chart; chips rank by every chart or one; a row opens Compare. No AI, no guesswork.

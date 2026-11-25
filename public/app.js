@@ -49,11 +49,11 @@
     'screen.tags': 'All Tags', 'screen.upload': 'Upload Screenshots', 'screen.import': 'Import Tags', 'screen.status': 'Status and backup',
     'viewer.add_tag': 'Add a tag to a chart', 'quick.save': 'Save a quick chart', 'quick.full_screen': 'Quick Chart full screen',
     'quick.year_rows': 'Year Rows and Day Vibrations', 'rows.on_date': 'Year Rows: pick a date', 'rows.meaning': 'Year Rows: tap a number for its meaning', 'quick.show_parts': 'Show and Hide Parts', 'quick.augment': 'Augmentation On or Off', 'status.backup': 'Back up now', 'status.logout': 'Log out',
-    'screen.position': 'Search by Position', 'position.search': 'Run a position search', 'home.quick': 'Home → Quick Chart', 'home.recent_all': 'Home → Recently Opened: Show All', 'app.back_to_start': 'Back to the home screen after a while away', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'status.recompute': 'Recompute chart numbers',
+    'screen.position': 'Search by Position', 'home.quick': 'Home → Quick Chart', 'home.recent_all': 'Home → Recently Opened: Show All', 'app.back_to_start': 'Back to the home screen after a while away', 'home.position': 'Home → Search by Position', 'viewer.fix_inputs': 'Fix a chart\'s name or date', 'status.recompute': 'Recompute chart numbers',
     'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart', 'viewer.year_rows': 'Year Rows from a chart',
-    'position.search_more': 'Narrow a position search by another number', 'position.add_more': 'Tap + Another number', 'position.combo': 'Open the combination screen from Search by Position', 'position.hsd': 'Higher Self Diamond charts from Search by Position', 'position.plain': 'Plain number only, in a two-number position search', 'position.making': 'Pick the number two parts make (Making 35/8)', 'combo.search': 'Show Charts on the combination screen', 'reading.show_number': 'Most Often → ring a number on the chart', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'viewer.share': 'Share Picture from a chart', 'quick.share': 'Share Picture from the Quick Chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
+    'position.add_more': 'Tap + Another number', 'reading.show_number': 'Most Often → ring a number on the chart', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'viewer.share': 'Share Picture from a chart', 'quick.share': 'Share Picture from the Quick Chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
     'grid.size': 'Chart size on the grid (− / +)', 'similar.size': 'Chart size on Similar Charts (− / +)', 'duplicates.size': 'Chart size on Possible Duplicates (− / +)',
-    'viewer.similar': 'Similar Charts from a chart', 'screen.group': 'What This Group Shares', 'grid.group': 'Tag results → What This Group Shares', 'group.open_search': 'What This Group Shares: open a find', 'group.open_chart': 'What This Group Shares: open a chart', 'group.show_weak': 'What This Group Shares: show the weaker finds', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
+    'viewer.similar': 'Similar Charts from a chart', 'viewer.google': 'Search Google from a chart', 'screen.group': 'What This Group Shares', 'grid.group': 'Tag results → What This Group Shares', 'group.open_search': 'What This Group Shares: open a find', 'group.open_chart': 'What This Group Shares: open a chart', 'group.show_weak': 'What This Group Shares: show the weaker finds', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
     'viewer.delete': 'Delete a chart from the chart page', 'duplicates.delete': 'Delete a chart from Possible Duplicates', 'duplicates.keep': 'Keep a duplicate group', 'deleted.restore': 'Put a deleted chart back',
     'screen.duplicates': 'Possible Duplicates', 'screen.deleted': 'Deleted Charts', 'search.position': 'Search box → a position',
     'viewer.meaning': 'Tap a number on a chart for its meaning', 'quick.meaning': 'Tap a number on the Quick Chart for its meaning', 'meaning.jump': 'Meaning → jump to a part of the page', 'meaning.show_charts': 'Meaning → show the charts with that number there', 'meaning.course_words': 'Meaning → open the full course words', 'meaning.number_guide': 'Meaning → Show More About a number (your guide)', 'meaning.open_doc': 'Meaning → Open the Document', 'meaning.ask': 'Meaning → Ask About This (paid)',
@@ -87,7 +87,7 @@
   const posLabel = (pos) => { const [chart, key = '*'] = String(pos).split('.'); if (key === '*') return chart === '*' ? 'anywhere' : `anywhere in the ${chartLabel(chart).toLowerCase()}`; const p = catalog && catalog.positions.find((x) => x.chart === chart && x.key === key); return `${p ? p.label : key} · ${chartLabel(chart)}`; };
   // "12" reads 12/3; "/3" reads "digit sum 3".
   // "12+5@35" reads "35/8 from 12/3 and 5" (the diamond the two make); "!3" reads "plain 3" (a 3 that is no 12/3).
-  const numLabel = (num) => { const made = /^(.*)@(\d+)$/.exec(String(num)); if (made) return `${numLabel(made[2])} from ${numLabel(made[1])}`; if (/\+/.test(String(num))) return String(num).split('+').map(numLabel).join(' and '); if (/^!\d$/.test(String(num))) return `plain ${String(num).slice(1)}`; const m = /^(\d+)?(?:\/(\d))?$/.exec(String(num)); if (!m) return String(num); if (!m[1]) return `digit sum ${m[2]}`; const n = Number(m[1]); return n < 10 ? String(n) : `${n}/${TagCodes.digitSum(n)}`; };
+  const numLabel = (num) => { const made = /^(.*)@(\d+)$/.exec(String(num)); if (made) return `${numLabel(made[2])} from ${numLabel(made[1])}`; if (/\+/.test(String(num))) return String(num).split('+').map(numLabel).join(' and '); if (/^!\d$/.test(String(num))) return `Plain ${String(num).slice(1)}`; const m = /^(\d+)?(?:\/(\d))?$/.exec(String(num)); if (!m) return String(num); if (!m[1]) return `Any ${m[2]}`; const n = Number(m[1]); return n < 10 ? String(n) : `${n}/${TagCodes.digitSum(n)}`; };
   // A position search is a list of conditions [{ pos, num }], all of which a chart must meet (day 8 AND first
   // name 15). The address carries them pairwise (?pos=essence.day&num=8&pos=name.first&num=15).
   const condLabel = (c) => { const p = posLabel(c.pos); return p.startsWith('anywhere') ? `${numLabel(c.num)} ${p}` : `${numLabel(c.num)} in ${p}`; };
@@ -102,14 +102,21 @@
   let lastRoute = null, lastHash = null; // the screen shown before this one (null = this is the first screen since the page loaded)
   let viewerFromApp = false; // the viewer was opened from another screen here, so Back can use the browser's own history
   let underHash = null; // the screen still drawn under the viewer: closing the viewer onto it needs no redraw, so the list keeps its place
-  // The position search (the picker, the combination screen, the results) is ONE stop in the phone's Back history
-  // (owner 2026-10-21: Back walked through every search made). Every move inside it replaces the address (swap), so
-  // Back from any of them leaves the search in one step: to the screen it was opened from (flowFromApp), else home.
+  // The position search: the Search by Position screen, then its results ONE step further (owner 2026-11-25: Back
+  // from the results went all the way home). Inside the results every change replaces the address (swap); changing
+  // the search from the results steps back to the search screen (editPositionSearch) instead of adding a step, so
+  // Back from the search screen leaves in one step: to the screen it was opened from (flowFromApp), else home.
   const parseHash = (hash) => { const [, name = ''] = /^#\/([^/?]*)/.exec(hash || '#/') || []; return { name, query: new URLSearchParams((hash || '').split('?')[1] || '') }; };
   const inFlow = (hash) => { const { name, query } = parseHash(hash); return name === 'position' || name === 'combo' || (name === '' && condsOf(query).length > 0); };
   const OVER_FLOW = new Set(['chart', 'compare', 'similar']); // screens that lie over the search and come back to it
   let flowFromApp = false;
   const leaveFlow = () => (flowFromApp ? history.back() : swap('#/'));
+  // Results pushed by the search screen carry fromPos in history.state; posReturn = the conditions to show when the
+  // results step back to it; carryFromPos keeps the mark when the results replace themselves (× on a condition).
+  let posPushed = false, posReturn = null, carryFromPos = false;
+  const showPositionResults = (conds) => { posPushed = true; go(positionHash(conds)); };
+  const editPositionSearch = (conds) => { if (history.state && history.state.fromPos) { posReturn = conds; history.back(); } else swap('#/position?' + condsQuery(conds)); };
+  const takePositionReturn = () => { const r = posReturn; posReturn = null; return r; };
   // How deep this step of the phone's Back history is (`d` in history.state; 0 = the step the app started on).
   // Coming back after a while rewinds to that first step and opens home (backToStart, below).
   let depth = Number.isInteger(history.state && history.state.d) ? history.state.d : 0, replacing = false, rewinding = false;
@@ -122,6 +129,8 @@
     seen();
     const [, name = '', arg = ''] = /^#\/([^/?]*)\/?([^?]*)/.exec(hash) || [];
     const query = new URLSearchParams(hash.split('?')[1] || '');
+    if ((posPushed || carryFromPos) && name === '' && condsOf(query).length) { try { history.replaceState({ ...(history.state || {}), fromPos: true }, '', location.href); } catch {} }
+    posPushed = carryFromPos = false;
     const view = routes[name] || routes[''];
     closeOverlays();
     if (viewerCleanup) { viewerCleanup(); viewerCleanup = null; }
@@ -155,7 +164,7 @@
   const go = (hash) => afterOverlayClosed(() => { location.hash = hash; });
   // Same screen change, but without adding a step to the browser's history (used between charts in the
   // viewer, so the phone's Back button returns to the screen the viewer was opened from, not to the last chart).
-  const swap = (hash) => afterOverlayClosed(() => { if ((location.hash || '#/') !== hash) replacing = true; location.replace(hash); });
+  const swap = (hash) => afterOverlayClosed(() => { if (history.state && history.state.fromPos) carryFromPos = true; if ((location.hash || '#/') !== hash) replacing = true; location.replace(hash); });
   // Like replaceChildren, but skips null/false so a conditional part never shows as the word "null".
   const fill = (el, ...nodes) => el.replaceChildren(...nodes.filter((n) => n !== null && n !== undefined && n !== false));
   // Line drawings for the button symbols (owner 2026-11-23): the new looks show these, the classic looks keep the
@@ -222,6 +231,7 @@
   let overlays = []; // [{ el, close }], oldest first
   let peopleUi = null; // set once public/people.js is installed (bottom of this file)
   let meaningUi = null; // set once public/meaning.js is installed (bottom of this file)
+  let positionUi = null; // set once public/positionmap.js is installed (bottom of this file)
   let lookupUi = null; // set once public/lookup.js is installed (bottom of this file)
   let closingAll = false, pendingBack = 0, afterBack = [];
   const trackOverlay = (el, close = null) => { overlays.push({ el, close }); try { history.pushState({ overlay: true, d: depth + 1 }, '', location.href); depth += 1; } catch {} };
@@ -573,19 +583,19 @@
       : drawn === false ? h('div', { class: 'filters' }, chip({ name: 'Still the screenshot', kind: 'name' }, { active: true, removable: true, onclick: () => setTag('', 'chart') }))
       : pattern ? h('div', { class: 'filters' }, chip({ name: PATTERN_NAMES[pattern], kind: 'name' }, { active: true, removable: true, onclick: () => setTag('', 'chart') }))
       : who.length ? peopleUi.filters(who)
-      // One chip per condition: tap it to change it on the combination screen (every condition kept), tap × to drop it.
-      // "+ Another number" opens the combination screen with every condition kept and a new row to fill.
-      : position ? h('div', { class: 'filters' },
-        ...conds.map((c, i) => { const rest = conds.filter((_, j) => j !== i); return h('span', { class: 'chip position', title: 'Tap to change, × to remove' },
-          h('button', { type: 'button', class: 't', onclick: () => swap('#/combo?' + condsQuery(conds)) }, condLabel(c)),
-          h('button', { type: 'button', class: 'x', 'aria-label': `Remove ${condLabel(c)}`, onclick: () => (rest.length ? swap(positionHash(rest)) : leaveFlow()) }, '×')); }),
-        h('button', { type: 'button', class: 'chip position add', onclick: () => { count('position.add_more'); swap('#/combo?' + condsQuery(conds, { add: 1 })); } }, h('span', { class: 't' }, '+ Another number'))) : null;
+      // One chip per condition: tap it to change it on the Search by Position screen (every condition kept), tap × to drop it.
+      // "+ Another number" opens that screen too, every condition kept, to tap one more spot.
+      : null;
+    // A position search (owner 2026-11-25): the screen says once what was searched. "‹ N Charts", one row per spot
+    // (tap = change it on the search screen, × = drop it), "+ Add Another Spot"; no search box, no size buttons.
+    const $posHead = position && positionUi ? positionUi.resultsHead(conds, { edit: editPositionSearch, remove: (rest) => (rest.length ? swap(positionHash(rest)) : history.state && history.state.fromPos ? editPositionSearch([]) : leaveFlow()), back: () => (history.state && history.state.fromPos ? editPositionSearch(conds) : leaveFlow()) }) : null;
     const $summary = h('div', { class: 'summary' }, 'Loading…');
     const $grid = h('div', { class: 'grid' });
     // One size for every grid of charts (the list, the search results, Recently Opened): − / + beside the count.
     const wide = window.innerWidth >= 1000 ? 2 : window.innerWidth >= 700 ? 1 : 0;
     let onCols = null; // the home screen's Recently Opened keeps to two rows whatever the size
-    const size = sizeControl('gridCols', { min: 2, max: [5, 7, 9][wide], def: [3, 5, 6][wide], countName: 'grid.size', apply: (c) => { document.documentElement.style.setProperty('--grid-cols', c); if (onCols) onCols(c); } });
+    if ($posHead) $grid.style.setProperty('--grid-cols', [2, 4, 5][wide]);
+    const size = $posHead ? { node: null } : sizeControl('gridCols', { min: 2, max: [5, 7, 9][wide], def: [3, 5, 6][wide], countName: 'grid.size', apply: (c) => { document.documentElement.style.setProperty('--grid-cols', c); if (onCols) onCols(c); } });
     const $bar = h('div', { class: 'gridbar' }, $summary, size.node);
     const $sentinel = h('div', { class: 'sentinel' });
     // A tag's charts against the rest of the vault (owner 2026-11-20); shown once the tag has three charts or more.
@@ -605,10 +615,10 @@
     drawCmpBar(true);
     render(h('div', { class: `screen ${home ? 'home' : ''}` },
       home ? h('div', { class: 'pagetop hometop' }, h('h1', {}, 'Chart Vault'), $gear) : null,
-      h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), home ? null : $quickIcon, home ? null : $gear), $filters),
+      $posHead ? $posHead.node : h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), home ? null : $quickIcon, home ? null : $gear), $filters),
       home && readingUi ? readingUi.homeBanner() : null,
       home ? $acts : null, $recent, home && toolsUi ? toolsUi.homeButtons() : null,
-      home ? null : $bar, home ? null : $group, home ? null : $grid, home ? null : $sentinel));
+      home || $posHead ? null : $bar, home ? null : $group, home ? null : $grid, home ? null : $sentinel));
     // Recently Opened charts (this phone remembers the last 48), a grid like a search result, only on the home screen.
     if (home && recentIds().length) {
       api('/api/images?ids=' + recentIds().join(',') + '&limit=50').then((r) => {
@@ -643,6 +653,7 @@
       try {
         const r = await api('/api/images?' + params());
         total = r.total; offset += r.items.length;
+        if ($posHead) $posHead.setTotal(total, mostFirst);
         if ($group) $group.classList.toggle('hidden', total < 3);
         for (const img of r.items) $grid.append(cell(img));
         done = offset >= total || r.items.length === 0;
@@ -979,15 +990,18 @@
           h('div', { class: 'row', style: 'flex-wrap:nowrap' }, h('button', { type: 'button', class: 'btn-primary', style: 'flex:1', onclick: save }, 'Save'), h('button', { type: 'button', onclick: () => { fixing = false; drawNumbers(); } }, 'Cancel')));
         return;
       }
+      // Search Google (owner 2026-11-25): opens a Google search for the person, in a new tab, from the swiped-up sheet.
+      const who = imgName(img) || (inp && inp.name) || '';
+      const $google = who ? h('a', { class: 'btn gsearch', href: `https://www.google.com/search?q=${encodeURIComponent(who)}`, target: '_blank', rel: 'noopener', onclick: () => count('viewer.google') }, `Search Google for ${who}`) : null;
       if (!inp) {
-        fill($numbers, h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('span', { class: 'muted small' }, 'Name and date not read yet, so this chart cannot be found by position.'), h('button', { type: 'button', onclick: () => { fixing = true; drawNumbers(); } }, 'Type them')));
+        fill($numbers, h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('span', { class: 'muted small' }, 'Name and date not read yet, so this chart cannot be found by position.'), h('button', { type: 'button', onclick: () => { fixing = true; drawNumbers(); } }, 'Type them')), $google);
         return;
       }
       // Only the name and date here (owner 2026-10-19): the lists of every position's number are gone; the
       // drawing shows them, and a tap on a number there opens its meaning and "N charts with it here".
       fill($numbers,
         h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('div', { style: 'min-width:0' }, h('b', {}, inp.name || '(no name)'), h('div', { class: 'muted small' }, when ? `Born ${when}` : 'No date: name chart only')),
-          h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:6px' }, inp.name ? h('button', { type: 'button', onclick: wholePyramid }, 'Pyramid') : null, h('button', { type: 'button', onclick: () => { fixing = true; drawNumbers(); } }, 'Wrong? Fix'))));
+          h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:6px' }, inp.name ? h('button', { type: 'button', onclick: wholePyramid }, 'Pyramid') : null, h('button', { type: 'button', onclick: () => { fixing = true; drawNumbers(); } }, 'Wrong? Fix'))), $google);
     };
     if (img.kind === 'chart') loadNumbers();
     const draw = () => {
@@ -1399,6 +1413,8 @@
     const LOOK_KEYS = 'look theme style light dark appearance night day mode colors follows the phone system glass color blueprint classic icon';
     const LOOK_NOTES = { null: 'Blueprint Night when the phone is dark, Light when it is light.', glass: 'The icon\'s colors fill the screen, with frosted glass buttons.', blueprint: 'Deep navy with a faint grid; the colors glow in from the top.', light: 'Soft white with the icon\'s colors as a gentle glow.', 'classic-dark': 'The look the app had before, dark.', 'classic-light': 'The look the app had before, light.' };
     const $look = h('div', { class: 'card stack' });
+    // Which chart the Search by Position screen shows: names on the spots, or clean (owner 2026-11-25).
+    const $pm = positionUi ? positionUi.settingsCard() : null;
     const drawLook = () => {
       const cur = currentLook();
       fill($look, h('div', { class: 'row', style: 'justify-content:space-between' }, h('b', {}, 'Look'), h('span', { class: 'muted small' }, LOOK_NOTES[cur])),
@@ -1410,11 +1426,13 @@
       const hit = words.length ? SETTINGS.filter(([label, , keys]) => hay(label, keys)) : SETTINGS;
       const lookHit = !words.length || hay('Look', LOOK_KEYS);
       $look.classList.toggle('hidden', !lookHit);
+      const pmHit = !!$pm && (!words.length || hay('Search by Position Chart', positionUi.SETTINGS_WORDS));
+      if ($pm) $pm.classList.toggle('hidden', !pmHit);
       fill($list, ...hit.map(row));
-      $none.classList.toggle('hidden', hit.length > 0 || lookHit);
+      $none.classList.toggle('hidden', hit.length > 0 || lookHit || pmHit);
     };
     $q.addEventListener('input', () => { count('settings.search'); draw(); });
-    render(h('div', { class: 'screen stack' }, pageTop('Settings', '#/'), h('div', { class: 'searchbox' }, $q), $look, $list, $none));
+    render(h('div', { class: 'screen stack' }, pageTop('Settings', '#/'), h('div', { class: 'searchbox' }, $q), $look, $pm, $list, $none));
     drawLook(); draw();
   };
 
@@ -2014,100 +2032,7 @@
   // Every tag there is, three ways: the words (people and topics), the position codes grouped by
   // position, and everything grouped by number. Tap a tag to search it. Groups open on tap.
   // ---------- search by position ----------
-  // Type a number, see how many charts hold it in every position of every chart, tap one. The counts come
-  // from the server's stored chart numbers; the search itself is the browse screen with ?pos=&num=.
-  routes.position = async function positionView(_, query) {
-    // Conditions already chosen (?pos=&num=, pairwise) are kept and shown at the top: the next number narrows
-    // the charts that meet them ("day 8" first, then "first name 15" among those). ?edit= is a number to start with.
-    const fixed = condsOf(query);
-    const startNum = query.get('edit') || '';
-    let chart = 'name'; try { chart = localStorage.getItem('posChart') || 'name'; } catch {}
-    // Two numbers ("4" and "9") look for a combination: the two parts of a center or a diamond, either way round.
-    // "12+!5@35": a part with ! is a plain number (owner 2026-11-16: "a pure 3"), @35 = the diamond they make.
-    const [startPair, startMade = ''] = startNum.split('@');
-    const [startA, startB = ''] = startPair.split('+');
-    const plain = { a: startA.startsWith('!'), b: startB.startsWith('!') };
-    let made = Number(startMade) || null;
-    const $num = h('input', { type: 'text', inputmode: 'numeric', placeholder: fixed.length ? 'Next number' : 'Number, like 12', autocomplete: 'off', maxlength: 3, value: startA.replace(/[/!]/g, ''), enterkeyhint: 'search' });
-    const $num2 = h('input', { type: 'text', class: 'second', inputmode: 'numeric', placeholder: 'number', autocomplete: 'off', maxlength: 3, value: startB.replace(/[/!]/g, ''), enterkeyhint: 'search', 'aria-label': 'Second number of a combination, meeting the first in a center or diamond' });
-    const $ds = h('button', { type: 'button', class: 'chip off', title: 'Digit sum' }, 'as a digit sum');
-    let ds = startA.startsWith('/');
-    const combo = () => !!($num.value.trim() && $num2.value.trim());
-    const $fixed = h('div', { class: 'fixedconds' });
-    const $charts = h('div', { class: 'chips tabs' });
-    const $list = h('div', { class: 'stack poslist' });
-    const $hint = h('p', { class: 'muted small' });
-    // Under two numbers: "Plain 3 Only" for a one-digit number (otherwise a 12/3 counts as a 3), and the diamond the two
-    // make side by side ("Making 35/8", never 53/8), owner 2026-11-16.
-    const $made = h('div', { class: 'stack posmade' });
-    render(h('div', { class: 'screen' }, pageTop('Search by Position', () => (fixed.length ? swap(positionHash(fixed)) : leaveFlow())), $fixed,
-      h('div', { class: 'row posnum', style: 'flex-wrap:nowrap' }, $num, h('span', { class: 'muted small andword' }, 'meets'), $num2, $ds), $made,
-      // A number in each of several positions at once (owner 2026-10-21): the combination screen.
-      h('button', { type: 'button', class: 'rsearch alltags', onclick: () => { count('position.combo'); swap('#/combo?' + condsQuery(fixed, { add: 1 })); } }, h('span', {}, 'Combination: a number in each position'), h('span', { class: 'muted' }, '›')),
-      // A shape of the whole chart, no number to type (owner 2026-11-07): the day's digit sum equals the dharma diamond's.
-      fixed.length ? null : h('button', { type: 'button', class: 'rsearch alltags', onclick: () => { count('position.hsd'); go('#/?pattern=hsd'); } }, h('span', { class: 'pl' }, h('span', {}, 'Higher Self Diamond'), h('span', { class: 'muted small' }, 'The day has the same digit sum as the dharma diamond')), h('span', { class: 'muted' }, '›')),
-      $hint, $charts, $list));
-    try { await loadCatalog(true); } catch (err) { if (!catalog) { fill($list, h('p', { class: 'err' }, err.message)); return; } }
-    let counts = null, seq = 0;
-    const one = (v) => /^\d$/.test(v);
-    const dsOf = (v) => { let n = Number(v); while (n > 9) n = String(n).split('').reduce((t, d) => t + Number(d), 0); return n; };
-    // The numbers two parts can make side by side: 12/3 and 5 make 35/8 or 53/8.
-    const makeable = () => { const a = dsOf($num.value.trim()), b = dsOf($num2.value.trim()); return [...new Set([a * 10 + b, b * 10 + a])]; };
-    const numText = () => {
-      const n = $num.value.trim(); if (!n) return '';
-      if (combo()) { const m = $num2.value.trim(); const part = (v, p) => (p && one(v) ? '!' : '') + v; return `${part(n, plain.a)}+${part(m, plain.b)}${made && makeable().includes(made) ? '@' + made : ''}`; }
-      return ds ? `/${n.slice(-1)}` : n;
-    };
-    const drawMade = () => {
-      if (!combo() || !/^\d{1,3}$/.test($num.value.trim()) || !/^\d{1,3}$/.test($num2.value.trim())) { fill($made); return; }
-      if (made && !makeable().includes(made)) made = null;
-      const chip = (label, on, click) => h('button', { type: 'button', class: `chip ${on ? 'active' : 'off'}`, onclick: () => { click(); drawMade(); refresh(); } }, label);
-      const plainChip = (k, $el) => (one($el.value.trim()) ? chip(`Plain ${$el.value.trim()} Only`, plain[k], () => { plain[k] = !plain[k]; count('position.plain'); }) : null);
-      const plains = [plainChip('a', $num), plainChip('b', $num2)].filter(Boolean);
-      fill($made, plains.length ? h('div', { class: 'chips' }, ...plains) : null,
-        h('div', { class: 'chips' }, h('span', { class: 'muted small', style: 'align-self:center' }, 'Making'), chip('Any', !made, () => { made = null; }),
-          ...makeable().map((v) => chip(numLabel(String(v)), made === v, () => { made = made === v ? null : v; count('position.making'); }))));
-    };
-    const fixedParam = () => fixed.map((c) => `${c.pos}:${c.num}`).join(',');
-    const refresh = async () => {
-      const n = numText(); const my = ++seq;
-      $ds.classList.toggle('hidden', combo() || !/^\d$/.test($num.value.trim()));
-      drawMade();
-      if (!n) { counts = null; drawList(); return; }
-      try { const c = await api('/api/positions/counts?num=' + encodeURIComponent(n) + (fixed.length ? '&fixed=' + encodeURIComponent(fixedParam()) : '')); if (my === seq) { counts = c; drawList(); } } catch (err) { if (my === seq) { counts = { error: err.message }; drawList(); } }
-    };
-    // The conditions kept so far, each with its × (dropping one re-opens this picker without it), and the way to
-    // the charts that meet them as they are.
-    const drawFixed = () => {
-      if (!fixed.length) { fill($fixed); return; }
-      const total = counts && !counts.error && counts.fixedTotal !== null && counts.fixedTotal !== undefined ? counts.fixedTotal : null;
-      fill($fixed, h('div', { class: 'muted small', style: 'margin-bottom:6px' }, 'Every chart found must have:'),
-        h('div', { class: 'chips' }, ...fixed.map((c, i) => h('span', { class: 'chip position' }, h('span', { class: 't' }, condLabel(c)),
-          h('button', { type: 'button', class: 'x', 'aria-label': `Remove ${condLabel(c)}`, onclick: () => { const rest = fixed.filter((_, j) => j !== i); swap('#/position?' + condsQuery(rest, numText() ? { edit: numText() } : {})); } }, '×')))),
-        h('a', { class: 'linkbtn', href: positionHash(fixed) }, total === null ? 'See these charts ›' : `See these ${fmtN(total)} chart${total === 1 ? '' : 's'} ›`));
-    };
-    const drawCharts = () => fill($charts, ...[{ key: '*', label: 'Any chart' }, ...catalog.charts].map((c) => h('button', { type: 'button', class: `chip ${chart === c.key ? 'active' : 'off'}`, onclick: () => { chart = c.key; try { localStorage.setItem('posChart', chart); } catch {} drawCharts(); drawList(); } }, c.label)));
-    const pick = (pos) => { const n = numText(); if (!n) { $num.focus(); toast('Type a number first', true); return; } count(fixed.length ? 'position.search_more' : 'position.search'); swap(positionHash([...fixed, { pos, num: n }])); };
-    const drawList = () => {
-      drawFixed();
-      const n = numText();
-      const have = `${fmtN(counts ? counts.total : 0)} chart${counts && counts.total === 1 ? '' : 's'}${fixed.length ? ' of these' : ''} have ${numLabel(n)}${n.includes('@') ? ' in a diamond' : combo() ? ' meeting in a center or diamond (one digit means the digit sum, so 4 finds a 13/4 or a 22/4; tap Plain 4 Only for a plain 4)' : ' somewhere'}. Tap the position it must be in.`;
-      $hint.textContent = n ? (counts && !counts.error ? have : '')
-        : fixed.length ? 'Type the next number, then tap the position it must be in. Only charts with everything above are counted.'
-        : 'Type a number, then tap the position it must be in. Two numbers side by side, like 4 and 9, find them meeting in a center or diamond. Once the charts show, tap “+ Another number” above them to ask for a second position too, like day 8 with first name 15. Charts are found by their name and date, tags or not.';
-      if (counts && counts.error) { fill($list, h('p', { class: 'err' }, counts.error)); return; }
-      fill($list, ...posRows(chart, counts, combo() ? (n.includes('@') ? 'made' : true) : false, pick));
-    };
-    for (const el of [$num, $num2]) {
-      el.addEventListener('input', () => { clearTimeout($num.t); $num.t = setTimeout(refresh, 150); });
-      el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); el.blur(); } });
-    }
-    $ds.onclick = () => { ds = !ds; $ds.classList.toggle('active', ds); $ds.classList.toggle('off', !ds); refresh(); };
-    $ds.classList.toggle('active', ds); $ds.classList.toggle('off', !ds);
-    drawCharts(); refresh();
-    if (!$num.value) setTimeout(() => $num.focus(), 50);
-  };
-
+  // The screen itself (the blank chart to tap, the sheets, the list) is public/positionmap.js.
   // The rows of positions to tap, one chart at a time ("Any chart" lists the charts themselves): the picker's list
   // and the combination screen's position sheet draw the same rows. counts = the counts endpoint's answer (null =
   // no number typed yet, so no counts); isCombo = two numbers meeting, so only centers and diamonds are listed.
@@ -2122,76 +2047,6 @@
     const list = catalog.positions.filter((p) => p.chart === chart && (!isCombo || (isCombo === 'made' ? p.made : p.combo)));
     return [row(`${chart}.*`, `Anywhere in the ${c.label.toLowerCase()}`, isCombo === 'made' ? 'Any diamond of it' : isCombo ? 'Any center or diamond of it' : c.note + most), ...list.map((p) => row(`${chart}.${p.key}`, p.label))];
   }
-
-  // ---------- combination search: a number in each of several positions (owner 2026-10-21) ----------
-  // One row per position: tap the position to pick it (a sheet of the same rows as the picker, counts narrowed to
-  // the other rows), type its number beside it. "Add Another Position" adds a row; the foot says how many charts
-  // have everything and "Show Charts" lists them. The address carries the rows (?pos=&num=, like the results), so
-  // the screen survives a reload; ?add=1 starts with an empty row. One stop in the phone's Back history (see route).
-  routes.combo = async function comboView(_, query) {
-    const rows = condsOf(query).map((c) => ({ pos: c.pos, num: c.num }));
-    if (query.get('add') || !rows.length) rows.push({ pos: '', num: '' });
-    let chart = 'name'; try { chart = localStorage.getItem('posChart') || 'name'; } catch {}
-    const $rows = h('div', { class: 'stack crows' });
-    const $foot = h('div', { class: 'stack cfoot' });
-    render(h('div', { class: 'screen' }, pageTop('Combination', () => (complete().length ? swap(positionHash(complete())) : leaveFlow())),
-      h('p', { class: 'muted small' }, 'A number in each position, all at once: 12 as the mind center main vibration and 8 as its sub vibration, for example. Every chart found has all of them.'),
-      $rows, $foot));
-    try { await loadCatalog(true); } catch (err) { fill($rows, h('p', { class: 'err' }, err.message)); return; }
-    const complete = () => rows.filter((r) => r.pos && r.num);
-    const numOf = (r) => r.num.trim();
-    // The address follows the rows without a new history step or a redraw (replaceState fires no hashchange).
-    const remember = () => { try { history.replaceState(history.state, '', '#/combo?' + condsQuery(complete())); } catch {} };
-    let seq = 0;
-    const drawFoot = async () => {
-      const done = complete();
-      if (!done.length) { fill($foot, h('p', { class: 'muted small' }, 'Pick a position and type its number to start.')); return; }
-      const my = ++seq;
-      fill($foot, h('p', { class: 'muted small' }, 'Counting…'));
-      try {
-        const r = await api('/api/images?limit=1&' + condsQuery(done));
-        if (my !== seq) return;
-        const n = r.total;
-        fill($foot, h('p', { class: n ? '' : 'muted' }, n ? `${fmtN(n)} chart${n === 1 ? '' : 's'} ${n === 1 ? 'has' : 'have'} all of these.` : 'No chart has all of these yet. Change a number or remove a row.'),
-          h('button', { type: 'button', class: 'btn-primary btn-block', disabled: !n, onclick: () => { count('combo.search'); swap(positionHash(done)); } }, n ? `Show ${fmtN(n)} Chart${n === 1 ? '' : 's'}` : 'Show Charts'));
-      } catch (err) { if (my === seq) fill($foot, h('p', { class: 'err' }, err.message)); }
-    };
-    // After a pick in the sheet, the sheet's own Close is still stepping back through the history: writing the
-    // address before that step lands would change the entry the step returns to and redraw the screen from it.
-    const changed = () => afterOverlayClosed(() => { remember(); drawFoot(); });
-    // The position sheet for one row: chart chips and the rows of positions, counts for this row's number among
-    // the charts that already meet the other rows.
-    const pickPosition = async (row) => {
-      const bg = h('div', { class: 'sheet-bg', onclick: (e) => { if (e.target === bg) close(); } });
-      const close = () => { bg.remove(); untrackOverlay(bg); };
-      const $charts = h('div', { class: 'chips tabs' });
-      const $list = h('div', { class: 'stack poslist' });
-      const $hint = h('p', { class: 'muted small' });
-      bg.append(h('div', { class: 'sheet possheet' }, h('div', { class: 'sheet-grip', onclick: close }, h('span', {})), h('h3', {}, numOf(row) ? `Where must ${numLabel(numOf(row))} be?` : 'Pick the position'), $hint, $charts, $list));
-      document.body.append(bg); trackOverlay(bg, close);
-      const others = complete().filter((r) => r !== row);
-      let counts = null;
-      const n = numOf(row);
-      const isCombo = /@/.test(n) ? 'made' : /\+/.test(n);
-      const drawList = () => fill($list, ...posRows(chart, counts, isCombo, (pos) => { row.pos = pos; close(); drawRows(); changed(); }));
-      const drawCharts = () => fill($charts, ...[{ key: '*', label: 'Any chart' }, ...catalog.charts].map((c) => h('button', { type: 'button', class: `chip ${chart === c.key ? 'active' : 'off'}`, onclick: () => { chart = c.key; try { localStorage.setItem('posChart', chart); } catch {} drawCharts(); drawList(); } }, c.label)));
-      $hint.textContent = n ? (others.length ? 'Counts: among the charts that already meet the other rows.' : 'Counts: how many charts have it there.') : 'Type the number first and the counts show here.';
-      drawCharts(); drawList();
-      if (n) { try { counts = await api('/api/positions/counts?num=' + encodeURIComponent(n) + (others.length ? '&fixed=' + encodeURIComponent(others.map((c) => `${c.pos}:${c.num}`).join(',')) : '')); } catch { counts = null; } if (bg.isConnected) drawList(); }
-    };
-    const drawRows = () => {
-      fill($rows, ...rows.map((row, i) => {
-        const $num = h('input', { type: 'text', inputmode: 'numeric', placeholder: 'Number', autocomplete: 'off', maxlength: 5, value: row.num, 'aria-label': 'The number for this position' });
-        $num.addEventListener('input', () => { row.num = $num.value; clearTimeout($num.t); $num.t = setTimeout(changed, 200); });
-        $num.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $num.blur(); } });
-        const $pos = h('button', { type: 'button', class: `cpos ${row.pos ? '' : 'empty'}`, onclick: () => pickPosition(row) }, h('span', { class: 't' }, row.pos ? posLabel(row.pos) : 'Pick the position'), h('span', { class: 'muted' }, '›'));
-        const $x = h('button', { type: 'button', class: 'x', 'aria-label': 'Remove this row', onclick: () => { rows.splice(i, 1); if (!rows.length) rows.push({ pos: '', num: '' }); drawRows(); changed(); } }, '×');
-        return h('div', { class: 'crow' }, $num, $pos, rows.length > 1 || row.pos || row.num ? $x : null);
-      }), h('button', { type: 'button', class: 'btn-block', onclick: () => { rows.push({ pos: '', num: '' }); drawRows(); const inputs = $rows.querySelectorAll('input'); inputs[inputs.length - 1].focus(); } }, '+ Add Another Position'));
-    };
-    drawRows(); drawFoot();
-    if (!rows[rows.length - 1].num) setTimeout(() => { const inputs = $rows.querySelectorAll('input'); if (inputs.length) inputs[inputs.length - 1].focus(); }, 50);
-  };
 
   routes.tags = async function tagsView() {
     const VIEWS = [['words', 'Words'], ['position', 'By position'], ['number', 'By number']];
@@ -2585,6 +2440,9 @@
   if (researchUi) Object.assign(USAGE_LABELS, researchUi.USAGE_LABELS);
   peopleUi = window.People ? window.People.install({ routes, h, fill, api, count, go, render, pageTop, fmtN }) : null;
   if (peopleUi) Object.assign(USAGE_LABELS, peopleUi.USAGE_LABELS);
+  // Search by Position: the blank chart to tap (public/positionmap.js).
+  positionUi = window.PositionMap ? window.PositionMap.install({ routes, h, sv, fill, api, toast, count, go, swap, render, pageTop, fmtN, numeroscopeSvg, loadCatalog, catalog: () => catalog, numLabel, condsOf, condsQuery, positionHash, leaveFlow, afterOverlayClosed, showPositionResults, takePositionReturn, overlay: trackOverlay, overlayGone: untrackOverlay }) : null;
+  if (positionUi) Object.assign(USAGE_LABELS, positionUi.USAGE_LABELS);
   meaningUi = window.Meaning ? window.Meaning.install({ h, fill, api, count, go, positionHash, overlay: trackOverlay, overlayGone: untrackOverlay }) : null;
 
   // ---------- start ----------

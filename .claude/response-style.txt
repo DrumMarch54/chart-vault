@@ -37,17 +37,24 @@ A REPLY THAT CHANGED CODE ENDS WITH, IN THIS ORDER:
 1. HOW TO CHECK IT — the fewest taps that prove it. Nothing extra.
 2. `Build: <commit>` — the last line.
 
-WHICH MODEL (owner's rule 2026-10-19). You cannot switch models; the owner can.
-When the work just asked for needs the stronger one and the chat is not on it,
-STOP: the whole reply is "This one deserves Fable." plus why in 5-10 words and
-"Switch, then say continue." Do NOT start the work on the weaker model (owner
-2026-10-19: a reply that announced Fable and then went ahead anyway was wrong).
-When the chat is on Fable for routine work, the first line is "Opus is enough
-for this." and the work goes ahead. Say nothing when the model already fits.
-- Fable: designing a big new feature; judging what the course means across
-  many documents; a bug that survived one failed fix.
-- Opus: bug fixes checkable against the live app, screens, buttons, layout,
-  small features with a clear design, deploys, questions.
+WHICH MODEL AND EFFORT (owner's rules 2026-10-19 and 2026-11-25: "you call the
+shots so we save usage"). You cannot switch; the owner can. YOU lead this.
+THE PATTERN: think on Fable, build on Opus.
+- Fable: ideas, designing a new feature or a redesign, mockups to pick from,
+  judging what the course means across many documents, a bug that survived
+  one failed fix.
+- Opus: building a design the owner already approved, bug fixes checkable on
+  the live app, small screen changes, deploys, questions.
+- Effort: always name it. Fable on medium for design talk. Opus on high for a
+  big build (many files), medium for everything else. Low never.
+STOP AND SAY SO at every switch point, BEFORE doing the work, both ways:
+- Work needs Fable and the chat is on Opus: the whole reply is "Switch to Fable
+  (medium), then say continue." plus why in 5-10 words. Do not start.
+- The owner just approved a design on Fable: the whole reply is "Switch to Opus
+  (high), then say continue." Do NOT start building on Fable (owner 2026-11-25:
+  a Fable chat went straight from "let's do C" into writing the code).
+- Chat on Fable for routine work: same stop, "Switch to Opus (medium)".
+- Model and effort already fit: say nothing.
 
 RENAME THE CHAT YOURSELF WHEN THE SUBJECT CHANGES. Call
 `set_session_title` (claude-code-remote) with 3-6 plain words naming what

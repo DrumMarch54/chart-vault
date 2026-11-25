@@ -373,7 +373,9 @@ export function positionCounts(db, { number, ds = false, combo = null, made = nu
   const total = db.prepare(`SELECT count(DISTINCT image_id) AS c FROM chart_values WHERE ${col} = ? ${within}`).get(number, ...fp).c;
   return { number, ds, counts, perChart, total, fixedTotal };
 }
-export const catalog = () => ({ charts: CHARTS, positions: POSITIONS.filter((p) => !p.hidden).map((p) => ({ chart: p.chart, key: p.key, label: p.label, combo: !!PARTS[p.key], made: MADE_BESIDE.has(p.key) })) });
+// `parts`: the names of the two numbers a center or a diamond is made of (the Search by Position sheet asks for them).
+const partLabel = (chart, part) => { const [c, k] = part.includes('.') ? part.split('.') : [chart, part]; return positionLabel(c, k).replace(/\s*\(.*\)$/, ''); };
+export const catalog = () => ({ charts: CHARTS, positions: POSITIONS.filter((p) => !p.hidden).map((p) => ({ chart: p.chart, key: p.key, label: p.label, combo: !!PARTS[p.key], made: MADE_BESIDE.has(p.key), parts: PARTS[p.key] ? PARTS[p.key].map((x) => partLabel(p.chart, x)) : null })) });
 
 // --- the quality gate: do the owner's position tags agree with the computed charts? ---
 export function tagCheck(db) {
