@@ -53,7 +53,7 @@
     'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart', 'viewer.year_rows': 'Year Rows from a chart',
     'position.add_more': 'Tap + Another number', 'reading.show_number': 'Most Often → ring a number on the chart', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'viewer.share': 'Share Picture from a chart', 'quick.share': 'Share Picture from the Quick Chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
     'grid.size': 'Chart size on the grid (− / +)', 'similar.size': 'Chart size on Similar Charts (− / +)', 'duplicates.size': 'Chart size on Possible Duplicates (− / +)',
-    'viewer.similar': 'Similar Charts from a chart', 'viewer.google': 'Search Google from a chart', 'screen.group': 'What This Group Shares', 'grid.group': 'Tag results → What This Group Shares', 'group.open_search': 'What This Group Shares: open a find', 'group.open_chart': 'What This Group Shares: open a chart', 'group.show_weak': 'What This Group Shares: show the weaker finds', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
+    'viewer.similar': 'Similar Charts from a chart', 'viewer.quick': 'Open a chart in the Quick Chart', 'viewer.google': 'Search Google from a chart', 'screen.group': 'What This Group Shares', 'grid.group': 'Tag results → What This Group Shares', 'group.open_search': 'What This Group Shares: open a find', 'group.open_chart': 'What This Group Shares: open a chart', 'group.show_weak': 'What This Group Shares: show the weaker finds', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
     'viewer.delete': 'Delete a chart from the chart page', 'duplicates.delete': 'Delete a chart from Possible Duplicates', 'duplicates.keep': 'Keep a duplicate group', 'deleted.restore': 'Put a deleted chart back',
     'screen.duplicates': 'Possible Duplicates', 'screen.deleted': 'Deleted Charts', 'search.position': 'Search box → a position',
     'viewer.meaning': 'Tap a number on a chart for its meaning', 'quick.meaning': 'Tap a number on the Quick Chart for its meaning', 'meaning.jump': 'Meaning → jump to a part of the page', 'meaning.show_charts': 'Meaning → show the charts with that number there', 'meaning.course_words': 'Meaning → open the full course words', 'meaning.number_guide': 'Meaning → Show More About a number (your guide)', 'meaning.open_doc': 'Meaning → Open the Document', 'meaning.ask': 'Meaning → Ask About This (paid)',
@@ -762,9 +762,10 @@
     const $rows = h('button', { type: 'button', class: 'cmenu-item' }, 'Year Rows and Day Vibrations');
     const $pyrItem = h('button', { type: 'button', class: 'cmenu-item' }, 'Whole Name Pyramid');
     const $simItem = h('button', { type: 'button', class: 'cmenu-item' }, 'Similar Charts');
+    const $quickItem = h('button', { type: 'button', class: 'cmenu-item' }, 'Open in Quick Chart');
     const $shareItem = h('button', { type: 'button', class: 'cmenu-item' }, 'Share Picture');
     const $delItem = h('button', { type: 'button', class: 'cmenu-item danger' }, 'Delete This Chart');
-    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $rows, $simItem, $pyrItem, $shareItem, $orig, $delItem);
+    const $menu = h('div', { class: 'cmenu hidden', role: 'menu' }, $rows, $quickItem, $simItem, $pyrItem, $shareItem, $orig, $delItem);
     const $dots = h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'More', title: 'More', onclick: (e) => { e.stopPropagation(); $menu.classList.toggle('hidden'); } }, '⋮');
     const $more = h('div', { class: 'vmore hidden' }, $dots, $menu);
     const $cmp = h('button', { type: 'button', class: 'vbtn hidden' }, 'Compare');
@@ -906,6 +907,17 @@
       openWord(inp.name, dayOf(inp), { wholeName: true });
     };
     $pyrItem.onclick = wholePyramid;
+    // Open in Quick Chart (owner 2026-11-25): the chart's name and date go into the Quick Chart to play with or
+    // edit; the vault's chart is never changed. Same hand-over as Look Up's (the Quick Chart's draft).
+    const toQuick = () => {
+      $menu.classList.add('hidden');
+      const inp = img.inputs;
+      if (!inp || !inp.name) { toast('This chart has no name read yet. Swipe up and tap "Type them" to add it.', true); return; }
+      count('viewer.quick');
+      try { localStorage.setItem('quickDraft', JSON.stringify({ day: inp.day || '', month: inp.month || '', year: inp.year || '', name: inp.name })); } catch {}
+      go('#/quick');
+    };
+    $quickItem.onclick = toQuick;
     // Share Picture (owner's ask 2026-10-20): the drawn chart as a picture with the name and date under it, through
     // the phone's share sheet; a chart that is still a screenshot shares the screenshot itself.
     $shareItem.onclick = () => {
@@ -1009,9 +1021,12 @@
       }
       // Only the name and date here (owner 2026-10-19): the lists of every position's number are gone; the
       // drawing shows them, and a tap on a number there opens its meaning and "N charts with it here".
+      const SLIM = 'flex:1 1 auto;padding-left:8px;padding-right:8px;white-space:nowrap';
       fill($numbers,
-        h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('div', { style: 'min-width:0' }, h('b', {}, inp.name || '(no name)'), h('div', { class: 'muted small' }, when ? `Born ${when}` : 'No date: name chart only'), knownAsNote(inp.name, imgName(img))),
-          h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:6px' }, inp.name ? h('button', { type: 'button', onclick: wholePyramid }, 'Pyramid') : null, h('button', { type: 'button', onclick: () => { fixing = true; drawNumbers(); } }, 'Wrong? Fix'))), $google);
+        // The name and date on their own lines, the buttons in one row under them: beside a long name they
+        // squeezed it into one word a line (owner 2026-11-25, when Quick Chart joined them).
+        h('div', { style: 'min-width:0' }, h('b', {}, inp.name || '(no name)'), h('div', { class: 'muted small' }, when ? `Born ${when}` : 'No date: name chart only'), knownAsNote(inp.name, imgName(img))),
+        h('div', { class: 'row', style: 'gap:6px;flex-wrap:nowrap' }, inp.name ? h('button', { type: 'button', style: SLIM, onclick: toQuick }, 'Quick Chart') : null, inp.name ? h('button', { type: 'button', style: SLIM, onclick: wholePyramid }, 'Pyramid') : null, h('button', { type: 'button', style: SLIM, onclick: () => { fixing = true; drawNumbers(); } }, 'Wrong? Fix')), $google);
     };
     if (img.kind === 'chart') loadNumbers();
     const draw = () => {
