@@ -219,6 +219,12 @@ body.noscroll { overflow: hidden; }
 .pyr .n-gray { color: #7f7f7f; } .pyr .n-dark { color: #303030; } .pyr .n-faded { color: #cecabf; } .pyr .n-blue { color: #5f7990; }
 .pyr .n-green1 { color: #689868; } .pyr .n-green2 { color: #53ad53; } .pyr .n-green3 { color: #3ac838; } .pyr .n-green4 { color: #1be41a; }
 .pyr .n-red1 { color: #926967; } .pyr .n-red2 { color: #a35352; } .pyr .n-red3 { color: #b43e3c; }
+/* The pyramid's gray, dark, faded and blue numbers sit on the card, not on a chart: on a dark look they follow its
+   text (the colored greens and reds read as they are). The generated section leaves .n-* alone for the charts. */
+html[data-style="glass"] .pyr .n-dark, html[data-style="blueprint"] .pyr .n-dark { color: var(--text); }
+html[data-style="glass"] .pyr .n-gray, html[data-style="blueprint"] .pyr .n-gray { color: var(--muted); }
+html[data-style="glass"] .pyr .n-faded, html[data-style="blueprint"] .pyr .n-faded { color: rgba(255, 255, 255, .38); }
+html[data-style="glass"] .pyr .n-blue, html[data-style="blueprint"] .pyr .n-blue { color: #9fb8cf; }
 .verdict { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-top: 1px solid #eceef2; margin: 8px 4px 0; padding: 10px 4px 4px; }
 .verdict > div { display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .verdict .muted { color: #8a8f9c; font-size: 12px; }
