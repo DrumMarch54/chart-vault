@@ -830,6 +830,7 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .hold.holding .holdfill { width: 100%; transition: width 1s linear; }
 .hold .holdlabel { position: relative; }
 .cmenu-item.danger { color: #b3261e; }
+.gsearch { display: flex; align-items: center; justify-content: center; text-decoration: none; }
 
 /* Possible Duplicates and Deleted Charts: small cards with a thumbnail each. */
 .dupgroup > .row > button { white-space: nowrap; flex: none; }
@@ -1165,6 +1166,8 @@ html.day[data-style="classic"] body, html.day[data-style="light"] body { backgro
 html.day[data-style="classic"] body::before, html.day[data-style="light"] body::before { display: none; }
 /* sheets and pop-ups are solid in every new look, so what is under them never shows through (owner 2026-11-23) */
 html[data-style]:not([data-style="classic"]) .vsheet { background: var(--sheet); }
+/* the ⋮ menus too: on Glass on Color the panel color is see-through and the chart showed through the menu (owner 2026-11-25) */
+html[data-style]:not([data-style="classic"]) .cmenu { background: var(--sheet); }
 /* surfaces */
 html[data-style]:not([data-style="classic"]) .card, html[data-style]:not([data-style="classic"]) .act,
 html[data-style]:not([data-style="classic"]) .tools .toolgrid .btn, html[data-style]:not([data-style="classic"]) .settingsrow,

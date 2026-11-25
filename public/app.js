@@ -53,7 +53,7 @@
     'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart', 'viewer.year_rows': 'Year Rows from a chart',
     'position.add_more': 'Tap + Another number', 'reading.show_number': 'Most Often → ring a number on the chart', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'viewer.share': 'Share Picture from a chart', 'quick.share': 'Share Picture from the Quick Chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
     'grid.size': 'Chart size on the grid (− / +)', 'similar.size': 'Chart size on Similar Charts (− / +)', 'duplicates.size': 'Chart size on Possible Duplicates (− / +)',
-    'viewer.similar': 'Similar Charts from a chart', 'screen.group': 'What This Group Shares', 'grid.group': 'Tag results → What This Group Shares', 'group.open_search': 'What This Group Shares: open a find', 'group.open_chart': 'What This Group Shares: open a chart', 'group.show_weak': 'What This Group Shares: show the weaker finds', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
+    'viewer.similar': 'Similar Charts from a chart', 'viewer.google': 'Search Google from a chart', 'screen.group': 'What This Group Shares', 'grid.group': 'Tag results → What This Group Shares', 'group.open_search': 'What This Group Shares: open a find', 'group.open_chart': 'What This Group Shares: open a chart', 'group.show_weak': 'What This Group Shares: show the weaker finds', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
     'viewer.delete': 'Delete a chart from the chart page', 'duplicates.delete': 'Delete a chart from Possible Duplicates', 'duplicates.keep': 'Keep a duplicate group', 'deleted.restore': 'Put a deleted chart back',
     'screen.duplicates': 'Possible Duplicates', 'screen.deleted': 'Deleted Charts', 'search.position': 'Search box → a position',
     'viewer.meaning': 'Tap a number on a chart for its meaning', 'quick.meaning': 'Tap a number on the Quick Chart for its meaning', 'meaning.jump': 'Meaning → jump to a part of the page', 'meaning.show_charts': 'Meaning → show the charts with that number there', 'meaning.course_words': 'Meaning → open the full course words', 'meaning.number_guide': 'Meaning → Show More About a number (your guide)', 'meaning.open_doc': 'Meaning → Open the Document', 'meaning.ask': 'Meaning → Ask About This (paid)',
@@ -980,15 +980,18 @@
           h('div', { class: 'row', style: 'flex-wrap:nowrap' }, h('button', { type: 'button', class: 'btn-primary', style: 'flex:1', onclick: save }, 'Save'), h('button', { type: 'button', onclick: () => { fixing = false; drawNumbers(); } }, 'Cancel')));
         return;
       }
+      // Search Google (owner 2026-11-25): opens a Google search for the person, in a new tab, from the swiped-up sheet.
+      const who = imgName(img) || (inp && inp.name) || '';
+      const $google = who ? h('a', { class: 'btn gsearch', href: `https://www.google.com/search?q=${encodeURIComponent(who)}`, target: '_blank', rel: 'noopener', onclick: () => count('viewer.google') }, `Search Google for ${who}`) : null;
       if (!inp) {
-        fill($numbers, h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('span', { class: 'muted small' }, 'Name and date not read yet, so this chart cannot be found by position.'), h('button', { type: 'button', onclick: () => { fixing = true; drawNumbers(); } }, 'Type them')));
+        fill($numbers, h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('span', { class: 'muted small' }, 'Name and date not read yet, so this chart cannot be found by position.'), h('button', { type: 'button', onclick: () => { fixing = true; drawNumbers(); } }, 'Type them')), $google);
         return;
       }
       // Only the name and date here (owner 2026-10-19): the lists of every position's number are gone; the
       // drawing shows them, and a tap on a number there opens its meaning and "N charts with it here".
       fill($numbers,
         h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('div', { style: 'min-width:0' }, h('b', {}, inp.name || '(no name)'), h('div', { class: 'muted small' }, when ? `Born ${when}` : 'No date: name chart only')),
-          h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:6px' }, inp.name ? h('button', { type: 'button', onclick: wholePyramid }, 'Pyramid') : null, h('button', { type: 'button', onclick: () => { fixing = true; drawNumbers(); } }, 'Wrong? Fix'))));
+          h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:6px' }, inp.name ? h('button', { type: 'button', onclick: wholePyramid }, 'Pyramid') : null, h('button', { type: 'button', onclick: () => { fixing = true; drawNumbers(); } }, 'Wrong? Fix'))), $google);
     };
     if (img.kind === 'chart') loadNumbers();
     const draw = () => {
