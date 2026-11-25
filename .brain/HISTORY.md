@@ -1088,3 +1088,13 @@ read a number in a center). The fix was to narrow the search to what a reader re
 the cards are now 13/4 beside any 9 (39 of 122, usually 20 in 100), 13/4 and 16/7 in the same chart (113, usually 84),
 13/4 in a center (75, usually 46), charts heavy with sevens. The box is gone. Lesson: when the diagnosis shows the
 flaw, fix the flaw. A new tool that lets the owner do the app's job is not the fix he asked for.
+
+## 2026-11-25 — Model and effort: Claude leads, think on Fable, build on Opus
+The owner redesigned Search by Position on Fable (medium). After they picked look "C", the Fable chat went
+straight into writing the whole new screen instead of stopping to say "switch to Opus now". The owner had to
+interrupt it and ask. Their rule: "you need to lead the way ... make sure I'm on Fable when I need to be and
+on Opus when I need to be ... and tell me the effort levels ... I'm going to trust you to call the shots on
+this so that we can save usage." The pattern they want: ideas and design on Fable, then drop to Opus to build
+once the design is approved. Written into `.claude/response-style.txt` (WHICH MODEL AND EFFORT), which the hook
+injects on every message, so every future chat follows it. The two sibling apps' response-style files still
+carry the older rule; update them from a chat in those repos (never push to a sibling from here).
