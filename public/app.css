@@ -50,7 +50,6 @@ input:focus { outline: none; border-color: var(--blue); }
 /* A laptop: reading screens stay a comfortable column, grids of charts use the width. */
 .screen.qscreen, .screen.tscreen { max-width: 760px; }
 .screen.tscreen.wide { max-width: 1100px; }
-.posnum .andword { flex: 0 0 auto; padding: 0 2px; }
 .screen h1 { font-size: 22px; margin: 8px 0 12px; }
 .screen h2 { font-size: 18px; margin: 20px 0 8px; }
 .card { background: var(--panel); border-radius: var(--radius); padding: 14px; margin: 10px 0; }
@@ -328,8 +327,6 @@ html[data-style="glass"] .pyr .n-blue, html[data-style="blueprint"] .pyr .n-blue
 .tchips .chip .count::before { content: "·"; margin-right: 4px; }
 
 /* search by position */
-.posnum input { flex: 1; min-width: 0; min-height: 52px; font-size: 20px; }
-.posnum .chip { white-space: nowrap; }
 .poslist { margin-top: 4px; }
 .posrow { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 10px; background: var(--panel); text-align: left; padding: 0 14px; min-height: 54px; }
 .posrow .pl { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; line-height: 1.2; padding: 8px 0; }
@@ -620,13 +617,10 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .chip button.t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; min-width: 0; text-align: left; } /* a long condition clips at its end, never its start */
 .chip button.x { padding: 0 2px 0 4px; }
 .chip.add { background: transparent; border: 1.5px dashed var(--chip-pos); color: var(--chip-add); }
-.fixedconds { background: var(--panel); border-radius: var(--radius); padding: 10px 12px 4px; }
-.fixedconds .linkbtn { display: inline-flex; margin-top: 2px; }
 /* A whole name's pyramid can be 20 letters wide: the card scrolls sideways on its own, the page never does. */
 .pyr.wide .pyr-row span { min-width: var(--cell, 34px); padding: 0; font-size: clamp(9px, calc(var(--cell, 34px) * 0.46), 14px); }
 .pyr.wide .pyr-row.letters span { font-size: clamp(9px, calc(var(--cell, 34px) * 0.42), 13px); }
 .wordpop .pagetop h1.whole { font-size: 22px; }
-.posnum input.second { flex: 0 1 110px; }
 /* Price Tool, cleaned up (design 2a, 2026-10-18). Everything is scoped to .pt (the Price Tool screen) or uses
    pt-* classes, so no other screen changes. Colors are the ones the light tool screens already use. */
 .screen.tscreen.pt { padding: 6px 12px 28px; }
@@ -1210,6 +1204,55 @@ html.day[data-style="classic"], html.day[data-style="light"] {
 .ins-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 3px; }
 .rs-title { padding: 2px 2px 4px; }
 .ins-lvl-solid { border: 2px solid var(--green); }
+
+/* Search by Position (public/positionmap.js): what is looked for, the blank chart to tap, the count at the foot. */
+.pm-screen { max-width: 760px; padding-bottom: 96px; }
+.pm-h { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 12px 2px 6px; }
+.pm-looking { gap: 6px; }
+.pm-empty { background: var(--panel); border-radius: var(--radius); padding: 12px 14px; margin: 0; }
+.pm-cond { display: flex; align-items: stretch; gap: 6px; }
+.pm-cond-main { flex: 1; min-width: 0; justify-content: flex-start; gap: 12px; background: var(--panel); text-align: left; padding: 6px 14px; min-height: 54px; }
+.pm-cond-main b { font-size: 18px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pm-cond-main .pl, .pm-opt .pl { display: flex; flex-direction: column; gap: 1px; min-width: 0; line-height: 1.2; }
+.pm-x { flex: 0 0 48px; padding: 0; font-size: 20px; background: var(--panel); }
+.pm-wrap { position: relative; }
+.pm-back { position: absolute; left: 8px; top: 18px; z-index: 2; min-height: 40px; padding: 0 14px; border-radius: 20px; background: var(--text); color: var(--bg); font-weight: 700; font-size: 15px; }
+.nscope-box.pmap { padding: 0; overflow: hidden; }
+.nscope .pm-lab { fill: #4a4763; font-weight: 600; pointer-events: none; }
+.nscope .pm-lab.picked { fill: #a85d00; font-weight: 800; }
+.nscope .pm-lab.off { opacity: .15; }
+.nscope .pm-pad { cursor: pointer; }
+.nscope .pm-pad.off { pointer-events: none; }
+.nscope .pm-ring { stroke: #2f6fed; pointer-events: none; }
+.pm-under { margin-top: 10px; gap: 8px; }
+.pm-pill { min-height: 44px; border-radius: 22px; background: var(--panel); font-weight: 600; font-size: 15px; padding: 0 16px; }
+.pm-foot { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); background: var(--bg); border-top: 1px solid var(--panel2); }
+.pm-foot > * { max-width: 736px; margin: 0 auto; display: flex; }
+.pm-foot .err { margin: 0 auto; }
+.pm-foot button { min-height: 54px; font-size: 17px; }
+.pm-foot button:disabled { background: var(--panel2); color: var(--muted); }
+.sheet.pm-sheet { max-height: 88vh; overflow: auto; }
+.sheet.pm-sheet h3 { word-break: normal; margin-bottom: 10px; }
+.sheet.pm-sheet h3 small { display: block; font-size: 14px; font-weight: 500; margin-top: 2px; }
+.sheet.pm-sheet .chip { width: auto; min-height: 40px; margin-top: 0; }
+.sheet.pm-sheet .pm-modes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.sheet.pm-sheet .pm-modes:empty { display: none; }
+.pm-numrow { flex-wrap: nowrap; gap: 12px; }
+.sheet.pm-sheet input.pm-num { width: 112px; flex: 0 0 112px; min-height: 58px; font-size: 26px; font-weight: 700; text-align: center; padding: 0 8px; }
+.pm-count b { color: var(--text); font-size: 18px; }
+.pm-pair { display: flex; gap: 10px; }
+.pm-pair label { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.sheet.pm-sheet .pm-pair input.pm-num { width: 100%; flex: none; }
+.sheet.pm-sheet .pm-opt { margin-top: 0; gap: 12px; background: var(--panel2); border: 2px solid transparent; text-align: left; padding: 8px 14px; }
+.sheet.pm-sheet .pm-opt.on { border-color: var(--accent); }
+.pm-opt i { flex: 0 0 18px; height: 18px; border-radius: 50%; border: 2px solid var(--muted); }
+.pm-opt.on i { border-color: var(--accent); background: radial-gradient(var(--accent) 45%, transparent 50%); }
+.sheet.pm-sheet .pm-add { justify-content: center; margin-top: 12px; }
+.sheet.pm-sheet .pm-add:disabled { background: var(--panel2); color: var(--muted); }
+.sheet.pm-list { display: flex; flex-direction: column; }
+.sheet.pm-list .poslist { overflow: auto; }
+.sheet.pm-list .posrow { margin-top: 0; background: var(--panel2); }
+.sheet.pm-list .tabs { margin: 0 0 4px; }
 
 /* ===== GENERATED by tools/make-look-colors.mjs: dark looks for fixed colors. Do not edit by hand. ===== */
 :where(html[data-style="glass"]) .qfields input, :where(html[data-style="blueprint"]) .qfields input { background-color: var(--panel); border: 1px solid var(--line); color: var(--text); }
