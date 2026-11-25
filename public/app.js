@@ -499,6 +499,9 @@
         // (owner 2026-10-19): the position search below covers every chart, those tags only the hand-tagged few.
         // They are still on each chart's page and in All Tags, and still found by the position search.
         if (names) items = items.filter((t) => t.kind !== 'position');
+        // A tag that reads the same as a chart name listed above it, on as many charts, is the same person twice
+        // (owner 2026-11-25, "always two of the same person"): keep only the name row. The tag stays on the chart's page.
+        if (who && who.names) { const seen = new Map(who.names.map((n) => [n.name.toLowerCase(), n.count])); items = items.filter((t) => seen.get(pretty(t.name).toLowerCase()) !== t.count); }
         const spots = names ? await positionSpots(q, items).catch(() => []) : [];
         if (my === seq) show(items, q, who, spots);
       } catch {}
