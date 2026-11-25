@@ -87,7 +87,7 @@
   const posLabel = (pos) => { const [chart, key = '*'] = String(pos).split('.'); if (key === '*') return chart === '*' ? 'anywhere' : `anywhere in the ${chartLabel(chart).toLowerCase()}`; const p = catalog && catalog.positions.find((x) => x.chart === chart && x.key === key); return `${p ? p.label : key} · ${chartLabel(chart)}`; };
   // "12" reads 12/3; "/3" reads "digit sum 3".
   // "12+5@35" reads "35/8 from 12/3 and 5" (the diamond the two make); "!3" reads "plain 3" (a 3 that is no 12/3).
-  const numLabel = (num) => { const made = /^(.*)@(\d+)$/.exec(String(num)); if (made) return `${numLabel(made[2])} from ${numLabel(made[1])}`; if (/\+/.test(String(num))) return String(num).split('+').map(numLabel).join(' and '); if (/^!\d$/.test(String(num))) return `plain ${String(num).slice(1)}`; const m = /^(\d+)?(?:\/(\d))?$/.exec(String(num)); if (!m) return String(num); if (!m[1]) return `digit sum ${m[2]}`; const n = Number(m[1]); return n < 10 ? String(n) : `${n}/${TagCodes.digitSum(n)}`; };
+  const numLabel = (num) => { const made = /^(.*)@(\d+)$/.exec(String(num)); if (made) return `${numLabel(made[2])} from ${numLabel(made[1])}`; if (/\+/.test(String(num))) return String(num).split('+').map(numLabel).join(' and '); if (/^!\d$/.test(String(num))) return `Plain ${String(num).slice(1)}`; const m = /^(\d+)?(?:\/(\d))?$/.exec(String(num)); if (!m) return String(num); if (!m[1]) return `Any ${m[2]}`; const n = Number(m[1]); return n < 10 ? String(n) : `${n}/${TagCodes.digitSum(n)}`; };
   // A position search is a list of conditions [{ pos, num }], all of which a chart must meet (day 8 AND first
   // name 15). The address carries them pairwise (?pos=essence.day&num=8&pos=name.first&num=15).
   const condLabel = (c) => { const p = posLabel(c.pos); return p.startsWith('anywhere') ? `${numLabel(c.num)} ${p}` : `${numLabel(c.num)} in ${p}`; };
@@ -102,14 +102,21 @@
   let lastRoute = null, lastHash = null; // the screen shown before this one (null = this is the first screen since the page loaded)
   let viewerFromApp = false; // the viewer was opened from another screen here, so Back can use the browser's own history
   let underHash = null; // the screen still drawn under the viewer: closing the viewer onto it needs no redraw, so the list keeps its place
-  // The position search (the Search by Position screen and the results) is ONE stop in the phone's Back history
-  // (owner 2026-10-21: Back walked through every search made). Every move inside it replaces the address (swap), so
-  // Back from any of them leaves the search in one step: to the screen it was opened from (flowFromApp), else home.
+  // The position search: the Search by Position screen, then its results ONE step further (owner 2026-11-25: Back
+  // from the results went all the way home). Inside the results every change replaces the address (swap); changing
+  // the search from the results steps back to the search screen (editPositionSearch) instead of adding a step, so
+  // Back from the search screen leaves in one step: to the screen it was opened from (flowFromApp), else home.
   const parseHash = (hash) => { const [, name = ''] = /^#\/([^/?]*)/.exec(hash || '#/') || []; return { name, query: new URLSearchParams((hash || '').split('?')[1] || '') }; };
   const inFlow = (hash) => { const { name, query } = parseHash(hash); return name === 'position' || name === 'combo' || (name === '' && condsOf(query).length > 0); };
   const OVER_FLOW = new Set(['chart', 'compare', 'similar']); // screens that lie over the search and come back to it
   let flowFromApp = false;
   const leaveFlow = () => (flowFromApp ? history.back() : swap('#/'));
+  // Results pushed by the search screen carry fromPos in history.state; posReturn = the conditions to show when the
+  // results step back to it; carryFromPos keeps the mark when the results replace themselves (× on a condition).
+  let posPushed = false, posReturn = null, carryFromPos = false;
+  const showPositionResults = (conds) => { posPushed = true; go(positionHash(conds)); };
+  const editPositionSearch = (conds) => { if (history.state && history.state.fromPos) { posReturn = conds; history.back(); } else swap('#/position?' + condsQuery(conds)); };
+  const takePositionReturn = () => { const r = posReturn; posReturn = null; return r; };
   // How deep this step of the phone's Back history is (`d` in history.state; 0 = the step the app started on).
   // Coming back after a while rewinds to that first step and opens home (backToStart, below).
   let depth = Number.isInteger(history.state && history.state.d) ? history.state.d : 0, replacing = false, rewinding = false;
@@ -122,6 +129,8 @@
     seen();
     const [, name = '', arg = ''] = /^#\/([^/?]*)\/?([^?]*)/.exec(hash) || [];
     const query = new URLSearchParams(hash.split('?')[1] || '');
+    if ((posPushed || carryFromPos) && name === '' && condsOf(query).length) { try { history.replaceState({ ...(history.state || {}), fromPos: true }, '', location.href); } catch {} }
+    posPushed = carryFromPos = false;
     const view = routes[name] || routes[''];
     closeOverlays();
     if (viewerCleanup) { viewerCleanup(); viewerCleanup = null; }
@@ -155,7 +164,7 @@
   const go = (hash) => afterOverlayClosed(() => { location.hash = hash; });
   // Same screen change, but without adding a step to the browser's history (used between charts in the
   // viewer, so the phone's Back button returns to the screen the viewer was opened from, not to the last chart).
-  const swap = (hash) => afterOverlayClosed(() => { if ((location.hash || '#/') !== hash) replacing = true; location.replace(hash); });
+  const swap = (hash) => afterOverlayClosed(() => { if (history.state && history.state.fromPos) carryFromPos = true; if ((location.hash || '#/') !== hash) replacing = true; location.replace(hash); });
   // Like replaceChildren, but skips null/false so a conditional part never shows as the word "null".
   const fill = (el, ...nodes) => el.replaceChildren(...nodes.filter((n) => n !== null && n !== undefined && n !== false));
   // Line drawings for the button symbols (owner 2026-11-23): the new looks show these, the classic looks keep the
@@ -576,17 +585,17 @@
       : who.length ? peopleUi.filters(who)
       // One chip per condition: tap it to change it on the Search by Position screen (every condition kept), tap × to drop it.
       // "+ Another number" opens that screen too, every condition kept, to tap one more spot.
-      : position ? h('div', { class: 'filters' },
-        ...conds.map((c, i) => { const rest = conds.filter((_, j) => j !== i); return h('span', { class: 'chip position', title: 'Tap to change, × to remove' },
-          h('button', { type: 'button', class: 't', onclick: () => swap('#/position?' + condsQuery(conds)) }, condLabel(c)),
-          h('button', { type: 'button', class: 'x', 'aria-label': `Remove ${condLabel(c)}`, onclick: () => (rest.length ? swap(positionHash(rest)) : leaveFlow()) }, '×')); }),
-        h('button', { type: 'button', class: 'chip position add', onclick: () => { count('position.add_more'); swap('#/position?' + condsQuery(conds)); } }, h('span', { class: 't' }, '+ Another number'))) : null;
+      : null;
+    // A position search (owner 2026-11-25): the screen says once what was searched. "‹ N Charts", one row per spot
+    // (tap = change it on the search screen, × = drop it), "+ Add Another Spot"; no search box, no size buttons.
+    const $posHead = position && positionUi ? positionUi.resultsHead(conds, { edit: editPositionSearch, remove: (rest) => (rest.length ? swap(positionHash(rest)) : history.state && history.state.fromPos ? editPositionSearch([]) : leaveFlow()), back: () => (history.state && history.state.fromPos ? editPositionSearch(conds) : leaveFlow()) }) : null;
     const $summary = h('div', { class: 'summary' }, 'Loading…');
     const $grid = h('div', { class: 'grid' });
     // One size for every grid of charts (the list, the search results, Recently Opened): − / + beside the count.
     const wide = window.innerWidth >= 1000 ? 2 : window.innerWidth >= 700 ? 1 : 0;
     let onCols = null; // the home screen's Recently Opened keeps to two rows whatever the size
-    const size = sizeControl('gridCols', { min: 2, max: [5, 7, 9][wide], def: [3, 5, 6][wide], countName: 'grid.size', apply: (c) => { document.documentElement.style.setProperty('--grid-cols', c); if (onCols) onCols(c); } });
+    if ($posHead) $grid.style.setProperty('--grid-cols', [2, 4, 5][wide]);
+    const size = $posHead ? { node: null } : sizeControl('gridCols', { min: 2, max: [5, 7, 9][wide], def: [3, 5, 6][wide], countName: 'grid.size', apply: (c) => { document.documentElement.style.setProperty('--grid-cols', c); if (onCols) onCols(c); } });
     const $bar = h('div', { class: 'gridbar' }, $summary, size.node);
     const $sentinel = h('div', { class: 'sentinel' });
     // A tag's charts against the rest of the vault (owner 2026-11-20); shown once the tag has three charts or more.
@@ -606,10 +615,10 @@
     drawCmpBar(true);
     render(h('div', { class: `screen ${home ? 'home' : ''}` },
       home ? h('div', { class: 'pagetop hometop' }, h('h1', {}, 'Chart Vault'), $gear) : null,
-      h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), home ? null : $quickIcon, home ? null : $gear), $filters),
+      $posHead ? $posHead.node : h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), home ? null : $quickIcon, home ? null : $gear), $filters),
       home && readingUi ? readingUi.homeBanner() : null,
       home ? $acts : null, $recent, home && toolsUi ? toolsUi.homeButtons() : null,
-      home ? null : $bar, home ? null : $group, home ? null : $grid, home ? null : $sentinel));
+      home || $posHead ? null : $bar, home ? null : $group, home ? null : $grid, home ? null : $sentinel));
     // Recently Opened charts (this phone remembers the last 48), a grid like a search result, only on the home screen.
     if (home && recentIds().length) {
       api('/api/images?ids=' + recentIds().join(',') + '&limit=50').then((r) => {
@@ -644,6 +653,7 @@
       try {
         const r = await api('/api/images?' + params());
         total = r.total; offset += r.items.length;
+        if ($posHead) $posHead.setTotal(total, mostFirst);
         if ($group) $group.classList.toggle('hidden', total < 3);
         for (const img of r.items) $grid.append(cell(img));
         done = offset >= total || r.items.length === 0;
@@ -2424,7 +2434,7 @@
   peopleUi = window.People ? window.People.install({ routes, h, fill, api, count, go, render, pageTop, fmtN }) : null;
   if (peopleUi) Object.assign(USAGE_LABELS, peopleUi.USAGE_LABELS);
   // Search by Position: the blank chart to tap (public/positionmap.js).
-  positionUi = window.PositionMap ? window.PositionMap.install({ routes, h, sv, fill, api, toast, count, go, swap, render, pageTop, fmtN, numeroscopeSvg, loadCatalog, catalog: () => catalog, numLabel, condsOf, condsQuery, positionHash, leaveFlow, afterOverlayClosed, overlay: trackOverlay, overlayGone: untrackOverlay }) : null;
+  positionUi = window.PositionMap ? window.PositionMap.install({ routes, h, sv, fill, api, toast, count, go, swap, render, pageTop, fmtN, numeroscopeSvg, loadCatalog, catalog: () => catalog, numLabel, condsOf, condsQuery, positionHash, leaveFlow, afterOverlayClosed, showPositionResults, takePositionReturn, overlay: trackOverlay, overlayGone: untrackOverlay }) : null;
   if (positionUi) Object.assign(USAGE_LABELS, positionUi.USAGE_LABELS);
   meaningUi = window.Meaning ? window.Meaning.install({ h, fill, api, count, go, positionHash, overlay: trackOverlay, overlayGone: untrackOverlay }) : null;
 
