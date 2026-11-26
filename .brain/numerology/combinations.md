@@ -163,4 +163,16 @@ First name 17/8 with public aura 16/7 (the owner's example).
 3. What a pop-up should hold, and how long.
 
 ## The owner's corrections
-(none yet)
+2026-11-26, after the first test reading ("it seems pretty good ... I want you to do more"):
+- Say what the POSITION is for the person, in plain words. "A name built to be seen" was off: "what does
+  the first name actually represent for the person? It's like how you greet the world."
+- Every reading shows WHY: "be clear in the reading why you come to that conclusion".
+- Which number is primary: "the primary energy is always ... the more dominant position. If it's between
+  the day vibration and the public aura, the day vibration is a lot more influential", the aura secondary.
+- The joined number (the diamond the two make) is a SECOND LEVEL on top of piecing the two together. The
+  owner has not decided whether readings carry it: write it as its own labeled line so it can be judged.
+- The `nlm-*` documents (narrative weaving and the like) are NotebookLM's answers the owner only skimmed:
+  "might be really useful, but there also might be things that are outdated or misinterpreted ... have
+  some healthy skepticism". The course books and the owner's own notes outrank them.
+- Open question 1 is dropped: "you could establish your own principles based on the material".
+- Order of work: this playbook first, then the redesign of the number meaning screen (another chat).
