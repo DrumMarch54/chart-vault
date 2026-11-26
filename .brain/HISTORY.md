@@ -1107,3 +1107,11 @@ carry the older rule; update them from a chat in those repos (never push to a si
   Caleb Hammer 19956, Bob Marley 6.1.1990, Tommy Robinson month 2, "Keven" Hodge); the app draws the fixed ones.
   Kevin Hodge's "9mc" tag came from the "Keven" screenshot. Real typos still in the vault: "Gandh" (#137), "cylde" (#87).
 - Owner: a one-word name + a number ("Asmondgold 11", "N3on 0") is a way of studying one name with the date. Never flag it.
+
+## 2026-11-26 The chart sheet redesigned as tabs; design rules
+- Owner: "you just kind of slopped it in there and didn't even consider the aesthetic or the intuitive layout".
+  The sheet had grown a button row per feature (Quick Chart / Pyramid / Wrong? Fix, a Google bar, a note squeezed
+  beside buttons), two Fix buttons, and ran 4.5 screens long. Three mockups drawn with Freud's real data; owner
+  picked Tabs. Tap counts set the four tools: Pyramid 33, Year Rows 18, Similar 16; Fix ~0 went into More.
+- The rules now: mockup first and the owner picks; screenshot every look after building; a checklist
+  (public/CLAUDE.md "Designing a change you can see").

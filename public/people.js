@@ -75,7 +75,10 @@
     }
 
     // The chart sheet's card. Draws nothing at all for a chart with no researched person (friends, family, unknowns).
-    function section(img) {
+    // `compact` (the tabbed sheet, owner 2026-11-26): the dates, country and roles sit in the sheet's header, so the
+    // card is the summary, the kinds as pills, Life Events as one row, and what it rests on in one small line.
+    function section(img, { compact = false } = {}) {
+      if (compact) return compactSection(img);
       const $root = h('div', { class: 'about stack hidden' });
       personOf(img).then((p) => {
         if (!p) return;
@@ -99,6 +102,32 @@
           p.sources.length ? h('div', { class: 'muted small asrc' }, 'Read from: ', ...p.sources.map((u, i) => h('a', { href: u, target: '_blank', rel: 'noopener noreferrer', onclick: () => count('people.source') }, (i ? ', ' : '') + host(u)))) : null,
           p.photo ? creditLine(p.photo) : null,
           h('div', { class: 'muted small' }, 'These facts are the app\'s research, kept apart from your chart. Your names, dates and tags are never changed by it.'));
+        $root.classList.remove('hidden');
+      }).catch(() => {});
+      return $root;
+    }
+
+    function compactSection(img) {
+      const $root = h('div', { class: 'about2 hidden' });
+      personOf(img).then((p) => {
+        if (!p) return;
+        learn(p.field_names.map((f) => ({ who: `field:${f.value}`, label: f.label }))); learn(p.flag_names.map((f) => ({ who: `flag:${f.value}`, label: f.label })));
+        const pill = (who, cls) => h('a', { class: `apill ${cls}`, href: listHash(who), onclick: () => count('people.pill') }, label(who));
+        const $events = h('div', { class: 'aevents hidden' }, ...p.events.map((e) => h('div', { class: 'aevent' }, h('b', {}, e.year || ''), h('span', {}, e.what))));
+        const $n = h('span', { class: 'lrow-n' }, `${p.events.length} ›`);
+        const $row = p.events.length ? h('button', { type: 'button', class: 'lrow', onclick: () => { count('people.events'); const open = $events.classList.toggle('hidden') === false; $n.textContent = open ? 'Hide' : `${p.events.length} ›`; } }, h('span', {}, 'Life Events'), $n) : null;
+        const rests = [p.checked ? 'Looked up online' : 'From memory, not looked up online yet', 'your names, dates and tags are never changed by it'].join('; ') + '.';
+        fill($root,
+          h('div', { class: 'slabel' }, h('b', {}, 'About')),
+          p.summary ? h('div', { class: 'asum' }, p.summary) : null,
+          p.field_names.length || p.flag_names.length ? h('div', { class: 'apills' }, ...p.field_names.map((f) => pill(`field:${f.value}`, 'field')), ...p.flag_names.map((f) => pill(`flag:${f.value}`, 'flag'))) : null,
+          $row, $events,
+          p.date_matches === false ? h('div', { class: 'anote warn' }, h('b', {}, 'Birth date differs. '),
+            `Your chart: ${chartDate(img.inputs) || 'no date'}. Online: ${nice(p.born) || 'a different date'}. Your chart keeps your date; nothing was changed.`) : null,
+          p.note ? h('div', { class: 'anote' }, h('b', {}, 'Worth checking: '), p.note) : null,
+          h('div', { class: 'afoot' }, rests,
+            p.sources.length ? h('div', {}, 'Read from: ', ...p.sources.map((u, i) => h('a', { href: u, target: '_blank', rel: 'noopener noreferrer', onclick: () => count('people.source') }, (i ? ', ' : '') + host(u)))) : null,
+            p.photo ? creditLine(p.photo) : null));
         $root.classList.remove('hidden');
       }).catch(() => {});
       return $root;
@@ -145,7 +174,7 @@
 
     const homeButton = () => h('a', { class: 'btn', href: '#/people', onclick: () => count('home.people') }, h('span', { class: 'qicon' }, '☺'), 'Kinds of People', h('span', { class: 'sub' }, 'by career and life'));
     USAGE_LABELS['home.people'] = 'Home → Kinds of People';
-    return { section, photo, filters, label, homeButton, USAGE_LABELS };
+    return { section, photo, person: personOf, filters, label, homeButton, USAGE_LABELS };
   }
   root.People = { install };
 })(typeof globalThis !== 'undefined' ? globalThis : this);

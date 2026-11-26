@@ -8,7 +8,7 @@ import { receiveUpload, createQuickChart, UploadError, fullPathFor, thumbPathFor
 import { deleteImage, restoreImage, listDeleted, trashFilePath, findDuplicates, keepDuplicates, TrashError } from './trash.js';
 import { similarCharts } from './similar.js';
 import { groupShares } from './group.js';
-import { listImages, getImage, imageContext, suggestTags, allTags, tagNames, statusReport, exportTags, bumpUsage, usageReport } from './queries.js';
+import { listImages, getImage, personCharts, imageContext, suggestTags, allTags, tagNames, statusReport, exportTags, bumpUsage, usageReport } from './queries.js';
 import { runBackup, streamZip, isBackupRunning } from './backup.js';
 import { setTitle, acceptTitle, titlesToCheck, titleStats, suggestNames, MAX_TITLE } from './titles.js';
 import { snapshot } from './snapshot.js';
@@ -138,6 +138,11 @@ export function createApp(db, { log = console.log } = {}) {
     const img = getImage(db, Number(req.params.id));
     if (!img) return res.status(404).json({ error: 'No such chart.' });
     res.json(img);
+  });
+  app.get('/api/images/:id/charts', (req, res) => {
+    const list = personCharts(db, Number(req.params.id));
+    if (!list) return res.status(404).json({ error: 'No such chart.' });
+    res.json({ charts: list });
   });
   // Delete a chart (owner's ask 2026-10-19): the picture goes to the trash folder and the whole record is
   // kept, so Settings -> Deleted Charts can put it back. Nothing is ever lost; imports skip the filename.

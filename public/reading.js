@@ -53,11 +53,14 @@
     function section(img, hooks = {}) {
       const $facts = h('div', { class: 'stack' }, h('p', { class: 'muted small' }, 'Looking at the numbers…'));
       const $ai = h('div', { class: 'stack' });
-      const $root = h('div', { class: 'chartread stack' }, h('div', { class: 'row', style: 'justify-content:space-between' }, h('b', {}, 'Reading'), h('span', { class: 'muted small' }, 'From the course rules, free')), $facts, $ai);
+      // `split` (the tabbed chart sheet, owner 2026-11-26): the free reading and the AI part are two tabs of their own.
+      const $root = hooks.split
+        ? { reading: h('div', { class: 'chartread2 stack' }, h('div', { class: 'muted small' }, 'From the course rules, free.'), $facts), ai: h('div', { class: 'chartread2 stack' }, $ai) }
+        : h('div', { class: 'chartread stack' }, h('div', { class: 'row', style: 'justify-content:space-between' }, h('b', {}, 'Reading'), h('span', { class: 'muted small' }, 'From the course rules, free')), $facts, $ai);
       let state = null, shownId = null, showEarlier = false;
       const opts = recallOpts();
       const drawFacts = (f) => {
-        if (!f || f.missing) { fill($facts, h('p', { class: 'muted small' }, 'No numbers read for this chart yet, so nothing to read. Tap "Type them" above.')); return; }
+        if (!f || f.missing) { fill($facts, h('p', { class: 'muted small' }, 'No numbers read for this chart yet, so nothing to read. Tap "Type Them" on the Overview tab.')); return; }
         // Repeated numbers (owner 2026-10-19: the five most repeated with their counts, never where they sit;
         // owner 2026-10-21: as pills, and a tap rings every spot holding that number on the chart through
         // hooks.showNumber). The other facts (nexus, unbalanced, karmic, ...) stay as they are.

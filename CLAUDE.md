@@ -69,9 +69,14 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   Owner 2026-11-23: leave the charts WHITE until then (a dark chart ground was wrong); the fix will be see-through.
 - A name typed as ONE word + a number ("Asmondgold 11", "6ix9ine 17", "N3on 0", "Google 13") is ON PURPOSE (owner 2026-11-25):
   the owner's way of studying one name with a birth date; 0 is another way. Never flag it as a typo or "fix" it.
-- Birth name vs known name (owner 2026-11-25, Freud: born Sigismund Schlomo): the chart is the birth name and the sheet
-  says "Drawn from the birth name. Known as …" (`knownAsNote`). The owner also wants the known name's chart in the vault
-  with the person's tag (Quick save + tag), e.g. #775 "Sigmund Freud" beside #298.
+- Birth name vs known name (owner 2026-11-25, Freud: born Sigismund Schlomo): the birth-name chart stays; the known
+  name gets its own chart with the same name under the picture and the same name tags. A ONE-word known name gets
+  two: "MrBeast 16" (the day's digit sum + 9: the 7th -> 16) and "MrBeast 0". The sheet's Overview lists them all as
+  "Charts of This Person" (`GET /api/images/:id/charts`, same `images.title`), each labeled Birth Name / Known As /
+  One Name With the Day / One Name With 0 (`chartKind` in app.js).
+- The chart sheet is TABBED (owner's design 1, 2026-11-26): header, Pyramid / Year Rows / Similar / More, then
+  Overview / Archetypes / Reading / Ask AI. More = Quick Chart, Google, Share, Screenshot, Edit Name and Date (the
+  one edit form: name under the picture + typed name + date). Design rules: `public/CLAUDE.md` "Designing".
 - Never lose or mix up a chart or a tag. Filename = identity. Tags are kept
   exactly as written, never renamed or "fixed". How a tag READS is separate:
   `server/tagnames.js` splits run-together names ("alexjones" → "Alex Jones");

@@ -53,7 +53,7 @@
     'viewer.show_screenshot': 'See the original screenshot', 'viewer.show_drawn': 'Back to the drawn chart', 'viewer.name_tap': 'Tap a name on a chart', 'viewer.year_rows': 'Year Rows from a chart',
     'position.add_more': 'Tap + Another number', 'reading.show_number': 'Most Often → ring a number on the chart', 'viewer.whole_pyramid': 'Whole Name Pyramid from a chart', 'viewer.share': 'Share Picture from a chart', 'quick.share': 'Share Picture from the Quick Chart', 'quick.whole_pyramid': 'Whole Name Pyramid from the Quick Chart',
     'grid.size': 'Chart size on the grid (− / +)', 'similar.size': 'Chart size on Similar Charts (− / +)', 'duplicates.size': 'Chart size on Possible Duplicates (− / +)',
-    'viewer.similar': 'Similar Charts from a chart', 'viewer.quick': 'Open a chart in the Quick Chart', 'viewer.google': 'Search Google from a chart', 'screen.group': 'What This Group Shares', 'grid.group': 'Tag results → What This Group Shares', 'group.open_search': 'What This Group Shares: open a find', 'group.open_chart': 'What This Group Shares: open a chart', 'group.show_weak': 'What This Group Shares: show the weaker finds', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
+    'viewer.similar': 'Similar Charts from a chart', 'viewer.quick': 'Open a chart in the Quick Chart', 'viewer.google': 'Search Google from a chart', 'viewer.more': 'Chart sheet: More', 'viewer.person_chart': 'Chart sheet: open another chart of the person', 'viewer.tab_overview': 'Chart sheet: Overview tab', 'viewer.tab_archetypes': 'Chart sheet: Archetypes tab', 'viewer.tab_reading': 'Chart sheet: Reading tab', 'viewer.tab_ai': 'Chart sheet: Ask AI tab', 'screen.group': 'What This Group Shares', 'grid.group': 'Tag results → What This Group Shares', 'group.open_search': 'What This Group Shares: open a find', 'group.open_chart': 'What This Group Shares: open a chart', 'group.show_weak': 'What This Group Shares: show the weaker finds', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
     'viewer.delete': 'Delete a chart from the chart page', 'duplicates.delete': 'Delete a chart from Possible Duplicates', 'duplicates.keep': 'Keep a duplicate group', 'deleted.restore': 'Put a deleted chart back',
     'screen.duplicates': 'Possible Duplicates', 'screen.deleted': 'Deleted Charts', 'search.position': 'Search box → a position',
     'viewer.meaning': 'Tap a number on a chart for its meaning', 'quick.meaning': 'Tap a number on the Quick Chart for its meaning', 'meaning.jump': 'Meaning → jump to a part of the page', 'meaning.show_charts': 'Meaning → show the charts with that number there', 'meaning.course_words': 'Meaning → open the full course words', 'meaning.number_guide': 'Meaning → Show More About a number (your guide)', 'meaning.open_doc': 'Meaning → Open the Document', 'meaning.ask': 'Meaning → Ask About This (paid)',
@@ -894,7 +894,7 @@
     $rows.onclick = () => {
       $menu.classList.add('hidden');
       const inp = img.inputs;
-      if (!inp || !(inp.day && inp.month && inp.year)) { toast('This chart has no full birth date yet. Swipe up and tap "Wrong? Fix" to add it.', true); return; }
+      if (!inp || !(inp.day && inp.month && inp.year)) { toast('This chart has no full birth date yet. Swipe up, tap More, then Edit Name and Date.', true); return; }
       count('viewer.year_rows');
       openForecast({ day: inp.day, month: inp.month, year: inp.year, name: inp.name || '', augment: true });
     };
@@ -902,7 +902,7 @@
     const wholePyramid = () => {
       $menu.classList.add('hidden');
       const inp = img.inputs;
-      if (!inp || !inp.name) { toast('This chart has no name read yet. Swipe up and tap "Type them" to add it.', true); return; }
+      if (!inp || !inp.name) { toast('This chart has no name read yet. Swipe up and tap "Type Them".', true); return; }
       count('viewer.whole_pyramid');
       openWord(inp.name, dayOf(inp), { wholeName: true });
     };
@@ -912,7 +912,7 @@
     const toQuick = () => {
       $menu.classList.add('hidden');
       const inp = img.inputs;
-      if (!inp || !inp.name) { toast('This chart has no name read yet. Swipe up and tap "Type them" to add it.', true); return; }
+      if (!inp || !inp.name) { toast('This chart has no name read yet. Swipe up and tap "Type Them".', true); return; }
       count('viewer.quick');
       try { localStorage.setItem('quickDraft', JSON.stringify({ day: inp.day || '', month: inp.month || '', year: inp.year || '', name: inp.name })); } catch {}
       go('#/quick');
@@ -927,7 +927,7 @@
       else if (img.has_file) sharePhoto(`/thumb/${img.id}`, imgName(img) || img.filename, fileNameOf(imgName(img) || img.filename, 'jpg'));
       else toast('This chart has no picture to share yet: no screenshot and no name read.', true);
     };
-    $simItem.onclick = () => { $menu.classList.add('hidden'); if (!img.inputs) { toast('This chart has no name read yet. Swipe up and tap "Type them" to add it.', true); return; } count('viewer.similar'); go(`#/similar/${img.id}`); };
+    $simItem.onclick = () => { $menu.classList.add('hidden'); if (!img.inputs) { toast('This chart has no name read yet. Swipe up and tap "Type Them".', true); return; } count('viewer.similar'); go(`#/similar/${img.id}`); };
     // Delete (owner's ask 2026-10-19): hold to confirm; the picture and everything about the chart go to
     // Settings -> Deleted Charts, where it can be put back. Then back to the list, redrawn without it.
     $delItem.onclick = () => {
@@ -970,131 +970,174 @@
       for (const nid of [c.next, c.prev]) if (nid && !inputsById.has(nid)) { const pre = new Image(); pre.src = `/img/${nid}`; }
     }).catch(() => {});
 
-    // The chart's own numbers: the name and date read off the picture and every position computed from
-    // them. Tap a number to find every chart with it there; "Wrong? Fix" lets the owner correct the inputs.
-    const $numbers = h('div', { class: 'numbers stack' });
-    let numbers = null, fixing = false;
-    const loadNumbers = async () => { try { numbers = await api(`/api/images/${img.id}/numbers`); } catch (err) { numbers = { error: err.message }; } drawNumbers(); };
-    // Birth name vs the name they are known by (owner 2026-11-25, Freud: "Sigismund Schlomo" looked like a typo):
-    // the chart is drawn from the birth name; when the known name has a word the birth name lacks, say so.
-    const knownAsNote = (birth, title) => {
-      const known = String(title || '').split(' · ')[0].trim();
-      if (!birth || !known || /^me$/i.test(known)) return null;
-      const words = (t) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter(Boolean);
-      const has = new Set(words(birth));
-      if (words(known).every((w) => has.has(w))) return null;
-      return h('div', { class: 'muted small' }, `Drawn from the birth name. Known as ${known}.`);
-    };
-    const drawNumbers = () => {
-      if (img.kind !== 'chart') { fill($numbers); return; }
-      if (!numbers) { fill($numbers, h('p', { class: 'muted small' }, 'Loading the numbers…')); return; }
-      if (numbers.error) { fill($numbers, h('p', { class: 'err small' }, numbers.error)); return; }
-      const inp = numbers.inputs;
-      const when = inp && (inp.day || inp.month || inp.year) ? `${inp.day ?? '?'}.${inp.month ?? '?'}.${inp.year ?? '?'}` : '';
-      if (fixing) {
-        const field = (ph, v, attrs = {}) => h('input', { type: 'text', inputmode: 'numeric', placeholder: ph, autocomplete: 'off', value: v ?? '', ...attrs });
-        const $day = field('day', inp && inp.day, { maxlength: 2 }), $month = field('month', inp && inp.month, { maxlength: 2 }), $year = field('year', inp && inp.year, { maxlength: 4 });
-        const $name = h('input', { type: 'text', placeholder: 'Full name, exactly as typed into the chart', autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false', value: inp ? inp.name : '' });
-        const $msg = h('p', { class: 'err small' });
-        const save = async () => {
-          try {
-            count('viewer.fix_inputs');
-            numbers = await api(`/api/images/${img.id}/inputs`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ day: $day.value.trim(), month: $month.value.trim(), year: $year.value.trim(), name: $name.value }) });
-            fixing = false; toast('Numbers recomputed'); drawNumbers();
-            const ni = numbers.inputs; img.inputs = ni ? { day: ni.day, month: ni.month, year: ni.year, name: ni.name } : null;
-            if (img.inputs) { inputsById.set(img.id, img.inputs); showDrawn(); } else { inputsById.delete(img.id); showPhoto(); }
-            drawOrig();
-          } catch (err) { $msg.textContent = err.message; }
-        };
-        fill($numbers, h('b', {}, inp ? 'Fix the name or date' : 'Type the name and date'),
-          h('p', { class: 'muted small' }, 'Exactly as typed into the chart: same spelling, every name, Jr or III included. The numbers are recomputed at once.'),
-          h('div', { class: 'row qfields fixfields' }, $day, $month, $year), $name, $msg,
-          h('div', { class: 'row', style: 'flex-wrap:nowrap' }, h('button', { type: 'button', class: 'btn-primary', style: 'flex:1', onclick: save }, 'Save'), h('button', { type: 'button', onclick: () => { fixing = false; drawNumbers(); } }, 'Cancel')));
-        return;
+    // ---------- the swiped-up sheet (owner 2026-11-26, design 1 "Tabs") ----------
+    // The header (photo, name, dates · country, what they do), four tools (Pyramid, Year Rows, Similar, More), then
+    // four tabs: Overview (Charts of This Person, Tags, About, File Details), Archetypes, Reading and Ask AI, each
+    // built the first time it is opened. One Edit (More → Edit Name and Date) replaced the two Fix buttons.
+    const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const longDate = (i) => (i && i.year && i.month && i.day ? `${MONTHS[i.month - 1]} ${i.day}, ${i.year}` : i && i.year ? String(i.year) : '');
+    const region = (code) => { try { return new Intl.DisplayNames(['en'], { type: 'region' }).of(code) || code; } catch { return code; } };
+    const normName = (t) => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').trim().replace(/\s+/g, ' ');
+    // One name studied with the birth date (owner 2026-11-25): one word + a number, "MrBeast 16" or "MrBeast 0".
+    // The number is the day's digit sum plus nine (the 7th -> 16, the 20th -> 11): `Numeroscope`-free, plain math.
+    const STUDY = /^(\S+)\s+(\d+)$/;
+    const dayOctave = (day) => { let d = Number(day); if (!d) return null; while (d > 9) d = String(d).split('').reduce((a, c) => a + Number(c), 0); return d + 9; };
+    const chartKind = (ch, all, title) => {
+      const name = ch.inputs && ch.inputs.name;
+      if (!name) return 'Name and Date Not Read Yet';
+      const m = STUDY.exec(name.trim());
+      if (m) {
+        const n = Number(m[2]);
+        if (n === 0) return 'One Name With 0';
+        return dayOctave(ch.inputs.day) === n ? `One Name With the Day (${Number(ch.inputs.day) === n ? n : `${ch.inputs.day} → ${n}`})` : `One Name With ${n}`;
       }
-      // Search Google (owner 2026-11-25): opens a Google search for the person, in a new tab, from the swiped-up sheet.
-      const who = imgName(img) || (inp && inp.name) || '';
-      const $google = who ? h('a', { class: 'btn gsearch', href: `https://www.google.com/search?q=${encodeURIComponent(who)}`, target: '_blank', rel: 'noopener', onclick: () => count('viewer.google') }, `Search Google for ${who}`) : null;
-      if (!inp) {
-        fill($numbers, h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' }, h('span', { class: 'muted small' }, 'Name and date not read yet, so this chart cannot be found by position.'), h('button', { type: 'button', onclick: () => { fixing = true; drawNumbers(); } }, 'Type them')), $google);
-        return;
-      }
-      // Only the name and date here (owner 2026-10-19): the lists of every position's number are gone; the
-      // drawing shows them, and a tap on a number there opens its meaning and "N charts with it here".
-      const SLIM = 'flex:1 1 auto;padding-left:8px;padding-right:8px;white-space:nowrap';
-      fill($numbers,
-        // The name and date on their own lines, the buttons in one row under them: beside a long name they
-        // squeezed it into one word a line (owner 2026-11-25, when Quick Chart joined them).
-        h('div', { style: 'min-width:0' }, h('b', {}, inp.name || '(no name)'), h('div', { class: 'muted small' }, when ? `Born ${when}` : 'No date: name chart only'), knownAsNote(inp.name, imgName(img))),
-        h('div', { class: 'row', style: 'gap:6px;flex-wrap:nowrap' }, inp.name ? h('button', { type: 'button', style: SLIM, onclick: toQuick }, 'Quick Chart') : null, inp.name ? h('button', { type: 'button', style: SLIM, onclick: wholePyramid }, 'Pyramid') : null, h('button', { type: 'button', style: SLIM, onclick: () => { fixing = true; drawNumbers(); } }, 'Wrong? Fix')), $google);
+      const known = normName(String(title || '').split(' · ')[0]);
+      const birthElsewhere = all.some((o) => o.inputs && o.inputs.name && !STUDY.test(o.inputs.name.trim()) && normName(o.inputs.name) !== known);
+      return known && normName(name) === known && birthElsewhere ? 'Known As' : 'Birth Name';
     };
-    if (img.kind === 'chart') loadNumbers();
+    const ICON = {
+      pyramid: '<path d="M12 4 3.5 19h17Z"/><path d="M8 13h8M10 9.5h4"/>',
+      rows: '<rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M4 10h16M9 5v15M4 15h16"/>',
+      similar: '<path d="M9 5 4 12l5 7 5-7Z"/><path d="M15 5l5 7-5 7"/>',
+      more: '<circle cx="6" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18" cy="12" r="1.3"/>',
+    };
+    const tool = (key, label, run) => h('button', { type: 'button', class: 'vtool', onclick: run },
+      h('span', { class: 'vt-ic', html: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICON[key]}</svg>` }), h('span', {}, label));
+    const TABS = [['overview', 'Overview'], ['archetypes', 'Archetypes'], ['reading', 'Reading'], ['ai', 'Ask AI']];
+    let tab = 'overview', editing = false, addingTag = false, built = {}, personList = null;
+    const openGoogle = () => { const who = imgName(img) || (img.inputs && img.inputs.name) || ''; if (!who) { toast('This chart has no name yet.', true); return; } count('viewer.google'); window.open(`https://www.google.com/search?q=${encodeURIComponent(who)}`, '_blank', 'noopener'); };
+    const moreSheet = () => {
+      count('viewer.more');
+      const acts = [
+        { label: 'Open in Quick Chart', run: toQuick },
+        { label: 'Search Google', run: openGoogle },
+        { label: 'Share Picture', run: () => $shareItem.onclick() },
+        img.inputs && img.has_file ? { label: mode === 'drawn' ? 'Show the Screenshot' : 'Show the Drawn Chart', run: () => $orig.onclick() } : null,
+        { label: img.inputs ? 'Edit Name and Date' : 'Type the Name and Date', run: () => { editing = true; tab = 'overview'; draw(); $sheetBody.scrollTop = 0; } },
+      ].filter(Boolean);
+      sheet(imgName(img) || 'This Chart', acts);
+    };
     const draw = () => {
       const groups = { name: [], position: [], number: [] };
       for (const t of img.tags) groups[t.kind].push(t);
-      const $tagInput = h('input', { type: 'text', placeholder: 'Add a tag…', autocomplete: 'off', autocapitalize: 'none', enterkeyhint: 'done' });
       const addTag = async (name) => {
         try { const r = await postJson(`/api/images/${img.id}/tags`, { name }); img = r.image; toast(r.added ? `Added “${name}”` : `“${name}” was already there`); draw(); }
         catch (err) { toast(err.message, true); }
       };
-      const $sugg = suggestBox($tagInput, { onPick: addTag, allowNew: true });
       const tagBtn = (t) => chip(t, { onclick: () => sheet(pretty(t.name), [
         { label: `▦ Show all ${img.kind === 'archetype' ? 'archetype pics' : 'charts'} tagged “${pretty(t.name)}”`, run: () => go(`#/?${img.kind === 'archetype' ? 'kind=archetype&' : ''}tag=${encodeURIComponent(t.name)}`) },
         { label: `✕ Remove “${pretty(t.name)}” from this ${img.kind === 'archetype' ? 'picture' : 'chart'}`, cls: 'btn-danger', run: async () => {
           try { const r = await postJson(`/api/images/${img.id}/tags/remove`, { name: t.name }); img = r.image; toast(`Removed “${t.name}”`); draw(); } catch (err) { toast(err.message, true); }
         } },
       ]) });
-      // Who this is: the name under the thumbnail. Shown with a Fix button; a seeded guess asks to be confirmed.
-      const $who = h('div', { class: 'who-row' });
-      let fixingName = false;
-      const drawWho = () => {
-        if (img.kind !== 'chart') { fill($who); return; }
-        if (fixingName) {
-          const $in = h('input', { type: 'text', placeholder: 'First and last name, or the name they go by', autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false', value: img.title || '', maxlength: 80 });
-          const save = async () => {
-            try { count('viewer.fix_name'); const r = await api(`/api/images/${img.id}/title`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ title: $in.value }) }); img = r.image; fixingName = false; showName(); toast(img.title ? `Named ${img.title}` : 'Name cleared'); drawWho(); }
-            catch (err) { toast(err.message, true); }
-          };
-          $in.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); save(); } });
-          fill($who, h('b', {}, 'Who is this?'), h('p', { class: 'muted small' }, 'Short: first and last name, a stage name, or “Name · Group”. Tags are not changed.'), $in,
-            h('div', { class: 'row', style: 'flex-wrap:nowrap' }, h('button', { type: 'button', class: 'btn-primary', style: 'flex:1', onclick: save }, 'Save'), h('button', { type: 'button', onclick: () => { fixingName = false; drawWho(); } }, 'Cancel')));
-          setTimeout(() => $in.focus(), 50);
-          return;
-        }
-        const ok = async () => { try { count('viewer.name_ok'); const r = await postJson(`/api/images/${img.id}/title/ok`, {}); img = r.image; toast('Name confirmed'); drawWho(); } catch (err) { toast(err.message, true); } };
-        // The person's photo beside the name (people.js `photo`): nothing at all when there is none.
-        const [$ph, $phBig] = peopleUi && img.title && !img.title_check ? peopleUi.photo(img) : [null, null];
-        fill($who,
-          h('div', { class: 'row', style: 'justify-content:space-between;flex-wrap:nowrap' },
-            $ph,
-            h('div', { style: 'min-width:0;flex:1' }, h('b', {}, img.title || 'No name yet'), img.title_check ? h('div', { class: 'muted small' }, 'A guess. Is it right?') : null),
-            h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:6px' }, img.title_check ? h('button', { type: 'button', onclick: ok }, 'Yes') : null, h('button', { type: 'button', onclick: () => { fixingName = true; drawWho(); } }, img.title ? 'Fix' : 'Name it'))),
-          $phBig);
-      };
-      drawWho();
-      // A folded row: tap to show what is under it (the position and number tags, the file details). The
-      // owner wants the sheet short (2026-10-19): the name tags and the reading stay in view, the rest folds.
+      // A folded row: tap to show what is under it (the position and number tags, the file details).
       const folded = (label, ...inside) => {
         const $in = h('div', { class: 'stack hidden' }, ...inside), $arrow = h('span', { class: 'arrow' }, '⌄');
         return [h('button', { type: 'button', class: 'tgroup', onclick: () => { $in.classList.toggle('hidden'); $arrow.textContent = $in.classList.contains('hidden') ? '⌄' : '⌃'; } }, h('span', { class: 'tg-title' }, label), $arrow), $in];
       };
+      const slabel = (text, hint) => h('div', { class: 'slabel' }, h('b', {}, text), hint ? h('span', {}, hint) : null);
+
+      // Tags: the name tags as chips with "+ Add Tag" among them; the box opens under them when tapped.
+      const $tagInput = h('input', { type: 'text', placeholder: 'Type a tag…', autocomplete: 'off', autocapitalize: 'none', enterkeyhint: 'done' });
+      const $sugg = suggestBox($tagInput, { onPick: addTag, allowNew: true });
+      const submitTag = () => { const v = $tagInput.value.trim(); if (v) { count('viewer.add_tag'); addTag(v); $tagInput.value = ''; } };
+      $tagInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); submitTag(); } });
       const codeTags = [...groups.position, ...groups.number];
-      fill($sheetBody,
-        $who,
-        h('div', { class: 'row', style: 'justify-content:space-between' }, h('b', {}, `${img.tags.length} tag${img.tags.length === 1 ? '' : 's'}`), h('span', { class: 'muted small' }, 'Tap a tag for options')),
-        groups.name.length ? h('div', { class: 'chips' }, ...groups.name.map(tagBtn)) : null,
-        h('div', { class: 'addtag row', style: 'flex-wrap:nowrap' }, $tagInput, h('button', { type: 'button', class: 'btn-primary', onclick: () => { const v = $tagInput.value.trim(); if (v) { count('viewer.add_tag'); addTag(v); $tagInput.value = ''; } } }, 'Add'), $sugg),
-        ...(codeTags.length ? folded(`${codeTags.length} position and number tag${codeTags.length === 1 ? '' : 's'}`, h('div', { class: 'chips' }, ...codeTags.map(tagBtn))) : []),
-        $numbers,
-        img.kind === 'chart' && peopleUi ? peopleUi.section(img) : null,
-        img.kind === 'chart' && archUi ? archUi.section(img) : null,
-        img.kind === 'chart' && readingUi ? readingUi.section(img, { showNumber }) : null,
-        ...folded('File details', h('div', { class: 'small muted' },
-          h('div', {}, img.kind === 'archetype' ? 'Type: archetype pic (a picture that represents a number)' : 'Type: chart'),
-          h('div', {}, `Taken: ${img.taken_at ? img.taken_at.replace('T', ' ') : 'unknown'}`),
-          h('div', {}, img.has_file ? `File: ${fmtBytes(img.size)}, ${img.width}×${img.height}, uploaded ${fmtDate(img.uploaded_at)}` : 'File: not uploaded yet'),
-          h('div', { style: 'word-break:break-all' }, img.filename),
-          ...img.paths.map((p) => h('div', { style: 'word-break:break-all;padding-left:8px' }, p)))));
+      const $tags = h('div', { class: 'vsec' },
+        slabel('Tags', groups.name.length ? 'Tap a tag for options' : ''),
+        h('div', { class: 'chips' }, ...groups.name.map(tagBtn),
+          h('button', { type: 'button', class: 'chip addchip', onclick: () => { addingTag = !addingTag; draw(); } }, addingTag ? 'Done Adding' : '+ Add Tag')),
+        addingTag ? h('div', { class: 'addtag row', style: 'flex-wrap:nowrap;margin-top:10px' }, $tagInput, h('button', { type: 'button', class: 'btn-primary', onclick: submitTag }, 'Add'), $sugg) : null,
+        ...(codeTags.length ? folded(`${codeTags.length} Position and Number Tag${codeTags.length === 1 ? '' : 's'}`, h('div', { class: 'chips' }, ...codeTags.map(tagBtn))) : []));
+      if (addingTag) setTimeout(() => $tagInput.focus(), 50);
+      const $files = h('div', { class: 'vsec' }, ...folded('File Details', h('div', { class: 'small muted' },
+        h('div', {}, img.kind === 'archetype' ? 'Type: archetype pic (a picture that represents a number)' : 'Type: chart'),
+        h('div', {}, `Taken: ${img.taken_at ? img.taken_at.replace('T', ' ') : 'unknown'}`),
+        h('div', {}, img.has_file ? `File: ${fmtBytes(img.size)}, ${img.width}×${img.height}, uploaded ${fmtDate(img.uploaded_at)}` : 'File: not uploaded yet'),
+        h('div', { style: 'word-break:break-all' }, img.filename),
+        ...img.paths.map((p) => h('div', { style: 'word-break:break-all;padding-left:8px' }, p)))));
+      if (img.kind !== 'chart') { fill($sheetBody, $tags, $files); return; }
+
+      // The header. The dates come from the chart; the death year, the country and what they do from the About research.
+      const $sub1 = h('div', { class: 'vh-sub' }, longDate(img.inputs) || 'No birth date read yet');
+      const $sub2 = h('div', { class: 'vh-sub' });
+      const [$ph, $phBig] = peopleUi && img.title && !img.title_check ? peopleUi.photo(img) : [null, null];
+      if (peopleUi && img.title) peopleUi.person(img).then((p) => {
+        if (!p) return;
+        const born = longDate(img.inputs) || (p.born ? String(p.born).slice(0, 4) : '');
+        $sub1.textContent = [`${born}${p.died ? ` – ${String(p.died).slice(0, 4)}` : ''}`, p.country ? region(p.country) : ''].filter(Boolean).join(' · ') || 'No birth date read yet';
+        $sub2.textContent = (p.roles || []).slice(0, 3).map((r) => r.charAt(0).toUpperCase() + r.slice(1)).join(' · ');
+      }).catch(() => {});
+      const ok = async () => { try { count('viewer.name_ok'); const r = await postJson(`/api/images/${img.id}/title/ok`, {}); img = r.image; toast('Name confirmed'); draw(); } catch (err) { toast(err.message, true); } };
+      const $head = h('div', { class: 'vhead' }, $ph, h('div', { class: 'vh-text' }, h('div', { class: 'vh-name' }, img.title || 'No name yet'), $sub1, $sub2));
+      const $guess = img.title_check || !img.title ? h('div', { class: 'vguess' }, h('span', {}, img.title ? 'A guess at the name. Is it right?' : 'This chart has no name yet.'),
+        img.title ? h('button', { type: 'button', onclick: ok }, 'Yes') : null, h('button', { type: 'button', onclick: () => { editing = true; tab = 'overview'; draw(); } }, img.title ? 'Edit' : 'Name It')) : null;
+      const $tools = h('div', { class: 'vtools' },
+        tool('pyramid', 'Pyramid', wholePyramid), tool('rows', 'Year Rows', () => $rows.onclick()), tool('similar', 'Similar', () => $simItem.onclick()), tool('more', 'More', moreSheet));
+      const $panel = h('div', { class: 'vpanel' });
+      const $tabs = h('div', { class: 'vtabs', role: 'tablist' }, ...TABS.map(([k, label]) => h('button', { type: 'button', role: 'tab', class: `vtab ${tab === k ? 'on' : ''}`, 'aria-selected': tab === k ? 'true' : 'false', onclick: () => { if (tab === k) return; tab = k; count(`viewer.tab_${k}`); draw(); if ($sheetBody.scrollTop > $tabs.offsetTop) $sheetBody.scrollTop = $tabs.offsetTop; } }, label)));
+
+      // Overview, part one: the edit form (More → Edit Name and Date), or every chart of this person.
+      const editForm = () => {
+        const inp = img.inputs;
+        const field = (ph, v, attrs = {}) => h('input', { type: 'text', inputmode: 'numeric', placeholder: ph, autocomplete: 'off', value: v ?? '', ...attrs });
+        const $title = h('input', { type: 'text', placeholder: 'First and last name, or the name they go by', autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false', value: img.title || '', maxlength: 80 });
+        const $day = field('Day', inp && inp.day, { maxlength: 2 }), $month = field('Month', inp && inp.month, { maxlength: 2 }), $year = field('Year', inp && inp.year, { maxlength: 4 });
+        const $name = h('input', { type: 'text', placeholder: 'Full name, exactly as typed into the chart', autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false', value: inp ? inp.name : '' });
+        const $msg = h('p', { class: 'err small', style: 'margin:0' });
+        const save = async () => {
+          try {
+            const title = $title.value.trim();
+            if (title !== (img.title || '')) { count('viewer.fix_name'); const r = await api(`/api/images/${img.id}/title`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ title }) }); img = { ...img, ...r.image, inputs: img.inputs }; showName(); }
+            const typed = { day: $day.value.trim(), month: $month.value.trim(), year: $year.value.trim(), name: $name.value };
+            const was = inp ? { day: String(inp.day ?? ''), month: String(inp.month ?? ''), year: String(inp.year ?? ''), name: inp.name } : { day: '', month: '', year: '', name: '' };
+            if (JSON.stringify(typed) !== JSON.stringify(was)) {
+              count('viewer.fix_inputs');
+              const n = await api(`/api/images/${img.id}/inputs`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(typed) });
+              const ni = n.inputs; img.inputs = ni ? { day: ni.day, month: ni.month, year: ni.year, name: ni.name } : null;
+              if (img.inputs) { inputsById.set(img.id, img.inputs); showDrawn(); } else { inputsById.delete(img.id); showPhoto(); }
+              drawOrig(); built = {};
+            }
+            editing = false; personList = null; toast('Saved'); draw();
+          } catch (err) { $msg.textContent = err.message; }
+        };
+        return h('div', { class: 'vedit stack' },
+          h('div', { class: 'slabel', style: 'margin-top:0' }, h('b', {}, 'Name Under the Picture')),
+          $title, h('div', { class: 'muted small' }, 'Short: first and last name, a stage name, or “Name · Group”. Tags are not changed.'),
+          h('div', { class: 'slabel' }, h('b', {}, 'Name and Birth Date in the Chart')),
+          h('div', { class: 'row qfields fixfields' }, $day, $month, $year), $name,
+          h('div', { class: 'muted small' }, 'Exactly as typed into the chart: same spelling, every name, Jr or III included. The numbers are worked out again at once.'),
+          $msg,
+          h('div', { class: 'row', style: 'flex-wrap:nowrap' }, h('button', { type: 'button', class: 'btn-primary', style: 'flex:1', onclick: save }, 'Save'), h('button', { type: 'button', style: 'flex:1', onclick: () => { editing = false; draw(); } }, 'Cancel')));
+      };
+      const $charts = h('div', { class: 'vsec' });
+      const drawCharts = (list) => {
+        if (!img.inputs) {
+          fill($charts, slabel('Name and Birth Date'), h('div', { class: 'pchart here' }, h('span', { class: 'pc-main' }, h('span', { class: 'pc-name' }, 'Not read yet'), h('span', { class: 'pc-kind' }, 'This chart cannot be drawn or searched by position until they are typed.')),
+            h('button', { type: 'button', class: 'btn-primary', onclick: () => { editing = true; draw(); } }, 'Type Them')));
+          return;
+        }
+        const all = list && list.length ? list : [{ id: img.id, title: img.title, inputs: img.inputs }];
+        const sameDay = (a, b) => a && b && a.day === b.day && a.month === b.month && a.year === b.year;
+        const row = (ch) => {
+          const here = ch.id === img.id;
+          const extra = ch.inputs && !sameDay(ch.inputs, img.inputs) && ch.inputs.year ? ` · ${longDate(ch.inputs)}` : '';
+          return h(here ? 'div' : 'button', { type: here ? null : 'button', class: `pchart ${here ? 'here' : ''}`, onclick: here ? null : () => { count('viewer.person_chart'); goTo(ch.id); } },
+            h('span', { class: 'pc-main' }, h('span', { class: 'pc-name' }, (ch.inputs && ch.inputs.name) || ch.title || 'No name'), h('span', { class: 'pc-kind' }, chartKind(ch, all, img.title) + extra)),
+            h('span', { class: 'pc-go' }, here ? 'This Chart' : 'Open ›'));
+        };
+        fill($charts, slabel(all.length > 1 ? 'Charts of This Person' : 'Drawn From'), h('div', { class: 'pcharts' }, ...all.map(row)));
+      };
+      drawCharts(personList);
+      if (!personList && img.inputs && img.title) api(`/api/images/${img.id}/charts`).then((r) => { personList = r.charts; drawCharts(personList); }).catch(() => {});
+
+      // The other tabs, each built once (their numbers only change with an edit, which empties `built`).
+      if (!built.archetypes && tab === 'archetypes') built.archetypes = archUi ? archUi.section(img, { bare: true }) : h('p', { class: 'muted' }, 'Not available.');
+      if (!built.read && (tab === 'reading' || tab === 'ai')) built.read = readingUi ? readingUi.section(img, { showNumber, split: true }) : { reading: h('p', { class: 'muted' }, 'Not available.'), ai: h('p', { class: 'muted' }, 'Not available.') };
+      if (tab === 'overview') fill($panel, editing ? editForm() : $charts, $tags, peopleUi ? peopleUi.section(img, { compact: true }) : null, $files);
+      else if (tab === 'archetypes') fill($panel, built.archetypes);
+      else fill($panel, built.read[tab === 'ai' ? 'ai' : 'reading']);
+      fill($sheetBody, h('div', { class: 'vsheet2' }, $head, $phBig, $guess, $tools, $tabs, $panel));
     };
     draw();
   };

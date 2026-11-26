@@ -29,12 +29,14 @@
       line.shadow.length ? h('div', { class: 'arch-shadow' }, h('span', {}, 'Shadow: '), line.shadow[0]) : null);
 
     // The chart sheet section. Loads on its own; says so when the chart has no numbers yet.
-    function section(img) {
+    // `bare` (the tabbed chart sheet, owner 2026-11-26): the tab already says Archetypes, so only the hint stays.
+    function section(img, { bare = false } = {}) {
       const $body = h('div', { class: 'stack' }, h('p', { class: 'muted small' }, 'Putting words on the numbers…'));
-      const $root = h('div', { class: 'archetypes stack' },
-        h('div', { class: 'row', style: 'justify-content:space-between;align-items:baseline' }, h('b', {}, 'Archetypes'), h('span', { class: 'muted small' }, 'Tap one for more wordings')), $body);
+      const $root = h('div', { class: bare ? 'archetypes2 stack' : 'archetypes stack' },
+        bare ? h('div', { class: 'muted small' }, 'Tap one for more wordings.')
+          : h('div', { class: 'row', style: 'justify-content:space-between;align-items:baseline' }, h('b', {}, 'Archetypes'), h('span', { class: 'muted small' }, 'Tap one for more wordings')), $body);
       api(`/api/images/${img.id}/archetypes`).then((r) => {
-        if (r.missing || !r.lines.length) { fill($body, h('p', { class: 'muted small' }, 'No numbers read for this chart yet, so no archetypes. Tap "Type them" above.')); return; }
+        if (r.missing || !r.lines.length) { fill($body, h('p', { class: 'muted small' }, 'No numbers read for this chart yet, so no archetypes. Tap "Type Them" on the Overview tab.')); return; }
         fill($body, ...r.lines.map(card));
       }).catch((err) => fill($body, h('p', { class: 'err small' }, err.message)));
       return $root;

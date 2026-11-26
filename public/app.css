@@ -835,7 +835,6 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .hold.holding .holdfill { width: 100%; transition: width 1s linear; }
 .hold .holdlabel { position: relative; }
 .cmenu-item.danger { color: #b3261e; }
-.gsearch { display: flex; align-items: center; justify-content: center; text-decoration: none; }
 
 /* Possible Duplicates and Deleted Charts: small cards with a thumbnail each. */
 .dupgroup > .row > button { white-space: nowrap; flex: none; }
@@ -1122,6 +1121,53 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .ins-lean.strong { background: var(--warn-bg); color: var(--text); }
 .rs-size-note { margin: 0; }
 
+
+/* ---------- the chart sheet, tabbed (owner 2026-11-26, design 1) ----------
+   Header, four tools, four tabs; section labels are small capitals, rows are one shape, nothing squeezed beside a button. */
+.vsheet2 { display: flex; flex-direction: column; }
+.vhead { display: flex; gap: 12px; align-items: center; }
+.vhead .pthumb { flex: 0 0 60px; width: 60px; height: 60px; border-radius: 16px; }
+.vh-text { min-width: 0; flex: 1; }
+.vh-name { font-size: 21px; font-weight: 700; line-height: 1.15; overflow-wrap: anywhere; }
+.vh-sub { font-size: 14px; color: var(--muted); line-height: 1.3; margin-top: 2px; }
+.vh-sub:empty { display: none; }
+.vsheet2 .pbig { margin-top: 12px; }
+.vguess { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 8px 8px 8px 12px; border-radius: 12px; background: var(--warn-bg); font-size: 14px; }
+.vguess span { flex: 1; min-width: 0; }
+.vguess button { min-height: 36px; padding: 0 14px; font-size: 14px; }
+.vtools { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px; }
+.vtool { flex-direction: column; gap: 5px; min-height: 62px; padding: 8px 2px; border-radius: 14px; font-size: 13px; line-height: 1.1; }
+.vt-ic, .vt-ic svg { display: block; width: 22px; height: 22px; }
+.vtabs { position: sticky; top: -8px; z-index: 3; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-top: 14px; padding: 4px; border-radius: 13px; background: linear-gradient(var(--panel2), var(--panel2)), var(--sheet, var(--panel)); box-shadow: 0 0 0 6px var(--sheet, var(--panel)); }
+.vtab { min-height: 38px; padding: 0 2px; border-radius: 10px; font-size: 14px; font-weight: 600; background: none; color: var(--muted); white-space: nowrap; }
+.vtab.on { background: var(--accent); color: var(--accent-text); }
+.vpanel { padding-top: 4px; }
+.vpanel > * + * { margin-top: 4px; }
+.slabel { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin: 18px 0 8px; }
+.slabel b { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.slabel span { font-size: 13px; color: var(--muted); text-align: right; }
+.vsec .tgroup { margin-top: 10px; }
+.pcharts { display: grid; gap: 6px; }
+.pchart { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 58px; padding: 9px 12px; border-radius: 12px; border: 1px solid var(--line, rgba(128,128,128,.3)); background: none; color: var(--text); text-align: left; justify-content: flex-start; font-weight: 400; }
+.pchart.here { background: var(--panel2); border-color: transparent; }
+.pc-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.pc-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pc-kind { font-size: 13px; color: var(--muted); line-height: 1.3; }
+.pc-go { font-size: 13px; color: var(--muted); white-space: nowrap; }
+.pchart.here .pc-go { color: var(--green); font-weight: 600; }
+.pchart > button { flex: none; min-height: 40px; }
+.chip.addchip { background: none; border: 1.5px dashed var(--line, rgba(128,128,128,.4)); color: var(--muted); }
+.vedit { padding: 12px; border-radius: 14px; background: var(--panel2); margin-top: 14px; }
+.vedit .slabel:first-child { margin-top: 0; }
+.vedit .slabel { margin: 8px 0 0; }
+.about2 { display: flex; flex-direction: column; gap: 10px; }
+.about2 .slabel { margin-bottom: -2px; }
+.lrow { display: flex; justify-content: space-between; align-items: center; width: 100%; min-height: 48px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--line, rgba(128,128,128,.3)); background: none; color: var(--text); font-weight: 600; }
+.lrow-n { color: var(--muted); font-weight: 400; font-size: 14px; }
+.afoot { font-size: 13px; line-height: 1.4; color: var(--muted); }
+.afoot a { color: var(--blue); }
+.afoot .pcredit { font-size: 13px; }
+.chartread2, .archetypes2 { padding-top: 12px; }
 
 /* ---------- Looks (owner 2026-11-23, to match the new icon) ----------
    html[data-style] is set by applyTheme in app.js (and index.html before the first paint): classic = the look before,

@@ -27,3 +27,15 @@
   Days): the list and search results share one setting (`gridCols`), which Recently Opened on home follows without buttons of its own, Similar Charts
   (`simCols`) and Possible Duplicates (`dupCols`) have their own; remembered per device. A new grid of
   charts gets one too, in the page's top row.
+
+## Designing a change you can see (owner 2026-11-26: "you just slopped it in there")
+1. Mockup FIRST: any change to how a screen looks or is laid out gets a picture (two or three options, drawn at
+   390 px with the real data) and the owner picks before a line is built. Design on Fable, build on Opus.
+2. After building: screenshot the real screen at 390x844 in EVERY look (Glass, Blueprint, Light, Classic Dark,
+   Classic Light), read the PNGs, compare with the picked mockup, fix what differs, then say done.
+3. Checklist for every screen: nothing squeezed beside buttons (text gets its own line); buttons in one row are the
+   same size; one idea per line; every block has a small-capitals label (`.slabel`); long parts go behind a tab or a
+   row, never a wall; nothing see-through over text (menus, sticky bars: solid `--sheet`); Title Case labels.
+- The chart sheet (owner's design 1, 2026-11-26): header (photo, name, dates · country, roles), four tools
+  (Pyramid, Year Rows, Similar, More), tabs Overview / Archetypes / Reading / Ask AI. A new chart feature goes in a
+  tab or in More, never as another button row under the name.

@@ -89,6 +89,19 @@ export function getImage(db, id) {
   };
 }
 
+// Charts of This Person (owner 2026-11-26): every chart with the same name under the thumbnail (images.title, any
+// case), this one included: the birth-name chart, the known-name chart, the one-word study charts. Oldest first.
+export function personCharts(db, id) {
+  const img = db.prepare('SELECT title FROM images WHERE id = ?').get(id);
+  if (!img) return null;
+  const rows = img.title && img.title.trim()
+    ? db.prepare(`SELECT i.id, i.title, c.day, c.month, c.year, c.name AS input_name FROM images i LEFT JOIN chart_inputs c ON c.image_id = i.id
+        WHERE i.kind = 'chart' AND lower(trim(i.title)) = lower(trim(?)) ORDER BY i.id`).all(img.title)
+    : db.prepare(`SELECT i.id, i.title, c.day, c.month, c.year, c.name AS input_name FROM images i LEFT JOIN chart_inputs c ON c.image_id = i.id
+        WHERE i.id = ?`).all(id);
+  return rows.map((r) => ({ id: r.id, title: r.title, inputs: inputsOf(r) }));
+}
+
 // Tag suggestions. With `within` tags set, counts are narrowed to images that
 // already match those tags, so you only see tags you can still combine with.
 export function suggestTags(db, { q = '', within = [], kind = 'chart', limit = 30 } = {}) {

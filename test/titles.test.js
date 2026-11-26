@@ -157,3 +157,17 @@ test('the seed file in the repo is sound: one entry per filename, every name sho
   const flagged = seed.filter((s) => s.check).length;
   assert.ok(flagged < 60, `${flagged} flagged`);
 });
+
+test('Charts of This Person: every chart with the same name, any case, this one included; a chart with no name is alone', async () => {
+  const a = addChart(db, 'p1.jpg'); T.setTitle(db, a, 'Sigmund Freud');
+  const b = addChart(db, 'p2.jpg'); T.setTitle(db, b, 'sigmund freud');
+  const c = addChart(db, 'p3.jpg'); T.setTitle(db, c, 'Someone Else');
+  db.prepare("INSERT INTO chart_inputs (image_id, day, month, year, name, source) VALUES (?, 6, 5, 1856, ?, 'owner')").run(a, 'Sigismund Schlomo Freud');
+  const r = await (await api(`/api/images/${b}/charts`)).json();
+  assert.deepEqual(r.charts.map((x) => x.id), [a, b]);
+  assert.equal(r.charts[0].inputs.name, 'Sigismund Schlomo Freud');
+  assert.equal(r.charts[1].inputs, null);
+  const d = addChart(db, 'p4.jpg');
+  assert.deepEqual((await (await api(`/api/images/${d}/charts`)).json()).charts.map((x) => x.id), [d]);
+  assert.equal((await api('/api/images/999999/charts')).status, 404);
+});
