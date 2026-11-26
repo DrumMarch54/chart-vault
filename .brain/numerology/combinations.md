@@ -65,7 +65,7 @@ diamond, the two psyche charts' twins, and any two of day, life path, life expre
 - Top and bottom, left and right: day conscious / life expression unconscious (Shiva / Shakti); first
   name extrovert, "invites the world in" / surname introvert, family karma; left faces the public,
   right the intimate world.
-- Ready sentence frames: day "At their core, consciously ..."; little life expression "... daily life
+- Ready sentence frames: day "His personality is ..., day to day he is ..., consciously ..." (NEVER "at his core": the core is the life path, owner 2026-11-26); little life expression "... daily life
   keeps attracting ..."; big life expression "... ultimately evolving into ..."; pillar "... anchored
   by ..."; life path "the boss" and day "the employee it hires"; DVLP "the conversation between ego
   and soul"; month "worldview, outer field"; year "the rucksack, the subconscious"; outer aura "social
@@ -217,3 +217,17 @@ for grading in the chat that day: day 10/1 + life path 15/6; first name 9 + publ
 with 7; emotion center 6 with 11/2; emotion center 9 with 10/1; day 7 + first name 15/6; personality number 8
 + heart's desire 15/6; day 9 + surname 16/7; emotion center 7 + love life aura 15/6; first name 13/4 +
 surname 17/8. The graded ones belong below as model cards, word for word.
+2026-11-26, sixth round, on the batch of ten ("this is undoubtedly the best we've made it so far. Everything is
+fantastic"); the cards stand except:
+- THE DAY IS NOT "THE CORE": "When I hear core, I think of something more like the life path." The day is the
+  personality (Chart Notes: "Day = Main Personality", "LP = Internal Core"). The "At their core" frame came from
+  a NotebookLM doc (`nlm-interpret-dv-combo-le`), not from the owner.
+- When the math gives away a third number (first name 9 + public aura 11/2 means the day is a 2), read ALL THREE
+  in one line, in order: day, name, the aura they make. A bullet that named the day and left the aura out
+  "is missing something ... I'm sure there's a way to do it where you're interpreting all three".
+- OVERLAP: say what the two numbers have in common, when they do: "six and eleven have a lot of similar themes
+  ... a lot of love in general or emotionality". A shared theme is doubled.
+- A course quote must be understood ALONE: say whose chart or which place it is about before quoting ("she did
+  not show it and kept her guard up" meant nothing without that).
+- A reasoning line says one plain thing. "6 is the main one, so love basically works (6). The cost is what he
+  gives up to keep it (11/2)" was not understood.
