@@ -211,3 +211,9 @@ First name 17/8 with public aura 16/7 (the owner's example).
   once: "his care (24/6) gets misread (12/3)". Not understood: "misread as control or neediness" and an "at its
   best" line whose words pointed at no number. (Claude's rule from this: a claim that cannot carry a number
   in brackets is cut.)
+2026-11-26, fifth round: the brackets after every claim are approved ("yes"); the card has the parts The Phrase,
+By Position, What the Course Says, My Reasoning (labeled as Claude's), At Its Best. A batch of ten was written
+for grading in the chat that day: day 10/1 + life path 15/6; first name 9 + public aura 11/2; mind center 3
+with 7; emotion center 6 with 11/2; emotion center 9 with 10/1; day 7 + first name 15/6; personality number 8
++ heart's desire 15/6; day 9 + surname 16/7; emotion center 7 + love life aura 15/6; first name 13/4 +
+surname 17/8. The graded ones belong below as model cards, word for word.
