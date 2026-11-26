@@ -231,3 +231,8 @@ fantastic"); the cards stand except:
   not show it and kept her guard up" meant nothing without that).
 - A reasoning line says one plain thing. "6 is the main one, so love basically works (6). The cost is what he
   gives up to keep it (11/2)" was not understood.
+2026-11-26, a second batch of six with every rule applied, sent for grading: mind center 4 with 6; emotion
+center 5 with 8; day 8 + first name 15/6 making public aura 14/5; first name 7 + life expression 5 making
+associates aura 12/3; day 3 + life path 9; day 1 + first name 7 making public aura 8. Card parts now: The
+Phrase, By Position, What They Share (or What Sets Them Apart), What the Course Says, My Reasoning, At Its Best.
+Still to do: the psyche charts, then life expression + pillar.
