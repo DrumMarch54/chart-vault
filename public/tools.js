@@ -47,38 +47,49 @@
   const rate = (r, cls = '') => A.h('span', { class: `rate ${r} ${cls}` }, T.RATING_WORDS[r]);
   // The two-line heading of a number: "15/6  The Enchanter  · what it is".
   const bigNum = (v, note) => A.h('div', { class: 'bignum' }, A.h('b', {}, v.text), A.h('span', { class: 'nm' }, nameOf(v)), note ? A.h('span', { class: 'ty' }, note) : null);
-  // A sheet with everything the books say about one number in one position. Tap anywhere outside to close.
-  async function numberSheet(v, pos, extra) {
+  // Everything the books say about one number in one position, as sections: { label, sub, items: [{ text, cls }] }.
+  // The pop-up (numberSheet) and Number Fun's Meaning tab draw the same sections.
+  async function numberSections(v, pos) {
     const [R, B] = await Promise.all([readings(), bizwords()]);
-    const n = v.sum, name = nameOf(v);
-    const parts = [];
-    const para = (t) => (t ? String(t).split('\n\n').map((p) => A.h('p', {}, p)) : []);
-    const head = (t) => A.h('div', { class: 'muted small', style: 'margin:10px 0 2px;text-transform:uppercase;letter-spacing:.06em' }, t);
-    if (pos === 'dv' && R.dayVibration && R.dayVibration[n]) parts.push(head('Day vibration · ' + R.dayVibration[n].keywords), ...para(R.dayVibration[n].text));
-    if (pos === 'lp' && R.lifePath && R.lifePath[n]) parts.push(head('Essence of the day · ' + R.lifePath[n].keywords), ...para(R.lifePath[n].text));
-    if (pos === 'dvlp' && R.dvlp && R.dvlp[n]) parts.push(head('Natural talent · ' + R.dvlp[n].keywords), ...para(R.dvlp[n].text));
-    if (pos === 'outer' && R.outer && R.outer[n]) { const o = R.outer[n]; parts.push(head('Aura of the day'), ...para(o['Aura of the Day']), head('How to act today'), ...para(o['How to Act Today'])); }
-    if (pos === 'inner' && R.inner && R.inner[n]) { const o = R.inner[n]; parts.push(head('Inner weather'), ...para(o['Inner Weather']), head('Inner success codes'), ...para(o['Inner Success Codes'])); }
-    if (pos === 'target' && R.target && R.target[n]) { const o = R.target[n]; parts.push(head('Alignment'), ...para(o['Alignment Vector']), head('Fastest bridge'), ...para(o['Fastest Bridge'])); }
+    const n = v.sum, out = [];
+    const paras = (t) => (t ? String(t).split('\n\n').map((text) => ({ text })) : []);
+    const sec = (label, t, sub) => { if (t) out.push({ label, sub, items: paras(t) }); };
+    const both = (o, a, ka, b, kb) => out.push({ label: a, items: paras(o[ka]) }, { label: b, items: paras(o[kb]) }); // two heads, as the books' pages have
+    if (pos === 'dv' && R.dayVibration && R.dayVibration[n]) sec('Day vibration', R.dayVibration[n].text, R.dayVibration[n].keywords);
+    if (pos === 'lp' && R.lifePath && R.lifePath[n]) sec('Essence of the day', R.lifePath[n].text, R.lifePath[n].keywords);
+    if (pos === 'dvlp' && R.dvlp && R.dvlp[n]) sec('Natural talent', R.dvlp[n].text, R.dvlp[n].keywords);
+    if (pos === 'outer' && R.outer && R.outer[n]) both(R.outer[n], 'Aura of the day', 'Aura of the Day', 'How to act today', 'How to Act Today');
+    if (pos === 'inner' && R.inner && R.inner[n]) both(R.inner[n], 'Inner weather', 'Inner Weather', 'Inner success codes', 'Inner Success Codes');
+    if (pos === 'target' && R.target && R.target[n]) both(R.target[n], 'Alignment', 'Alignment Vector', 'Fastest bridge', 'Fastest Bridge');
     const about = (R.outer && R.outer[n] && R.outer[n].about) || (R.inner && R.inner[n] && R.inner[n].about) || (R.target && R.target[n] && R.target[n].about) || null;
-    if (about) parts.push(head(`About ${v.text}`), ...para(about));
-    if (N.MEANINGS[n]) parts.push(head('In the year rows'), A.h('p', {}, N.MEANINGS[n]));
-    if (!parts.length && n < 10 && R.dayVibration && R.dayVibration[n]) parts.push(head(R.dayVibration[n].keywords), ...para(R.dayVibration[n].text));
+    sec(`About ${v.text}`, about);
+    if (N.MEANINGS[n]) out.push({ label: 'In the year rows', items: [{ text: N.MEANINGS[n] }] });
+    if (!out.length && n < 10 && R.dayVibration && R.dayVibration[n]) sec(R.dayVibration[n].keywords, R.dayVibration[n].text);
     const kind = T.codeKind(n), group = kind ? codeGroup(R, n, kind) : null;
-    if (group) parts.push(head(`Success code · ${group.name}`), A.h('p', {}, group.text));
-    parts.push(...bizParts(B, n, head));
+    if (group) out.push({ label: 'Success code', sub: group.name, items: [{ text: group.text }] });
+    out.push(...bizSections(B, n));
+    return out;
+  }
+  // A sheet with everything the books say about one number in one position. Tap anywhere outside to close.
+  // `top` (Number Fun's tapped diamond) replaces the plain heading.
+  async function numberSheet(v, pos, extra, top) {
+    const sections = await numberSections(v, pos);
+    const name = nameOf(v), kind = T.codeKind(v.sum);
+    const head = (t) => A.h('div', { class: 'muted small', style: 'margin:10px 0 2px;text-transform:uppercase;letter-spacing:.06em' }, t);
+    const parts = sections.flatMap((s) => [head(s.sub ? `${s.label} · ${s.sub}` : s.label), ...s.items.map((it) => A.h('p', it.cls ? { class: it.cls } : {}, it.text))]);
     if (!parts.length) parts.push(A.h('p', { class: 'muted' }, 'The books have no page for this number in this place yet.'));
-    return A.sheet(A.h('div', { class: 'numsheet' }, A.h('h3', {}, `${v.text} ${name}`), kind ? A.h('div', { class: 'codes' }, A.h('span', { class: kind === 'avoid' || kind === 'care' ? 'warn' : kind === 'soft' ? 'soft' : '' }, T.CODE_WORDS[kind])) : null, extra || null, ...parts));
+    return A.sheet(A.h('div', { class: 'numsheet' }, top || A.h('h3', {}, `${v.text} ${name}`),
+      !top && kind ? A.h('div', { class: 'codes' }, A.h('span', { class: kind === 'avoid' || kind === 'care' ? 'warn' : kind === 'soft' ? 'soft' : '' }, T.CODE_WORDS[kind])) : null, extra || null, ...parts));
   }
   // What the business books say about a number 1-99: The Numbers 10-99 in Business (with its color code), the
   // summary of its family for 1-9, and the general meaning from Numbers Overview 1-99.
-  function bizParts(B, n, head) {
+  function bizSections(B, n) {
     const out = [], b = B.business && B.business[n], fam = B.businessFamilies && B.businessFamilies[n < 10 ? n : 0], o = B.overview && B.overview[n];
-    if (b) out.push(head(`In business · ${b.name}${b.color && BIZ_COLOR_WORD[b.color] ? ' · ' + BIZ_COLOR_WORD[b.color] : ''}`), A.h('p', {}, b.text), b.warn ? A.h('p', { class: 'warnline' }, '⚠ ' + b.warn) : null,
-      b.color && B.businessColors && B.businessColors[b.color] ? A.h('p', { class: 'muted small' }, `${BIZ_COLOR_WORD[b.color]}: ${B.businessColors[b.color]}.`) : null);
-    if (fam) out.push(head(`In business · the ${n} numbers · ${fam.title}`), A.h('p', {}, fam.text));
-    if (o) out.push(head(`The number · ${o.name}`), A.h('p', {}, o.text));
-    return out.filter(Boolean);
+    if (b) out.push({ label: 'In business', sub: `${b.name}${b.color && BIZ_COLOR_WORD[b.color] ? ' · ' + BIZ_COLOR_WORD[b.color] : ''}`, items: [{ text: b.text },
+      b.warn ? { text: '⚠ ' + b.warn, cls: 'warnline' } : null, b.color && B.businessColors && B.businessColors[b.color] ? { text: `${BIZ_COLOR_WORD[b.color]}: ${B.businessColors[b.color]}.`, cls: 'muted small' } : null].filter(Boolean) });
+    if (fam) out.push({ label: 'In business', sub: `the ${n} numbers · ${fam.title}`, items: [{ text: fam.text }] });
+    if (o) out.push({ label: 'The number', sub: o.name, items: [{ text: o.text }] });
+    return out;
   }
   const POS_WORDS = { dv: 'Day Vibration', lp: 'Essence of the Day', bigLp: 'Big Essence', outer: 'Outer Diamond · Day + Month', inner: 'Inner Diamond · Day + Year', dvlp: 'Natural Talent · Day + Essence', dharma: 'Dharma of the Month · Month + Year', target: 'Target Number · Day + Dharma' };
   const POS_INTRO = { dv: 'The main vibration of the day and where to focus your attention.', lp: 'The emotional energy of the day: what inspiration you receive and how you feel.', outer: 'The day\'s radiance and action: what kind of actions are best to take.', inner: 'The day\'s inner motivation and drive: how the mind, thoughts and emotions work.', dvlp: 'How to connect to the greatest flow, creativity and productivity of the day.', dharma: 'The same for the whole month: the qualities you need to awaken to be successful.', target: 'The day\'s portal to success: the one adjustment that aligns your tone with the day.' };
@@ -419,68 +430,177 @@
   }
 
   // ---------- Number Fun ----------
-  // One number's whole big diamond, small, for the grid of every number: the paid tool's "10 by 10" page draws
-  // seven triangles per cell: the integration diamond on top, the essence diamond with its outer and inner
-  // diamonds beside it, the main diamond (bigger, dark) with its outer and inner diamonds beside it.
+  // The owner's design B (2026-11-26, out of three mock-ups; .brain/PLAN-number-fun.md): a header (the number,
+  // its name, pills), four tools (previous, Pick, All Numbers, next), tabs Diamond / Levels / Meaning / Found In.
+  // The drawings above (tri, levelSvg, bigDiamondEl) are the paid tool's page, measured: the frame changes, never them.
   // One cell of All Numbers (owner's pick B, 2026-10-19, out of five mock-ups): the number's own three-level
   // page in miniature, tinted bands, gold names, imbalanced diamonds and all, so the grid reads like the page.
   function cellSvg(x) {
     return A.h('div', { class: 'nfmini' }, bigDiamondEl(T.bigDiamond(x), null, {}));
   }
+  const NF_ICON = {
+    prev: '<path d="M15 5l-7 7 7 7"/>', next: '<path d="M9 5l7 7-7 7"/>',
+    pick: '<rect x="4" y="4" width="4" height="4" rx="1"/><rect x="10" y="4" width="4" height="4" rx="1"/><rect x="16" y="4" width="4" height="4" rx="1"/><rect x="4" y="10" width="4" height="4" rx="1"/><rect x="10" y="10" width="4" height="4" rx="1"/><rect x="16" y="10" width="4" height="4" rx="1"/><rect x="4" y="16" width="4" height="4" rx="1"/><rect x="10" y="16" width="4" height="4" rx="1"/><rect x="16" y="16" width="4" height="4" rx="1"/>',
+    all: '<path d="M4 5h8l-4 6zM12 5h8l-4 6zM8 13h8l-4 6z"/>',
+  };
+  const nfIcon = (k) => A.h('span', { class: 'vt-ic', html: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${NF_ICON[k]}</svg>` });
+  const nfLabel = (t, right) => A.h('div', { class: 'slabel' }, A.h('b', {}, t), right ? A.h('span', {}, right) : null);
+  // A row of equal buttons, one lit (the tabs, the level switch).
+  const nfSeg = (items, on, pick, cls = '') => A.h('div', { class: `nf-seg ${cls}`, role: 'tablist' }, ...items.map(([k, label]) =>
+    A.h('button', { type: 'button', role: 'tab', class: k === on ? 'on' : '', 'aria-selected': k === on ? 'true' : 'false', onclick: () => { if (k !== on) pick(k); } }, label)));
+  // The pills under a number's name: its ruler, its success-code kind, its business color (the books' words).
+  const NF_KIND = { strong: ['Strong Success Code', 'ok'], soft: ['Soft Success Code', 'ok'], strength: ['Strength Code', 'ok'], special: ['Special Code', ''], avoid: ['Number to Avoid', 'bad'], care: ['Use With Care', 'warn'], limited: ['Strength Code, Not in a Strong Position', 'warn'] };
+  const NF_BIZ = { green: ['ok'], black: [''], orange: ['warn'], red: ['bad'] };
+  function nfPills(x, B) {
+    const v = T.val(x), kind = T.codeKind(x), b = B && B.business && B.business[x];
+    return A.h('div', { class: 'nf-pills' }, A.h('span', { class: 'nf-pill' }, `Ruler ${N.PLANETS[v.ds]}`),
+      kind ? A.h('span', { class: `nf-pill ${NF_KIND[kind][1]}` }, NF_KIND[kind][0]) : null,
+      b && BIZ_COLOR_WORD[b.color] ? A.h('span', { class: `nf-pill ${NF_BIZ[b.color][0]}` }, `${BIZ_COLOR_WORD[b.color]} in Business`) : null);
+  }
+  // One little diamond drawn big, on its level's band color (the BANDS tints), for the Levels tab and the tap sheet.
+  const NF_TINT = { main: BANDS.main.bg[1], essence: BANDS.essence.bg[1], integration: BANDS.integration.bg[0] };
+  function nfTri(d, level, w, W, onTap, opts = {}) {
+    const svg = A.sv('svg', { class: 'dia', role: 'img', 'aria-label': `${d.text} ${d.name || ''}` });
+    const bottom = tri(svg, d, W / 2, 26, w, { onTap, name: '', ...opts });
+    svg.setAttribute('viewBox', `0 0 ${W} ${Math.ceil(bottom + 4)}`);
+    return A.h('div', { class: 'nf-tri', style: `background:${NF_TINT[level]}` }, svg);
+  }
+  const NF_TABS = [['diamond', 'Diamond'], ['levels', 'Levels'], ['meaning', 'Meaning'], ['found', 'Found In']];
+  const NF_LEVELS = [['main', 'Physical'], ['essence', 'Emotional'], ['integration', 'Spiritual']];
+  // Where Number Fun was when All Numbers opened, so its ‹ goes back there (one step in the phone's Back history).
+  let nfFromNumber = false;
   function numberFunView(arg) {
-    light();
+    if (arg === 'all') return allNumbersView();
+    nfFromNumber = false;
     let n = Math.min(99, Math.max(1, Number(arg) || recall('numberFun', 14)));
-    // "All Numbers" (owner 2026-10-19, the paid tool's grid page): every number's main diamond at once, as many
-    // across as the − / + choose (remembered per device); tap one to open that number. The chip brings the grid back.
-    const wide = window.innerWidth >= 700;
-    const MIN_COLS = 2, MAX_COLS = 10; // the paid tool's page is 10 by 10; a phone can go there too, the − / + choose
-    const clampCols = (c) => Math.min(MAX_COLS, Math.max(MIN_COLS, Number(c) || 0));
-    const view = { grid: !!recall('numberFunGrid', false), cols: clampCols(recall('numberFunCols', wide ? 4 : 2)) };
-    const $row = A.h('div', { class: 'numrow' }), $body = A.h('div', {}), $chips = A.h('div', { class: 'togglerow' });
-    const $in = A.h('input', { type: 'text', inputmode: 'numeric', class: 'numin', maxlength: 2, 'aria-label': 'Number' });
-    $in.addEventListener('change', () => { const v = Number($in.value); if (v >= 1 && v <= 99) { n = v; view.grid = false; A.count('numberfun.type'); draw(); } });
-    // A tap on a diamond pops its words up from the bottom (owner 2026-10-19: never a new screen, so the page
-    // underneath stays put); "Open" in the sheet goes to that number on purpose.
-    const jump = async (d) => {
+    let tab = NF_TABS.some(([k]) => k === recall('numberFunTab', 'diamond')) ? recall('numberFunTab', 'diamond') : 'diamond';
+    let level = NF_LEVELS.some(([k]) => k === recall('numberFunLevel', 'main')) ? recall('numberFunLevel', 'main') : 'main';
+    let Bd = null; // the big diamond on screen: a tap hands back one of its own little diamonds, found here by identity
+    const $head = A.h('div', {}), $tools = A.h('div', { class: 'vtools nf-tools' }), $tabs = A.h('div', {}), $panel = A.h('div', { class: 'nf-panel' });
+    const open = (x, how) => { if (!(x >= 1 && x <= 99) || x === n) return; n = x; if (how) A.count(how); draw(); window.scrollTo(0, 0); };
+    // Pick a Number: 1 to 99 ten across, a row per ten, 1-9 on top with the first cell empty so the ones line up.
+    const pick = () => {
+      A.count('numberfun.pick_open');
+      let close = null;
+      const cells = [];
+      for (let x = 0; x <= 99; x++) cells.push(x === 0 ? A.h('span', {}) : A.h('button', { type: 'button', class: x === n ? 'on' : '', 'aria-label': T.val(x).text, onclick: () => { if (close) close(); open(x, 'numberfun.pick'); } }, String(x)));
+      close = A.sheet(A.h('div', { class: 'nf-picksheet' }, nfLabel('Pick a Number', '1 to 99'), A.h('div', { class: 'nf-pad' }, ...cells)));
+    };
+    // A tap on a diamond pops it up drawn big with its words (owner 2026-10-19: never a new screen); "Open" goes there.
+    const jump = (d) => {
       if (!(d.code >= 1 && d.code <= 99)) return;
       A.count('numberfun.tap_diamond');
+      let where = null;
+      for (const lv of T.LEVELS) for (const pl of T.PLACES) if (!where && T.placeOf(Bd, lv, pl) === d) where = { lv, pl };
+      const v = T.val(d.code);
       let close = null;
-      const $open = A.h('button', { type: 'button', class: 'btn-primary', onclick: () => { if (close) close(); n = d.code; view.grid = false; A.count('numberfun.open_from_sheet'); draw(); window.scrollTo(0, 0); } }, `Open ${T.val(d.code).text} ${d.name}`);
-      close = await numberSheet(T.val(d.code), 'about', $open);
+      const $open = A.h('button', { type: 'button', class: 'btn-primary nf-open', onclick: () => { if (close) close(); open(d.code, 'numberfun.open_from_sheet'); } }, `Open ${v.text} in Number Fun`);
+      const $pills = A.h('div', {});
+      bizwords().then((B) => A.fill($pills, nfPills(d.code, B)));
+      const top = A.h('div', { class: 'nf-taptop' },
+        where ? nfLabel(`${T.PLACE_WORDS[where.lv][where.pl]} of ${T.val(n).text}`) : null,
+        nfTri(d, where ? where.lv : 'main', 150, 366, null, { dark: where && where.lv === 'main' && where.pl === 'self', unbalanced: where && where.pl.endsWith('U') }),
+        A.h('h3', { class: 'nf-taptitle' }, `${v.text} `, A.h('span', {}, d.name || nameOf(v))), $pills);
+      numberSheet(v, 'about', $open, top).then((c) => { close = c; });
     };
-    const setCols = (c) => { view.cols = clampCols(c); remember('numberFunCols', view.cols); A.count('numberfun.size'); draw(); };
-    const draw = async () => {
-      remember('numberFun', n); remember('numberFunGrid', view.grid); $in.value = String(n);
-      A.fill($chips, chip('All Numbers', view.grid, () => { view.grid = !view.grid; A.count('numberfun.grid'); draw(); }),
-        view.grid ? A.h('span', { class: 'sizectl', role: 'group', 'aria-label': 'Chart size' },
-          A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Smaller charts', disabled: view.cols >= MAX_COLS, onclick: () => setCols(view.cols + 1) }, '−'),
-          A.h('span', { class: 'small' }, 'Size'),
-          A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Bigger charts', disabled: view.cols <= MIN_COLS, onclick: () => setCols(view.cols - 1) }, '+')) : null);
-      $row.classList.toggle('hidden', view.grid);
-      if (view.grid) {
-        // The paid tool's order: a row per ten, the nineties on top, 0 to 9 across (ten across = its page exactly).
-        const c = view.cols, order = [];
+    const setTab = (k) => { tab = k; remember('numberFunTab', k); A.count(`numberfun.tab_${k}`); drawPanel(); };
+    const setLevel = (k) => { level = k; remember('numberFunLevel', k); A.count('numberfun.level'); drawPanel(); };
+    let B = null; // the business words, for the pills
+    const drawPanel = async () => {
+      A.fill($tabs, nfSeg(NF_TABS, tab, setTab, 'nf-tabs'));
+      const v = T.val(n), now = n;
+      if (!Bd || Bd.main.code !== n) Bd = T.bigDiamond(n);
+      if (tab === 'diamond') {
+        A.fill($panel, nfLabel('The Big Diamond', 'Tap a Diamond'), A.h('div', { class: 'nf-bleed' }, bigDiamondEl(Bd, jump)));
+      } else if (tab === 'levels') {
+        const card = (pl, w, W) => {
+          const d = T.placeOf(Bd, level, pl), unb = pl.endsWith('U');
+          return A.h('button', { type: 'button', class: 'nf-tcard', onclick: () => jump(d) },
+            A.h('span', { class: `nf-cap${unb ? ' unb' : ''}` }, T.PLACE_WORDS[level][pl]),
+            nfTri(d, level, w, W, null, { dark: level === 'main' && pl === 'self', unbalanced: unb }),
+            A.h('span', { class: 'nf-tname' }, A.h('b', {}, `${d.text} `), d.name || ''));
+        };
+        A.fill($panel, nfLabel('One Level at a Time', 'Tap a Diamond'), nfSeg(NF_LEVELS, level, setLevel, 'three'),
+          A.h('div', { class: 'nf-level' }, card('self', 150, 366), A.h('div', { class: 'nf-four' }, card('outerD', 84, 180), card('innerD', 84, 180), card('outerU', 84, 180), card('innerU', 84, 180))));
+      } else if (tab === 'meaning') {
+        A.fill($panel, nfLabel(`What ${v.text} Means`), A.h('p', { class: 'muted small' }, 'Loading the books…'));
+        const sections = await numberSections(v, n < 10 ? 'dv' : 'about');
+        if (now !== n || tab !== 'meaning') return;
+        A.fill($panel, ...(sections.length ? sections.flatMap((sec) => [nfLabel(sec.label, sec.sub),
+          A.h('div', { class: 'card nf-words' }, ...sec.items.map((it) => A.h('p', it.cls ? { class: it.cls } : {}, it.text)))])
+          : [nfLabel(`What ${v.text} Means`), A.h('div', { class: 'card nf-words' }, A.h('p', { class: 'muted' }, 'The books have no page for this number yet.'))]));
+      } else {
+        const xs = T.numbersContaining(n);
+        A.fill($panel, nfLabel(`${v.text} Inside Other Numbers`, String(xs.length)),
+          xs.length ? A.h('div', { class: 'nf-rows' }, ...xs.map((x) => {
+            const where = T.placesIn(x, n).map((p) => T.PLACE_WORDS[p.level][p.place]).join(' and ');
+            return A.h('button', { type: 'button', class: 'nf-row', onclick: () => open(x, 'numberfun.tap_other') },
+              A.h('b', { class: 'nf-rnum' }, T.val(x).text), A.h('span', { class: 'nf-rtext' }, A.h('span', { class: 'nf-rname' }, nameOf(T.val(x)) || T.val(x).text), A.h('span', { class: 'nf-rsub' }, `${v.text} Is Its ${where}`)), A.h('span', { class: 'nf-go' }, '›'));
+          })) : A.h('div', { class: 'card nf-words' }, A.h('p', { class: 'muted' }, `No number from 10 to 99 holds ${v.text} in its big diamond.`)));
+      }
+    };
+    const drawHead = () => {
+      const v = T.val(n);
+      A.fill($head, A.h('div', { class: 'nf-head' }, A.h('div', { class: 'nf-tile' }, v.text),
+        A.h('div', { class: 'nf-htext' }, A.h('div', { class: 'nf-name' }, nameOf(v) || v.text), nfPills(n, B))));
+    };
+    const draw = () => {
+      remember('numberFun', n);
+      drawHead();
+      const step = (to, k) => A.h('button', { type: 'button', class: 'vtool', disabled: !(to >= 1 && to <= 99), 'aria-label': k === 'prev' ? 'Previous number' : 'Next number', onclick: () => open(to, 'numberfun.step') },
+        nfIcon(k), A.h('span', {}, to >= 1 && to <= 99 ? T.val(to).text : '—'));
+      A.fill($tools, step(n - 1, 'prev'),
+        A.h('button', { type: 'button', class: 'vtool', onclick: pick }, nfIcon('pick'), A.h('span', {}, 'Pick')),
+        A.h('button', { type: 'button', class: 'vtool', onclick: () => { A.count('numberfun.grid'); nfFromNumber = true; A.go('#/numberfun/all'); } }, nfIcon('all'), A.h('span', {}, 'All Numbers')),
+        step(n + 1, 'next'));
+      drawPanel();
+    };
+    A.render(A.h('div', { class: 'screen tscreen nfscreen' }, top('Number Fun', '#/', A.h('span', { class: 'nf-topgap' })), $head, $tools, $tabs, $panel));
+    draw();
+    // The business pill waits for the business words (loaded once); then the header is drawn again with it.
+    bizwords().then((x) => { B = x; drawHead(); });
+  }
+  // All Numbers (owner 2026-10-19, the paid tool's grid page; laid out again 2026-11-26): grouped by ten from 1 up,
+  // each cell a card with the number and its name over the miniature page, a Jump To row, − / + for how many across.
+  // Ten across is the paid tool's page exactly: nineties on top, no headings or captions.
+  function allNumbersView() {
+    const back = () => { if (nfFromNumber) history.back(); else A.go('#/numberfun'); };
+    const n = recall('numberFun', 14);
+    const MIN_COLS = 2, MAX_COLS = 10;
+    const clampCols = (c) => Math.min(MAX_COLS, Math.max(MIN_COLS, Number(c) || 0));
+    let cols = clampCols(recall('numberFunCols', window.innerWidth >= 700 ? 4 : 2));
+    const $grid = A.h('div', {}), $minus = A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Smaller charts' }, '−'), $plus = A.h('button', { type: 'button', class: 'cbtn', 'aria-label': 'Bigger charts' }, '+');
+    const openX = (x) => { remember('numberFun', x); A.count('numberfun.tap_cell'); back(); };
+    const cell = (x, caption) => A.h('button', { type: 'button', class: `nf-cell${x === n ? ' on' : ''}${caption ? '' : ' bare'}`, 'aria-label': `Open ${T.val(x).text}`, onclick: () => openX(x) },
+      caption ? A.h('span', { class: 'nf-cnum' }, A.h('b', {}, T.val(x).text), A.h('span', {}, nameOf(T.val(x)))) : null, cellSvg(x));
+    const draw = () => {
+      $minus.disabled = cols >= MAX_COLS; $plus.disabled = cols <= MIN_COLS;
+      const style = `grid-template-columns: repeat(${cols}, minmax(0, 1fr))`;
+      if (cols >= 10) {
+        const order = [];
         for (let tens = 9; tens >= 0; tens--) for (let u = 0; u <= 9; u++) { const x = tens * 10 + u; if (x >= 1) order.push(x); }
-        A.fill($body, A.h('div', { class: 'nftable', 'data-cols': String(c), style: `grid-template-columns: repeat(${c}, minmax(0, 1fr))` },
-          ...order.map((x) => A.h('div', { class: 'nfc' + (x === n ? ' today' : ''), role: 'button', 'aria-label': `Open ${T.val(x).text}`, onclick: () => { n = x; view.grid = false; A.count('numberfun.tap_cell'); draw(); window.scrollTo(0, 0); } }, cellSvg(x)))),
-          A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Every number\u2019s three levels, the nineties on top. Tap one to see it large.'));
+        A.fill($grid, A.h('div', { class: 'nf-grid tight', style }, ...order.map((x) => cell(x, false))));
         return;
       }
-      A.fill($row, ...Array.from({ length: 99 }, (_, i) => i + 1).map((x) => A.h('button', { type: 'button', class: x === n ? 'active' : '', onclick: () => { n = x; draw(); } }, String(x))));
-      const active = $row.querySelector('.active'); if (active) active.scrollIntoView({ inline: 'center', block: 'nearest' });
-      const B = T.bigDiamond(n), v = T.val(n);
-      const R = await readings();
-      const about = (R.outer && R.outer[n] && R.outer[n].about) || (R.dayVibration && R.dayVibration[n] && R.dayVibration[n].text) || '';
-      const inOthers = n >= 10 ? T.numbersContaining(n) : [];
-      A.fill($body,
-        A.h('div', { class: 'bignum', onclick: () => numberSheet(v, n < 10 ? 'dv' : 'about') }, A.h('b', {}, v.text), A.h('span', { class: 'nm' }, nameOf(v)), A.h('span', { class: 'ty' }, `Ruler ${N.PLANETS[v.ds]}`)),
-        bigDiamondEl(B, jump),
-        about ? A.h('div', { class: 'reading', onclick: () => numberSheet(v, n < 10 ? 'dv' : 'about') }, A.h('div', { class: 'head' }, A.h('b', {}, v.text), A.h('span', { class: 'nm' }, nameOf(v))), A.h('p', {}, about)) : null,
-        inOthers.length ? A.h('div', { class: 'reading' }, A.h('div', { class: 'head' }, A.h('span', { class: 'nm' }, `Where ${v.text} Appears in Other Numbers`)), A.h('div', { class: 'chips', style: 'margin-top:6px' }, ...inOthers.map((x) => A.h('button', { type: 'button', class: 'chip', onclick: () => { n = x; A.count('numberfun.tap_other'); draw(); } }, T.val(x).text)))) : null,
-        A.h('p', { class: 'muted small', style: 'margin:8px 2px' }, 'Tap any diamond to open that number. The three levels follow the Diamond Method book: the main diamond, the essence diamond made of its two auras, and the integration diamond above that.'));
+      const kids = [];
+      for (let tens = 0; tens <= 9; tens++) {
+        kids.push(A.h('div', { class: 'nf-tens', id: `nf-t${tens}` }, tens ? `${tens * 10} to ${tens * 10 + 9}` : '1 to 9'));
+        for (let u = 0; u <= 9; u++) { const x = tens * 10 + u; if (x >= 1) kids.push(cell(x, true)); }
+      }
+      A.fill($grid, A.h('div', { class: 'nf-grid', style }, ...kids));
     };
-    A.render(A.h('div', { class: 'screen qscreen tscreen wide' }, top('Number Fun', '#/', $in), $chips, $row, $body));
+    const setCols = (c) => { cols = clampCols(c); remember('numberFunCols', cols); A.count('numberfun.size'); draw(); };
+    $minus.onclick = () => setCols(cols + 1); $plus.onclick = () => setCols(cols - 1);
+    const jumpTo = (tens) => { A.count('numberfun.jump'); const el = document.getElementById(`nf-t${tens}`) || $grid.querySelector(`[aria-label="Open ${T.val(tens ? tens * 10 : 1).text}"]`); if (el) el.scrollIntoView({ block: 'start', behavior: 'smooth' }); };
+    const $back = A.h('button', { type: 'button', class: 'btn iconbtn', 'aria-label': 'Back', onclick: back }, '‹');
+    A.render(A.h('div', { class: 'screen tscreen wide nfscreen' },
+      A.h('div', { class: 'pagetop ttop' }, $back, A.h('h1', {}, 'All Numbers'), A.h('span', { class: 'nf-topgap' })),
+      A.h('div', { class: 'nf-ctl' }, A.h('b', {}, 'Jump To'), A.h('span', { class: 'sizectl', role: 'group', 'aria-label': 'Chart size' }, $minus, A.h('span', { class: 'small' }, 'Size'), $plus)),
+      A.h('div', { class: 'nf-jump' }, ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((t) => A.h('button', { type: 'button', class: Math.floor(n / 10) === t ? 'on' : '', onclick: () => jumpTo(t) }, String(t ? t * 10 : 1)))),
+      $grid));
     draw();
+    // Open where the current number is, so the grid never starts at the far end.
+    requestAnimationFrame(() => { const el = $grid.querySelector('.nf-cell.on'); if (el) el.scrollIntoView({ block: 'center' }); });
   }
 
   // ---------- Price Tool ----------
@@ -1262,7 +1382,7 @@
   const USAGE_LABELS = {
     'screen.today': 'Today', 'screen.coming': 'Coming Days', 'screen.numberfun': 'Number Fun', 'screen.price': 'Price Tool', 'screen.relation': 'Relationship', 'screen.karmic': 'Karmic Connections', 'screen.mychart': 'My Chart (settings)',
     'home.today': 'Home → Today', 'home.coming': 'Home → Coming Days', 'home.numberfun': 'Home → Number Fun', 'home.price': 'Home → Price Tool', 'home.relation': 'Home → Relationship', 'home.karmic': 'Home → Karmic Connections', 'home.mychart': 'Home → My Chart',
-    'today.psyche': 'Today: psyche charts on or off', 'today.full': 'Today: full screen day', 'today.ruler': 'Today: ruler of the day', 'today.company': 'Today: a company started this day', 'dayfull.move': 'Full screen day: previous or next day', 'coming.open_day': 'Coming Days: open a day', 'coming.size': 'Coming Days: chart size', 'coming.super_only': 'Coming Days: super dates only', 'numberfun.type': 'Number Fun: type a number', 'numberfun.grid': 'Number Fun: All Numbers grid on or off', 'numberfun.size': 'Number Fun: grid chart size', 'numberfun.tap_cell': 'Number Fun: open a number from the grid', 'numberfun.open_from_sheet': 'Number Fun: open a number from its sheet', 'numberfun.tap_diamond': 'Number Fun: tap a diamond', 'numberfun.tap_other': 'Number Fun: tap a number it appears in',
+    'today.psyche': 'Today: psyche charts on or off', 'today.full': 'Today: full screen day', 'today.ruler': 'Today: ruler of the day', 'today.company': 'Today: a company started this day', 'dayfull.move': 'Full screen day: previous or next day', 'coming.open_day': 'Coming Days: open a day', 'coming.size': 'Coming Days: chart size', 'coming.super_only': 'Coming Days: super dates only', 'numberfun.pick_open': 'Number Fun: Pick button', 'numberfun.pick': 'Number Fun: pick a number', 'numberfun.step': 'Number Fun: previous or next number', 'numberfun.grid': 'Number Fun: All Numbers button', 'numberfun.size': 'All Numbers: chart size', 'numberfun.jump': 'All Numbers: Jump To', 'numberfun.tap_cell': 'All Numbers: open a number', 'numberfun.open_from_sheet': 'Number Fun: open a number from its sheet', 'numberfun.tap_diamond': 'Number Fun: tap a diamond', 'numberfun.tap_other': 'Number Fun: open a number it sits in', 'numberfun.tab_diamond': 'Number Fun: Diamond tab', 'numberfun.tab_levels': 'Number Fun: Levels tab', 'numberfun.tab_meaning': 'Number Fun: Meaning tab', 'numberfun.tab_found': 'Number Fun: Found In tab', 'numberfun.level': 'Number Fun: Physical / Emotional / Spiritual',
     'screen.house': 'House Number', 'screen.phone': 'Phone and Domain', 'screen.words': 'Business Words', 'home.house': 'Home → House Number', 'home.phone': 'Home → Phone and Domain', 'home.words': 'Home → Business Words',
     'home.more_tools': 'Home → More Tools',
     'screen.finddate': 'Find a Date', 'screen.planrows': 'Plan With Year Rows', 'screen.famous': 'Famous People', 'home.finddate': 'Home → Find a Date', 'home.planrows': 'Home → Plan With Year Rows', 'home.famous': 'Home → Famous People',

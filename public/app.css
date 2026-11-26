@@ -1148,6 +1148,72 @@ html.day .bignum { flex-wrap: nowrap; } html.day .bignum .ty { max-width: 42%; w
 .slabel span { font-size: 13px; color: var(--muted); text-align: right; }
 .vsec .tgroup { margin-top: 10px; }
 .pcharts { display: grid; gap: 6px; }
+
+/* ---------- Number Fun (owner's design B, 2026-11-26): header, four tools, four tabs ----------
+   Colors are the look's variables only; the drawn diamonds keep their own band colors. */
+.nf-topgap { width: 48px; flex: none; }
+.tscreen.nfscreen { color: var(--text); }
+.nfscreen .ttop .btn, .nfscreen .cbtn { background: var(--panel2); color: var(--text); }
+.nf-head { display: flex; gap: 12px; align-items: center; margin-top: 6px; }
+.nf-tile { flex: none; min-width: 76px; height: 64px; padding: 0 10px; border-radius: 16px; background: var(--panel); border: 1px solid var(--line, transparent); display: grid; place-items: center; font-size: 26px; font-weight: 800; letter-spacing: -.02em; }
+.nf-htext { min-width: 0; flex: 1; }
+.nf-name { font-size: 21px; font-weight: 700; line-height: 1.15; color: var(--other-ink); }
+.nf-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.nf-pill { font-size: 13px; font-weight: 600; line-height: 1.2; padding: 5px 10px; border-radius: 999px; background: var(--panel2); color: var(--text); }
+.nf-pill.ok { background: var(--ok-bg); color: var(--ok-ink); }
+.nf-pill.bad { background: var(--bad-bg); color: var(--bad-ink); }
+.nf-pill.warn { background: var(--other-bg); color: var(--other-ink); }
+.nf-tools .vtool { border: 1px solid var(--line, transparent); }
+.nf-seg { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 4px; padding: 4px; border-radius: 13px; background: var(--panel2); }
+.nf-seg button { min-height: 38px; padding: 0 2px; border-radius: 10px; font-size: 14px; font-weight: 600; background: none; color: var(--muted); white-space: nowrap; }
+.nf-seg button.on { background: var(--accent); color: var(--accent-text); }
+.nf-tabs { margin-top: 14px; }
+.nf-bleed { margin: 0 -12px; }
+.nf-bleed .bigd { border-radius: 0; }
+.nf-level { margin-top: 8px; }
+.nf-four { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.nf-tcard { display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 6px; width: 100%; min-height: 0; padding: 8px; border-radius: 14px; background: var(--panel); border: 1px solid var(--line, transparent); text-align: center; }
+.nf-cap { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); line-height: 1.25; }
+.nf-four .nf-cap { min-height: 2.5em; display: flex; align-items: center; justify-content: center; }
+.nf-cap.unb { color: var(--bad-ink); }
+.nf-tri { border-radius: 10px; padding: 2px; }
+.nf-tri svg { max-width: 420px; margin: 0 auto; }
+.nf-four .nf-tri svg { max-width: 260px; }
+.nf-tname { font-size: 15px; line-height: 1.25; }
+.nf-four .nf-tname { font-size: 14px; min-height: 2.5em; }
+.nf-tname b { font-weight: 800; }
+.nf-words { margin: 0; }
+.nf-words p { margin: 0; font-size: 15px; line-height: 1.45; }
+.nf-words p + p { margin-top: 8px; }
+.nf-rows { display: grid; gap: 6px; }
+.nf-row { display: grid; grid-template-columns: 64px minmax(0, 1fr) 14px; align-items: center; gap: 10px; width: 100%; min-height: 60px; padding: 8px 12px; border-radius: 14px; background: var(--panel); border: 1px solid var(--line, transparent); text-align: left; }
+.nf-rnum { font-size: 19px; font-weight: 800; }
+.nf-rtext { display: flex; flex-direction: column; min-width: 0; }
+.nf-rname { font-size: 15px; font-weight: 600; line-height: 1.2; }
+.nf-rsub { font-size: 13px; color: var(--muted); margin-top: 2px; line-height: 1.25; }
+.nf-go { color: var(--muted); font-size: 20px; }
+.nf-picksheet .slabel:first-child, .nf-taptop .slabel:first-child { margin-top: 0; }
+.nf-pad { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 4px; }
+.sheet .nf-pad button { width: auto; min-height: 38px; height: 38px; margin: 0; padding: 0; justify-content: center; border-radius: 9px; font-size: 15px; font-weight: 600; }
+.sheet .nf-pad button.on { background: var(--accent); color: var(--accent-text); font-weight: 800; }
+.sheet h3.nf-taptitle { margin: 12px 0 0; font-size: 21px; word-break: normal; }
+.nf-taptitle span { color: var(--other-ink); }
+.sheet .nf-open { justify-content: center; margin-top: 12px; }
+.nf-ctl { display: flex; justify-content: space-between; align-items: center; margin: 10px 2px 8px; }
+.nf-ctl b { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.nf-jump { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 4px; }
+.nf-jump button { min-height: 36px; padding: 0; border-radius: 9px; font-size: 13px; font-weight: 700; justify-content: center; }
+.nf-jump button.on { background: var(--accent); color: var(--accent-text); }
+.nf-grid { display: grid; gap: 8px; margin-top: 10px; }
+.nf-tens { grid-column: 1 / -1; margin: 10px 2px 0; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; scroll-margin-top: 12px; }
+.nf-tens:first-child { margin-top: 0; }
+.nf-cell { display: block; width: 100%; min-width: 0; min-height: 0; padding: 8px 6px 6px; border-radius: 14px; background: var(--panel); border: 1px solid var(--line, transparent); text-align: left; scroll-margin-top: 12px; }
+.nf-cell.on { outline: 2px solid var(--other-ink); outline-offset: -1px; }
+.nf-cnum { display: block; padding: 0 4px 6px; }
+.nf-cnum b { display: block; font-size: 19px; font-weight: 800; line-height: 1.1; }
+.nf-cnum span { display: block; font-size: 13px; font-weight: 600; color: var(--other-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nf-grid.tight { gap: 0; }
+.nf-grid.tight .nf-cell { padding: 1px; border-radius: 0; }
 .pchart { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 58px; padding: 9px 12px; border-radius: 12px; border: 1px solid var(--line, rgba(128,128,128,.3)); background: none; color: var(--text); text-align: left; justify-content: flex-start; font-weight: 400; }
 .pchart.here { background: var(--panel2); border-color: transparent; }
 .pc-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }

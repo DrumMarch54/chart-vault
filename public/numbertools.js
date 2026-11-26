@@ -40,18 +40,27 @@
     const integration = littleDiamond(essence.outer.ds, essence.inner.ds);
     return { main: unpack(main), essence: unpack(essence), integration: unpack(integration) };
   }
+  // The fifteen little diamonds of a big diamond: three levels, five places each, in the course's names
+  // (the labels the paid tool's Number Fun page draws: "outer imbalanced essence diamond" ...).
+  const LEVELS = ['main', 'essence', 'integration'], PLACES = ['self', 'outerD', 'innerD', 'outerU', 'innerU'];
+  const PLACE_WORDS = {
+    main: { self: 'Main Diamond', outerD: 'Outer Diamond', innerD: 'Inner Diamond', outerU: 'Outer Imbalanced Diamond', innerU: 'Inner Imbalanced Diamond' },
+    essence: { self: 'Essence Diamond', outerD: 'Outer Essence Diamond', innerD: 'Inner Essence Diamond', outerU: 'Outer Imbalanced Essence Diamond', innerU: 'Inner Imbalanced Essence Diamond' },
+    integration: { self: 'Integration Diamond', outerD: 'Outer Integration Diamond', innerD: 'Inner Integration Diamond', outerU: 'Outer Imbalanced Integration Diamond', innerU: 'Inner Imbalanced Integration Diamond' },
+  };
+  const placeOf = (B, level, place) => (place === 'self' ? B[level] : B[level][place]);
+  // Where `n` sits in the big diamond of `x`: [{ level, place }], in drawing order (main first).
+  function placesIn(x, n) {
+    const B = bigDiamond(x), out = [];
+    for (const level of LEVELS) for (const place of PLACES) if (placeOf(B, level, place).code === Number(n)) out.push({ level, place });
+    return out;
+  }
   // Every number 10-99 whose big diamond holds `n` somewhere (Number fun: "find other numbers a
   // particular diamond is part of", book p. 31).
   function numbersContaining(n) {
     n = Number(n);
     const out = [];
-    for (let x = 10; x <= 99; x++) {
-      if (x === n) continue;
-      const B = bigDiamond(x);
-      const codes = [];
-      for (const lvl of [B.main, B.essence, B.integration]) for (const d of [lvl, lvl.outerD, lvl.innerD, lvl.outerU, lvl.innerU]) codes.push(d.code);
-      if (codes.includes(n)) out.push(x);
-    }
+    for (let x = 10; x <= 99; x++) if (x !== n && placesIn(x, n).length) out.push(x);
     return out;
   }
 
@@ -365,5 +374,5 @@
     return hits;
   }
 
-  root.NumberTools = { val, littleDiamond, bigDiamond, numbersContaining, dayEnergy, comingDays, rateDate, RATING_WORDS, CODES, CODE_WORDS, POSITION_WORDS, codeKind, PRICE_VIBES, PRICE_RANGES, VERDICT_WORDS, priceCheck, priceFind, pyramidRatio, plutoUndertone, karmic, nameOf, PURPOSES, COMPANY_FIT, findDates, ROW_COMBOS, COMBO_BY_KEY, rowHits, SELF_WORDS, COL_WORDS };
+  root.NumberTools = { val, littleDiamond, bigDiamond, numbersContaining, placesIn, placeOf, LEVELS, PLACES, PLACE_WORDS, dayEnergy, comingDays, rateDate, RATING_WORDS, CODES, CODE_WORDS, POSITION_WORDS, codeKind, PRICE_VIBES, PRICE_RANGES, VERDICT_WORDS, priceCheck, priceFind, pyramidRatio, plutoUndertone, karmic, nameOf, PURPOSES, COMPANY_FIT, findDates, ROW_COMBOS, COMBO_BY_KEY, rowHits, SELF_WORDS, COL_WORDS };
 })(typeof globalThis !== 'undefined' ? globalThis : this);

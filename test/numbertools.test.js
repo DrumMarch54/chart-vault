@@ -31,6 +31,20 @@ test('a single digit sits in the inner corner with 0 outside; 14/5 is found insi
   assert.ok(T.numbersContaining(14).includes(64));
 });
 
+test('Number Fun "Found In": where 14/5 sits inside other numbers, in the course\'s names', () => {
+  assert.deepEqual([...T.numbersContaining(14)], [13, 31, 46, 64]);
+  const where = (x) => [...T.placesIn(x, 14).map((p) => T.PLACE_WORDS[p.level][p.place])];
+  assert.deepEqual(where(13), ['Outer Imbalanced Diamond']);
+  assert.deepEqual(where(31), ['Inner Imbalanced Diamond']);
+  assert.deepEqual(where(46), ['Outer Diamond']);
+  assert.deepEqual(where(64), ['Inner Diamond']);
+  // 14/5 itself: the main diamond; and 69/6 is both its essence and its inner essence diamond.
+  assert.deepEqual([...T.placesIn(14, 69)].map((p) => ({ ...p })), [{ level: 'essence', place: 'self' }, { level: 'essence', place: 'innerD' }, { level: 'integration', place: 'innerU' }]);
+  // A one-digit number sits in one place only: the inner imbalanced diamond of its own tens (5 -> 50/5: 0 then 5).
+  for (let n = 1; n <= 9; n++) assert.deepEqual([...T.numbersContaining(n)], [n * 10], String(n));
+  assert.deepEqual(T.placesIn(50, 5).map((p) => T.PLACE_WORDS[p.level][p.place]).join(), 'Inner Imbalanced Diamond');
+});
+
 test('relationship: John 25/7 and Eve 21/3 (the paid tool\'s example)', () => {
   const B = T.bigDiamond(7, 3);
   assert.equal(t(B.main.le), '10/1'); assert.equal(t(B.main.outer), '8'); assert.equal(t(B.main.inner), '4'); assert.equal(t(B.main.center), '12/3');

@@ -192,8 +192,13 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   The reasons are on the screen ("Why …"); never change the lists without the book page. Screen titles,
   buttons and chips are Title Case everywhere (owner's rule).
 - Coming Days is a grid of day charts only (the list of numbers is gone, owner 2026-10-16); − / + set how many
-  across (2 to 5 on a phone, more on a laptop), remembered per device. Number Fun's "All Numbers" is the same
-  kind of grid: every number's main diamond (`cellSvg`), tap one to open it. The Price Tool has two modes, Check a
+  across (2 to 5 on a phone, more on a laptop), remembered per device. Number Fun (owner's design B, 2026-11-26,
+  `.brain/PLAN-number-fun.md`): header (number tile, name, pills: ruler, code kind, business color), four tools
+  (previous, Pick = a 1-99 sheet, All Numbers, next), tabs Diamond / Levels (one level's five diamonds drawn big) /
+  Meaning (`numberSections`, the same words as the pop-up) / Found In (`placesIn`: "14/5 Is Its Outer Diamond").
+  A tapped diamond pops up drawn big with its place's name. No keyboard box. All Numbers is `#/numberfun/all`
+  (a Back step): grouped by ten from 1, a card per number, Jump To, − / +; ten across = the paid tool's page.
+  `tri` / `levelSvg` / `bigDiamondEl` are the paid tool's measured drawing: redesigns change the frame only. The Price Tool has two modes, Check a
   Price and Find a Price (two pickers: the vibration, the range), never a wall of chips. Today has no row of
   code chips under the chart.
 - Today, Coming Days and the full-screen day use the day look (`day()` in tools.js, `html.day` in app.css,

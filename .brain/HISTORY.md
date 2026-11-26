@@ -1115,3 +1115,18 @@ carry the older rule; update them from a chat in those repos (never push to a si
   picked Tabs. Tap counts set the four tools: Pyramid 33, Year Rows 18, Similar 16; Fix ~0 went into More.
 - The rules now: mockup first and the owner picks; screenshot every look after building; a checklist
   (public/CLAUDE.md "Designing a change you can see").
+
+## 2026-11-26 Number Fun redesigned (owner picked B, Tabs, out of three mock-ups)
+- Owner: "fix the Number Fun section ... functional and intuitive. And also aesthetic." Measured on the dev app at
+  390 px before designing: four controls for one job (a box that read as a label, a lone All Numbers chip, a strip of
+  99 buttons, the grid), no previous / next, the small diamonds 5 px text with no readable version, unlabeled cards,
+  a wrong instruction paragraph, and All Numbers two across from 90 down with no captions.
+- Designed on Fable: mock-ups drawn with the app's own drawing code and real data (canvas
+  https://claude.ai/artifact/1FzWK1d9dkw2Mw8iUmFPu6); built on Opus. Owner approved counting All Numbers up from 1.
+- Built: header + four tools + tabs (Diamond / Levels / Meaning / Found In), Pick a Number sheet, the tap sheet draws
+  the diamond big and names its place, All Numbers as its own Back step with Jump To. The page now follows the look
+  (it no longer forces the white page): its old fixed dark text was invisible on Classic Dark until `.nfscreen` took
+  the look's text color.
+- Found while testing: a tapped diamond is matched by identity, so the screen keeps the big diamond it drew (`Bd`);
+  a fresh `bigDiamond(n)` never matches. And 1-9 DO sit inside other numbers: 5 is the inner imbalanced diamond of 50.
+
