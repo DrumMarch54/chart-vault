@@ -176,3 +176,18 @@ First name 17/8 with public aura 16/7 (the owner's example).
   some healthy skepticism". The course books and the owner's own notes outrank them.
 - Open question 1 is dropped: "you could establish your own principles based on the material".
 - Order of work: this playbook first, then the redesign of the number meaning screen (another chat).
+2026-11-26, second round ("you're doing pretty good with level one ... it can be improved"):
+- NO joined number (level two) for now: "let's just not even bother with the level two ... if I want to
+  implement that in the future, I will."
+- There are several MODES of saying one combination, and the app should carry more than one:
+  1. a short phrase on the pair with the positions pulled back: "direct communication" (5 with 9: talkative
+     and good at it, with a number that is masculine, bold and outright), "nervous celebrity" (first name
+     17/8, public aura 16/7);
+  2. each number in its position, then held together: "his personality is light and almost zippity (5), but
+     he has this inner strength and life themes of perseverance he has to learn over time (9)";
+  3. the dynamic between the two, cut and dry (liked: "Guarded inside (8), magnetic with a partner (15/6):
+     reads them well, lets little in");
+  4. the psychological traits each number can carry (OCD, self-doubt, low self-confidence, drama) woven together.
+- One analogy is one way, never the only way: the boss and the worker for life path and day "was cool, but
+  there's also other ways to explain it".
+- The explaining is wanted ("you could also sort of nicely explain things out like you did").
