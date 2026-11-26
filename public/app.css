@@ -198,6 +198,11 @@ html.light, html.light body { background: #fff; color: #22252e; }
 .qname { position: relative; }
 .qname input { flex: 1; min-width: 0; }
 html.light .nscope-box { border-radius: 0; padding: 0; margin-top: 4px; }
+/* The chart's white runs to the foot of the screen: with the look's backdrop under a short chart, a colored band
+   showed below it (owner 2026-11-26, "a colored bar at the bottom"). */
+.qscreen { display: flex; flex-direction: column; min-height: 100dvh; box-sizing: border-box; padding-bottom: 0; }
+.qscreen > .nscope-home { flex: 1; display: flex; flex-direction: column; }
+.qscreen > .nscope-home > .nscope-box { flex: 1; }
 .cbtn { min-height: 36px; height: 36px; width: 36px; min-width: 36px; padding: 0; border-radius: 10px; background: #eef0f4; color: #3a3f52; font-size: 20px; font-weight: 700; }
 .cmenu { position: absolute; top: calc(100% + 4px); right: 0; z-index: 5; min-width: 190px; background: #fff; border-radius: 12px; padding: 6px 0; box-shadow: 0 8px 28px rgba(0,0,0,.28); }
 .cmenu-item { display: flex; width: 100%; justify-content: flex-start; background: none; color: #22252e; border-radius: 0; padding: 0 18px; font-size: 16px; font-weight: 500; }
