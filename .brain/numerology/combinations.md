@@ -191,3 +191,13 @@ First name 17/8 with public aura 16/7 (the owner's example).
 - One analogy is one way, never the only way: the boss and the worker for life path and day "was cool, but
   there's also other ways to explain it".
 - The explaining is wanted ("you could also sort of nicely explain things out like you did").
+2026-11-26, third round:
+- A center's main + sub vibration is read as WHAT IS IN THE CIRCLE. Do not say "from the middle name": "the
+  middle name is kind of not a part of this combination interpretation ... it kind of sounds a bit confusing.
+  You could just discuss what's right there in the center." (Model: "inside he wants to tear up what exists
+  and create new things, but then there's this opposite energy he feels as well.")
+- No part of a card may repeat another in different words ("you're kind of repeating the same thing in
+  different ways"). Each part must add something.
+- Go PAST the material: the course's stated combinations are wanted, and so is Claude's own reasoning built
+  on them and on each number alone ("there's much more you could have discussed beyond what was already
+  mentioned in the material ... I'm handing the wheel over to you to create the best stuff").
