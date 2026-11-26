@@ -18,6 +18,7 @@ This folder is the distilled, app-relevant part. Read these before touching
 | `number-names.md` | The archetype name of every compound number 10 to 99 and the one-line "energy type" of each. |
 | `psyche.md` | Inner and outer psyche charts, the "teenage" numbers 10 to 18, the ages each aura covers. |
 | `interpretation.md` | How the owner reads a chart: hierarchy of positions, narrative weaving, terminology and number notation. |
+| `combinations.md` | HOW TO INTERPRET TWO NUMBERS TOGETHER: the five-step read, what one number does to its neighbor, the sentence frames per position, the owner's own lines, and the owner's corrections. Read before writing any words about a combination. |
 | `lingo.md` | The many names for one position (heart center = mind center = HC = MC, ...), and look-alikes that are NOT the same. |
 | `yearly-rows.md` | Destiny rhythms and the year row formulas F0-F4, combinations to read in them. |
 | `software-tools.md` | Every feature of the paid tool, which the app has, and where each rule was read (Today, Coming days, Number fun, Price tool, Relationship, Karmic). |

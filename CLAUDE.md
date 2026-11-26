@@ -39,6 +39,8 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   README). Read `chart-construction.md` before touching `public/numeroscope.js`
   or the Quick chart screen. The owner's Google Drive folder "Hub" is readable
   from a cloud session with the Drive connector; ids are in that README.
+- Words about two numbers together (owner 2026-11-26, "train you ... to interpret combinations"): read
+  `.brain/numerology/combinations.md` first; every correction the owner gives goes into it, dated, in their words.
 - Tag codes ("19fn") are decoded in `.brain/numerology/tag-codes.md` and
   spelled out on screen by `public/tag-codes.js`; the stored tag never changes.
 - Number colors are the paid tool's OWN tables, read off its live page script
