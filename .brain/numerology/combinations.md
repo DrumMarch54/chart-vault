@@ -201,3 +201,13 @@ First name 17/8 with public aura 16/7 (the owner's example).
 - Go PAST the material: the course's stated combinations are wanted, and so is Claude's own reasoning built
   on them and on each number alone ("there's much more you could have discussed beyond what was already
   mentioned in the material ... I'm handing the wheel over to you to create the best stuff").
+2026-11-26, fourth round:
+- Liked as written ("I love that interpretation"): "Inside, he wants to tear up what exists and build new
+  (13/4), and feels an opposite pull ... that says hold the line (8)."
+- But never "just as strong" for a sub vibration: "the sub vibration is less influential than the main
+  vibration ... it's coloring the main vibration." Primary and secondary hold everywhere; still, part of the
+  read is simply what each number is and the dynamic between them ("I don't want that to overly confuse you").
+- EVERY WORD MUST TRACE TO ONE OF THE TWO NUMBERS, and the number stands in brackets after it. Understood at
+  once: "his care (24/6) gets misread (12/3)". Not understood: "misread as control or neediness" and an "at its
+  best" line whose words pointed at no number. (Claude's rule from this: a claim that cannot carry a number
+  in brackets is cut.)
