@@ -76,9 +76,12 @@ Every claim carries its number in brackets. Full text, never shortened to fit.
    AUDIT 2026-11-27: `node tools/audit-spots.mjs` (per spot and source: numbers covered, shown, missing). Own-chart holes
    FIXED: love aura + the book's "AURA N" (16 numbers), "AURA 5 AND 14/5" / centers 5 and 14/5 (one entry, both forms),
    NotebookLM dharma notes on the dharma line, the essence book's little life path 4-9; 46 sets of points rewritten.
-   OPEN, the owner's call: show the Name Numeroscopes book's general aura / center words and the spine doc on the psyche,
-   vocation and personality charts (psyche auras and centers already show the name chart's own docs; sub-chart auras
-   show none; sub-chart spines show nothing).
+   OWNER 2026-11-27: vocation/personality = the sub-chart guide (centers) and the sub-chart book (mental and emotional
+   diamonds), both already shown; their AURAS are not needed ("I don't think I'll ever really even need" them). PSYCHE =
+   prefer the course's own words for psyche spots: Drive folder 1V6o7YX8tiABP-EvjN_oiJwneMrxMnkgr (notes pulled from the
+   Numerologist PRO paid "merged charts"; some per-number psyche info) and maybe more scraped from the merged charts; keep
+   ONLY what is about a psyche POSITION, never a general number description. Reading and sorting that is Fable work.
+   Open question: the name chart spine doc on the vocation/personality spines too (psyche spines already use it)?
 3. Part 4: rows, the card, the graded cards, Not Written Yet + the tapped-while-missing list, This Is Off.
 4. Writing sessions fill cards and the "In This Spot" explanations.
 After each: `npm run verify`, the dev app at 390x844 in every look, compare with the mockups, then say done.
