@@ -418,3 +418,16 @@ test('no Name Cleanse words anywhere on the number screen (owner 2026-11-27: "ju
     assert.ok(![...m.passages, ...(m.nameChart ? m.nameChart.passages : [])].some((p) => /cleanse/.test(p.source)), `${chart}.${position} ${sum} passages`);
   }
 });
+
+// The step 2 audit (tools/audit-spots.mjs, 2026-11-27): course words that existed and never showed.
+test('audit holes stay closed: love aura takes the book\'s "AURA N", one entry for 5 and 14/5, dharma notes, life path list', () => {
+  const heads = (m) => m.passages.map((p) => `${p.source}: ${String(p.heading).split(' > ').pop()}`);
+  assert.ok(heads(meaningFor({ chart: 'name', position: 'lowerRight', sum: 17 })).includes('name-numeroscopes-book: AURA 17/8'));
+  assert.ok(heads(meaningFor({ chart: 'name', position: 'lowerRight', sum: 17 })).includes('name-chart-auras: Number 17 as the love life aura'));
+  for (const n of [5, 14]) assert.ok(heads(meaningFor({ chart: 'name', position: 'upperLeft', sum: n })).includes('name-numeroscopes-book: AURA 5 AND 14/5'), `aura ${n}`);
+  assert.ok(heads(meaningFor({ chart: 'name', position: 'solar', sum: 14 })).some((h) => /5 AND 14\/5 IN THE SOLAR PLEXUS/.test(h)));
+  assert.ok(heads(meaningFor({ chart: 'essence', position: 'topAura', sum: 12 })).some((h) => /DHARMA NUMBER IS 12/.test(h)));
+  assert.ok(heads(meaningFor({ chart: 'essence', position: 'littleLp', sum: 5 })).includes('essence-book: 5: The Communicator'));
+  // a pair heading in the same book is still a pair: "7 and 13" never shows on a 7 alone
+  assert.ok(!heads(meaningFor({ chart: 'name', position: 'heart', sum: 7 })).some((h) => /\b13\b/.test(h)));
+});

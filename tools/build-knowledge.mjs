@@ -75,9 +75,10 @@ function headingNumbers(h) {
     if (/^\s*[-–]\s*\d/.test(after) || /\d\s*[-–]\s*$/.test(before)) continue; // a range "1-9", "10-45"
 
     if (/^\s*[.)]/.test(after) && !before.trim()) continue; // "1) ..." / "1. ..."
+    // "4: The Builder" (the essence book's life path list, 2026-11-27) is number 4, like "1 – The Illuminator"
     const atStart = !before.replace(/[#*\s]/g, '');
     const atEnd = !after.replace(/[*\s:)]/g, '');
-    if (m[2] === 's' || KEYWORD_BEFORE.test(before) || atEnd || (atStart && /^\s*(?:[–—+&,-]|(?:is|as|in|and|with|vs\.?)\b|[A-Z]{2,}\b)/.test(after))) set.add(n);
+    if (m[2] === 's' || KEYWORD_BEFORE.test(before) || atEnd || (atStart && /^\s*(?:[–—+&,:-]|(?:is|as|in|and|with|vs\.?)\b|[A-Z]{2,}\b)/.test(after))) set.add(n);
   }
   return [...set];
 }

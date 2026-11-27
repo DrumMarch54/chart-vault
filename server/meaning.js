@@ -138,12 +138,14 @@ const HOME = [
   { keys: ['outer.solar', 'inner.solar'], source: /^psyche-solar-plexus-codes/, heading: /^Code \d/ },
   { keys: ['essence.month'], source: /^higher-self-month-positions/, heading: /^Month Vibration \d+/ },
   { keys: ['essence.topAura', 'essence.dharmaDiamond'], source: /^higher-self-dharma-fusion/, heading: /^Dharma Number \d+/ },
+  { keys: ['essence.topAura'], source: /^nlm-dharma$/, heading: /DHARMA NUMBER IS \d+/ }, // NotebookLM's per-number dharma notes (audit 2026-11-27)
   { keys: ['essence.day'], source: /^biz-superdates-int/, heading: /^Day Vibration \d+$/ },
   { keys: ['essence.littleLp', 'essence.bigLp'], source: /^biz-superdates-int/, heading: /^Life Path \d+$/ },
   { keys: ['essence.nexus'], source: /^biz-superdates-int/, heading: /^DVLP \d+$/ },
 ];
 const homeOf = (chart, position, c) => HOME.some((h) => h.keys.includes(`${chart}.${position}`) && h.source.test(c.source) && (!h.heading || String(c.heading).split(' > ').some((seg) => h.heading.test(seg)))); // "Day Vibration 1 > Winner Mentality, Luck, Flow, Shine"
 
+const TWO_FORMS = /^name-numeroscopes-book/;
 const reduce = (n) => { while (n > 9) n = String(n).split('').reduce((a, d) => a + Number(d), 0); return n; };
 const numRe = (n) => new RegExp(`(?<![\\d/.:])${n}(?![\\d])`);
 // Every number a heading names ("15 and 12 in the mind center" -> 15, 12; "12/3" is one number). Only the heading's
@@ -245,7 +247,9 @@ function forPosition(k, chart, position, n, taken, { limit = 4 } = {}) {
     const c = k.chunks[i];
     const home = homeOf(chart, position, c);
     if (!home && (ownDiamond(c) || COMBO_SOURCE.test(c.source) || otherChart(c, chart))) continue;
-    if (headNums(c.heading).some((x) => x !== n)) continue; // a pair or a case: not about n alone
+    // a pair or a case: not about n alone. The Name Numeroscopes book writes one entry for two forms of one number
+    // ("AURA 5 AND 14/5", "5 AND 14/5 IN THE HEART CENTER"): that is about n (audit 2026-11-27).
+    if (headNums(c.heading).some((x) => x !== n && !(TWO_FORMS.test(c.source) && reduce(x) === reduce(n)))) continue;
     // A home passage is about n by its heading: its paragraphs stay whole ("a 9 energy amplified by the super-ego
     // (1 and 8)" is not a pair paragraph). Elsewhere a paragraph that opens on another pair is cut.
     const text = home ? c.text.trim() : keepOnly(c.text, alone);
@@ -257,7 +261,10 @@ function forPosition(k, chart, position, n, taken, { limit = 4 } = {}) {
     const sf = sourceFit(chart, c.source);
     // Specific = about this position: its topic, the number in the heading, and either a source written about this
     // chart or the position's own word in the heading. A business book (dates, brands) is never specific here.
-    const specific = home || (topics.length && has(topics[0]) && named === 0 && wf < 2 && (wf === 0 || sf === 0) && !BUSINESS.test(c.source));
+    // The love life aura's own topic comes first, but the course's words for the number as ANY aura are its words too
+    // (the book's "AURA 17/8"; the other three auras already took them: audit 2026-11-27).
+    const topicOk = topics.length && (has(topics[0]) || (topics[0] === 'loveAura' && has('auras')));
+    const specific = home || (topicOk && named === 0 && wf < 2 && (wf === 0 || sf === 0) && !BUSINESS.test(c.source));
     scored.push({ c: { ...c, text }, specific, key: [home ? 0 : 1, sf + topicFit + wf, named, text.length < 200 ? 1 : 0, -sourceWeight(c.source), i] });
   }
   scored.sort(byKey);
