@@ -6,7 +6,8 @@ surrounding numbers"). A chat does not remember the last chat: THIS FILE is the 
 before writing any words about two numbers together, and add every correction the owner gives to
 "The owner's corrections" at the end, dated, in their words.
 
-Status: v1, a Claude session's reading of the sources below. Sections marked OPEN wait for the owner.
+Status: VERSION 1 saved 2026-11-27 in .brain/combo-versions/v1/ (the owner's name for it); v1.1 = the clarity work after it.
+Earlier: v1, a Claude session's reading of the sources below. Sections marked OPEN wait for the owner.
 
 ## Sources read for this (all in `knowledge/raw/` unless noted)
 - `sources/main-combo-guide.md` (Main Combo Guide): every pair the course states, by family
