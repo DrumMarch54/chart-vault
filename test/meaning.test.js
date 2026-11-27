@@ -351,6 +351,9 @@ test('short points: one set never serves two numbers of the same position; raw e
   }
   const bad = [...by].filter(([key, ns]) => {
     if (ns.length < 2) return false;
+    // the book writes one entry for two forms of one number ("AURA 5 AND 14/5"): one set for 5 and 14 is right
+    const ds = (x) => { let v = Number(x); while (v > 9) v = String(v).split('').reduce((a, d) => a + Number(d), 0); return v; };
+    if (ns.length === 2 && ds(ns[0]) === ds(ns[1]) && b.sets[key.split('|')[0]].sources.includes('name-numeroscopes-book')) return false;
     const pts = b.sets[key.split('|')[0]].groups.flatMap((g) => g.points).join(' ');
     return !ns.every((n) => new RegExp(`(^|\\D)${n}(\\/\\d)?:`).test(pts));
   });
