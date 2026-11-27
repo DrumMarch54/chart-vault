@@ -3082,6 +3082,540 @@
    "best": "Takes in a great deal of knowledge (12/3) and leads with it (9).",
    "worst": "Lectures people (12/3) in a tone that puts them off (9).",
    "batch": "batch-06"
+  },
+  "inner.lowerLeft=10|inner.lowerRight=14": {
+   "a": {
+    "spot": "inner.lowerRight",
+    "sum": 14
+   },
+   "b": {
+    "spot": "inner.lowerLeft",
+    "sum": 10
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "Lively Child, Winning Adult",
+    "Talker Turned Leader",
+    "Fast and First"
+   ],
+   "position": "By nature the child in them is lively, likeable and quick, friends with everyone (14/5). By nature their twenties side is strong and sure, the one who shows they are the best, all on or all off with people (10/1).",
+   "share": {
+    "title": "What They Share",
+    "text": "Both are quick, outgoing, masculine numbers (14/5, 10/1). Lecture: 5 adores 1."
+   },
+   "course": {
+    "about": "a 10/1 in the twenties aura",
+    "text": "\"There may also have been a tendency for you to be either super on - actively spending time with and engaging with others - or super off, completely in your own world without bothering to engage with others.\""
+   },
+   "reasoning": [
+    "The child wanted to be everyone's friend (14/5). The twenties side wants to stand out from them (10/1).",
+    "The child's quick tongue (14/5) becomes the young adult's tool for winning (10/1).",
+    "Neither goes deep or sits still: the child skipped from one interest to the next (14/5), the adult switches from all on to all off (10/1)."
+   ],
+   "best": "Makes friends everywhere (14/5) and ends up leading them (10/1).",
+   "worst": "Talks their way to the front (14/5) and stops listening once they are there (10/1).",
+   "made": "Made together: the emotion center 6, loving and wanting harmony.",
+   "batch": "batch-07"
+  },
+  "outer.lowerLeft=7|outer.solar=12": {
+   "a": {
+    "spot": "outer.solar",
+    "sum": 12
+   },
+   "b": {
+    "spot": "outer.lowerLeft",
+    "sum": 7
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "The Anxious Explorer",
+    "Curious and Unsure",
+    "Looks Far, Worries Close"
+   ],
+   "position": "In their twenties they had an open, curious mind and were drawn to faraway places, with anxiety and withdrawal when out of balance (7). The emotional response under it is to turn things over in the head and feel misunderstood (12/3).",
+   "share": {
+    "title": "What They Share",
+    "text": "Both live in the head: 7 wonders (7), 12/3 overthinks (12/3). The course's pair for intelligence with intuition, and for mixing reality with fiction."
+   },
+   "course": {
+    "about": "a 7 twenties aura with 12/3 in the psyche chart's emotion center",
+    "text": "\"In the twenties, the most important lesson was to learn to let go of anxiety (number 7) and over-perfectionism (10/1 psychic life expression) and inner victimhood (12/3 solar plexus)\""
+   },
+   "reasoning": [
+    "They went looking for answers in their twenties (7) because they did not feel understood where they were (12/3).",
+    "When anxious they withdrew (7), and alone the head made the story worse (12/3).",
+    "The owner's line for 7 with 12/3 is the conspiracy theorist: looking beneath the surface (7) and finding oneself the victim there (12/3)."
+   ],
+   "best": "Explores widely (7) and turns what they find into knowledge others can use (12/3).",
+   "worst": "Withdraws from people (7) and decides they were pushed out (12/3).",
+   "batch": "batch-07"
+  },
+  "outer.lowerRight=5|outer.solar=12": {
+   "a": {
+    "spot": "outer.solar",
+    "sum": 12
+   },
+   "b": {
+    "spot": "outer.lowerRight",
+    "sum": 5
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "The Lively Child Who Got Hurt",
+    "Talked Fast, Felt Wronged",
+    "Charm Out of Trouble"
+   ],
+   "position": "As a child they were lively, sociable and quick, more in touch with thoughts than feelings, and talked their way out of threats (5). The emotional response that settled from it is to turn things over in the head and feel misunderstood (12/3).",
+   "share": {
+    "title": "What They Share",
+    "text": "Both are head-first numbers: 5 talks (5), 12/3 thinks (12/3). Neither is at home with a plain feeling."
+   },
+   "course": {
+    "about": "a 5 childhood aura with 12/3 in the psyche chart's emotion center",
+    "text": "\"The psychic self solar plexus number 12/3 means that certain events happened in childhood that made you feel like a victim. Nevertheless, this victim state combined with the inherent liveliness and winning mentality made you come out stronger on the other side\""
+   },
+   "reasoning": [
+    "The child talked instead of feeling (5), so the hurt went into the head and stayed there (12/3).",
+    "The combo guide on 12/3 with 5: a victim of one's own communication. What the child said to get out of trouble (5) was later held against them (12/3).",
+    "The liveliness is real (5), and it is also how they keep people from seeing that they feel wronged (12/3)."
+   ],
+   "best": "Explains what they have been through (12/3) in a way that is easy to listen to (5).",
+   "worst": "Talks fast to win an argument (5) and feels misquoted afterward (12/3).",
+   "batch": "batch-07"
+  },
+  "outer.lowerLeft=7|outer.lowerRight=5": {
+   "a": {
+    "spot": "outer.lowerRight",
+    "sum": 5
+   },
+   "b": {
+    "spot": "outer.lowerLeft",
+    "sum": 7
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "Curious From the Start",
+    "The Traveler",
+    "Chatty Child, Thoughtful Adult"
+   ],
+   "position": "As a child they were lively, sociable and quick, and talked their way out of threats (5). In their twenties they had an open, curious mind and were drawn to faraway places, with anxiety and withdrawal when out of balance (7).",
+   "share": {
+    "title": "What They Share",
+    "text": "Curiosity. The course names 5 with 7 for the urge to travel and discover (5, 7). Apart: 5 is fast and outward, 7 slow and inward."
+   },
+   "course": {
+    "about": "the owner's own example of 5 with 7",
+    "text": "\"can create a perfect storm for looping thoughts\""
+   },
+   "reasoning": [
+    "The child asked everyone everything (5). The young adult went away to find out alone (7).",
+    "The child's defence was to talk (5), the young adult's was to go quiet (7): two opposite ways of not being pinned down.",
+    "Neither number stays put (5, 7), and together they add up to an emotion center 12/3: a head that keeps running."
+   ],
+   "best": "Meets people easily (5) and thinks about what they said (7).",
+   "worst": "Skims as a child (5), broods as an adult (7), and settles nowhere.",
+   "made": "Made together: the emotion center 12/3, overthinking and feeling misunderstood.",
+   "batch": "batch-07"
+  },
+  "inner.lowerRight=10|inner.solar=3": {
+   "a": {
+    "spot": "inner.solar",
+    "sum": 3
+   },
+   "b": {
+    "spot": "inner.lowerRight",
+    "sum": 10
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "Born Confident",
+    "The Child Who Led",
+    "Says It and Means It"
+   ],
+   "position": "By nature the child in them is strong in body and mind, divides opinion, and defends itself by being the best at something (10/1). The emotional response that goes with it is to talk a feeling out and make a plan of it (3).",
+   "share": {
+    "title": "What They Share",
+    "text": "1 with 3 is the course's pair for strategy and leadership (10/1, 3). 10/1 also turns up whatever stands beside it."
+   },
+   "course": {
+    "about": "the Hub's Psyche Chart Solar Plexus Codes, on a 3 in a psyche emotion center",
+    "text": "\"Speaking about emotions turns them into a \"thread\" that can be pulled to unravel and understand the inner self.\""
+   },
+   "reasoning": [
+    "By nature they deal with a feeling by putting it into words (3), and they expect to be listened to (10/1).",
+    "The child's rule was to be the best (10/1). The 3 turns that into goals and a plan for reaching them (3).",
+    "Little here doubts itself (10/1, 3), so they can miss what a quieter person is feeling."
+   ],
+   "best": "Knows what they want (3) and believes they can get it (10/1).",
+   "worst": "Turns every feeling into a contest (3) that they have to win (10/1).",
+   "batch": "batch-07"
+  },
+  "inner.lowerRight=10|inner.solar=9": {
+   "a": {
+    "spot": "inner.solar",
+    "sum": 9
+   },
+   "b": {
+    "spot": "inner.lowerRight",
+    "sum": 10
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "Best or Nothing",
+    "Golden Child, Iron Rule",
+    "Wins and Wants More"
+   ],
+   "position": "By nature the child in them is strong in body and mind, divides opinion, and defends itself by being the best at something (10/1). The emotional response that goes with it is fire: push on, and be hard on themselves (9).",
+   "share": {
+    "title": "What They Share",
+    "text": "Both give out: 10/1 shines (10/1), 9 pushes (9). Neither one takes anything in."
+   },
+   "course": {
+    "about": "9 together with 10/1 in an emotion center (written for the name chart)",
+    "text": "\"You are so \"radiant\" that it is difficult to take in things such as how life affects one's emotions\""
+   },
+   "reasoning": [
+    "By nature they answer any threat by excelling (10/1), and answer any shortfall by attacking themselves (9).",
+    "10/1 turns up what stands beside it (10/1), so the self-criticism is louder than a 9 alone would make it (9).",
+    "Praise does not land: they are already on to the next thing to prove (9) before the win has been enjoyed (10/1)."
+   ],
+   "best": "Has a champion's belief (10/1) and a fighter's work rate (9).",
+   "worst": "Needs to be the best (10/1) and hates themselves when they are not (9).",
+   "batch": "batch-07"
+  },
+  "outer.lowerRight=13|outer.solar=6": {
+   "a": {
+    "spot": "outer.solar",
+    "sum": 6
+   },
+   "b": {
+    "spot": "outer.lowerRight",
+    "sum": 13
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "The Odd Child With a Loving Heart",
+    "Outsider Who Wants a Home",
+    "Original and Warm"
+   ],
+   "position": "As a child they were original and a bit odd, awkward and introverted, the black sheep who either withdrew or rebelled (13/4). The emotional response that settled from it is loving and wants harmony (6).",
+   "share": {
+    "title": "What Sets Them Apart",
+    "text": "13/4 stands outside the group (13/4). 6 wants to be in the middle of it (6)."
+   },
+   "course": {
+    "about": "a 13/4 in the childhood aura",
+    "text": "\"With these combinations of numbers lies a desire to get away from the turmoil you experienced in childhood and create a safe, secure and nurturing environment for yourself.\""
+   },
+   "reasoning": [
+    "Feeling unwanted as a child (13/4) is why a harmonious home matters so much to them now (6).",
+    "The combo guide says a 6 softens the 4: \"odd\" becomes \"original\". Their strangeness (13/4) comes with warmth (6), so people take to it.",
+    "They are gentle with anyone who does not fit in (6), because they remember it (13/4)."
+   ],
+   "best": "Builds the loving home (6) the odd child did not have (13/4).",
+   "worst": "Keeps the peace at any price (6) for fear of being the black sheep again (13/4).",
+   "batch": "batch-07"
+  },
+  "outer.lowerLeft=11|outer.lowerRight=13": {
+   "a": {
+    "spot": "outer.lowerRight",
+    "sum": 13
+   },
+   "b": {
+    "spot": "outer.lowerLeft",
+    "sum": 11
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "Different, Then Defenseless",
+    "The Odd One Who Felt Everything",
+    "Strange and Weak, the Course Says"
+   ],
+   "position": "As a child they were original and a bit odd, the black sheep who either withdrew or rebelled (13/4). In their twenties they were very sensitive: easily hurt, slow to speak out, with others stepping over their limits (11/2).",
+   "share": {
+    "title": "What They Share",
+    "text": "Both pull away from people: the child withdrew as the black sheep (13/4), the young adult escaped into an inner world (11/2)."
+   },
+   "course": {
+    "about": "an 11/2 twenties aura made with a 13/4",
+    "text": "\"means that you may have been very sensitive and melancholic by nature in your twenties.\""
+   },
+   "reasoning": [
+    "The combo guide's rule is that 11/2 weakens its neighbor: the child's rebellion (13/4) lost its bite in their twenties (11/2).",
+    "Being odd as a child (13/4) taught them to expect rejection, and in their twenties they let people walk over them to avoid it (11/2).",
+    "What both leave them with is a rich inner world: original ideas (13/4) and a fine sense for what others feel (11/2)."
+   ],
+   "best": "Sees things differently (13/4) and feels what others miss (11/2).",
+   "worst": "Felt unwanted as a child (13/4) and so let people use them later (11/2).",
+   "made": "Made together: the emotion center 6, loving and wanting harmony.",
+   "batch": "batch-07"
+  },
+  "outer.lowerLeft=8|outer.solar=12": {
+   "a": {
+    "spot": "outer.solar",
+    "sum": 12
+   },
+   "b": {
+    "spot": "outer.lowerLeft",
+    "sum": 8
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "Seen and Sore About It",
+    "Careful, and Still Misjudged",
+    "Kept Order, Felt Blamed"
+   ],
+   "position": "In their twenties they were strong, independent and cautious, kept people at a distance and kept things under control (8). The emotional response under it is to turn things over in the head and feel misunderstood (12/3).",
+   "share": {
+    "title": "What They Share",
+    "text": "Both keep count: 8 remembers every wrong (8), 12/3 feels every slight (12/3)."
+   },
+   "course": {
+    "about": "an 8 twenties aura with 12/3 in the psyche chart's emotion center",
+    "text": "\"The numbers indicate that you might have felt very visible in your twenties, which might have given an inner victim feeling (12/3 in the psychic solar plexus).\""
+   },
+   "reasoning": [
+    "They made sure everyone behaved (8), and felt wronged when people resented it (12/3).",
+    "Keeping others at a distance (8) meant nobody knew them well enough to understand them (12/3).",
+    "They looked capable and in charge (8), so nobody guessed they felt picked on (12/3)."
+   ],
+   "best": "Organizes people well (8) and learns how each one thinks (12/3).",
+   "worst": "Holds an old grudge from their twenties (8) and still goes over it (12/3).",
+   "batch": "batch-07"
+  },
+  "outer.lowerRight=12|outer.solar=12": {
+   "a": {
+    "spot": "outer.solar",
+    "sum": 12
+   },
+   "b": {
+    "spot": "outer.lowerRight",
+    "sum": 12
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "The Child Who Felt Unwanted",
+    "Wronged From the Start",
+    "Black Sheep at Heart"
+   ],
+   "position": "As a child they felt like the victim of someone else's agenda, withdrew and felt unlovable (12/3). The emotional response that settled from it is the same: turning things over in the head and feeling misunderstood (12/3).",
+   "share": {
+    "title": "What They Share",
+    "text": "Everything: it is the same number twice. The childhood feeling and the adult response are one and the same (12/3, 12/3)."
+   },
+   "course": {
+    "about": "12/3 in the childhood aura",
+    "text": "\"There may have been an endless stream of victim and poor self-esteem thoughts crossing the mind.\""
+   },
+   "reasoning": [
+    "Nothing came along afterward to answer the child's feeling (12/3), so it simply became how they feel (12/3).",
+    "They expect to be misunderstood (12/3), and so explain themselves before anyone has objected (12/3).",
+    "The same passage says the way out is to go back over the childhood themes and see how they shaped the thinking."
+   ],
+   "best": "Understands from the inside what being left out does to a child (12/3) and can put it into words (12/3).",
+   "worst": "Felt unlovable as a child (12/3) and still reads rejection into small things (12/3).",
+   "batch": "batch-07"
+  },
+  "outer.lowerLeft=9|outer.lowerRight=12": {
+   "a": {
+    "spot": "outer.lowerRight",
+    "sum": 12
+   },
+   "b": {
+    "spot": "outer.lowerLeft",
+    "sum": 9
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "The Victim Who Learned to Fight",
+    "From Hurt Child to Fighter",
+    "Never Again"
+   ],
+   "position": "As a child they felt like the victim of someone else's agenda, withdrew and felt unlovable (12/3). In their twenties they were direct, fair-minded and ready to fight for a friend or a cause (9).",
+   "share": {
+    "title": "What Sets Them Apart",
+    "text": "12/3 withdrew and took it (12/3). 9 stands up and gives it back (9)."
+   },
+   "course": {
+    "about": "a 9 in the twenties aura",
+    "text": "\"You said things very honestly and directly, which could sometimes upset or anger others.\""
+   },
+   "reasoning": [
+    "The fighting in their twenties (9) was the answer to the helplessness of childhood (12/3).",
+    "They stood up for friends (9) the way nobody stood up for them (12/3).",
+    "The combo guide says a hard number such as 9 makes 12/3 clumsy and overbearing: the old hurt (12/3) comes out as too much force (9)."
+   ],
+   "best": "Was pushed around as a child (12/3) and became the one who defends others (9).",
+   "worst": "Still feels attacked (12/3) and so hits first (9).",
+   "made": "Made together: the emotion center 12/3, overthinking and feeling misunderstood.",
+   "batch": "batch-07"
+  },
+  "inner.lowerLeft=9|inner.solar=12": {
+   "a": {
+    "spot": "inner.solar",
+    "sum": 12
+   },
+   "b": {
+    "spot": "inner.lowerLeft",
+    "sum": 9
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "Just, and Feeling Unjustly Treated",
+    "The Sore Fighter",
+    "Stands Up, Then Stews"
+   ],
+   "position": "By nature their twenties side is direct, fair-minded and ready to fight for a friend or a cause (9). The emotional response under it is to turn things over in the head and feel misunderstood (12/3).",
+   "share": {
+    "title": "What Sets Them Apart",
+    "text": "9 acts on what is unfair (9). 12/3 broods on it (12/3)."
+   },
+   "course": {
+    "about": "the combo guide on 12/3 with 9",
+    "text": "\"The 9 makes you angry and the 12/3 can be clumsy (in social situations).\""
+   },
+   "reasoning": [
+    "By nature they speak up at once (9) and think about it for a week afterward (12/3).",
+    "Their sense of justice (9) is fed by a private feeling of having been treated unfairly themselves (12/3).",
+    "They are braver for others (9) than they are sure of themselves (12/3)."
+   ],
+   "best": "Fights for what is fair (9) and can explain exactly why it is unfair (12/3).",
+   "worst": "Makes a blunt remark (9) and then feels that everyone turned on them (12/3).",
+   "batch": "batch-07"
+  },
+  "outer.lowerRight=14|outer.solar=6": {
+   "a": {
+    "spot": "outer.solar",
+    "sum": 6
+   },
+   "b": {
+    "spot": "outer.lowerRight",
+    "sum": 14
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "The Popular Child",
+    "Loved by Everyone",
+    "Friendly Then, Warm Now"
+   ],
+   "position": "As a child they were lively, likeable and quick, friends with everyone, interested in everything (14/5). The emotional response that settled from it is loving and wants harmony (6).",
+   "share": {
+    "title": "What They Share",
+    "text": "Both are people numbers, and the course's pair for popularity: 14/5 talks to everyone (14/5), 6 makes them feel at home (6)."
+   },
+   "course": {
+    "about": "14/5 with 6 together in an emotion center (written for the name chart)",
+    "text": "\"You are very good at thinking about the community and what is best for everyone. This makes you a very good family person.\""
+   },
+   "reasoning": [
+    "A childhood full of friends (14/5) left them expecting people to be kind, and mostly people are, to them (6).",
+    "As a child they got everyone talking when there was trouble (14/5). As an adult they still cannot stand a quarrel left open (6).",
+    "They learned as a child what to say to be liked (14/5), and it became a habit of pleasing (6)."
+   ],
+   "best": "Had friends everywhere as a child (14/5) and makes a warm home as an adult (6).",
+   "worst": "Tells each person what they want to hear (14/5) so that nobody is upset (6).",
+   "batch": "batch-07"
+  },
+  "outer.lowerLeft=10|outer.lowerRight=14": {
+   "a": {
+    "spot": "outer.lowerRight",
+    "sum": 14
+   },
+   "b": {
+    "spot": "outer.lowerLeft",
+    "sum": 10
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "Popular Child, Star Adult",
+    "Liked, Then Looked Up To",
+    "From Class Clown to Captain"
+   ],
+   "position": "As a child they were lively, likeable and quick, friends with everyone (14/5). In their twenties they were strong and sure, showed they were the best at something, and were all on or all off with people (10/1).",
+   "share": {
+    "title": "What They Share",
+    "text": "Both are quick, outgoing numbers (14/5, 10/1). Lecture: 5 adores 1."
+   },
+   "course": {
+    "about": "a 10/1 in the twenties aura",
+    "text": "\"There may have been people who really looked up to you, and others who really disliked who you were.\""
+   },
+   "reasoning": [
+    "As a child everyone liked them (14/5). In their twenties, for the first time, some people did not (10/1).",
+    "The child got out of trouble by talking (14/5). The young adult got out of it by winning (10/1).",
+    "10/1 turns up what stands beside it (10/1): the talkative child (14/5) became a very persuasive adult."
+   ],
+   "best": "Made friends easily as a child (14/5) and led them as an adult (10/1).",
+   "worst": "Was the entertainer as a child (14/5) and the show-off in their twenties (10/1).",
+   "made": "Made together: the emotion center 6, loving and wanting harmony.",
+   "batch": "batch-07"
+  },
+  "inner.lowerLeft=12|inner.solar=12": {
+   "a": {
+    "spot": "inner.solar",
+    "sum": 12
+   },
+   "b": {
+    "spot": "inner.lowerLeft",
+    "sum": 12
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "Misread, and Feels It",
+    "Awake Mind, Sore Heart",
+    "Lost in Translation"
+   ],
+   "position": "By nature their twenties side is expansive and mentally awake, and often feels misunderstood by people (12/3). The emotional response under it is the same thing again: turning it over in the head and feeling wronged (12/3).",
+   "share": {
+    "title": "What They Share",
+    "text": "Everything: it is the same number twice. How they come across and how they feel about it match (12/3, 12/3)."
+   },
+   "course": {
+    "about": "12/3 in the twenties aura",
+    "text": "\"You may have often felt misunderstood, as if people didn't quite understand what you were saying. Alternatively, you may not have understood other people's intentions, making it difficult to navigate the social scene.\""
+   },
+   "reasoning": [
+    "By nature they send a muddled signal (12/3) and then take the muddled answer to heart (12/3).",
+    "The mind is quick and full of ideas (12/3), which only makes it better at building a case for having been wronged (12/3).",
+    "The combo guide's rule that twice the same number doubles it reads here as deeply misunderstood (12/3, 12/3)."
+   ],
+   "best": "Has more ideas than most (12/3) and the patience to think each one through (12/3).",
+   "worst": "Misreads a friend (12/3) and feels betrayed by what they did not mean (12/3).",
+   "batch": "batch-07"
+  },
+  "inner.lowerLeft=12|inner.lowerRight=9": {
+   "a": {
+    "spot": "inner.lowerRight",
+    "sum": 9
+   },
+   "b": {
+    "spot": "inner.lowerLeft",
+    "sum": 12
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "Fighter Who Got Tangled",
+    "Clear Child, Confused Adult",
+    "Strong, Then Second-Guessing"
+   ],
+   "position": "By nature the child in them is a fighter: fair, direct, and guarded about showing feeling (9). By nature their twenties side is expansive and mentally awake, and often feels misunderstood by people (12/3).",
+   "share": {
+    "title": "What They Share",
+    "text": "The course calls 9 and 3 the most masculine numbers: both push outward and say it bluntly (9, 12/3)."
+   },
+   "course": {
+    "about": "12/3 in the twenties aura with a 9 beside it",
+    "text": "\"There could have been a tendency sometimes to speak before sensing the environment, and that what you said to either be taken badly by others, or to fall flat because the timing was off.\""
+   },
+   "reasoning": [
+    "The child knew what was fair and said so (9). The twenties side says it too, and then wonders why it went down badly (12/3).",
+    "Bluntness that protected the child (9) becomes the thing that gets them misread later (12/3).",
+    "The child did not show feeling (9), so the young adult has little practice at reading it in others (12/3)."
+   ],
+   "best": "Has a child's courage (9) and a grown mind full of ideas (12/3).",
+   "worst": "Says it bluntly (9) at the wrong moment and feels misunderstood (12/3).",
+   "made": "Made together: the emotion center 12/3, overthinking and feeling misunderstood.",
+   "batch": "batch-07"
   }
  }
 }
