@@ -283,3 +283,7 @@ psyche charts"):
   server/insight.js when the cards are built (CLAUDE.md: a new example from the owner goes there).
 - "I hope you're learning from all these things I'm pointing out throughout this entire chat, so that you can
   improve the way you do this when we finally implement it": this section IS that; the build must read it.
+2026-11-27, ninth round ("everything's good"): three numbers in one card is too much: "whenever you try to
+interpret three of them, it just becomes kind of like too much or something. I mean it's good, but I don't
+know." (Claude's answer: every card is TWO numbers; when the two make an aura, one closing line names it.)
+The owner then asked how this gets built; the design talk follows in the chat, nothing decided yet.
