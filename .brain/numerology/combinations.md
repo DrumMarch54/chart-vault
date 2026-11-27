@@ -268,3 +268,18 @@ Still to do: the psyche charts, then life expression + pillar.
 - First psyche batch, on the owner's own chart (19 May 1998), sent for grading: mental strategies 61/7 and 71/8;
   life expression diamonds 59/5 and 69/6; inner mental strategies 61/7 on inner life expression diamond 59/5;
   challenge numbers 5 and 15/6; pillars 19/1 and 24/6; emotion centers 6 and 9.
+2026-11-27, eighth round, on the first psyche batch ("pretty good ... that's definitely a way of interpreting
+psyche charts"):
+- Not understood: "Feels a thing plainly (59/5), delivers it with charm (69/6)". "What does 'feels a thing
+  plainly' mean?" A line names a concrete thing a person does; no loose verbs.
+- SEVERAL PHRASES per combination, not one: "it would be nice if you added some more ... there's multiple ways
+  to put phrases on these combinations ... those are really useful."
+- The psyche charts get the SAME cluster readings as the name chart, on top of comparing the two charts:
+  "we should be able to interpret the combinations of stuff clustered together in a psyche chart": the outer
+  psyche challenge number with the aura above it (the owner says "public aura" for the upper left one in a
+  psyche chart too); "the outer associates diamond in the psyche chart, flanked by the solar plexus diamond".
+- A NEW KIND OF COMBINATION, in every numeroscope: an aura's diamond with the center's diamond beside it
+  ("that's another combination interpretation with any numeroscope chart"). To be added to `diamondsOf` in
+  server/insight.js when the cards are built (CLAUDE.md: a new example from the owner goes there).
+- "I hope you're learning from all these things I'm pointing out throughout this entire chat, so that you can
+  improve the way you do this when we finally implement it": this section IS that; the build must read it.
