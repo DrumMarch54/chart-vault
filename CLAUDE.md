@@ -389,8 +389,12 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
 - Tap a number on a drawn chart (viewer, Quick Chart; not Today): an outline goes round it; tap it again and its
   page opens (owner's ask: never straight to the page). The page: the course's passages for that number IN THAT
   POSITION, the balance verdict, "N charts with 12/3 here ›", the number with the others in its circle ("7 with 13/4
-  in the Mind Center"), and the diamond(s) behind it (diamonds are not drawn: mental diamond behind a mind center
-  and its upper auras, outer diamond behind the outer aura, nexus behind day and life path, ...).
+  in the Mind Center"), and its connected diamonds (diamonds are not drawn).
+- The number screen (owner's design 2026-11-27, `.brain/PLAN-number-screen.md`, step 1 built): the band once, "What this spot
+  is" (`server/spot-what.js`, positions.md words only, no line rather than a guess), the spot's points, About N in General
+  (one folded row), Connected Diamonds = ONLY what makes the number and what it helps make (`server/connections.js`: PARTS +
+  `MADE_BY`, proven on every chart shape in test/connections.test.js; the drawing carries its inputs as `data-inputs`), Ask.
+  No Quick Gist, no jump chips, no Name Cleanse advice on the essence or a psyche chart (a birth date cannot change).
 - A center's COMBINATION is the two numbers in its circle, main + extra vibration, in the course, in the owner's
   combo tags (37 of 38) and in the position search (`PARTS` heart/solar). The auras around it make the DIAMOND.
 - SUB DIAMOND (owner 2026-10-20): a center's main vibration digit sum beside a middle name's digit sum, one per

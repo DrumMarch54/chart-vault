@@ -165,7 +165,8 @@
     if (augment) for (const w of all) if (w.value && !w.numeric && w.value.sum < 10) { let n = w.value.sum + (e.day ? e.day.ds : 0); if (n < 10) n += 9; w.value = val(n); }
     const cons = parts.map((p) => nameWord(p, (c) => !VOWELS.has(c)));
     const vow = parts.map((p) => nameWord(p, (c) => VOWELS.has(c)));
-    return { essence: e, birth: e, psyche: psyche(e), name: rhombus(all, e.day), consonants: rhombus(cons, e.day), vowels: rhombus(vow, e.day) };
+    // input: what was typed, so a tapped number's screen can ask the server for its connected diamonds
+    return { essence: e, birth: e, psyche: psyche(e), name: rhombus(all, e.day), consonants: rhombus(cons, e.day), vowels: rhombus(vow, e.day), input: { day, month, year, name: String(name || '') } };
   }
 
   // Single name chart (Module 12, Name Change method step 3): the numeroscope applied to ONE word, every

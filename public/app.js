@@ -56,7 +56,7 @@
     'viewer.similar': 'Similar Charts from a chart', 'viewer.quick': 'Open a chart in the Quick Chart', 'viewer.google': 'Search Google from a chart', 'viewer.more': 'Chart sheet: More', 'viewer.person_chart': 'Chart sheet: open another chart of the person', 'viewer.tab_overview': 'Chart sheet: Overview tab', 'viewer.tab_archetypes': 'Chart sheet: Archetypes tab', 'viewer.tab_reading': 'Chart sheet: Reading tab', 'viewer.tab_ai': 'Chart sheet: Ask AI tab', 'screen.group': 'What This Group Shares', 'grid.group': 'Tag results → What This Group Shares', 'group.open_search': 'What This Group Shares: open a find', 'group.open_chart': 'What This Group Shares: open a chart', 'group.show_weak': 'What This Group Shares: show the weaker finds', 'screen.similar': 'Similar Charts', 'similar.by': 'Similar Charts: rank by one chart', 'similar.compare': 'Similar Charts → Compare',
     'viewer.delete': 'Delete a chart from the chart page', 'duplicates.delete': 'Delete a chart from Possible Duplicates', 'duplicates.keep': 'Keep a duplicate group', 'deleted.restore': 'Put a deleted chart back',
     'screen.duplicates': 'Possible Duplicates', 'screen.deleted': 'Deleted Charts', 'search.position': 'Search box → a position',
-    'viewer.meaning': 'Tap a number on a chart for its meaning', 'quick.meaning': 'Tap a number on the Quick Chart for its meaning', 'meaning.jump': 'Meaning → jump to a part of the page', 'meaning.show_charts': 'Meaning → show the charts with that number there', 'meaning.course_words': 'Meaning → open the full course words', 'meaning.number_guide': 'Meaning → Show More About a number (your guide)', 'meaning.open_doc': 'Meaning → Open the Document', 'meaning.ask': 'Meaning → Ask About This (paid)',
+    'viewer.meaning': 'Tap a number on a chart for its meaning', 'quick.meaning': 'Tap a number on the Quick Chart for its meaning', 'meaning.diamond': 'Meaning → open a connected diamond', 'meaning.show_charts': 'Meaning → show the charts with that number there', 'meaning.course_words': 'Meaning → open the full course words', 'meaning.number_guide': 'Meaning → Show More About a number (your guide)', 'meaning.open_doc': 'Meaning → Open the Document', 'meaning.ask': 'Meaning → Ask About This (paid)',
   };
   const count = (name) => { try { fetch('/api/usage', { method: 'POST', credentials: 'same-origin', keepalive: true, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name }) }).catch(() => {}); } catch { /* counting never breaks a tap */ } };
 
@@ -1748,7 +1748,7 @@
   function numeroscopeSvg(data) {
     // 850 units across the screen, the drawing centered: the numbers at the far edges keep a thumb's
     // width of white, and the whole set still fits above the fold on a phone.
-    const svg = sv('svg', { viewBox: `${371 - 425} 20 850 1270`, class: 'nscope', role: 'img', 'aria-label': 'Numeroscope' });
+    const svg = sv('svg', { viewBox: `${371 - 425} 20 850 1270`, class: 'nscope', role: 'img', 'aria-label': 'Numeroscope', 'data-inputs': data.input ? JSON.stringify(data.input) : null });
     const M = L.main, H = L.hex, P = L.psy, S = L.sub;
     // Essence shape: a cube seen from the front, light top and sides, dark front triangle, tinted circles.
     // Every shape and number carries its chart (data-chart) and kind (k-… / data-kind) so the Show sheet can hide parts.
@@ -1770,7 +1770,7 @@
     // on the same chart ([position, value]), which are not drawn, so the page shows them with the number that makes them.
     const sums = (list) => (list || []).filter((q) => q && q.sum > 0).map((q) => q.sum);
     const posAttrs = (v, pos) => (pos && v && v.sum > 0 ? { 'data-pos': `${pos.chart}.${pos.key}`, 'data-num': String(v.sum), 'data-pair': sums(pos.pair).join(',') || null,
-      'data-rel': (pos.rel || []).filter(([, d]) => d && d.sum > 0).map(([k, d]) => `${k}:${d.sum}`).join(',') || null, 'data-n': pos.n || null, role: 'button', 'aria-label': `What ${v.text} means in this position` } : {});
+      'data-rel': (pos.rel || []).filter(([, d]) => d && d.sum > 0).map(([k, d]) => `${k}:${d.sum}`).join(',') || null, 'data-n': pos.n || null, 'data-at': pos.at || null, role: 'button', 'aria-label': `What ${v.text} means in this position` } : {});
     const txt = (x, y, v, cls, size, anchor, pos) => (v ? sv('text', { x, y, class: cls + (pos && v.sum > 0 ? ' n-hit' : ''), 'font-size': size, 'text-anchor': anchor || 'middle', ...posAttrs(v, pos) }, typeof v === 'string' ? v : v.text) : null);
     const hit = (x, y, v, cls, size, anchor, pos) => {
       if (!v || !pos || !(v.sum > 0)) return null;
@@ -1801,7 +1801,7 @@
       const mx = (i) => (t.middle2 && c.middle.length <= 2 ? cx + spread(c.middle.length, t.middle2, i) : nL + (nR - nL) * (i + 1) / (c.middle.length + 1));
       return [
         // The name chart's day is the ESSENCE day: drawn in its own group below (owner 2026-11-08), not with the name chart.
-        ...(pre === '' ? [] : num(cx, t.dvY, top, tone(pre + 'day', top, false), t.day, null, { chart: 'essence', key: 'day', rel: [['nexus', data.essence.nexus]] })),
+        ...(pre === '' ? [] : num(cx, t.dvY, top, tone(pre + 'day', top, false), t.day, null, { chart: 'essence', key: 'day', at: chart, rel: [['nexus', data.essence.nexus]] })),
         ...num(aL, t.upY, c.upperLeft, tone(pre + 'ul', c.upperLeft), t.small, an, at('upperLeft', null, 0, MD)), ...num(aR, t.upY, c.upperRight, tone(pre + 'ur', c.upperRight), t.small, an, at('upperRight', null, 0, MD)),
         ...num(cx, t.heartY, c.heart, tone(pre + 'heart', c.heart, true), t.heart, null, at('heart', c.heartExtra, 0, MD)),
         ...c.heartExtra.flatMap((v, i) => num(cx + spread(c.heartExtra.length, t.extra2, i), t.heartY + t.extraUp, v, tone(pre + 'heartExtra', v), t.extra, null, at('heartExtra', [c.heart], i, [HSD[i] || MD[0]]))),
@@ -1822,7 +1822,7 @@
     const day = data.essence.day;
     // The day vibration belongs to the essence chart: it stays drawn while the Essence Chart OR the Name Chart is shown
     // (owner 2026-11-08: "only the essence chart" took the day away). CSS: hidden only when both are hidden.
-    svg.append(grp('day', null, ...num(M.cx, M.text.dvY, day, tone('day', day, true), M.text.day, null, { chart: 'essence', key: 'day', rel: [['nexus', data.essence.nexus]] })));
+    svg.append(grp('day', null, ...num(M.cx, M.text.dvY, day, tone('day', day, true), M.text.day, null, { chart: 'essence', key: 'day', at: 'name', rel: [['nexus', data.essence.nexus]] })));
     svg.append(grp('main', null, ...numbers('', data.name, { ...M.text, bigX: M.big[0] }, M.cx, day),
       txt(M.letter[0], M.text.letterY, data.name.letters ? String(data.name.letters) : null, 'n-blue n-bold k-letters', M.text.letterFont)));
     svg.append(grp('con', null, ...numbers('c.', data.consonants, { ...S.text, ...S.left }, S.left.cx, day)), grp('vow', null, ...numbers('v.', data.vowels, { ...S.text, ...S.right }, S.right.cx, day)));

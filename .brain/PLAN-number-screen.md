@@ -70,6 +70,8 @@ Every claim carries its number in brackets. Full text, never shortened to fit.
 
 ## Build order (each step shippable)
 1. The connection list + the screen's new order with parts 1, 2, 3, 5 (fixes what is wrong today; no cards yet).
+   BUILT 2026-11-27 (server/connections.js, server/spot-what.js, public/meaning.js). The circle's pair section stays
+   between 3 and 5 until part 4's cards replace it.
 2. The both-sources fix for part 1's points (regenerate the affected short points with tools/bits).
 3. Part 4: rows, the card, the graded cards, Not Written Yet + the tapped-while-missing list, This Is Off.
 4. Writing sessions fill cards and the "In This Spot" explanations.

@@ -29,6 +29,8 @@ import { judge, familyOf, nameOf, fmt } from './facts.js';
 import { wordsFor } from './subchart-words.js';
 import { listedWordsFor } from './listed-words.js';
 import { bookOf } from './books.js';
+import { connectionsFor } from './connections.js';
+import { spotWhat } from './spot-what.js';
 
 const BY_KEY = new Map(POSITIONS.map((p) => [`${p.chart}.${p.key}`, p]));
 
@@ -311,10 +313,16 @@ export function guideFor(n) {
   if (!GUIDE) { try { GUIDE = JSON.parse(fs.readFileSync(new URL('./number-guide.json', import.meta.url), 'utf8')).numbers || {}; } catch { GUIDE = {}; } }
   return GUIDE[n] || null;
 }
+// A position's name on the screen: the catalog's label without its bracket ("Public aura (upper left)" -> "Public
+// aura"); the nexus keeps its course name.
+export const shortLabel = (chart, position) => (position === 'nexus' ? 'Nexus' : positionLabel(chart, position).replace(/\s*\([^)]*\)/g, '').trim());
 function head(chart, position, n) {
   const ds = reduce(n);
-  return { chart, chartLabel: chartLabel(chart), position, label: positionLabel(chart, position), sum: n, ds, text: fmt(n, ds), name: nameOf(n), verdict: judge(chart, position, n), family: familyOf(chart, position), guide: guideFor(n) };
+  return { chart, chartLabel: chartLabel(chart), position, label: positionLabel(chart, position), short: shortLabel(chart, position), what: spotWhat(chart, position), sum: n, ds, text: fmt(n, ds), name: nameOf(n), verdict: judge(chart, position, n), family: familyOf(chart, position), guide: guideFor(n) };
 }
+// A birth date cannot be changed: name-change advice (the Name Cleanse sets) never shows on the essence or a psyche chart.
+const NO_NAME_CHANGE = new Set(['essence', 'outer', 'inner']);
+const noCleanse = (b) => (b && b.groups.some((g) => g.title === 'Name Cleanse') ? (b.groups.every((g) => g.title === 'Name Cleanse') ? null : { ...b, groups: b.groups.filter((g) => g.title !== 'Name Cleanse') }) : b);
 const okNum = (n) => Number.isInteger(n) && n >= 1 && n <= 99;
 const known = (chart, position) => { const p = BY_KEY.get(`${chart}.${position}`); return p && !p.hidden; };
 
@@ -333,26 +341,32 @@ function forSpot(k, chart, position, n, taken, limit) {
 // aura is the brand, friends, associates or love aura, which a sub-chart aura is not.
 const NAME_TWIN = new Set(['heart', 'heartExtra', 'solar', 'solarExtra']);
 
-export function meaningFor({ chart, position, sum, pair = null, rel = null } = {}) {
+//   inputs ({ day, month, year, name }, with n = the repeat and at = the numeroscope a tapped day sits on): the
+//   connected diamonds come from server/connections.js (what makes this number, what it helps make), each with its
+//   role and its two parts. Without inputs, `rel` is used as given (role unknown).
+export function meaningFor({ chart, position, sum, pair = null, rel = null, n: rep = 0, at = 'name', inputs = null } = {}) {
   const n = Number(sum);
   if (!known(chart, position) || !okNum(n)) return null;
   const k = knowledgeIndex();
   const base = head(chart, position, n);
   const partners = (Array.isArray(pair) ? pair : []).map(Number).filter(okNum);
-  const rels = (Array.isArray(rel) ? rel : []).map((r) => ({ position: String(r.position), sum: Number(r.sum) })).filter((r) => known(chart, r.position) && r.position !== position && okNum(r.sum));
+  const conn = inputs ? connectionsFor({ chart, position, n: Number(rep) || 0, at, inputs }) : null;
+  const rels = conn
+    ? conn.filter((c) => okNum(c.sum)).map((c) => ({ ...c, parts: c.parts.map((p) => ({ chart: p.chart, position: p.position, short: shortLabel(p.chart, p.position), sum: p.sum, text: fmt(p.sum, reduce(p.sum)) })) }))
+    : (Array.isArray(rel) ? rel : []).map((r) => ({ chart, position: String(r.position), sum: Number(r.sum), role: null, parts: null })).filter((r) => known(chart, r.position) && r.position !== position && okNum(r.sum));
   if (k.missing) return { ...base, passages: wordsFor(chart, position, n).map(card), nameChart: null, pair: null, related: [], missing: true };
   const taken = { ids: new Set(), shingles: [] };
   const passages = forSpot(k, chart, position, n, taken, 4);
-  const bits = bitsFor(`${chart}.${position}:${n}`);
+  const own = bitsFor(`${chart}.${position}:${n}`);
+  const bits = NO_NAME_CHANGE.has(chart) ? noCleanse(own) : own;
   const twin = (chart === 'vocation' || chart === 'personality') && NAME_TWIN.has(position) && known('name', position);
-  // the twin and the related spots keep their own short points, minus the Name Cleanse group the main number already carries
-  const noCleanse = (b) => (b && b.groups.some((g) => g.title === 'Name Cleanse') ? { ...b, groups: b.groups.filter((g) => g.title !== 'Name Cleanse') } : b);
+  // the twin and the diamonds keep their own short points, minus the Name Cleanse group the main number already carries
   const nameChart = twin ? { ...head('name', position, n), bits: noCleanse(bitsFor(`name.${position}:${n}`)), passages: forPosition(k, 'name', position, n, taken, { limit: 2 }) } : null;
   // A sub-chart's circle: its own course words first, then the name chart's words on the same pair in the same center.
   const pairWords = partners.length ? [...forPair(k, chart, position, n, partners, taken), ...(twin ? forPair(k, 'name', position, n, partners, taken) : [])].slice(0, 3) : [];
   const pbits = partners.map((p) => pairBits(chart, position, n, p) || (twin ? pairBits('name', position, n, p) : null)).filter(Boolean);
   const pairOut = partners.length ? { with: partners.map((p) => ({ sum: p, text: fmt(p, reduce(p)) })), bits: pbits.length ? { groups: pbits.flatMap((b) => b.groups), sources: pbits.flatMap((b) => b.sources) } : null, passages: pairWords } : null;
-  const related = rels.map((r) => ({ ...head(chart, r.position, r.sum), bits: noCleanse(bitsFor(`${chart}.${r.position}:${r.sum}`)), passages: forSpot(k, chart, r.position, r.sum, taken, 2) }));
+  const related = rels.map((r) => ({ ...head(r.chart, r.position, r.sum), role: r.role, n: r.n || 0, parts: r.parts, bits: noCleanse(bitsFor(`${r.chart}.${r.position}:${r.sum}`)), passages: forSpot(k, r.chart, r.position, r.sum, taken, 2) }));
   return { ...base, bits, passages, nameChart: nameChart && nameChart.passages.length ? nameChart : null, pair: pairOut, related };
 }
 

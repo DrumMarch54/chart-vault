@@ -280,11 +280,15 @@ export function createApp(db, { log = console.log } = {}) {
   });
   // What a number means in a position (a number tapped twice on a drawn chart): the course's words, the balance
   // verdict and how many vault charts hold it there. ?pair=13 = the numbers sharing its circle (a center's main and
-  // extra vibrations); ?rel=mindDiamond:61,... = the diamonds behind it on the same chart, each with its own count.
+  // extra vibrations); ?day=&month=&year=&name= = the drawn chart's inputs, with ?n= (which middle name or sub
+  // vibration) and ?at= (the numeroscope a tapped day sits on): the connected diamonds (server/connections.js), each
+  // with its own count. ?rel=mindDiamond:61,... (old screens) = the diamonds as the screen gave them.
+  const inputsOf = (q) => (q.name || q.day ? { day: q.day, month: q.month, year: q.year, name: String(q.name || '').slice(0, 120) } : null);
   app.get('/api/meaning', (req, res) => {
     const pair = String(req.query.pair || '').split(',').map(Number).filter((x) => Number.isInteger(x) && x > 0).slice(0, 4);
     const rel = String(req.query.rel || '').split(',').map((x) => x.split(':')).filter((x) => x.length === 2).map(([position, sum]) => ({ position, sum: Number(sum) })).slice(0, 4);
-    const m = meaningFor({ chart: String(req.query.chart || ''), position: String(req.query.position || ''), sum: Number(req.query.sum), pair, rel });
+    const m = meaningFor({ chart: String(req.query.chart || ''), position: String(req.query.position || ''), sum: Number(req.query.sum), pair, rel,
+      n: Number(req.query.n) || 0, at: String(req.query.at || 'name'), inputs: inputsOf(req.query) });
     if (!m) return res.status(400).json({ error: 'That position or number is not one the app knows.' });
     res.json({ ...m, count: countWith(db, m.chart, m.position, m.sum), related: m.related.map((r) => ({ ...r, count: countWith(db, r.chart, r.position, r.sum) })) });
   });
@@ -507,7 +511,8 @@ export function createApp(db, { log = console.log } = {}) {
   // GET = what a question would cost (no call).
   const spotOf = (b) => ({ chart: String(b.chart || ''), position: String(b.position || ''), sum: Number(b.sum),
     pair: (Array.isArray(b.pair) ? b.pair : String(b.pair || '').split(',')).map(Number).filter((x) => Number.isInteger(x) && x > 0).slice(0, 4),
-    rel: (Array.isArray(b.rel) ? b.rel : []).map((r) => ({ position: String(r && r.position), sum: Number(r && r.sum) })).slice(0, 4) });
+    rel: (Array.isArray(b.rel) ? b.rel : []).map((r) => ({ position: String(r && r.position), sum: Number(r && r.sum) })).slice(0, 4),
+    n: Number(b.n) || 0, at: String(b.at || 'name'), inputs: b.inputs && typeof b.inputs === 'object' ? inputsOf(b.inputs) : null });
   app.post('/api/meaning/ask', express.json({ limit: '4kb' }), async (req, res, next) => {
     try { res.json(await askAboutSpot(spotOf(req.body || {}), (req.body || {}).question)); } catch (err) { if (err instanceof AiError) return res.status(400).json({ error: err.message }); next(err); }
   });
