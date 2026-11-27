@@ -1,0 +1,312 @@
+{
+ "about": "Sixteen cards written 2026-11-27 by a Claude session following tools/combo-cards/BRIEF.md: the next most-used missing pairs of the NAME chart (a center with the aura beside it, a center's main and sub vibration, two auras side by side).",
+ "cards": [
+  {
+   "a": { "spot": "name.heart", "sum": 14 },
+   "b": { "spot": "name.upperLeft", "sum": 9 },
+   "written": "2026-11-27",
+   "phrases": ["Direct Communication", "Speaks Up, Stands Firm", "The Forceful Spokesperson"],
+   "position": "They think fast, speak their mind clearly and come across as lively and successful (14/5). What strangers and the public conclude is someone strong and a little intimidating, who sets firm limits (9).",
+   "share": { "title": "What They Share", "text": "Both are quick, masculine, outgoing numbers (14/5, 9). Neither waits to be asked." },
+   "course": {
+    "about": "9 as the public aura",
+    "text": "\"It makes people who approach you for the first time feel a strong and perhaps slightly intimidating energy that is not to be trifled with.\""
+   },
+   "reasoning": [
+    "The owner's phrase for 5 with 9 is \"direct communication\": talkative and good at it (14/5), with a number that is bold and outright (9).",
+    "The public meets the firmness first (9). The friendliness comes once they start talking (14/5).",
+    "The combo guide warns that a hard number beside a 5 turns it to harsh selling: the message (14/5) is pushed too hard (9)."
+   ],
+   "best": "Says clearly what they mean (14/5) and is taken seriously (9).",
+   "worst": "Talks over people (14/5) in a tone that frightens them off (9)."
+  },
+  {
+   "a": { "spot": "name.solar", "sum": 12 },
+   "b": { "spot": "name.solarExtra", "sum": 12 },
+   "written": "2026-11-27",
+   "phrases": ["Deeply Misunderstood", "Twisted and Turned", "The Head That Will Not Stop"],
+   "position": "Inside they turn things over in the head, feel misunderstood and read other people's intentions wrongly (12/3), with a tint of exactly the same (12/3).",
+   "share": { "title": "What They Share", "text": "Everything: it is the same number twice. The overthinking and the feeling of being wronged are both doubled (12/3, 12/3)." },
+   "course": {
+    "about": "12/3 twice in a center (written for the mind center)",
+    "text": "\"Too much 12/3 in the mind center helps to reinforce the unhappy aspects of 12/3. One feels deeply misunderstood and victimized in ones communication with others.\""
+   },
+   "reasoning": [
+    "A sub vibration usually tints the main one with something else. Here it tints it with more of itself (12/3, 12/3).",
+    "Loved ones cannot read them (12/3), and they do not read loved ones correctly either (12/3).",
+    "In love they are sure they give more than they get (12/3), and the partner is just as sure of the opposite (12/3)."
+   ],
+   "best": "Thinks a feeling through until they truly understand it (12/3) and can explain it to others (12/3).",
+   "worst": "Takes a partner's harmless remark the wrong way (12/3) and broods on it for days (12/3)."
+  },
+  {
+   "a": { "spot": "name.solar", "sum": 9 },
+   "b": { "spot": "name.lowerRight", "sum": 10 },
+   "written": "2026-11-27",
+   "phrases": ["Sunny at Home, Hard on Themselves", "The Family's Rock", "Strong Face, Strict Voice"],
+   "position": "Inside they are driven and hard on themselves, with a harsh inner voice (9). What a partner and family see is a strong, cheerful person who fills the home with enthusiasm (10/1).",
+   "share": { "title": "What They Share", "text": "Both give out and neither takes in: 9 pushes (9), 10/1 shines (10/1)." },
+   "course": {
+    "about": "10/1 as the love life aura",
+    "text": "\"You are likely to be loved because you fill those around you with enthusiasm, joy and happiness.\""
+   },
+   "reasoning": [
+    "The family sees the optimism (10/1) and does not hear the voice that tells them they are not doing well enough (9).",
+    "10/1 turns up what stands beside it (10/1), so the inner critic is louder for it (9).",
+    "They lead and provide at home (10/1, 9) and find it hard to be the one who is comforted."
+   ],
+   "best": "Carries the family with strength (9) and good cheer (10/1).",
+   "worst": "Acts as if everything is fine (10/1) while tearing into themselves inside (9)."
+  },
+  {
+   "a": { "spot": "name.solar", "sum": 14 },
+   "b": { "spot": "name.solarExtra", "sum": 9 },
+   "written": "2026-11-27",
+   "phrases": ["Says It Straight at Home", "The Hard Sell", "Lively With an Edge"],
+   "position": "Inside they are lively and want movement, talk and contact (14/5), with a tint of force and a harsh inner voice (9).",
+   "share": { "title": "What They Share", "text": "Both are quick, masculine numbers that go outward (14/5, 9)." },
+   "course": {
+    "about": "14/5 and 9 in the emotion center",
+    "text": "\"gives very strong and direct communication. It also gives skills in sales, marketing and branding. In imbalance there is a tendency to be harsh in one's communication and to over-sell\""
+   },
+   "reasoning": [
+    "14/5 is the main one: they talk their feelings out easily (14/5). The 9 makes what they say blunt (9).",
+    "The same passage says they can talk too much (14/5) and be bossy with a partner or children (9).",
+    "They get restless at home (14/5) and blame themselves for it (9)."
+   ],
+   "best": "Tells a loved one the truth (9) in words that are easy to hear (14/5).",
+   "worst": "Talks a partner down (14/5) until they give in (9)."
+  },
+  {
+   "a": { "spot": "name.solar", "sum": 18 },
+   "b": { "spot": "name.lowerLeft", "sum": 9 },
+   "written": "2026-11-27",
+   "phrases": ["Hard on Colleagues, Harder on Themselves", "The Taskmaster", "All Steel"],
+   "position": "Inside they are hard on themselves to an extreme, with anger shut in until it bursts (18/9). What colleagues and acquaintances see is someone strong-willed, direct and tough (9).",
+   "share": { "title": "What They Share", "text": "Both are nines, and 18/9 is the harsher one (18/9, 9). The hardness is doubled." },
+   "course": {
+    "about": "9 as the associates aura",
+    "text": "\"colleagues may see you as a slightly repressed person who is very hard on yourself.\""
+   },
+   "reasoning": [
+    "Colleagues read them correctly: the toughness outside (9) is the toughness inside, only more so (18/9).",
+    "They ask a lot of colleagues (9) and far more of themselves (18/9).",
+    "The associates aura text says an over-provoked 9 explodes. With 18/9 behind it, the fuse is shorter."
+   ],
+   "best": "Leads a team by working harder than anyone on it (18/9) and saying plainly what is needed (9).",
+   "worst": "Holds it in at work until it bursts (18/9), and a colleague takes the blast (9)."
+  },
+  {
+   "a": { "spot": "name.lowerLeft", "sum": 9 },
+   "b": { "spot": "name.lowerRight", "sum": 9 },
+   "written": "2026-11-27",
+   "phrases": ["Tough Everywhere", "Same at Work and at Home", "The Protector"],
+   "position": "What colleagues and acquaintances see is someone strong-willed, direct and tough (9). What a partner and family see is the same: strong, direct and quick-tempered (9).",
+   "share": { "title": "What They Share", "text": "Everything: it is the same number twice. Nobody, at work or at home, gets a softer version (9, 9)." },
+   "course": {
+    "about": "9 as the associates aura",
+    "text": "\"it will help colleagues and acquaintances not by “giving them fish”, but by teaching them to fish, so that they can awaken their own inner strength and resourcefulness.\""
+   },
+   "reasoning": [
+    "They treat family like a team (9) and a team like family (9): direct, demanding, loyal.",
+    "Neither aura shields the emotion center (9, 9). What they feel shows as force on both sides.",
+    "Two 9 auras add up to an emotion center 18/9, so the hardness they show is harder still inside."
+   ],
+   "best": "Stands up for colleagues (9) and for family (9) alike.",
+   "worst": "Is blunt at work (9) and blunt at home (9), and wonders why people keep their distance.",
+   "made": "Made together: the emotion center 18/9, anger shut in until it bursts."
+  },
+  {
+   "a": { "spot": "name.solar", "sum": 15 },
+   "b": { "spot": "name.lowerLeft", "sum": 7 },
+   "written": "2026-11-27",
+   "phrases": ["Quiet Magnetism", "Popular and Alluring", "The Fascinating Colleague"],
+   "position": "Inside they run on attraction: charm, desire and wanting to be wanted (15/6). What colleagues and acquaintances see is someone thoughtful, creative and well liked, with a touch of mystery (7).",
+   "share": { "title": "What They Share", "text": "Both are loved, feminine numbers (15/6, 7). The combo guide says a 7 lifts 15/6." },
+   "course": {
+    "about": "15/6 with a 7",
+    "text": "\"a strong and hypnotic charisma that fascinates people and gives an aura of sensuality and mystery.\""
+   },
+   "reasoning": [
+    "The 7 aura keeps the desire (15/6) out of sight at work: colleagues see depth and calm (7).",
+    "They do not push for attention among colleagues (7), which makes people more curious about them (15/6).",
+    "A 7 aura leaves the center open. If it slips, colleagues see the drama (15/6) with nothing in front of it (7)."
+   ],
+   "best": "Draws colleagues in (15/6) with ideas worth their time (7).",
+   "worst": "Charms a colleague (15/6) and then goes distant on them (7)."
+  },
+  {
+   "a": { "spot": "name.lowerLeft", "sum": 7 },
+   "b": { "spot": "name.lowerRight", "sum": 8 },
+   "written": "2026-11-27",
+   "phrases": ["Open at Work, Guarded at Home", "Easy Colleague, Watchful Partner", "Two Kinds of Distance"],
+   "position": "What colleagues and acquaintances see is someone thoughtful, creative and well liked (7). What a partner and family see is someone strong and careful, who keeps watch over them and keeps a little distance (8).",
+   "share": { "title": "What They Share", "text": "Both keep some distance: 7 by drifting off into thought (7), 8 by holding people back on purpose (8)." },
+   "course": {
+    "about": "8 as the love life aura",
+    "text": "\"you can also have subtle rings around you - where you never let those closest to you get too close.\""
+   },
+   "reasoning": [
+    "Colleagues find them easier to be with (7) than the family does (8).",
+    "At work they explore ideas freely (7). At home they keep order and remember who did what (8).",
+    "The course's line for an 8 aura beside a 7 is that the 8 grounds the 7's insight: their intuition about people (7) is put to use protecting the family (8)."
+   ],
+   "best": "Is open-minded with colleagues (7) and fiercely loyal at home (8).",
+   "worst": "Gives acquaintances their best side (7) and the family their strictest (8).",
+   "made": "Made together: the emotion center 15/6, charm and wanting to be wanted."
+  },
+  {
+   "a": { "spot": "name.solar", "sum": 8 },
+   "b": { "spot": "name.solarExtra", "sum": 12 },
+   "written": "2026-11-27",
+   "phrases": ["In Control, Full of Doubt", "Starts, Then Second-Guesses", "The Tired Adviser"],
+   "position": "Inside they are controlled, tough and stubborn, and keep a mask on (8), with a tint of overthinking and feeling misunderstood (12/3).",
+   "share": { "title": "What They Share", "text": "Both keep count: 8 remembers every wrong (8), 12/3 feels every slight (12/3)." },
+   "course": {
+    "about": "8 and 12/3 together in a center (written for the mind center)",
+    "text": "\"give a low self-esteem where there is a tendency to always doubt one's actions. Every time you set something in motion, you immediately doubt it and pull back.\""
+   },
+   "reasoning": [
+    "8 is the main one: they look composed (8). The doubt is a tint that only they hear (12/3).",
+    "The same passage: loved ones come to them for advice (8), and they are left tired and feeling used (12/3).",
+    "They keep score at home (8) and feel the balance is always against them (12/3)."
+   ],
+   "best": "Takes responsibility for the family (8) and thinks each decision through (12/3).",
+   "worst": "Controls a partner (8) and feels like the wronged one when the partner objects (12/3)."
+  },
+  {
+   "a": { "spot": "name.solar", "sum": 8 },
+   "b": { "spot": "name.solarExtra", "sum": 15 },
+   "written": "2026-11-27",
+   "phrases": ["Cool Head, Warm Pull", "Guarded, With a Hook", "Sees Through You"],
+   "position": "Inside they are controlled, tough and stubborn, and keep a mask on (8), with a tint of charm and wanting to be wanted (15/6).",
+   "share": { "title": "What Sets Them Apart", "text": "8 is duty and control (8). 15/6 is desire and attraction (15/6). Lecture: 6 likes 8." },
+   "course": {
+    "about": "15/6 and 8 in the emotion center",
+    "text": "\"can give psychopathic tendencies where you coolly are able to exploit other people.\""
+   },
+   "reasoning": [
+    "8 is the main one, so control comes first (8). The 15/6 gives the control a charming face (15/6).",
+    "They keep their own feelings locked away (8) and read a partner's easily (15/6).",
+    "The combo guide's balanced reading of the pair is psychological insight: someone who sees what a person wants (15/6) and handles it responsibly (8)."
+   ],
+   "best": "Stays calm in a family crisis (8) and knows what each person needs to hear (15/6).",
+   "worst": "Shows a partner just enough warmth (15/6) to keep the upper hand (8)."
+  },
+  {
+   "a": { "spot": "name.solar", "sum": 15 },
+   "b": { "spot": "name.lowerLeft", "sum": 6 },
+   "written": "2026-11-27",
+   "phrases": ["Loved at Work, Longing Inside", "Everyone's Favorite", "Charm on Both Sides"],
+   "position": "Inside they run on attraction: charm, desire and wanting to be wanted (15/6). What colleagues and acquaintances see is someone loving and likable, who finds the harmonious solution (6).",
+   "share": { "title": "What They Share", "text": "Both are sixes: love and attraction (15/6, 6). 15/6 is the 6 that makes drama. The theme is doubled." },
+   "course": {
+    "about": "6 as the associates aura",
+    "text": "\"No matter how you feel in your solar plexus center, you will try to be loving and have loving communication with your colleagues.\""
+   },
+   "reasoning": [
+    "The 6 aura shields the center: colleagues get the pleasant side (6), and the craving stays private (15/6).",
+    "They are popular at work (6) and still need more proof that they are wanted (15/6).",
+    "With love on both sides (15/6, 6), a workplace friendship easily turns into a flirtation."
+   ],
+   "best": "Makes a workplace pleasant (6) and is warmly liked for it (15/6).",
+   "worst": "Keeps colleagues charmed (6) because they cannot stand not being wanted (15/6)."
+  },
+  {
+   "a": { "spot": "name.solar", "sum": 6 },
+   "b": { "spot": "name.solarExtra", "sum": 12 },
+   "written": "2026-11-27",
+   "phrases": ["Gives and Gives", "Loving and Unthanked", "Warm Heart, Tangled Wires"],
+   "position": "Inside they are warm, feel good about themselves and are at home in closeness (6), with a tint of overthinking and feeling taken for granted (12/3).",
+   "share": { "title": "What Sets Them Apart", "text": "6 feels at home with people (6). 12/3 feels misunderstood by them (12/3)." },
+   "course": {
+    "about": "6 and 12/3 in the emotion center",
+    "text": "\"You can feel like you're giving and giving, but it's never good enough and you never get anything in return, leaving you feeling tired, burned out and unappreciated.\""
+   },
+   "reasoning": [
+    "6 is the main one, so love basically works for them (6). The 12/3 is a tint at the edges (12/3).",
+    "Their care (6) gets misread (12/3).",
+    "The same passage says they feel like a victim of other people's drama while helping to create it in ways they cannot see (12/3)."
+   ],
+   "best": "Loves their family (6) and learns from each misunderstanding how the others think (12/3).",
+   "worst": "Does a kindness nobody asked for (6) and is hurt when it is not noticed (12/3)."
+  },
+  {
+   "a": { "spot": "name.heart", "sum": 10 },
+   "b": { "spot": "name.upperRight", "sum": 9 },
+   "written": "2026-11-27",
+   "phrases": ["The Friend Who Pushes You", "Bright Mind, Tough Love", "Cheerleader and Coach"],
+   "position": "They think with bright optimism and come across as cheerful, lucky and youthful (10/1). What friends see is someone strong and independent, who helps by making them stronger (9).",
+   "share": { "title": "What They Share", "text": "Both give out and neither takes in: 10/1 shines (10/1), 9 pushes (9). The course's word for 9 with 1 is megalomania." },
+   "course": {
+    "about": "9 as the friends aura",
+    "text": "\"you would probably help your friends not by “giving them fish”, but by teaching them to fish\""
+   },
+   "reasoning": [
+    "10/1 turns up what stands beside it (10/1), so friends get the 9 at full strength: the honesty and the push (9).",
+    "They believe in a friend's chances (10/1) and tell them bluntly what to do about it (9).",
+    "They give friends a great deal of energy (10/1) and seldom ask a friend for help (9)."
+   ],
+   "best": "Makes a friend believe they can do it (10/1) and holds them to it (9).",
+   "worst": "Is sure they know best (10/1) and tells friends so without being asked (9)."
+  },
+  {
+   "a": { "spot": "name.upperLeft", "sum": 10 },
+   "b": { "spot": "name.upperRight", "sum": 9 },
+   "written": "2026-11-27",
+   "phrases": ["Winner in Public, Fighter Among Friends", "Strong on Both Sides", "The Force of Nature"],
+   "position": "What strangers and the public conclude is a strong person with a winner's attitude (10/1). What friends see is someone strong and independent, who helps by making them stronger (9).",
+   "share": { "title": "What They Share", "text": "Both are strong, masculine numbers that give out (10/1, 9). Neither aura shows a soft side." },
+   "course": {
+    "about": "10/1 as the public aura",
+    "text": "\"10/1 in this aura provides good protection for the heart center, meaning that you will not be easily swayed by public opinion\""
+   },
+   "reasoning": [
+    "The public and friends agree about them: strong (10/1, 9). Only the tone differs, sunny for strangers (10/1) and blunt for friends (9).",
+    "They are hard to sway (10/1) and hard to argue with (9).",
+    "Whatever doubt they have stays in the mind center between the two auras, where neither the public nor friends see it (10/1, 9)."
+   ],
+   "best": "Wins the public's confidence (10/1) and their friends' respect (9).",
+   "worst": "Comes across as full of themselves in public (10/1) and bossy with friends (9).",
+   "made": "Made together: the mind center 10/1, bright, optimistic thinking."
+  },
+  {
+   "a": { "spot": "name.solar", "sum": 15 },
+   "b": { "spot": "name.solarExtra", "sum": 12 },
+   "written": "2026-11-27",
+   "phrases": ["Drama With a Grievance", "Wanted, and Sure They Are Not", "The Jealous Heart"],
+   "position": "Inside they run on attraction: charm, desire and wanting to be wanted (15/6), with a tint of overthinking and feeling wronged (12/3).",
+   "share": { "title": "What Sets Them Apart", "text": "15/6 knows how to be wanted (15/6). 12/3 doubts that it is (12/3)." },
+   "course": {
+    "about": "the combo guide on 12/3 with 15/6",
+    "text": "\"paranoia, you create vivid images about how people are out to get you\""
+   },
+   "reasoning": [
+    "15/6 is the main one: the pull toward people is strong (15/6). The 12/3 adds suspicion about what they want back (12/3).",
+    "The course says 15/6 turns to drama in relationships when the number beside it in the emotion center is one like 12/3.",
+    "They picture a partner's unfaithfulness in detail (12/3), and the picture feels as real as the love does (15/6)."
+   ],
+   "best": "Loves intensely (15/6) and thinks hard about what makes a relationship work (12/3).",
+   "worst": "Imagines a slight from a partner (12/3) and makes a scene over it (15/6)."
+  },
+  {
+   "a": { "spot": "name.solar", "sum": 9 },
+   "b": { "spot": "name.solarExtra", "sum": 15 },
+   "written": "2026-11-27",
+   "phrases": ["The Player", "Conquest and Charm", "Hard Heart With a Hook"],
+   "position": "Inside they are driven and hard on themselves, with a harsh inner voice (9), with a tint of charm and wanting to be wanted (15/6).",
+   "share": { "title": "What Sets Them Apart", "text": "9 dominates (9). 15/6 seduces (15/6)." },
+   "course": {
+    "about": "15/6 and 9 in the emotion center, at its most balanced",
+    "text": "\"these numbers can create a strong polarity between masculine and feminine, and thus great attraction and sexual tension.\""
+   },
+   "reasoning": [
+    "9 is the main one: the drive comes first (9), and the charm is how it gets what it wants (15/6).",
+    "The course's name for the pair is \"the Player\": partners are won (9) more than loved (15/6).",
+    "Being wanted (15/6) quiets the voice that says they are not good enough (9), for a while."
+   ],
+   "best": "Pursues the person they want with courage (9) and wins them with warmth (15/6).",
+   "worst": "Seduces someone (15/6) to feel strong (9)."
+  }
+ ]
+}
