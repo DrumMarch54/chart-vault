@@ -16,7 +16,7 @@ const clean = (t) => t.split('\n').map((l) => l.trim()).filter(Boolean).join(' '
 const ds = (n) => { n = Number(n); while (n > 9) n = String(n).split('').reduce((a, x) => a + Number(x), 0); return n; };
 const fmt = (n) => (Number(n) > 9 ? `${n}/${ds(n)}` : String(n));
 // where a section stops being about the number in the spot and starts on this person's other numbers
-const SPLIT = /(?=The combination of (?:the|a) (?<![\d/])\d|The combination of energies|The influence of |(?<![\d/])\d{1,2}(?:\/\d)? in the (?:psychic )?heart cent|The (?<![\d/])\d+ in the psychic heart|In imbalance, the numbers in the upper|Because you have both|The many (?<![\d/])\d)/;
+const SPLIT = /(?=The combination of (?:the|a) (?<![\d/])\d|The combination of energies|The influence of |(?<![\d/])\d{1,2}(?:\/\d)? in the (?:psychic )?heart cent|The (?<![\d/])\d+ in the psychic heart|In imbalance, the numbers in the upper|Because you have both|Because the number |The many (?<![\d/])\d)/;
 const CELEBS = /\s*(?:Among )?[Cc]elebrities (?:who have|with) this constellation[^]*$/;
 const head = (title, source) => `# ${title}\nsource: the paid tool's personal reports (Drive: Class PDF > Charts, Merged Charts 1-4), read 2026-11-27\ntopic: psyche\n\n${source}\n`;
 const NOTE = 'Text the paid tool prints in a personal report for a number in this one spot of the psyche chart. Only the part about the number in the spot is kept; the report\'s general description of the number and the parts about that person\'s other numbers are left out.';
