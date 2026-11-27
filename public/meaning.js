@@ -184,8 +184,6 @@
       return { ...bits, groups };
     };
 
-    // "12/3 with 15/6" for a 3 with a 6: the two-digit forms of the same digit sums, as the course's family headings name them.
-    const pairExample = (m, p) => { const two = (t) => (/\//.test(t) ? t : `${Number(t) + 9}/${t}`); return `${two(m.text)} with ${p.with.map((x) => two(x.text)).join(' and ')}`; };
     // Ask About This (owner 2026-11-07): a question about this number in this spot, answered by the AI from the
     // course's words for it (POST /api/meaning/ask, server/spot-ask.js). Paid: the button says so. Answers stay on
     // the page while it is open, newest first.
@@ -216,7 +214,44 @@
         h('div', { class: 'mblk' }, h('p', { class: 'muted small', style: 'margin:0 0 8px' }, `The AI answers from the course's words on ${m.text} here, the numbers beside it and its connected diamonds, and names its sources.`),
           $q, $btn, $answers));
     }
+    // A combination card (owner's parts, never renamed or reordered: combinations.md "How it gets built"): the pair as
+    // two chips, the phrases, By Position, What They Share / What Sets Them Apart, What the Course Says, My Reasoning
+    // (separate points), At Its Best, At Its Worst, the number they make, and This Is Off. Every "(17/8)" stands out.
+    const withNums = (t) => String(t).split(/(\([^()]*\d[^()]*\))/).filter((x) => x !== '').map((x) => (/^\(.*\d.*\)$/.test(x) ? h('span', { class: 'nc-n' }, x) : x));
+    const ncPart = (title, ...body) => h('div', { class: 'nc-part' }, h('div', { class: 'nc-pl' }, title), ...body.filter(Boolean));
+    function comboCard(c, key, pairName) {
+      const chip = (x) => h('span', { class: 'nc-chip' }, `${titleCase(x.short).replace(/ Main Vibration$/, '')} `, h('b', {}, x.text));
+      const tag = !c.graded ? h('span', { class: 'nc-tag new' }, 'New · For You to Grade')
+        : c.unreviewed && c.unreviewed.length ? h('span', { class: 'nc-tag' }, `Not Graded Yet: ${c.unreviewed.map((u) => ({ phrases: 'Two Phrases', best: 'At Its Best', worst: 'At Its Worst' }[u] || u)).join(', ')}`) : null;
+      const $note = h('textarea', { class: 'maskq', rows: 3, maxlength: 1000, placeholder: 'What is wrong with this card? Your words go to the next writing chat.' });
+      const $said = h('div', { class: 'muted small' });
+      const $send = h('button', { type: 'button', class: 'btn btn-block' }, 'Send');
+      const $offBox = h('div', { class: 'nc-offbox', hidden: true }, $note, $send, $said);
+      $send.onclick = async () => {
+        const note = $note.value.trim();
+        if (!note) { $note.focus(); return; }
+        $send.disabled = true;
+        try {
+          await api('/api/combo/off', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ key, label: pairName, note }) });
+          count('meaning.combo_off'); $note.value = ''; $said.textContent = 'Saved. The next writing chat reads it and fixes the card.';
+        } catch (err) { $said.textContent = err.message; }
+        $send.disabled = false;
+      };
+      return h('div', { class: 'nc-card' },
+        h('div', { class: 'nc-head' }, chip(c.a), h('span', { class: 'nc-plus' }, '+'), chip(c.b), tag),
+        h('div', { class: 'nc-phr' }, h('span', { class: 'main' }, c.phrases[0]), c.phrases.length > 1 ? h('span', { class: 'alt' }, c.phrases.slice(1).join(' · ')) : null),
+        ncPart('By Position', h('p', {}, ...withNums(c.position))),
+        c.share ? ncPart(c.share.title, h('p', {}, ...withNums(c.share.text))) : null,
+        c.course ? ncPart('What the Course Says', h('div', { class: 'nc-quote' }, c.course.about ? h('small', {}, `Of ${c.course.about}:`) : null, h('div', {}, ...withNums(c.course.text)))) : null,
+        c.reasoning && c.reasoning.length ? ncPart('My Reasoning', h('div', { class: 'mblk mpts nc-pts' }, ...c.reasoning.map((t) => h('div', { class: 'mpt' }, h('i', { class: 'mdot', 'aria-hidden': 'true' }), h('div', { class: 'mpt-x' }, ...withNums(t))))),
+          h('div', { class: 'nc-mine' }, 'Past the course: reasoning from the two numbers.')) : null,
+        c.best ? ncPart('At Its Best', h('div', { class: 'nc-best' }, ...withNums(c.best))) : null,
+        c.worst ? ncPart('At Its Worst', h('div', { class: 'nc-worst' }, ...withNums(c.worst))) : null,
+        c.made ? h('div', { class: 'nc-made' }, ...withNums(c.made)) : null,
+        h('div', { class: 'nc-foot' }, h('button', { type: 'button', class: 'btn btn-block', onclick: () => { $offBox.hidden = !$offBox.hidden; if (!$offBox.hidden) $note.focus(); } }, 'This Is Off'), $offBox));
+    }
     const short = (x) => titleCase(x.short || x.label);
+    const spotName = (x) => short(x).replace(/ Main Vibration$/, ''); // "Mind Center 16/7", as the mockup and the course say
     function open({ chart, position, sum, pair, rel, n, at, inputs }) {
       if (document.querySelector('.mpop')) return; // one at a time
       const $num = h('span', { class: 'ns-num' }, String(sum));
@@ -246,9 +281,7 @@
         $num.textContent = m.text;
         $title.textContent = short(m);
         $sub.textContent = [m.chartLabel.replace(/ chart$/i, ' Chart'), m.name].filter(Boolean).join(' · ');
-        const p = m.pair, nc = m.nameChart;
-        const others = p ? p.with.map((x) => x.text).join(' and ') : '';
-        const center = short(m).replace(/ (Main|Sub|Extra) Vibration$/, '');
+        const nc = m.nameChart;
         // 1 the number in this spot
         const spot = h('section', { class: 'ns-sec ns-first' },
           m.what ? h('div', { class: 'ns-what' }, `What this spot is: ${m.what.charAt(0).toLowerCase()}${m.what.slice(1)}`) : null,
@@ -285,16 +318,20 @@
         }
         const dias = h('section', { class: 'ns-sec' }, label('Connected Diamonds', 'dia'),
           ...(m.related.length ? m.related.flatMap(diaRow) : [h('div', { class: 'ns-empty' }, `${m.text} here is not part of a diamond.`)]));
-        // the circle's combination (main + sub vibration), until its cards come
-        let pairSec = null;
-        if (p) {
-          const bits = pairSplit(p.bits, [m.text, ...p.with.map((x) => x.text)]);
-          const apart = bits && bits.groups.some((g) => /^Only With/.test(g.title || ''));
-          pairSec = h('section', { class: 'ns-sec' }, label(`${m.text} With ${others} in the ${center}`, 'pair'),
-            apart ? h('div', { class: 'mblk mnote' }, `Points about another form (like ${pairExample(m, p)}) are set apart and named.`) : null,
-            wordsBody({ bits, passages: p.passages, empty: `The course has no words yet for ${m.text} with ${others} here.` }));
-        }
-        fill($body, spot, gen, dias, pairSec, askBox(m, { chart, position, sum, pair: pair || [], rel: rel || [], n: n || 0, at: at || 'name', inputs: inputs || null }));
+        // 4 With Its Neighbors (owner 2026-11-27): each number this one makes a combination with, one row each with the
+        // pair's first phrase; a row opens the card (server/neighbors.js, knowledge/combo-cards.json). A pair with no
+        // card yet says Not Written Yet, costs nothing, and is noted for the next writing chat; a circle partner then
+        // shows the course's words on the pair.
+        const nbLabel = (x) => (x.kind === 'circle' ? `${x.text} in the Same Circle` : `${x.chart !== m.chart ? `${x.chartLabel.replace(/ chart$/i, ' Chart')} ` : ''}${spotName(x)} ${x.text}`);
+        const pairLabel = (x) => `${m.chartLabel.replace(/ chart$/i, ' Chart')} ${spotName(m)} ${m.text} + ${nbLabel(x)}`;
+        const nbRow = (x) => openRow({ small: `With ${nbLabel(x)}`, big: x.card ? x.card.phrases[0] : 'Not Written Yet',
+          onOpen: () => { count('meaning.combo'); if (!x.card && !x.asked) { x.asked = true; api('/api/combo/wanted', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ key: x.key, label: pairLabel(x) }) }).catch(() => {}); } },
+          body: x.card ? comboCard(x.card, x.key, pairLabel(x)) : h('div', {},
+            h('div', { class: 'ns-empty' }, 'No card yet. Opening it put it on the list for the next writing chat. Nothing is charged.'),
+            x.pairWords ? wordsBody({ bits: pairSplit(x.pairWords.bits, [m.text, x.text]), passages: x.pairWords.passages, empty: '' }) : null) });
+        const nbs = m.neighbors || [];
+        const nbSec = nbs.length ? h('section', { class: 'ns-sec' }, label('With Its Neighbors', 'pair'), ...nbs.flatMap(nbRow)) : null;
+        fill($body, spot, gen, dias, nbSec, askBox(m, { chart, position, sum, pair: pair || [], rel: rel || [], n: n || 0, at: at || 'name', inputs: inputs || null }));
       }).catch((err) => fill($body, h('p', { class: 'err' }, err.message)));
     }
     // What a tapped number carries (data- attributes set by numeroscopeSvg in app.js; the chart's name and date sit on the drawing).

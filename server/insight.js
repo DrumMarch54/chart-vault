@@ -61,7 +61,7 @@ const NUMEROSCOPES = ['name', 'vocation', 'personality', 'outer', 'inner'];
 const CHART_WORD = { name: 'Name Chart', vocation: 'Vocation Chart', personality: 'Personality Chart', outer: 'Outer Psyche', inner: 'Inner Psyche' };
 const PRIMARY = ['essence.day', 'essence.littleLp', 'name.le', 'name.first', 'name.middle', 'name.last'];
 // Every diamond or center of one person: [{ spot, x, y }] with the two parts as the chart holds them.
-function diamondsOf(values) {
+export function diamondsOf(values) {
   const at = new Map();
   for (const v of values) { const k = `${v.chart}.${v.position}`; let l = at.get(k); if (!l) at.set(k, l = []); l.push(v.sum); }
   const out = [], seen = new Set();
@@ -100,6 +100,10 @@ function diamondsOf(values) {
   pairsOf('outer.heart', 'inner.heart', 'The Two Psyche Mind Centers');
   pairsOf('outer.solar', 'inner.solar', 'The Two Psyche Emotion Centers');
   pairsOf('outer.mindDiamond', 'inner.mindDiamond', 'The Two Psyche Mental Strategies');
+  // the Psyche book compares the same spot in the two charts (owner 2026-11-27); server/neighbors.js holds the same list
+  pairsOf('outer.leDiamond', 'inner.leDiamond', 'The Two Psyche Life Expression Diamonds');
+  pairsOf('outer.first', 'inner.first', 'The Two Psyche Challenge Numbers');
+  pairsOf('outer.pillar', 'inner.pillar', 'The Two Psyche Pillars');
   return out;
 }
 // The readings of one pair, from exact to loose: "13|18", "13|f9", "f4|18", "f4|f9".

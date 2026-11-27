@@ -30,6 +30,7 @@ import { wordsFor } from './subchart-words.js';
 import { listedWordsFor } from './listed-words.js';
 import { bookOf } from './books.js';
 import { connectionsFor } from './connections.js';
+import { neighborsFor } from './neighbors.js';
 import { spotWhat } from './spot-what.js';
 
 const BY_KEY = new Map(POSITIONS.map((p) => [`${p.chart}.${p.key}`, p]));
@@ -363,7 +364,7 @@ export function meaningFor({ chart, position, sum, pair = null, rel = null, n: r
   const k = knowledgeIndex();
   const base = head(chart, position, n);
   const partners = (Array.isArray(pair) ? pair : []).map(Number).filter(okNum);
-  const conn = inputs ? connectionsFor({ chart, position, n: Number(rep) || 0, at, inputs }) : null;
+  const conn = inputs ? connectionsFor({ chart, position, n: Number(rep) || 0, at, inputs, sum: n }) : null;
   const rels = conn
     ? conn.filter((c) => okNum(c.sum)).map((c) => ({ ...c, parts: c.parts.map((p) => ({ chart: p.chart, position: p.position, short: shortLabel(p.chart, p.position), sum: p.sum, text: fmt(p.sum, reduce(p.sum)) })) }))
     : (Array.isArray(rel) ? rel : []).map((r) => ({ chart, position: String(r.position), sum: Number(r.sum), role: null, parts: null })).filter((r) => known(chart, r.position) && r.position !== position && okNum(r.sum));
@@ -378,7 +379,16 @@ export function meaningFor({ chart, position, sum, pair = null, rel = null, n: r
   const pbits = partners.map((p) => pairBits(chart, position, n, p) || (twin ? pairBits('name', position, n, p) : null)).filter(Boolean);
   const pairOut = partners.length ? { with: partners.map((p) => ({ sum: p, text: fmt(p, reduce(p)) })), bits: pbits.length ? { groups: pbits.flatMap((b) => b.groups), sources: pbits.flatMap((b) => b.sources) } : null, passages: pairWords } : null;
   const related = rels.map((r) => ({ ...head(r.chart, r.position, r.sum), role: r.role, n: r.n || 0, parts: r.parts, bits: bitsFor(`${r.chart}.${r.position}:${r.sum}`), passages: forSpot(k, r.chart, r.position, r.sum, taken, 2) }));
-  return { ...base, bits, passages, nameChart: nameChart && nameChart.passages.length ? nameChart : null, pair: pairOut, related };
+  // With Its Neighbors (owner 2026-11-27): every number this one makes a combination with, and its card when one is
+  // written. A circle partner with no card yet carries the course's words on the pair instead.
+  const lab = (spot) => { const [c, q] = spot.split('.'); return { short: shortLabel(c, q), chartLabel: chartLabel(c) }; };
+  const nb = inputs ? neighborsFor({ chart, position, n: Number(rep) || 0, at, inputs, sum: n }) : null;
+  const neighbors = (nb || []).map((x) => ({
+    kind: x.kind, chart: x.spot.chart, position: x.spot.position, n: x.spot.n, sum: x.spot.sum, text: fmt(x.spot.sum, reduce(x.spot.sum)), ...lab(`${x.spot.chart}.${x.spot.position}`), key: x.key,
+    card: x.card ? { ...x.card, a: { ...x.card.a, ...lab(x.card.a.spot), text: fmt(x.card.a.sum, reduce(x.card.a.sum)) }, b: { ...x.card.b, ...lab(x.card.b.spot), text: fmt(x.card.b.sum, reduce(x.card.b.sum)) } } : null,
+    pairWords: !x.card && x.kind === 'circle' && pairOut ? pairOut : null,
+  }));
+  return { ...base, bits, passages, nameChart: nameChart && nameChart.passages.length ? nameChart : null, pair: pairOut, related, neighbors };
 }
 
 export function countWith(db, chart, position, sum) {

@@ -25,6 +25,7 @@ import { lookupPerson, vaultMatches, rememberLookup, storeLookup, pastLookups, p
 import { startResearch, moreResearch, checkDates, closeResearch, reopenResearch, findResearch, answerResearch, addFromDatabase, checkFits, CHECK_USD_EACH, recoverResearch, pastResearch, getResearch, deleteResearch, setOff, fixPerson, researchShares, writeSummary, researchCost, summaryEstimate, researchRunning } from './research.js';
 import { factsFor } from './facts.js';
 import { meaningFor, countWith } from './meaning.js';
+import { noteWanted, noteOff, validKey } from './combo-notes.js';
 import { findInDoc, docWindow, findNumberSection, findPhrase } from './doc.js';
 import { askAboutSpot, spotContext } from './spot-ask.js';
 import { wordsFor, wordInfo } from './words.js';
@@ -291,6 +292,20 @@ export function createApp(db, { log = console.log } = {}) {
       n: Number(req.query.n) || 0, at: String(req.query.at || 'name'), inputs: inputsOf(req.query) });
     if (!m) return res.status(400).json({ error: 'That position or number is not one the app knows.' });
     res.json({ ...m, count: countWith(db, m.chart, m.position, m.sum), related: m.related.map((r) => ({ ...r, count: countWith(db, r.chart, r.position, r.sum) })) });
+  });
+  // Combination cards (server/neighbors.js): a pair opened while it had no card, and "This Is Off" notes. Kept for the
+  // next writing chat (server/combo-notes.js, the snapshot's COMBINATION CARDS). Names and numbers only; free.
+  app.post('/api/combo/wanted', express.json({ limit: '4kb' }), (req, res) => {
+    const b = req.body || {};
+    if (!validKey(b.key)) return res.status(400).json({ error: 'That pair is not one the app knows.' });
+    res.json({ ok: true, wanted: noteWanted(b.key, b.label) });
+  });
+  app.post('/api/combo/off', express.json({ limit: '8kb' }), (req, res) => {
+    const b = req.body || {};
+    if (!validKey(b.key)) return res.status(400).json({ error: 'That pair is not one the app knows.' });
+    const row = noteOff(b.key, b.label, b.note);
+    if (!row) return res.status(400).json({ error: 'Type what is wrong first.' });
+    res.json({ ok: true, note: row });
   });
   // "Open the Document" from a course-words card (server/doc.js): ?source=&text=&heading= opens the document at those
   // words (`at` = the part holding them, null = not found, opened at the top); ?source=&from=&to= reads more of it.

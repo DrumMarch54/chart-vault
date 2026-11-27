@@ -89,5 +89,10 @@ Every claim carries its number in brackets. Full text, never shortened to fit.
    aura, psyche life expression (the reports give only the general number text there). NEXT IDEA: the reports' other
    chapters hold per-spot text for the higher self, vocation, personality, names and life areas.
 3. Part 4: rows, the card, the graded cards, Not Written Yet + the tapped-while-missing list, This Is Off.
+   BUILT 2026-11-27: server/neighbors.js, server/combo-notes.js, tools/combo-cards (merge.mjs, BRIEF.md, batch-01 = the 28
+   graded cards; their added phrases / best / worst are marked "Not Graded Yet" on the card). The circle's course words now
+   sit inside the circle partner's row when it has no card. NOT done: the owner's "aura's diamond beside the center's
+   diamond" pairs: the engine has no aura diamonds besides the public diamond (needs new positions first); the graded
+   66/3 + 36/9 card waits for that.
 4. Writing sessions fill cards and the "In This Spot" explanations.
 After each: `npm run verify`, the dev app at 390x844 in every look, compare with the mockups, then say done.

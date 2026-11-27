@@ -29,14 +29,14 @@ const split = (chart, part) => (part.includes('.') ? part.split('.') : [chart, p
 export const DIAMOND_PARTS = POSITIONS.filter((p) => !p.hidden && (MADE_BESIDE.has(p.key) || FLOWS[p.key]))
   .map((p) => ({ chart: p.chart, position: p.key, parts: (FLOWS[p.key] || PARTS[p.key]).map((x) => split(p.chart, x)) }));
 
-export function connectionsFor({ chart, position, n = 0, at = 'name', inputs } = {}) {
+export function connectionsFor({ chart, position, n = 0, at = 'name', inputs, sum = null } = {}) {
   const inp = normalizeInputs(inputs || {});
   if (!inp.name && !inp.day) return null;
   const vals = new Map();
   for (const v of computeValues(inp)) vals.set(`${v.chart}.${v.position}.${v.n}`, v);
   const get = (c, k, i = 0) => vals.get(`${c}.${k}.${i}`) || null;
   const me = get(chart, position, n);
-  if (!me) return null;
+  if (!me || (sum !== null && me.sum !== Number(sum))) return null;
   const host = RHOMBUS.has(at) ? at : 'name';
   const out = [];
   const add = (role, d, i) => {
