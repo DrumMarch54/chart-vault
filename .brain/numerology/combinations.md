@@ -246,3 +246,25 @@ Still to do: the psyche charts, then life expression + pillar.
   make: day + first name + public aura; first name + life expression + associates aura; day + month + outer
   aura); TWO everywhere else (inside one circle, a center and the aura beside it, day + life path, names side
   by side, the same spot in two charts).
+
+## Psyche charts: how their pairs are read (Claude, 2026-11-27, from the Psyche book pp. 43-53; not yet graded)
+- The book's own method is to COMPARE THE SAME SPOT IN THE TWO CHARTS, in this order: life expression diamonds
+  (how each supports the other, where they conflict), mental diamonds, challenge numbers, pillars; then zoom out.
+- Inner psyche = the psyche by nature, "pure", the month and year seen with neutral eyes; the owner's words:
+  "the foundational psychological architecture of your soul". Outer psyche = the same psyche once the day (the
+  ego, the personality) takes up space; "how the ego influences and interprets this core structure". Sentence
+  frame: "By nature ... (inner). Once the personality steps in ... (outer)."
+- What each spot is: mental diamond (the owner's "mental strategies") = how thoughts are processed and what drives
+  the way of speaking; life expression diamond = how emotions are organized, how one feels deep inside, the inner
+  story; emotion center = the emotional response that results (a 9 there, in any chart: "a highly charged inner
+  self-critical voice fueled by anger", p. 45); challenge number = the step into full adulthood, sharpest at 27;
+  pillar = how the psyche RESTS (digit sum table p. 50-51, nuances for 12, 13, 15, 16, 17, 18, 24, 26).
+- A teen number is the pure number with the ego in it (p. 36-37): 12/3 overthinks and feels a victim, 13/4 the
+  outsider, 14/5 adds business, 15/6 makes drama, 16/7 fear, 17/8 hesitates in the spotlight, 18/9 overreacts.
+- The numbers in these spots are often compounds 46-99: say what the two DIGITS share too (59/5 and 69/6 both
+  have 9 as the inner digit, "the boss inside").
+- The book itself joins twins into one number (95/5 with 15/6 = 65/2; 8 with 18/9 = 98/8 "The Legacy Builder").
+  Left out of the cards while the owner has level two switched off.
+- First psyche batch, on the owner's own chart (19 May 1998), sent for grading: mental strategies 61/7 and 71/8;
+  life expression diamonds 59/5 and 69/6; inner mental strategies 61/7 on inner life expression diamond 59/5;
+  challenge numbers 5 and 15/6; pillars 19/1 and 24/6; emotion centers 6 and 9.
