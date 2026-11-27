@@ -21,8 +21,8 @@ const points = (bits) => (bits ? bits.groups.map((g) => `${g.title ? `${g.title}
 
 // The words the model gets, built from the same lookup as the page (server/meaning.js), so the answer stands on
 // what the owner can read on the screen, plus up to six more passages on the number for this position's topic.
-export function spotContext({ chart, position, sum, pair = [], rel = [] }) {
-  const m = meaningFor({ chart, position, sum, pair, rel });
+export function spotContext({ chart, position, sum, pair = [], rel = [], n = 0, at = 'name', inputs = null }) {
+  const m = meaningFor({ chart, position, sum, pair, rel, n, at, inputs });
   if (!m) return null;
   const parts = [`THE SPOT: ${m.text} as the ${m.label} of the ${m.chartLabel}${m.name ? ` (${m.name})` : ''}.${m.verdict ? ` The course's balance verdict here: ${m.verdict}.` : ''}`];
   const seen = new Set();
@@ -34,7 +34,8 @@ export function spotContext({ chart, position, sum, pair = [], rel = [] }) {
   add(`THE COURSE ON ${m.text} IN THIS SPOT`, m.bits, m.passages);
   if (m.nameChart) add(`THE NAME CHART'S WORDS ON ${m.text} IN THE SAME CENTER`, m.nameChart.bits, m.nameChart.passages);
   if (m.pair) add(`${m.text} TOGETHER WITH ${m.pair.with.map((x) => x.text).join(' AND ')} IN THIS CIRCLE (the course writes these as a family: points naming other compounds are about those)`, m.pair.bits, m.pair.passages);
-  for (const r of m.related) add(`THE DIAMOND BEHIND IT: ${r.label} ${r.text}`, r.bits, r.passages);
+  const how = (r) => (r.role === 'made' ? `THE DIAMOND THAT MAKES IT (${r.parts.map((p) => `${p.short} ${p.text}`).join(' beside ')})` : r.role === 'helps' ? `A DIAMOND IT HELPS MAKE (${r.parts.map((p) => `${p.short} ${p.text}`).join(' beside ')})` : 'THE DIAMOND BEHIND IT');
+  for (const r of m.related) add(`${how(r)}: ${r.label} ${r.text}`, r.bits, r.passages);
   const topic = topicsFor(chart, position)[0] || null;
   const more = chunksFor(sum, topic, 6);
   add(`MORE COURSE PASSAGES ON ${m.text}${topic ? ` (topic: ${topic})` : ''}: may be about other positions; say so if you use them`, null, more);

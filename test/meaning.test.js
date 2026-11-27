@@ -401,3 +401,22 @@ test('Year Rows documents: a number opens its own section in the number books; a
   const f = await (await get('/api/knowledge/doc?' + new URLSearchParams({ source: 'forecasting-book', heading: 'The Money Triad' }))).json();
   assert.match(f.blocks.find((b) => b.n === f.at).text, /^The Money Triad/);
 });
+
+// The number screen (owner 2026-11-27): with the chart's inputs the diamonds are the CONNECTED ones only, each with
+// its role and parts; a birth-date chart never shows name-change advice; every spot says what it is when the notes do.
+test('connected diamonds come from the inputs: Elvis public aura 17/8 -> public diamond 89/8 (made), mental diamond 88/7 (helps)', () => {
+  const m = meaningFor({ chart: 'name', position: 'upperLeft', sum: 17, inputs: { day: 8, month: 1, year: 1935, name: 'Elvis Aaron Presley' } });
+  assert.deepEqual(m.related.map((r) => `${r.role} ${r.short} ${r.text}`), ['made Public diamond 89/8', 'helps Mental diamond 88/7']);
+  assert.deepEqual(m.related[0].parts.map((p) => `${p.short} ${p.text}`), ['Day vibration 8', 'First name 18/9']);
+  assert.match(m.what, /strangers/);
+  const day = meaningFor({ chart: 'essence', position: 'day', sum: 8, at: 'name', inputs: { day: 8, month: 1, year: 1935, name: 'Elvis Aaron Presley' } });
+  assert.ok(day.related.some((r) => r.chart === 'name' && r.position === 'spineDiamond' && r.text === '87/6'));
+  assert.equal(day.related.find((r) => r.position === 'nexus').short, 'Nexus');
+});
+
+test('no Name Cleanse group on the essence or a psyche chart; it stays on the name chart', () => {
+  const titles = (m) => (m.bits ? m.bits.groups.map((g) => g.title) : []);
+  assert.ok(!titles(meaningFor({ chart: 'outer', position: 'first', sum: 11 })).includes('Name Cleanse'));
+  assert.ok(bitsFor('outer.first:11').groups.some((g) => g.title === 'Name Cleanse'), 'the stored points have it');
+  assert.ok(titles(meaningFor({ chart: 'name', position: 'first', sum: 11 })).includes('Name Cleanse'));
+});
