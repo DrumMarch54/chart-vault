@@ -64,8 +64,7 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   (`drawnChart`, the Quick Chart drawing) on the grid, in the viewer and in Compare; the screenshot
   stays one tap away ("Screenshot" in the viewer's top bar) and is never deleted. Charts without a
   name and date still show the screenshot: Settings -> "Charts Still Showing the Screenshot"
-  (`#/?drawn=0`). **Open item: the owner asked to be reminded to go through those** (count in the
-  snapshot's DRAWN CHARTS line); remind them at the start of a session until that list is empty.
+  (`#/?drawn=0`). Emptied 2026-11-27 (owner deleted all 24; restorable in Deleted Charts). Remind only if it fills again.
 - **Open item (owner 2026-11-23): remind the owner to fix how the charts look in the new looks** (the white ground
   "glaring" on Glass on Color; see-through grounds shown in https://claude.ai/artifact/8jxLVKyac8MUnCkfP1bt2w).
   Owner 2026-11-23: leave the charts WHITE until then (a dark chart ground was wrong); the fix will be see-through.

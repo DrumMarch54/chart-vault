@@ -1137,3 +1137,6 @@ carry the older rule; update them from a chat in those repos (never push to a si
   labels "Mom" and "Dad" as known names and made "Mom 18", "Mom 0" (#829, #830), "Dad 18", "Dad 0" (#924, #925).
 - Owner, on finding "Mom 18" in the viewer: "you definitely did not need to make a chart with the word mom".
 - Rule: a family word under the picture is a label, never a name to chart. Only public stage or pen names.
+
+## 2026-11-27 Charts still showing the screenshot: list emptied
+The 24 charts with no name and date: 18 had no picture at all (tag-file leftovers: two tests, three question tags, first names only), 6 were year-row tables or an unnamed hand-drawn chart. None could be drawn. Owner chose "Delete all 24"; done through DELETE /api/images/:id, all restorable from Settings -> Deleted Charts. Reminder rule in CLAUDE.md retired.
