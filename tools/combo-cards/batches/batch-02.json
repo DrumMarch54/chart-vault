@@ -1,0 +1,140 @@
+{
+ "about": "Five cards written 2026-11-27 by a Claude session following tools/combo-cards/BRIEF.md, for the owner to grade before more are written. Picked by use on the seeded charts: the two most common missing pairs of all (the psyche charts' emotion centers, 9 and 12/3 both ways round) and the three most common missing pairs in the name chart.",
+ "cards": [
+  {
+   "a": { "spot": "inner.solar", "sum": 9 },
+   "b": { "spot": "outer.solar", "sum": 12 },
+   "written": "2026-11-27",
+   "phrases": [
+    "Fighter Who Feels Wronged",
+    "Hurt Behind a Wall of Anger",
+    "Pushes Hard, Then Falls"
+   ],
+   "position": "By nature the emotional response is fire: get it done, and be hard on themselves when it is not (9). Once the personality steps in, the response turns to going over it in the head and feeling treated unfairly (12/3).",
+   "share": {
+    "title": "What Sets Them Apart",
+    "text": "9 blames itself (9). 12/3 feels blamed by others (12/3)."
+   },
+   "course": {
+    "about": "the Psyche book, on a woman's two psyche charts with 9 in the inner emotion center and 12/3 in the outer one",
+    "text": "\"the 12/3 ... strives to continue its expansion but feels trapped, pushing even harder to break free. Meanwhile, the 9 in the Inner Psyche Chart feels pulled in opposing directions, responding with anger and self-criticism.\""
+   },
+   "reasoning": [
+    "They are angry at themselves first (9). By the time it shows, it sounds like a complaint about someone else (12/3).",
+    "They take on too much to prove themselves (9), fall short, and feel it was unfair (12/3).",
+    "Under pressure they say something blunt (9), get a cold reaction, and feel rejected (12/3).",
+    "The combo guide says of 12/3 with 9 in an emotion center that the anger (9) is a wall in front of the victim feeling (12/3). So they rarely find out what the hurt is really about."
+   ],
+   "best": "Finishes what they start (9) and can teach others what they learned doing it (12/3).",
+   "worst": "Snaps at someone (9), then feels like the injured one (12/3)."
+  },
+  {
+   "a": { "spot": "inner.solar", "sum": 12 },
+   "b": { "spot": "outer.solar", "sum": 9 },
+   "written": "2026-11-27",
+   "phrases": [
+    "Hurt Turned Into Drive",
+    "Misunderstood, So They Push",
+    "Proves Them Wrong"
+   ],
+   "position": "By nature the emotional response is to turn a feeling over in the head and quietly feel misunderstood (12/3). Once the personality steps in, the response is to push: get it done, and be hard on themselves (9).",
+   "share": {
+    "title": "What Sets Them Apart",
+    "text": "12/3 waits to be understood (12/3). 9 does not wait for anyone (9)."
+   },
+   "course": {
+    "about": "the Psyche book on a 9 in an emotion center, in any chart",
+    "text": "\"a highly charged inner self-critical voice fueled by anger.\""
+   },
+   "reasoning": [
+    "Here the hurt is the root (12/3) and the anger is the cover (9). With the two numbers swapped it is the other way round.",
+    "The personality answers the hurt (12/3) with work (9): they would rather win than talk about it.",
+    "Others see the toughness (9). The feeling of being overlooked (12/3) stays unsaid.",
+    "They hold irritation in (9) and keep going over it in their head (12/3), until it bursts out."
+   ],
+   "best": "Takes what once hurt them (12/3) and turns it into a goal they reach (9).",
+   "worst": "Feels slighted (12/3) and hits back harder than the slight deserved (9)."
+  },
+  {
+   "a": { "spot": "name.solar", "sum": 11 },
+   "b": { "spot": "name.solarExtra", "sum": 6 },
+   "written": "2026-11-27",
+   "phrases": [
+    "Too Open, Still Loved",
+    "Pleaser With a Warm Heart",
+    "Sensitive and Sweet"
+   ],
+   "position": "Inside they are oversensitive, take on other people's moods and find it hard to say no (11/2), with a tint of warmth and ease in closeness (6).",
+   "share": {
+    "title": "What They Share",
+    "text": "Both numbers are about love and closeness (11/2, 6). The theme is doubled, and neither number sets a limit."
+   },
+   "course": {
+    "about": "6 and 11/2 together in the emotion center",
+    "text": "\"Even with an unbalanced number (such as 11/2) along with the number 6 in the emotion center, you will find that you have a relatively good sex life, because the number 6 is so good to have in a center.\""
+   },
+   "reasoning": [
+    "11/2 is the main one, so the trouble is real: feelings run too high and they lean on a partner (11/2). The 6 softens that. It does not remove it.",
+    "The same two numbers the other way round (6 colored by 11/2) is a loving person who gives too much. This one is an overwhelmed person (11/2) who is still easy to love (6).",
+    "People want to be close to them (6), and they cannot tell who is safe to let in (11/2).",
+    "They calm strong feelings (11/2) with comfort: food, shopping, making the home nice (6)."
+   ],
+   "best": "Feels what a loved one is going through (11/2) and makes them feel at home (6).",
+   "worst": "Gives in to a partner every time (11/2) to keep the home peaceful (6)."
+  },
+  {
+   "a": { "spot": "name.solar", "sum": 15 },
+   "b": { "spot": "name.lowerRight", "sum": 8 },
+   "written": "2026-11-27",
+   "phrases": [
+    "The Watchful Lover",
+    "Passion Behind a Guard",
+    "Wants Closeness, Keeps Distance"
+   ],
+   "position": "Inside they run on attraction: charm, desire and wanting to be wanted (15/6). What a partner and family see is someone strong and careful, who keeps watch over them and keeps a little distance (8).",
+   "share": {
+    "title": "What Sets Them Apart",
+    "text": "15/6 reaches for people and has few boundaries (15/6). 8 keeps a ring around itself and lets nobody too close (8)."
+   },
+   "course": {
+    "about": "15/6 in the emotion center with an 8 beside it, when out of balance; then the combo guide on the same pair in better balance",
+    "text": "\"15/6 and 8 can give psychopathic tendencies where you coolly are able to exploit other people.\" In better balance: \"good at seeing through others (15/6), but may use this to their own advantage\"."
+   },
+   "reasoning": [
+    "A love life aura is meant to shield the emotion center. This one does: the family sees composure (8), not the craving under it (15/6).",
+    "They sense exactly what a partner wants (15/6), and they remember everything a partner ever did (8).",
+    "They want to be desired (15/6) and do not let a partner close enough to hurt them (8). The partner feels wanted and shut out at once.",
+    "They are drawn to temptation themselves (15/6) and demand loyalty (8), so they watch a partner for the very thing they feel pulled toward."
+   ],
+   "best": "Strongly attracted to a partner (15/6) and loyal and protective toward them (8).",
+   "worst": "Uses what a partner longs for (15/6) to keep control of them (8)."
+  },
+  {
+   "a": { "spot": "name.solar", "sum": 15 },
+   "b": { "spot": "name.lowerLeft", "sum": 9 },
+   "written": "2026-11-27",
+   "phrases": [
+    "The Player",
+    "Charm With a Hard Edge",
+    "Wins People, Then Pushes Them"
+   ],
+   "position": "Inside they run on attraction: charm, desire and wanting to be wanted (15/6). What colleagues and acquaintances see is someone strong-willed, direct and tough on themselves (9).",
+   "share": {
+    "title": "What Sets Them Apart",
+    "text": "15/6 pulls people toward them (15/6). 9 goes straight at a thing and wants nobody leaning on them (9)."
+   },
+   "course": {
+    "about": "15/6 with a 9 beside it in a center; the course calls this pair \"The Player\"",
+    "text": "\"it can give a very large and strong charisma, but it also tends to make you not shy away from manipulating other people to get things your way.\""
+   },
+   "reasoning": [
+    "Colleagues meet a blunt, capable person (9) and do not guess how much that person wants to be liked (15/6).",
+    "At work they turn the charm on (15/6) to get a thing done fast (9).",
+    "The combo guide on this pair: they seek attention (15/6) and get angry when someone else takes it (9). Among colleagues that shows as rivalry.",
+    "Their moods swing inside (15/6). In front of colleagues they hold it down (9), and when pushed too far it comes out as an angry outburst (9)."
+   ],
+   "best": "Senses what each colleague wants (15/6) and uses it to get the best out of them (9).",
+   "worst": "Charms a colleague to get their way (15/6) and turns harsh when it does not work (9)."
+  }
+ ]
+}
