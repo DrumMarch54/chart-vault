@@ -181,6 +181,7 @@
       const $msg = h('p', { class: 'muted small' }, 'Loading…');
       const $state = h('div', { class: 'card' });
       const $warn = h('div', {});
+      const $what = h('div', {});
       const show = (s) => {
         fill($state,
           h('div', { class: 'stat' }, h('span', {}, 'AI key'), h('b', { class: s.key_set ? 'ok' : 'err' }, s.key_set ? `Set, ends in ${s.key_hint}` : 'Not set')),
@@ -189,7 +190,18 @@
           h('div', { class: 'stat' }, h('span', {}, 'Left this month'), h('b', { class: s.level === 'over' ? 'err' : s.level === 'near' ? 'warn' : 'ok' }, money(s.remaining))),
           h('div', { class: 'stat' }, h('span', {}, 'Calls this month'), h('b', {}, String(s.calls))),
           h('div', { class: 'stat' }, h('span', {}, 'Readings written by'), h('b', { style: 'font-size:16px' }, s.model)),
-          h('div', { class: 'stat' }, h('span', {}, 'Ask the Vault answered by'), h('b', { style: 'font-size:16px' }, s.ask_model)));
+          h('div', { class: 'stat' }, h('span', {}, 'Ask the Vault answered by'), h('b', { style: 'font-size:16px' }, s.ask_model)),
+          s.card_model ? h('div', { class: 'stat' }, h('span', {}, 'Combination cards written by'), h('b', { style: 'font-size:16px' }, s.card_model)) : null);
+        // Spent on what (owner 2026-11-27): this month by kind, then every paid call with its price, newest first.
+        const by = s.by || [], log = s.log || [];
+        fill($what, h('div', { class: 'slabel' }, h('b', {}, 'Spent This Month on What')),
+          by.length ? h('div', { class: 'card' }, ...by.map((x) => h('div', { class: 'stat' }, h('span', {}, `${x.area} (${x.calls})`), h('b', {}, money(x.usd)))))
+            : h('p', { class: 'muted small' }, 'Nothing spent this month yet.'),
+          h('div', { class: 'slabel' }, h('b', {}, 'Recent Paid Calls')),
+          log.length ? h('div', { class: 'card ai-log' }, ...log.map((x) => h('div', { class: 'ai-log-row' },
+            h('div', { class: 'ai-log-top' }, h('span', {}, x.area), h('b', {}, money(x.usd))),
+            h('div', { class: 'muted small' }, `${String(x.at).slice(0, 16).replace('T', ' ')} · ${x.model} · ${x.what}`))))
+            : h('p', { class: 'muted small' }, 'No paid calls kept yet. Every call from now on is listed here with its price.'));
         $cap.value = String(s.cap);
         fill($warn, warningNode(s.warning));
       };
@@ -203,13 +215,13 @@
         } catch (err) { $msg.textContent = err.message; $msg.className = 'err small'; }
       };
       render(h('div', { class: 'screen stack' }, pageTop('AI Reading'),
-        $warn, $state,
+        $warn, $state, $what,
         h('div', { class: 'card stack' },
           h('h2', { style: 'margin-top:0' }, 'AI key'),
           h('p', { class: 'muted small' }, 'The key lets the app pay for readings and questions. It is kept on the server only and never shown again: this screen says only its last 4 characters. Pasting a new one replaces the old one.'),
           $key,
           h('h2', {}, 'Monthly cap, in dollars'),
-          h('p', { class: 'muted small' }, 'Readings and questions stop when the month\'s spend reaches this. You are warned here and in the app at 80% and at the cap. A reading costs about 25 cents (Short) to 40 cents (In Depth); a question about a chart about 3 to 10 cents; an Ask the Vault question about a cent. Every price shows on its button before you tap.'),
+          h('p', { class: 'muted small' }, 'Readings and questions stop when the month\'s spend reaches this. You are warned here and in the app at 80% and at the cap. A reading costs about 25 cents (Short) to 40 cents (In Depth); a question about a chart about 3 to 10 cents; an Ask the Vault question about a cent; a combination card about 35 cents. Every price shows on its button before you tap.'),
           $cap, $msg,
           h('div', { class: 'row', style: 'flex-wrap:nowrap' }, h('button', { type: 'button', class: 'btn-primary', style: 'flex:1', onclick: () => save(false) }, 'Save'), h('button', { type: 'button', class: 'btn-danger', onclick: () => save(true) }, 'Remove key')))));
       api('/api/ai/settings').then((s) => { show(s); $msg.textContent = s.key_set ? 'Leave the key box empty to keep the current key.' : 'No key yet. Paste one and tap Save.'; }).catch((err) => { $msg.textContent = err.message; $msg.className = 'err small'; });

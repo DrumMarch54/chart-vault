@@ -17,7 +17,19 @@ export const MODELS = {
   reading: { id: 'claude-opus-5-5', label: 'Claude Opus 5.5', input: 4, output: 20, cacheRead: 0.2, cacheWrite: 5 },
   ask: { id: 'claude-haiku-5-5', label: 'Claude Haiku 5.5', input: 0.1, output: 0.5, cacheRead: 0.01, cacheWrite: 0.125 },
   lookup: { id: 'claude-haiku-5-5', label: 'Claude Haiku 5.5', input: 0.1, output: 0.5, cacheRead: 0.01, cacheWrite: 0.125 },
+  // Combination cards written in the app (owner 2026-11-27: "we'll want to use Fable on medium effort"; the Opus
+  // test cards read weaker). Fable 5.2 list price: $8 in, $40 out, cache reads $0.20, 5-minute cache writes 1.25x.
+  card: { id: 'claude-fable-5-2', label: 'Claude Fable 5.2', input: 8, output: 40, cacheRead: 0.2, cacheWrite: 10 },
 };
+// What a paid call was FOR, from its `what` label: the Settings screen's "Spent This Month on What" (owner 2026-11-27:
+// "somewhere where I can go into the settings of the app and see how much I've spent on what").
+export const AREAS = [
+  [/^combo card/, 'Combination Cards'], [/^reading /, 'Chart Readings'], [/^question /, 'Questions About a Chart'],
+  [/^ask turn/, 'Ask the Vault'], [/^spot question/, 'Ask About This (Number Screen)'], [/^lookup /, 'Look Up Someone'],
+  [/^research /, 'Research a Group'],
+];
+export const areaOf = (what) => (AREAS.find(([re]) => re.test(String(what || ''))) || [null, 'Other'])[1];
+const LOG_KEEP = 200; // the last paid calls kept in data/ai.json for the Settings screen
 // The web search tool (Look Up Someone) is billed per search on top of the tokens: $10 per 1,000.
 export const WEB_SEARCH_USD = 0.01;
 export const DEFAULT_CAP = 8;
@@ -34,7 +46,8 @@ function normalize(o) {
   return {
     key: typeof o.key === 'string' ? o.key.trim() : '',
     cap: Number.isFinite(cap) && cap >= 0 ? cap : DEFAULT_CAP,
-    spend: o.spend && typeof o.spend === 'object' ? o.spend : {}, // { '2026-10': { usd, calls } }
+    spend: o.spend && typeof o.spend === 'object' ? o.spend : {}, // { '2026-10': { usd, calls, by: { area: { usd, calls } } } }
+    log: Array.isArray(o.log) ? o.log : [], // the last paid calls: { at, area, what, model, usd, seconds }
     warned: o.warned && typeof o.warned === 'object' ? o.warned : {}, // { '2026-10': { level: 'near' | 'over', cap } } the last warning seen
   };
 }
@@ -48,7 +61,7 @@ function save(o) {
 // What the screens may know. Never the key.
 export function aiSettings() {
   const o = load();
-  return { key_set: !!o.key, key_hint: o.key ? o.key.slice(-4) : '', cap: o.cap, model: MODELS.reading.label, ask_model: MODELS.ask.label, ...spendState(o) };
+  return { key_set: !!o.key, key_hint: o.key ? o.key.slice(-4) : '', cap: o.cap, model: MODELS.reading.label, ask_model: MODELS.ask.label, card_model: MODELS.card.label, ...spendState(o) };
 }
 // Saves the key (when given; an empty string clears it) and the cap (when given).
 export function setAiSettings({ key, cap } = {}) {
@@ -68,8 +81,9 @@ export function spendState(o = load()) {
   const m = month();
   const s = o.spend[m] || { usd: 0, calls: 0 };
   const usd = round(s.usd);
+  const by = Object.entries(s.by || {}).map(([area, x]) => ({ area, usd: round(x.usd), calls: x.calls })).sort((a, b) => b.usd - a.usd);
   const level = o.cap > 0 && usd >= o.cap ? 'over' : o.cap > 0 && usd >= o.cap * WARN_AT ? 'near' : 'ok';
-  return { month: m, spent: usd, calls: s.calls, cap: o.cap, level, remaining: Math.max(0, round(o.cap - usd)) };
+  return { month: m, spent: usd, calls: s.calls, cap: o.cap, level, remaining: Math.max(0, round(o.cap - usd)), by };
 }
 export function canSpend(estimateUsd = 0) {
   const o = load();
@@ -103,15 +117,23 @@ export function costOf(usage, model) {
   const searches = (usage.server_tool_use && usage.server_tool_use.web_search_requests) || 0;
   return round((inTok * m.input + out * m.output + cr * m.cacheRead + cw * m.cacheWrite) / 1e6 + searches * WEB_SEARCH_USD);
 }
-function addSpend(usd) {
+function addSpend(usd, { what = '', model = '', seconds = 0 } = {}) {
   const o = load();
   const m = month();
   const s = o.spend[m] || { usd: 0, calls: 0 };
   s.usd = round(s.usd + usd); s.calls += 1;
+  const area = areaOf(what);
+  s.by = s.by || {};
+  const a = s.by[area] || { usd: 0, calls: 0 };
+  a.usd = round(a.usd + usd); a.calls += 1; s.by[area] = a;
   o.spend[m] = s;
+  o.log.push({ at: new Date().toISOString(), area, what: redact(String(what)).slice(0, 120), model, usd, seconds });
+  if (o.log.length > LOG_KEEP) o.log.splice(0, o.log.length - LOG_KEEP);
   save(o);
   return spendState(o);
 }
+// The paid calls kept for the Settings screen, newest first.
+export const spendLog = (n = 60) => load().log.slice(-n).reverse();
 
 // --- the call log (last 20, per process) ---
 const CALLS = [];
@@ -158,7 +180,7 @@ export async function callModel(kind, params, { estimateUsd = 0, what = '' } = {
     const searches = message.usage?.server_tool_use?.web_search_requests || 0;
     if (searches) entry.searches = searches;
     record(entry);
-    const state = addSpend(usd);
+    const state = addSpend(usd, { what, model: m.label, seconds: entry.seconds });
     return { message, usd, seconds: entry.seconds, state, model: m };
   } catch (err) {
     entry.seconds = round((Date.now() - t0) / 1000);

@@ -90,6 +90,8 @@ const FAKE_READING = '## Nexus\nThe 19/1 day vibration with the 6/6 life path ma
 useClientFactory(() => ({ messages: { create: async (params) => {
   await new Promise((r) => setTimeout(r, 1000));
   const usage = { input_tokens: 42000, output_tokens: 700 };
+  // Write It on a combination card: a fake card in the schema (the real one is Claude Fable 5.2, paid).
+  if (params.output_config && params.output_config.format) return { content: [{ type: 'text', text: JSON.stringify({ phrases: ['Fake Card One', 'Fake Card Two', 'Fake Card Three'], position: 'A fake card written by the dev app (a).', share: { title: 'What They Share', text: 'Nothing real (a, b).' }, course: { about: '', text: '' }, reasoning: ['Point one (a).', 'Point two (b).'], best: 'Best line (a) and (b).', worst: 'Worst line (a) and (b).', made: '', primary: 'a' }) }], stop_reason: 'end_turn', usage: { input_tokens: 4000, output_tokens: 3000, cache_read_input_tokens: 15000 } };
   // The plan before a research: the dev app never reaches the free database (no network), and asks nothing.
   if (params.tools && params.tools.some((t) => t.name === 'give_plan')) return { content: [{ type: 'tool_use', id: 'p1', name: 'give_plan', input: { category: 'Computer Coders', what_counts: 'People known for writing software.', question: '', personal: false, wikidata: [] } }], stop_reason: 'tool_use', usage: { input_tokens: 600, output_tokens: 90 } };
   // Check the Dates: every date confirmed on a page, Carmack's corrected by a day.

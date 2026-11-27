@@ -248,9 +248,12 @@
         c.best ? ncPart('At Its Best', h('div', { class: 'nc-best' }, ...withNums(c.best))) : null,
         c.worst ? ncPart('At Its Worst', h('div', { class: 'nc-worst' }, ...withNums(c.worst))) : null,
         c.made ? h('div', { class: 'nc-made' }, ...withNums(c.made)) : null,
+        c.by === 'app' ? h('div', { class: 'nc-made' }, `Written in the app by ${c.model} on ${c.written} · cost ${money(c.usd)}`) : null,
         h('div', { class: 'nc-foot' }, h('button', { type: 'button', class: 'btn btn-block', onclick: () => { $offBox.hidden = !$offBox.hidden; if (!$offBox.hidden) $note.focus(); } }, 'This Is Off'), $offBox));
     }
     const short = (x) => titleCase(x.short || x.label);
+    const money = (n) => `$${Number(n || 0).toFixed(2)}`;
+    const cents = (n) => (Number(n) < 1 ? `${Math.max(1, Math.round(Number(n) * 100))}¢` : money(n));
     const spotName = (x) => short(x).replace(/ Main Vibration$/, ''); // "Mind Center 16/7", as the mockup and the course say
     function open({ chart, position, sum, pair, rel, n, at, inputs }) {
       if (document.querySelector('.mpop')) return; // one at a time
@@ -322,13 +325,39 @@
         // pair's first phrase; a row opens the card (server/neighbors.js, knowledge/combo-cards.json). A pair with no
         // card yet says Not Written Yet, costs nothing, and is noted for the next writing chat; a circle partner then
         // shows the course's words on the pair.
-        const nbLabel = (x) => (x.kind === 'circle' ? `${x.text} in the Same Circle` : `${x.chart !== m.chart ? `${x.chartLabel.replace(/ chart$/i, ' Chart')} ` : ''}${spotName(x)} ${x.text}`);
+        const nbLabel = (x) => (x.kind === 'circle' ? `${spotName(x)} ${x.text}, in the Same Center` : `${x.chart !== m.chart ? `${x.chartLabel.replace(/ chart$/i, ' Chart')} ` : ''}${spotName(x)} ${x.text}`);
         const pairLabel = (x) => `${m.chartLabel.replace(/ chart$/i, ' Chart')} ${spotName(m)} ${m.text} + ${nbLabel(x)}`;
         const nbRow = (x) => openRow({ small: `With ${nbLabel(x)}`, big: x.card ? x.card.phrases[0] : 'Not Written Yet',
           onOpen: () => { count('meaning.combo'); if (!x.card && !x.asked) { x.asked = true; api('/api/combo/wanted', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ key: x.key, label: pairLabel(x) }) }).catch(() => {}); } },
-          body: x.card ? comboCard(x.card, x.key, pairLabel(x)) : h('div', {},
-            h('div', { class: 'ns-empty' }, 'No card yet. Opening it put it on the list for the next writing chat. Nothing is charged.'),
-            x.pairWords ? wordsBody({ bits: pairSplit(x.pairWords.bits, [m.text, x.text]), passages: x.pairWords.passages, empty: '' }) : null) });
+          body: x.card ? comboCard(x.card, x.key, pairLabel(x)) : missingCard(x) });
+        // Not written yet: noted for the writing chats (free), and Write It (owner 2026-11-27: a paid call, one card,
+        // the price on the button before the tap and on the card after it; kept for every chart with this pair).
+        function missingCard(x) {
+          const $btn = h('button', { type: 'button', class: 'btn btn-primary btn-block' }, 'Write It');
+          const $note = h('div', { class: 'muted small' }, 'Paid: written by the AI from the course and the card rules. About half a minute.');
+          const $wrap = h('div', {},
+            h('div', { class: 'ns-empty' }, 'No card yet. Opening it put it on the list for the next writing chat (free), or write it now.'),
+            h('div', { class: 'nc-write' }, $btn, $note),
+            x.pairWords ? wordsBody({ bits: pairSplit(x.pairWords.bits, [m.text, x.text]), passages: x.pairWords.passages, empty: '' }) : null);
+          api('/api/combo/estimate?' + new URLSearchParams({ key: x.key })).then((e) => { if (!$btn.disabled) $btn.textContent = `Write It · about ${cents(e.usd)}`; }).catch(() => {});
+          $btn.onclick = async () => {
+            count('meaning.combo_write');
+            $btn.disabled = true; $btn.textContent = 'Writing… about half a minute';
+            try {
+              const r = await api('/api/combo/write', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ key: x.key, label: pairLabel(x) }) });
+              x.card = withLabels(r.card);
+              const open = $wrap.parentNode;
+              const row = open && open.previousElementSibling;
+              if (row) { const b = row.querySelector('.ns-with b'); if (b) b.textContent = x.card.phrases[0]; }
+              fill($wrap, comboCard(x.card, x.key, pairLabel(x)));
+            } catch (err) { $btn.disabled = false; $btn.textContent = 'Write It'; $note.textContent = err.message; $note.className = 'err small'; }
+          };
+          return $wrap;
+        }
+        // a card written now comes back with spots only: give its two sides the names the screen shows
+        const sideOf = (spot, sum) => (spot === `${m.chart}.${m.position}` && sum === m.sum ? m : nbs.find((y) => `${y.chart}.${y.position}` === spot && y.sum === sum)) || {};
+        const named = (x) => ({ ...x, short: sideOf(x.spot, x.sum).short || x.spot, text: sideOf(x.spot, x.sum).text || String(x.sum) });
+        const withLabels = (c) => ({ ...c, a: named(c.a), b: named(c.b) });
         const nbs = m.neighbors || [];
         const nbSec = nbs.length ? h('section', { class: 'ns-sec' }, label('With Its Neighbors', 'pair'), ...nbs.flatMap(nbRow)) : null;
         fill($body, spot, gen, dias, nbSec, askBox(m, { chart, position, sum, pair: pair || [], rel: rel || [], n: n || 0, at: at || 'name', inputs: inputs || null }));

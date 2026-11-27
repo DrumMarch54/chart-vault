@@ -29,7 +29,8 @@ A JSON object in `tools/combo-cards/batches/batch-NN.json` ({ "about": "...", "c
 - Every claim carries its number in brackets: "his care (24/6) gets misread (12/3)". A claim that cannot carry a
   number is cut.
 - "They", never "he". The day is the personality, never "the core" (the core is the life path).
-- A sub vibration only tints the main one. Read what is IN the circle; never say "from the middle name".
+- A sub vibration only tints the main one. Read what is IN the center; never say "from the middle name".
+- Never the word "circle": a center's two numbers are "in the center" (owner 2026-11-27).
 - No part repeats another in other words. Two numbers a card, never three.
 - A course quote must make sense alone: say whose chart or which place it is about first.
 - Full text, never shortened to fit the phone: the screen folds it.

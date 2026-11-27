@@ -411,7 +411,15 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   `tools/combo-cards/BRIEF.md` (the owner pays for none). The card's parts never change: Phrases, By Position, What They
   Share, What the Course Says, My Reasoning, At Its Best, At Its Worst, made line, This Is Off. A missing card = "Not
   Written Yet", free, noted; This Is Off notes too (`server/combo-notes.js`, snapshot COMBINATION CARDS: write those first).
-- A center's COMBINATION is the two numbers in its circle, main + extra vibration, in the course, in the owner's
+- WRITE IT (owner 2026-11-27, after judging Opus-written cards weaker than Fable's): a missing card has a paid "Write It ·
+  about 35¢" button: Claude Fable 5.2, effort medium (`MODELS.card`), through server/ai.js; the playbook, the graded cards
+  and the brief are the cached system prompt (`server/combo-write.js`). Written once per pair, kept in
+  data/combo-cards-app.json (`server/combo-store.js`), marked "New · For You to Grade" with its model and cost on the card.
+  NEVER say "circle" for a center (owner 2026-11-27): a center's two numbers are "in the center".
+- SPEND BY KIND (owner 2026-11-27: "see how much I've spent on what"): every paid call is booked under an area from its
+  `what` label (`AREAS` in ai.js; a new paid feature needs its row there) and the last 200 calls are kept in data/ai.json;
+  Settings → AI Reading shows Spent This Month on What and Recent Paid Calls with each price.
+- A center's COMBINATION is the two numbers in the center, main + extra vibration, in the course, in the owner's
   combo tags (37 of 38) and in the position search (`PARTS` heart/solar). The auras around it make the DIAMOND.
 - SUB DIAMOND (owner 2026-10-20): a center's main vibration digit sum beside a middle name's digit sum, one per
   middle name, both centers, every chart with a middle name (Elvis's personality chart: 8 beside rn 7 = 87, the

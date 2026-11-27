@@ -18,7 +18,7 @@ import { linesFor, phrasesFor } from './archetypes.js';
 import { catalog, positionCounts, parseNumber, parseCondition, parseFixed, getInputs, setInputs, clearInputs, valuesFor, recomputeAll, inputStats, tagCheck, InputError } from './positions.js';
 import { COMMIT } from './build.js';
 import { paths } from './config.js';
-import { aiSettings, setAiSettings, spendState, pendingWarning, markWarningSeen, AiError } from './ai.js';
+import { aiSettings, setAiSettings, spendState, pendingWarning, markWarningSeen, AiError, spendLog } from './ai.js';
 import { readingFor, writeReading, answerQuestion, deleteReadings, readingEstimate, readingChoices } from './reading.js';
 import { askVault } from './ask.js';
 import { lookupPerson, vaultMatches, rememberLookup, storeLookup, pastLookups, pastLookup, deleteLookup } from './lookup.js';
@@ -26,6 +26,8 @@ import { startResearch, moreResearch, checkDates, closeResearch, reopenResearch,
 import { factsFor } from './facts.js';
 import { meaningFor, countWith } from './meaning.js';
 import { noteWanted, noteOff, validKey } from './combo-notes.js';
+import { writeCard, cardEstimate, cardsWriting } from './combo-write.js';
+import { cardFor } from './neighbors.js';
 import { findInDoc, docWindow, findNumberSection, findPhrase } from './doc.js';
 import { askAboutSpot, spotContext } from './spot-ask.js';
 import { wordsFor, wordInfo } from './words.js';
@@ -300,6 +302,17 @@ export function createApp(db, { log = console.log } = {}) {
     if (!validKey(b.key)) return res.status(400).json({ error: 'That pair is not one the app knows.' });
     res.json({ ok: true, wanted: noteWanted(b.key, b.label) });
   });
+  // Write It (paid, Claude Fable 5.2 through server/ai.js): the price before the tap, then the card, kept for every chart.
+  app.get('/api/combo/estimate', (req, res) => {
+    const key = String(req.query.key || '');
+    if (!validKey(key)) return res.status(400).json({ error: 'That pair is not one the app knows.' });
+    res.json({ usd: cardEstimate(key), written: !!cardFor(key) });
+  });
+  app.post('/api/combo/write', express.json({ limit: '4kb' }), async (req, res, next) => {
+    const b = req.body || {};
+    try { const card = await writeCard(String(b.key || ''), { label: String(b.label || '').slice(0, 160) }); res.json({ card, spend: spendState() }); }
+    catch (err) { if (err instanceof AiError) return res.status(400).json({ error: err.message }); next(err); }
+  });
   app.post('/api/combo/off', express.json({ limit: '8kb' }), (req, res) => {
     const b = req.body || {};
     if (!validKey(b.key)) return res.status(400).json({ error: 'That pair is not one the app knows.' });
@@ -489,7 +502,7 @@ export function createApp(db, { log = console.log } = {}) {
 
   // --- AI: readings, questions, the vault search; the key, the cap and the spend (server/ai.js) ---
   // The key never comes back out: the settings answer says set / not set and the last 4 characters.
-  app.get('/api/ai/settings', (req, res) => res.json({ ...aiSettings(), warning: pendingWarning() }));
+  app.get('/api/ai/settings', (req, res) => res.json({ ...aiSettings(), warning: pendingWarning(), log: spendLog(60) }));
   app.put('/api/ai/settings', express.json({ limit: '4kb' }), (req, res, next) => {
     try {
       const b = req.body || {};
@@ -667,7 +680,7 @@ export function createApp(db, { log = console.log } = {}) {
 
 let lastUpload = 0;
 // Busy while a backup runs or a file arrived in the last 20 seconds.
-function isBusy() { return isBackupRunning() || Date.now() - lastUpload < 20_000 || researchRunning() > 0; } // a paid web search in flight is never thrown away by a deploy
+function isBusy() { return isBackupRunning() || Date.now() - lastUpload < 20_000 || researchRunning() > 0 || cardsWriting() > 0; } // a paid web search in flight is never thrown away by a deploy
 function appVersion() {
   try { return JSON.parse(fs.readFileSync(path.join(config.root, 'package.json'), 'utf8')).version; } catch { return '?'; }
 }

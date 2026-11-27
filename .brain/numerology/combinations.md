@@ -351,3 +351,7 @@ The owner then asked how this gets built; the design talk follows in the chat, n
   merged and published without a check-in between them; the owner grades in the app. Psyche aura cards (batch-04
   on) take their words from the Hub's Childhood Aura and Twenties Aura documents and the personal reports; the
   frame is "As a child ... / In their twenties ..." for the outer psyche chart and "By nature ..." for the inner.
+2026-11-27, on the Opus test cards: NEVER SAY "CIRCLE". "You keep calling the center the circle ... what the fuck does that
+mean? By circle, do you mean center? ... please fix that and remember that." A center's main + sub vibration are "in the
+center" (the mind center, the emotion center), never "in the circle", on a card or on the screen. Same day the owner judged
+the Opus-written test cards weaker than Fable's ("this is not as good as it was with Fable"): cards are written by Fable.

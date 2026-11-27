@@ -14,6 +14,7 @@
 //   cardKey(spotA, sumA, spotB, sumB) -> "name.heart=16|name.upperLeft=17" (the two sides sorted)
 import fs from 'node:fs';
 import { computeValues, normalizeInputs } from './positions.js';
+import { appCards } from './combo-store.js';
 
 const NUMEROSCOPES = ['name', 'vocation', 'personality', 'outer', 'inner'];
 const RHOMBUS = new Set(NUMEROSCOPES);
@@ -54,7 +55,8 @@ export function loadCards() {
   try { CARDS = JSON.parse(fs.readFileSync(new URL('../knowledge/combo-cards.json', import.meta.url), 'utf8')).cards || {}; } catch { CARDS = {}; }
   return CARDS;
 }
-export const cardFor = (key) => loadCards()[key] || null;
+// a card the writing chats made first; else one written in the app (paid, marked as such on the card)
+export const cardFor = (key) => loadCards()[key] || appCards()[key] || null;
 
 // Every number of one chart, by spot: "name.middle" -> [{ n, sum }, ...].
 function valuesBySpot(inputs) {

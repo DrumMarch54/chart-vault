@@ -827,6 +827,10 @@ html[data-theme="dark"]:not(.light) .mpop { --p-spot: #f0b64a; --p-name: #ff8fb8
 .nc-made { padding: 4px 12px 8px; font-size: 14px; color: var(--muted); }
 .nc-foot { border-top: 1px solid var(--panel2); padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 8px; }
 .nc-offbox[hidden] { display: none; }
+.nc-write { padding: 0 14px 12px; display: flex; flex-direction: column; gap: 6px; }
+.ai-log-row { padding: 8px 0; border-top: 1px solid var(--panel2); }
+.ai-log-row:first-child { border-top: 0; }
+.ai-log-top { display: flex; justify-content: space-between; gap: 10px; }
 .nc-offbox { display: flex; flex-direction: column; gap: 8px; }
 .nc-offbox .maskq { width: 100%; box-sizing: border-box; font-size: 16px; padding: 10px 12px; border-radius: 12px; resize: vertical; }
 .mverdict.ok { background: var(--ok-bg); color: var(--ok-ink); } .mverdict.mid { background: var(--other-bg); color: var(--other-ink); } .mverdict.err { background: var(--bad-bg); color: var(--bad-ink); }
