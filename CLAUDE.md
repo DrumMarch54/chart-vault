@@ -396,7 +396,7 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   is" (`server/spot-what.js`, positions.md words only, no line rather than a guess), the spot's points, About N in General
   (one folded row), Connected Diamonds = ONLY what makes the number and what it helps make (`server/connections.js`: PARTS +
   `MADE_BY`, proven on every chart shape in test/connections.test.js; the drawing carries its inputs as `data-inputs`), Ask.
-  No Quick Gist, no jump chips, no Name Cleanse advice on the essence or a psyche chart (a birth date cannot change).
+  No Quick Gist, no jump chips, no Name Cleanse words anywhere (owner 2026-11-27: "just remove all of it"; `CLEANSE` in meaning.js).
   A diamond with no course words for its spot opens STRAIGHT to its number's general guide (owner 2026-11-27: the course
   rarely writes about a diamond in a spot; use the same source as About N in General), never "no words yet".
 - A center's COMBINATION is the two numbers in its circle, main + extra vibration, in the course, in the owner's
