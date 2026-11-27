@@ -287,3 +287,16 @@ psyche charts"):
 interpret three of them, it just becomes kind of like too much or something. I mean it's good, but I don't
 know." (Claude's answer: every card is TWO numbers; when the two make an aura, one closing line names it.)
 The owner then asked how this gets built; the design talk follows in the chat, nothing decided yet.
+
+## How it gets built (the owner's decisions, 2026-11-27; mockup https://claude.ai/artifact/NpKJYm5nJWbMsE2e7ANTX1)
+- BOTH: "both sounds good. If one is missing that wasn't already written here, then I should be able to tap it
+  in the app and it writes it there." A card depends only on the kind of pair and the two numbers, never on the
+  person: written once (by a Claude session ahead of time, or by the app's AI on the first tap, through
+  server/ai.js, the cost shown on the row before the tap), stored, then free on every chart with that pair.
+- Tapping a number lists its neighbors as rows, each with the pair's phrase; a row opens the card.
+- Layout A (folds), "I kind of like A a little more": the pair, the phrases (one big, the others under it),
+  By Position, then folds: The Reasoning, In Balance and Out of Balance (green / red), What They Share, What the
+  Course Says; "Made together with ..." for the third number; This Is Off (the owner types what is wrong, the
+  card is rewritten, the note is kept as a rule).
+- THE CARD IS NEVER SHORTENED TO FIT: the first mockup dropped the reasoning lines and the owner noticed at once
+  ("did you shrink the little interpretive bits to fit them in the app or something?"). Folding is how it fits.
