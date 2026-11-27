@@ -150,15 +150,14 @@
     // About the number in general (owner 2026-11-23): the owner's own guide and Number Notes, wherever it sits. One
     // folded row: its title and opening lines; open = the opening lines in full, every section of the guide as
     // written, then the owner's notes. Under the spot's own words, never mixed into them.
-    const guideRow = (text, g) => {
-      if (!g) return null;
+    const guideBody = (g) => {
       const groups = [...(g.groups || []).map((x) => ({ ...x, title: /^(?:Balanced|Unbalanced) Manifestation$/.test(x.title) ? x.title.replace(' Manifestation', '') : x.title })),
         ...(g.notes || []).map((x) => ({ title: x.title ? `Your Notes on ${x.title}` : 'Your Number Notes', points: x.points, notes: true }))];
-      const body = h('div', { class: 'ns-guide' }, g.intro ? h('div', { class: 'mblk mguide-i' }, ...boldParts(g.intro)) : null,
-        ...groups.map((x) => group(x.notes ? { ...x, title: x.title } : x)),
+      return h('div', { class: 'ns-guide' }, g.intro ? h('div', { class: 'mblk mguide-i' }, ...boldParts(g.intro)) : null,
+        ...groups.map(group),
         h('div', { class: 'mblk mfoot-from' }, `From ${[g.book ? `your ${g.book}` : null, g.notes ? 'your Number Notes' : null].filter(Boolean).join(' and ')}`));
-      return openRow({ big: g.name || `About ${text}`, small: g.alt || null, tail: true, body, onOpen: () => count('meaning.number_guide') });
     };
+    const guideRow = (text, g) => (g ? openRow({ big: g.name || `About ${text}`, small: g.alt || null, tail: true, body: guideBody(g), onOpen: () => count('meaning.number_guide') }) : null);
     // A combination's points (owner 2026-11-07): the course writes "3 + 6 Combinations (and 12/3 + 6, 3 + 15/6, etc.)" as
     // one family, so some points are about one exact compound number. A point that names a compound this chart does NOT
     // have moves to its own group, titled with those numbers, so the family's words never pass for this chart's own.
@@ -271,9 +270,19 @@
           return `What this ${num} helps make${on}: beside ${partText(other)}`;
         };
         const diaRow = (r) => openRow({ small: howOf(r), big: `${short(r)} ${r.text}${r.name ? ` · ${r.name}` : ''}`, onOpen: () => count('meaning.diamond'),
-          body: h('div', {}, h('div', { class: 'mblk' }, top(r)),
-            wordsBody({ bits: r.bits, passages: r.passages, empty: `The course has no words yet for ${r.text} as the ${short(r)}.` }),
-            r.guide && r.sum !== m.sum ? h('div', { class: 'ns-sub2' }, label(`About ${r.text} in General`, 'gen'), ...guideRow(r.text, r.guide)) : null) });
+          body: diaBody(r) });
+        // A diamond opens to the course's words for it in this spot; the course rarely has any (owner 2026-11-27: "there
+        // really isn't any course material on what a certain diamond means in positions like this"), so then it opens
+        // straight to the number's general guide, the same source as About N in General above. With course words, the
+        // guide is one folded row under them.
+        function diaBody(r) {
+          const own = r.bits || r.passages.length;
+          return h('div', {}, h('div', { class: 'mblk' }, top(r)),
+            own ? wordsBody({ bits: r.bits, passages: r.passages }) : null,
+            own && r.guide ? h('div', { class: 'ns-sub2' }, label(`About ${r.text} in General`, 'gen'), ...guideRow(r.text, r.guide)) : null,
+            !own && r.guide ? h('div', { class: 'ns-sub2' }, label(`${r.text} · ${r.name || 'In General'}`, 'gen'), r.guide.alt ? h('div', { class: 'ns-empty ns-alt' }, r.guide.alt) : null, guideBody(r.guide)) : null,
+            !own && !r.guide ? wordsBody({ empty: `The course has no words yet for ${r.text} as the ${short(r)}.` }) : null);
+        }
         const dias = h('section', { class: 'ns-sec' }, label('Connected Diamonds', 'dia'),
           ...(m.related.length ? m.related.flatMap(diaRow) : [h('div', { class: 'ns-empty' }, `${m.text} here is not part of a diamond.`)]));
         // the circle's combination (main + sub vibration), until its cards come

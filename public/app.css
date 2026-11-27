@@ -788,6 +788,7 @@ html[data-theme="dark"]:not(.light) .mpop { --p-spot: #f0b64a; --p-name: #ff8fb8
 .ns-strip .mpt + .mpt { border-top-color: var(--line, rgba(127,127,127,.25)); }
 .ns-words .mfoot { border-top: 0; padding-top: 4px; }
 .ns-empty { padding: 4px 14px 14px; color: var(--muted); font-size: 15px; }
+.ns-alt { padding-bottom: 4px; font-style: italic; }
 .ns-row { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: none; border: 0; border-top: 1px solid var(--panel2); border-radius: 0; color: var(--text); font: inherit; padding: 11px 14px; min-height: 58px; cursor: pointer; }
 .ns-row[aria-expanded="true"] { background: var(--panel2); }
 .ns-with { flex: 1; min-width: 0; }
