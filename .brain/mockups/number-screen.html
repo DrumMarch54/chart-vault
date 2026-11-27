@@ -1,0 +1,181 @@
+<title>Number Screen Mockup</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one phone-width sheet, the whole screen that opens when a number is tapped; five labeled parts, rows open in place. */
+:root {
+  --bg: #f3f4f8; --panel: #ffffff; --panel2: #e6e8f0; --text: #1d2130; --muted: #5f6475;
+  --accent: #f0b64a; --accent-text: #1b1f2a; --blue: #2e6fd0;
+  --ok-solid: #1d7a43; --bad-solid: #b3261e; --solid-text: #ffffff; --ok-bg: #e4f4ea; --bad-bg: #fbe9e7;
+  --band: #1f2533; --band-text: #ffffff; --line: #d9dce6;
+  --p-spot: #b7791f; --p-pair: #7a4fd0; --p-dia: #1f7f8c; --p-gen: #2e6fd0;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12151d; --panel: #1b1f2a; --panel2: #242938; --text: #f3f4f8; --muted: #a5abbd; --blue: #6fb3ff;
+  --ok-bg: #173123; --bad-bg: #3a1c1a; --band: #2c3346; --line: #2f3547;
+  --p-spot: #f0b64a; --p-pair: #b79cff; --p-dia: #5fd0de; --p-gen: #6fb3ff; color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --bg: #12151d; --panel: #1b1f2a; --panel2: #242938; --text: #f3f4f8; --muted: #a5abbd; --blue: #6fb3ff;
+  --ok-bg: #173123; --bad-bg: #3a1c1a; --band: #2c3346; --line: #2f3547;
+  --p-spot: #f0b64a; --p-pair: #b79cff; --p-dia: #5fd0de; --p-gen: #6fb3ff; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); font: 16px/1.45 var(--font); }
+.wrap { max-width: 430px; margin: 0 auto; padding-block: 16px 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 12px; }
+h1 { font-size: 21px; margin: 0; text-wrap: balance; }
+.note { color: var(--muted); font-size: 14px; margin: 0; }
+.sheet { background: var(--panel); border-radius: 16px; overflow: hidden; border: 1px solid var(--line); }
+.band { background: var(--band); color: var(--band-text); padding: 12px 14px; display: flex; align-items: center; gap: 12px; }
+.num { background: var(--accent); color: var(--accent-text); font-weight: 800; border-radius: 10px; padding: 6px 10px; font-size: 20px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.band .t { min-width: 0; }
+.band .t b { display: block; font-size: 17px; }
+.band .t span { font-size: 13px; opacity: .85; }
+.what { padding: 10px 14px; color: var(--muted); font-size: 14px; border-bottom: 1px solid var(--line); }
+.sec { border-top: 6px solid var(--bg); }
+.slabel { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; font-weight: 800; padding: 13px 14px 6px; display: flex; align-items: center; gap: 8px; color: var(--pc); }
+.slabel::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--pc); }
+.c-spot { --pc: var(--p-spot); } .c-pair { --pc: var(--p-pair); } .c-dia { --pc: var(--p-dia); } .c-gen { --pc: var(--p-gen); }
+.strip { margin: 4px 14px; border-radius: 10px; overflow: hidden; }
+.strip > b { display: block; color: var(--solid-text); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; padding: 5px 10px; }
+.ok > b { background: var(--ok-solid); } .bad > b { background: var(--bad-solid); }
+.ok { background: var(--ok-bg); } .bad { background: var(--bad-bg); }
+.pts { list-style: none; margin: 0; padding: 2px 10px 4px; }
+.pts li { position: relative; padding: 7px 0 7px 16px; border-top: 1px solid var(--line); }
+.pts li:first-child { border-top: 0; }
+.pts li::before { content: ""; position: absolute; left: 2px; top: 15px; width: 6px; height: 6px; border-radius: 50%; background: var(--pc, var(--muted)); }
+.src { font-size: 13px; color: var(--muted); padding: 4px 14px 0; }
+.btnrow { padding: 8px 14px 12px; }
+.btn { width: 100%; min-height: 46px; border-radius: 12px; border: 0; background: var(--panel2); color: var(--text); font: inherit; font-weight: 600; cursor: pointer; }
+.row { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: none; border: 0; border-top: 1px solid var(--line); color: inherit; font: inherit; padding: 11px 14px; min-height: 58px; cursor: pointer; }
+.row .with { flex: 1; min-width: 0; }
+.row .with small { display: block; color: var(--muted); font-size: 13px; }
+.row .with b { display: block; font-size: 16px; }
+.row .chev { color: var(--muted); font-size: 20px; transition: transform .15s; }
+.row[aria-expanded="true"] .chev { transform: rotate(90deg); }
+.row[aria-expanded="true"] { background: var(--panel2); }
+.row:focus-visible, .btn:focus-visible, .fold > summary:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
+@media (prefers-reduced-motion: reduce) { .row .chev { transition: none; } }
+.tag { font-size: 11px; font-weight: 700; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 7px; white-space: nowrap; }
+.tag.new { color: var(--p-pair); border-color: var(--p-pair); }
+.open { border-top: 1px solid var(--line); background: var(--bg); padding: 10px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; --pc: var(--p-pair); }
+.pairhead { padding: 12px 12px 0; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.plus { color: var(--muted); font-weight: 700; }
+.chip { background: var(--panel2); border-radius: 10px; padding: 5px 9px; font-size: 14px; }
+.chip b { font-variant-numeric: tabular-nums; }
+.phrases { padding: 10px 12px 4px; display: flex; flex-direction: column; gap: 2px; }
+.phrases .main { font-size: 21px; font-weight: 800; line-height: 1.2; text-wrap: balance; }
+.phrases .alt { color: var(--muted); font-size: 15px; }
+.part { border-top: 1px solid var(--line); margin-top: 8px; }
+.plabel { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; padding: 11px 12px 3px; }
+.part p { margin: 0; padding: 2px 12px 4px; }
+.part .pts { padding: 0 12px 4px; }
+.n { color: var(--p-pair); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.quote { border-left: 3px solid var(--p-pair); padding: 2px 0 2px 10px; margin: 2px 12px 6px; }
+.quote small { display: block; color: var(--muted); font-size: 13px; }
+.best { background: var(--ok-bg); border-radius: 10px; margin: 2px 12px 6px; padding: 8px 10px; }
+.worst { background: var(--bad-bg); border-radius: 10px; margin: 2px 12px 10px; padding: 8px 10px; }
+.mine { font-size: 12px; color: var(--muted); padding: 0 12px 6px; }
+.empty { padding: 4px 4px; color: var(--muted); font-size: 14px; }
+.made { padding: 2px 14px 10px; font-size: 14px; color: var(--muted); }
+.fold > summary { list-style: none; cursor: pointer; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; min-height: 52px; }
+.fold > summary::-webkit-details-marker { display: none; }
+.fold > summary::after { content: "Show More"; color: var(--blue); font-size: 14px; font-weight: 600; white-space: nowrap; }
+.fold[open] > summary::after { content: "Show Less"; }
+.fold .in { padding: 0 14px 12px; }
+.ask { margin: 4px 14px 14px; min-height: 48px; border-radius: 12px; border: 2px solid var(--panel2); background: var(--bg); color: var(--muted); display: flex; align-items: center; padding: 0 14px; }
+.gone { font-size: 13px; color: var(--muted); border: 1px dashed var(--line); border-radius: 12px; padding: 10px 12px; }
+</style>
+
+<div class="wrap">
+  <h1>The Screen When You Tap a Number</h1>
+  <p class="note">A drawing, not the app. Elvis Aaron Presley, 8 January 1935. You tapped his public aura. Rows open when tapped.</p>
+
+  <div class="sheet">
+    <div class="band"><span class="num">17/8</span><div class="t"><b>Public Aura</b><span>Name Chart · The Star</span></div></div>
+    <div class="what">What this spot is: how strangers and the public see them.</div>
+
+    <!-- 1 -->
+    <div class="c-spot">
+      <div class="slabel">17/8 as a Public Aura</div>
+      <div class="strip ok"><b>In Balance</b><ul class="pts">
+        <li><strong>Spotlight, star quality</strong>, an immortality number; fascinating, memorable in public.</li>
+        <li><strong>Archetypal beauty</strong> in how you are perceived.</li>
+        <li>Brings out the <strong>spiritual side of the 8</strong> more than the material.</li>
+      </ul></div>
+      <div class="strip bad"><b>Out of Balance</b><ul class="pts">
+        <li><strong>Negative spotlight, paranoia</strong>, many problems.</li>
+        <li><strong>Fear, private details revealed</strong>; uncomfortable.</li>
+      </ul></div>
+      <div class="src">Short points from the course. Nothing added.</div>
+      <div class="btnrow"><button class="btn">Course Words</button></div>
+    </div>
+
+    <!-- 2 -->
+    <div class="sec c-gen">
+      <div class="slabel">About 17/8 in General</div>
+      <details class="fold"><summary><span><b>The Star</b> · The Spotlight Number</span></summary>
+        <div class="in">This energy is the “Star of the Magi,” a vibration of immortality, peace, and hope that shines brightly enough to be remembered long after its physical presence is gone. <span class="note">The whole guide entry and Number Notes follow here, as today.</span></div>
+      </details>
+    </div>
+
+    <!-- 3 -->
+    <div class="sec c-dia">
+      <div class="slabel">Connected Diamonds</div>
+      <button class="row" aria-expanded="false" data-open="d1"><div class="with"><small>What makes this 17: Day 8 beside First Name 18/9</small><b>Public Diamond 89/8</b></div><span class="chev">›</span></button>
+      <div class="open" id="d1" hidden><div class="empty">Opens the same way: the course’s words for 89/8 as a public diamond where the course has them, and an “In This Spot” explanation, marked as an interpretation, where it has none.</div></div>
+      <button class="row" aria-expanded="false" data-open="d2"><div class="with"><small>What this 17 helps make: beside Friends Aura 17/8</small><b>Mental Diamond 88/7 · Master of Karma</b></div><span class="chev">›</span></button>
+      <div class="open" id="d2" hidden><div class="empty">Opens the same way, for 88/7 as the name chart’s mental diamond.</div></div>
+      <div class="made">Only diamonds this number is part of. Sub diamond 77/5 is gone from here: it belongs to the mind center.</div>
+    </div>
+
+    <!-- 4 -->
+    <div class="sec c-pair">
+      <div class="slabel">With Its Neighbors</div>
+      <button class="row" aria-expanded="true" data-open="n1"><div class="with"><small>With Mind Center 16/7</small><b>Nervous Celebrity</b></div><span class="chev">›</span></button>
+      <div class="open" id="n1">
+        <div class="card">
+          <div class="pairhead"><span class="chip">Public Aura <b>17/8</b></span><span class="plus">+</span><span class="chip">Mind Center <b>16/7</b></span><span class="tag new">New · For You to Grade</span></div>
+          <div class="phrases"><span class="main">Nervous Celebrity</span><span class="alt">Famous and Afraid of It · The Spotlight Hurts</span></div>
+          <div class="part"><div class="plabel">By Position</div>
+            <p>The public sees a star, someone they cannot look away from <span class="n">(17/8)</span>. Behind that, their own thinking is anxious and expects loss <span class="n">(16/7)</span>.</p></div>
+          <div class="part"><div class="plabel">What They Share</div>
+            <p>Fear of being exposed. The guide lists “visibility allergy” under <span class="n">17/8</span>, and <span class="n">16/7</span> is the fear of loss. It is doubled.</p></div>
+          <div class="part"><div class="plabel">What the Course Says</div>
+            <div class="quote"><small>Of 16/7 with 17/8 in a mind center:</small>“can create a strong visibility allergy and fear of the world. Sensitive private matters become public, creating great fear and anxiety.”</div></div>
+          <div class="part"><div class="plabel">My Reasoning</div>
+            <ul class="pts">
+              <li>The aura brings attention in <span class="n">(17/8)</span>. The mind it lands on reads attention as danger <span class="n">(16/7)</span>.</li>
+              <li>The more famous they get <span class="n">(17/8)</span>, the more they withdraw <span class="n">(16/7)</span>.</li>
+              <li>A public aura is meant to shield the mind center. This one lights it up instead <span class="n">(17/8)</span>, so the anxious thoughts get seen <span class="n">(16/7)</span>.</li>
+            </ul>
+            <div class="mine">Past the course: reasoning from the two numbers.</div></div>
+          <div class="part"><div class="plabel">At Its Best</div>
+            <div class="best">Draws a crowd <span class="n">(17/8)</span> and gives it something thoughtful <span class="n">(16/7)</span>.</div>
+            <div class="plabel">At Its Worst</div>
+            <div class="worst">Is watched by everyone <span class="n">(17/8)</span> and hides from them <span class="n">(16/7)</span>.</div></div>
+        </div>
+      </div>
+      <button class="row" aria-expanded="false" data-open="n2"><div class="with"><small>With First Name 18/9</small><b>Not Written Yet</b></div><span class="chev">›</span></button>
+      <div class="open" id="n2" hidden><div class="empty">No card yet. Tapping this puts it on the list for the next writing chat. Nothing is charged.</div></div>
+      <button class="row" aria-expanded="false" data-open="n3"><div class="with"><small>With Day 8</small><b>Not Written Yet</b></div><span class="chev">›</span></button>
+      <div class="open" id="n3" hidden><div class="empty">No card yet. Tapping this puts it on the list for the next writing chat. Nothing is charged.</div></div>
+    </div>
+
+    <!-- 5 -->
+    <div class="sec">
+      <div class="slabel" style="color: var(--muted)">Ask About This</div>
+      <div class="ask">Type a question about this spot…</div>
+    </div>
+  </div>
+
+  <div class="gone"><b>What changed from today’s screen:</b> the title once, not three times · no Quick Gist (it repeated the points) · no diamonds that are not connected · every connected diamond listed · neighbors and their cards added near the bottom · long parts folded.</div>
+</div>
+
+<script>
+document.querySelectorAll('.row[data-open]').forEach((r) => r.addEventListener('click', () => {
+  const p = document.getElementById(r.dataset.open); const on = p.hidden;
+  p.hidden = !on; r.setAttribute('aria-expanded', String(on));
+}));
+</script>

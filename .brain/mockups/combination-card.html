@@ -1,0 +1,122 @@
+<title>Combination Cards Mockup</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one phone-width column; step 1 the rows under a tapped number, step 2 the card with the chat's own parts, word for word. */
+:root {
+  --bg: #f3f4f8; --panel: #ffffff; --panel2: #e6e8f0; --text: #1d2130; --muted: #5f6475;
+  --accent: #f0b64a; --accent-text: #1b1f2a; --blue: #2e6fd0;
+  --ok-bg: #e4f4ea; --ok-ink: #1d7a43;
+  --band: #1f2533; --band-text: #ffffff; --pair: #7a4fd0; --line: #d9dce6;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12151d; --panel: #1b1f2a; --panel2: #242938; --text: #f3f4f8; --muted: #a5abbd;
+  --accent: #f0b64a; --accent-text: #1b1f2a; --blue: #6fb3ff;
+  --ok-bg: #173123; --ok-ink: #6fd596;
+  --band: #2c3346; --band-text: #ffffff; --pair: #b79cff; --line: #2f3547; color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --bg: #12151d; --panel: #1b1f2a; --panel2: #242938; --text: #f3f4f8; --muted: #a5abbd;
+  --accent: #f0b64a; --accent-text: #1b1f2a; --blue: #6fb3ff;
+  --ok-bg: #173123; --ok-ink: #6fd596;
+  --band: #2c3346; --band-text: #ffffff; --pair: #b79cff; --line: #2f3547; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); font: 16px/1.45 var(--font); }
+.wrap { max-width: 430px; margin: 0 auto; padding-block: 16px 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 14px; }
+h1 { font-size: 21px; margin: 0; text-wrap: balance; }
+.note { color: var(--muted); font-size: 14px; margin: 0; }
+.step { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin: 10px 0 0; }
+.sheet { background: var(--panel); border-radius: 16px; overflow: hidden; border: 1px solid var(--line); }
+.band { background: var(--band); color: var(--band-text); padding: 12px 14px; display: flex; align-items: center; gap: 12px; }
+.num { background: var(--accent); color: var(--accent-text); font-weight: 800; border-radius: 10px; padding: 6px 10px; font-size: 18px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.band .t { min-width: 0; }
+.band .t b { display: block; font-size: 16px; }
+.band .t span { font-size: 13px; opacity: .8; }
+.slabel { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; padding: 14px 14px 4px; }
+.row { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: none; border: 0; border-top: 1px solid var(--line); color: inherit; font: inherit; padding: 12px 14px; min-height: 56px; cursor: pointer; }
+.row .with { flex: 1; min-width: 0; }
+.row .with small { display: block; color: var(--muted); font-size: 13px; }
+.row .with b { display: block; font-size: 16px; }
+.row .chev { color: var(--muted); font-size: 20px; }
+.row.on { background: var(--panel2); }
+.row:focus-visible, .btn:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
+.new { font-size: 11px; font-weight: 700; color: var(--pair); border: 1px solid var(--pair); border-radius: 999px; padding: 1px 7px; white-space: nowrap; }
+.pairhead { padding: 12px 14px 0; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.pairhead .plus { color: var(--muted); font-weight: 700; }
+.chip { background: var(--panel2); border-radius: 10px; padding: 5px 9px; font-size: 14px; }
+.chip b { font-variant-numeric: tabular-nums; }
+.phrases { padding: 10px 14px 4px; display: flex; flex-direction: column; gap: 2px; }
+.phrases .main { font-size: 22px; font-weight: 800; line-height: 1.2; text-wrap: balance; }
+.phrases .alt { color: var(--muted); font-size: 15px; }
+.part { border-top: 1px solid var(--line); margin-top: 10px; }
+.part p { margin: 0; padding: 2px 14px 4px; }
+.pts { list-style: none; margin: 0; padding: 0 14px 4px; }
+.pts li { position: relative; padding: 9px 0 9px 18px; border-top: 1px solid var(--line); }
+.pts li:first-child { border-top: 0; padding-top: 2px; }
+.pts li::before { content: ""; position: absolute; left: 2px; top: 17px; width: 7px; height: 7px; border-radius: 50%; background: var(--pair); }
+.pts li:first-child::before { top: 10px; }
+.n { color: var(--pair); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.quote { border-left: 3px solid var(--pair); padding: 2px 0 2px 10px; margin: 2px 14px 6px; }
+.quote small { display: block; color: var(--muted); font-size: 13px; }
+.best { background: var(--ok-bg); border-radius: 10px; margin: 2px 14px 6px; padding: 9px 11px; }
+.mine { font-size: 12px; color: var(--muted); padding: 0 14px 6px; }
+.foot { display: flex; gap: 8px; padding: 12px 14px; border-top: 1px solid var(--line); margin-top: 10px; }
+.btn { flex: 1; min-height: 46px; border-radius: 12px; border: 0; background: var(--panel2); color: var(--text); font: inherit; font-weight: 600; cursor: pointer; }
+.said { margin: 0 14px 12px; font-size: 14px; color: var(--ok-ink); }
+</style>
+
+<div class="wrap">
+  <h1>Combination Cards: How It Could Look</h1>
+  <p class="note">A drawing to pick from, not the app. The card below is the reading you approved in the chat, word for word, in the same parts.</p>
+
+  <p class="step">Step 1 · You tap the emotion center on a chart</p>
+  <div class="sheet">
+    <div class="band"><span class="num">13/4</span><div class="t"><b>Emotion Center</b><span>What they feel inside</span></div></div>
+    <div class="slabel">This Number With Its Neighbors</div>
+    <button class="row on"><div class="with"><small>With 8 in the Same Circle</small><b>The Rebel and the Judge</b></div><span class="chev">›</span></button>
+    <button class="row"><div class="with"><small>With Love Life Aura 15/6</small><b>Not written yet</b></div><span class="new">Write It · about 4¢</span></button>
+    <button class="row"><div class="with"><small>With Associates Aura 7</small><b>Not written yet</b></div><span class="new">Write It · about 4¢</span></button>
+    <div class="slabel">This Number by Itself</div>
+    <button class="row"><div class="with"><b>13/4 in the Emotion Center</b><small>The course's words for this spot</small></div><span class="chev">›</span></button>
+  </div>
+
+  <p class="step">Step 2 · You tap the first row</p>
+  <div class="sheet">
+    <div class="pairhead"><span class="chip">Emotion Center <b>13/4</b></span><span class="plus">+</span><span class="chip">Colored by <b>8</b></span></div>
+    <div class="phrases"><span class="main">The Rebel and the Judge</span><span class="alt">Gas and Brake · Starts, Then Doubts</span></div>
+
+    <div class="part"><div class="slabel">By Position</div>
+      <p>Inside, they want to tear up what exists and build new <span class="n">(13/4)</span>, with a quieter pull underneath that says hold the line <span class="n">(8)</span>.</p>
+    </div>
+
+    <div class="part"><div class="slabel">What They Share</div>
+      <p>The one thing both numbers agree on is “I’m on my own” <span class="n">(13/4, 8)</span>. It is hard for them to receive care.</p>
+    </div>
+
+    <div class="part"><div class="slabel">What the Course Says</div>
+      <div class="quote"><small>Of 13/4 with 8 in the emotion center:</small>“a kind of speeder/brake … You throw yourself into something new, but immediately have doubts and pull back.”</div>
+    </div>
+
+    <div class="part"><div class="slabel">My Reasoning</div>
+      <ul class="pts">
+        <li>The 8 does not only brake, it judges <span class="n">(8)</span>. The wish for change <span class="n">(13/4)</span> arrives already feeling guilty: “who are you to want that?”</li>
+        <li>It sits below the name line, so they do not see a conflict. They just feel moody, restless, suddenly cold. Others notice before they do.</li>
+        <li>Change comes in ruptures. 8 endures under pressure <span class="n">(8)</span>, 13/4 is sudden rebirth <span class="n">(13/4)</span>: they put up with something for years, then end it overnight.</li>
+        <li>In love: stays out of duty <span class="n">(8)</span> while longing for something else <span class="n">(13/4)</span>.</li>
+      </ul>
+      <div class="mine">Past the course: the app’s own reasoning from the two numbers.</div>
+    </div>
+
+    <div class="part"><div class="slabel">At Its Best</div>
+      <div class="best">A reformer <span class="n">(13/4)</span> with staying power <span class="n">(8)</span>. Most people who want change quit; they have the discipline to finish a reinvention and to hold steady in a crisis.</div>
+    </div>
+
+    <div class="foot"><button class="btn" id="off">This Is Off</button><button class="btn">Open the Course Words</button></div>
+    <p class="said" id="said" hidden>A box opens here. You type what is wrong, the card is rewritten, and your note is kept as a rule.</p>
+  </div>
+</div>
+
+<script>
+document.getElementById('off').addEventListener('click', () => { const s = document.getElementById('said'); s.hidden = !s.hidden; });
+</script>
