@@ -175,15 +175,11 @@ test('every card from a course PDF says its book and page; a hand-written point 
   const rule = meaningFor({ chart: 'vocation', position: 'heartExtra', sum: 13 }).bits.groups.find((g) => g.title === 'When Choosing a Name');
   assert.ok(rule && /secondary vibration/.test(rule.points[0])); assert.equal(rule.cites[0].page, 4);
   assert.ok(!meaningFor({ chart: 'name', position: 'heartExtra', sum: 13 }).bits?.groups.some((g) => g.title === 'When Choosing a Name'), 'the booklet rules are for the sub-charts only');
-  // the two lectures (2026-10-22): sub-chart rules by the minute, the Name Cleanse group on the five hard numbers, once
+  // the sub-chart rules lecture by the minute (2026-10-22)
   const seven = meaningFor({ chart: 'vocation', position: 'solar', sum: 7 }).bits.groups.find((g) => g.title === 'When Choosing a Name');
   const i7 = seven.points.findIndex((p) => /7 is susceptible/.test(p));
   assert.deepEqual(seven.cites[i7], { book: 'Sub-chart Rules lecture', at: '36:54' });
   assert.ok(seven.points.findIndex((p) => /First priority/.test(p)) < i7, 'the position\'s general rule comes before the number\'s own');
-  const eleven = meaningFor({ chart: 'vocation', position: 'heart', sum: 11 });
-  assert.ok(eleven.bits.groups.some((g) => g.title === 'Name Cleanse'), 'the Name Cleanse group on an 11');
-  assert.ok(!eleven.nameChart.bits.groups.some((g) => g.title === 'Name Cleanse'), 'not again in the name chart twin');
-  assert.ok(!meaningFor({ chart: 'name', position: 'heart', sum: 7 }).bits.groups.some((g) => g.title === 'Name Cleanse'), 'a 7 has no Name Cleanse group');
   const dharma = meaningFor({ chart: 'essence', position: 'dharmaDiamond', sum: 15 });
   assert.deepEqual(dharma.bits.groups[0].cites, [{ book: 'Essence book', page: 47 }]);
   assert.match(dharma.bits.groups[0].points[0], /charisma code/);
@@ -414,9 +410,11 @@ test('connected diamonds come from the inputs: Elvis public aura 17/8 -> public 
   assert.equal(day.related.find((r) => r.position === 'nexus').short, 'Nexus');
 });
 
-test('no Name Cleanse group on the essence or a psyche chart; it stays on the name chart', () => {
-  const titles = (m) => (m.bits ? m.bits.groups.map((g) => g.title) : []);
-  assert.ok(!titles(meaningFor({ chart: 'outer', position: 'first', sum: 11 })).includes('Name Cleanse'));
-  assert.ok(bitsFor('outer.first:11').groups.some((g) => g.title === 'Name Cleanse'), 'the stored points have it');
-  assert.ok(titles(meaningFor({ chart: 'name', position: 'first', sum: 11 })).includes('Name Cleanse'));
+test('no Name Cleanse words anywhere on the number screen (owner 2026-11-27: "just remove all of it")', () => {
+  for (const [chart, position, sum] of [['outer', 'first', 11], ['name', 'first', 11], ['vocation', 'heart', 11], ['name', 'heart', 16], ['inner', 'solar', 18]]) {
+    const m = meaningFor({ chart, position, sum });
+    const groups = [m.bits, m.nameChart && m.nameChart.bits].filter(Boolean).flatMap((b) => b.groups);
+    assert.ok(!groups.some((g) => g.title === 'Name Cleanse'), `${chart}.${position} ${sum}`);
+    assert.ok(![...m.passages, ...(m.nameChart ? m.nameChart.passages : [])].some((p) => /cleanse/.test(p.source)), `${chart}.${position} ${sum} passages`);
+  }
 });

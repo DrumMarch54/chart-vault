@@ -176,7 +176,7 @@ function take(list, limit, taken) {
   const out = [];
   for (const c of list) {
     if (out.length >= limit) break;
-    if (!c.text || taken.ids.has(c.id)) continue;
+    if (!c.text || taken.ids.has(c.id) || /^lecture-name-cleanse/.test(c.source)) continue; // never the Name Cleanse lecture (owner 2026-11-27)
     const sh = words6(c.text);
     if (sh.size < 3 && c.text.length < 60) continue;
     if (taken.shingles.some((s) => overlaps(s, sh))) continue;
@@ -204,9 +204,12 @@ function loadBits() {
 }
 // A page's points, then the set (or list of sets) "more" names for it (the Diamond Method's path to integration on a day
 // page, the name-change booklet's rules on a sub-chart page): its groups come after the page's own.
+// The Name Cleanse lecture's groups are never shown (owner 2026-11-27: "just remove all of it").
+const CLEANSE = /^hand\/cleanse\//;
 export function bitsFor(key) {
   const { sets, pages, more } = loadBits();
-  const list = [pages[key], ...[].concat(more[key] || [])].map((id) => sets[id]).filter(Boolean);
+  const list = [pages[key], ...[].concat(more[key] || [])].filter((id) => id && !CLEANSE.test(id)).map((id) => sets[id])
+    .map((b) => b && { ...b, groups: b.groups.filter((g) => g.title !== 'Name Cleanse') }).filter((b) => b && b.groups.length);
   if (!list.length) return null;
   const copy = (g) => ({ title: g.title, points: g.points.slice(), ...(g.cites ? { cites: g.cites.map((c) => (c ? { ...c } : null)) } : {}) });
   // several sets with the same heading ("When Choosing a Name" from the booklet and from the lecture) are one card
@@ -320,9 +323,6 @@ function head(chart, position, n) {
   const ds = reduce(n);
   return { chart, chartLabel: chartLabel(chart), position, label: positionLabel(chart, position), short: shortLabel(chart, position), what: spotWhat(chart, position), sum: n, ds, text: fmt(n, ds), name: nameOf(n), verdict: judge(chart, position, n), family: familyOf(chart, position), guide: guideFor(n) };
 }
-// A birth date cannot be changed: name-change advice (the Name Cleanse sets) never shows on the essence or a psyche chart.
-const NO_NAME_CHANGE = new Set(['essence', 'outer', 'inner']);
-const noCleanse = (b) => (b && b.groups.some((g) => g.title === 'Name Cleanse') ? (b.groups.every((g) => g.title === 'Name Cleanse') ? null : { ...b, groups: b.groups.filter((g) => g.title !== 'Name Cleanse') }) : b);
 const okNum = (n) => Number.isInteger(n) && n >= 1 && n <= 99;
 const known = (chart, position) => { const p = BY_KEY.get(`${chart}.${position}`); return p && !p.hidden; };
 
@@ -357,16 +357,14 @@ export function meaningFor({ chart, position, sum, pair = null, rel = null, n: r
   if (k.missing) return { ...base, passages: wordsFor(chart, position, n).map(card), nameChart: null, pair: null, related: [], missing: true };
   const taken = { ids: new Set(), shingles: [] };
   const passages = forSpot(k, chart, position, n, taken, 4);
-  const own = bitsFor(`${chart}.${position}:${n}`);
-  const bits = NO_NAME_CHANGE.has(chart) ? noCleanse(own) : own;
+  const bits = bitsFor(`${chart}.${position}:${n}`);
   const twin = (chart === 'vocation' || chart === 'personality') && NAME_TWIN.has(position) && known('name', position);
-  // the twin and the diamonds keep their own short points, minus the Name Cleanse group the main number already carries
-  const nameChart = twin ? { ...head('name', position, n), bits: noCleanse(bitsFor(`name.${position}:${n}`)), passages: forPosition(k, 'name', position, n, taken, { limit: 2 }) } : null;
+  const nameChart = twin ? { ...head('name', position, n), bits: bitsFor(`name.${position}:${n}`), passages: forPosition(k, 'name', position, n, taken, { limit: 2 }) } : null;
   // A sub-chart's circle: its own course words first, then the name chart's words on the same pair in the same center.
   const pairWords = partners.length ? [...forPair(k, chart, position, n, partners, taken), ...(twin ? forPair(k, 'name', position, n, partners, taken) : [])].slice(0, 3) : [];
   const pbits = partners.map((p) => pairBits(chart, position, n, p) || (twin ? pairBits('name', position, n, p) : null)).filter(Boolean);
   const pairOut = partners.length ? { with: partners.map((p) => ({ sum: p, text: fmt(p, reduce(p)) })), bits: pbits.length ? { groups: pbits.flatMap((b) => b.groups), sources: pbits.flatMap((b) => b.sources) } : null, passages: pairWords } : null;
-  const related = rels.map((r) => ({ ...head(r.chart, r.position, r.sum), role: r.role, n: r.n || 0, parts: r.parts, bits: noCleanse(bitsFor(`${r.chart}.${r.position}:${r.sum}`)), passages: forSpot(k, r.chart, r.position, r.sum, taken, 2) }));
+  const related = rels.map((r) => ({ ...head(r.chart, r.position, r.sum), role: r.role, n: r.n || 0, parts: r.parts, bits: bitsFor(`${r.chart}.${r.position}:${r.sum}`), passages: forSpot(k, r.chart, r.position, r.sum, taken, 2) }));
   return { ...base, bits, passages, nameChart: nameChart && nameChart.passages.length ? nameChart : null, pair: pairOut, related };
 }
 
