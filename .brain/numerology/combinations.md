@@ -346,3 +346,8 @@ The owner then asked how this gets built; the design talk follows in the chat, n
   order: the number in this spot (short points + Course Words), With Its Neighbors (rows that open the
   cards), Connected Diamonds (only real ones, what makes it / what it helps make), About the Number in General
   (folded), Ask About This. One new card on it awaits grading: public aura 17/8 with mind center 16/7.
+- 2026-11-27, in the card-writing chat, after the first five cards by the brief (batch-02): "Yes, keep writing
+  batches." and "I don't need to stop and check the shit every time. Just keep going." So: batches are written,
+  merged and published without a check-in between them; the owner grades in the app. Psyche aura cards (batch-04
+  on) take their words from the Hub's Childhood Aura and Twenties Aura documents and the personal reports; the
+  frame is "As a child ... / In their twenties ..." for the outer psyche chart and "By nature ..." for the inner.
