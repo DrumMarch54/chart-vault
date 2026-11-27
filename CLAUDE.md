@@ -167,9 +167,9 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   over through `quickDraft` (as Look Up and Research do); the vault's chart is never changed.
 
 ## Home and What This Group Shares (2026-11-20)
-- Home order follows the owner's tap counts: search, two top tiles, Quick Chart and Look Up (the owner's word: "the main buttons I use"; By Position
-  and Ask the Vault are the first Tools tiles), Recently Opened (two rows, "Show All", no size buttons: owner 2026-11-20), then Tools as small tiles, the rarely opened ones behind
-  "More Tools" (`homeButtons` in tools.js). Move a tile only on the counts or the owner's word.
+- Home order (owner 2026-11-27): no app name on top (search box + gear), two top tiles Quick Chart and Look Up, then Tools
+  as small tiles (By Position and Ask the Vault first, the rarely opened behind "More Tools", `homeButtons` in tools.js), then
+  Recently Opened (two rows, "Show All", no size buttons). Move a tile only on the counts or the owner's word.
 - Back after a while (owner 2026-11-20, "backing out a million times"): every Back-history step carries its depth
   (`history.state.d`); away over 15 min (`AWAY_MS`, `lastSeen`), `backToStart` rewinds to the first step and opens
   home. A new `pushState` must carry `d: depth + 1`; a `replaceState` keeps `history.state`.

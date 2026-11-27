@@ -171,7 +171,7 @@
   // old symbol. Keyed by the symbol the button was built with, so a button needs nothing new; upgradeIcons runs on render.
   const LINE_ICONS = {
     '◈': '<path d="M12 2.5L20 12L12 21.5L4 12Z"/><path d="M4 12h16"/><circle cx="12" cy="8.5" r="2"/><circle cx="12" cy="15.5" r="2"/>',
-    '⚙': '<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
+    '⚙': '<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
     '⌕': '<circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/>',
     '⌖': '<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.5"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>',
     '?': '<path d="M4 5h16v11H9l-5 4z"/><path d="M10 9a2 2 0 1 1 2.5 2c-.5.2-.5.6-.5 1"/><circle cx="12" cy="13.8" r=".5"/>',
@@ -614,10 +614,10 @@
       lookupUi ? lookupUi.homeButton() : null);
     drawCmpBar(true);
     render(h('div', { class: `screen ${home ? 'home' : ''}` },
-      home ? h('div', { class: 'pagetop hometop' }, h('h1', {}, 'Chart Vault'), $gear) : null,
-      $posHead ? $posHead.node : h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), home ? null : $quickIcon, home ? null : $gear), $filters),
+      // No app name on home (owner 2026-11-27): the gear sits beside the search box, Tools come before Recently Opened.
+      $posHead ? $posHead.node : h('div', { class: 'searchbar' }, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:8px' }, h('div', { class: 'searchbox', style: 'flex:1' }, $input, $clear, $sugg), home ? null : $quickIcon, $gear), $filters),
       home && readingUi ? readingUi.homeBanner() : null,
-      home ? $acts : null, $recent, home && toolsUi ? toolsUi.homeButtons() : null,
+      home ? $acts : null, home && toolsUi ? toolsUi.homeButtons() : null, $recent,
       home || $posHead ? null : $bar, home ? null : $group, home ? null : $grid, home ? null : $sentinel));
     // Recently Opened charts (this phone remembers the last 48), a grid like a search result, only on the home screen.
     if (home && recentIds().length) {
@@ -627,8 +627,7 @@
         if (!items.length) return;
         // No size buttons here (owner 2026-11-20: they looked bad and went unused); the size is the one the search
     // results' − / + set (`gridCols`).
-    // Opening charts is the most used thing in the app (owner's tap counts, 2026-11-20): Recently Opened sits right
-        // under the top tiles, two rows of it, and "Show All" opens the rest so the tools stay one short scroll away.
+        // Recently Opened sits under the Tools (owner 2026-11-27; was above them), two rows, "Show All" opens the rest.
         const cells = items.map(cell);
         let all = false;
         const $more = h('button', { type: 'button', class: 'btn btn-block showall', onclick: () => { all = !all; count('home.recent_all'); trim(); } });
