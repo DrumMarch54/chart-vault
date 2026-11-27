@@ -334,3 +334,15 @@ The owner then asked how this gets built; the design talk follows in the chat, n
   in each spot gets its own card (name chart 3,326; half of all pair slots are covered by about 1,700 cards;
   about 3,000 pairs occur once). Vocation and personality come on top. Too many to write or grade in one go:
   write in order of use, and let the app note which missing cards were tapped so the next session writes those.
+- 2026-11-27, the screen's first part stays AS IT IS TODAY: "I like the way the screen kind of currently is in
+  some way ... it's already written out, and if I actually want to see the full course words, then there's a
+  button for that." So: the short points first, the Course Words button for the full text; not the raw course
+  text up front. Best and worst lines approved in this plain form ("that's much better"): "changes things for
+  real (13/4) and sees them through to the end (8)" / "wants out (13/4) but won't let themselves go (8), so
+  they stay and resent it".
+- The owner did not follow the talk of counts and costs ("I have no clue what you're even talking about"):
+  say it in three plain lines, no numbers of cards, no tables.
+- Whole-screen mockup (Elvis, public aura 17/8): https://claude.ai/artifact/ (see the chat of 2026-11-27);
+  order: the number in this spot (short points + Course Words), With Its Neighbors (rows that open the
+  cards), Connected Diamonds (only real ones, what makes it / what it helps make), About the Number in General
+  (folded), Ask About This. One new card on it awaits grading: public aura 17/8 with mind center 16/7.
