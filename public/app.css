@@ -817,7 +817,7 @@ html[data-theme="dark"]:not(.light) .mpop { --p-spot: #f0b64a; --p-name: #ff8fb8
 .nc-part { border-top: 1px solid var(--panel2); margin-top: 8px; padding-bottom: 4px; }
 .nc-pl { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 700; padding: 11px 12px 3px; }
 .nc-part p { margin: 0; padding: 2px 12px 4px; font-size: 16px; line-height: 1.45; color: var(--text); }
-.nc-n { color: var(--p-pair); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.nc-n { background: var(--accent); color: var(--accent-text); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; border-radius: 6px; padding: 0 5px; font-size: .92em; }
 .nc-quote { border-left: 3px solid var(--p-pair); padding: 2px 0 2px 10px; margin: 2px 12px 6px; font-size: 16px; line-height: 1.45; color: var(--text); }
 .nc-quote small { display: block; color: var(--muted); font-size: 13px; }
 .nc-pts { padding: 0 12px 2px; }
