@@ -300,3 +300,14 @@ The owner then asked how this gets built; the design talk follows in the chat, n
   card is rewritten, the note is kept as a rule).
 - THE CARD IS NEVER SHORTENED TO FIT: the first mockup dropped the reasoning lines and the owner noticed at once
   ("did you shrink the little interpretive bits to fit them in the app or something?"). Folding is how it fits.
+- 2026-11-27, THE MOCKUP WENT WRONG TWICE, and the owner was angry ("we just got done going through multiple
+  rounds ... the shit you were giving me here in the chat was good. I thought that's what we were gonna put in
+  the app ... you just plopped all this text together"). What Claude did: wrote NEW, ungraded lines for the
+  mockup instead of a graded card, renamed and replaced the parts (an In Balance / Out of Balance split in place
+  of At Its Best), and set the reasoning as run-together paragraphs. One new line made no sense to the owner:
+  "Hides from chances that would have suited them (16/7)".
+  RULES: (1) the card in the app has EXACTLY the parts graded in the chat, by the same names, in the same order:
+  The Phrases, By Position, What They Share, What the Course Says, My Reasoning, At Its Best. No In Balance /
+  Out of Balance split. (2) My Reasoning is a list of separate points, a dot and a line between them, never
+  paragraphs. (3) A mockup, a test or an example uses a card the owner graded, word for word; never text made
+  up for the occasion. (4) The corrected layout A above is superseded by this.
