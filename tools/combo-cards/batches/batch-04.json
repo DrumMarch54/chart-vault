@@ -1,0 +1,309 @@
+{
+ "about": "Sixteen cards written 2026-11-27 by a Claude session following tools/combo-cards/BRIEF.md, most-used missing pairs first: a psyche chart's emotion center with the aura beside it (childhood aura lower right, twenties aura lower left), inner and outer psyche chart. Aura words from the Hub's Childhood Aura and Twenties Aura documents and the paid tool's personal reports.",
+ "cards": [
+  {
+   "a": { "spot": "inner.solar", "sum": 12 },
+   "b": { "spot": "inner.lowerRight", "sum": 9 },
+   "written": "2026-11-27",
+   "phrases": ["Tough Kid Who Felt Wronged", "Fought Early, Brooded After", "Guarded and Misread"],
+   "position": "By nature the child in them is a fighter: fair, direct, and guarded about showing feeling (9). The emotional response that goes with it is to turn things over in the head and feel misunderstood (12/3).",
+   "share": { "title": "What Sets Them Apart", "text": "9 pushes people off (9). 12/3 wishes they had understood (12/3)." },
+   "course": {
+    "about": "a 9 in the childhood aura",
+    "text": "\"If others tried to hug you and you didn't like it, you probably pushed them away right away without thinking much about it. You felt safe if you were respected and others didn't come too close.\""
+   },
+   "reasoning": [
+    "A child who says things straight (9) gets told off for it, and concludes that nobody understands them (12/3).",
+    "They kept feelings off their face (9), so the adults guessed wrong about them (12/3).",
+    "The combo guide on 12/3 with 9: an insensitive remark (9), then rejection, then feeling the victim (12/3). Here that loop starts young."
+   ],
+   "best": "Stood up for the smaller ones (9) and learned to explain why it mattered (12/3).",
+   "worst": "Hit first (9) and felt like the injured one afterward (12/3)."
+  },
+  {
+   "a": { "spot": "inner.solar", "sum": 9 },
+   "b": { "spot": "inner.lowerRight", "sum": 11 },
+   "written": "2026-11-27",
+   "phrases": ["Tender Child, Harsh Voice", "Too Soft, So They Got Tough", "Stress From the Start"],
+   "position": "By nature the child in them is very sensitive: easily hurt, unable to defend itself, quick to hide in a world of its own (11/2). The emotional response that goes with it is fire turned inward: push on, and be hard on themselves (9).",
+   "share": { "title": "What Sets Them Apart", "text": "11/2 lets everything in (11/2). 9 shuts the lid (9)." },
+   "course": {
+    "about": "11/2 with 9 in an emotion center (written for the name chart)",
+    "text": "\"can cause stress and fatigue from being too lenient with others (with 11/2) and then becoming angry (9).\""
+   },
+   "reasoning": [
+    "The hard voice (9) is aimed at the soft child (11/2): \"stop being so sensitive.\"",
+    "They could not defend themselves then (11/2), so the anger went inward (9).",
+    "As an adult the same pair shows as helping too much (11/2) and then being furious with themselves for it (9)."
+   ],
+   "best": "Remembers how it felt to be defenseless (11/2) and fights for those who are (9).",
+   "worst": "Gets hurt (11/2) and blames themselves for being hurt (9)."
+  },
+  {
+   "a": { "spot": "inner.solar", "sum": 12 },
+   "b": { "spot": "inner.lowerLeft", "sum": 8 },
+   "written": "2026-11-27",
+   "phrases": ["Guarded and Misjudged", "Keeps Watch, Feels Wronged", "Advice Nobody Takes"],
+   "position": "By nature their twenties side is strong, cautious and in control, with nobody let too close (8). The emotional response under it is to turn things over in the head and feel misunderstood (12/3).",
+   "share": { "title": "What They Share", "text": "Both keep count: 8 remembers every wrong (8), 12/3 feels every slight (12/3)." },
+   "course": {
+    "about": "an 8 in the twenties aura",
+    "text": "\"People weren't allowed to get too close. The defense mechanism was to exert some sort of control over the environment and make sure everyone behaved as they should.\""
+   },
+   "reasoning": [
+    "They hold people at a distance (8) and then feel that nobody knows them (12/3).",
+    "Watching how everyone behaves (8) gives the busy head plenty to brood on (12/3).",
+    "The combo guide on 12/3 with 8: they give advice and it is not respected (8), which feeds the victim feeling (12/3)."
+   ],
+   "best": "Observes people closely (8) and turns what they see into knowledge (12/3).",
+   "worst": "Controls the people around them (8) and feels wronged when they pull away (12/3)."
+  },
+  {
+   "a": { "spot": "inner.solar", "sum": 9 },
+   "b": { "spot": "inner.lowerLeft", "sum": 7 },
+   "written": "2026-11-27",
+   "phrases": ["The Driven Seeker", "Curious Mind, Hard Taskmaster", "Works Away the Worry"],
+   "position": "By nature their twenties side is open and curious, drawn to faraway places, and anxious and withdrawn when out of balance (7). The emotional response under it is fire: push on, and be hard on themselves (9).",
+   "share": { "title": "What Sets Them Apart", "text": "7 watches and wonders (7). 9 acts and judges (9)." },
+   "course": {
+    "about": "a 7 in the twenties aura",
+    "text": "\"you had an open and curious mind and were perhaps also attracted to distant regions and places.\" And: \"In imbalance there could also have been a tendency towards anxiety and to withdraw from the world.\""
+   },
+   "reasoning": [
+    "The curiosity (7) gets a drive behind it (9): they go and see for themselves.",
+    "When anxious (7) they do not rest. They push harder (9).",
+    "They withdraw to think (7) and then scold themselves for having done nothing (9)."
+   ],
+   "best": "Follows a question all the way (7) and does the work it takes (9).",
+   "worst": "Pulls away from people (7) and is hard on themselves for being alone (9)."
+  },
+  {
+   "a": { "spot": "inner.solar", "sum": 9 },
+   "b": { "spot": "inner.lowerRight", "sum": 12 },
+   "written": "2026-11-27",
+   "phrases": ["The Black Sheep Who Fights", "Hurt Child, Hard Driver", "Never Good Enough"],
+   "position": "By nature the child in them feels like the victim of someone else's agenda, withdraws and feels unlovable (12/3). The emotional response that goes with it is fire: push on, and be hard on themselves (9).",
+   "share": { "title": "What Sets Them Apart", "text": "12/3 withdraws (12/3). 9 attacks, and mostly itself (9)." },
+   "course": {
+    "about": "12/3 in the childhood aura",
+    "text": "\"The defence mechanism was to withdraw into yourself and feel that you were unlovable or a black sheep.\""
+   },
+   "reasoning": [
+    "The child's sentence was \"I am not wanted\" (12/3). The 9 answers it with \"then be better\" (9).",
+    "The combo guide: the anger (9) stands like a wall in front of the victim feeling (12/3), so the old hurt is rarely looked at.",
+    "Achievement becomes the way to earn a place (9) that the child felt it did not have (12/3)."
+   ],
+   "best": "Turns a hard start (12/3) into the will to get somewhere (9).",
+   "worst": "Still hears \"unlovable\" from childhood (12/3) and repeats it to themselves (9)."
+  },
+  {
+   "a": { "spot": "inner.solar", "sum": 9 },
+   "b": { "spot": "inner.lowerLeft", "sum": 12 },
+   "written": "2026-11-27",
+   "phrases": ["Big Ideas, Blunt Delivery", "Speaks First, Regrets After", "Misread and Angry About It"],
+   "position": "By nature their twenties side is expansive and mentally awake, and often feels misunderstood by people (12/3). The emotional response under it is fire: push on, and be hard on themselves (9).",
+   "share": { "title": "What They Share", "text": "The course calls 3 and 9 the most masculine numbers: both push outward (12/3, 9)." },
+   "course": {
+    "about": "12/3 in the twenties aura with a 9 beside it",
+    "text": "\"9 and 3 are the most masculine numbers, so you probably had a fairly direct style and said things a bit bluntly. There could have been a tendency sometimes to speak before sensing the environment\""
+   },
+   "reasoning": [
+    "They say it before reading the room (12/3). When it falls flat, they turn on themselves (9).",
+    "Being misunderstood (12/3) makes them angry more than sad (9).",
+    "The same passage says the self-critical 9 can hold them to a high standard (9), so the big ideas get carried out (12/3)."
+   ],
+   "best": "Has large ideas (12/3) and the drive to see them through (9).",
+   "worst": "Blurts out something clumsy (12/3) and beats themselves up over it for days (9)."
+  },
+  {
+   "a": { "spot": "inner.solar", "sum": 6 },
+   "b": { "spot": "inner.lowerLeft", "sum": 10 },
+   "written": "2026-11-27",
+   "phrases": ["The Star With a Warm Heart", "Winner Who Cares", "Shines, Then Comes Home"],
+   "position": "By nature their twenties side is strong and sure, the one who shows they are the best, all on or all off with people (10/1). The emotional response under it is loving and wants harmony (6).",
+   "share": { "title": "What They Share", "text": "Both are well-liked numbers (10/1, 6). 10/1 turns up what stands beside it, and here that is love (6)." },
+   "course": {
+    "about": "a 10/1 in the twenties aura",
+    "text": "\"There may have been people who really looked up to you, and others who really disliked who you were.\""
+   },
+   "reasoning": [
+    "They compete to be the best (10/1), and what they want from winning is to be loved (6).",
+    "10/1 divides people (10/1). The 6 under it wants everyone comfortable (6), so being disliked stings more than they show.",
+    "The all-off phases (10/1) are spent at home with the few they love (6)."
+   ],
+   "best": "Leads from the front (10/1) and looks after the people behind them (6).",
+   "worst": "Shows off (10/1) to be loved (6), and sulks when it earns envy."
+  },
+  {
+   "a": { "spot": "outer.solar", "sum": 9 },
+   "b": { "spot": "outer.lowerLeft", "sum": 12 },
+   "written": "2026-11-27",
+   "phrases": ["The Misread Go-Getter", "Tried Too Hard to Prove It", "Loud Outside, Not Good Enough Inside"],
+   "position": "In their twenties they were expansive and mentally awake, and often felt misunderstood by the people around them (12/3). The emotional response under it is fire: push, hold the feeling down, and be hard on themselves (9).",
+   "share": { "title": "What Sets Them Apart", "text": "12/3 wants to be understood (12/3). 9 would rather be respected (9)." },
+   "course": {
+    "about": "12/3 in the twenties aura with 9 in the psyche chart's emotion center",
+    "text": "\"In imbalance, the number 9 in the psychic solar plexus can also make you very self-critical and talk down to yourself. However, it can also cause you to hold yourself to a high standard and thus be successful in your endeavors.\""
+   },
+   "reasoning": [
+    "In their twenties they competed with friends (9) and then felt left out by them (12/3).",
+    "They took on many things at once (12/3) and judged themselves for each one left unfinished (9).",
+    "Others saw a loud, sure person (12/3). What they felt was not being good enough (9)."
+   ],
+   "best": "Sets a high bar (9) and gathers the knowledge to clear it (12/3).",
+   "worst": "Boasts (12/3), falls short, and punishes themselves for it (9)."
+  },
+  {
+   "a": { "spot": "outer.solar", "sum": 9 },
+   "b": { "spot": "outer.lowerLeft", "sum": 11 },
+   "written": "2026-11-27",
+   "phrases": ["Helps Everyone, Furious Inside", "Soft With Others, Hard on Themselves", "The Burnout Years"],
+   "position": "In their twenties they were very sensitive: easily hurt, slow to speak out, with others stepping over their limits (11/2). The emotional response under it is fire turned inward: push on, and be hard on themselves (9).",
+   "share": { "title": "What Sets Them Apart", "text": "11/2 gives way (11/2). 9 fights (9)." },
+   "course": {
+    "about": "an 11/2 in the twenties aura",
+    "text": "\"There may also have been a feeling that you could not defend yourself against others and that others were always overstepping their bounds.\""
+   },
+   "reasoning": [
+    "They let people walk over them in their twenties (11/2) and saved the anger for themselves (9).",
+    "The course's word for 9 with 2 is stress: giving too much (11/2), then driving themselves on anyway (9).",
+    "The lesson of those years is the 9 turned outward: one firm \"no\" (9) on behalf of the soft part (11/2)."
+   ],
+   "best": "Feels what others need (11/2) and has the strength to act on it (9).",
+   "worst": "Says yes to everyone (11/2) and calls themselves weak for it (9)."
+  },
+  {
+   "a": { "spot": "outer.solar", "sum": 12 },
+   "b": { "spot": "outer.lowerLeft", "sum": 9 },
+   "written": "2026-11-27",
+   "phrases": ["Fighter With a Grievance", "Stood Up, Felt Let Down", "The Cause and the Complaint"],
+   "position": "In their twenties they were direct, fair-minded and ready to fight for a friend or a cause (9). The emotional response under it is to turn it over in the head and feel treated unfairly (12/3).",
+   "share": { "title": "What Sets Them Apart", "text": "9 takes the fight on (9). 12/3 keeps score of how unfair it was (12/3)." },
+   "course": {
+    "about": "a 9 twenties aura with 12/3 in the psyche chart's emotion center",
+    "text": "\"If you did not experience success there could have been a tendency to complain loudly about things and feel like a victim (12/3 psychic solar plexus).\""
+   },
+   "reasoning": [
+    "They fought other people's battles (9) and felt nobody fought theirs (12/3).",
+    "They were honest to the point of hurting (9), then surprised that people pulled back (12/3).",
+    "A sense of justice (9) sits on a sense of grievance (12/3), so every unfairness feels personal."
+   ],
+   "best": "Leads a group through a hard stretch (9) and learns from it what to teach next (12/3).",
+   "worst": "Loses a fight (9) and tells everyone how unfairly they were treated (12/3)."
+  },
+  {
+   "a": { "spot": "outer.solar", "sum": 9 },
+   "b": { "spot": "outer.lowerRight", "sum": 11 },
+   "written": "2026-11-27",
+   "phrases": ["Armor Over the Child", "Cried Easily, Then Stopped", "Comfort, Then Scolding"],
+   "position": "As a child they were very sensitive: easily hurt, quick to cry, unable to defend themselves, hiding in a world of their own (11/2). The emotional response that settled from it is fire turned inward: push on, and be hard on themselves (9).",
+   "share": { "title": "What Sets Them Apart", "text": "11/2 is open and gets hurt (11/2). 9 closes up and gets angry (9)." },
+   "course": {
+    "about": "an 11/2 in the childhood aura",
+    "text": "\"It may have been difficult to speak up, and you may have found that you were easily hurt and cried easily.\""
+   },
+   "reasoning": [
+    "Somewhere in childhood they decided that crying (11/2) was a failure (9).",
+    "They still reach for the comfort food of childhood (11/2) and then scold themselves for it (9).",
+    "Their anger at people who push others around (9) comes from having been the one who was pushed (11/2)."
+   ],
+   "best": "Protects a sensitive child (9) because they were one (11/2).",
+   "worst": "Feels small again (11/2) and takes it out on themselves (9)."
+  },
+  {
+   "a": { "spot": "outer.solar", "sum": 3 },
+   "b": { "spot": "outer.lowerLeft", "sum": 10 },
+   "written": "2026-11-27",
+   "phrases": ["Talks Like a Winner", "Confident and Outspoken", "Leads With Good Cheer"],
+   "position": "In their twenties they were strong and sure, showed they were the best at something, and were all on or all off with people (10/1). The emotional response under it is to talk a feeling out and make a plan of it (3).",
+   "share": { "title": "What They Share", "text": "1 with 3 is the course's pair for strategy and leadership (10/1, 3). 10/1 also turns up whatever stands beside it." },
+   "course": {
+    "about": "3 and 10/1 together in a center (written for the name chart's mind center)",
+    "text": "\"gives great power on the mental level. You become good at strategy and therefore good at leading others. You also gain great optimism and faith in life\""
+   },
+   "reasoning": [
+    "They cover a weak spot by winning (10/1), then explain the win as if it had been the plan (3).",
+    "A feeling gets turned into a goal (3), and the twenties gave them the confidence to chase it (10/1).",
+    "People either looked up to them or could not stand them (10/1). They talked their way past the second group (3)."
+   ],
+   "best": "Believes in themselves (10/1) and can say clearly what they want (3).",
+   "worst": "Has to be the best (10/1) and talks over anyone who doubts it (3)."
+  },
+  {
+   "a": { "spot": "outer.solar", "sum": 6 },
+   "b": { "spot": "outer.lowerLeft", "sum": 10 },
+   "written": "2026-11-27",
+   "phrases": ["Golden Twenties", "Admired and Affectionate", "Popular, and Needs to Be"],
+   "position": "In their twenties they were strong and sure, showed they were the best at something, and were all on or all off with people (10/1). The emotional response under it is loving and wants harmony (6).",
+   "share": { "title": "What They Share", "text": "Both are easy, well-liked numbers (10/1, 6), and 10/1 turns the love up (6)." },
+   "course": {
+    "about": "6 and 10/1 together in an emotion center (written for the name chart)",
+    "text": "\"It adds a \"cosmic\" dimension to love (6), which can lead one to easily feel unconditional love for everything that exists.\""
+   },
+   "reasoning": [
+    "They were the one others looked up to (10/1), and they took care that the others felt good around them (6).",
+    "The defence was to be the best (10/1). The reason for the defence was wanting to be loved (6).",
+    "The off phases, alone in their own world (10/1), were hard on the people who loved them (6)."
+   ],
+   "best": "Wins (10/1) and shares the win with everyone they love (6).",
+   "worst": "Needs to be adored (10/1) and keeps everyone pleased to make sure of it (6)."
+  },
+  {
+   "a": { "spot": "outer.solar", "sum": 6 },
+   "b": { "spot": "outer.lowerLeft", "sum": 11 },
+   "written": "2026-11-27",
+   "phrases": ["Too Kind to Refuse", "Everyone's Favorite Listener", "Gentle Twenties"],
+   "position": "In their twenties they were very sensitive: easily hurt, slow to speak out, with others stepping over their limits (11/2). The emotional response under it is loving and wants harmony (6).",
+   "share": { "title": "What They Share", "text": "Both numbers are about closeness (11/2, 6). It is doubled, and neither sets a limit." },
+   "course": {
+    "about": "the combo guide on 11/2 with 6",
+    "text": "\"A tendency to get overly invested in others' needs and have trouble with personal boundaries (Codependency).\""
+   },
+   "reasoning": [
+    "In their twenties they said what people wanted to hear (11/2), because peace mattered more to them than being right (6).",
+    "They felt responsible for a friend's or partner's mood (6) and soaked it up (11/2).",
+    "The 6 gives them a steady, warm base (6), so the sensitivity made them liked more than it made them ill (11/2)."
+   ],
+   "best": "Reads the mood of a room (11/2) and makes everyone comfortable (6).",
+   "worst": "Stays in a bad relationship (11/2) to keep the harmony (6)."
+  },
+  {
+   "a": { "spot": "outer.solar", "sum": 12 },
+   "b": { "spot": "outer.lowerLeft", "sum": 6 },
+   "written": "2026-11-27",
+   "phrases": ["Liked by All, Feels Unseen", "Charming and Unsure of It", "Pretty Picture, Busy Head"],
+   "position": "In their twenties they had charm and turned heads; it was the time they drew a partner (6). The emotional response under it is to turn it over in the head and feel misunderstood or taken for granted (12/3).",
+   "share": { "title": "What Sets Them Apart", "text": "6 is at ease with people (6). 12/3 doubts what they really think (12/3)." },
+   "course": {
+    "about": "6 and 12/3 together in an emotion center (written for the name chart)",
+    "text": "\"can be tricky because there can be a tendency for a lot of drama and complications.\""
+   },
+   "reasoning": [
+    "People were drawn to them (6), and they wondered what those people wanted from them (12/3).",
+    "Love came easily in their twenties (6). Understanding each other did not (12/3).",
+    "The combo guide: beside a feminine number like 6, the 12/3 goes silent. They feel unvalued by loved ones (12/3) and keep things pleasant anyway (6)."
+   ],
+   "best": "Draws people in (6) and learns from each relationship how people work (12/3).",
+   "worst": "Is surrounded by admirers (6) and feels none of them understands them (12/3)."
+  },
+  {
+   "a": { "spot": "outer.solar", "sum": 12 },
+   "b": { "spot": "outer.lowerRight", "sum": 6 },
+   "written": "2026-11-27",
+   "phrases": ["The Little Peacemaker", "Kept the Peace, Paid for It", "The Good Child Nobody Thanked"],
+   "position": "As a child they were charming and loved by everyone, and kept the family comfortable and in harmony (6). The emotional response that settled from it is to turn things over in the head and feel taken for granted (12/3).",
+   "share": { "title": "What Sets Them Apart", "text": "6 gives to everyone (6). 12/3 counts what came back (12/3)." },
+   "course": {
+    "about": "a 6 in the childhood aura",
+    "text": "\"The defense mechanism was to create harmony in the environment by making sure everyone was comfortable.\""
+   },
+   "reasoning": [
+    "The child's job was everyone's comfort (6). Nobody asked how the child was (12/3).",
+    "They learned that charm brings love (6), and still wonder whether they are loved without it (12/3).",
+    "The course on 6 with 12/3 in an emotion center: giving and giving (6) and never getting it back (12/3). Here the habit began at home."
+   ],
+   "best": "Makes a home feel harmonious (6) and understands what each person in it needs (12/3).",
+   "worst": "Pleases the whole family (6) and resents that it goes unnoticed (12/3)."
+  }
+ ]
+}
