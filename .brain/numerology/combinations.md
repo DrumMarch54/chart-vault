@@ -311,3 +311,18 @@ The owner then asked how this gets built; the design talk follows in the chat, n
   Out of Balance split. (2) My Reasoning is a list of separate points, a dot and a line between them, never
   paragraphs. (3) A mockup, a test or an example uses a card the owner graded, word for word; never text made
   up for the occasion. (4) The corrected layout A above is superseded by this.
+- 2026-11-27: the owner wants the hard side too ("I like the idea of having the unbalanced or out of balance
+  thing as well"): ONE part "At Its Worst" right under "At Its Best", the same size. Nothing else changes.
+  But the first two lines were poor: "with staying power? That just doesn't really make sense". Best and worst
+  lines say a plain thing a person does, each half with its number, like every other line.
+- ONE SCREEN, ONE JOB (owner 2026-11-27): the other chat ("Fix the number meaning screen", session
+  session_012fMnaA3usFXnoYaXapSkoZ, branch claude/fable-position-screen-2ug5gr, nothing built) is redesigning
+  what opens when a number is tapped; the cards belong on that screen. Its findings, measured on Elvis: every
+  aura gets the mind center's sub diamond (public aura 17/8 shown with 77/5, not connected); the real ones are
+  missing (public diamond 89/8, mental diamond 88/7; the day lacks spine diamond 87/6, public diamond, outer,
+  inner, target; life expression, month, year, pillar show no diamonds); empty parts get the general number
+  text as filler; the title three times, Quick Gist repeats the points; 3 to 5 screens long; psyche spots show
+  name-change advice. The owner's asks there, all still wanted: the course's own words for the number IN THAT
+  POSITION; only the diamonds really connected to the tapped number, all of them; the general guide text as a
+  pop-out; an explanation "in the correct context" where the course has none (88/7 as the name chart's mental
+  diamond); the sub-chart books' words for diamonds and centers; no repeats; layout and colors reassessed.
