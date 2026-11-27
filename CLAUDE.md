@@ -76,6 +76,8 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   two: "MrBeast 16" (the day's digit sum + 9: the 7th -> 16) and "MrBeast 0". The sheet's Overview lists them all as
   "Charts of This Person" (`GET /api/images/:id/charts`, same `images.title`), each labeled Birth Name / Known As /
   One Name With the Day / One Name With 0 (`chartKind` in app.js).
+  A family word under the picture (Mom, Dad, Me) is a LABEL, never a known name: no chart is ever made from it
+  (owner 2026-11-27: "Mom 18" made by the 2026-11-26 batch). Known-name charts only for a public stage or pen name.
 - The chart sheet is TABBED (owner's design 1, 2026-11-26): header, Pyramid / Year Rows / Similar / More, then
   Overview / Archetypes / Reading / Ask AI. More = Quick Chart, Google, Share, Screenshot, Edit Name and Date (the
   one edit form: name under the picture + typed name + date). Design rules: `public/CLAUDE.md` "Designing".

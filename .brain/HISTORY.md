@@ -1130,3 +1130,10 @@ carry the older rule; update them from a chat in those repos (never push to a si
 - Found while testing: a tapped diamond is matched by identity, so the screen keeps the big diamond it drew (`Bd`);
   a fresh `bigDiamond(n)` never matches. And 1-9 DO sit inside other numbers: 5 is the inner imbalanced diamond of 50.
 
+
+## 2026-11-27 "Mom 18" and "Dad 18": known-name charts made from a family label
+- On 2026-11-26 (08:47-09:02, builds f7b6577 / 1c4308f) a chat ran the 2026-11-25 known-name rule over the whole
+  vault: about 230 new Quick charts (#777-#1005), "X 16" + "X 0" for every one-word title. It took the owner's
+  labels "Mom" and "Dad" as known names and made "Mom 18", "Mom 0" (#829, #830), "Dad 18", "Dad 0" (#924, #925).
+- Owner, on finding "Mom 18" in the viewer: "you definitely did not need to make a chart with the word mom".
+- Rule: a family word under the picture is a label, never a name to chart. Only public stage or pen names.
