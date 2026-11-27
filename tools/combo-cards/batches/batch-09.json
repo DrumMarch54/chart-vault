@@ -1,0 +1,315 @@
+{
+ "about": "Sixteen cards written 2026-11-27 by a Claude session following tools/combo-cards/BRIEF.md, most-used missing pairs first: psyche emotion centers with the childhood or twenties aura beside them, and childhood aura with twenties aura, inner and outer psyche chart.",
+ "cards": [
+  {
+   "a": { "spot": "outer.solar", "sum": 9 },
+   "b": { "spot": "outer.lowerRight", "sum": 7 },
+   "written": "2026-11-27",
+   "phrases": ["Dreamy Child, Driven Adult", "Had to Fend for Themselves", "Gentle Start, Hard Finish"],
+   "position": "As a child they lived in a big inner world of imagination, could not hurt a fly, and escaped into themselves when threatened (7). The emotional response that settled from it is fire: push, hold the feeling down, and be hard on themselves (9).",
+   "share": { "title": "What Sets Them Apart", "text": "7 drifts off and watches (7). 9 gets up and does (9)." },
+   "course": {
+    "about": "a 7 in the childhood aura",
+    "text": "\"A parent or sibling may have passed away, leaving an inner feeling that life was difficult and you had to fend for yourself.\""
+   },
+   "reasoning": [
+    "A child left to manage alone (7) grows a voice that says \"then be strong\" (9).",
+    "They are hard on the dreamer they once were (9): daydreaming (7) now feels like wasted time.",
+    "The same passage says the need to fend for oneself gave inner strength (9) and a strong intuition (7) that can be used to lead and guide others."
+   ],
+   "best": "Kept the child's compassion (7) and added the strength to act on it (9).",
+   "worst": "Escapes into their own head (7) and then punishes themselves for it (9)."
+  },
+  {
+   "a": { "spot": "outer.lowerRight", "sum": 7 },
+   "b": { "spot": "outer.lowerLeft", "sum": 11 },
+   "written": "2026-11-27",
+   "phrases": ["Always the Sensitive One", "Dreamer, Then Pleaser", "No Shield, Twice"],
+   "position": "As a child they lived in a big inner world of imagination and escaped into themselves when threatened (7). In their twenties they were very sensitive: easily hurt, slow to speak out, with others stepping over their limits (11/2).",
+   "share": { "title": "What They Share", "text": "Both are receptive, inward numbers with no armor (7, 11/2). The escape into an inner world is doubled." },
+   "course": {
+    "about": "11/2 and 7 together in a center (written for the name chart's mind center)",
+    "text": "\"create a lot of mental instability and feeling of vulnerability.\""
+   },
+   "reasoning": [
+    "The child escaped inward (7), and the young adult did the same when people overstepped (11/2).",
+    "The child could not hurt a fly (7). The young adult could not say no (11/2).",
+    "What it leaves them with is rare: a child's imagination (7) and a grown feel for what others are going through (11/2)."
+   ],
+   "best": "Imagines what another person is feeling (7) and is nearly always right (11/2).",
+   "worst": "Zoned out as a child (7) and let people walk over them later (11/2).",
+   "made": "Made together: the emotion center 9, a harsh voice toward themselves."
+  },
+  {
+   "a": { "spot": "inner.solar", "sum": 12 },
+   "b": { "spot": "inner.lowerRight", "sum": 13 },
+   "written": "2026-11-27",
+   "phrases": ["Born the Black Sheep", "Odd, and Sore About It", "Nobody Gets Me"],
+   "position": "By nature the child in them is original and a bit odd, the black sheep who either withdraws or rebels (13/4). The emotional response that goes with it is to turn things over in the head and feel misunderstood (12/3).",
+   "share": { "title": "What They Share", "text": "Both feel shut out: 13/4 as the outsider (13/4), 12/3 as the one wronged (12/3). It is doubled." },
+   "course": {
+    "about": "a 13/4 childhood aura with 12/3 in the psyche chart's emotion center",
+    "text": "\"although you have access to a great deal of imagination and originality on the inside, and may sometimes feel like a victim on the inside (solar plexus 12/3), you seem more \"normal\" and restrained on the outside.\""
+   },
+   "reasoning": [
+    "By nature they see things their own way (13/4) and feel alone in it (12/3).",
+    "The combo guide's phrase for 12/3 beside a 4 is the black sheep: here it is said twice (13/4, 12/3).",
+    "They hide how different they are (13/4), which guarantees that nobody understands them (12/3)."
+   ],
+   "best": "Has an original mind (13/4) and the patience to work an idea out fully (12/3).",
+   "worst": "Feels like an outcast (13/4) and reads every look as proof of it (12/3)."
+  },
+  {
+   "a": { "spot": "inner.lowerRight", "sum": 13 },
+   "b": { "spot": "inner.lowerLeft", "sum": 8 },
+   "written": "2026-11-27",
+   "phrases": ["Rebel Child, Controlled Adult", "The Outsider Who Took Charge", "Brake After the Gas"],
+   "position": "By nature the child in them is original and a bit odd, the black sheep who either withdraws or rebels (13/4). By nature their twenties side is strong, cautious and in control, with nobody let too close (8).",
+   "share": { "title": "What They Share", "text": "The one thing both agree on is \"I'm on my own\" (13/4, 8). Apart: 13/4 breaks the rules, 8 keeps them." },
+   "course": {
+    "about": "a 13/4 childhood aura with an 8 beside it",
+    "text": "\"With psychic life expression 8, you can remember everything because the number 8 stands for memory and karma. You especially remember all the times you felt different, unwanted and like the black sheep.\""
+   },
+   "reasoning": [
+    "The child was pushed out (13/4). The twenties side makes sure it cannot happen again, by controlling who comes near (8).",
+    "The same passage: standing up for themselves comes across as harsh, even territorial (8), because a small provocation recalls the old feeling (13/4).",
+    "The combo guide says 4 and 8 fight. In this pair the wild child (13/4) is held down by the careful adult (8)."
+   ],
+   "best": "Stands up for people who are left out (8) because they remember being one (13/4).",
+   "worst": "Remembers every time they were made to feel odd (13/4) and forgives none of it (8).",
+   "made": "Made together: the emotion center 12/3, overthinking and feeling misunderstood."
+  },
+  {
+   "a": { "spot": "inner.solar", "sum": 9 },
+   "b": { "spot": "inner.lowerRight", "sum": 15 },
+   "written": "2026-11-27",
+   "phrases": ["Charmer by Nature, Fighter at Heart", "Sweet Talk, Iron Will", "The Player"],
+   "position": "By nature the child in them is charming, a little flirtatious, and knows how to get its way (15/6). The emotional response that goes with it is fire: push on, and be hard on themselves (9).",
+   "share": { "title": "What Sets Them Apart", "text": "15/6 wins by being liked (15/6). 9 wins by being stronger (9)." },
+   "course": {
+    "about": "15/6 in the childhood aura",
+    "text": "\"There's definitely a great ability to make things happen from behind the scenes by pulling the right strings.\""
+   },
+   "reasoning": [
+    "By nature they try charm first (15/6) and force second (9), and usually one of them works.",
+    "They want to be adored (15/6) and scold themselves for wanting it (9).",
+    "The combo guide: when 15/6 stands with a power number such as 9, no effort is spared to get things their way."
+   ],
+   "best": "Gets people on their side (15/6) and then gets the job done (9).",
+   "worst": "Pulls strings behind the scenes (15/6) and turns angry when caught (9)."
+  },
+  {
+   "a": { "spot": "inner.lowerRight", "sum": 15 },
+   "b": { "spot": "inner.lowerLeft", "sum": 12 },
+   "written": "2026-11-27",
+   "phrases": ["Charming, Then Misjudged", "Drama and Doubt", "Loved for the Act"],
+   "position": "By nature the child in them is charming, a little flirtatious, and knows how to get its way (15/6). By nature their twenties side is expansive and mentally awake, and often feels misunderstood by people (12/3).",
+   "share": { "title": "What Sets Them Apart", "text": "15/6 knows how to be liked (15/6). 12/3 feels that it is not (12/3)." },
+   "course": {
+    "about": "the combo guide on 15/6 beside unbalanced numbers such as 12/3",
+    "text": "\"The unbalanced numbers can bring out the worst in the number 15/6, so that emotions take over\""
+   },
+   "reasoning": [
+    "By nature they charm people (15/6) and then suspect they were liked only for the charm (12/3).",
+    "The child's gossip (15/6) comes back in their twenties as being talked about (12/3).",
+    "The combo guide ties 12/3 with 15/6 to paranoia, drama and addiction: strong feeling (15/6) with a head that reads it wrongly (12/3)."
+   ],
+   "best": "Draws people in (15/6) and gives them something to think about (12/3).",
+   "worst": "Stirs up drama (15/6) and then feels like its victim (12/3).",
+   "made": "Made together: the emotion center 9, a harsh voice toward themselves."
+  },
+  {
+   "a": { "spot": "inner.solar", "sum": 15 },
+   "b": { "spot": "inner.lowerRight", "sum": 9 },
+   "written": "2026-11-27",
+   "phrases": ["Tough Shell, Wanting Heart", "The Guarded Romantic", "Fights It, Wants It"],
+   "position": "By nature the child in them is a fighter: fair, direct, and guarded about showing feeling (9). The emotional response that goes with it is attraction: charm, wanting to be wanted, and drama (15/6).",
+   "share": { "title": "What Sets Them Apart", "text": "9 keeps people at arm's length (9). 15/6 wants them close (15/6)." },
+   "course": {
+    "about": "the combo guide on 15/6 with 9",
+    "text": "\"You will typically seek attention because of 15/6 and become very angry (9) if others take it (9) and may find it difficult to feel rejected.\""
+   },
+   "reasoning": [
+    "By nature they act as if they need nobody (9), while needing very much to be wanted (15/6).",
+    "A fighter does not ask (9), so the wish for affection (15/6) comes out sideways: as teasing, testing, a scene.",
+    "Being turned down is felt as losing a fight (9), on top of the hurt itself (15/6)."
+   ],
+   "best": "Protects fiercely (9) whoever they have given their heart to (15/6).",
+   "worst": "Pushes a person away (9) to see whether they will come back (15/6)."
+  },
+  {
+   "a": { "spot": "inner.solar", "sum": 15 },
+   "b": { "spot": "inner.lowerLeft", "sum": 8 },
+   "written": "2026-11-27",
+   "phrases": ["Sees Through People", "Cool Outside, Craving Inside", "Controlled Passion"],
+   "position": "By nature their twenties side is strong, cautious and in control, with nobody let too close (8). The emotional response under it is attraction: charm, wanting to be wanted, and drama (15/6).",
+   "share": { "title": "What Sets Them Apart", "text": "8 is duty and distance (8). 15/6 is desire and closeness (15/6). Lecture: 6 likes 8." },
+   "course": {
+    "about": "the combo guide on 15/6 with 8, at the more balanced end",
+    "text": "\"someone who is good at seeing through others (15/6), but may use this to their own advantage and gain power through manipulation.\""
+   },
+   "reasoning": [
+    "By nature they watch people from a safe distance (8) and feel strongly drawn to them all the same (15/6).",
+    "They know what someone wants (15/6) and when to use it (8).",
+    "The guard exists (8) because the feelings behind it are so strong (15/6)."
+   ],
+   "best": "Understands what moves a person (15/6) and uses it responsibly (8).",
+   "worst": "Reads someone's longing (15/6) and uses it to control them (8)."
+  },
+  {
+   "a": { "spot": "inner.solar", "sum": 15 },
+   "b": { "spot": "inner.lowerRight", "sum": 7 },
+   "written": "2026-11-27",
+   "phrases": ["Dreamy and Magnetic", "The Mystic Charmer", "Soul and Sensuality"],
+   "position": "By nature the child in them lives in a big inner world of imagination, gentle with every creature, escaping inward when threatened (7). The emotional response that goes with it is attraction: charm, wanting to be wanted, and drama (15/6).",
+   "share": { "title": "What They Share", "text": "Both are loved, feminine numbers (7, 15/6). The combo guide says a 7 lifts 15/6 into something hypnotic and spiritual." },
+   "course": {
+    "about": "15/6 with a 7 (written for the name chart)",
+    "text": "\"a strong and hypnotic charisma that fascinates people and gives an aura of sensuality and mystery.\""
+   },
+   "reasoning": [
+    "By nature they do not chase (7), which makes the pull stronger (15/6).",
+    "The gentle child (7) keeps the charm (15/6) from turning into a game.",
+    "Under strong attraction (15/6) they make the other person into a dream (7), and are let down by the real one."
+   ],
+   "best": "Loves with imagination (7) and with passion (15/6).",
+   "worst": "Falls for a fantasy of someone (7) and makes a drama of the disappointment (15/6)."
+  },
+  {
+   "a": { "spot": "inner.lowerRight", "sum": 7 },
+   "b": { "spot": "inner.lowerLeft", "sum": 8 },
+   "written": "2026-11-27",
+   "phrases": ["Dreamer Who Took Control", "Quiet Authority", "Soft Child, Guarded Adult"],
+   "position": "By nature the child in them lives in a big inner world of imagination and escapes inward when threatened (7). By nature their twenties side is strong, cautious and in control, with nobody let too close (8).",
+   "share": { "title": "What They Share", "text": "Both keep their distance and observe: the child from inside its own world (7), the young adult from behind a guard (8)." },
+   "course": {
+    "about": "an 8 aura with a 7 beside it (written for the name chart)",
+    "text": "\"strong intuition and deep knowledge ... great success as the 8 grounds the spirituality and insight of the 7.\""
+   },
+   "reasoning": [
+    "The child had no defence but to drift off (7). The twenties side builds one: control (8).",
+    "Both watch before they act (7, 8), so little escapes them.",
+    "The psyche aura texts call 7 with 8 part of the \"spotlight\" combination: a private nature (7) that keeps getting noticed (8)."
+   ],
+   "best": "Senses what is going on (7) and organizes around it (8).",
+   "worst": "Trusts nobody (8) and retreats into their own head (7).",
+   "made": "Made together: the emotion center 15/6, charm and wanting to be wanted."
+  },
+  {
+   "a": { "spot": "inner.solar", "sum": 9 },
+   "b": { "spot": "inner.lowerLeft", "sum": 13 },
+   "written": "2026-11-27",
+   "phrases": ["Rebel With a Cause", "The Contrarian", "Against, and Loud About It"],
+   "position": "By nature their twenties side is the original one, a bit of a loner with ideas of its own, black sheep or rebel (13/4). The emotional response under it is fire: push on, and be hard on themselves (9).",
+   "share": { "title": "What They Share", "text": "Both stand alone and bow to nobody: 13/4 the outsider (13/4), 9 the fighter (9)." },
+   "course": {
+    "about": "a 4 in the twenties aura (13/4 is the 4 with the ego in it), beside a 9 emotion center",
+    "text": "\"There could also have been a tendency in the twenties to be very self-critical (the 9 psychic solar plexus number).\""
+   },
+   "reasoning": [
+    "By nature they meet the world as the one who does it differently (13/4), and drive themselves hard to prove the different way works (9).",
+    "The combo guide says a hard number such as 9 makes 13/4 rebellious, the dangerous contrarian.",
+    "They would rather be right alone (13/4) than give way (9)."
+   ],
+   "best": "Tears down what does not work (13/4) and builds its replacement by sheer effort (9).",
+   "worst": "Opposes something because everyone else supports it (13/4), and makes a fight of it (9)."
+  },
+  {
+   "a": { "spot": "inner.solar", "sum": 9 },
+   "b": { "spot": "inner.lowerRight", "sum": 14 },
+   "written": "2026-11-27",
+   "phrases": ["Chatty Child, Fierce Heart", "Quick and Combative", "Says It Straight"],
+   "position": "By nature the child in them is lively, likeable and quick, friends with everyone, interested in everything (14/5). The emotional response that goes with it is fire: push on, and be hard on themselves (9).",
+   "share": { "title": "What Sets Them Apart", "text": "14/5 scatters its attention (14/5). 9 wants one thing done properly (9)." },
+   "course": {
+    "about": "a 14/5 in the childhood aura",
+    "text": "\"You probably didn't go into super much depth about any one thing, preferring to generalise your attention.\""
+   },
+   "reasoning": [
+    "By nature they start many things (14/5), and hold it against themselves that few are finished (9).",
+    "The friendly talker (14/5) has a temper under it that friends meet late (9).",
+    "The owner's phrase for 5 with 9 is \"direct communication\": a quick tongue (14/5) with a fighter behind it (9)."
+   ],
+   "best": "Gets everyone talking (14/5) and then gets them moving (9).",
+   "worst": "Laughs it off in company (14/5) and tears into themselves alone (9)."
+  },
+  {
+   "a": { "spot": "outer.solar", "sum": 15 },
+   "b": { "spot": "outer.lowerLeft", "sum": 6 },
+   "written": "2026-11-27",
+   "phrases": ["Heartbreaker Years", "Turned Heads, Lost Theirs", "All About Love"],
+   "position": "In their twenties they had charm and turned heads; it was the time they drew a partner (6). The emotional response under it is attraction with the ego in it: wanting to be wanted, temptation, and drama (15/6).",
+   "share": { "title": "What They Share", "text": "Both are sixes: love and attraction (6, 15/6). 15/6 is the 6 that makes drama. The theme is doubled." },
+   "course": {
+    "about": "a 6 in the twenties aura",
+    "text": "\"it's likely that you met your current spouse during this period, as it marks the peak of sexual charisma.\""
+   },
+   "reasoning": [
+    "In their twenties attention came without effort (6), and they found they needed it (15/6).",
+    "The 6 wanted to settle with one partner (6). The 15/6 under it wanted to stay desired by many (15/6).",
+    "Nothing in this pair sets a limit (6, 15/6), so love life in the twenties was likely full and stormy."
+   ],
+   "best": "Charmed people in their twenties (6) and loved wholeheartedly (15/6).",
+   "worst": "Had a devoted partner (6) and still went looking to be wanted (15/6)."
+  },
+  {
+   "a": { "spot": "outer.lowerRight", "sum": 9 },
+   "b": { "spot": "outer.lowerLeft", "sum": 6 },
+   "written": "2026-11-27",
+   "phrases": ["Tough Kid Turned Charmer", "Fought First, Loved Later", "The Fighter Softens"],
+   "position": "As a child they were a fighter: fair, direct, and guarded about showing feeling (9). In their twenties they had charm and turned heads; it was the time they drew a partner (6).",
+   "share": { "title": "What Sets Them Apart", "text": "9 keeps people off (9). 6 draws them in (6)." },
+   "course": {
+    "about": "a 9 childhood aura with sixes beside it",
+    "text": "\"Here, the fighting spirit acquired as a child combines with the lessons of love encountered in life to create a strong matriarchal or patriarchal energy.\""
+   },
+   "reasoning": [
+    "The child would not be hugged (9). In their twenties they discovered they liked being liked (6).",
+    "The same passage calls love their biggest lesson: learning to care for people (6) after a childhood of standing guard (9).",
+    "Their charm has backbone in it (9): they are warm (6), and nobody takes them for a pushover."
+   ],
+   "best": "Fought for siblings as a child (9) and built a loving family as an adult (6).",
+   "worst": "Wins a partner's heart (6) and then keeps them at arm's length (9).",
+   "made": "Made together: the emotion center 15/6, charm and wanting to be wanted."
+  },
+  {
+   "a": { "spot": "inner.solar", "sum": 6 },
+   "b": { "spot": "inner.lowerRight", "sum": 10 },
+   "written": "2026-11-27",
+   "phrases": ["Proud and Loving", "The Little Leader With a Big Heart", "Shines for Its People"],
+   "position": "By nature the child in them is strong in body and mind, divides opinion, and defends itself by being the best at something (10/1). The emotional response that goes with it is loving and wants harmony (6).",
+   "share": { "title": "What They Share", "text": "Both are warm, well-liked numbers (10/1, 6), and 10/1 turns the love up (6)." },
+   "course": {
+    "about": "a 10/1 in the childhood aura",
+    "text": "\"You have a great ability to create peace and love in the environment due to a great inner sense of what is right and wrong.\""
+   },
+   "reasoning": [
+    "By nature they want to be first (10/1), and they want everyone to be happy about it (6).",
+    "The child's pride (10/1) is softened by a real wish to look after people (6).",
+    "Being disliked is their sore point: the 10/1 splits a room (10/1), and the 6 cannot bear a split (6)."
+   ],
+   "best": "Leads with confidence (10/1) and with love for the people led (6).",
+   "worst": "Has to be the favorite (10/1) and charms everyone to make sure (6)."
+  },
+  {
+   "a": { "spot": "inner.lowerRight", "sum": 11 },
+   "b": { "spot": "inner.lowerLeft", "sum": 10 },
+   "written": "2026-11-27",
+   "phrases": ["Tender Child, Bold Adult", "Covers the Soft Spot by Winning", "Feelings Turned Up"],
+   "position": "By nature the child in them is very sensitive: easily hurt, unable to defend itself, hiding in a world of its own (11/2). By nature their twenties side is strong and sure, the one who shows they are the best (10/1).",
+   "share": { "title": "What Sets Them Apart", "text": "11/2 feels small (11/2). 10/1 acts big (10/1)." },
+   "course": {
+    "about": "a 10/1 twenties aura",
+    "text": "\"In your twenties, you might well have tried to cover up any weaknesses by displaying a strong winning mentality.\""
+   },
+   "reasoning": [
+    "The twenties side wins (10/1) so that nobody sees the child who cried easily (11/2).",
+    "10/1 turns up what stands beside it (10/1), so the sensitivity is stronger, not weaker, for being covered (11/2).",
+    "On the off days of 10/1 (10/1), the child's wish to hide comes straight back (11/2)."
+   ],
+   "best": "Feels deeply (11/2) and has the confidence to show it (10/1).",
+   "worst": "Boasts (10/1) to cover how easily they are hurt (11/2).",
+   "made": "Made together: the emotion center 3, talking a feeling out and making a plan of it."
+  }
+ ]
+}
