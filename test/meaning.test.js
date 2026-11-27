@@ -261,7 +261,7 @@ test('psyche: the childhood and twenties docs come first, the psyche pillar list
   assert.deepEqual(heads(pillar.passages), ['Psyche Pillar 16/7', 'Psyche Pillar Digit Sum 7 (the digit sum of 16)']);
   assert.match(pillar.passages[0].text, /existential crises/);
   const p11 = meaningFor({ chart: 'outer', position: 'pillar', sum: 11 });
-  assert.deepEqual(heads(p11.passages), ['Psyche Pillar Digit Sum 2 (the digit sum of 11)']);
+  assert.deepEqual(heads(p11.passages), ['11/2 AS PSYCHIC PILLAR', 'Psyche Pillar Digit Sum 2 (the digit sum of 11)'], 'the paid tool\'s own words for the psychic pillar first');
 });
 
 test('the problem-areas docs: name line, life expression, spine, centers, auras, sub-chart pillars and heart\'s desire', () => {
@@ -316,7 +316,8 @@ test('psyche spine reads the spine doc for one-digit numbers too; the challenge 
   assert.match(o15.passages[0].heading, /15\/6 as an Outer Challenge/); assert.equal(o15.passages[0].source, 'nlm-psyche-example-15-6-and-5-challenge');
   const i5 = meaningFor({ chart: 'inner', position: 'first', sum: 5 });
   assert.deepEqual(heads(i5.passages), ['5 as an Inner Challenge', 'Month Vibration 5: The Communicator'], 'the inner challenge number is the month vibration');
-  assert.equal(meaningFor({ chart: 'outer', position: 'first', sum: 18 }).passages[0].heading, '3) Comparing the Challenge Numbers > The Number 18/9 (Outer Psyche)');
+  const o18 = heads(meaningFor({ chart: 'outer', position: 'first', sum: 18 }).passages);
+  assert.equal(o18[0], '18/9 AS PSYCHE CHALLENGE NUMBER', 'the personal reports\' own words first'); assert.ok(o18.includes('The Number 18/9 (Outer Psyche)'));
   assert.ok(meaningFor({ chart: 'inner', position: 'first', sum: 8 }).passages.some((p) => p.heading.endsWith('The Number 8 (Inner Psyche)')));
 });
 
@@ -433,4 +434,18 @@ test('audit holes stay closed: love aura takes the book\'s "AURA N", one entry f
   assert.ok(heads(meaningFor({ chart: 'essence', position: 'littleLp', sum: 5 })).includes('essence-book: 5: The Communicator'));
   // a pair heading in the same book is still a pair: "7 and 13" never shows on a 7 alone
   assert.ok(!heads(meaningFor({ chart: 'name', position: 'heart', sum: 7 })).some((h) => /\b13\b/.test(h)));
+});
+
+// The paid tool's personal reports (tools/psyche-reports, owner 2026-11-27): words written for ONE psyche spot come first
+// there, and never carry the report's general description of the number.
+test('psyche spots read the personal reports first: teenage aura, challenge number, pillar, heart centre', () => {
+  const first = (chart, position, sum) => meaningFor({ chart, position, sum }).passages[0];
+  assert.equal(first('outer', 'upperRight', 10).heading, 'THE NUMBER 10 IN THE TEENAGE YEARS');
+  assert.equal(first('inner', 'upperRight', 10).heading, 'THE NUMBER 10 IN THE TEENAGE YEARS', 'day + year: the same aura on both psyche charts');
+  assert.equal(first('outer', 'pillar', 24).heading, '24/6 AS PSYCHIC PILLAR');
+  assert.equal(first('outer', 'heart', 8).heading, '8 IN THE PSYCHIC HEART CENTRE');
+  assert.equal(first('outer', 'lowerRight', 15).heading, 'THE NUMBER 15 IN CHILDHOOD');
+  assert.equal(first('outer', 'lowerLeft', 6).heading, 'THE NUMBER 6 IN THE TWENTIES');
+  assert.doesNotMatch(first('outer', 'upperRight', 10).text, /combination of the|heart cent/i, 'only the number in the spot');
+  assert.notEqual(first('name', 'upperRight', 10).source, 'psyche-report-teenage-aura', 'never on the name chart');
 });

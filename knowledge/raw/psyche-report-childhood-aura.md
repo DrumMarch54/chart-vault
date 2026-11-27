@@ -1,0 +1,21 @@
+# Psyche Chart - Childhood Aura (Bottom Right Aura), more numbers from the personal reports
+source: the paid tool's personal reports (Drive: Class PDF > Charts, Merged Charts 1-4), read 2026-11-27
+topic: psyche
+
+Text the paid tool prints in a personal report for a number in this one spot of the psyche chart. Only the part about the number in the spot is kept; the report's general description of the number and the parts about that person's other numbers are left out.
+
+## THE NUMBER 4 IN CHILDHOOD
+
+With 4 in the aura, you probably had a good practical sense as a child, where you could build up small universes. Perhaps you were good at Lego or other toys that allowed you to build small worlds. The defence mechanism if you were threatened was either to withdraw completely and feel misunderstood as a black sheep who was not wanted by others, or to be rebellious and anti-authoritarian. You likely had a rather unique and counterintuitive sense of humour -where you made strange or bizarre jokes or said strange or bizarre things that made people stop and think. Any feelings you may have had as a child of being different or misunderstood have been refined up to the next octave. You now have access to this originality and can use it to think outside the box and create successful communication. The foundation was laid in childhood for success later in life. You probably have a great team spirit and a super likeable charisma. There is a deep inner feeling that success comes from good teamwork. You probably empathise easily with others and use this empathy both to work with others and to know how to be with other people to achieve success.
+
+## THE NUMBER 15 IN CHILDHOOD
+
+As a child you might have been very sensual and maybe even a little flirtatious in the way you were. You knew that if you could charm people, you would be liked and trusted. You may even have discovered as a child how to get other children or adults to do things you wanted, either with charm or threats. There could also have been a tendency at times to be a bit gossipy and a bit of a gossipmonger. This ability to charm others has followed you all your life, and you may have developed into a real charmer/femme fatale. There's definitely a great ability to make things happen from behind the scenes by pulling the right strings.
+
+## THE NUMBER 16 IN CHILDHOOD
+
+16/7 is a potentially difficult number in the childhood aura. The defence mechanism against life's hardships was probably to escape into an inner world. Instead of playing with the other children, you may have preferred to keep a safe distance and watch them from the outside. Maybe you desperately wanted to take part, but fear, shyness and lack of confidence kept you away. You might have longed to be more of a child, but chose or was dictated by the environment to be responsible and polite. You could also have been bullied and kept out by the other children. Childhood may also have been difficult in other ways, for example there may have been poverty in the family or a feeling that there was not enough for everyone. Despite the hardships of childhood, you had a good ability to synthesize learning and awaken a deep empathy for the human condition. Whatever happened in childhood, the foundations have been laid for an intuitive and strong capacity for leadership.
+
+## THE NUMBER 18 IN CHILDHOOD
+
+Childhood could have felt like a battle, constantly having to fight and prove yourself. With an 18/9 aura, there is a strong theme of masculinity in childhood. You may have had a very strong father figure that you had to live up to or prove yourself to. You may have been in situations where you had to fight with other children to prove yourself. You might have grown up in a very competitive environment -or there might have been other children who were very hard on you, or you had to be very hard on others. In advanced incarnations, 18/9 in the childhood aura means that you knew from a very early age what you wanted to spend the rest of your life doing -and this pursuit is usually something profound that serves humanity. For example, you might have chosen to do things that went directly against what parents and teachers told you to do and what they thought was possible or normal. The inner will could have been so strong that you followed your own inner guidance and ignored everything else.

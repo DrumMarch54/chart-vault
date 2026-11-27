@@ -398,6 +398,12 @@ Who they are: `.brain/USER.md`. Why a rule exists: grep `.brain/HISTORY.md`.
   No Quick Gist, no jump chips, no Name Cleanse words anywhere (owner 2026-11-27: "just remove all of it"; `CLEANSE` in meaning.js).
   A diamond with no course words for its spot opens STRAIGHT to its number's general guide (owner 2026-11-27: the course
   rarely writes about a diamond in a spot; use the same source as About N in General), never "no words yet".
+- PSYCHE spots read the paid tool's PERSONAL REPORTS first (owner 2026-11-27: "prefer direct information ... about the
+  spots"): `knowledge/raw/psyche-report-*.md` (teenage aura, challenge number, psychic pillar, psychic heart centre, more
+  childhood and twenties numbers), made by `tools/psyche-reports/` from the four "Merged Charts" PDFs (Drive Class PDF >
+  Charts: 23 full reports, fetch by link). Keep ONLY text about the number in the spot; the report's general number
+  text ("NUMBER: 71 ARCHETYPE", "GENERALLY ABOUT") and the parts about that person's other numbers stay out. The report's
+  psyche chart = the app's OUTER psyche chart. The reports also hold per-spot text for every other chart: not read yet.
 - A center's COMBINATION is the two numbers in its circle, main + extra vibration, in the course, in the owner's
   combo tags (37 of 38) and in the position search (`PARTS` heart/solar). The auras around it make the DIAMOND.
 - SUB DIAMOND (owner 2026-10-20): a center's main vibration digit sum beside a middle name's digit sum, one per

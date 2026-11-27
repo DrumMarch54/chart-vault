@@ -129,8 +129,14 @@ function wordFit(position, heading) {
 // "Outer Diamond" and "Target Number" entries are two digits side by side (day 1, month 2 = "12"), not a sum, so
 // they are not this app's numbers and stay out.
 const HOME = [
-  { keys: ['outer.lowerRight', 'inner.lowerRight'], source: /^psyche-childhood-aura/ },
-  { keys: ['outer.lowerLeft', 'inner.lowerLeft'], source: /^psyche-twenties-aura/ },
+  { keys: ['outer.lowerRight', 'inner.lowerRight'], source: /^psyche-(?:report-)?childhood-aura/ },
+  { keys: ['outer.lowerLeft', 'inner.lowerLeft'], source: /^psyche-(?:report-)?twenties-aura/ },
+  // The paid tool's personal reports (tools/psyche-reports, owner 2026-11-27: prefer the course's own words for a psyche
+  // spot). The report's psyche chart is the OUTER psyche chart; the teenage aura (day + year) is the same number on both.
+  { keys: ['outer.upperRight', 'inner.upperRight'], source: /^psyche-report-teenage-aura/ },
+  { keys: ['outer.first'], source: /^psyche-report-challenge-number/ },
+  { keys: ['outer.pillar'], source: /^psyche-report-pillar/ },
+  { keys: ['outer.heart'], source: /^psyche-report-heart-centre/ },
   { keys: ['outer.first'], source: /^nlm-outer-psyche-challenge/ },
   { keys: ['outer.first'], source: /^nlm-psyche-example-15-6-and-5-challenge/, heading: /Outer Challenge/ },
   { keys: ['inner.first'], source: /^nlm-psyche-example-15-6-and-5-challenge/, heading: /Inner Challenge/ },

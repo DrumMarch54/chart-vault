@@ -348,3 +348,9 @@ when each passage was said. `knowledge/books.json` "lectures" names the transcri
 lecture"); such a point's citation is `{ book, at: "mm:ss" }`, the speaker line its words sit under, shown as
 "Sub-chart Rules lecture at 8:07". test/meaning.test.js checks every citation: a page from "books" or a minute from
 "lectures", never both.
+
+## The personal reports (2026-11-27)
+`psyche-report-*.md` come from the paid tool's full personal reports (Drive "Class PDF > Charts", the four "Merged
+Charts" PDFs, 23 reports), not from a Drive doc: `tools/psyche-reports/parse.mjs` + `make.mjs` (how to run is at the top
+of make.mjs). Only text about a number IN ONE psyche spot is kept. `psyche-report-heart-centre.md` is sorted by hand
+(the report mixes the centre's number with the aura beside it); never regenerate it blindly.

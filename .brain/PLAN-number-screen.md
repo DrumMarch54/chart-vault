@@ -81,7 +81,13 @@ Every claim carries its number in brackets. Full text, never shortened to fit.
    prefer the course's own words for psyche spots: Drive folder 1V6o7YX8tiABP-EvjN_oiJwneMrxMnkgr (notes pulled from the
    Numerologist PRO paid "merged charts"; some per-number psyche info) and maybe more scraped from the merged charts; keep
    ONLY what is about a psyche POSITION, never a general number description. Reading and sorting that is Fable work.
-   Open question: the name chart spine doc on the vocation/personality spines too (psyche spines already use it)?
+   Sub-chart spines: owner said no ("don't even worry about the spine stuff for the sub charts").
+   DONE 2026-11-27: the folder's two docs were already in the store. The "merged charts" are 23 full personal reports
+   of the paid tool; their psyche chapters gave six new documents (`knowledge/raw/psyche-report-*.md`,
+   tools/psyche-reports): teenage aura 3-14, challenge number 10-18, psychic pillar (12 numbers), psychic heart centre
+   (13 numbers, hand-sorted), childhood 4/15/16/18, twenties 5/6/18. Still thin: emotion center, upper left (adult)
+   aura, psyche life expression (the reports give only the general number text there). NEXT IDEA: the reports' other
+   chapters hold per-spot text for the higher self, vocation, personality, names and life areas.
 3. Part 4: rows, the card, the graded cards, Not Written Yet + the tapped-while-missing list, This Is Off.
 4. Writing sessions fill cards and the "In This Spot" explanations.
 After each: `npm run verify`, the dev app at 390x844 in every look, compare with the mockups, then say done.
