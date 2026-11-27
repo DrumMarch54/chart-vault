@@ -1147,6 +1147,414 @@
    "best": "Senses what each colleague wants (15/6) and uses it to get the best out of them (9).",
    "worst": "Charms a colleague to get their way (15/6) and turns harsh when it does not work (9).",
    "batch": "batch-02"
+  },
+  "inner.solar=9|outer.solar=9": {
+   "a": {
+    "spot": "inner.solar",
+    "sum": 9
+   },
+   "b": {
+    "spot": "outer.solar",
+    "sum": 9
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "Twice as Hard on Themselves",
+    "No Off Switch",
+    "The Volcano"
+   ],
+   "position": "By nature the emotional response is fire: push through, and criticize themselves (9). Once the personality steps in, nothing changes it: the same push and the same self-criticism again (9).",
+   "share": {
+    "title": "What They Share",
+    "text": "Everything: it is the same number twice. The drive and the self-criticism are both doubled (9, 9)."
+   },
+   "course": {
+    "about": "the Psyche book on a 9 in an emotion center, in any chart",
+    "text": "\"typically indicates a highly charged inner self-critical voice fueled by anger. This number often highlights a deeply internalized frustration\""
+   },
+   "reasoning": [
+    "In most people the personality answers the first feeling with a different one. Here it answers with the same one (9, 9), so nothing inside argues back.",
+    "They hold irritation down (9), and then hold it down again (9). When it comes out, it comes out big.",
+    "Rest feels like failing (9). They finish one thing and are already judging the next (9).",
+    "The anger is aimed at themselves first (9). The people closest to them catch what spills over (9)."
+   ],
+   "best": "Gets through what would stop most people (9) and does not complain about it (9).",
+   "worst": "Tears into themselves over a small mistake (9), then snaps at whoever is nearest (9).",
+   "batch": "batch-03"
+  },
+  "inner.solar=12|outer.solar=12": {
+   "a": {
+    "spot": "inner.solar",
+    "sum": 12
+   },
+   "b": {
+    "spot": "outer.solar",
+    "sum": 12
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "Twice Misunderstood",
+    "The Loop in the Head",
+    "Reads the Worst Into It"
+   ],
+   "position": "By nature the emotional response is to turn a feeling over in the head and quietly feel misunderstood (12/3). Once the personality steps in, it does the same again: more thinking, and feeling wronged (12/3).",
+   "share": {
+    "title": "What They Share",
+    "text": "Everything: it is the same number twice. The overthinking and the feeling of being wronged are both doubled (12/3, 12/3)."
+   },
+   "course": {
+    "about": "12/3 in an emotion center (written for the name chart)",
+    "text": "\"It gives incessant thoughts, a feeling of being a victim and a tendency to misunderstand other people's intentions.\""
+   },
+   "reasoning": [
+    "Nothing inside says \"maybe they meant well\": both voices read the worst into it (12/3, 12/3).",
+    "They explain a feeling (12/3) where another person would simply have it, so talking it over brings little relief (12/3).",
+    "The same book says loved ones have trouble reading a 12/3, and the 12/3 does not read them correctly either. Doubled, it goes both ways at once (12/3, 12/3).",
+    "Followed to its root, the habit turns into knowledge: they understand how a misunderstanding starts better than anyone (12/3)."
+   ],
+   "best": "Thinks a feeling all the way through (12/3) and can put it into words for other people (12/3).",
+   "worst": "Hears an insult nobody meant (12/3) and builds a whole story on it (12/3).",
+   "batch": "batch-03"
+  },
+  "inner.solar=9|outer.solar=6": {
+   "a": {
+    "spot": "inner.solar",
+    "sum": 9
+   },
+   "b": {
+    "spot": "outer.solar",
+    "sum": 6
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "Hard on Themselves, Kind to Others",
+    "A Fighter Who Keeps the Peace",
+    "Warm Face, Hot Core"
+   ],
+   "position": "By nature the emotional response is fire: push, and be hard on themselves (9). Once the personality steps in, the response turns warm and wants harmony with people (6).",
+   "share": {
+    "title": "What Sets Them Apart",
+    "text": "9 goes it alone (9). 6 wants people around and peace between them (6)."
+   },
+   "course": {
+    "about": "the Hub's Psyche Chart Solar Plexus Codes, on a 6 in a psyche emotion center",
+    "text": "\"A primary pitfall is feeling an over-responsibility for others' emotions\""
+   },
+   "reasoning": [
+    "Here the judge is the root (9) and love is how the personality handles it (6). With the two numbers swapped, love comes first and the judge second.",
+    "The warmth (6) covers the inner critic (9): people rarely see how hard they are on themselves.",
+    "They are kinder to others (6) than they are to themselves (9).",
+    "They keep the peace (6) by swallowing irritation (9). It adds up."
+   ],
+   "best": "Fights for the people they love (9) and makes them feel cared for while doing it (6).",
+   "worst": "Smiles and smooths things over (6) while seething inside (9).",
+   "batch": "batch-03"
+  },
+  "inner.solar=9|outer.solar=15": {
+   "a": {
+    "spot": "inner.solar",
+    "sum": 9
+   },
+   "b": {
+    "spot": "outer.solar",
+    "sum": 15
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "Driven and Seductive",
+    "Anger Dressed as Charm",
+    "Has to Win Them Over"
+   ],
+   "position": "By nature the emotional response is fire: push, and be hard on themselves (9). Once the personality steps in, the response turns to attraction: charm, wanting to be wanted, and drama when they are not (15/6).",
+   "share": {
+    "title": "What Sets Them Apart",
+    "text": "9 holds feelings down (9). 15/6 makes a scene of them (15/6)."
+   },
+   "course": {
+    "about": "the combo guide on 15/6 with 9 in an emotion center, at its most balanced",
+    "text": "\"these numbers can create a strong polarity between masculine and feminine, and thus great attraction and sexual tension.\""
+   },
+   "reasoning": [
+    "Being admired (15/6) quiets the inner judge for a while (9). That is why they look for it.",
+    "The combo guide on this pair: they seek attention (15/6) and get very angry when someone else takes it (9).",
+    "Winning a person over (15/6) feels to them like a goal reached (9), so the chase interests them more than what comes after.",
+    "A rejection lands twice: the wish to be wanted is refused (15/6), and the judge inside says it was their own fault (9)."
+   ],
+   "best": "Goes after what they want (9) and charms people into coming along (15/6).",
+   "worst": "Collects admirers (15/6) like trophies (9).",
+   "batch": "batch-03"
+  },
+  "inner.solar=6|outer.solar=12": {
+   "a": {
+    "spot": "inner.solar",
+    "sum": 6
+   },
+   "b": {
+    "spot": "outer.solar",
+    "sum": 12
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "Gives, Then Feels Unthanked",
+    "Warmth That Gets Misread",
+    "Loving Heart, Busy Head"
+   ],
+   "position": "By nature the emotional response is loving and wants harmony (6). Once the personality steps in, the response turns to going over it in the head and feeling taken for granted (12/3).",
+   "share": {
+    "title": "What Sets Them Apart",
+    "text": "6 feels at home with people (6). 12/3 feels misunderstood by them (12/3)."
+   },
+   "course": {
+    "about": "6 and 12/3 together in an emotion center (written for the name chart)",
+    "text": "\"You can feel like you're giving and giving, but it's never good enough and you never get anything in return, leaving you feeling tired, burned out and unappreciated.\""
+   },
+   "reasoning": [
+    "The love is real and comes first (6). The complaint comes after, when the head gets hold of it (12/3).",
+    "They help without being asked (6), then notice that nobody thanked them (12/3).",
+    "Their care (6) gets misread (12/3).",
+    "The combo guide says 12/3 beside a feminine number such as 6 goes quiet: they feel unvalued (12/3) and say nothing, to keep the peace (6)."
+   ],
+   "best": "Loves their people (6) and learns from every family trouble how people work (12/3).",
+   "worst": "Gives and gives (6), then sulks that nobody noticed (12/3).",
+   "batch": "batch-03"
+  },
+  "inner.solar=12|outer.solar=6": {
+   "a": {
+    "spot": "inner.solar",
+    "sum": 12
+   },
+   "b": {
+    "spot": "outer.solar",
+    "sum": 6
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "Mends What Hurt Them",
+    "Feels Left Out, Welcomes Everyone",
+    "Kindness Over an Old Hurt"
+   ],
+   "position": "By nature the emotional response is to turn a feeling over in the head and quietly feel misunderstood (12/3). Once the personality steps in, the response turns loving: keep the peace and look after people (6).",
+   "share": {
+    "title": "What Sets Them Apart",
+    "text": "12/3 feels left out (12/3). 6 belongs (6)."
+   },
+   "course": {
+    "about": "the Hub's Psyche Chart Solar Plexus Codes, on 12/3 in a psyche emotion center",
+    "text": "\"bringing a quiet feeling of being victimized or misunderstood.\""
+   },
+   "reasoning": [
+    "Here the hurt is the root (12/3) and love is how the personality handles it (6): they give others the understanding they missed themselves.",
+    "They look settled and warm (6). The feeling of not being understood (12/3) is kept out of sight.",
+    "They take on everyone's feelings (6) partly to be needed, so they are not overlooked again (12/3).",
+    "A peaceful home (6) quiets the looping thoughts (12/3). A quarrel at home starts them again."
+   ],
+   "best": "Knows what it is like to be misread (12/3) and makes other people feel welcome (6).",
+   "worst": "Keeps everyone happy (6) and privately feels nobody does the same for them (12/3).",
+   "batch": "batch-03"
+  },
+  "inner.solar=15|outer.solar=9": {
+   "a": {
+    "spot": "inner.solar",
+    "sum": 15
+   },
+   "b": {
+    "spot": "outer.solar",
+    "sum": 9
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "Longing Under Armor",
+    "Wants to Be Wanted, Acts Tough",
+    "The Charmer Who Fights"
+   ],
+   "position": "By nature the emotional response is attraction: charm, wanting to be wanted, and drama (15/6). Once the personality steps in, the response is fire: push, hold the feeling down, and be hard on themselves (9).",
+   "share": {
+    "title": "What Sets Them Apart",
+    "text": "15/6 reaches for people (15/6). 9 acts as if it needs nobody (9)."
+   },
+   "course": {
+    "about": "the combo guide on 15/6 with a 9",
+    "text": "\"The inherent tendency for emotional drama in 15/6 can become particularly belligerent because of the 9.\""
+   },
+   "reasoning": [
+    "Here the toughness is on show (9) and the longing is hidden (15/6). With the two numbers swapped, the charm is on show and the anger hidden.",
+    "The personality puts a lid (9) on a hungry heart (15/6): they act as if they need no one.",
+    "They judge themselves (9) for how much they want attention (15/6).",
+    "When the lid slips (9), the drama comes out as a fight (15/6)."
+   ],
+   "best": "Feels strongly drawn to someone (15/6) and has the courage to act on it (9).",
+   "worst": "Wants someone badly (15/6) and picks a fight with them over it (9).",
+   "batch": "batch-03"
+  },
+  "name.solar=10|name.solarExtra=6": {
+   "a": {
+    "spot": "name.solar",
+    "sum": 10
+   },
+   "b": {
+    "spot": "name.solarExtra",
+    "sum": 6
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "Sunny and Sensual",
+    "Easy to Love",
+    "Likes Themselves, Loves Others"
+   ],
+   "position": "Inside they are bright and sure of themselves, and feelings flow easily (10/1), with a tint of warmth and love of beautiful things (6).",
+   "share": {
+    "title": "What They Share",
+    "text": "Both are easy, well-liked numbers (10/1, 6). 10/1 turns up whatever stands beside it, and here that is love (6)."
+   },
+   "course": {
+    "about": "6 and 10/1 together in the emotion center",
+    "text": "\"is a great combination, giving a winning mentality, a sense of beauty, an artistic sense and perfectionism. It adds a \"cosmic\" dimension to love (6), which can lead one to easily feel unconditional love for everything that exists.\""
+   },
+   "reasoning": [
+    "10/1 is the main one: the self-confidence comes first (10/1), and the warmth makes it pleasant to be around (6).",
+    "They like themselves (10/1), so they can love a partner without clinging (6).",
+    "The course names perfectionism here. Home, body and partner have to look right (6), and they expect to get it (10/1).",
+    "Nothing in this circle is hard (10/1, 6), so they can be puzzled by people for whom love is a struggle."
+   ],
+   "best": "Fills a home with good mood (10/1) and affection (6).",
+   "worst": "Expects love to come easily (10/1) and everything around them to be beautiful (6), and is thrown when it is not.",
+   "batch": "batch-03"
+  },
+  "name.solar=11|name.solarExtra=9": {
+   "a": {
+    "spot": "name.solar",
+    "sum": 11
+   },
+   "b": {
+    "spot": "name.solarExtra",
+    "sum": 9
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "Gives In, Then Blows Up",
+    "Soft Until Pushed Too Far",
+    "The Tired Helper"
+   ],
+   "position": "Inside they are oversensitive, take on other people's moods and find it hard to say no (11/2), with a tint of anger and a harsh voice toward themselves (9).",
+   "share": {
+    "title": "What Sets Them Apart",
+    "text": "11/2 gives way (11/2). 9 fights (9). The course's one word for the two together is stress."
+   },
+   "course": {
+    "about": "11/2 with 9 in the emotion center",
+    "text": "\"can cause stress and fatigue from being too lenient with others (with 11/2) and then becoming angry (9). People constantly go over your limits and you never say no in time and end up feeling like a doormat.\""
+   },
+   "reasoning": [
+    "11/2 is the main one, so they give way first (11/2). The anger comes late, and most of it is aimed at themselves for giving way (9).",
+    "The same passage on love: the longing (11/2) joins with stubbornness (9), so they keep pursuing someone who is not good for them.",
+    "They run on other people's needs (11/2) and push their own body past its limit (9). Exhaustion is the usual end.",
+    "The 9 is the only limit in this circle. Used early, as a plain \"no\" (9), it protects the soft heart (11/2)."
+   ],
+   "best": "Feels for someone (11/2) and stands up for them (9).",
+   "worst": "Says yes all week (11/2) and explodes at the end of it (9).",
+   "batch": "batch-03"
+  },
+  "name.solar=10|name.solarExtra=9": {
+   "a": {
+    "spot": "name.solar",
+    "sum": 10
+   },
+   "b": {
+    "spot": "name.solarExtra",
+    "sum": 9
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "Sure of Themselves, Never Satisfied",
+    "Big Claims, Hard Push",
+    "The Winner With a Whip"
+   ],
+   "position": "Inside they are bright and sure of themselves (10/1), with a tint of drive and a harsh inner critic (9).",
+   "share": {
+    "title": "What They Share",
+    "text": "Both give out: 10/1 shines (10/1), 9 pushes (9). Neither one takes anything in."
+   },
+   "course": {
+    "about": "9 together with 10/1 in the emotion center",
+    "text": "\"can produce a kind of megalomania where one overcompensates for an inner sense of inadequacy. There can be a tendency to make extreme statements that one cannot live up to.\""
+   },
+   "reasoning": [
+    "In the same circle the other way round (9 colored by 10/1) the critic rules. Here the winner rules (10/1) and the critic drives them on (9).",
+    "The confidence is real (10/1). The 9 adds the feeling that it has to be earned again every day (9).",
+    "10/1 turns up what stands beside it (10/1), so the critic is louder than a tint usually is (9).",
+    "In love they bring enthusiasm (10/1) and protection (9), and find it hard to be the one who is looked after."
+   ],
+   "best": "Believes they can do it (10/1) and then does the hard work (9).",
+   "worst": "Promises something huge (10/1) and attacks themselves when it falls short (9).",
+   "batch": "batch-03"
+  },
+  "name.lowerLeft=11|name.solar=6": {
+   "a": {
+    "spot": "name.solar",
+    "sum": 6
+   },
+   "b": {
+    "spot": "name.lowerLeft",
+    "sum": 11
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "Everybody's Shoulder",
+    "The One Colleagues Lean On",
+    "Steady Heart, Soft Hands"
+   ],
+   "position": "Inside they are warm, feel good about themselves and are at home in closeness (6). What colleagues and acquaintances see is someone soft and kind, who senses what others feel and finds it hard to refuse them (11/2).",
+   "share": {
+    "title": "What They Share",
+    "text": "Both numbers care about other people's feelings (6, 11/2). It is doubled, with no hard number between them to say stop."
+   },
+   "course": {
+    "about": "11/2 as the associates aura",
+    "text": "\"There is a tendency to GIVE much more than you receive.\""
+   },
+   "reasoning": [
+    "A 6 is one of the best numbers to have in the emotion center (6). The soft aura rests on a steady heart, so they can give a lot before it costs them (11/2).",
+    "Colleagues bring them their troubles (11/2) because being near them feels like being at home (6).",
+    "They feel responsible for the mood at work (6) and pick up every colleague's mood (11/2).",
+    "The trouble stays outside, among colleagues (11/2). With a partner and family they are on firmer ground (6)."
+   ],
+   "best": "Senses what a colleague is going through (11/2) and makes them feel cared for (6).",
+   "worst": "Takes on every colleague's problem (11/2) because they feel it is their job to keep things harmonious (6).",
+   "batch": "batch-03"
+  },
+  "name.heart=7|name.upperRight=10": {
+   "a": {
+    "spot": "name.heart",
+    "sum": 7
+   },
+   "b": {
+    "spot": "name.upperRight",
+    "sum": 10
+   },
+   "written": "2026-11-27",
+   "phrases": [
+    "The Radiant Sage",
+    "Wise and Sunny",
+    "Deep Mind, Bright Company"
+   ],
+   "position": "They think deeply, look for the meaning behind things and come across as wise and a little apart (7). What friends see is a sunny, strong person who lifts them up and needs a lot of space (10/1).",
+   "share": {
+    "title": "What They Share",
+    "text": "Both keep to themselves: 7 withdraws to think (7), 10/1 wants its freedom (10/1). Lecture: 7 loves the pure 1."
+   },
+   "course": {
+    "about": "10/1 beside a 7 in the mind center",
+    "text": "\"10/1 magnifies the energy of the number 7 and gives a strong and cosmic intuition and sense of the spiritual.\" And: \"10/1 and 7 also give great charisma and self-confidence.\""
+   },
+   "reasoning": [
+    "10/1 turns up what stands beside it (10/1), so friends get the 7 at full strength: the insight and the intuition (7).",
+    "Friends come to them for a wise word (7) and leave cheered up (10/1).",
+    "They disappear for a while to think (7) and expect their friends not to mind (10/1).",
+    "A 7 alone can drift off into its own world (7). The friends aura pulls them out and gives them company (10/1)."
+   ],
+   "best": "Has real insight (7) and shares it with warmth and confidence (10/1).",
+   "worst": "Takes their own view for the deep truth (7) and is too sure of themselves to hear a friend disagree (10/1).",
+   "batch": "batch-03"
   }
  }
 }
