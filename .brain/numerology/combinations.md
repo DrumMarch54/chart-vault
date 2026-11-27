@@ -236,3 +236,13 @@ center 5 with 8; day 8 + first name 15/6 making public aura 14/5; first name 7 +
 associates aura 12/3; day 3 + life path 9; day 1 + first name 7 making public aura 8. Card parts now: The
 Phrase, By Position, What They Share (or What Sets Them Apart), What the Course Says, My Reasoning, At Its Best.
 Still to do: the psyche charts, then life expression + pillar.
+2026-11-27, seventh round (second batch: "everything looks pretty good ... we're good to move on"):
+- Not every chart is a "he": "sometimes the chart we'll be looking at will be a she". (Claude's choice until the
+  owner says otherwise: cards are written with "they", since the vault stores no gender.)
+- Not understood: "Freedom for himself (5), rules for those close to him (8)" for an emotion center 5 colored
+  by 8. A line that leans on a course statement must say so in the line, and a sub vibration only tints.
+- Open: "we're going to have to get clear on when you interpret three things at a time and when two."
+  Claude's proposal: THREE when the numbers form a triangle the chart draws (two parents and the aura they
+  make: day + first name + public aura; first name + life expression + associates aura; day + month + outer
+  aura); TWO everywhere else (inside one circle, a center and the aura beside it, day + life path, names side
+  by side, the same spot in two charts).
