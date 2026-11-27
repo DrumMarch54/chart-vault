@@ -30,6 +30,14 @@ below is Claude's reading of his last note and waits for his yes.
    heart center", ...), applied to the spot tapped. Measured 2026-11-27: the public, friends and associates aura
    of 17/8 show only the general aura text (right: the course has no specific one); the love life aura shows only
    the specific text and drops the general one (the gap to close). Check every position family for the same gap.
+   The owner is "a bit skeptical about these specific number in specific position descriptions at the top of
+   the screen and how they're being done", with reason. Audit of the name chart auras, numbers 2-18, run
+   2026-11-27 (`meaningFor`): NOTHING shown for public aura 5 and 14, associates aura 5, love life aura 2, 3, 5,
+   9, 18, though the book's "as an aura" text exists for them; the love life aura uses the specific text alone
+   for 4, 6, 7, 8, 10, 13, 14, 15, 17 (general dropped). Drive doc "Name Chart - Auras" = `name-chart-auras`
+   in the store; it does not cover every number in every aura (no 17 as a public aura). Step 2 = run the same
+   audit for EVERY spot family in every chart, show the owner the table of holes, fill them from both sources,
+   and print under the points which course texts they came from.
 2. ABOUT THE NUMBER IN GENERAL: one folded row (the guide's title and opening lines, Show More = the whole guide
    entry and Number Notes, as today). Directly under part 1, never mixed into it.
 3. CONNECTED DIAMONDS: only the diamonds the tapped number is PART OF or MAKES, all of them, each a row that
