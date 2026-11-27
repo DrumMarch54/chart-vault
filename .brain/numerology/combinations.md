@@ -326,3 +326,11 @@ The owner then asked how this gets built; the design talk follows in the chat, n
   POSITION; only the diamonds really connected to the tapped number, all of them; the general guide text as a
   pop-out; an explanation "in the correct context" where the course has none (88/7 as the name chart's mental
   diamond); the sub-chart books' words for diamonds and centers; no repeats; layout and colors reassessed.
+- 2026-11-27, THE OWNER DOES NOT WANT TO PAY FOR CARDS: "obviously going to want to try and write all these
+  descriptions for the combinations here in Claude. I'm not going to want to pay the money to do them in the
+  app." So: Claude sessions write the cards (helpers following this playbook, the way knowledge/bits.json was
+  made); the app's paid writing is at most an optional button, never the plan. Measured the same day on the 665
+  seeded charts: about 9,200 different cards for the essence, name and psyche charts alone when each exact pair
+  in each spot gets its own card (name chart 3,326; half of all pair slots are covered by about 1,700 cards;
+  about 3,000 pairs occur once). Vocation and personality come on top. Too many to write or grade in one go:
+  write in order of use, and let the app note which missing cards were tapped so the next session writes those.
